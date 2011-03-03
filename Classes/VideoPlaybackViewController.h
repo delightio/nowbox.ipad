@@ -1,5 +1,5 @@
 //
-//  NowmovViewController.h
+//  VideoPlaybackViewController.h
 //  Nowmov
 //
 //  Created by Bill So on 03/03/2011.
@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NowmovViewController : UIViewController {
+
+@interface VideoPlaybackViewController : UIViewController {
 
 }
 
 @end
-

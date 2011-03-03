@@ -7,7 +7,7 @@
 //
 
 #import "NowmovAppDelegate.h"
-#import "NowmovViewController.h"
+#import "ChannelViewController.h"
 
 @implementation NowmovAppDelegate
 

@@ -12,9 +12,18 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
-		2899E5220DE3E06400AC0155 /* NowmovViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* NowmovViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
-		28D7ACF80DDB3853001CB0EB /* NowmovViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* NowmovViewController.m */; };
+		A904C7BB131F8E2200925F61 /* ChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7BA131F8E2200925F61 /* ChannelViewController.m */; };
+		A904C7BD131F8E3400925F61 /* ChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A904C7BC131F8E3400925F61 /* ChannelViewController.xib */; };
+		A904C7C1131F8E6400925F61 /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7BF131F8E6400925F61 /* VideoPlaybackViewController.m */; };
+		A904C7C4131F8E8B00925F61 /* VideoPlaybackView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A904C7C3131F8E8B00925F61 /* VideoPlaybackView.xib */; };
+		A904C7D2131F93CC00925F61 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7D1131F93CC00925F61 /* JSONKit.m */; };
+		A904C7EA132005F500925F61 /* NMNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7E9132005F500925F61 /* NMNetworkController.m */; };
+		A904C7EE13200AAA00925F61 /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7ED13200AAA00925F61 /* NMTask.m */; };
+		A904C7F113200ADC00925F61 /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7F013200ADC00925F61 /* NMGetChannelsTask.m */; };
+		A904C7F413200B0D00925F61 /* NMGetNextVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7F313200B0D00925F61 /* NMGetNextVideo.m */; };
+		A904C7F713200B5500925F61 /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7F613200B5500925F61 /* NMGetVideoReasonTask.m */; };
+		A904C7FA13200B9100925F61 /* NMGetChannelVideosTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7F913200B9100925F61 /* NMGetChannelVideosTask.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,13 +33,32 @@
 		1D6058910D05DD3D006BFB54 /* Nowmov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nowmov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		2899E5210DE3E06400AC0155 /* NowmovViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NowmovViewController.xib; sourceTree = "<group>"; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		28D7ACF60DDB3853001CB0EB /* NowmovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NowmovViewController.h; sourceTree = "<group>"; };
-		28D7ACF70DDB3853001CB0EB /* NowmovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NowmovViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Nowmov_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nowmov_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Nowmov-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Nowmov-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		A904C7B9131F8E2200925F61 /* ChannelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelViewController.h; sourceTree = "<group>"; };
+		A904C7BA131F8E2200925F61 /* ChannelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelViewController.m; sourceTree = "<group>"; };
+		A904C7BC131F8E3400925F61 /* ChannelViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChannelViewController.xib; sourceTree = "<group>"; };
+		A904C7BE131F8E6400925F61 /* VideoPlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackViewController.h; sourceTree = "<group>"; };
+		A904C7BF131F8E6400925F61 /* VideoPlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackViewController.m; sourceTree = "<group>"; };
+		A904C7C3131F8E8B00925F61 /* VideoPlaybackView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoPlaybackView.xib; sourceTree = "<group>"; };
+		A904C7D1131F93CC00925F61 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		A904C7D3131F93D800925F61 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		A904C7E8132005F500925F61 /* NMNetworkController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMNetworkController.h; sourceTree = "<group>"; };
+		A904C7E9132005F500925F61 /* NMNetworkController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMNetworkController.m; sourceTree = "<group>"; };
+		A904C7EC13200AAA00925F61 /* NMTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTask.h; sourceTree = "<group>"; };
+		A904C7ED13200AAA00925F61 /* NMTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMTask.m; sourceTree = "<group>"; };
+		A904C7EF13200ADC00925F61 /* NMGetChannelsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelsTask.h; sourceTree = "<group>"; };
+		A904C7F013200ADC00925F61 /* NMGetChannelsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelsTask.m; sourceTree = "<group>"; };
+		A904C7F213200B0D00925F61 /* NMGetNextVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetNextVideo.h; sourceTree = "<group>"; };
+		A904C7F313200B0D00925F61 /* NMGetNextVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetNextVideo.m; sourceTree = "<group>"; };
+		A904C7F513200B5500925F61 /* NMGetVideoReasonTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVideoReasonTask.h; sourceTree = "<group>"; };
+		A904C7F613200B5500925F61 /* NMGetVideoReasonTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVideoReasonTask.m; sourceTree = "<group>"; };
+		A904C7F813200B9100925F61 /* NMGetChannelVideosTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelVideosTask.h; sourceTree = "<group>"; };
+		A904C7F913200B9100925F61 /* NMGetChannelVideosTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideosTask.m; sourceTree = "<group>"; };
+		A904C81F13200DD000925F61 /* NMTaskType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTaskType.h; sourceTree = "<group>"; };
+		A904C822132013E100925F61 /* NMDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMDataType.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,10 +78,12 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A904C7B9131F8E2200925F61 /* ChannelViewController.h */,
+				A904C7BA131F8E2200925F61 /* ChannelViewController.m */,
 				1D3623240D0F684500981E51 /* NowmovAppDelegate.h */,
 				1D3623250D0F684500981E51 /* NowmovAppDelegate.m */,
-				28D7ACF60DDB3853001CB0EB /* NowmovViewController.h */,
-				28D7ACF70DDB3853001CB0EB /* NowmovViewController.m */,
+				A904C7BE131F8E6400925F61 /* VideoPlaybackViewController.h */,
+				A904C7BF131F8E6400925F61 /* VideoPlaybackViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -69,6 +99,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				A904C7D0131F93BF00925F61 /* NMLibrary */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -90,7 +121,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2899E5210DE3E06400AC0155 /* NowmovViewController.xib */,
+				A904C7C3131F8E8B00925F61 /* VideoPlaybackView.xib */,
+				A904C7BC131F8E3400925F61 /* ChannelViewController.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* Nowmov-Info.plist */,
 			);
@@ -105,6 +137,37 @@
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A904C7D0131F93BF00925F61 /* NMLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				A904C7EB132008A200925F61 /* Tasks */,
+				A904C822132013E100925F61 /* NMDataType.h */,
+				A904C7D3131F93D800925F61 /* JSONKit.h */,
+				A904C7D1131F93CC00925F61 /* JSONKit.m */,
+				A904C7E8132005F500925F61 /* NMNetworkController.h */,
+				A904C7E9132005F500925F61 /* NMNetworkController.m */,
+			);
+			path = NMLibrary;
+			sourceTree = "<group>";
+		};
+		A904C7EB132008A200925F61 /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				A904C7EC13200AAA00925F61 /* NMTask.h */,
+				A904C7ED13200AAA00925F61 /* NMTask.m */,
+				A904C7EF13200ADC00925F61 /* NMGetChannelsTask.h */,
+				A904C7F013200ADC00925F61 /* NMGetChannelsTask.m */,
+				A904C7F213200B0D00925F61 /* NMGetNextVideo.h */,
+				A904C7F313200B0D00925F61 /* NMGetNextVideo.m */,
+				A904C7F513200B5500925F61 /* NMGetVideoReasonTask.h */,
+				A904C7F613200B5500925F61 /* NMGetVideoReasonTask.m */,
+				A904C7F813200B9100925F61 /* NMGetChannelVideosTask.h */,
+				A904C7F913200B9100925F61 /* NMGetChannelVideosTask.m */,
+				A904C81F13200DD000925F61 /* NMTaskType.h */,
+			);
+			path = Tasks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,7 +220,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
-				2899E5220DE3E06400AC0155 /* NowmovViewController.xib in Resources */,
+				A904C7BD131F8E3400925F61 /* ChannelViewController.xib in Resources */,
+				A904C7C4131F8E8B00925F61 /* VideoPlaybackView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,7 +234,15 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* NowmovAppDelegate.m in Sources */,
-				28D7ACF80DDB3853001CB0EB /* NowmovViewController.m in Sources */,
+				A904C7BB131F8E2200925F61 /* ChannelViewController.m in Sources */,
+				A904C7C1131F8E6400925F61 /* VideoPlaybackViewController.m in Sources */,
+				A904C7D2131F93CC00925F61 /* JSONKit.m in Sources */,
+				A904C7EA132005F500925F61 /* NMNetworkController.m in Sources */,
+				A904C7EE13200AAA00925F61 /* NMTask.m in Sources */,
+				A904C7F113200ADC00925F61 /* NMGetChannelsTask.m in Sources */,
+				A904C7F413200B0D00925F61 /* NMGetNextVideo.m in Sources */,
+				A904C7F713200B5500925F61 /* NMGetVideoReasonTask.m in Sources */,
+				A904C7FA13200B9100925F61 /* NMGetChannelVideosTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

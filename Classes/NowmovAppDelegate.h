@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@class NowmovViewController;
+@class ChannelViewController;
 
 @interface NowmovAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
-    NowmovViewController *viewController;
+    ChannelViewController *viewController;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet NowmovViewController *viewController;
+@property (nonatomic, retain) IBOutlet ChannelViewController *viewController;
 
 @end
 
