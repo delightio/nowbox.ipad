@@ -12,6 +12,9 @@
 @implementation NMTask
 
 @synthesize state, command, buffer;
+@synthesize encountersErrorDuringProcessing;
+@synthesize httpStatusCode;
+
 
 - (NSDate *)dateTimeFromString:(NSString *)str {
 	if ( _dateTimeFormatter == nil ) {
@@ -51,6 +54,26 @@
 	[_dateTimeFormatter release];
 	[buffer release];
 	[super dealloc];
+}
+
+- (NSMutableURLRequest *)URLRequest {
+	return nil;
+}
+
+- (id)processDownloadedDataInBuffer {
+	return nil;
+}
+
+- (NSString *)willLoadNotificationName {
+	return nil;
+}
+
+- (NSString *)didLoadNotificationName {
+	return nil;
+}
+
+- (NSString *)didFailNotificationName {
+	return nil;
 }
 
 @end

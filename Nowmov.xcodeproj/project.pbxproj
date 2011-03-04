@@ -24,6 +24,8 @@
 		A904C7F413200B0D00925F61 /* NMGetNextVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7F313200B0D00925F61 /* NMGetNextVideo.m */; };
 		A904C7F713200B5500925F61 /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7F613200B5500925F61 /* NMGetVideoReasonTask.m */; };
 		A904C7FA13200B9100925F61 /* NMGetChannelVideosTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A904C7F913200B9100925F61 /* NMGetChannelVideosTask.m */; };
+		A90A460F1320B83E009D6B42 /* NMGetYouTubeDirectURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */; };
+		A90A46121320B84F009D6B42 /* NMGetVimeoDirectURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +61,10 @@
 		A904C7F913200B9100925F61 /* NMGetChannelVideosTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideosTask.m; sourceTree = "<group>"; };
 		A904C81F13200DD000925F61 /* NMTaskType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTaskType.h; sourceTree = "<group>"; };
 		A904C822132013E100925F61 /* NMDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMDataType.h; sourceTree = "<group>"; };
+		A90A460D1320B83E009D6B42 /* NMGetYouTubeDirectURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetYouTubeDirectURL.h; sourceTree = "<group>"; };
+		A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetYouTubeDirectURL.m; sourceTree = "<group>"; };
+		A90A46101320B84F009D6B42 /* NMGetVimeoDirectURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURL.h; sourceTree = "<group>"; };
+		A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVimeoDirectURL.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +172,10 @@
 				A904C7F813200B9100925F61 /* NMGetChannelVideosTask.h */,
 				A904C7F913200B9100925F61 /* NMGetChannelVideosTask.m */,
 				A904C81F13200DD000925F61 /* NMTaskType.h */,
+				A90A460D1320B83E009D6B42 /* NMGetYouTubeDirectURL.h */,
+				A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */,
+				A90A46101320B84F009D6B42 /* NMGetVimeoDirectURL.h */,
+				A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -243,6 +253,8 @@
 				A904C7F413200B0D00925F61 /* NMGetNextVideo.m in Sources */,
 				A904C7F713200B5500925F61 /* NMGetVideoReasonTask.m in Sources */,
 				A904C7FA13200B9100925F61 /* NMGetChannelVideosTask.m in Sources */,
+				A90A460F1320B83E009D6B42 /* NMGetYouTubeDirectURL.m in Sources */,
+				A90A46121320B84F009D6B42 /* NMGetVimeoDirectURL.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

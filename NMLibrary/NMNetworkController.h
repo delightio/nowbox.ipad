@@ -10,9 +10,10 @@
 
 
 @interface NMNetworkController : NSObject {
-	NSMutableDictionary *connectionPool;
-	NSMutableDictionary *taskPool;
-	NSMutableArray *pendingTaskBuffer;
+	NSMutableDictionary * connectionPool;
+	NSMutableDictionary * taskPool;
+	NSMutableArray * pendingTaskBuffer;
+	NSOperationQueue * operationQueue;
 	
 	//TODO: not sure if needed
 //	NMTaskQueueScheduler * scheduler;
@@ -45,9 +46,10 @@
 - (BOOL)tryGetNetworkResource;
 - (void)returnNetworkResource;
 
-- (void)tryCancelImageDownloadWithURLStringsNotIn:(NSArray *)urlAy;
-- (void)tryCancelDownloadWithCaller:(id)aCaller;
+//- (void)tryCancelImageDownloadWithURLStringsNotIn:(NSArray *)urlAy;
+//- (void)tryCancelDownloadWithCaller:(id)aCaller;
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
+- (void)createDataParsingOperationForTask:(NMTask *)atask;
 
 @end
