@@ -11,20 +11,57 @@
 #import "NMNetworkController.h"
 #import "NMDataController.h"
 
+static NMTaskQueueController * sharedTaskQueueController_ = nil;
+
 @implementation NMTaskQueueController
 
 @synthesize managedObjectContext;
 @synthesize networkController;
 @synthesize dataController;
 
++ (NMTaskQueueController *)sharedTaskQueueController {
+	if ( sharedTaskQueueController_ == nil ) {
+		sharedTaskQueueController_ = [[NMTaskQueueController alloc] init];
+	}
+	return sharedTaskQueueController_;
+}
+
+- (id)init {
+	self = [super init];
+	
+	dataController = [[NMDataController alloc] init];
+	networkController = [[NMNetworkController alloc] init];
+	networkController.dataController = dataController;
+	
+	return self;
+}
+
+- (void)setManagedObjectContext:(NSManagedObjectContext *)moc {
+	if ( managedObjectContext ) {
+		if ( managedObjectContext == moc ) {
+			return;
+		}
+		[managedObjectContext release];
+		managedObjectContext = nil;
+		dataController.managedObjectContext = nil;
+	}
+	if ( moc ) {
+		managedObjectContext = [moc retain];
+		dataController.managedObjectContext = moc;
+	}
+}
+
 - (void)dealloc {
 	[managedObjectContext release];
+	[dataController release];
+	[networkController release];
 	[super dealloc];
 }
 
+#pragma mark Queue tasks to network controller
 - (void)issueGetChannels {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] init];
-	
+	[networkController addNewConnectionForTask:task];
 	[task release];
 }
 

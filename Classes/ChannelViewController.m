@@ -7,6 +7,7 @@
 //
 
 #import "ChannelViewController.h"
+#import "NMLibrary.h"
 
 @implementation ChannelViewController
 
@@ -29,12 +30,11 @@
 */
 
 
-/*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
 }
-*/
 
 
 // Override to allow orientations other than the default portrait orientation.
@@ -61,7 +61,7 @@
 
 #pragma mark Target-action methods
 - (IBAction)getChannels:(id)sender {
-	
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 }
 
 @end

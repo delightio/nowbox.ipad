@@ -33,7 +33,7 @@
 
 @property (nonatomic, retain) NSTimer *connectionExecutionTimer;
 //@property (nonatomic, assign) NMTaskQueueScheduler *scheduler;
-//@property (nonatomic, assign) NMDataController * dataController;
+@property (nonatomic, retain) NMDataController * dataController;
 @property (nonatomic, assign) NSThread *controlThread;
 
 - (void)addNewConnectionForTasks:(NSArray *)tasks;

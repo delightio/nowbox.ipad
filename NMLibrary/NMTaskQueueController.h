@@ -19,8 +19,10 @@
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
-@property (nonatomic, retain) NMNetworkController * networkController;
-@property (nonatomic, retain) NMDataController * dataController;
+@property (nonatomic, readonly) NMNetworkController * networkController;
+@property (nonatomic, readonly) NMDataController * dataController;
+
++ (NMTaskQueueController *)sharedTaskQueueController;
 
 - (void)issueGetChannels;
 

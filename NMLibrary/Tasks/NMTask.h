@@ -18,6 +18,7 @@
 @interface NMTask : NSObject {
 	NMTaskExecutionState state;
 	NSMutableData * buffer;
+	NSMutableArray * parsedObjects;
 	NMCommand command;
 	BOOL encountersErrorDuringProcessing;
 	NSInteger httpStatusCode;
@@ -37,6 +38,7 @@
 - (NSMutableURLRequest *)URLRequest;
 - (id)processDownloadedDataInBuffer;
 - (void)saveProcessedDataInController:(NMDataController *)ctrl;
+- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict;
 
 - (NSString *)willLoadNotificationName;
 - (NSString *)didLoadNotificationName;

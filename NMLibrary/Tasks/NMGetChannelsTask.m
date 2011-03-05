@@ -10,6 +10,9 @@
 #import "JSONKit.h"
 
 
+NSString * const NMWillGetChannelsNotification = @"NMWillGetChannelsNotification";
+NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
+
 @implementation NMGetChannelsTask
 
 - (id)init {
@@ -27,13 +30,38 @@
 
 - (id)processDownloadedDataInBuffer {
 	// parse JSON
-	if ( [buffer length] == 0 ) return;
+	if ( [buffer length] == 0 ) return nil;
 	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	NSDictionary * dict = [str objectFromJSONString];
 	
+	if ( [self checkDictionaryContainsError:dict] ) {
+		return parsedObjects;
+	}
 	
+	NSArray * theChs = [dict objectForKey:@"channel_list"];
+	parsedObjects = [[NSMutableArray alloc] init];
+	NSDictionary * cDict;
+	NSMutableDictionary * pDict;
+	for (cDict in theChs) {
+		pDict = [NSMutableDictionary dictionaryWithDictionary:cDict];
+		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
+		[parsedObjects addObject:pDict];
+	}
 	
-	return nil;
+	return parsedObjects;
+}
+
+- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+	// save the data into core data
+	
+}
+
+- (NSString *)willLoadNotificationName {
+	return NMWillGetChannelsNotification;
+}
+
+- (NSString *)didLoadNotificationName {
+	return NMDidGetChannelsNotification;
 }
 
 @end

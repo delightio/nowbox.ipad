@@ -19,4 +19,6 @@
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
+- (NMChannel *)fetchChannelForName:(NSString *)cname;
+
 @end

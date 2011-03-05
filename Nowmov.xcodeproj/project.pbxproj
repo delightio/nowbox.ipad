@@ -27,10 +27,10 @@
 		A908F2C713221AD900F237FA /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A908F2C613221AD900F237FA /* NMDataController.m */; };
 		A908F2E613221E4E00F237FA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A908F2E513221E4E00F237FA /* CoreData.framework */; };
 		A908F2F71322244900F237FA /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A908F2F61322244900F237FA /* NMTaskQueueController.m */; };
-		A908F339132224FD00F237FA /* Nowmov.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A908F338132224FD00F237FA /* Nowmov.xcdatamodel */; };
 		A908F340132225AA00F237FA /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A908F33F132225AA00F237FA /* NMChannel.m */; };
 		A90A460F1320B83E009D6B42 /* NMGetYouTubeDirectURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */; };
 		A90A46121320B84F009D6B42 /* NMGetVimeoDirectURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */; };
+		A96C095B13224E6D001A9E1D /* Nowmov.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A908F338132224FD00F237FA /* Nowmov.xcdatamodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +78,7 @@
 		A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetYouTubeDirectURL.m; sourceTree = "<group>"; };
 		A90A46101320B84F009D6B42 /* NMGetVimeoDirectURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURL.h; sourceTree = "<group>"; };
 		A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVimeoDirectURL.m; sourceTree = "<group>"; };
+		A92F3C2413224F82004234C1 /* NMLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMLibrary.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +175,7 @@
 				A908F2C613221AD900F237FA /* NMDataController.m */,
 				A908F2F51322244900F237FA /* NMTaskQueueController.h */,
 				A908F2F61322244900F237FA /* NMTaskQueueController.m */,
+				A92F3C2413224F82004234C1 /* NMLibrary.h */,
 			);
 			path = NMLibrary;
 			sourceTree = "<group>";
@@ -272,6 +274,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A96C095B13224E6D001A9E1D /* Nowmov.xcdatamodel in Sources */,
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* NowmovAppDelegate.m in Sources */,
 				A904C7BB131F8E2200925F61 /* ChannelViewController.m in Sources */,
@@ -287,7 +290,6 @@
 				A90A46121320B84F009D6B42 /* NMGetVimeoDirectURL.m in Sources */,
 				A908F2C713221AD900F237FA /* NMDataController.m in Sources */,
 				A908F2F71322244900F237FA /* NMTaskQueueController.m in Sources */,
-				A908F339132224FD00F237FA /* Nowmov.xcdatamodel in Sources */,
 				A908F340132225AA00F237FA /* NMChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -304,6 +306,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Nowmov_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_CONNECTION_CONTROLLER;
 				INFOPLIST_FILE = "Nowmov-Info.plist";
 				PRODUCT_NAME = Nowmov;
 			};

@@ -53,6 +53,7 @@
 	[_dateFormatter release];
 	[_dateTimeFormatter release];
 	[buffer release];
+	[parsedObjects release];
 	[super dealloc];
 }
 
@@ -66,6 +67,12 @@
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	
+}
+
+- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict {
+	NSNumber * c = [dict valueForKeyPath:@"status.code"];
+	encountersErrorDuringProcessing = ( c == nil || [c integerValue] == 0 );
+	return encountersErrorDuringProcessing;
 }
 
 - (NSString *)willLoadNotificationName {

@@ -27,6 +27,14 @@
 	[super dealloc];
 }
 
+#pragma mark Data fetching
+- (NMChannel *)fetchChannelForName:(NSString *)cname {
+	// channels are created when the app launch or after sign in. Probably don't need to optimize the operation that much
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	
+}
+
+#pragma mark Data parsing
 - (void)createDataParsingOperationForTask:(NMTask *)atask {
 	NSInvocationOperation * op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseAndProcessData:) object:atask];
 	[operationQueue addOperation:op];

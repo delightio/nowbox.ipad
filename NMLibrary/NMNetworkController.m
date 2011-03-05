@@ -17,6 +17,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 @implementation NMNetworkController
 
 @synthesize connectionExecutionTimer;
+@synthesize dataController;
 @synthesize controlThread;
 
 - (id)init {
@@ -24,10 +25,10 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	taskPool = [[NSMutableDictionary alloc] init];
 	connectionPool = [[NSMutableDictionary alloc] init];
 	pendingTaskBuffer = [[NSMutableArray alloc] init];
-	connectionDateLog = [[NSMutableArray alloc] initWithCapacity:5];
+	connectionDateLog = [[NSMutableArray alloc] initWithCapacity:NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION];
 	networkConnectionLock = [[NSLock alloc] init];
 	isDone = NO;
-	maxNumberOfConnection = 8;
+	maxNumberOfConnection = NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION;
 	defaultCenter = [[NSNotificationCenter defaultCenter] retain];
 	[NSThread detachNewThreadSelector:@selector(controlThreadMain:) toTarget:self withObject:nil];
 	return self;
@@ -41,6 +42,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[pendingTaskBuffer release];
 	[networkConnectionLock release];
 	[connectionDateLog release];
+	[dataController release];
 	[super dealloc];
 }
 
@@ -245,6 +247,9 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	task.httpStatusCode = [httpResponse statusCode];
 	// create buffer
 	[task prepareDataBuffer];
+#ifdef DEBUG_CONNECTION_CONTROLLER
+	NSLog(@"received response %d", task.httpStatusCode);
+#endif
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -286,7 +291,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	NMTask *theTask = [taskPool objectForKey:key];
 	
 #ifdef DEBUG_CONNECTION_CONTROLLER
-    NSLog(@"Succeeded! Received %d bytes of data, response code %d",[theTask.buffer length], theTask.statusCode);
+    NSLog(@"Succeeded! Received %d bytes of data, response code %d",[theTask.buffer length], theTask.httpStatusCode);
 	if ( [theTask.buffer length] < 200 ) {
 		NSString *str = [[NSString alloc] initWithData:theTask.buffer encoding:NSUTF8StringEncoding];
 		NSLog(@"%@", str);
