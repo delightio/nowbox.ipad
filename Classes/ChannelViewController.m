@@ -59,4 +59,9 @@
     [super dealloc];
 }
 
+#pragma mark Target-action methods
+- (IBAction)getChannels:(id)sender {
+	
+}
+
 @end

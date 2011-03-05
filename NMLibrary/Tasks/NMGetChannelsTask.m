@@ -7,6 +7,7 @@
 //
 
 #import "NMGetChannelsTask.h"
+#import "JSONKit.h"
 
 
 @implementation NMGetChannelsTask
@@ -18,7 +19,7 @@
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = @"http://nowmov.com/channel/listings/recommend";
+	NSString * urlStr = @"http://nowmov.com/channel/listings/recommended";
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
 	return request;
@@ -26,8 +27,13 @@
 
 - (id)processDownloadedDataInBuffer {
 	// parse JSON
+	if ( [buffer length] == 0 ) return;
+	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+	NSDictionary * dict = [str objectFromJSONString];
 	
 	
+	
+	return nil;
 }
 
 @end

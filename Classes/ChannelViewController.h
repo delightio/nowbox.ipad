@@ -12,5 +12,7 @@
 
 }
 
+- (IBAction)getChannels:(id)sender;
+
 @end
 
