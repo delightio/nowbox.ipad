@@ -7,6 +7,7 @@
 //
 
 #import "NMNetworkController.h"
+#import "NMDataController.h"
 #import "NMDataType.h"
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
@@ -25,7 +26,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	pendingTaskBuffer = [[NSMutableArray alloc] init];
 	connectionDateLog = [[NSMutableArray alloc] initWithCapacity:5];
 	networkConnectionLock = [[NSLock alloc] init];
-	operationQueue = [[NSOperationQueue alloc] init];
 	isDone = NO;
 	maxNumberOfConnection = 8;
 	defaultCenter = [[NSNotificationCenter defaultCenter] retain];
@@ -72,37 +72,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 // this method should run in main thread
 - (void)performPostNotification:(id)arg {
 	[[NSNotificationCenter defaultCenter] postNotification:arg];
-}
-
-- (void)createDataParsingOperationForTask:(NMTask *)atask {
-	NSInvocationOperation * op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseAndProcessData:) object:atask];
-	[operationQueue addOperation:op];
-	[op release];
-}
-
-- (void)parseAndProcessData:(id)data { 
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	
-	NMTask * task = (NMTask *)data;
-	id parsedObject = nil;
-	if ( [task.buffer length] ) {
-		// parse the JSON string
-		parsedObject = [task processDownloadedDataInBuffer];
-		// remove data buffer to save memory
-		[task clearDataBuffer];
-	}
-	
-	if ( task.httpStatusCode >= 400 || task.encountersErrorDuringProcessing ) {
-		// there's error, check if there's "error" object
-		NSDictionary * errDict = [parsedObject objectForKey:@"error"];
-		NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:self userInfo:errDict];
-		// post notification from main thread. we must use performSelectorOnMainThread
-		[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
-	} else {
-		[self performSelectorOnMainThread:@selector(saveCacheForTask:) withObject:task waitUntilDone:NO];
-	}
-	
-	[pool release];
 }
 
 #pragma mark Connection management
@@ -163,7 +132,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 					conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 					key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
 					[connectionPool setObject:conn forKey:key];
-					[theTask prepareDataBuffer];
 					[taskPool setObject:theTask forKey:key];
 					[conn release];
 				} else {
@@ -198,7 +166,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 					conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 					key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
 					[connectionPool setObject:conn forKey:key];
-					[theTask prepareDataBuffer];
 					[taskPool setObject:theTask forKey:key];
 					[conn release];
 					
@@ -276,6 +243,8 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
 	NMTask * task = [taskPool objectForKey:key];
 	task.httpStatusCode = [httpResponse statusCode];
+	// create buffer
+	[task prepareDataBuffer];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -331,8 +300,11 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 //	if ( theTask.command > NMCommandImageDownloadCommandBoundary ) {
 //		[dataController storeImageForTask:(NMImageDownloadTask *)theTask];
 //	} else {
-		[self createDataParsingOperationForTask:theTask];
-//	}
+	if ( theTask.httpStatusCode >= 400 ) {
+		// fire error notification right here
+	} else {
+		[dataController createDataParsingOperationForTask:theTask];
+	}
 	
     // release the connection, and the data object
 	[taskPool removeObjectForKey:key];

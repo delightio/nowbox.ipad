@@ -19,4 +19,6 @@ typedef enum {
 	NMCommandGetChannelVideos,
 	NMCommandGetNextVideo,
 	NMCommandGetVideoReason,
+	NMCommandGetYouTubeDirectURL,
+	NMCommandGetVimeoDirectURL,
 } NMCommand;

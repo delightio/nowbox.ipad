@@ -64,6 +64,10 @@
 	return nil;
 }
 
+- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+	
+}
+
 - (NSString *)willLoadNotificationName {
 	return nil;
 }
@@ -73,6 +77,10 @@
 }
 
 - (NSString *)didFailNotificationName {
+	return nil;
+}
+
+- (NSDictionary *)userInfo {
 	return nil;
 }
 

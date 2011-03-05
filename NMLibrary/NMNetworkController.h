@@ -9,15 +9,16 @@
 #import "NMTaskType.h"
 
 
+@class NMDataController;
+
 @interface NMNetworkController : NSObject {
 	NSMutableDictionary * connectionPool;
 	NSMutableDictionary * taskPool;
 	NSMutableArray * pendingTaskBuffer;
-	NSOperationQueue * operationQueue;
 	
 	//TODO: not sure if needed
 //	NMTaskQueueScheduler * scheduler;
-//	NMDataController * dataController;
+	NMDataController * dataController;
 	
 	NSThread *controlThread;
 	BOOL isDone;
@@ -50,6 +51,5 @@
 //- (void)tryCancelDownloadWithCaller:(id)aCaller;
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
-- (void)createDataParsingOperationForTask:(NMTask *)atask;
 
 @end

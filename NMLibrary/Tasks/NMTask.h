@@ -8,6 +8,10 @@
 
 #import "NMDataType.h"
 
+#define NM_URL_REQUEST_TIMEOUT		20.0f
+
+@class NMDataController;
+
 /*!
  Parent class of all tasks.
  */
@@ -32,9 +36,11 @@
 - (void)clearDataBuffer;
 - (NSMutableURLRequest *)URLRequest;
 - (id)processDownloadedDataInBuffer;
+- (void)saveProcessedDataInController:(NMDataController *)ctrl;
 
 - (NSString *)willLoadNotificationName;
 - (NSString *)didLoadNotificationName;
 - (NSString *)didFailNotificationName;
+- (NSDictionary *)userInfo;
 
 @end
