@@ -8,7 +8,10 @@
 
 #import "NMDataController.h"
 #import "NMTask.h"
+#import "NMChannel.h"
 
+
+NSString * const NMChannelEntityName = @"NMChannel";
 
 @implementation NMDataController
 @synthesize managedObjectContext;
@@ -19,19 +22,54 @@
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	
+	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"channel_name like $NM_CHANNEL_NAME"] retain];
+	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel_name IN $NM_CHANNEL_NAMES"] retain];
+	
 	return self;
 }
 
 - (void)dealloc {
+	[channelNamePredicateTemplate release];
+	[managedObjectContext release];
 	[operationQueue release];
 	[super dealloc];
 }
 
-#pragma mark Data fetching
-- (NMChannel *)fetchChannelForName:(NSString *)cname {
+#pragma mark Data manipulation
+- (void)deleteManagedObjects:(NSArray *)objs {
+	NSManagedObject * mobj;
+	for (mobj in objs) {
+		[managedObjectContext deleteObject:mobj];
+	}
+}
+
+#pragma mark Channels
+- (NMChannel *)insertNewChannel {
+	NMChannel * channelObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+	return channelObj;
+}
+
+- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy {
 	// channels are created when the app launch or after sign in. Probably don't need to optimize the operation that much
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setReturnsObjectsAsFaults:NO];
+	[request setPredicate:[channelNamesPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channelAy forKey:@"NM_CHANNEL_NAMES"]]];
 	
+	NSError * error = nil;
+	NSArray * results = [managedObjectContext executeFetchRequest:request error:&error];
+	
+	NMChannel * channelObj = nil;
+	NSMutableDictionary * dict = nil;
+	if ( results && [results count] ) {
+		dict = [NSMutableDictionary dictionary];
+		for (channelObj in results) {
+			[dict setObject:channelObj forKey:channelObj.channel_name];
+		}
+		return dict;
+	}
+	
+	return nil;
 }
 
 #pragma mark Data parsing

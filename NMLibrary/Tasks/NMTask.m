@@ -71,7 +71,7 @@
 
 - (BOOL)checkDictionaryContainsError:(NSDictionary *)dict {
 	NSNumber * c = [dict valueForKeyPath:@"status.code"];
-	encountersErrorDuringProcessing = ( c == nil || [c integerValue] == 0 );
+	encountersErrorDuringProcessing = ( c == nil || [c integerValue] );
 	return encountersErrorDuringProcessing;
 }
 

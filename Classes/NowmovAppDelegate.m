@@ -20,6 +20,11 @@
 #pragma mark -
 #pragma mark Application lifecycle
 
+- (void)awakeFromNib {
+	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
+	viewController.managedObjectContext = self.managedObjectContext;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];

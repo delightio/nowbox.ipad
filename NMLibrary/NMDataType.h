@@ -22,3 +22,10 @@ typedef enum {
 	NMCommandGetYouTubeDirectURL,
 	NMCommandGetVimeoDirectURL,
 } NMCommand;
+
+// Notifications
+extern NSString * const NMWillGetChannelsNotification;
+extern NSString * const NMDidGetChannelsNotification;
+
+// Entity names
+extern NSString * const NMChannelEntityName;

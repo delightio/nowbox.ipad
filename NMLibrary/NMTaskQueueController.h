@@ -9,6 +9,7 @@
 
 @class NMNetworkController;
 @class NMDataController;
+@class NMChannel;
 
 
 @interface NMTaskQueueController : NSObject {
@@ -25,5 +26,6 @@
 + (NMTaskQueueController *)sharedTaskQueueController;
 
 - (void)issueGetChannels;
+- (void)issueGetVideoListForChannel:(NMChannel *)chnObj isNew:(BOOL)aNewChn;
 
 @end

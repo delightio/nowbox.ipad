@@ -8,6 +8,9 @@
 
 #import "NMGetChannelsTask.h"
 #import "JSONKit.h"
+#import "NMChannel.h"
+#import "NMDataController.h"
+#import "NMTaskQueueController.h"
 
 
 NSString * const NMWillGetChannelsNotification = @"NMWillGetChannelsNotification";
@@ -45,6 +48,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	for (cDict in theChs) {
 		pDict = [NSMutableDictionary dictionaryWithDictionary:cDict];
 		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
+		[pDict removeObjectForKey:@"description"];
 		[parsedObjects addObject:pDict];
 	}
 	
@@ -53,7 +57,36 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	// save the data into core data
-	
+	NSMutableArray * ay = [NSMutableArray array];
+	NSDictionary * dict;
+	// prepare channel names for batch fetch request
+	for (dict in parsedObjects) {
+		[ay addObject:[dict objectForKey:@"channel_name"]];
+	}
+	NSDictionary * fetchedChannels = [ctrl fetchChannelsForNames:ay];
+	// save channel with new data
+	NMChannel * chnObj;
+	NSMutableArray * foundAy = [NSMutableArray array];
+	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
+	for (dict in parsedObjects) {
+		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"channel_name"]];
+		if ( chnObj ) {
+			[foundAy addObject:chnObj.channel_name];
+		} else {
+			// create a new channel object
+			chnObj = [ctrl insertNewChannel];
+			// set value
+			[chnObj setValuesForKeysWithDictionary:dict];
+			// if it's a new channel, we should get the list of video
+			[queueCtrl issueGetVideoListForChannel:chnObj isNew:YES];
+		}
+	}
+	// remove channel no longer here
+	NSArray * allKeys = [fetchedChannels allKeys];
+	NSArray * untouchedKeys = [allKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"!SELF IN %@", foundAy]];
+	if ( [untouchedKeys count] ) {
+		[ctrl deleteManagedObjects:untouchedKeys];
+	}
 }
 
 - (NSString *)willLoadNotificationName {
