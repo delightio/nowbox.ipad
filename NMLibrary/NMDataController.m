@@ -12,6 +12,7 @@
 
 
 NSString * const NMChannelEntityName = @"NMChannel";
+NSString * const NMVideoEntityName = @"NMVideo";
 
 @implementation NMDataController
 @synthesize managedObjectContext;
@@ -36,7 +37,7 @@ NSString * const NMChannelEntityName = @"NMChannel";
 }
 
 #pragma mark Data manipulation
-- (void)deleteManagedObjects:(NSArray *)objs {
+- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs {
 	NSManagedObject * mobj;
 	for (mobj in objs) {
 		[managedObjectContext deleteObject:mobj];
@@ -70,6 +71,12 @@ NSString * const NMChannelEntityName = @"NMChannel";
 	}
 	
 	return nil;
+}
+
+#pragma mark Video 
+- (NMVideo *)insertNewVideo {
+	NMVideo * vid = (NMVideo *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext];
+	return vid;
 }
 
 #pragma mark Data parsing

@@ -35,6 +35,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	if ( [buffer length] == 0 ) return nil;
 	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	NSDictionary * dict = [str objectFromJSONString];
+	[str release];
 	
 	if ( [self checkDictionaryContainsError:dict] ) {
 		return parsedObjects;

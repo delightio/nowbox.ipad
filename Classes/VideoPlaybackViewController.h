@@ -6,11 +6,17 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
+@class NMVideo;
+@class NMChannel;
 
 @interface VideoPlaybackViewController : UIViewController {
-
+	NMVideo * currentVideo;
+	NMChannel * currentChannel;
 }
+
+@property (nonatomic, retain) NMVideo * currentVideo;
+@property (nonatomic, retain) NMChannel * currentChannel;
+
+- (IBAction)closeView:(id)sender;
 
 @end

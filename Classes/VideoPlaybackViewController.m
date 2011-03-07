@@ -1,4 +1,4 @@
-    //
+//
 //  VideoPlaybackViewController.m
 //  Nowmov
 //
@@ -10,6 +10,7 @@
 
 
 @implementation VideoPlaybackViewController
+@synthesize currentChannel, currentVideo;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -32,7 +33,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
-    return YES;
+	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 
@@ -52,8 +53,14 @@
 
 
 - (void)dealloc {
+	[currentVideo release];
+	[currentChannel release];
     [super dealloc];
 }
 
+#pragma mark Target-action methods
+- (IBAction)closeView:(id)sender {
+	[self dismissModalViewControllerAnimated:YES];
+}
 
 @end

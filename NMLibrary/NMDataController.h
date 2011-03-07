@@ -25,7 +25,7 @@
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
 // general data manipulation
-- (void)deleteManagedObjects:(NSArray *)objs;
+- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 // channels
 - (NMChannel *)insertNewChannel;
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;

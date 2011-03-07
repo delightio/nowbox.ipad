@@ -14,12 +14,17 @@
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
 
-NSPredicate * existingVideoPredicateTempate = nil;
+NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 @implementation NMGetChannelVideoListTask
 @synthesize channel, channelName, newChannel;
 
-+ (NSPredicate *)
++ (NSPredicate *)outdatedVideoPredicateTempate {
+	if ( outdatedVideoPredicateTempate_ == nil ) {
+		outdatedVideoPredicateTempate_ = [[NSPredicate predicateWithFormat:@"!nm_id IN $NM_VIDEO_ID_LIST"] retain];
+	}
+	return outdatedVideoPredicateTempate_;
+}
 
 - (id)initWithChannel:(NMChannel *)aChn {
 	self = [super init];
@@ -41,6 +46,7 @@ NSPredicate * existingVideoPredicateTempate = nil;
 	if ( [buffer length] == 0 ) return nil;
 	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	NSDictionary * dict = [str objectFromJSONString];
+	[str release];
 	
 	if ( [self checkDictionaryContainsError:dict] ) {
 		return parsedObjects;
@@ -57,6 +63,11 @@ NSPredicate * existingVideoPredicateTempate = nil;
 		[pDict removeObjectForKey:@"description"];
 		[pDict setObject:[cDict objectForKey:@"id"] forKey:@"nm_id"];
 		[pDict removeObjectForKey:@"id"];
+		// date
+		//TODO: make sure timezone is set correctly. timestamp from server is pacific time
+		[pDict setObject:[NSDate dateWithTimeIntervalSince1970:[[cDict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
+		//TODO: remove once JSON format bug is fixed
+		[pDict setObject:[NSNumber numberWithInteger:[[cDict objectForKey:@"total_mentions"] integerValue]] forKey:@"total_mentions"];
 		[parsedObjects addObject:pDict];
 	}
 	
@@ -67,39 +78,41 @@ NSPredicate * existingVideoPredicateTempate = nil;
 	if ( newChannel ) {
 		// update existing video
 		// remove ALL old videos not in the list
-		// save the data into core data
+		
+		// prepare the array of ID
 		NSMutableArray * ay = [NSMutableArray array];
 		NSDictionary * dict;
-		// prepare channel names for batch fetch request
 		for (dict in parsedObjects) {
 			[ay addObject:[dict objectForKey:@"nm_id"]];
 		}
-		NSSet * vidSet = channel.videos;
-		[vidSet filteredSetUsingPredicate:];
-		NSDictionary * fetchedChannels = [ctrl fetchChannelsForNames:ay];
-		// save channel with new data
-		NMChannel * chnObj;
-		NSMutableArray * foundAy = [NSMutableArray array];
-		NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
-		for (dict in parsedObjects) {
-			chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"channel_name"]];
-			if ( chnObj ) {
-				[foundAy addObject:chnObj.channel_name];
-			} else {
-				// create a new channel object
-				chnObj = [ctrl insertNewChannel];
-				// set value
-				[chnObj setValuesForKeysWithDictionary:dict];
-				// if it's a new channel, we should get the list of video
-				[queueCtrl issueGetVideoListForChannel:chnObj isNew:YES];
+		
+		// delete outdated video
+		NSSet * outdatedVidSet = [channel.videos filteredSetUsingPredicate:[[NMGetChannelVideoListTask outdatedVideoPredicateTempate] predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:ay forKey:@"NM_VIDEO_ID_LIST"]]];
+		[ctrl deleteManagedObjects:outdatedVidSet];
+		
+		// get the array of remaining videos ID
+		NMVideo * vidObj;
+		NSMutableDictionary * overlappingVidIDDict = [NSMutableDictionary dictionary];
+		for (vidObj in channel.videos) {
+			[overlappingVidIDDict setObject:vidObj forKey:vidObj.nm_id];
+		}
+		
+		NSNumber * vidID;
+		NSUInteger idx = 0;
+		for (vidID in ay) {
+			vidObj = [overlappingVidIDDict objectForKey:vidID];
+			if ( vidObj == nil ) {
+				// create a new video
+				vidObj = [ctrl insertNewVideo];
 			}
+			[vidObj setValuesForKeysWithDictionary:[parsedObjects objectAtIndex:idx]];
+			vidObj.nm_sort_order = [NSNumber numberWithInteger:idx];
+			// associate data objects
+			[vidObj addChannelsObject:channel];
+			[channel addVideosObject:vidObj];
+			idx++;
 		}
-		// remove channel no longer here
-		NSArray * allKeys = [fetchedChannels allKeys];
-		NSArray * untouchedKeys = [allKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"!SELF IN %@", foundAy]];
-		if ( [untouchedKeys count] ) {
-			[ctrl deleteManagedObjects:untouchedKeys];
-		}
+		
 	} else {
 		// this is an existing channel. We should append new videos and update the order. No need to remove old videos
 	}

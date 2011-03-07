@@ -7,6 +7,7 @@
 //
 
 #import "ChannelViewController.h"
+#import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
 
 @implementation ChannelViewController
@@ -163,9 +164,18 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
-	// for testing - get video list when tapped
+	//TODO: for testing - get video list when tapped
 	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:chnObj isNew:YES];
+	if ( [chnObj.videos count] ) {
+		// there's some video. just load the first video for testing purpose
+		VideoPlaybackViewController * vidCtrl = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
+		vidCtrl.currentVideo = [chnObj.videos anyObject];
+		vidCtrl.currentChannel = chnObj;
+		[self presentModalViewController:vidCtrl animated:YES];
+	} else {
+		// no video for the channel. try getting the list from the server
+		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:chnObj isNew:YES];
+	}
 }
 
 
