@@ -8,6 +8,6 @@
 
 
 #import "NMGetChannelsTask.h"
-#import "NMGetChannelVideosTask.h"
+#import "NMGetChannelVideoListTask.h"
 #import "NMGetNextVideo.h"
 #import "NMGetVideoReasonTask.h"

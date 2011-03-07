@@ -9,6 +9,7 @@
 #import "NMTask.h"
 
 @class NMChannel;
+@class NMVideo;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -28,5 +29,7 @@
 // channels
 - (NMChannel *)insertNewChannel;
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
+// video
+- (NMVideo *)insertNewVideo;
 
 @end

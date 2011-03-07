@@ -7,7 +7,6 @@
 //
 
 #import "NMGetChannelsTask.h"
-#import "JSONKit.h"
 #import "NMChannel.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
@@ -78,7 +77,8 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 			// set value
 			[chnObj setValuesForKeysWithDictionary:dict];
 			// if it's a new channel, we should get the list of video
-			[queueCtrl issueGetVideoListForChannel:chnObj isNew:YES];
+			//TODO: uncomment this
+			//[queueCtrl issueGetVideoListForChannel:chnObj isNew:YES];
 		}
 	}
 	// remove channel no longer here

@@ -163,6 +163,9 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
+	// for testing - get video list when tapped
+	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:chnObj isNew:YES];
 }
 
 

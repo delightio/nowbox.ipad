@@ -2,12 +2,13 @@
 //  NMChannel.m
 //  Nowmov
 //
-//  Created by Bill So on 05/03/2011.
+//  Created by Bill So on 07/03/2011.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import "NMChannel.h"
 
+#import "NMVideo.h"
 
 @implementation NMChannel 
 
@@ -15,5 +16,6 @@
 @dynamic count;
 @dynamic reason;
 @dynamic channel_name;
+@dynamic videos;
 
 @end
