@@ -26,12 +26,14 @@
 		A908F2C713221AD900F237FA /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A908F2C613221AD900F237FA /* NMDataController.m */; };
 		A908F2E613221E4E00F237FA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A908F2E513221E4E00F237FA /* CoreData.framework */; };
 		A908F2F71322244900F237FA /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A908F2F61322244900F237FA /* NMTaskQueueController.m */; };
-		A90A460F1320B83E009D6B42 /* NMGetYouTubeDirectURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */; };
-		A90A46121320B84F009D6B42 /* NMGetVimeoDirectURL.m in Sources */ = {isa = PBXBuildFile; fileRef = A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */; };
 		A93666D61324D94C00E98DE3 /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */; };
 		A93667171324DF1900E98DE3 /* NMVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A93667141324DF1900E98DE3 /* NMVideo.m */; };
 		A93667181324DF1900E98DE3 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A93667161324DF1900E98DE3 /* NMChannel.m */; };
+		A965A7391325749200C77699 /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */; };
+		A965A73A1325749200C77699 /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7381325749200C77699 /* NMGetYouTubeDirectURLTask.m */; };
 		A96C095B13224E6D001A9E1D /* Nowmov.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A908F338132224FD00F237FA /* Nowmov.xcdatamodel */; };
+		A98271C31325712500BCA920 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98271C21325712500BCA920 /* QuartzCore.framework */; };
+		A98271C71325713D00BCA920 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98271C61325713D00BCA920 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,10 +73,6 @@
 		A908F2F51322244900F237FA /* NMTaskQueueController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTaskQueueController.h; sourceTree = "<group>"; };
 		A908F2F61322244900F237FA /* NMTaskQueueController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMTaskQueueController.m; sourceTree = "<group>"; };
 		A908F338132224FD00F237FA /* Nowmov.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Nowmov.xcdatamodel; sourceTree = "<group>"; };
-		A90A460D1320B83E009D6B42 /* NMGetYouTubeDirectURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetYouTubeDirectURL.h; sourceTree = "<group>"; };
-		A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetYouTubeDirectURL.m; sourceTree = "<group>"; };
-		A90A46101320B84F009D6B42 /* NMGetVimeoDirectURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURL.h; sourceTree = "<group>"; };
-		A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVimeoDirectURL.m; sourceTree = "<group>"; };
 		A92F3C2413224F82004234C1 /* NMLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMLibrary.h; sourceTree = "<group>"; };
 		A93666D41324D94C00E98DE3 /* NMGetChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelVideoListTask.h; sourceTree = "<group>"; };
 		A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideoListTask.m; sourceTree = "<group>"; };
@@ -82,6 +80,12 @@
 		A93667141324DF1900E98DE3 /* NMVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideo.m; sourceTree = "<group>"; };
 		A93667151324DF1900E98DE3 /* NMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel.h; sourceTree = "<group>"; };
 		A93667161324DF1900E98DE3 /* NMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel.m; sourceTree = "<group>"; };
+		A965A7351325749200C77699 /* NMGetVimeoDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURLTask.h; sourceTree = "<group>"; };
+		A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVimeoDirectURLTask.m; sourceTree = "<group>"; };
+		A965A7371325749200C77699 /* NMGetYouTubeDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetYouTubeDirectURLTask.h; sourceTree = "<group>"; };
+		A965A7381325749200C77699 /* NMGetYouTubeDirectURLTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetYouTubeDirectURLTask.m; sourceTree = "<group>"; };
+		A98271C21325712500BCA920 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A98271C61325713D00BCA920 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +97,8 @@
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */,
 				A908F2E613221E4E00F237FA /* CoreData.framework in Frameworks */,
+				A98271C31325712500BCA920 /* QuartzCore.framework in Frameworks */,
+				A98271C71325713D00BCA920 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +167,8 @@
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
 				A908F2E513221E4E00F237FA /* CoreData.framework */,
+				A98271C21325712500BCA920 /* QuartzCore.framework */,
+				A98271C61325713D00BCA920 /* AVFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -186,6 +194,10 @@
 		A904C7EB132008A200925F61 /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
+				A965A7351325749200C77699 /* NMGetVimeoDirectURLTask.h */,
+				A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */,
+				A965A7371325749200C77699 /* NMGetYouTubeDirectURLTask.h */,
+				A965A7381325749200C77699 /* NMGetYouTubeDirectURLTask.m */,
 				A93666D41324D94C00E98DE3 /* NMGetChannelVideoListTask.h */,
 				A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */,
 				A904C7EC13200AAA00925F61 /* NMTask.h */,
@@ -197,10 +209,6 @@
 				A904C7F513200B5500925F61 /* NMGetVideoReasonTask.h */,
 				A904C7F613200B5500925F61 /* NMGetVideoReasonTask.m */,
 				A904C81F13200DD000925F61 /* NMTaskType.h */,
-				A90A460D1320B83E009D6B42 /* NMGetYouTubeDirectURL.h */,
-				A90A460E1320B83E009D6B42 /* NMGetYouTubeDirectURL.m */,
-				A90A46101320B84F009D6B42 /* NMGetVimeoDirectURL.h */,
-				A90A46111320B84F009D6B42 /* NMGetVimeoDirectURL.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -290,13 +298,13 @@
 				A904C7F113200ADC00925F61 /* NMGetChannelsTask.m in Sources */,
 				A904C7F413200B0D00925F61 /* NMGetNextVideo.m in Sources */,
 				A904C7F713200B5500925F61 /* NMGetVideoReasonTask.m in Sources */,
-				A90A460F1320B83E009D6B42 /* NMGetYouTubeDirectURL.m in Sources */,
-				A90A46121320B84F009D6B42 /* NMGetVimeoDirectURL.m in Sources */,
 				A908F2C713221AD900F237FA /* NMDataController.m in Sources */,
 				A908F2F71322244900F237FA /* NMTaskQueueController.m in Sources */,
 				A93666D61324D94C00E98DE3 /* NMGetChannelVideoListTask.m in Sources */,
 				A93667171324DF1900E98DE3 /* NMVideo.m in Sources */,
 				A93667181324DF1900E98DE3 /* NMChannel.m in Sources */,
+				A965A7391325749200C77699 /* NMGetVimeoDirectURLTask.m in Sources */,
+				A965A73A1325749200C77699 /* NMGetYouTubeDirectURLTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

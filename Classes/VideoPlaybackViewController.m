@@ -8,6 +8,8 @@
 
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
+#import "NMVideo.h"
+#import <QuartzCore/QuartzCore.h>
 
 
 @implementation VideoPlaybackViewController
@@ -27,7 +29,8 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:self];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:currentVideo];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -57,14 +60,25 @@
 
 
 - (void)dealloc {
+	[player release];
 	[currentVideo release];
 	[currentChannel release];
     [super dealloc];
 }
 
-- (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
+- (void)preparePlayer {
 	
+	player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:currentVideo.nm_direct_url]]]];
+	AVPlayerLayer * pLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+	pLayer.frame = self.view.layer.bounds;
+	[movieView.layer addSublayer:pLayer];
+	[player play];
 }
+
+- (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
+	[self preparePlayer];
+}
+
 #pragma mark Target-action methods
 - (IBAction)closeView:(id)sender {
 	[self dismissModalViewControllerAnimated:YES];

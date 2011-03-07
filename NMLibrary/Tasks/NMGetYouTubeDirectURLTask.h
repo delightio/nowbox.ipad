@@ -1,5 +1,5 @@
 //
-//  NMGetYouTubeDirectURL.h
+//  NMGetYouTubeDirectURLTask.h
 //  Nowmov
 //
 //  Created by Bill So on 04/03/2011.
@@ -10,7 +10,7 @@
 
 @class NMVideo;
 
-@interface NMGetYouTubeDirectURL : NMTask {
+@interface NMGetYouTubeDirectURLTask : NMTask {
 	NMVideo * video;
 	NSString * externalID;
 	NSString * directURLString;
@@ -19,5 +19,7 @@
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) NSString * directURLString;
+
+- (id)initWithVideo:(NMVideo *)vdo;
 
 @end

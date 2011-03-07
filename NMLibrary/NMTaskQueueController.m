@@ -73,4 +73,10 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 	[task release];
 }
 
+- (void)issueGetDirectURLForVideo:(NMVideo *)vid {
+	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:vid];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 @end

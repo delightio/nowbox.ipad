@@ -10,6 +10,7 @@
 @class NMNetworkController;
 @class NMDataController;
 @class NMChannel;
+@class NMVideo;
 
 
 @interface NMTaskQueueController : NSObject {
@@ -27,5 +28,6 @@
 
 - (void)issueGetChannels;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj isNew:(BOOL)aNewChn;
+- (void)issueGetDirectURLForVideo:(NMVideo *)vid;
 
 @end

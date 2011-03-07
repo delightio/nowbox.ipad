@@ -1,16 +1,14 @@
 //
-//  NMGetVimeoDirectURL.h
+//  NMGetVimeoDirectURLTask.m
 //  Nowmov
 //
 //  Created by Bill So on 04/03/2011.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "NMTask.h"
+#import "NMGetVimeoDirectURLTask.h"
 
 
-@interface NMGetVimeoDirectURL : NMTask {
-
-}
+@implementation NMGetVimeoDirectURLTask
 
 @end

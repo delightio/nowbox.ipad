@@ -1,12 +1,12 @@
 //
-//  NMGetYouTubeDirectURL.m
+//  NMGetYouTubeDirectURLTask.m
 //  Nowmov
 //
 //  Created by Bill So on 04/03/2011.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "NMGetYouTubeDirectURL.h"
+#import "NMGetYouTubeDirectURLTask.h"
 #import "NMVideo.h"
 
 static NSString * const NMYoutubeUserAgent = @"Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5";
@@ -14,7 +14,7 @@ static NSString * const NMYoutubeUserAgent = @"Mozilla/5.0 (iPad; U; CPU OS 4_2_
 NSString * const NMWillGetYouTubeDirectURLNotification = @"NMWillGetYouTubeDirectURLNotification";
 NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectURLNotification";
 
-@implementation NMGetYouTubeDirectURL
+@implementation NMGetYouTubeDirectURLTask
 
 @synthesize video, externalID, directURLString;
 
