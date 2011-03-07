@@ -172,6 +172,7 @@
 		vidCtrl.currentVideo = [chnObj.videos anyObject];
 		vidCtrl.currentChannel = chnObj;
 		[self presentModalViewController:vidCtrl animated:YES];
+		[vidCtrl release];
 	} else {
 		// no video for the channel. try getting the list from the server
 		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:chnObj isNew:YES];

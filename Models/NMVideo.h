@@ -2,7 +2,7 @@
 //  NMVideo.h
 //  Nowmov
 //
-//  Created by Bill So on 07/03/2011.
+//  Created by Bill So on 08/03/2011.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * external_id;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * total_mentions;
+@property (nonatomic, retain) NSString * nm_direct_url;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSString * reason_included;
 @property (nonatomic, retain) NSSet* channels;

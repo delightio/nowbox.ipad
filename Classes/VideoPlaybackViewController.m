@@ -7,6 +7,7 @@
 //
 
 #import "VideoPlaybackViewController.h"
+#import "NMLibrary.h"
 
 
 @implementation VideoPlaybackViewController
@@ -23,13 +24,16 @@
 }
 */
 
-/*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:self];
 }
-*/
 
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
@@ -58,6 +62,9 @@
     [super dealloc];
 }
 
+- (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
+	
+}
 #pragma mark Target-action methods
 - (IBAction)closeView:(id)sender {
 	[self dismissModalViewControllerAnimated:YES];

@@ -8,6 +8,7 @@
 
 #import "NMTask.h"
 
+NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 
 @implementation NMTask
 
@@ -61,8 +62,8 @@
 	return nil;
 }
 
-- (id)processDownloadedDataInBuffer {
-	return nil;
+- (void)processDownloadedDataInBuffer {
+	return;
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
@@ -84,7 +85,7 @@
 }
 
 - (NSString *)didFailNotificationName {
-	return nil;
+	return NMTaskFailNotification;
 }
 
 - (NSDictionary *)userInfo {

@@ -37,7 +37,7 @@
 - (void)prepareDataBuffer;
 - (void)clearDataBuffer;
 - (NSMutableURLRequest *)URLRequest;
-- (id)processDownloadedDataInBuffer;
+- (void)processDownloadedDataInBuffer;
 - (void)saveProcessedDataInController:(NMDataController *)ctrl;
 - (BOOL)checkDictionaryContainsError:(NSDictionary *)dict;
 

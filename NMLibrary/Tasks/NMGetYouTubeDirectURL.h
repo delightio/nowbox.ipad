@@ -8,9 +8,16 @@
 
 #import "NMTask.h"
 
+@class NMVideo;
 
 @interface NMGetYouTubeDirectURL : NMTask {
-
+	NMVideo * video;
+	NSString * externalID;
+	NSString * directURLString;
 }
+
+@property (nonatomic, retain) NMVideo * video;
+@property (nonatomic, retain) NSString * externalID;
+@property (nonatomic, retain) NSString * directURLString;
 
 @end

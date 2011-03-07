@@ -30,15 +30,15 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	return request;
 }
 
-- (id)processDownloadedDataInBuffer {
+- (void)processDownloadedDataInBuffer {
 	// parse JSON
-	if ( [buffer length] == 0 ) return nil;
+	if ( [buffer length] == 0 ) return;
 	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	NSDictionary * dict = [str objectFromJSONString];
 	[str release];
 	
 	if ( [self checkDictionaryContainsError:dict] ) {
-		return parsedObjects;
+		return;
 	}
 	
 	NSArray * theChs = [dict objectForKey:@"channel_list"];
@@ -51,8 +51,6 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 		[pDict removeObjectForKey:@"description"];
 		[parsedObjects addObject:pDict];
 	}
-	
-	return parsedObjects;
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {

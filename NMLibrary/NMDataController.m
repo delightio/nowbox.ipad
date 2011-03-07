@@ -93,7 +93,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	id parsedObject = nil;
 	if ( [task.buffer length] ) {
 		// parse the JSON string
-		parsedObject = [task processDownloadedDataInBuffer];
+		[task processDownloadedDataInBuffer];
 		// remove data buffer to save memory
 		[task clearDataBuffer];
 	}

@@ -28,6 +28,10 @@ extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;
 extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
+extern NSString * const NMWillGetYouTubeDirectURLNotification;
+extern NSString * const NMDidGetYouTubeDirectURLNotification;
+
+extern NSString * const NMTaskFailNotification;
 
 // Entity names
 extern NSString * const NMChannelEntityName;

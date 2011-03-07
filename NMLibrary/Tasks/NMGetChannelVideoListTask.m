@@ -41,15 +41,15 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	return request;
 }
 
-- (id)processDownloadedDataInBuffer {
+- (void)processDownloadedDataInBuffer {
 	// parse JSON
-	if ( [buffer length] == 0 ) return nil;
+	if ( [buffer length] == 0 ) return;
 	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	NSDictionary * dict = [str objectFromJSONString];
 	[str release];
 	
 	if ( [self checkDictionaryContainsError:dict] ) {
-		return parsedObjects;
+		return;
 	}
 	
 	NSArray * theVideos = [dict objectForKey:@"video_list"];
@@ -70,8 +70,6 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 		[pDict setObject:[NSNumber numberWithInteger:[[cDict objectForKey:@"total_mentions"] integerValue]] forKey:@"total_mentions"];
 		[parsedObjects addObject:pDict];
 	}
-	
-	return parsedObjects;
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
