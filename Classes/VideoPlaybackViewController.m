@@ -29,12 +29,15 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
+	self.wantsFullScreenLayout = YES;
 	[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:currentVideo];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
+	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

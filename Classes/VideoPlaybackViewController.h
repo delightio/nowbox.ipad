@@ -13,6 +13,7 @@
 
 @interface VideoPlaybackViewController : UIViewController {
 	IBOutlet UIView * movieView;
+	IBOutlet UIView * controlsContainerView;
 	AVQueuePlayer * player;
 	
 	NMVideo * currentVideo;
