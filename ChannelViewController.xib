@@ -74,13 +74,15 @@
 					<object class="IBUITableView" id="108103267">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">278</int>
-						<string key="NSFrame">{{319, 175}, {394, 553}}</string>
+						<string key="NSFrame">{{164, 96}, {860, 652}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
-						<reference key="IBUIBackgroundColor" ref="574004056"/>
+						<object class="NSColor" key="IBUIBackgroundColor">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MCAwAA</bytes>
+						</object>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<bool key="IBUIAlwaysBounceVertical">YES</bool>
-						<int key="IBUISeparatorStyle">1</int>
 						<int key="IBUISectionIndexMinimumDisplayRowCount">0</int>
 						<bool key="IBUIShowsSelectionImmediatelyOnTouchBegin">YES</bool>
 						<float key="IBUIRowHeight">44</float>
@@ -208,9 +210,9 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="142044664"/>
-							<reference ref="108103267"/>
 							<reference ref="479697433"/>
 							<reference ref="996561451"/>
+							<reference ref="108103267"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -273,7 +275,7 @@
 					</object>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABDEQAAxDiAAA</bytes>
+						<bytes key="NSTransformStruct">P4AAAL+AAABDJAAAxCZAAA</bytes>
 					</object>
 				</object>
 			</object>

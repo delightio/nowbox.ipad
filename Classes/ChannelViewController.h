@@ -11,6 +11,7 @@
 @interface ChannelViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
 	IBOutlet UITableView * channelTableView;
 @private
+	NSUInteger numberOfChannels;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
 }

@@ -9,6 +9,7 @@
 #import "ChannelViewController.h"
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
+#import "ChannelTableCellView.h"
 
 @implementation ChannelViewController
 
@@ -35,6 +36,9 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	channelTableView.rowHeight = 194.0;
+	// set inset so that the top of the channel thunbmail aligns with the left button
+	channelTableView.contentInset = UIEdgeInsetsMake(15.0, 0.0, 0.0, 0.0);
 //	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
 //	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 }
@@ -76,22 +80,34 @@
 
 #pragma mark Other table methods
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
-    NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = chnObj.channel_name;
+	// since each cell shows 3 channels, we need to calculate the real index path
+	NSMutableArray * ay = [NSMutableArray arrayWithCapacity:3];
+	NSUInteger rowIdx;
+	for (NSUInteger i = 0; i < 3; i++) {
+		rowIdx = i + indexPath.row * 3;
+		if ( rowIdx < numberOfChannels ) {
+			// fetch the channel object
+			[ay addObject:[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:rowIdx inSection:0]]];
+		} else {
+			break;
+		}
+	}
+	((ChannelTableCellView *)cell).channels = ay;
 }
 
 #pragma mark -
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [[self.fetchedResultsController sections] count];
+    return 1;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
-    return [sectionInfo numberOfObjects];
+	// each cell shows 3 channels
+	numberOfChannels = [sectionInfo numberOfObjects];
+    return numberOfChannels / 3 + ( numberOfChannels % 3 ? 1 : 0 );
 }
 
 
@@ -100,9 +116,9 @@
     
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[ChannelTableCellView alloc] initWithReuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell.
@@ -197,6 +213,7 @@
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
+	[fetchRequest setReturnsObjectsAsFaults:NO];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
@@ -262,24 +279,28 @@
       newIndexPath:(NSIndexPath *)newIndexPath {
     
     UITableView *tableView = channelTableView;
+	// one row == 3 channels
+	NSIndexPath * realNewIndexPath, * realSrcIndexPath;
+	realNewIndexPath = [NSIndexPath indexPathForRow:indexPath.row / 3 inSection:0];
+	realSrcIndexPath = [NSIndexPath indexPathForRow:indexPath.row / 3 inSection:0];
     
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:realNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:realSrcIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:[tableView cellForRowAtIndexPath:realSrcIndexPath] atIndexPath:realSrcIndexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:realSrcIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:realNewIndexPath]withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }

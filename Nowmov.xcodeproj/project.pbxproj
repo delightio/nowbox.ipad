@@ -50,6 +50,7 @@
 		A96C095B13224E6D001A9E1D /* Nowmov.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A908F338132224FD00F237FA /* Nowmov.xcdatamodel */; };
 		A98271C31325712500BCA920 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98271C21325712500BCA920 /* QuartzCore.framework */; };
 		A98271C71325713D00BCA920 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98271C61325713D00BCA920 /* AVFoundation.framework */; };
+		A991FB221326B996004C7E4D /* ChannelTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A991FB211326B996004C7E4D /* ChannelTableCellView.m */; };
 		A9DF4A8213261BB700174C48 /* info_panel.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A8013261BB700174C48 /* info_panel.png */; };
 		A9DF4A8313261BB700174C48 /* volume_panel.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A8113261BB700174C48 /* volume_panel.png */; };
 		A9DF4B701326654700174C48 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4B6F1326654700174C48 /* Icon.png */; };
@@ -128,6 +129,8 @@
 		A965A7C71325929800C77699 /* playback_progress_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playback_progress_background.png; sourceTree = "<group>"; };
 		A98271C21325712500BCA920 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A98271C61325713D00BCA920 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A991FB201326B996004C7E4D /* ChannelTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelTableCellView.h; sourceTree = "<group>"; };
+		A991FB211326B996004C7E4D /* ChannelTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelTableCellView.m; sourceTree = "<group>"; };
 		A9DF4A8013261BB700174C48 /* info_panel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info_panel.png; sourceTree = "<group>"; };
 		A9DF4A8113261BB700174C48 /* volume_panel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = volume_panel.png; sourceTree = "<group>"; };
 		A9DF4B6F1326654700174C48 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -182,6 +185,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				A991FB1F1326B981004C7E4D /* Views */,
 				A908F3371322249F00F237FA /* Models */,
 				A904C7D0131F93BF00925F61 /* NMLibrary */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -312,6 +316,15 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		A991FB1F1326B981004C7E4D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A991FB201326B996004C7E4D /* ChannelTableCellView.h */,
+				A991FB211326B996004C7E4D /* ChannelTableCellView.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -417,6 +430,7 @@
 				A93667181324DF1900E98DE3 /* NMChannel.m in Sources */,
 				A965A7391325749200C77699 /* NMGetVimeoDirectURLTask.m in Sources */,
 				A965A73A1325749200C77699 /* NMGetYouTubeDirectURLTask.m in Sources */,
+				A991FB221326B996004C7E4D /* ChannelTableCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
