@@ -50,10 +50,8 @@
 		A96C095B13224E6D001A9E1D /* Nowmov.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A908F338132224FD00F237FA /* Nowmov.xcdatamodel */; };
 		A98271C31325712500BCA920 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98271C21325712500BCA920 /* QuartzCore.framework */; };
 		A98271C71325713D00BCA920 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A98271C61325713D00BCA920 /* AVFoundation.framework */; };
-		A9DF4A5F1326175D00174C48 /* VideoTweetListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DF4A5D1326175D00174C48 /* VideoTweetListViewController.m */; };
-		A9DF4A641326179900174C48 /* VideoVolumeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DF4A621326179900174C48 /* VideoVolumeViewController.m */; };
-		A9DF4A681326180E00174C48 /* VideoTweetListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A661326180E00174C48 /* VideoTweetListView.xib */; };
-		A9DF4A691326180E00174C48 /* VideoVolumeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A671326180E00174C48 /* VideoVolumeView.xib */; };
+		A9DF4A8213261BB700174C48 /* info_panel.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A8013261BB700174C48 /* info_panel.png */; };
+		A9DF4A8313261BB700174C48 /* volume_panel.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A8113261BB700174C48 /* volume_panel.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -122,12 +120,8 @@
 		A965A7C71325929800C77699 /* playback_progress_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playback_progress_background.png; sourceTree = "<group>"; };
 		A98271C21325712500BCA920 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A98271C61325713D00BCA920 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		A9DF4A5C1326175D00174C48 /* VideoTweetListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoTweetListViewController.h; sourceTree = "<group>"; };
-		A9DF4A5D1326175D00174C48 /* VideoTweetListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoTweetListViewController.m; sourceTree = "<group>"; };
-		A9DF4A611326179900174C48 /* VideoVolumeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoVolumeViewController.h; sourceTree = "<group>"; };
-		A9DF4A621326179900174C48 /* VideoVolumeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoVolumeViewController.m; sourceTree = "<group>"; };
-		A9DF4A661326180E00174C48 /* VideoTweetListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoTweetListView.xib; sourceTree = "<group>"; };
-		A9DF4A671326180E00174C48 /* VideoVolumeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoVolumeView.xib; sourceTree = "<group>"; };
+		A9DF4A8013261BB700174C48 /* info_panel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info_panel.png; sourceTree = "<group>"; };
+		A9DF4A8113261BB700174C48 /* volume_panel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = volume_panel.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,10 +150,6 @@
 				1D3623250D0F684500981E51 /* NowmovAppDelegate.m */,
 				A904C7BE131F8E6400925F61 /* VideoPlaybackViewController.h */,
 				A904C7BF131F8E6400925F61 /* VideoPlaybackViewController.m */,
-				A9DF4A5C1326175D00174C48 /* VideoTweetListViewController.h */,
-				A9DF4A5D1326175D00174C48 /* VideoTweetListViewController.m */,
-				A9DF4A611326179900174C48 /* VideoVolumeViewController.h */,
-				A9DF4A621326179900174C48 /* VideoVolumeViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -202,8 +192,6 @@
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				A904C7BC131F8E3400925F61 /* ChannelViewController.xib */,
 				A904C7C3131F8E8B00925F61 /* VideoPlaybackView.xib */,
-				A9DF4A661326180E00174C48 /* VideoTweetListView.xib */,
-				A9DF4A671326180E00174C48 /* VideoVolumeView.xib */,
 				8D1107310486CEB800E47090 /* Nowmov-Info.plist */,
 			);
 			name = Resources;
@@ -277,6 +265,8 @@
 		A965A79E13257A1800C77699 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A9DF4A8013261BB700174C48 /* info_panel.png */,
+				A9DF4A8113261BB700174C48 /* volume_panel.png */,
 				A965A7C51325929800C77699 /* cntrl_next.png */,
 				A965A7C61325929800C77699 /* cntrl_prev.png */,
 				A965A7C71325929800C77699 /* playback_progress_background.png */,
@@ -365,8 +355,8 @@
 				A965A7C81325929800C77699 /* cntrl_next.png in Resources */,
 				A965A7C91325929800C77699 /* cntrl_prev.png in Resources */,
 				A965A7CA1325929800C77699 /* playback_progress_background.png in Resources */,
-				A9DF4A681326180E00174C48 /* VideoTweetListView.xib in Resources */,
-				A9DF4A691326180E00174C48 /* VideoVolumeView.xib in Resources */,
+				A9DF4A8213261BB700174C48 /* info_panel.png in Resources */,
+				A9DF4A8313261BB700174C48 /* volume_panel.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,8 +385,6 @@
 				A93667181324DF1900E98DE3 /* NMChannel.m in Sources */,
 				A965A7391325749200C77699 /* NMGetVimeoDirectURLTask.m in Sources */,
 				A965A73A1325749200C77699 /* NMGetYouTubeDirectURLTask.m in Sources */,
-				A9DF4A5F1326175D00174C48 /* VideoTweetListViewController.m in Sources */,
-				A9DF4A641326179900174C48 /* VideoVolumeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

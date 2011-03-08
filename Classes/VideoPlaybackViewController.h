@@ -14,16 +14,33 @@
 @interface VideoPlaybackViewController : UIViewController {
 	IBOutlet UIView * movieView;
 	IBOutlet UIView * controlsContainerView;
+	IBOutlet UILabel * channelNameLabel;
+	IBOutlet UILabel * postedByLabel;
+	IBOutlet UILabel * postSourceLabel;
+	IBOutlet UILabel * videoTitleLabel;
+	
+	UIImageView * progressView;
+	
 	AVQueuePlayer * player;
 	
 	NMVideo * currentVideo;
 	NMChannel * currentChannel;
+	
+	// fake controls
+	UIImageView * infoPanelImageView;
+	UIImageView * volumePanelImageView;
 }
 
 @property (nonatomic, retain) NMVideo * currentVideo;
 @property (nonatomic, retain) NMChannel * currentChannel;
 
-- (IBAction)closeView:(id)sender;
+- (IBAction)showTweetView:(id)sender;
+- (IBAction)showVolumeControlView:(id)sender;
+- (IBAction)showShareActionView:(id)sender;
+- (IBAction)backToChannelView:(id)sender;
+- (IBAction)playStopVideo:(id)sender;
+- (IBAction)setLikeVideo:(id)sender;
+- (IBAction)skipCurrentVideo:(id)sender;
 
 - (void)preparePlayer;
 

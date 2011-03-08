@@ -33,6 +33,18 @@
 	self.wantsFullScreenLayout = YES;
 	[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:currentVideo];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+	
+	// progress view
+	UIImage * img = [UIImage imageNamed:@"playback_progress_background"];
+	progressView = [[UIImageView alloc] initWithImage:[img stretchableImageWithLeftCapWidth:98 topCapHeight:0]];
+	CGRect theFrame = CGRectMake(0.0, 0.0, 732.0, 50.0);
+	theFrame.origin.x = (1024.0 - theFrame.size.width) / 2.0;
+	theFrame.origin.y = 612.0;
+	progressView.frame = theFrame;
+	[controlsContainerView addSubview:progressView];
+	
+	channelNameLabel.text = [currentChannel.channel_name capitalizedString];
+	videoTitleLabel.text = [currentVideo.title uppercaseString];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -63,6 +75,10 @@
 
 
 - (void)dealloc {
+	[infoPanelImageView release];
+	[volumePanelImageView release];
+	
+	[progressView release];
 	[player release];
 	[currentVideo release];
 	[currentChannel release];
@@ -83,8 +99,61 @@
 }
 
 #pragma mark Target-action methods
-- (IBAction)closeView:(id)sender {
+
+- (IBAction)showTweetView:(id)sender {
+	if ( infoPanelImageView == nil ) {
+		UIButton * btn = (UIButton *)sender;
+		UIImage * img = [UIImage imageNamed:@"info_panel"];
+		CGRect theFrame;
+		theFrame.size = img.size;
+		theFrame.origin.y = 768.0 - img.size.height - 96.0 + 35.0;
+		theFrame.origin.x = floorf(btn.frame.origin.x - ( img.size.width - btn.frame.size.width ) / 2.0);
+		infoPanelImageView = [[UIImageView alloc] initWithImage:img];
+		infoPanelImageView.frame = theFrame;
+		[controlsContainerView addSubview:infoPanelImageView];
+	} else {
+		[infoPanelImageView removeFromSuperview];
+		[infoPanelImageView release];
+		infoPanelImageView = nil;
+	}
+}
+
+- (IBAction)showVolumeControlView:(id)sender {
+	if ( volumePanelImageView == nil ) {
+		UIButton * btn = (UIButton *)sender;
+		UIImage * img = [UIImage imageNamed:@"volume_panel"];
+		CGRect theFrame;
+		theFrame.size = img.size;
+		theFrame.origin.y = 768.0 - img.size.height - 96.0 + 35.0;
+		theFrame.origin.x = floorf(btn.frame.origin.x - ( img.size.width - btn.frame.size.width ) / 2.0);
+		volumePanelImageView = [[UIImageView alloc] initWithImage:img];
+		volumePanelImageView.frame = theFrame;
+		[controlsContainerView addSubview:volumePanelImageView];
+	} else {
+		[volumePanelImageView removeFromSuperview];
+		[volumePanelImageView release];
+		volumePanelImageView = nil;
+	}
+}
+
+- (IBAction)showShareActionView:(id)sender {
+	
+}
+
+- (IBAction)backToChannelView:(id)sender {
 	[self dismissModalViewControllerAnimated:YES];
+}
+
+- (IBAction)playStopVideo:(id)sender {
+	
+}
+
+- (IBAction)setLikeVideo:(id)sender {
+	
+}
+
+- (IBAction)skipCurrentVideo:(id)sender {
+	
 }
 
 @end
