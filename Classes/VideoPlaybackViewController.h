@@ -20,6 +20,7 @@
 	IBOutlet UILabel * videoTitleLabel;
 	
 	UIImageView * progressView;
+	UILabel * currentTimeLabel, * totalDurationLabel;
 	
 	AVQueuePlayer * player;
 	
@@ -29,6 +30,7 @@
 	// fake controls
 	UIImageView * infoPanelImageView;
 	UIImageView * volumePanelImageView;
+	UIImageView * shareVideoPanelImageView;
 }
 
 @property (nonatomic, retain) NMVideo * currentVideo;
@@ -43,5 +45,9 @@
 - (IBAction)skipCurrentVideo:(id)sender;
 
 - (void)preparePlayer;
+
+// progress indicator
+- (void)setCurrentTime:(NSInteger)sec;
+- (void)setTotalLength:(NSInteger)sec;
 
 @end

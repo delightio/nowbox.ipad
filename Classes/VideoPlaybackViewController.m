@@ -10,7 +10,10 @@
 #import "NMLibrary.h"
 #import "NMVideo.h"
 #import <QuartzCore/QuartzCore.h>
+#import <CoreMedia/CoreMedia.h>
 
+
+#define NM_PLAYER_STATUS_CONTEXT		100
 
 @implementation VideoPlaybackViewController
 @synthesize currentChannel, currentVideo;
@@ -42,6 +45,20 @@
 	theFrame.origin.y = 612.0;
 	progressView.frame = theFrame;
 	[controlsContainerView addSubview:progressView];
+	// label
+	currentTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 0.0, 70.0, 50.0)];
+	currentTimeLabel.backgroundColor = [UIColor clearColor];
+	currentTimeLabel.font = [UIFont fontWithName:@"Futura-MediumItalic" size:20.0];
+	currentTimeLabel.textAlignment = UITextAlignmentRight;
+	currentTimeLabel.textColor = [UIColor grayColor];
+	currentTimeLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+	[progressView addSubview:currentTimeLabel];
+	totalDurationLabel = [[UILabel alloc] initWithFrame:CGRectMake(progressView.frame.size.width - 70.0, 0.0, 70.0, 50.0)];
+	totalDurationLabel.backgroundColor = [UIColor clearColor];
+	totalDurationLabel.font = [UIFont fontWithName:@"Futura-MediumItalic" size:20.0];
+	totalDurationLabel.textColor = [UIColor whiteColor];
+	totalDurationLabel.shadowOffset = CGSizeMake(0.0, -1.0);
+	[progressView addSubview:totalDurationLabel];
 	
 	channelNameLabel.text = [currentChannel.channel_name capitalizedString];
 	videoTitleLabel.text = [currentVideo.title uppercaseString];
@@ -88,6 +105,13 @@
 - (void)preparePlayer {
 	
 	player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:currentVideo.nm_direct_url]]]];
+	// observe status change in player
+	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
+	[player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime aTime){
+		// print the time
+		CMTime t = [player currentTime];
+		[self setCurrentTime:t.value / t.timescale];
+	}];
 	AVPlayerLayer * pLayer = [AVPlayerLayer playerLayerWithPlayer:player];
 	pLayer.frame = self.view.layer.bounds;
 	[movieView.layer addSublayer:pLayer];
@@ -96,6 +120,32 @@
 
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
 	[self preparePlayer];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger c = (NSInteger)context;
+	if ( c == NM_PLAYER_STATUS_CONTEXT ) {
+		switch (player.status) {
+			case AVPlayerStatusReadyToPlay:
+			{
+				// the instance is ready to play. yeah!
+				CMTime t = player.currentItem.asset.duration;
+				[self setTotalLength:t.value / t.timescale];
+				break;
+			}
+			default:
+				break;
+		}
+	}
+}
+
+#pragma mark Playback progress indicator
+- (void)setCurrentTime:(NSInteger)sec {
+	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+}
+
+- (void)setTotalLength:(NSInteger)sec {
+	totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
 }
 
 #pragma mark Target-action methods
@@ -137,15 +187,33 @@
 }
 
 - (IBAction)showShareActionView:(id)sender {
-	
+	if ( shareVideoPanelImageView == nil ) {
+		UIImage * img = [UIImage imageNamed:@"twitter_share_popup"];
+		CGRect theFrame;
+		theFrame.size = img.size;
+		theFrame.origin.x = floorf( (1024.0 - img.size.width) / 2.0 );
+		theFrame.origin.y = floorf( ( 768.0 - img.size.height ) / 2.0 );
+		shareVideoPanelImageView = [[UIImageView alloc] initWithImage:img];
+		shareVideoPanelImageView.frame = theFrame;
+		[controlsContainerView addSubview:shareVideoPanelImageView];
+	} else {
+		[shareVideoPanelImageView removeFromSuperview];
+		[shareVideoPanelImageView release];
+		shareVideoPanelImageView = nil;
+	}
 }
 
 - (IBAction)backToChannelView:(id)sender {
+	[player pause];
 	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (IBAction)playStopVideo:(id)sender {
-	
+	if ( player.rate == 0.0 ) {
+		[player play];
+	} else {
+		[player pause];
+	}
 }
 
 - (IBAction)setLikeVideo:(id)sender {
