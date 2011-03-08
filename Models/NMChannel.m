@@ -17,5 +17,6 @@
 @dynamic reason;
 @dynamic channel_name;
 @dynamic videos;
+@dynamic thumbnail;
 
 @end
