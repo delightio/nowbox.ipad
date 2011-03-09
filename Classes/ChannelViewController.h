@@ -7,8 +7,9 @@
 //
 
 
+#import "ChannelTableCellView.h"
 
-@interface ChannelViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+@interface ChannelViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, ChannelTableCellDelegate> {
 	IBOutlet UITableView * channelTableView;
 @private
 	NSUInteger numberOfChannels;

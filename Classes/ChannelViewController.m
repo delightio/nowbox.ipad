@@ -9,7 +9,6 @@
 #import "ChannelViewController.h"
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
-#import "ChannelTableCellView.h"
 
 @implementation ChannelViewController
 
@@ -36,7 +35,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-	channelTableView.rowHeight = 194.0;
+	channelTableView.rowHeight = 218.0;
 	// set inset so that the top of the channel thunbmail aligns with the left button
 	channelTableView.contentInset = UIEdgeInsetsMake(15.0, 0.0, 0.0, 0.0);
 //	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
@@ -95,6 +94,23 @@
 	((ChannelTableCellView *)cell).channels = ay;
 }
 
+- (void)tableViewCell:(ChannelTableCellView *)cell didSelectChannelAtIndex:(NSUInteger)index {
+	NSIndexPath * idxPath = [channelTableView indexPathForCell:cell];
+	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idxPath.row * 3 + index inSection:0]];
+	//TODO: for testing - get video list when tapped
+	if ( [chnObj.videos count] ) {
+		// there's some video. just load the first video for testing purpose
+		VideoPlaybackViewController * vidCtrl = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
+		vidCtrl.currentVideo = [chnObj.videos anyObject];
+		vidCtrl.currentChannel = chnObj;
+		[self presentModalViewController:vidCtrl animated:YES];
+		[vidCtrl release];
+	} else {
+		// no video for the channel. try getting the list from the server
+		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:chnObj isNew:YES];
+	}
+}
+
 #pragma mark -
 #pragma mark Table view data source
 
@@ -116,9 +132,11 @@
     
     static NSString *CellIdentifier = @"Cell";
     
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	ChannelTableCellView *cell = (ChannelTableCellView *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[ChannelTableCellView alloc] initWithReuseIdentifier:CellIdentifier] autorelease];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		cell.delegate = self;
     }
     
     // Configure the cell.
@@ -170,7 +188,7 @@
 #pragma mark -
 #pragma mark Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here -- for example, create and push another view controller.
     /*
      <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
@@ -180,20 +198,7 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
-	//TODO: for testing - get video list when tapped
-	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	if ( [chnObj.videos count] ) {
-		// there's some video. just load the first video for testing purpose
-		VideoPlaybackViewController * vidCtrl = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
-		vidCtrl.currentVideo = [chnObj.videos anyObject];
-		vidCtrl.currentChannel = chnObj;
-		[self presentModalViewController:vidCtrl animated:YES];
-		[vidCtrl release];
-	} else {
-		// no video for the channel. try getting the list from the server
-		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:chnObj isNew:YES];
-	}
-}
+//}
 
 
 #pragma mark -
