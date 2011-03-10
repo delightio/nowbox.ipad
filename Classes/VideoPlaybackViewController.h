@@ -46,7 +46,8 @@
 - (IBAction)skipCurrentVideo:(id)sender;
 
 - (void)preparePlayer;
-- (void)bufferItemAtIndex:(NSUInteger)idx;
+- (void)requestAddVideoAtIndex:(NSUInteger)idx;
+- (void)getVideoInfoAtIndex:(NSUInteger)idx;
 
 // playback view update
 - (void)setCurrentTime:(NSInteger)sec;

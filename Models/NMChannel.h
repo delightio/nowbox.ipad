@@ -2,7 +2,7 @@
 //  NMChannel.h
 //  Nowmov
 //
-//  Created by Bill So on 07/03/2011.
+//  Created by Bill So on 10/03/2011.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
@@ -17,9 +17,9 @@
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NSNumber * count;
 @property (nonatomic, retain) NSString * reason;
+@property (nonatomic, retain) NSString * thumbnail;
 @property (nonatomic, retain) NSString * channel_name;
 @property (nonatomic, retain) NSSet* videos;
-@property (nonatomic, retain) NSString * thumbnail;
 
 @end
 

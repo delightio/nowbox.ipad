@@ -28,6 +28,7 @@
 
 - (void)issueGetChannels;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj isNew:(BOOL)aNewChn;
-- (void)issueGetDirectURLForVideo:(NMVideo *)vid;
+- (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
+- (void)issueGetVideoInfo:(NMVideo *)aVideo;
 
 @end

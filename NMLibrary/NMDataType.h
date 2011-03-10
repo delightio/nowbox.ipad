@@ -16,6 +16,7 @@ typedef enum {
 
 typedef enum {
 	NMCommandGetChannels			= 1,
+	NMCommandGetVideoInfo,
 	NMCommandGetChannelVideoList,
 	NMCommandGetNextVideo,
 	NMCommandGetVideoReason,
@@ -30,6 +31,8 @@ extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
 extern NSString * const NMWillGetYouTubeDirectURLNotification;
 extern NSString * const NMDidGetYouTubeDirectURLNotification;
+extern NSString * const NMWillGetVideoInfoNotification;
+extern NSString * const NMDidGetVideoInfoNotification;
 
 extern NSString * const NMTaskFailNotification;
 

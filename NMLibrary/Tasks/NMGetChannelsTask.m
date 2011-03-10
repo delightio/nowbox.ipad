@@ -25,7 +25,11 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 }
 
 - (NSMutableURLRequest *)URLRequest {
+#ifdef NOWMOV_USE_BETA_SITE
+	NSString * urlStr = @"http://beta.nowmov.com/channel/listings/recommended";
+#else
 	NSString * urlStr = @"http://nowmov.com/channel/listings/recommended";
+#endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
 	return request;

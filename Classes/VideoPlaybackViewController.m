@@ -15,6 +15,14 @@
 
 #define NM_PLAYER_STATUS_CONTEXT		100
 
+
+@interface VideoPlaybackViewController (PrivateMethods)
+
+- (void)insertVideoAtIndex:(NSUInteger)idx;
+
+@end
+
+
 @implementation VideoPlaybackViewController
 @synthesize currentChannel, sortedVideoList;
 
@@ -59,7 +67,7 @@
 	totalDurationLabel.shadowOffset = CGSizeMake(0.0, -1.0);
 	[progressView addSubview:totalDurationLabel];
 	
-	if ( sortedVideoList ) {
+	if ( sortedVideoList == nil ) {
 		// get videos from server
 		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:currentChannel isNew:YES];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
@@ -128,16 +136,20 @@
 	[player play];
 	
 	// get other video's direct URL
-	[self bufferItemAtIndex:currentIndex + 1];
-	[self bufferItemAtIndex:currentIndex + 2];
+	[self requestAddVideoAtIndex:currentIndex + 1];
+	[self requestAddVideoAtIndex:currentIndex + 2];
 }
 
-- (void)bufferItemAtIndex:(NSUInteger)idx {
+#pragma mark Video queuing
+
+- (void)requestAddVideoAtIndex:(NSUInteger)idx {
+	// request to add the video to queue. If the direct URL does not exists, fetch from the server
 	NMVideo * vid = [sortedVideoList objectAtIndex:idx];
 	if ( vid.nm_direct_url == nil && ![vid.nm_direct_url isEqualToString:@""] ) {
 		[self insertVideoAtIndex:idx];
 	} else {
 		[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:idx]];
+		[self getVideoInfoAtIndex:idx];
 	}
 }
 
@@ -147,6 +159,14 @@
 	AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
 	if ( [player canInsertItem:item afterItem:nil] ) {
 		[player insertItem:item afterItem:nil];
+	}
+}
+
+- (void)getVideoInfoAtIndex:(NSUInteger)idx {
+	NMVideo * v = [sortedVideoList objectAtIndex:idx];
+	// check if video info already exists
+	if ( v.title == nil ) {
+		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoInfo:v];
 	}
 }
 
@@ -166,7 +186,7 @@
 }
 	 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
-	[self bufferItemAtIndex:currentIndex + 3];
+	[self requestAddVideoAtIndex:currentIndex + 3];
 }
 
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
@@ -174,6 +194,15 @@
 	self.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:currentChannel];
 	// we've got the list. get the direct URL of the first video here
 	[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:currentIndex]];
+}
+
+- (void)handleDidGetVideoInfoNotification:(NSNotification *)aNotification {
+	NMVideo * v = [[aNotification userInfo] objectForKey:@"target_object"];
+	NSUInteger i = [sortedVideoList indexOfObject:v];
+	if ( i == currentIndex ) {
+		// update the interface
+		[self updateControlsForVideoAtIndex:currentIndex];
+	}
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -290,7 +319,7 @@
 		NSUInteger c = [sortedVideoList count];
 		if ( currentIndex + 2 < c ) {
 			// buffer the next next video
-			[self bufferItemAtIndex:currentIndex + 2];
+			[self requestAddVideoAtIndex:currentIndex + 2];
 		}
 		if ( currentIndex < c ) {
 			currentIndex++;

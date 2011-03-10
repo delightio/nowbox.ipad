@@ -23,7 +23,7 @@ NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectU
 	
 	command = NMCommandGetYouTubeDirectURL;
 	self.video = vdo;
-	self.externalID = vdo.external_id;
+	self.externalID = vdo.service_external_id;
 	
 	return self;
 }
