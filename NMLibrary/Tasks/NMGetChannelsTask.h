@@ -10,7 +10,7 @@
 
 
 @interface NMGetChannelsTask : NMTask {
-
+	NSArray * channelJSONKeys;
 }
 
 @end

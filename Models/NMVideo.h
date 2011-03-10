@@ -14,6 +14,7 @@
 {
 }
 
+@property (nonatomic, retain) NSString * service_name;
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSDate * created_at;

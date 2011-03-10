@@ -98,17 +98,14 @@
 	NSIndexPath * idxPath = [channelTableView indexPathForCell:cell];
 	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idxPath.row * 3 + index inSection:0]];
 	//TODO: for testing - get video list when tapped
+	// there's some video. just load the first video for testing purpose
+	VideoPlaybackViewController * vidCtrl = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
 	if ( [chnObj.videos count] ) {
-		// there's some video. just load the first video for testing purpose
-		VideoPlaybackViewController * vidCtrl = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
-		vidCtrl.currentVideo = [chnObj.videos anyObject];
-		vidCtrl.currentChannel = chnObj;
-		[self presentModalViewController:vidCtrl animated:YES];
-		[vidCtrl release];
-	} else {
-		// no video for the channel. try getting the list from the server
-		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:chnObj isNew:YES];
+		vidCtrl.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:chnObj];
 	}
+	vidCtrl.currentChannel = chnObj;
+	[self presentModalViewController:vidCtrl animated:YES];
+	[vidCtrl release];
 }
 
 #pragma mark -
@@ -219,6 +216,7 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
@@ -259,60 +257,60 @@
 #pragma mark Fetched results controller delegate
 
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [channelTableView beginUpdates];
-}
-
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [channelTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [channelTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
-}
-
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    UITableView *tableView = channelTableView;
-	// one row == 3 channels
-	NSIndexPath * realNewIndexPath, * realSrcIndexPath;
-	realNewIndexPath = [NSIndexPath indexPathForRow:indexPath.row / 3 inSection:0];
-	realSrcIndexPath = [NSIndexPath indexPathForRow:indexPath.row / 3 inSection:0];
-    
-    switch(type) {
-            
-        case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:realNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:realSrcIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:realSrcIndexPath] atIndexPath:realSrcIndexPath];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:realSrcIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:realNewIndexPath]withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
-}
+//- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+//    [channelTableView beginUpdates];
+//}
+//
+//
+//- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+//           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+//    
+//    switch(type) {
+//        case NSFetchedResultsChangeInsert:
+//            [channelTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//            
+//        case NSFetchedResultsChangeDelete:
+//            [channelTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//    }
+//}
+//
+//
+//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+//       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+//      newIndexPath:(NSIndexPath *)newIndexPath {
+//    
+//    UITableView *tableView = channelTableView;
+//	// one row == 3 channels
+//	NSIndexPath * realNewIndexPath, * realSrcIndexPath;
+//	realNewIndexPath = [NSIndexPath indexPathForRow:indexPath.row / 3 inSection:0];
+//	realSrcIndexPath = [NSIndexPath indexPathForRow:indexPath.row / 3 inSection:0];
+//    
+//    switch(type) {
+//            
+//        case NSFetchedResultsChangeInsert:
+//            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:realNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//            
+//        case NSFetchedResultsChangeDelete:
+//            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:realSrcIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//            
+//        case NSFetchedResultsChangeUpdate:
+//            [self configureCell:[tableView cellForRowAtIndexPath:realSrcIndexPath] atIndexPath:realSrcIndexPath];
+//            break;
+//            
+//        case NSFetchedResultsChangeMove:
+//            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:realSrcIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:realNewIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//    }
+//}
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [channelTableView endUpdates];
+    [channelTableView reloadData];
 }
 
 

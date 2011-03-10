@@ -12,6 +12,7 @@
 
 @implementation NMVideo 
 
+@dynamic service_name;
 @dynamic nm_description;
 @dynamic nm_id;
 @dynamic created_at;

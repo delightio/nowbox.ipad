@@ -79,6 +79,10 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	return vid;
 }
 
+- (NSArray *)sortedVideoListForChannel:(NMChannel *)chn {
+	return [chn.videos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+}
+
 #pragma mark Data parsing
 - (void)createDataParsingOperationForTask:(NMTask *)atask {
 	NSInvocationOperation * op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseAndProcessData:) object:atask];

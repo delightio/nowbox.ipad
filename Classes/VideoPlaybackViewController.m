@@ -16,7 +16,7 @@
 #define NM_PLAYER_STATUS_CONTEXT		100
 
 @implementation VideoPlaybackViewController
-@synthesize currentChannel, currentVideo;
+@synthesize currentChannel, sortedVideoList;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -34,7 +34,6 @@
     [super viewDidLoad];
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	self.wantsFullScreenLayout = YES;
-	[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:currentVideo];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 	
 	// progress view
@@ -60,8 +59,14 @@
 	totalDurationLabel.shadowOffset = CGSizeMake(0.0, -1.0);
 	[progressView addSubview:totalDurationLabel];
 	
-	channelNameLabel.text = [currentChannel.channel_name capitalizedString];
-	videoTitleLabel.text = [currentVideo.title uppercaseString];
+	if ( sortedVideoList ) {
+		// get videos from server
+		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:currentChannel isNew:YES];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+	} else {
+		// or get the direct URL
+		[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:currentIndex]];
+	}
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -97,14 +102,14 @@
 	
 	[progressView release];
 	[player release];
-	[currentVideo release];
+	[sortedVideoList release];
 	[currentChannel release];
     [super dealloc];
 }
 
 - (void)preparePlayer {
-	
-	player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:currentVideo.nm_direct_url]]]];
+	NMVideo * vid = [sortedVideoList objectAtIndex:currentIndex];
+	player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[NSURL URLWithString:vid.nm_direct_url]]];
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime aTime){
@@ -112,14 +117,63 @@
 		CMTime t = [player currentTime];
 		[self setCurrentTime:t.value / t.timescale];
 	}];
+	// listen to item finish up playing notificaiton
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+	// player layer
 	AVPlayerLayer * pLayer = [AVPlayerLayer playerLayerWithPlayer:player];
 	pLayer.frame = self.view.layer.bounds;
 	[movieView.layer addSublayer:pLayer];
 	[player play];
+	
+	// get other video's direct URL
+	[self bufferItemAtIndex:currentIndex + 1];
+	[self bufferItemAtIndex:currentIndex + 2];
 }
 
+- (void)bufferItemAtIndex:(NSUInteger)idx {
+	NMVideo * vid = [sortedVideoList objectAtIndex:idx];
+	if ( vid.nm_direct_url == nil && ![vid.nm_direct_url isEqualToString:@""] ) {
+		[self insertVideoAtIndex:idx];
+	} else {
+		[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:idx]];
+	}
+}
+
+- (void)insertVideoAtIndex:(NSUInteger)idx {
+	// buffer the next next video
+	NMVideo * vid = [sortedVideoList objectAtIndex:idx];
+	AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
+	if ( [player canInsertItem:item afterItem:nil] ) {
+		[player insertItem:item afterItem:nil];
+	}
+}
+
+#pragma mark Notification handling
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
-	[self preparePlayer];
+	if ( player == nil ) {
+		[self preparePlayer];
+	} else {
+		// check if we need to queue the video to player
+		NMVideo * vid = [[aNotification userInfo] objectForKey:@"target_object"];
+		NSUInteger i = [sortedVideoList indexOfObject:vid];
+		if ( [sortedVideoList count] - i < 3 ) {
+			// queue the item
+			[self insertVideoAtIndex:i];
+		}
+	}
+}
+	 
+- (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
+	[self bufferItemAtIndex:currentIndex + 3];
+}
+
+- (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
+	// update the sortedVideoList
+	self.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:currentChannel];
+	// we've got the list. get the direct URL of the first video here
+	[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:currentIndex]];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -131,6 +185,7 @@
 				// the instance is ready to play. yeah!
 				CMTime t = player.currentItem.asset.duration;
 				[self setTotalLength:t.value / t.timescale];
+				[self updateControlsForVideoAtIndex:currentIndex];
 				break;
 			}
 			default:
@@ -139,13 +194,19 @@
 	}
 }
 
-#pragma mark Playback progress indicator
+#pragma mark Playback view UI update
 - (void)setCurrentTime:(NSInteger)sec {
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
 }
 
 - (void)setTotalLength:(NSInteger)sec {
 	totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+}
+
+- (void)updateControlsForVideoAtIndex:(NSUInteger)idx {
+	NMVideo * vid = [sortedVideoList objectAtIndex:idx];
+	channelNameLabel.text = [currentChannel.channel_name capitalizedString];
+	videoTitleLabel.text = [vid.title uppercaseString];
 }
 
 #pragma mark Target-action methods
@@ -221,7 +282,21 @@
 }
 
 - (IBAction)skipCurrentVideo:(id)sender {
-	
+	UIButton * btn = (UIButton *)sender;
+	if ( btn.tag == 1000 ) {
+		// prev
+	} else {
+		// next
+		NSUInteger c = [sortedVideoList count];
+		if ( currentIndex + 2 < c ) {
+			// buffer the next next video
+			[self bufferItemAtIndex:currentIndex + 2];
+		}
+		if ( currentIndex < c ) {
+			currentIndex++;
+		}
+	}
+	[player advanceToNextItem];
 }
 
 @end

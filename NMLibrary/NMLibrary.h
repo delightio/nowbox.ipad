@@ -8,4 +8,5 @@
 
 #import "NMDataType.h"
 #import "NMTaskQueueController.h"
+#import "NMDataController.h"
 #import "NMChannel.h"

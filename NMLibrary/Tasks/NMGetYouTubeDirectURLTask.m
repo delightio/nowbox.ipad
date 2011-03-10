@@ -56,7 +56,17 @@ NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectU
 	
 	// get the JSON object
 	NSDictionary * dict = [cleanResultStr objectFromJSONString];
-	self.directURLString = [dict valueForKeyPath:@"content.video.hq_stream_url"];
+	// check if there's error
+	if ( ![dict isKindOfClass:[NSDictionary class]] ) {
+		encountersErrorDuringProcessing = YES;
+		return;
+	}
+	NSDictionary * contentDict = [dict objectForKey:@"content"];
+	if ( contentDict == nil || [contentDict count] == 0) {
+		encountersErrorDuringProcessing = YES;
+		return;
+	}
+	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	if ( directURLString == nil ) {
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
@@ -76,7 +86,7 @@ NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectU
 }
 
 - (NSDictionary *)userInfo {
-	return directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:directURLString, @"direct_url", video, @"target_object", nil] : nil;
+	return directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
 }
 
 @end

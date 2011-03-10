@@ -24,7 +24,8 @@
 	
 	AVQueuePlayer * player;
 	
-	NMVideo * currentVideo;
+	NSUInteger currentIndex;
+	NSArray * sortedVideoList;
 	NMChannel * currentChannel;
 	
 	// fake controls
@@ -33,7 +34,7 @@
 	UIImageView * shareVideoPanelImageView;
 }
 
-@property (nonatomic, retain) NMVideo * currentVideo;
+@property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, retain) NMChannel * currentChannel;
 
 - (IBAction)showTweetView:(id)sender;
@@ -45,9 +46,11 @@
 - (IBAction)skipCurrentVideo:(id)sender;
 
 - (void)preparePlayer;
+- (void)bufferItemAtIndex:(NSUInteger)idx;
 
-// progress indicator
+// playback view update
 - (void)setCurrentTime:(NSInteger)sec;
 - (void)setTotalLength:(NSInteger)sec;
+- (void)updateControlsForVideoAtIndex:(NSUInteger)idx;
 
 @end

@@ -20,6 +20,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 - (id)init {
 	self = [super init];
 	command = NMCommandGetChannels;
+	channelJSONKeys = [[NSArray alloc] initWithObjects:@"channel_name", @"count", @"reason", @"thumbnail", nil];
 	return self;
 }
 
@@ -34,21 +35,20 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
 	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-	NSDictionary * dict = [str objectFromJSONString];
+	NSArray * theChs = [str objectFromJSONString];
 	[str release];
 	
-	if ( [self checkDictionaryContainsError:dict] ) {
-		return;
-	}
-	
-	NSArray * theChs = [dict objectForKey:@"channel_list"];
 	parsedObjects = [[NSMutableArray alloc] init];
 	NSDictionary * cDict;
 	NSMutableDictionary * pDict;
+	NSString * theKey;
 	for (cDict in theChs) {
-		pDict = [NSMutableDictionary dictionaryWithDictionary:cDict];
+		pDict = [NSMutableDictionary dictionary];
+		for (theKey in channelJSONKeys) {
+			[pDict setObject:[cDict objectForKey:theKey] forKey:theKey];
+		}
 		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
-		[pDict removeObjectForKey:@"description"];
+		[pDict setObject:[cDict objectForKey:@"first_video"] forKey:@"first_video"];
 		[parsedObjects addObject:pDict];
 	}
 }
@@ -56,7 +56,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	// save the data into core data
 	NSMutableArray * ay = [NSMutableArray array];
-	NSDictionary * dict;
+	NSMutableDictionary * dict;
 	// prepare channel names for batch fetch request
 	for (dict in parsedObjects) {
 		[ay addObject:[dict objectForKey:@"channel_name"]];
@@ -64,6 +64,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	NSDictionary * fetchedChannels = [ctrl fetchChannelsForNames:ay];
 	// save channel with new data
 	NMChannel * chnObj;
+	NSDictionary * vidDict;
 	NSMutableArray * foundAy = [NSMutableArray array];
 	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
 	for (dict in parsedObjects) {
@@ -73,8 +74,13 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 		} else {
 			// create a new channel object
 			chnObj = [ctrl insertNewChannel];
+			vidDict = [[dict objectForKey:@"first_video"] retain];
+			[dict removeObjectForKey:@"first_video"];
+			
 			// set value
 			[chnObj setValuesForKeysWithDictionary:dict];
+			// insert the video
+			[vidDict release];
 			// if it's a new channel, we should get the list of video
 			//TODO: uncomment this
 			//[queueCtrl issueGetVideoListForChannel:chnObj isNew:YES];

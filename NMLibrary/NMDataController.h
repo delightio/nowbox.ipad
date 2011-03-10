@@ -31,5 +31,6 @@
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
 // video
 - (NMVideo *)insertNewVideo;
+- (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
 
 @end
