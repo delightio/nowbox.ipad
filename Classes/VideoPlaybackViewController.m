@@ -14,6 +14,7 @@
 
 
 #define NM_PLAYER_STATUS_CONTEXT		100
+#define NM_PLAYER_CURRENT_ITEM_CONTEXT		101
 
 
 @interface VideoPlaybackViewController (PrivateMethods)
@@ -44,6 +45,9 @@
 	self.wantsFullScreenLayout = YES;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 	
+	// set target-action methods
+	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
+	[controlsContainerView addTarget:self action:@selector(controlsViewTouchUp:)];
 	// progress view
 	UIImage * img = [UIImage imageNamed:@"playback_progress_background"];
 	progressView = [[UIImageView alloc] initWithImage:[img stretchableImageWithLeftCapWidth:98 topCapHeight:0]];
@@ -74,6 +78,7 @@
 	} else {
 		// or get the direct URL
 		[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:currentIndex]];
+		[self getVideoInfoAtIndex:currentIndex];
 	}
 }
 
@@ -120,7 +125,8 @@
 	player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
-	[player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime aTime){
+	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+	[player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
 		// print the time
 		CMTime t = [player currentTime];
 		[self setCurrentTime:t.value / t.timescale];
@@ -134,6 +140,8 @@
 	pLayer.frame = self.view.layer.bounds;
 	[movieView.layer addSublayer:pLayer];
 	[player play];
+	// update the view
+	[self updateControlsForVideoAtIndex:currentIndex];
 	
 	// get other video's direct URL
 	[self requestAddVideoAtIndex:currentIndex + 1];
@@ -145,10 +153,11 @@
 - (void)requestAddVideoAtIndex:(NSUInteger)idx {
 	// request to add the video to queue. If the direct URL does not exists, fetch from the server
 	NMVideo * vid = [sortedVideoList objectAtIndex:idx];
-	if ( vid.nm_direct_url == nil && ![vid.nm_direct_url isEqualToString:@""] ) {
-		[self insertVideoAtIndex:idx];
-	} else {
+	if ( vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""] ) {
 		[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:idx]];
+		[self getVideoInfoAtIndex:idx];
+	} else {
+		[self insertVideoAtIndex:idx];
 		[self getVideoInfoAtIndex:idx];
 	}
 }
@@ -159,7 +168,15 @@
 	AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
 	if ( [player canInsertItem:item afterItem:nil] ) {
 		[player insertItem:item afterItem:nil];
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+		NSLog(@"added video to queue player: %d", idx);
+#endif
 	}
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	else {
+		NSLog(@"can't add video to queue player: %d", idx);
+	}
+#endif
 }
 
 - (void)getVideoInfoAtIndex:(NSUInteger)idx {
@@ -178,7 +195,10 @@
 		// check if we need to queue the video to player
 		NMVideo * vid = [[aNotification userInfo] objectForKey:@"target_object"];
 		NSUInteger i = [sortedVideoList indexOfObject:vid];
-		if ( [sortedVideoList count] - i < 3 ) {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+		NSLog(@"resolved URL for idx: %d", i);
+#endif
+		if ( i - currentIndex < 3 ) {
 			// queue the item
 			[self insertVideoAtIndex:i];
 		}
@@ -186,7 +206,9 @@
 }
 	 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
-	[self requestAddVideoAtIndex:currentIndex + 3];
+	currentIndex++;
+//	[self updateControlsForVideoAtIndex:currentIndex];
+	[self requestAddVideoAtIndex:currentIndex + 2];
 }
 
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
@@ -212,14 +234,19 @@
 			case AVPlayerStatusReadyToPlay:
 			{
 				// the instance is ready to play. yeah!
-				CMTime t = player.currentItem.asset.duration;
-				[self setTotalLength:t.value / t.timescale];
-				[self updateControlsForVideoAtIndex:currentIndex];
+				//[self updateControlsForVideoAtIndex:currentIndex];
 				break;
 			}
 			default:
 				break;
 		}
+	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+		NSLog(@"current item changed");
+#endif
+		[self updateControlsForVideoAtIndex:currentIndex];
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
 
@@ -228,14 +255,13 @@
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
 }
 
-- (void)setTotalLength:(NSInteger)sec {
-	totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
-}
-
 - (void)updateControlsForVideoAtIndex:(NSUInteger)idx {
 	NMVideo * vid = [sortedVideoList objectAtIndex:idx];
 	channelNameLabel.text = [currentChannel.channel_name capitalizedString];
 	videoTitleLabel.text = [vid.title uppercaseString];
+	CMTime t = player.currentItem.asset.duration;
+	NSInteger sec = t.value / t.timescale;
+	totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
 }
 
 #pragma mark Target-action methods
@@ -324,8 +350,22 @@
 		if ( currentIndex < c ) {
 			currentIndex++;
 		}
+		[player advanceToNextItem];
 	}
-	[player advanceToNextItem];
+}
+
+- (void)movieViewTouchUp:(id)sender {
+	// show the control view
+	[UIView beginAnimations:nil context:nil];
+	controlsContainerView.alpha = 1.0;
+	[UIView commitAnimations];
+}
+
+- (void)controlsViewTouchUp:(id)sender {
+	// hide the control view
+	[UIView beginAnimations:nil context:nil];
+	controlsContainerView.alpha = 0.0;
+	[UIView commitAnimations];
 }
 
 @end

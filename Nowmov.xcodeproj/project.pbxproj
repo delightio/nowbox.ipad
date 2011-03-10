@@ -26,6 +26,9 @@
 		A908F2C713221AD900F237FA /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A908F2C613221AD900F237FA /* NMDataController.m */; };
 		A908F2E613221E4E00F237FA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A908F2E513221E4E00F237FA /* CoreData.framework */; };
 		A908F2F71322244900F237FA /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A908F2F61322244900F237FA /* NMTaskQueueController.m */; };
+		A91340F9132909D200DBAA12 /* demo_post_by.png in Resources */ = {isa = PBXBuildFile; fileRef = A91340F8132909D200DBAA12 /* demo_post_by.png */; };
+		A913415F1329390500DBAA12 /* NMMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = A913415E1329390500DBAA12 /* NMMovieView.m */; };
+		A91341621329391700DBAA12 /* NMControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91341611329391700DBAA12 /* NMControlsView.m */; };
 		A93666D61324D94C00E98DE3 /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */; };
 		A965A7391325749200C77699 /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */; };
 		A965A73A1325749200C77699 /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7381325749200C77699 /* NMGetYouTubeDirectURLTask.m */; };
@@ -105,6 +108,11 @@
 		A908F2F51322244900F237FA /* NMTaskQueueController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTaskQueueController.h; sourceTree = "<group>"; };
 		A908F2F61322244900F237FA /* NMTaskQueueController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMTaskQueueController.m; sourceTree = "<group>"; };
 		A908F338132224FD00F237FA /* Nowmov.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Nowmov.xcdatamodel; sourceTree = "<group>"; };
+		A91340F8132909D200DBAA12 /* demo_post_by.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demo_post_by.png; sourceTree = "<group>"; };
+		A913415D1329390500DBAA12 /* NMMovieView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMovieView.h; sourceTree = "<group>"; };
+		A913415E1329390500DBAA12 /* NMMovieView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMovieView.m; sourceTree = "<group>"; };
+		A91341601329391700DBAA12 /* NMControlsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMControlsView.h; sourceTree = "<group>"; };
+		A91341611329391700DBAA12 /* NMControlsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMControlsView.m; sourceTree = "<group>"; };
 		A92F3C2413224F82004234C1 /* NMLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMLibrary.h; sourceTree = "<group>"; };
 		A93666D41324D94C00E98DE3 /* NMGetChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelVideoListTask.h; sourceTree = "<group>"; };
 		A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideoListTask.m; sourceTree = "<group>"; };
@@ -301,6 +309,7 @@
 		A965A79E13257A1800C77699 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A91340F8132909D200DBAA12 /* demo_post_by.png */,
 				A9928CCB13274C6700EDC693 /* friend_videos.png */,
 				A9928CC913274C4F00EDC693 /* surprise_me.png */,
 				A9928C501327413E00EDC693 /* channel_border.png */,
@@ -340,6 +349,10 @@
 				A991FB211326B996004C7E4D /* ChannelTableCellView.m */,
 				A9928CCF13274CDA00EDC693 /* NMTouchImageView.h */,
 				A9928CD013274CDA00EDC693 /* NMTouchImageView.m */,
+				A913415D1329390500DBAA12 /* NMMovieView.h */,
+				A913415E1329390500DBAA12 /* NMMovieView.m */,
+				A91341601329391700DBAA12 /* NMControlsView.h */,
+				A91341611329391700DBAA12 /* NMControlsView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -424,6 +437,7 @@
 				A9928C511327413E00EDC693 /* channel_border.png in Resources */,
 				A9928CCA13274C4F00EDC693 /* surprise_me.png in Resources */,
 				A9928CCC13274C6700EDC693 /* friend_videos.png in Resources */,
+				A91340F9132909D200DBAA12 /* demo_post_by.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,6 +469,8 @@
 				A9A79A581328C347009A6768 /* NMGetVideoInfoTask.m in Sources */,
 				A9A79A721328C53E009A6768 /* NMVideo.m in Sources */,
 				A9A79A731328C53E009A6768 /* NMChannel.m in Sources */,
+				A913415F1329390500DBAA12 /* NMMovieView.m in Sources */,
+				A91341621329391700DBAA12 /* NMControlsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +487,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Nowmov_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_PLAYBACK_NETWORK_CALL,
 					NOWMOV_USE_BETA_SITE,
 					DEBUG_CONNECTION_CONTROLLER,
 				);

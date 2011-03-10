@@ -7,13 +7,15 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import "NMMovieView.h"
+#import "NMControlsView.h"
 
 @class NMVideo;
 @class NMChannel;
 
 @interface VideoPlaybackViewController : UIViewController {
-	IBOutlet UIView * movieView;
-	IBOutlet UIView * controlsContainerView;
+	IBOutlet NMMovieView * movieView;
+	IBOutlet NMControlsView * controlsContainerView;
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * postedByLabel;
 	IBOutlet UILabel * postSourceLabel;
@@ -51,7 +53,6 @@
 
 // playback view update
 - (void)setCurrentTime:(NSInteger)sec;
-- (void)setTotalLength:(NSInteger)sec;
 - (void)updateControlsForVideoAtIndex:(NSUInteger)idx;
 
 @end

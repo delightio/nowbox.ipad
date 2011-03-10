@@ -46,7 +46,13 @@ NSString * const NMDidGetVideoInfoNotification = @"NMDidGetVideoInfoNotification
 
 - (void)processDownloadedDataInBuffer {
 	if ( [buffer length] == 0 ) return;
-	infoDictionary = [[buffer objectFromJSONData] retain];
+	NSMutableDictionary * dict = [NSMutableDictionary dictionaryWithDictionary:[buffer objectFromJSONData]];
+	// date
+	//TODO: make sure timezone is set correctly. timestamp from server is pacific time
+	[dict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
+	[dict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
+	[dict removeObjectForKey:@"description"];
+	infoDictionary = [dict retain];
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
