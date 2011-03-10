@@ -117,7 +117,7 @@
 
 - (void)preparePlayer {
 	NMVideo * vid = [sortedVideoList objectAtIndex:currentIndex];
-	player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[NSURL URLWithString:vid.nm_direct_url]]];
+	player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime aTime){
