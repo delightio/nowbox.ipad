@@ -11,6 +11,8 @@
 
 @interface ChannelViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, ChannelTableCellDelegate> {
 	IBOutlet UITableView * channelTableView;
+    IBOutlet UIImageView *tableOverlayImageView;
+    IBOutlet UIImageView *headerOverlayImageView;
 @private
 	NSUInteger numberOfChannels;
     NSFetchedResultsController *fetchedResultsController_;

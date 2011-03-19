@@ -30,6 +30,8 @@
 		A913415F1329390500DBAA12 /* NMMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = A913415E1329390500DBAA12 /* NMMovieView.m */; };
 		A91341621329391700DBAA12 /* NMControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91341611329391700DBAA12 /* NMControlsView.m */; };
 		A93666D61324D94C00E98DE3 /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */; };
+		A9377CFA1334958900E6805B /* channel_header_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9377CF81334958900E6805B /* channel_header_shadow.png */; };
+		A9377CFB1334958900E6805B /* channel_table_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = A9377CF91334958900E6805B /* channel_table_overlay.png */; };
 		A965A7391325749200C77699 /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */; };
 		A965A73A1325749200C77699 /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7381325749200C77699 /* NMGetYouTubeDirectURLTask.m */; };
 		A965A7A013257A2200C77699 /* back_to_video.png in Resources */ = {isa = PBXBuildFile; fileRef = A965A79F13257A2200C77699 /* back_to_video.png */; };
@@ -56,6 +58,7 @@
 		A9928CCA13274C4F00EDC693 /* surprise_me.png in Resources */ = {isa = PBXBuildFile; fileRef = A9928CC913274C4F00EDC693 /* surprise_me.png */; };
 		A9928CCC13274C6700EDC693 /* friend_videos.png in Resources */ = {isa = PBXBuildFile; fileRef = A9928CCB13274C6700EDC693 /* friend_videos.png */; };
 		A9928CD113274CDA00EDC693 /* NMTouchImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9928CD013274CDA00EDC693 /* NMTouchImageView.m */; };
+		A99DFCEB1334A344004337C5 /* btn_connect_facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = A99DFCEA1334A344004337C5 /* btn_connect_facebook.png */; };
 		A9A79A581328C347009A6768 /* NMGetVideoInfoTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A79A571328C347009A6768 /* NMGetVideoInfoTask.m */; };
 		A9A79A721328C53E009A6768 /* NMVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A79A6F1328C53E009A6768 /* NMVideo.m */; };
 		A9A79A731328C53E009A6768 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A79A711328C53E009A6768 /* NMChannel.m */; };
@@ -116,6 +119,8 @@
 		A92F3C2413224F82004234C1 /* NMLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMLibrary.h; sourceTree = "<group>"; };
 		A93666D41324D94C00E98DE3 /* NMGetChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelVideoListTask.h; sourceTree = "<group>"; };
 		A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideoListTask.m; sourceTree = "<group>"; };
+		A9377CF81334958900E6805B /* channel_header_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_header_shadow.png; sourceTree = "<group>"; };
+		A9377CF91334958900E6805B /* channel_table_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_table_overlay.png; sourceTree = "<group>"; };
 		A965A7351325749200C77699 /* NMGetVimeoDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURLTask.h; sourceTree = "<group>"; };
 		A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVimeoDirectURLTask.m; sourceTree = "<group>"; };
 		A965A7371325749200C77699 /* NMGetYouTubeDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetYouTubeDirectURLTask.h; sourceTree = "<group>"; };
@@ -145,6 +150,7 @@
 		A9928CCB13274C6700EDC693 /* friend_videos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = friend_videos.png; sourceTree = "<group>"; };
 		A9928CCF13274CDA00EDC693 /* NMTouchImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTouchImageView.h; sourceTree = "<group>"; };
 		A9928CD013274CDA00EDC693 /* NMTouchImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMTouchImageView.m; sourceTree = "<group>"; };
+		A99DFCEA1334A344004337C5 /* btn_connect_facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_connect_facebook.png; sourceTree = "<group>"; };
 		A9A79A561328C347009A6768 /* NMGetVideoInfoTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVideoInfoTask.h; sourceTree = "<group>"; };
 		A9A79A571328C347009A6768 /* NMGetVideoInfoTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVideoInfoTask.m; sourceTree = "<group>"; };
 		A9A79A6E1328C53E009A6768 /* NMVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideo.h; sourceTree = "<group>"; };
@@ -309,6 +315,9 @@
 		A965A79E13257A1800C77699 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A99DFCEA1334A344004337C5 /* btn_connect_facebook.png */,
+				A9377CF81334958900E6805B /* channel_header_shadow.png */,
+				A9377CF91334958900E6805B /* channel_table_overlay.png */,
 				A91340F8132909D200DBAA12 /* demo_post_by.png */,
 				A9928CCB13274C6700EDC693 /* friend_videos.png */,
 				A9928CC913274C4F00EDC693 /* surprise_me.png */,
@@ -438,6 +447,9 @@
 				A9928CCA13274C4F00EDC693 /* surprise_me.png in Resources */,
 				A9928CCC13274C6700EDC693 /* friend_videos.png in Resources */,
 				A91340F9132909D200DBAA12 /* demo_post_by.png in Resources */,
+				A9377CFA1334958900E6805B /* channel_header_shadow.png in Resources */,
+				A9377CFB1334958900E6805B /* channel_table_overlay.png in Resources */,
+				A99DFCEB1334A344004337C5 /* btn_connect_facebook.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,7 +500,6 @@
 				GCC_PREFIX_HEADER = Nowmov_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_PLAYBACK_NETWORK_CALL,
-					NOWMOV_USE_BETA_SITE,
 					DEBUG_CONNECTION_CONTROLLER,
 				);
 				INFOPLIST_FILE = "Nowmov-Info.plist";

@@ -38,6 +38,10 @@
 	channelTableView.rowHeight = 218.0;
 	// set inset so that the top of the channel thunbmail aligns with the left button
 	channelTableView.contentInset = UIEdgeInsetsMake(15.0, 0.0, 0.0, 0.0);
+    UIImage * img = [[UIImage imageNamed:@"channel_table_overlay"] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    tableOverlayImageView.image = img;
+    img = [[UIImage imageNamed:@"channel_header_shadow"] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
+    headerOverlayImageView.image = img;
 //	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
 //	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 }
@@ -56,6 +60,10 @@
 }
 
 - (void)viewDidUnload {
+    [headerOverlayImageView release];
+    headerOverlayImageView = nil;
+    [tableOverlayImageView release];
+    tableOverlayImageView = nil;
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
@@ -64,6 +72,8 @@
 - (void)dealloc {
     [fetchedResultsController_ release];
     [managedObjectContext_ release];
+    [tableOverlayImageView release];
+    [headerOverlayImageView release];
     [super dealloc];
 }
 
