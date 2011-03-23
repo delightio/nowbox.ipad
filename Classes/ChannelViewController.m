@@ -87,6 +87,10 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 }
 
+- (IBAction)showLoginView:(id)sender {
+	
+}
+
 #pragma mark Other table methods
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	// since each cell shows 3 channels, we need to calculate the real index path

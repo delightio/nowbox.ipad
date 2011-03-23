@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 - (IBAction)getChannels:(id)sender;
+- (IBAction)showLoginView:(id)sender;
 
 @end
 

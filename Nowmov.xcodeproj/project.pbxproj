@@ -62,6 +62,8 @@
 		A9A79A581328C347009A6768 /* NMGetVideoInfoTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A79A571328C347009A6768 /* NMGetVideoInfoTask.m */; };
 		A9A79A721328C53E009A6768 /* NMVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A79A6F1328C53E009A6768 /* NMVideo.m */; };
 		A9A79A731328C53E009A6768 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A79A711328C53E009A6768 /* NMChannel.m */; };
+		A9D72FD5133A7D51006377E3 /* SocialSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D72FD4133A7D51006377E3 /* SocialSignInViewController.m */; };
+		A9D72FD7133A7D65006377E3 /* SocialSignInView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9D72FD6133A7D65006377E3 /* SocialSignInView.xib */; };
 		A9DF4A8213261BB700174C48 /* info_panel.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A8013261BB700174C48 /* info_panel.png */; };
 		A9DF4A8313261BB700174C48 /* volume_panel.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4A8113261BB700174C48 /* volume_panel.png */; };
 		A9DF4B701326654700174C48 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9DF4B6F1326654700174C48 /* Icon.png */; };
@@ -157,6 +159,9 @@
 		A9A79A6F1328C53E009A6768 /* NMVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideo.m; sourceTree = "<group>"; };
 		A9A79A701328C53E009A6768 /* NMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel.h; sourceTree = "<group>"; };
 		A9A79A711328C53E009A6768 /* NMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel.m; sourceTree = "<group>"; };
+		A9D72FD3133A7D51006377E3 /* SocialSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialSignInViewController.h; sourceTree = "<group>"; };
+		A9D72FD4133A7D51006377E3 /* SocialSignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialSignInViewController.m; sourceTree = "<group>"; };
+		A9D72FD6133A7D65006377E3 /* SocialSignInView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialSignInView.xib; sourceTree = "<group>"; };
 		A9DF4A8013261BB700174C48 /* info_panel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info_panel.png; sourceTree = "<group>"; };
 		A9DF4A8113261BB700174C48 /* volume_panel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = volume_panel.png; sourceTree = "<group>"; };
 		A9DF4B6F1326654700174C48 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -196,6 +201,8 @@
 				1D3623250D0F684500981E51 /* NowmovAppDelegate.m */,
 				A904C7BE131F8E6400925F61 /* VideoPlaybackViewController.h */,
 				A904C7BF131F8E6400925F61 /* VideoPlaybackViewController.m */,
+				A9D72FD3133A7D51006377E3 /* SocialSignInViewController.h */,
+				A9D72FD4133A7D51006377E3 /* SocialSignInViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -238,6 +245,7 @@
 				A965A79E13257A1800C77699 /* Images */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				A904C7BC131F8E3400925F61 /* ChannelViewController.xib */,
+				A9D72FD6133A7D65006377E3 /* SocialSignInView.xib */,
 				A904C7C3131F8E8B00925F61 /* VideoPlaybackView.xib */,
 				8D1107310486CEB800E47090 /* Nowmov-Info.plist */,
 			);
@@ -450,6 +458,7 @@
 				A9377CFA1334958900E6805B /* channel_header_shadow.png in Resources */,
 				A9377CFB1334958900E6805B /* channel_table_overlay.png in Resources */,
 				A99DFCEB1334A344004337C5 /* btn_connect_facebook.png in Resources */,
+				A9D72FD7133A7D65006377E3 /* SocialSignInView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +492,7 @@
 				A9A79A731328C53E009A6768 /* NMChannel.m in Sources */,
 				A913415F1329390500DBAA12 /* NMMovieView.m in Sources */,
 				A91341621329391700DBAA12 /* NMControlsView.m in Sources */,
+				A9D72FD5133A7D51006377E3 /* SocialSignInViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -29,6 +29,8 @@
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
+	
+	application.statusBarHidden = YES;
     
     // Override point for customization after app launch. 
     [self.window addSubview:viewController.view];
