@@ -28,6 +28,7 @@
 #import <Foundation/Foundation.h>
 #import "SHKSharer.h"
 #import "FBConnect.h"
+#import "SHKFBLoginViewController.h"
 
 typedef enum 
 {
@@ -42,11 +43,10 @@ typedef enum
 {
 	FBSession *session;
 	SHKFacebookPendingAction pendingFacebookAction;
-	FBLoginDialog *login;
+	SHKFBLoginViewController * loginViewController;
 }
 
 @property (retain) FBSession *session;
 @property SHKFacebookPendingAction pendingFacebookAction;
-@property (retain) FBLoginDialog *login;
 
 @end

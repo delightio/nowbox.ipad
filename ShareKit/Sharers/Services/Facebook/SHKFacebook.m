@@ -32,13 +32,12 @@
 
 @synthesize session;
 @synthesize pendingFacebookAction;
-@synthesize login;
 
 - (void)dealloc
 {
 	[session.delegates removeObject:self];
 	[session release];
-	[login release];
+	[loginViewController release];
 	[super dealloc];
 }
 
@@ -108,8 +107,12 @@
 - (void)promptAuthorization
 {
 	self.pendingFacebookAction = SHKFacebookPendingLogin;
-	self.login = [[[FBLoginDialog alloc] initWithSession:[self session]] autorelease];
-	[login show];
+	
+	loginViewController = [[SHKFBLoginViewController alloc] initWithSession:[self session]];
+
+	[[SHK currentHelper] showViewController:loginViewController];
+
+	//	[login show];
 }
 
 - (void)authFinished:(SHKRequest *)request

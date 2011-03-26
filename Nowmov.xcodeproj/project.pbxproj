@@ -32,6 +32,7 @@
 		A93666D61324D94C00E98DE3 /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */; };
 		A9377CFA1334958900E6805B /* channel_header_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9377CF81334958900E6805B /* channel_header_shadow.png */; };
 		A9377CFB1334958900E6805B /* channel_table_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = A9377CF91334958900E6805B /* channel_table_overlay.png */; };
+		A9480B2D133E37A500EAF991 /* SHKFBLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9480B2C133E37A500EAF991 /* SHKFBLoginViewController.m */; };
 		A965A7391325749200C77699 /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */; };
 		A965A73A1325749200C77699 /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A965A7381325749200C77699 /* NMGetYouTubeDirectURLTask.m */; };
 		A965A7A013257A2200C77699 /* back_to_video.png in Resources */ = {isa = PBXBuildFile; fileRef = A965A79F13257A2200C77699 /* back_to_video.png */; };
@@ -207,6 +208,8 @@
 		A93666D51324D94C00E98DE3 /* NMGetChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideoListTask.m; sourceTree = "<group>"; };
 		A9377CF81334958900E6805B /* channel_header_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_header_shadow.png; sourceTree = "<group>"; };
 		A9377CF91334958900E6805B /* channel_table_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_table_overlay.png; sourceTree = "<group>"; };
+		A9480B2B133E37A500EAF991 /* SHKFBLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SHKFBLoginViewController.h; sourceTree = "<group>"; };
+		A9480B2C133E37A500EAF991 /* SHKFBLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SHKFBLoginViewController.m; sourceTree = "<group>"; };
 		A965A7351325749200C77699 /* NMGetVimeoDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURLTask.h; sourceTree = "<group>"; };
 		A965A7361325749200C77699 /* NMGetVimeoDirectURLTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVimeoDirectURLTask.m; sourceTree = "<group>"; };
 		A965A7371325749200C77699 /* NMGetYouTubeDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetYouTubeDirectURLTask.h; sourceTree = "<group>"; };
@@ -985,6 +988,8 @@
 				A9F53090133E000D00A828D3 /* SHKFacebook.m */,
 				A9F53091133E000D00A828D3 /* SHKFBStreamDialog.h */,
 				A9F53092133E000D00A828D3 /* SHKFBStreamDialog.m */,
+				A9480B2B133E37A500EAF991 /* SHKFBLoginViewController.h */,
+				A9480B2C133E37A500EAF991 /* SHKFBLoginViewController.m */,
 			);
 			path = Facebook;
 			sourceTree = "<group>";
@@ -1306,6 +1311,7 @@
 				A9F53107133E000D00A828D3 /* SHKOAuthView.m in Sources */,
 				A9F53108133E000D00A828D3 /* SHKShareMenu.m in Sources */,
 				A9F53109133E000D00A828D3 /* SHKViewControllerWrapper.m in Sources */,
+				A9480B2D133E37A500EAF991 /* SHKFBLoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
