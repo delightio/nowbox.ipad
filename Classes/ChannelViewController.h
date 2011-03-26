@@ -9,7 +9,7 @@
 
 #import "ChannelTableCellView.h"
 
-@interface ChannelViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, ChannelTableCellDelegate> {
+@interface ChannelViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, ChannelTableCellDelegate, UIPopoverControllerDelegate> {
 	IBOutlet UITableView * channelTableView;
     IBOutlet UIImageView *tableOverlayImageView;
     IBOutlet UIImageView *headerOverlayImageView;

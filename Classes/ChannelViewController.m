@@ -8,6 +8,7 @@
 
 #import "ChannelViewController.h"
 #import "VideoPlaybackViewController.h"
+#import "SocialSignInViewController.h"
 #import "NMLibrary.h"
 
 @implementation ChannelViewController
@@ -88,7 +89,25 @@
 }
 
 - (IBAction)showLoginView:(id)sender {
+	UIButton * btn = (UIButton *)sender;
 	
+	SocialSignInViewController * socialCtrl = [[SocialSignInViewController alloc] initWithNibName:@"SocialSignInView" bundle:nil];
+	
+	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:socialCtrl];
+	
+	UIPopoverController * popCtrl = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
+	popCtrl.popoverContentSize = CGSizeMake(320.0f, 154.0f);
+	popCtrl.delegate = self;
+	
+	[popCtrl presentPopoverFromRect:btn.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+	
+	[socialCtrl release];
+	[navCtrl release];
+}
+
+#pragma mark Popover delegate methods
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+	[popoverController release];
 }
 
 #pragma mark Other table methods
