@@ -48,7 +48,23 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 - (void)processDownloadedDataInBuffer {
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
-	parsedObjects = [[buffer objectFromJSONData] retain];
+	NSArray * chVideos = [buffer objectFromJSONData];
+	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
+	NSMutableDictionary * mdict;
+	for (NSDictionary * dict in chVideos) {
+		mdict = [NSMutableDictionary dictionary];
+		[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
+		[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
+		[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
+		[mdict setObject:[dict objectForKey:@"service_name"] forKey:@"service_name"];
+		[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
+		[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
+		[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
+		[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
+		[parsedObjects addObject:mdict];
+	}
+	
+	// 
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
