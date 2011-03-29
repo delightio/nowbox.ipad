@@ -34,9 +34,22 @@
 //}
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	CGRect leftRect = CGRectMake(0.0f, 112.0f, 156.0f, 545.0f);
+	CGRect rightRect = CGRectMake(868.0f, 112.0f, 156.0f, 545.0f);
+	CGPoint touchLoc;
 	UITouch * atouch = [touches anyObject];
 	if ( atouch.tapCount == 1 ) {
-		[target performSelector:action withObject:self];
+		// check the location of the touch
+		touchLoc = [atouch locationInView:self];
+		if ( CGRectContainsPoint(leftRect, touchLoc) ) {
+			// go to previous
+			[target performSelector:@selector(skipCurrentVideo:) withObject:self];
+		} else if ( CGRectContainsPoint(rightRect, touchLoc) ) {
+			// go to next
+			[target performSelector:@selector(skipCurrentVideo:) withObject:self];
+		} else {
+			[target performSelector:action withObject:self];
+		}
 	}
 }
 

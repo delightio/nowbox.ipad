@@ -253,6 +253,14 @@
 #pragma mark Playback view UI update
 - (void)setCurrentTime:(NSInteger)sec {
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+	if ( videoDurationInvalid ) {
+		CMTime t = player.currentItem.asset.duration;
+		if ( t.flags & kCMTimeFlags_Valid ) {
+			NSInteger sec = t.value / t.timescale;
+			totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+			videoDurationInvalid = NO;
+		}
+	}
 }
 
 - (void)updateControlsForVideoAtIndex:(NSUInteger)idx {
@@ -260,8 +268,13 @@
 	channelNameLabel.text = [currentChannel.channel_name capitalizedString];
 	videoTitleLabel.text = [vid.title uppercaseString];
 	CMTime t = player.currentItem.asset.duration;
-	NSInteger sec = t.value / t.timescale;
-	totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+	// check if the time is value
+	if ( t.flags & kCMTimeFlags_Valid ) {
+		NSInteger sec = t.value / t.timescale;
+		totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+	} else {
+		videoDurationInvalid = YES;
+	}
 }
 
 #pragma mark Target-action methods
@@ -337,7 +350,7 @@
 }
 
 - (IBAction)skipCurrentVideo:(id)sender {
-	UIButton * btn = (UIButton *)sender;
+	UIView * btn = (UIView *)sender;
 	if ( btn.tag == 1000 ) {
 		// prev
 	} else {

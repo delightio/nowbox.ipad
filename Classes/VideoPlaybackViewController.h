@@ -34,6 +34,7 @@
 	UIImageView * infoPanelImageView;
 	UIImageView * volumePanelImageView;
 	UIImageView * shareVideoPanelImageView;
+	BOOL videoDurationInvalid;
 }
 
 @property (nonatomic, retain) NSArray * sortedVideoList;
