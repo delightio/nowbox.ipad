@@ -7,9 +7,6 @@
 //
 
 #import "SocialSignInViewController.h"
-#import "SHKSharer.h"
-#import "SHKFacebook.h"
-#import "SHKTwitter.h"
 
 
 @implementation SocialSignInViewController
@@ -65,12 +62,12 @@
 }
 
 - (IBAction)connectFacebook:(id)sender {
-	SHKFacebook * sharer = [[SHKFacebook alloc] init];
-	[sharer authorize];
+//	SHKFacebook * sharer = [[SHKFacebook alloc] init];
+//	[sharer authorize];
 }
 
 - (IBAction)connectTwitter:(id)sender {
-	SHKTwitter * sharer = [[SHKTwitter alloc] init];
-	[sharer authorize];
+//	SHKTwitter * sharer = [[SHKTwitter alloc] init];
+//	[sharer authorize];
 }
 @end
