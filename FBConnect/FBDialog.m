@@ -23,10 +23,10 @@
 
 static NSString* kDefaultTitle = @"Connect to Facebook";
 
-static CGFloat kFacebookBlue[4] = {0.42578125, 0.515625, 0.703125, 1.0};
-static CGFloat kBorderGray[4] = {0.3, 0.3, 0.3, 0.8};
-static CGFloat kBorderBlack[4] = {0.3, 0.3, 0.3, 1};
-static CGFloat kBorderBlue[4] = {0.23, 0.35, 0.6, 1.0};
+//static CGFloat kFacebookBlue[4] = {0.42578125, 0.515625, 0.703125, 1.0};
+//static CGFloat kBorderGray[4] = {0.3, 0.3, 0.3, 0.8};
+//static CGFloat kBorderBlack[4] = {0.3, 0.3, 0.3, 1};
+//static CGFloat kBorderBlue[4] = {0.23, 0.35, 0.6, 1.0};
 
 static CGFloat kTransitionDuration = 0.3;
 
@@ -293,7 +293,7 @@ BOOL FBIsDeviceIPad() {
 // NSObject
 
 - (id)init {
-  if (self = [super initWithFrame:CGRectZero]) {
+  if ((self = [super initWithFrame:CGRectZero])) {
     _delegate = nil;
     _loadingURL = nil;
     _orientation = UIDeviceOrientationUnknown;
@@ -373,21 +373,21 @@ BOOL FBIsDeviceIPad() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // UIView
 
-- (void)drawRect:(CGRect)rect {
-  CGRect grayRect = CGRectOffset(rect, -0.5, -0.5);
-  [self drawRect:grayRect fill:kBorderGray radius:10];
-
-  CGRect headerRect = CGRectMake(
-    ceil(rect.origin.x + kBorderWidth), ceil(rect.origin.y + kBorderWidth),
-    rect.size.width - kBorderWidth*2, _titleLabel.frame.size.height);
-  [self drawRect:headerRect fill:kFacebookBlue radius:0];
-  [self strokeLines:headerRect stroke:kBorderBlue];
-
-  CGRect webRect = CGRectMake(
-    ceil(rect.origin.x + kBorderWidth), headerRect.origin.y + headerRect.size.height,
-    rect.size.width - kBorderWidth*2, _webView.frame.size.height+1);
-  [self strokeLines:webRect stroke:kBorderBlack];
-}
+//- (void)drawRect:(CGRect)rect {
+//  CGRect grayRect = CGRectOffset(rect, -0.5, -0.5);
+//  [self drawRect:grayRect fill:kBorderGray radius:10];
+//
+//  CGRect headerRect = CGRectMake(
+//    ceil(rect.origin.x + kBorderWidth), ceil(rect.origin.y + kBorderWidth),
+//    rect.size.width - kBorderWidth*2, _titleLabel.frame.size.height);
+//  [self drawRect:headerRect fill:kFacebookBlue radius:0];
+//  [self strokeLines:headerRect stroke:kBorderBlue];
+//
+//  CGRect webRect = CGRectMake(
+//    ceil(rect.origin.x + kBorderWidth), headerRect.origin.y + headerRect.size.height,
+//    rect.size.width - kBorderWidth*2, _webView.frame.size.height+1);
+//  [self strokeLines:webRect stroke:kBorderBlack];
+//}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // UIWebViewDelegate

@@ -22,6 +22,8 @@
 		A90C07761343C00800435EC9 /* OARequestParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = A90C07631343C00700435EC9 /* OARequestParameter.m */; };
 		A90C07771343C00800435EC9 /* OAServiceTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = A90C07651343C00700435EC9 /* OAServiceTicket.m */; };
 		A90C07781343C00800435EC9 /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = A90C07681343C00700435EC9 /* OAToken.m */; };
+		A90C077B1343CA5F00435EC9 /* FacebookSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90C077A1343CA5F00435EC9 /* FacebookSignInViewController.m */; };
+		A90C077E1343CA8200435EC9 /* TwitterSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90C077D1343CA8200435EC9 /* TwitterSignInViewController.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A9250145134385BF001759F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
@@ -152,6 +154,10 @@
 		A90C07671343C00700435EC9 /* OAToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAToken.h; sourceTree = "<group>"; };
 		A90C07681343C00700435EC9 /* OAToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAToken.m; sourceTree = "<group>"; };
 		A90C07691343C00700435EC9 /* OAuthConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumer.h; sourceTree = "<group>"; };
+		A90C07791343CA5E00435EC9 /* FacebookSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookSignInViewController.h; sourceTree = "<group>"; };
+		A90C077A1343CA5F00435EC9 /* FacebookSignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookSignInViewController.m; sourceTree = "<group>"; };
+		A90C077C1343CA8200435EC9 /* TwitterSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterSignInViewController.h; sourceTree = "<group>"; };
+		A90C077D1343CA8200435EC9 /* TwitterSignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterSignInViewController.m; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* ipad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ipad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -462,6 +468,10 @@
 				A970501513438F860022BF2C /* SocialSignInViewController.m */,
 				A970501613438F860022BF2C /* VideoPlaybackViewController.h */,
 				A970501713438F860022BF2C /* VideoPlaybackViewController.m */,
+				A90C07791343CA5E00435EC9 /* FacebookSignInViewController.h */,
+				A90C077A1343CA5F00435EC9 /* FacebookSignInViewController.m */,
+				A90C077C1343CA8200435EC9 /* TwitterSignInViewController.h */,
+				A90C077D1343CA8200435EC9 /* TwitterSignInViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -811,6 +821,8 @@
 				A90C07761343C00800435EC9 /* OARequestParameter.m in Sources */,
 				A90C07771343C00800435EC9 /* OAServiceTicket.m in Sources */,
 				A90C07781343C00800435EC9 /* OAToken.m in Sources */,
+				A90C077B1343CA5F00435EC9 /* FacebookSignInViewController.m in Sources */,
+				A90C077E1343CA8200435EC9 /* TwitterSignInViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

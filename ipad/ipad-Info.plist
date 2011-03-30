@@ -37,5 +37,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>TwitterConsumerKey</key>
+	<string>7rMbEDvViSvXfCtZG3Ff4w</string>
+	<key>TwitterConsumerSecret</key>
+	<string>gFDmroyY9klENiOCWFqoCllozz1rh5daRlSoPuE</string>
+	<key>TwitterCallbackURL</key>
+	<string>http://nowmov.com/auth/twitter/callback</string>
 </dict>
 </plist>
