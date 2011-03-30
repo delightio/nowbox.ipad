@@ -234,7 +234,8 @@
 	if (pendingFacebookAction == SHKFacebookPendingLogin)
 	{
 		self.pendingFacebookAction = SHKFacebookPendingNone;
-		[self share];
+		//TODO: calll view controller to fetch user image
+		//[self share];
 	}
 }
 
