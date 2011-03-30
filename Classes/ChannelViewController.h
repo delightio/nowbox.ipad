@@ -24,6 +24,7 @@
 
 - (IBAction)getChannels:(id)sender;
 - (IBAction)showLoginView:(id)sender;
+- (IBAction)getFacebookProfile:(id)sender;
 
 @end
 

@@ -10,6 +10,7 @@
 #import "VideoPlaybackViewController.h"
 #import "SocialSignInViewController.h"
 #import "NMLibrary.h"
+#import "FBConnect.h"
 
 @implementation ChannelViewController
 
@@ -105,6 +106,15 @@
 	[navCtrl release];
 }
 
+- (IBAction)getFacebookProfile:(id)sender {
+    FBRequest * request = [FBRequest requestWithDelegate:self];
+    [request call:@"me" params:nil];
+    [request connect];
+}
+
+- (void)request:(FBRequest*)request didLoad:(id)result {
+    NSLog(@"result %@", result);
+}
 #pragma mark Popover delegate methods
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	[popoverController release];
