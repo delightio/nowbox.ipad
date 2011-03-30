@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @class ChannelViewController;
+@class Facebook;
 
 @interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
 	ChannelViewController *viewController;
+	Facebook * facebook;
 
 @private
     NSManagedObjectContext *managedObjectContext_;
@@ -21,6 +23,7 @@
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet ChannelViewController *viewController;
+@property (nonatomic, retain) Facebook * facebook;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;

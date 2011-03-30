@@ -11,6 +11,7 @@
 #import "SocialSignInViewController.h"
 #import "NMLibrary.h"
 #import "FBConnect.h"
+#import "ipadAppDelegate.h"
 
 @implementation ChannelViewController
 
@@ -107,14 +108,15 @@
 }
 
 - (IBAction)getFacebookProfile:(id)sender {
-    FBRequest * request = [FBRequest requestWithDelegate:self];
-    [request call:@"me" params:nil];
-    [request connect];
+	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+//	[appDel.facebook requestWithGraphPath:@"me" andDelegate:self];
+	[appDel.facebook requestWithGraphPath:@"me/picture" andParams:[NSMutableDictionary dictionaryWithObject:@"large" forKey:@"type"] andDelegate:self];
 }
 
-- (void)request:(FBRequest*)request didLoad:(id)result {
-    NSLog(@"result %@", result);
+- (void)request:(FBRequest *)request didLoad:(id)result {
+	NSLog(@"done graph %@", result);
 }
+
 #pragma mark Popover delegate methods
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	[popoverController release];

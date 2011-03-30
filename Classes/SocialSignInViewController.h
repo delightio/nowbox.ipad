@@ -6,10 +6,10 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FBConnect.h"
 
 
-@interface SocialSignInViewController : UIViewController {
+@interface SocialSignInViewController : UIViewController <FBSessionDelegate> {
     
 }
 
