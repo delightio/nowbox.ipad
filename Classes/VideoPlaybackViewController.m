@@ -7,6 +7,7 @@
 //
 
 #import "VideoPlaybackViewController.h"
+#import "SocialSignInViewController.h"
 #import "NMLibrary.h"
 #import "NMVideo.h"
 #import <QuartzCore/QuartzCore.h>
@@ -20,6 +21,7 @@
 @interface VideoPlaybackViewController (PrivateMethods)
 
 - (void)insertVideoAtIndex:(NSUInteger)idx;
+- (void)controlsViewTouchUp:(id)sender;
 
 @end
 
@@ -27,6 +29,7 @@
 @implementation VideoPlaybackViewController
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext=managedObjectContext_;
 @synthesize currentChannel, sortedVideoList;
+@synthesize currentPlayerLayer;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -44,10 +47,17 @@
     [super viewDidLoad];
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	self.wantsFullScreenLayout = YES;
+	isAspectFill = YES;
+	firstShowControlView = YES;
+	
 	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
 	[dc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 	[dc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	
+	// setup gesture recognizer
+	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewZoom:)];
+	[movieView addGestureRecognizer:pinRcr];
+	[pinRcr release];
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 	[controlsContainerView addTarget:self action:@selector(controlsViewTouchUp:)];
@@ -144,9 +154,9 @@
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	// player layer
-	AVPlayerLayer * pLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-	pLayer.frame = self.view.layer.bounds;
-	[movieView.layer addSublayer:pLayer];
+	self.currentPlayerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+	currentPlayerLayer.frame = self.view.layer.bounds;
+	[movieView.layer addSublayer:currentPlayerLayer];
 	[player play];
 	// update the view
 	[self updateControlsForVideoAtIndex:currentIndex];
@@ -248,10 +258,20 @@
 			{
 				// the instance is ready to play. yeah!
 				//[self updateControlsForVideoAtIndex:currentIndex];
+				if ( firstShowControlView ) {
+					firstShowControlView = NO;
+					if ( !controlsContainerView.hidden && controlsContainerView.alpha > 0.0 ) {
+						// hide the control
+						[self controlsViewTouchUp:nil];
+					}
+				}
 				break;
 			}
 			default:
 				break;
+		}
+		if ( firstShowControlView ) {
+			firstShowControlView = NO;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
@@ -260,6 +280,29 @@
 		[self updateControlsForVideoAtIndex:currentIndex];
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+}
+
+- (void)handleMovieViewZoom:(id)sender {
+	UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
+	NSLog(@"s %f v %f", rcr.scale, rcr.velocity);
+	CGRect theFrame;
+	CGSize theSize;
+	if ( rcr.velocity > 0 && rcr.scale > 1.2 && isAspectFill ) {
+		// scale the player layer down
+		isAspectFill = NO;
+		theFrame = self.currentPlayerLayer.bounds;
+		// calculate the size
+		theSize = currentPlayerLayer.player.currentItem.presentationSize;
+		theSize.width = floorf(768.0 / theSize.height * theSize.width);
+		theSize.height = 768.0;
+		theFrame.size = theSize;
+		self.currentPlayerLayer.bounds = theFrame;
+	} else if ( rcr.velocity < 0 && rcr.scale < 0.8 && !isAspectFill ) {
+		isAspectFill = YES;
+		// restore the original size
+		theFrame = self.view.bounds;
+		self.currentPlayerLayer.bounds = theFrame;
 	}
 }
 
@@ -380,6 +423,23 @@
 	}
 }
 
+- (IBAction)showSharePopover:(id)sender {
+	UIButton * btn = (UIButton *)sender;
+	
+	SocialSignInViewController * socialCtrl = [[SocialSignInViewController alloc] initWithNibName:@"SocialSignInView" bundle:nil];
+	socialCtrl.videoViewController = self;
+	
+	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:socialCtrl];
+	
+	UIPopoverController * popCtrl = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
+	popCtrl.popoverContentSize = CGSizeMake(320.0f, 154.0f);
+	
+	[popCtrl presentPopoverFromRect:btn.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+	
+	[socialCtrl release];
+	[navCtrl release];
+}
+
 - (void)movieViewTouchUp:(id)sender {
 	// show the control view
 	[UIView beginAnimations:nil context:nil];
@@ -393,5 +453,6 @@
 	controlsContainerView.alpha = 0.0;
 	[UIView commitAnimations];
 }
+
 
 @end

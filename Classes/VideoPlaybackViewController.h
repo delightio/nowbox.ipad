@@ -13,7 +13,7 @@
 @class NMVideo;
 @class NMChannel;
 
-@interface VideoPlaybackViewController : UIViewController {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate> {
 	IBOutlet NMMovieView * movieView;
 	IBOutlet NMControlsView * controlsContainerView;
 	IBOutlet UILabel * channelNameLabel;
@@ -23,6 +23,9 @@
 	
 	UIImageView * progressView;
 	UILabel * currentTimeLabel, * totalDurationLabel;
+	AVPlayerLayer * currentPlayerLayer;
+	BOOL isAspectFill;
+	BOOL firstShowControlView;
 	
 	AVQueuePlayer * player;
 	
@@ -43,6 +46,7 @@
 
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, retain) NMChannel * currentChannel;
+@property (nonatomic, retain) AVPlayerLayer * currentPlayerLayer;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
@@ -53,6 +57,7 @@
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)setLikeVideo:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;
+- (IBAction)showSharePopover:(id)sender;
 
 - (void)preparePlayer;
 - (void)requestAddVideoAtIndex:(NSUInteger)idx;

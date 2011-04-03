@@ -7,12 +7,17 @@
 //
 
 #import "SocialSignInViewController.h"
+#import "VideoPlaybackViewController.h"
 #import "SHKSharer.h"
 #import "SHKFacebook.h"
 #import "SHKTwitter.h"
 
 
+
 @implementation SocialSignInViewController
+
+@synthesize videoViewController;
+
 //
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -23,10 +28,10 @@
 //    return self;
 //}
 //
-//- (void)dealloc
-//{
-//    [super dealloc];
-//}
+- (void)dealloc {
+	[videoViewController release];
+    [super dealloc];
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -65,11 +70,15 @@
 }
 
 - (IBAction)connectFacebook:(id)sender {
+	// stop video playback
+	[videoViewController playStopVideo:sender];
 	SHKFacebook * sharer = [[SHKFacebook alloc] init];
 	[sharer authorize];
 }
 
 - (IBAction)connectTwitter:(id)sender {
+	// stop video playback
+	[videoViewController playStopVideo:sender];
 	SHKTwitter * sharer = [[SHKTwitter alloc] init];
 	[sharer authorize];
 }

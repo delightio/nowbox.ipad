@@ -8,10 +8,14 @@
 
 #import "FBConnect.h"
 
+@class VideoPlaybackViewController;
+
 
 @interface SocialSignInViewController : UIViewController {
-    
+	VideoPlaybackViewController * videoViewController;
 }
+
+@property (nonatomic, retain) VideoPlaybackViewController * videoViewController;
 
 - (IBAction)connectFacebook:(id)sender;
 - (IBAction)connectTwitter:(id)sender;
