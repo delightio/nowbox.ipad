@@ -21,7 +21,6 @@
 		A925016E134385BF001759F5 /* ipadTests.h in Resources */ = {isa = PBXBuildFile; fileRef = A925016D134385BF001759F5 /* ipadTests.h */; };
 		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
 		A970506713438F860022BF2C /* ChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970500E13438F860022BF2C /* ChannelViewController.xib */; };
-		A970506813438F860022BF2C /* ChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501113438F860022BF2C /* ChannelViewController.m */; };
 		A970506A13438F860022BF2C /* SocialSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501513438F860022BF2C /* SocialSignInViewController.m */; };
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
 		A970506C13438F860022BF2C /* back_to_video.png in Resources */ = {isa = PBXBuildFile; fileRef = A970501913438F860022BF2C /* back_to_video.png */; };
@@ -1319,7 +1318,6 @@
 			files = (
 				A925014E134385BF001759F5 /* main.m in Sources */,
 				A9250151134385BF001759F5 /* ipadAppDelegate.m in Sources */,
-				A970506813438F860022BF2C /* ChannelViewController.m in Sources */,
 				A970506A13438F860022BF2C /* SocialSignInViewController.m in Sources */,
 				A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */,
 				A970508C13438F860022BF2C /* NMChannel.m in Sources */,

@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class ChannelViewController;
+@class VideoPlaybackViewController;
 
 @interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
-	ChannelViewController *viewController;
+	VideoPlaybackViewController *viewController;
 
 @private
     NSManagedObjectContext *managedObjectContext_;
@@ -20,7 +20,7 @@
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet ChannelViewController *viewController;
+@property (nonatomic, retain) IBOutlet VideoPlaybackViewController *viewController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;

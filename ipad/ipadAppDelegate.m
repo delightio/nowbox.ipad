@@ -7,7 +7,7 @@
 //
 
 #import "ipadAppDelegate.h"
-#import "ChannelViewController.h"
+#import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
 
 @implementation ipadAppDelegate
@@ -53,9 +53,7 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-	/*
-	 Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-	 */
+	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

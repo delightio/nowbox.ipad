@@ -14,6 +14,8 @@
 {
 }
 
+@property (nonatomic, retain) NSString * author_profile_link;
+@property (nonatomic, retain) NSString * author_username;
 @property (nonatomic, retain) NSString * service_external_id;
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NSDate * created_at;

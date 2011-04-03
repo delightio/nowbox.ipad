@@ -25,6 +25,7 @@
 
 
 @implementation VideoPlaybackViewController
+@synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext=managedObjectContext_;
 @synthesize currentChannel, sortedVideoList;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -43,7 +44,9 @@
     [super viewDidLoad];
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	self.wantsFullScreenLayout = YES;
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
+	[dc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+	[dc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
@@ -72,13 +75,16 @@
 	[progressView addSubview:totalDurationLabel];
 	
 	if ( sortedVideoList == nil ) {
+		NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
+		[ctrl.dataController deleteAllVideos];
 		// get videos from server
-		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:currentChannel isNew:YES];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+		[ctrl issueGetLiveChannel];
+//		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoListForChannel:currentChannel isNew:YES];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	} else {
 		// or get the direct URL
 		[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:currentIndex]];
-		[self getVideoInfoAtIndex:currentIndex];
+		[self updateControlsForVideoAtIndex:currentIndex];
 	}
 }
 
@@ -110,6 +116,8 @@
 
 
 - (void)dealloc {
+    [fetchedResultsController_ release];
+    [managedObjectContext_ release];
 	[infoPanelImageView release];
 	[volumePanelImageView release];
 	
@@ -155,10 +163,10 @@
 	NMVideo * vid = [sortedVideoList objectAtIndex:idx];
 	if ( vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""] ) {
 		[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:idx]];
-		[self getVideoInfoAtIndex:idx];
+//		[self getVideoInfoAtIndex:idx];
 	} else {
 		[self insertVideoAtIndex:idx];
-		[self getVideoInfoAtIndex:idx];
+//		[self getVideoInfoAtIndex:idx];
 	}
 }
 
@@ -179,13 +187,13 @@
 #endif
 }
 
-- (void)getVideoInfoAtIndex:(NSUInteger)idx {
-	NMVideo * v = [sortedVideoList objectAtIndex:idx];
-	// check if video info already exists
-	if ( v.title == nil ) {
-		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoInfo:v];
-	}
-}
+//- (void)getVideoInfoAtIndex:(NSUInteger)idx {
+//	NMVideo * v = [sortedVideoList objectAtIndex:idx];
+//	// check if video info already exists
+//	if ( v.title == nil ) {
+//		[[NMTaskQueueController sharedTaskQueueController] issueGetVideoInfo:v];
+//	}
+//}
 
 #pragma mark Notification handling
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
@@ -204,7 +212,7 @@
 		}
 	}
 }
-	 
+
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 	currentIndex++;
 //	[self updateControlsForVideoAtIndex:currentIndex];
@@ -212,21 +220,26 @@
 }
 
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
+	// show the controls
+	controlsContainerView.hidden = NO;
+	currentIndex = 0;
 	// update the sortedVideoList
-	self.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:currentChannel];
+//	self.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:currentChannel];
+	self.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedLiveChannelVideoList];
+	[self updateControlsForVideoAtIndex:currentIndex];
 	// we've got the list. get the direct URL of the first video here
 	[[NMTaskQueueController sharedTaskQueueController] issueGetDirectURLForVideo:[sortedVideoList objectAtIndex:currentIndex]];
 }
 
-- (void)handleDidGetVideoInfoNotification:(NSNotification *)aNotification {
-	NMVideo * v = [[aNotification userInfo] objectForKey:@"target_object"];
-	NSUInteger i = [sortedVideoList indexOfObject:v];
-	if ( i == currentIndex ) {
-		// update the interface
-		[self updateControlsForVideoAtIndex:currentIndex];
-	}
-}
-
+//- (void)handleDidGetVideoInfoNotification:(NSNotification *)aNotification {
+//	NMVideo * v = [[aNotification userInfo] objectForKey:@"target_object"];
+//	NSUInteger i = [sortedVideoList indexOfObject:v];
+//	if ( i == currentIndex ) {
+//		// update the interface
+//		[self updateControlsForVideoAtIndex:currentIndex];
+//	}
+//}
+//
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	NSInteger c = (NSInteger)context;
 	if ( c == NM_PLAYER_STATUS_CONTEXT ) {

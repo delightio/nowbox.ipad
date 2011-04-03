@@ -15,7 +15,7 @@ NSString * const NMChannelEntityName = @"NMChannel";
 NSString * const NMVideoEntityName = @"NMVideo";
 
 @implementation NMDataController
-@synthesize managedObjectContext;
+@synthesize managedObjectContext, sortedVideoList;
 
 - (id)init {
 	self = [super init];
@@ -33,6 +33,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	[channelNamePredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
+	[sortedVideoList release];
 	[super dealloc];
 }
 
@@ -41,6 +42,16 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	NSManagedObject * mobj;
 	for (mobj in objs) {
 		[managedObjectContext deleteObject:mobj];
+	}
+}
+
+- (void)deleteAllVideos {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	for (NSManagedObject * obj in results) {
+		[managedObjectContext deleteObject:obj];
 	}
 }
 
@@ -81,6 +92,17 @@ NSString * const NMVideoEntityName = @"NMVideo";
 
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn {
 	return [chn.videos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+}
+
+- (NSArray *)sortedLiveChannelVideoList {
+	if ( sortedVideoList ) return sortedVideoList;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	self.sortedVideoList = [managedObjectContext executeFetchRequest:request error:nil];
+	return sortedVideoList;
 }
 
 #pragma mark Data parsing

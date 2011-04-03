@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * channelName;
 @property (nonatomic) BOOL newChannel;
 
-- (id)initWithChannel:(NMChannel *)aChn;
+// in this wind-down version. we only have one single channel - Live
+//- (id)initWithChannel:(NMChannel *)aChn;
 
 @end

@@ -26,19 +26,19 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	return outdatedVideoPredicateTempate_;
 }
 
-- (id)initWithChannel:(NMChannel *)aChn {
-	self = [super init];
-	command = NMCommandGetChannelVideoList;
-	self.channel = aChn;
-	self.channelName = aChn.channel_name;
-	return self;
-}
+//- (id)initWithChannel:(NMChannel *)aChn {
+//	self = [super init];
+//	command = NMCommandGetChannelVideoList;
+//	self.channel = aChn;
+//	self.channelName = aChn.channel_name;
+//	return self;
+//}
 
 - (NSMutableURLRequest *)URLRequest {
 #ifdef NOWMOV_USE_BETA_SITE
-	NSString * urlStr = [NSString stringWithFormat:@"http://beta.nowmov.com/%@/videos?target=mobile", channelName];
+	NSString * urlStr = [NSString stringWithFormat:@"http://beta.nowmov.com/live/videos?target=mobile", channelName];
 #else
-	NSString * urlStr = [NSString stringWithFormat:@"http://nowmov.com/%@/videos?target=mobile", channelName];
+	NSString * urlStr = @"http://nowmov.com/live/videos?target=mobile";//[NSString stringWithFormat:@"http://nowmov.com/live/videos?target=mobile", channelName];
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
@@ -53,6 +53,8 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	NSMutableDictionary * mdict;
 	for (NSDictionary * dict in chVideos) {
 		mdict = [NSMutableDictionary dictionary];
+		[mdict setObject:[dict objectForKey:@"author_username"] forKey:@"author_username"];
+		[mdict setObject:[dict objectForKey:@"author_profile_link"] forKey:@"author_profile_link"];
 		[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
 		[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
 		[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
@@ -68,7 +70,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	if ( newChannel ) {
+//	if ( newChannel ) {
 		// update existing video
 		// remove ALL old videos not in the list
 		
@@ -86,7 +88,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 		// get the array of remaining videos ID
 		NMVideo * vidObj;
 		NSMutableDictionary * overlappingVidIDDict = [NSMutableDictionary dictionary];
-		for (vidObj in channel.videos) {
+		for (vidObj in ctrl.sortedVideoList) {
 			[overlappingVidIDDict setObject:vidObj forKey:vidObj.vid];
 		}
 		
@@ -101,14 +103,15 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 			[vidObj setValuesForKeysWithDictionary:[parsedObjects objectAtIndex:idx]];
 			vidObj.nm_sort_order = [NSNumber numberWithInteger:idx];
 			// associate data objects
-			vidObj.channel = channel;
-			[channel addVideosObject:vidObj];
+//			vidObj.channel = channel;
+//			[channel addVideosObject:vidObj];
 			idx++;
 		}
+	ctrl.sortedVideoList = nil;
 		
-	} else {
+//	} else {
 		// this is an existing channel. We should append new videos and update the order. No need to remove old videos
-	}
+//	}
 }
 
 - (NSString *)willLoadNotificationName {

@@ -27,7 +27,7 @@
 + (NMTaskQueueController *)sharedTaskQueueController;
 
 - (void)issueGetChannels;
-- (void)issueGetVideoListForChannel:(NMChannel *)chnObj isNew:(BOOL)aNewChn;
+- (void)issueGetLiveChannel;
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
 - (void)issueGetVideoInfo:(NMVideo *)aVideo;
 

@@ -35,10 +35,16 @@
 	UIImageView * volumePanelImageView;
 	UIImageView * shareVideoPanelImageView;
 	BOOL videoDurationInvalid;
+	
+	@private
+    NSManagedObjectContext *managedObjectContext_;
+    NSFetchedResultsController *fetchedResultsController_;
 }
 
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, retain) NMChannel * currentChannel;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 - (IBAction)showTweetView:(id)sender;
 - (IBAction)showVolumeControlView:(id)sender;
@@ -50,7 +56,7 @@
 
 - (void)preparePlayer;
 - (void)requestAddVideoAtIndex:(NSUInteger)idx;
-- (void)getVideoInfoAtIndex:(NSUInteger)idx;
+//- (void)getVideoInfoAtIndex:(NSUInteger)idx;
 
 // playback view update
 - (void)setCurrentTime:(NSInteger)sec;

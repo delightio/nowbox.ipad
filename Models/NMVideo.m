@@ -12,6 +12,8 @@
 
 @implementation NMVideo 
 
+@dynamic author_profile_link;
+@dynamic author_username;
 @dynamic service_external_id;
 @dynamic nm_description;
 @dynamic created_at;

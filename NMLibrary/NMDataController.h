@@ -18,19 +18,24 @@
 	NSManagedObjectContext * managedObjectContext;
 	NSPredicate * channelNamePredicateTemplate;
 	NSPredicate * channelNamesPredicateTemplate;
+	
+	NSArray * sortedVideoList;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
+@property (nonatomic, retain) NSArray * sortedVideoList;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
 // general data manipulation
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
+- (void)deleteAllVideos;
 // channels
 - (NMChannel *)insertNewChannel;
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
 // video
 - (NMVideo *)insertNewVideo;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
+- (NSArray *)sortedLiveChannelVideoList;
 
 @end
