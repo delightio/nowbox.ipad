@@ -9,7 +9,6 @@
 #import "ipadAppDelegate.h"
 #import "ChannelViewController.h"
 #import "NMLibrary.h"
-#import "FBConnect.h"
 
 @implementation ipadAppDelegate
 
@@ -17,7 +16,6 @@
 @synthesize window=_window;
 @synthesize viewController;
 @synthesize managedObjectContext=managedObjectContext_;
-@synthesize facebook;
 
 - (void)awakeFromNib {
 	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
@@ -26,7 +24,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	facebook = [[Facebook alloc] initWithAppId:@"274567978986"];
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
@@ -100,7 +97,6 @@
 
 - (void)dealloc
 {
-	[facebook release];
 	[_window release];
     [super dealloc];
 }

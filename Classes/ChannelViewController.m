@@ -10,7 +10,6 @@
 #import "VideoPlaybackViewController.h"
 #import "SocialSignInViewController.h"
 #import "NMLibrary.h"
-#import "FBConnect.h"
 #import "ipadAppDelegate.h"
 
 @implementation ChannelViewController
@@ -108,9 +107,8 @@
 }
 
 - (IBAction)getFacebookProfile:(id)sender {
-	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+//	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
 //	[appDel.facebook requestWithGraphPath:@"me" andDelegate:self];
-	[appDel.facebook requestWithGraphPath:@"me/picture" andParams:[NSMutableDictionary dictionaryWithObject:@"large" forKey:@"type"] andDelegate:self];
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result {

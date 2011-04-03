@@ -9,7 +9,7 @@
 #import "FBConnect.h"
 
 
-@interface SocialSignInViewController : UIViewController <FBSessionDelegate> {
+@interface SocialSignInViewController : UIViewController {
     
 }
 

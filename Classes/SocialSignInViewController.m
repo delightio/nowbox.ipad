@@ -7,7 +7,9 @@
 //
 
 #import "SocialSignInViewController.h"
-#import "ipadAppDelegate.h"
+#import "SHKSharer.h"
+#import "SHKFacebook.h"
+#import "SHKTwitter.h"
 
 
 @implementation SocialSignInViewController
@@ -63,18 +65,13 @@
 }
 
 - (IBAction)connectFacebook:(id)sender {
-	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
-	[appDel.facebook authorize:nil delegate:self];
+	SHKFacebook * sharer = [[SHKFacebook alloc] init];
+	[sharer authorize];
 }
 
 - (IBAction)connectTwitter:(id)sender {
-//	SHKTwitter * sharer = [[SHKTwitter alloc] init];
-//	[sharer authorize];
-}
-
-#pragma mark Faceboook delegate
-- (void)fbDidLogin {
-	NSLog(@"logged in facebook");
+	SHKTwitter * sharer = [[SHKTwitter alloc] init];
+	[sharer authorize];
 }
 
 @end
