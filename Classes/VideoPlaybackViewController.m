@@ -29,7 +29,7 @@
 @implementation VideoPlaybackViewController
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext=managedObjectContext_;
 @synthesize currentChannel, sortedVideoList;
-@synthesize currentPlayerLayer;
+@synthesize currentPlayerLayer, currentVideo;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -164,6 +164,20 @@
 	// get other video's direct URL
 	[self requestAddVideoAtIndex:currentIndex + 1];
 	[self requestAddVideoAtIndex:currentIndex + 2];
+}
+
+- (void)stopVideo {
+	[player pause];
+}
+
+- (void)playVideo {
+	if ( player.rate == 0.0 ) {
+		[player play];
+	}
+}
+
+- (NMVideo *)currentVideo {
+	return [self.sortedVideoList objectAtIndex:currentIndex];
 }
 
 #pragma mark Video queuing
@@ -333,6 +347,11 @@
 	}
 }
 
+#pragma mark Popover delegate
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+	[self playVideo];
+}
+
 #pragma mark Target-action methods
 
 - (IBAction)showTweetView:(id)sender {
@@ -433,6 +452,7 @@
 	
 	UIPopoverController * popCtrl = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
 	popCtrl.popoverContentSize = CGSizeMake(320.0f, 154.0f);
+	popCtrl.delegate = self;
 	
 	[popCtrl presentPopoverFromRect:btn.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
 	

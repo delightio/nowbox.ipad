@@ -46,6 +46,7 @@
 
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, retain) NMChannel * currentChannel;
+@property (nonatomic, readonly) NMVideo * currentVideo;
 @property (nonatomic, retain) AVPlayerLayer * currentPlayerLayer;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
@@ -59,6 +60,7 @@
 - (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)showSharePopover:(id)sender;
 
+- (void)stopVideo;
 - (void)preparePlayer;
 - (void)requestAddVideoAtIndex:(NSUInteger)idx;
 //- (void)getVideoInfoAtIndex:(NSUInteger)idx;

@@ -32,12 +32,13 @@
 
 @synthesize session;
 @synthesize pendingFacebookAction;
+@synthesize login;
 
 - (void)dealloc
 {
 	[session.delegates removeObject:self];
 	[session release];
-	[loginViewController release];
+	[login release];
 	[super dealloc];
 }
 
@@ -107,12 +108,8 @@
 - (void)promptAuthorization
 {
 	self.pendingFacebookAction = SHKFacebookPendingLogin;
-	
-	loginViewController = [[SHKFBLoginViewController alloc] initWithSession:[self session]];
-
-	[[SHK currentHelper] showViewController:loginViewController];
-
-	//	[login show];
+	self.login = [[[FBLoginDialog alloc] initWithSession:[self session]] autorelease];
+	[login show];
 }
 
 - (void)authFinished:(SHKRequest *)request
@@ -234,8 +231,7 @@
 	if (pendingFacebookAction == SHKFacebookPendingLogin)
 	{
 		self.pendingFacebookAction = SHKFacebookPendingNone;
-		//TODO: calll view controller to fetch user image
-		//[self share];
+		[self share];
 	}
 }
 
