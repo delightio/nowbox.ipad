@@ -187,7 +187,9 @@
 {
 	if (item.shareType == SHKShareTypeURL)
 	{
-		[self shortenURL];
+		//[self shortenURL];
+		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.title, item.URL] forKey:@"status"];
+		[self showTwitterForm];
 	}
 	
 	else if (item.shareType == SHKShareTypeImage)
