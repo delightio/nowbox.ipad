@@ -11,7 +11,7 @@
 #import "SHKSharer.h"
 #import "SHKFacebook.h"
 #import "SHKTwitter.h"
-
+#import "NMVideo.h"
 
 
 @implementation SocialSignInViewController
@@ -71,16 +71,28 @@
 
 - (IBAction)connectFacebook:(id)sender {
 	// stop video playback
-	[videoViewController playStopVideo:sender];
-	SHKFacebook * sharer = [[SHKFacebook alloc] init];
-	[sharer authorize];
+	[videoViewController stopVideo];
+	NSString * urlStr;
+	NMVideo * video = videoViewController.currentVideo;
+	if ( [video.service_name isEqualToString:@"youtube"] ) {
+		urlStr = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", video.service_external_id];
+	} else if ( [video.service_name isEqualToString:@"vimeo"] ) {
+		urlStr = [NSString stringWithFormat:@"http://vimeo.com/%@", video.service_external_id];
+	}
+	[SHKFacebook shareURL:[NSURL URLWithString:urlStr] title:video.title];
 }
 
 - (IBAction)connectTwitter:(id)sender {
 	// stop video playback
-	[videoViewController playStopVideo:sender];
-	SHKTwitter * sharer = [[SHKTwitter alloc] init];
-	[sharer authorize];
+	[videoViewController stopVideo];
+	NSString * urlStr;
+	NMVideo * video = videoViewController.currentVideo;
+	if ( [video.service_name isEqualToString:@"youtube"] ) {
+		urlStr = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", video.service_external_id];
+	} else if ( [video.service_name isEqualToString:@"vimeo"] ) {
+		urlStr = [NSString stringWithFormat:@"http://vimeo.com/%@", video.service_external_id];
+	}
+	[SHKTwitter shareURL:[NSURL URLWithString:urlStr] title:video.title];
 }
 
 @end
