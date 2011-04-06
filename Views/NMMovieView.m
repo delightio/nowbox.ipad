@@ -20,6 +20,12 @@
 //	initialCenter = self.center;
 //}
 
+- (id)initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	self.backgroundColor = [UIColor blackColor];
+	return self;
+}
+
 - (void)dealloc {
 	[player_ release];
 	[super dealloc];
@@ -70,7 +76,6 @@
 //    [super dealloc];
 //}
 
-/*
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	CGRect leftRect = CGRectMake(0.0f, 112.0f, 156.0f, 545.0f);
 	CGRect rightRect = CGRectMake(868.0f, 112.0f, 156.0f, 545.0f);
@@ -90,7 +95,6 @@
 		}
 	}
 }
- */
 
 - (void)addTarget:(id)atarget action:(SEL)anAction {
 	target = atarget;

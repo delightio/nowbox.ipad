@@ -54,19 +54,25 @@
 	firstShowControlView = YES;
 	
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
-	// pre-load some control view
-	NSBundle * mb = [NSBundle mainBundle];
-	controlViewArray = [[NSMutableArray alloc] initWithCapacity:4]; // 4 in total, 1 for prev, 1 for current, 2 for upcoming
-	for (NSInteger i = 0; i < 4; i++) {
-		[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
-		[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
-		[controlViewArray addObject:loadedControlView];
-	}
-	
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:self.view.bounds];
 	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[self.view addSubview:movieView];
+	
+	// pre-load some control view
+	CGRect theFrame;
+	NSBundle * mb = [NSBundle mainBundle];
+	controlViewArray = [[NSMutableArray alloc] initWithCapacity:4]; // 4 in total, 1 for prev, 1 for current, 2 for upcoming
+	for (CGFloat i = 0.0; i < 4.0; i += 1.0) {
+		[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
+		[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
+		[controlViewArray addObject:loadedControlView];
+		// put the view to scroll view
+		theFrame = loadedControlView.frame;
+		theFrame.origin.x = i * theFrame.size.width;
+		loadedControlView.frame = theFrame;
+		[self.view addSubview:loadedControlView];
+	}
 	
 	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
 	[dc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
@@ -476,16 +482,18 @@
 }
 
 - (void)movieViewTouchUp:(id)sender {
+	UIView * v = (UIView *)[controlViewArray objectAtIndex:RRIndex(currentIndex)];
 	// show the control view
 	[UIView beginAnimations:nil context:nil];
-//	controlsContainerView.alpha = 1.0;
+	v.alpha = 1.0;
 	[UIView commitAnimations];
 }
 
 - (void)controlsViewTouchUp:(id)sender {
+	UIView * v = (UIView *)sender;
 	// hide the control view
 	[UIView beginAnimations:nil context:nil];
-//	controlsContainerView.alpha = 0.0;
+	v.alpha = 0.0;
 	[UIView commitAnimations];
 }
 
