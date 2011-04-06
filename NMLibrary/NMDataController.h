@@ -36,6 +36,6 @@
 // video
 - (NMVideo *)insertNewVideo;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
-- (NSArray *)sortedLiveChannelVideoList;
+//- (NSArray *)sortedLiveChannelVideoList;
 
 @end

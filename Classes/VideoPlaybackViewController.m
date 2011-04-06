@@ -98,6 +98,10 @@
 		}
 		if ( currentIndex + 1 < c )	[self configureControlViewAtIndex:currentIndex + 1];
 		if ( currentIndex + 2 < c ) [self configureControlViewAtIndex:currentIndex + 2];
+		UIScrollView * s = (UIScrollView *)self.view;
+		s.scrollEnabled = YES;
+		s.contentSize = CGSizeMake((CGFloat)(c * 1024), 768.0f);
+		
 		//TODO: check if need to queue fetch video list
 	} else {
 		// there's no video. fetch video right now
@@ -564,6 +568,7 @@
 		[self configureControlViewAtIndex:currentIndex];
 		[self configureControlViewAtIndex:currentIndex + 1];
 		[self configureControlViewAtIndex:currentIndex + 2];
+		((UIScrollView *)self.view).scrollEnabled = YES;
 	} else {
 		// check if we need to get the direct URL
 	}

@@ -53,6 +53,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	for (NSManagedObject * obj in results) {
 		[managedObjectContext deleteObject:obj];
 	}
+	[request release];
 }
 
 #pragma mark Channels
@@ -78,9 +79,11 @@ NSString * const NMVideoEntityName = @"NMVideo";
 		for (channelObj in results) {
 			[dict setObject:channelObj forKey:channelObj.channel_name];
 		}
+		[request release];
 		return dict;
 	}
 	
+	[request release];
 	return nil;
 }
 
@@ -94,16 +97,16 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	return [chn.videos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
 }
 
-- (NSArray *)sortedLiveChannelVideoList {
-	if ( sortedVideoList ) return sortedVideoList;
-	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
-	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
-	[request setReturnsObjectsAsFaults:NO];
-	
-	self.sortedVideoList = [managedObjectContext executeFetchRequest:request error:nil];
-	return sortedVideoList;
-}
+//- (NSArray *)sortedLiveChannelVideoList {
+//	if ( sortedVideoList ) return sortedVideoList;
+//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+//	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+//	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+//	[request setReturnsObjectsAsFaults:NO];
+//	
+//	self.sortedVideoList = [managedObjectContext executeFetchRequest:request error:nil];
+//	return sortedVideoList;
+//}
 
 #pragma mark Data parsing
 - (void)createDataParsingOperationForTask:(NMTask *)atask {
