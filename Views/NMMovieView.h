@@ -6,13 +6,18 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 
 
 @interface NMMovieView : UIView {
 	SEL action;
 	id target;
+	CGPoint initialCenter;
+@private
+	AVQueuePlayer * player_;
 }
+
+@property (nonatomic, retain) AVQueuePlayer * player;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 

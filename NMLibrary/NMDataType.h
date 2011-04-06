@@ -46,3 +46,4 @@ extern NSString * const NMTaskFailNotification;
 
 // Entity names
 extern NSString * const NMChannelEntityName;
+extern NSString * const NMVideoEntityName;

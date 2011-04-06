@@ -11,6 +11,43 @@
 
 @implementation NMMovieView
 
+@synthesize player=player_;
+
+//- (void)awakeFromNib {
+//	UIPanGestureRecognizer * panRcr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureAction:)];
+//	[self addGestureRecognizer:panRcr];
+//	[panRcr release];
+//	initialCenter = self.center;
+//}
+
+- (void)dealloc {
+	[player_ release];
+	[super dealloc];
+}
+
+- (void)swipeGestureAction:(id)sender {
+	UIPanGestureRecognizer * panRcr = (UIPanGestureRecognizer *)sender;
+	CGPoint pos = [panRcr translationInView:self.superview];
+	CGPoint theCenter = initialCenter;
+	theCenter.x += pos.x;
+	self.center = theCenter;
+	NSLog(@"%f, %f", pos.x, pos.y);
+}
+
++ (Class)layerClass {
+	return [AVPlayerLayer class];
+}
+
+- (AVQueuePlayer *)player {
+    return player_;
+}
+- (void)setPlayer:(AVQueuePlayer *)aPlayer {
+	if ( player_ ) {
+		[player_ release];
+	}
+	player_ = [aPlayer retain];
+    [(AVPlayerLayer *)[self layer] setPlayer:aPlayer];
+}
 
 //- (id)initWithFrame:(CGRect)frame {
 //    
@@ -33,6 +70,7 @@
 //    [super dealloc];
 //}
 
+/*
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	CGRect leftRect = CGRectMake(0.0f, 112.0f, 156.0f, 545.0f);
 	CGRect rightRect = CGRectMake(868.0f, 112.0f, 156.0f, 545.0f);
@@ -52,6 +90,7 @@
 		}
 	}
 }
+ */
 
 - (void)addTarget:(id)atarget action:(SEL)anAction {
 	target = atarget;

@@ -20,6 +20,7 @@
 		A925016B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250169134385BF001759F5 /* InfoPlist.strings */; };
 		A925016E134385BF001759F5 /* ipadTests.h in Resources */ = {isa = PBXBuildFile; fileRef = A925016D134385BF001759F5 /* ipadTests.h */; };
 		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
+		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A970506713438F860022BF2C /* ChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970500E13438F860022BF2C /* ChannelViewController.xib */; };
 		A970506A13438F860022BF2C /* SocialSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501513438F860022BF2C /* SocialSignInViewController.m */; };
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
@@ -196,6 +197,7 @@
 		A925016C134385BF001759F5 /* ipadTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ipadTests-Prefix.pch"; sourceTree = "<group>"; };
 		A925016D134385BF001759F5 /* ipadTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipadTests.h; sourceTree = "<group>"; };
 		A925016F134385BF001759F5 /* ipadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadTests.m; sourceTree = "<group>"; };
+		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A970500E13438F860022BF2C /* ChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelViewController.xib; sourceTree = "<group>"; };
 		A970501013438F860022BF2C /* ChannelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelViewController.h; sourceTree = "<group>"; };
 		A970501113438F860022BF2C /* ChannelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelViewController.m; sourceTree = "<group>"; };
@@ -703,6 +705,7 @@
 				A970500E13438F860022BF2C /* ChannelViewController.xib */,
 				A970505C13438F860022BF2C /* SocialSignInView.xib */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
+				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -1279,6 +1282,7 @@
 				A9DB20931348B4D00018AA4A /* Localizable.strings in Resources */,
 				A9DB20AA1348B4D00018AA4A /* SHKEvernote.md in Resources */,
 				A9DB20AB1348B4D00018AA4A /* FBConnect.bundle in Resources */,
+				A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
