@@ -393,7 +393,7 @@
 										<string key="NSFrame">{{95, 26}, {46, 46}}</string>
 										<reference key="NSSuperview" ref="674799147"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="958675615"/>
+										<reference key="NSNextKeyView"/>
 										<bool key="IBUIOpaque">NO</bool>
 										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 										<int key="IBUIContentHorizontalAlignment">0</int>
@@ -412,60 +412,6 @@
 										<object class="NSCustomResource" key="IBUINormalImage">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">btn_heart.png</string>
-										</object>
-									</object>
-									<object class="IBUIButton" id="958675615">
-										<reference key="NSNextResponder" ref="674799147"/>
-										<int key="NSvFlags">292</int>
-										<string key="NSFrame">{{659, 16}, {90, 78}}</string>
-										<reference key="NSSuperview" ref="674799147"/>
-										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="548584286"/>
-										<bool key="IBUIOpaque">NO</bool>
-										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-										<int key="IBUIContentHorizontalAlignment">0</int>
-										<int key="IBUIContentVerticalAlignment">0</int>
-										<reference key="IBUIFont" ref="1070501991"/>
-										<reference key="IBUIHighlightedTitleColor" ref="464695898"/>
-										<object class="NSColor" key="IBUINormalTitleColor">
-											<int key="NSColorSpace">1</int>
-											<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-										</object>
-										<reference key="IBUINormalTitleShadowColor" ref="765808185"/>
-										<object class="NSCustomResource" key="IBUIHighlightedImage">
-											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">btn_volume_active.png</string>
-										</object>
-										<object class="NSCustomResource" key="IBUINormalImage">
-											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">btn_volume.png</string>
-										</object>
-									</object>
-									<object class="IBUIButton" id="548584286">
-										<reference key="NSNextResponder" ref="674799147"/>
-										<int key="NSvFlags">292</int>
-										<string key="NSFrame">{{750, 16}, {90, 78}}</string>
-										<reference key="NSSuperview" ref="674799147"/>
-										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="71204765"/>
-										<bool key="IBUIOpaque">NO</bool>
-										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-										<int key="IBUIContentHorizontalAlignment">0</int>
-										<int key="IBUIContentVerticalAlignment">0</int>
-										<reference key="IBUIFont" ref="1070501991"/>
-										<reference key="IBUIHighlightedTitleColor" ref="464695898"/>
-										<object class="NSColor" key="IBUINormalTitleColor">
-											<int key="NSColorSpace">1</int>
-											<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-										</object>
-										<reference key="IBUINormalTitleShadowColor" ref="765808185"/>
-										<object class="NSCustomResource" key="IBUIHighlightedImage">
-											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">btn_info_active.png</string>
-										</object>
-										<object class="NSCustomResource" key="IBUINormalImage">
-											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">btn_info.png</string>
 										</object>
 									</object>
 									<object class="IBUIButton" id="71204765">
@@ -501,7 +447,6 @@
 										<string key="NSFrame">{{932, 16}, {90, 78}}</string>
 										<reference key="NSSuperview" ref="674799147"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView"/>
 										<bool key="IBUIOpaque">NO</bool>
 										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 										<int key="IBUIContentHorizontalAlignment">0</int>
@@ -608,24 +553,6 @@
 						<int key="IBEventType">7</int>
 					</object>
 					<int key="connectionID">28</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">showTweetView:</string>
-						<reference key="source" ref="548584286"/>
-						<reference key="destination" ref="841351856"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">29</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">showVolumeControlView:</string>
-						<reference key="source" ref="958675615"/>
-						<reference key="destination" ref="841351856"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">30</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -763,8 +690,6 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="298247232"/>
-							<reference ref="958675615"/>
-							<reference ref="548584286"/>
 							<reference ref="71204765"/>
 							<reference ref="555112219"/>
 							<reference ref="768192620"/>
@@ -790,16 +715,6 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">19</int>
 						<reference key="object" ref="71204765"/>
-						<reference key="parent" ref="674799147"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">18</int>
-						<reference key="object" ref="548584286"/>
-						<reference key="parent" ref="674799147"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">17</int>
-						<reference key="object" ref="958675615"/>
 						<reference key="parent" ref="674799147"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -893,10 +808,6 @@
 					<string>15.IBViewBoundsToFrameTransform</string>
 					<string>16.IBPluginDependency</string>
 					<string>16.IBViewBoundsToFrameTransform</string>
-					<string>17.IBPluginDependency</string>
-					<string>17.IBViewBoundsToFrameTransform</string>
-					<string>18.IBPluginDependency</string>
-					<string>18.IBViewBoundsToFrameTransform</string>
 					<string>19.IBPluginDependency</string>
 					<string>19.IBViewBoundsToFrameTransform</string>
 					<string>2.IBEditorWindowLastContentRect</string>
@@ -949,14 +860,6 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABCxgAAwpgAAA</bytes>
-					</object>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABEIoAAwuAAAA</bytes>
-					</object>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAABEQAAAwuAAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
@@ -1227,14 +1130,10 @@
 				<string>btn_explore_active.png</string>
 				<string>btn_heart.png</string>
 				<string>btn_heart_active.png</string>
-				<string>btn_info.png</string>
-				<string>btn_info_active.png</string>
 				<string>btn_play.png</string>
 				<string>btn_play_active.png</string>
 				<string>btn_share.png</string>
 				<string>btn_share_active.png</string>
-				<string>btn_volume.png</string>
-				<string>btn_volume_active.png</string>
 				<string>cntrl_next.png</string>
 				<string>cntrl_prev.png</string>
 				<string>demo_post_by.png</string>
@@ -1248,12 +1147,8 @@
 				<string>{90, 78}</string>
 				<string>{46, 46}</string>
 				<string>{46, 46}</string>
-				<string>{90, 78}</string>
-				<string>{90, 78}</string>
 				<string>{71, 70}</string>
 				<string>{71, 70}</string>
-				<string>{90, 78}</string>
-				<string>{90, 78}</string>
 				<string>{90, 78}</string>
 				<string>{90, 78}</string>
 				<string>{156, 545}</string>

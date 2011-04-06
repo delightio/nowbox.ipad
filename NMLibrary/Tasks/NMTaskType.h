@@ -13,3 +13,4 @@
 #import "NMGetNextVideo.h"
 #import "NMGetVideoReasonTask.h"
 #import "NMGetYouTubeDirectURLTask.h"
+#import "NMEventTask.h"

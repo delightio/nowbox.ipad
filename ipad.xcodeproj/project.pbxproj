@@ -80,6 +80,7 @@
 		A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
 		A97050D2134399050022BF2C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
 		A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
+		A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
 		A9DB20761348B4D00018AA4A /* SHKOAuthSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DB1FA41348B4D00018AA4A /* SHKOAuthSharer.m */; };
 		A9DB20771348B4D00018AA4A /* SHKSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DB1FA61348B4D00018AA4A /* SHKSharer.m */; };
 		A9DB20781348B4D00018AA4A /* NSData+md5.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DB1FA91348B4D00018AA4A /* NSData+md5.m */; };
@@ -280,6 +281,8 @@
 		A97050CF134398DD0022BF2C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A97050D1134399050022BF2C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A97050D313439B540022BF2C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		A9B1963F134C6B0B00CA17A0 /* NMEventTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMEventTask.h; sourceTree = "<group>"; };
+		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
 		A9DB1FA31348B4D00018AA4A /* SHKOAuthSharer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SHKOAuthSharer.h; sourceTree = "<group>"; };
 		A9DB1FA41348B4D00018AA4A /* SHKOAuthSharer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SHKOAuthSharer.m; sourceTree = "<group>"; };
 		A9DB1FA51348B4D00018AA4A /* SHKSharer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SHKSharer.h; sourceTree = "<group>"; };
@@ -673,6 +676,8 @@
 				A970505913438F860022BF2C /* NMTask.h */,
 				A970505A13438F860022BF2C /* NMTask.m */,
 				A970505B13438F860022BF2C /* NMTaskType.h */,
+				A9B1963F134C6B0B00CA17A0 /* NMEventTask.h */,
+				A9B19640134C6B0B00CA17A0 /* NMEventTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1410,6 +1415,7 @@
 				A9DB20C51348B4D10018AA4A /* SHKOAuthView.m in Sources */,
 				A9DB20C61348B4D10018AA4A /* SHKShareMenu.m in Sources */,
 				A9DB20C71348B4D10018AA4A /* SHKViewControllerWrapper.m in Sources */,
+				A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

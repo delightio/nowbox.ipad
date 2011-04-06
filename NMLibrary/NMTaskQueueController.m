@@ -91,4 +91,45 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 	[task release];
 }
 
+- (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventUpVote forVideo:aVideo];
+	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventDownVote forVideo:aVideo];
+	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueSendRewindEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventRewind forVideo:aVideo];
+	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
+	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
+	task.duration = vdur;
+	// how long the user has watched a video
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 @end

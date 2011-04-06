@@ -24,6 +24,14 @@ typedef enum {
 	NMCommandGetVimeoDirectURL,
 } NMCommand;
 
+typedef enum {
+	NMEventUpVote,
+	NMEventDownVote,
+	NMEventRewind,
+	NMEventShare,
+	NMEventView,
+} NMEventType;
+
 // Notifications
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;
