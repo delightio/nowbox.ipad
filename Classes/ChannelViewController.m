@@ -44,8 +44,16 @@
     tableOverlayImageView.image = img;
     img = [[UIImage imageNamed:@"channel_header_shadow"] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
     headerOverlayImageView.image = img;
-//	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
-//	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
+	
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	// check number of channels
+	numberOfChannels = [sectionInfo numberOfObjects];
+	if ( numberOfChannels == 0 ) {
+		// get channel
+		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+	}
+	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
+	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 }
 
 
@@ -80,9 +88,16 @@
 }
 
 #pragma mark Notification handler
-//- (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-//	NSLog(@"got the channels");
-//}
+- (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
+	NSLog(@"got the channels");
+	// we should have the first video for live channel. show the live channel
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"live_channel"];
+	if ( chnObj ) {
+		ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+		appDel.viewController.currentChannel = chnObj;
+		[self presentModalViewController:appDel.viewController animated:NO];
+	}
+}
 
 #pragma mark Target-action methods
 - (IBAction)getChannels:(id)sender {
@@ -143,9 +158,9 @@
 	//TODO: for testing - get video list when tapped
 	// there's some video. just load the first video for testing purpose
 	VideoPlaybackViewController * vidCtrl = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
-	if ( [chnObj.videos count] ) {
-		vidCtrl.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:chnObj];
-	}
+//	if ( [chnObj.videos count] ) {
+//		vidCtrl.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:chnObj];
+//	}
 	vidCtrl.currentChannel = chnObj;
 	[self presentModalViewController:vidCtrl animated:YES];
 	[vidCtrl release];

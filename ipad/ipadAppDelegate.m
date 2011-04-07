@@ -8,6 +8,7 @@
 
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
+#import "ChannelViewController.h"
 #import "NMLibrary.h"
 
 @implementation ipadAppDelegate
@@ -15,11 +16,13 @@
 
 @synthesize window=_window;
 @synthesize viewController;
+@synthesize channelViewController;
 @synthesize managedObjectContext=managedObjectContext_;
 
 - (void)awakeFromNib {
 	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
 	viewController.managedObjectContext = self.managedObjectContext;
+	channelViewController.managedObjectContext = self.managedObjectContext;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -30,7 +33,8 @@
 	
 	application.statusBarHidden = YES;
     
-	self.window.rootViewController = self.viewController;
+	self.window.rootViewController = self.channelViewController;
+	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[self.window makeKeyAndVisible];
     return YES;
 }
@@ -96,6 +100,7 @@
 - (void)dealloc
 {
 	[_window release];
+	[channelViewController release];
     [super dealloc];
 }
 

@@ -26,6 +26,21 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	return outdatedVideoPredicateTempate_;
 }
 
++ (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict {
+	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:10];
+	[mdict setObject:[dict objectForKey:@"author_username"] forKey:@"author_username"];
+	[mdict setObject:[dict objectForKey:@"author_profile_link"] forKey:@"author_profile_link"];
+	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
+	[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
+	[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
+	[mdict setObject:[dict objectForKey:@"service_name"] forKey:@"service_name"];
+	[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
+	[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
+	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
+	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
+	return mdict;
+}
+
 //- (id)initWithChannel:(NMChannel *)aChn {
 //	self = [super init];
 //	command = NMCommandGetChannelVideoList;
@@ -52,21 +67,10 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
 	for (NSDictionary * dict in chVideos) {
-		mdict = [NSMutableDictionary dictionary];
-		[mdict setObject:[dict objectForKey:@"author_username"] forKey:@"author_username"];
-		[mdict setObject:[dict objectForKey:@"author_profile_link"] forKey:@"author_profile_link"];
-		[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
-		[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
-		[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
-		[mdict setObject:[dict objectForKey:@"service_name"] forKey:@"service_name"];
-		[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
-		[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
-		[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
-		[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
+		mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
 		[parsedObjects addObject:mdict];
 	}
 	
-	// 
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {

@@ -8,9 +8,13 @@
 
 #import "NMTask.h"
 
+@class NMChannel;
 
 @interface NMGetChannelsTask : NMTask {
 	NSArray * channelJSONKeys;
+	NMChannel * liveChannel;
 }
+
+@property (nonatomic, retain) NMChannel * liveChannel;
 
 @end

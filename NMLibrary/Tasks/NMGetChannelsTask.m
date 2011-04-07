@@ -7,6 +7,7 @@
 //
 
 #import "NMGetChannelsTask.h"
+#import "NMGetChannelVideoListTask.h"
 #import "NMChannel.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
@@ -17,6 +18,8 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 
 @implementation NMGetChannelsTask
 
+@synthesize liveChannel;
+
 - (id)init {
 	self = [super init];
 	command = NMCommandGetChannels;
@@ -24,11 +27,16 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	return self;
 }
 
+- (void)dealloc {
+	[liveChannel release];
+	[super dealloc];
+}
+
 - (NSMutableURLRequest *)URLRequest {
 #ifdef NOWMOV_USE_BETA_SITE
 	NSString * urlStr = @"http://beta.nowmov.com/channel/listings/recommended";
 #else
-	NSString * urlStr = @"http://nowmov.com/channel/listings/recommended";
+	NSString * urlStr = @"http://nowmov.com/channel/listings/?as_user_screenname=dapunster";
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
@@ -43,7 +51,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	[str release];
 	
 	parsedObjects = [[NSMutableArray alloc] init];
-	NSDictionary * cDict;
+	NSDictionary * cDict, * fvDict;
 	NSMutableDictionary * pDict;
 	NSString * theKey;
 	for (cDict in theChs) {
@@ -52,7 +60,11 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 			[pDict setObject:[cDict objectForKey:theKey] forKey:theKey];
 		}
 		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
-		[pDict setObject:[cDict objectForKey:@"first_video"] forKey:@"first_video"];
+		
+		fvDict = [cDict objectForKey:@"first_video"];
+		if ( fvDict ) {
+			[pDict setObject:[NMGetChannelVideoListTask normalizeVideoDictionary:fvDict] forKey:@"first_video"];
+		}
 		[parsedObjects addObject:pDict];
 	}
 }
@@ -89,6 +101,9 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 			//TODO: uncomment this
 			//[queueCtrl issueGetVideoListForChannel:chnObj isNew:YES];
 		}
+		if ( [chnObj.channel_name isEqualToString:@"live"] ) {
+			self.liveChannel = chnObj;
+		}
 	}
 	// remove channel no longer here
 	NSArray * allKeys = [fetchedChannels allKeys];
@@ -104,6 +119,13 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 
 - (NSString *)didLoadNotificationName {
 	return NMDidGetChannelsNotification;
+}
+
+- (NSDictionary *)userInfo {
+	if ( liveChannel ) {
+		return [NSDictionary dictionaryWithObject:liveChannel forKey:@"live_channel"];
+	}
+	return nil;
 }
 
 @end
