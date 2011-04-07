@@ -132,9 +132,12 @@
 //}
 
 #pragma mark properties
-- (void)resetProgressView {
+- (void)resetView {
 	durationLabel.text = @"--:--";
 	currentTimeLabel.text = @"--:--";
+	self.alpha = 1.0;
+	self.hidden = NO;
+	[self setControlsHidden:YES animated:NO];
 }
 
 - (void)setChannel:(NSString *)cname author:(NSString *)authName {
@@ -162,7 +165,7 @@
 }
 
 - (void)setTitle:(NSString *)aTitle {
-	videoTitleLabel.text = aTitle;
+	videoTitleLabel.text = [aTitle uppercaseString];
 }
 
 - (void)setDuration:(NSInteger)aDur {

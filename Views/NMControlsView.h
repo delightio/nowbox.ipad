@@ -41,7 +41,7 @@
 
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)setChannel:(NSString *)cname author:(NSString *)authName;
-- (void)resetProgressView;
+- (void)resetView;
 //- (void)observeMovieView:(NMMovieView *)mvView;
 //- (void)stopObservingMovieView:(NMMovieView *)mvView;
 

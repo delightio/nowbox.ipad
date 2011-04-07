@@ -198,9 +198,11 @@
 	[movieView.player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
 		// print the time
 		CMTime t = [movieView.player currentTime];
-		//self.timeElapsed = t.value / t.timescale;
-		NSUInteger sec = t.value / t.timescale;
-		NSLog(@"video time: %lld", t.value / t.timescale);
+		NSUInteger sec = 0;
+		if ( t.flags & kCMTimeFlags_Valid ) {
+			sec = t.value / t.timescale;
+			NSLog(@"video time: %lld", t.value / t.timescale);
+		}
 		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 		if ( videoDurationInvalid ) {
 			t = movieView.player.currentItem.asset.duration;
@@ -245,9 +247,8 @@
 	NMVideo * v = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
 	mv.title = v.title;
 	mv.authorProfileURLString = v.author_profile_link;
-	[mv resetProgressView];
+	[mv resetView];
 	[mv setChannel:v.channel.channel_name author:v.author_username];
-	[mv setControlsHidden:YES animated:NO];
 	// update the position
 	CGRect theFrame = mv.frame;
 	theFrame.origin.x = (CGFloat)idx * theFrame.size.width;
@@ -311,6 +312,8 @@
 			if ( vid.nm_direct_url != nil && ![vid.nm_direct_url isEqualToString:@""] ) {
 				[self insertVideoAtIndex:currentIndex + 2];
 			}
+		} else if ( i - currentIndex == [[movieView.player items] count] ) {
+			[self insertVideoAtIndex:i];
 		}
 	}
 }
@@ -570,6 +573,7 @@
 		[movieView.player advanceToNextItem];
 		[movieView.player play];
 		[self configureControlViewAtIndex:currentIndex + 2];
+		[self requestAddVideoAtIndex:currentIndex + 2];
 //		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 	} else {
 		[self translateMovieViewByOffset:-1.0f];
@@ -627,14 +631,45 @@
     return fetchedResultsController_;
 }    
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-	NSUInteger numVideos = [sectionInfo numberOfObjects];
-	if ( numVideos == 0 ) {
-		return;
-	}
-	
+//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+//	switch (type) {
+//		case NSFetchedResultsChangeInsert:
+//		{
+//			id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
+//			NSUInteger numVideos = [sectionInfo numberOfObjects];
+//			if ( numVideos == 0 ) {
+//				return;
+//			}
+//			
+//			if ( freshStart ) {
+//				// launching the app with empty video list.
+//				// now, get the direct url for some videos
+//				[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
+//				// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
+//				freshStart = NO;
+//				[self configureControlViewAtIndex:currentIndex];
+//				[self configureControlViewAtIndex:currentIndex + 1];
+//				[self configureControlViewAtIndex:currentIndex + 2];
+//				((UIScrollView *)self.view).scrollEnabled = YES;
+//			} else {
+//				// check if we need to get the direct URL
+//			}
+//			break;
+//		}
+//			
+//		default:
+//			break;
+//	}
+//}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	if ( freshStart ) {
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
+		NSUInteger numVideos = [sectionInfo numberOfObjects];
+		if ( numVideos == 0 ) {
+			return;
+		}
+		
 		// launching the app with empty video list.
 		// now, get the direct url for some videos
 		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
@@ -643,9 +678,9 @@
 		[self configureControlViewAtIndex:currentIndex];
 		[self configureControlViewAtIndex:currentIndex + 1];
 		[self configureControlViewAtIndex:currentIndex + 2];
-		((UIScrollView *)self.view).scrollEnabled = YES;
-	} else {
-		// check if we need to get the direct URL
+		UIScrollView * s = (UIScrollView *)self.view;
+		s.scrollEnabled = YES;
+		s.contentSize = CGSizeMake((CGFloat)(numVideos * 1024), 768.0f);
 	}
 }
 
