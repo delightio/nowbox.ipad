@@ -70,7 +70,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	NMChannel * chnObj;
 	NSDictionary * vidDict;
 	NSMutableArray * foundAy = [NSMutableArray array];
-	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
+//	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
 	for (dict in parsedObjects) {
 		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"channel_name"]];
 		if ( chnObj ) {

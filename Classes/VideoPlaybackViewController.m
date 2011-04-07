@@ -13,9 +13,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
-
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT		101
+
 #define RRIndex(idx) idx % 4
 
 @interface VideoPlaybackViewController (PrivateMethods)
@@ -96,8 +96,12 @@
 		if ( currentIndex ) {
 			[self configureControlViewAtIndex:currentIndex - 1];
 		}
-		if ( currentIndex + 1 < c )	[self configureControlViewAtIndex:currentIndex + 1];
-		if ( currentIndex + 2 < c ) [self configureControlViewAtIndex:currentIndex + 2];
+		if ( currentIndex + 1 < c )	{
+			[self configureControlViewAtIndex:currentIndex + 1];
+		}
+		if ( currentIndex + 2 < c ) {
+			[self configureControlViewAtIndex:currentIndex + 2];
+		}
 		UIScrollView * s = (UIScrollView *)self.view;
 		s.scrollEnabled = YES;
 		s.contentSize = CGSizeMake((CGFloat)(c * 1024), 768.0f);
@@ -148,7 +152,6 @@
 	[currentIndexPath_ release];
 	
 	[movieView release];
-	[progressView release];
 	[currentChannel release];
     [super dealloc];
 }
@@ -190,12 +193,32 @@
 	AVQueuePlayer * player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
 	movieView.player = player;
 	// observe status change in player
-	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
-	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
-	[player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
+	[movieView.player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
+	[movieView.player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+	[movieView.player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
 		// print the time
-		CMTime t = [player currentTime];
-		[self setCurrentTime:t.value / t.timescale];
+		CMTime t = [movieView.player currentTime];
+		//self.timeElapsed = t.value / t.timescale;
+		NSUInteger sec = t.value / t.timescale;
+		NSLog(@"video time: %lld", t.value / t.timescale);
+		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+		if ( videoDurationInvalid ) {
+			t = movieView.player.currentItem.asset.duration;
+			if ( t.flags & kCMTimeFlags_Valid ) {
+				NSLog(@"invalide time, get duration again: %lld", t.value / t.timescale);
+				ctrlView.duration = t.value / t.timescale;
+				videoDurationInvalid = NO;
+			}
+		}
+		ctrlView.timeElapsed = sec;
+		if ( firstShowControlView && (sec + 1) % 10 == 0) {
+			firstShowControlView = NO;
+			ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+			if ( !ctrlView.hidden && ctrlView.alpha > 0.0 ) {
+				// hide the control
+				[self controlsViewTouchUp:ctrlView];
+			}
+		}
 	}];
 	// listen to item finish up playing notificaiton
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
@@ -209,6 +232,13 @@
 	[self requestAddVideoAtIndex:currentIndex + 2];
 }
 
+- (void)translateMovieViewByOffset:(CGFloat)offset {
+	CGRect theFrame = movieView.frame;
+	theFrame.origin.x += theFrame.size.width * offset;
+	movieView.frame = theFrame;
+}
+
+#pragma mark Control Views Management
 - (void)configureControlViewAtIndex:(NSInteger)idx {
 	NMControlsView * mv = [controlViewArray objectAtIndex:RRIndex(idx)];
 	// set title and stuff
@@ -218,6 +248,10 @@
 	[mv resetProgressView];
 	[mv setChannel:v.channel.channel_name author:v.author_username];
 	[mv setControlsHidden:YES animated:NO];
+	// update the position
+	CGRect theFrame = mv.frame;
+	theFrame.origin.x = (CGFloat)idx * theFrame.size.width;
+	mv.frame = theFrame;
 }
 
 #pragma mark Video queuing
@@ -270,9 +304,13 @@
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"resolved URL for idx: %d", i);
 #endif
-		if ( i - currentIndex < 3 ) {
+		if ( i == currentIndex + 1 ) {
 			// queue the item
 			[self insertVideoAtIndex:i];
+			vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:currentIndex + 2 inSection:0]];
+			if ( vid.nm_direct_url != nil && ![vid.nm_direct_url isEqualToString:@""] ) {
+				[self insertVideoAtIndex:currentIndex + 2];
+			}
 		}
 	}
 }
@@ -298,32 +336,45 @@
 //
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	NSInteger c = (NSInteger)context;
+	NMControlsView * ctrlView;
+	CMTime t;
 	if ( c == NM_PLAYER_STATUS_CONTEXT ) {
 		switch (movieView.player.status) {
 			case AVPlayerStatusReadyToPlay:
 			{
-				// the instance is ready to play. yeah!
-				//[self updateControlsForVideoAtIndex:currentIndex];
-				if ( firstShowControlView ) {
-					firstShowControlView = NO;
-//					if ( !controlsContainerView.hidden && controlsContainerView.alpha > 0.0 ) {
-//						// hide the control
-//						[self controlsViewTouchUp:nil];
-//					}
+				// the instance is ready to play. show time and progress view
+				ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+				[ctrlView setControlsHidden:NO animated:YES];
+				t = movieView.player.currentItem.asset.duration;
+				// check if the time is value
+				if ( t.flags & kCMTimeFlags_Valid ) {
+					ctrlView.duration = t.value / t.timescale;
+					videoDurationInvalid = NO;
+				} else {
+					videoDurationInvalid = YES;
 				}
+				//[self updateControlsForVideoAtIndex:currentIndex];
 				break;
 			}
 			default:
+				firstShowControlView = NO;
 				break;
-		}
-		if ( firstShowControlView ) {
-			firstShowControlView = NO;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"current item changed");
 #endif
-		[self updateControlsForVideoAtIndex:currentIndex];
+		// update the time
+		ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+		[ctrlView setControlsHidden:NO animated:YES];
+		t = movieView.player.currentItem.asset.duration;
+		// check if the time is value
+		if ( t.flags & kCMTimeFlags_Valid ) {
+			ctrlView.duration = t.value / t.timescale;
+			videoDurationInvalid = NO;
+		} else {
+			videoDurationInvalid = YES;
+		}
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -501,6 +552,30 @@
 	[UIView commitAnimations];
 }
 
+#pragma mark Scroll View Delegate
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+	[self stopVideo];
+//	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+	NSLog(@"decelerate: %d", decelerate);
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	// switch to the next/prev video
+	NSUInteger curIdx = (NSUInteger)(scrollView.contentOffset.x / scrollView.bounds.size.width);
+	if ( curIdx > currentIndex ) {
+		// moved to next video
+		[self translateMovieViewByOffset:1.0f];
+		firstShowControlView = YES;
+		currentIndex++;		// update the currentIndex before calling advanceToNextItem
+		[movieView.player advanceToNextItem];
+		[movieView.player play];
+		[self configureControlViewAtIndex:currentIndex + 2];
+//		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+	} else {
+		[self translateMovieViewByOffset:-1.0f];
+	}
+}
+
 #pragma mark Fetched Results Controller
 - (NSFetchedResultsController *)fetchedResultsController {
     
@@ -522,7 +597,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

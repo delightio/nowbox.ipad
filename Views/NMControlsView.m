@@ -7,6 +7,10 @@
 //
 
 #import "NMControlsView.h"
+#import "NMMovieView.h"
+
+#define NM_PLAYER_STATUS_CONTEXT		100
+#define NM_PLAYER_CURRENT_ITEM_CONTEXT		101
 
 
 @implementation NMControlsView
@@ -16,7 +20,7 @@
 - (void)awakeFromNib {
 	// load the progress bar image
 	UIImage * img = [UIImage imageNamed:@"playback_progress_background"];
-	progressView = [[UIImageView alloc] initWithImage:[img stretchableImageWithLeftCapWidth:98 topCapHeight:0]];
+	progressView.image = [img stretchableImageWithLeftCapWidth:98 topCapHeight:0];
 }
 
 //- (id)initWithFrame:(CGRect)frame {
@@ -74,6 +78,58 @@
 		[UIView commitAnimations];
 	}
 }
+
+#pragma mark KVO
+
+//- (void)observeMovieView:(NMMovieView *)mvView {
+//	firstShowControlView = YES;
+//	[mvView.player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
+//	[mvView.player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+//	[mvView.player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
+//		// print the time
+//		CMTime t = [mvView.player currentTime];
+//		self.timeElapsed = t.value / t.timescale;
+//	}];
+//}
+//
+//- (void)stopObservingMovieView:(NMMovieView *)mvView {
+//	[mvView.player removeObserver:self forKeyPath:@"status"];
+//	[mvView.player removeObserver:self forKeyPath:@"currentItem"];
+//	[mvView.player removeTimeObserver:self];
+//}
+//
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+//	NSInteger c = (NSInteger)context;
+//	NMMovieView * movieView = (NMMovieView *)object;
+//	if ( c == NM_PLAYER_STATUS_CONTEXT ) {
+//		switch (movieView.player.status) {
+//			case AVPlayerStatusReadyToPlay:
+//			{
+//				// the instance is ready to play. yeah!
+//				//[self updateControlsForVideoAtIndex:currentIndex];
+//				if ( firstShowControlView ) {
+//					firstShowControlView = NO;
+//					if ( !self.hidden && self.alpha > 0.0 ) {
+//						// hide the control
+//						[self performSelector:action withObject:target];
+//					}
+//				}
+//				break;
+//			}
+//			default:
+//				break;
+//		}
+//		if ( firstShowControlView ) {
+//			firstShowControlView = NO;
+//		}
+//	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
+//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+//		NSLog(@"current item changed");
+//#endif
+//		[self updateControlsForVideoAtIndex:currentIndex];
+//	}
+//	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+//}
 
 #pragma mark properties
 - (void)resetProgressView {

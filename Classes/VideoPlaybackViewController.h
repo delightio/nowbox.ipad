@@ -14,13 +14,12 @@
 @class NMChannel;
 @class NMTaskQueueController;
 
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
 	NMMovieView * movieView;
 	
 	NMControlsView * loadedControlView;
 	NSMutableArray * controlViewArray;
 	
-	UIImageView * progressView;
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
 	BOOL firstShowControlView;

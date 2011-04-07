@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class NMMovieView;
+
 
 @interface NMControlsView : UIView {
 	IBOutlet UILabel * channelNameLabel;
@@ -40,6 +42,8 @@
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)setChannel:(NSString *)cname author:(NSString *)authName;
 - (void)resetProgressView;
+//- (void)observeMovieView:(NMMovieView *)mvView;
+//- (void)stopObservingMovieView:(NMMovieView *)mvView;
 
 - (IBAction)goToAuthorProfilePage:(id)sender;
 
