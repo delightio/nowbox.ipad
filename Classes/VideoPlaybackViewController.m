@@ -182,7 +182,6 @@
 		s.scrollEnabled = YES;
 		s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 		
-		isReloadWithData = YES;
 		//TODO: check if need to queue fetch video list
 	} else {
 		// there's no video. fetch video right now
@@ -688,55 +687,77 @@
     return fetchedResultsController_;
 }    
 
-//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-//	switch (type) {
-//		case NSFetchedResultsChangeInsert:
-//		{
-//			id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-//			NSUInteger numVideos = [sectionInfo numberOfObjects];
-//			if ( numVideos == 0 ) {
-//				return;
-//			}
-//			
-//			if ( freshStart ) {
-//				// launching the app with empty video list.
-//				// now, get the direct url for some videos
-//				[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
-//				// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
-//				freshStart = NO;
-//				[self configureControlViewAtIndex:currentIndex];
-//				[self configureControlViewAtIndex:currentIndex + 1];
-//				[self configureControlViewAtIndex:currentIndex + 2];
-//				((UIScrollView *)self.view).scrollEnabled = YES;
-//			} else {
-//				// check if we need to get the direct URL
-//			}
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
+	switch (type) {
+//		case NSFetchedResultsChangeDelete:
+//			rowCountHasChanged = YES;
 //			break;
-//		}
-//			
-//		default:
-//			break;
-//	}
-//}
+			
+		case NSFetchedResultsChangeDelete:
+		case NSFetchedResultsChangeInsert:
+		case NSFetchedResultsChangeUpdate:
+		{
+			rowCountHasChanged = YES;
+			if ( freshStart ) {
+				// we now have the first video.
+				// launching the app with empty video list.
+				[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+				// now, get the direct url for some videos
+				[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
+				// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
+				freshStart = NO;
+				[self configureControlViewAtIndex:currentIndex];
+			} else {
+				// check if we has new "near" video added
+				if ( currentIndex + 1 == newIndexPath.row ) {
+					[self configureControlViewAtIndex:currentIndex + 1];
+					// queue the item for play
+					[self requestAddVideoAtIndex:currentIndex + 1];
+				}
+				if ( currentIndex + 2 == newIndexPath.row ) {
+					[self configureControlViewAtIndex:currentIndex + 2];
+					[self requestAddVideoAtIndex:currentIndex + 2];
+				}
+			}
+			break;
+		}
+			
+		default:
+			NSLog(@"default case");
+			break;
+	}
+}
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-	id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-	if ( freshStart ) {
+	NSLog(@"controllerDidChangeContent");
+	if ( rowCountHasChanged ) {
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
+		NSUInteger prevCount = numberOfVideos;
 		numberOfVideos = [sectionInfo numberOfObjects];
-		if ( numberOfVideos == 0 ) {
-			return;
+		if ( numberOfVideos != prevCount ) {
+			UIScrollView * s = (UIScrollView *)self.view;
+			s.scrollEnabled = YES;
+			s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 		}
-		
-		// launching the app with empty video list.
-		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
-		// now, get the direct url for some videos
-		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
-		// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
-		freshStart = NO;
-		isReloadWithData = YES;
-		[self configureControlViewAtIndex:currentIndex];
-	} else if ( isReloadWithData ) {
-		isReloadWithData = NO;
+		rowCountHasChanged = NO;
+	}
+//	if ( freshStart ) {
+//		numberOfVideos = [sectionInfo numberOfObjects];
+//		if ( numberOfVideos == 0 ) {
+//			return;
+//		}
+//		
+//		// launching the app with empty video list.
+//		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+//		// now, get the direct url for some videos
+//		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
+//		// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
+//		freshStart = NO;
+//		isReloadWithData = YES;
+//		[self configureControlViewAtIndex:currentIndex];
+//	} else if ( isReloadWithData ) {
+//		isReloadWithData = NO;
 //		NSUInteger prevCount = numberOfVideos;
 //		numberOfVideos = [sectionInfo numberOfObjects];
 //		// check if we has new "near" video added
@@ -754,7 +775,7 @@
 //			s.scrollEnabled = YES;
 //			s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 //		}
-	}
+//	}
 }
 
 @end

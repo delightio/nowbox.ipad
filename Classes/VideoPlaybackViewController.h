@@ -24,7 +24,7 @@
 	BOOL isAspectFill;
 	BOOL firstShowControlView;
 	BOOL freshStart;
-	BOOL isReloadWithData;	// set isReloadWithData to YES after loading a video list from Nowmov
+	BOOL rowCountHasChanged;
 	
 	NSUInteger currentIndex;
 	NSUInteger numberOfVideos;

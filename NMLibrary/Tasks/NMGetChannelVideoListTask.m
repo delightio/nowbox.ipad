@@ -80,11 +80,22 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
+	// add all video from server for now
+	NSDictionary * dict;
+	NMVideo * vidObj;
+	NSUInteger idx = [channel.videos count];
+	for (dict in parsedObjects) {
+		vidObj = [ctrl insertNewVideo];
+		[vidObj setValuesForKeysWithDictionary:dict];
+		vidObj.nm_sort_order = [NSNumber numberWithInteger:idx++];
+		vidObj.channel = channel;
+		[channel addVideosObject:vidObj];
+	}
 //	if ( newChannel ) {
 		// update existing video
 		// remove ALL old videos not in the list
 		
-		// prepare the array of ID
+/*		// prepare the array of ID
 		NSMutableArray * ay = [NSMutableArray array];
 		NSDictionary * dict;
 		for (dict in parsedObjects) {
@@ -118,7 +129,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 			idx++;
 		}
 	ctrl.sortedVideoList = nil;
-		
+*/		
 //	} else {
 		// this is an existing channel. We should append new videos and update the order. No need to remove old videos
 //	}
