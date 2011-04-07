@@ -16,6 +16,7 @@
 @implementation NMControlsView
 
 @synthesize title, duration, timeElapsed, authorProfileURLString;
+@synthesize channelViewButton, shareButton;
 
 - (void)awakeFromNib {
 	// load the progress bar image
@@ -133,6 +134,9 @@
 
 #pragma mark properties
 - (void)resetView {
+	channelNameLabel.text = @"";
+	videoTitleLabel.text = @"";
+	[authorButton setTitle:@"" forState:UIControlStateNormal];
 	durationLabel.text = @"--:--";
 	currentTimeLabel.text = @"--:--";
 	self.alpha = 1.0;

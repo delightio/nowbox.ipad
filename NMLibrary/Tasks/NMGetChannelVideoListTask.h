@@ -21,7 +21,7 @@
 @property (nonatomic) BOOL newChannel;
 
 // in this wind-down version. we only have one single channel - Live
-//- (id)initWithChannel:(NMChannel *)aChn;
+- (id)initWithChannel:(NMChannel *)aChn;
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict;
 

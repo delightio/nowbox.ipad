@@ -41,19 +41,25 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	return mdict;
 }
 
-//- (id)initWithChannel:(NMChannel *)aChn {
-//	self = [super init];
-//	command = NMCommandGetChannelVideoList;
-//	self.channel = aChn;
-//	self.channelName = aChn.channel_name;
-//	return self;
-//}
+- (id)initWithChannel:(NMChannel *)aChn {
+	self = [super init];
+	command = NMCommandGetChannelVideoList;
+	self.channel = aChn;
+	self.channelName = aChn.channel_name;
+	return self;
+}
+
+- (void)dealloc {
+	[channel release];
+	[channelName release];
+	[super dealloc];
+}
 
 - (NSMutableURLRequest *)URLRequest {
 #ifdef NOWMOV_USE_BETA_SITE
 	NSString * urlStr = [NSString stringWithFormat:@"http://beta.nowmov.com/live/videos?target=mobile", channelName];
 #else
-	NSString * urlStr = @"http://nowmov.com/live/videos?target=mobile";//[NSString stringWithFormat:@"http://nowmov.com/live/videos?target=mobile", channelName];
+	NSString * urlStr = [NSString stringWithFormat:@"http://nowmov.com/%@/videos?target=mobile", channelName];
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	

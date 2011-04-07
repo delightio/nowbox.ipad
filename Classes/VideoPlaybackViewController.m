@@ -66,6 +66,8 @@
 	for (CGFloat i = 0.0; i < 4.0; i += 1.0) {
 		[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
 		[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
+		[loadedControlView.channelViewButton addTarget:self action:@selector(backToChannelView:) forControlEvents:UIControlEventTouchUpInside];
+		[loadedControlView.shareButton addTarget:self action:@selector(showSharePopover:) forControlEvents:UIControlEventTouchUpInside];
 		[controlViewArray addObject:loadedControlView];
 		// put the view to scroll view
 		theFrame = loadedControlView.frame;
@@ -84,40 +86,6 @@
 	[pinRcr release];
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
-	
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	NSUInteger c = [sectionInfo numberOfObjects];
-	if ( c ) {
-		// we should play video at currentIndex
-		// get the direct URL
-		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
-		[self configureControlViewAtIndex:currentIndex];
-		//TODO: configure other view
-		if ( currentIndex ) {
-			[self configureControlViewAtIndex:currentIndex - 1];
-		}
-		if ( currentIndex + 1 < c )	{
-			[self configureControlViewAtIndex:currentIndex + 1];
-		}
-		if ( currentIndex + 2 < c ) {
-			[self configureControlViewAtIndex:currentIndex + 2];
-		}
-		UIScrollView * s = (UIScrollView *)self.view;
-		s.scrollEnabled = YES;
-		s.contentSize = CGSizeMake((CGFloat)(c * 1024), 768.0f);
-		
-		//TODO: check if need to queue fetch video list
-	} else {
-		// there's no video. fetch video right now
-		freshStart = YES;
-		NMTaskQueueController * ctrl = nowmovTaskController;
-//		[ctrl.dataController deleteAllVideos];
-		// get videos from server
-		[ctrl issueGetLiveChannel];
-//		[nowmovTaskController issueGetVideoListForChannel:currentChannel isNew:YES];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-	}
-	
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -165,6 +133,53 @@
 	}
 	
 	return currentIndexPath_;
+}
+
+- (void)setCurrentChannel:(NMChannel *)chnObj {
+	if ( currentChannel ) {
+		if ( currentChannel != chnObj ) {
+			[currentChannel release];
+			currentChannel = [chnObj retain];
+		}
+	} else {
+		currentChannel = [chnObj retain];
+	}
+	// reset fetch result
+	self.fetchedResultsController = nil;
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	numberOfVideos = [sectionInfo numberOfObjects];
+	
+	// update the video list
+	if ( numberOfVideos ) {
+		// we should play video at currentIndex
+		// get the direct URL
+		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
+		[self configureControlViewAtIndex:currentIndex];
+		//TODO: configure other view
+		if ( currentIndex ) {
+			[self configureControlViewAtIndex:currentIndex - 1];
+		}
+		if ( currentIndex + 1 < currentIndex )	{
+			[self configureControlViewAtIndex:currentIndex + 1];
+		}
+		if ( currentIndex + 2 < currentIndex ) {
+			[self configureControlViewAtIndex:currentIndex + 2];
+		}
+		UIScrollView * s = (UIScrollView *)self.view;
+		s.scrollEnabled = YES;
+		s.contentSize = CGSizeMake((CGFloat)(currentIndex * 1024), 768.0f);
+		
+		//TODO: check if need to queue fetch video list
+	} else {
+		// there's no video. fetch video right now
+		freshStart = YES;
+		//		[nowmovTaskController issueGetVideoListForChannel:currentChannel isNew:YES];
+		//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+	}
+	// reset movie control view
+	for (NMControlsView * ctrlView in controlViewArray) {
+		[ctrlView resetView];
+	}
 }
 
 #pragma mark Playback Control
@@ -256,6 +271,25 @@
 }
 
 #pragma mark Video queuing
+- (void)showNextVideo {
+	if ( !(currentIndex + 1 < numberOfVideos) ) {
+		// there's no more video available
+		//TODO: get more video here. issue fetch video list request
+		
+		return;
+	}
+	// advance the index
+	currentIndex++;
+	// show the next video in the player
+	[movieView.player advanceToNextItem];
+	// update the movie control view
+	if ( currentIndex + 2 < numberOfVideos ) {
+		[self configureControlViewAtIndex:currentIndex + 2];
+	} else {
+		// get more video here
+	}
+	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
+}
 
 - (void)requestAddVideoAtIndex:(NSUInteger)idx {
 	// request to add the video to queue. If the direct URL does not exists, fetch from the server
@@ -495,6 +529,8 @@
 //
 - (IBAction)backToChannelView:(id)sender {
 	[movieView.player pause];
+	// release the player object, a new AVQueuePlayer object will be created with preparePlayer method is called
+	movieView.player = nil;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -508,13 +544,11 @@
 		// prev
 	} else {
 		// next
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-		NSUInteger c = [sectionInfo numberOfObjects];
-		if ( currentIndex + 2 < c ) {
+		if ( currentIndex + 2 < numberOfVideos ) {
 			// buffer the next next video
 			[self requestAddVideoAtIndex:currentIndex + 2];
 		}
-		if ( currentIndex < c ) {
+		if ( currentIndex < numberOfVideos ) {
 			currentIndex++;
 		}
 		[movieView.player advanceToNextItem];
@@ -522,6 +556,7 @@
 }
 
 - (IBAction)showSharePopover:(id)sender {
+	
 	UIButton * btn = (UIButton *)sender;
 	
 	SocialSignInViewController * socialCtrl = [[SocialSignInViewController alloc] initWithNibName:@"SocialSignInView" bundle:nil];
@@ -596,6 +631,9 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
+	
+	// set predicate
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", currentChannel]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
@@ -663,24 +701,35 @@
 //}
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 	if ( freshStart ) {
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-		NSUInteger numVideos = [sectionInfo numberOfObjects];
-		if ( numVideos == 0 ) {
+		numberOfVideos = [sectionInfo numberOfObjects];
+		if ( numberOfVideos == 0 ) {
 			return;
 		}
 		
 		// launching the app with empty video list.
+		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
 		// now, get the direct url for some videos
 		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
 		// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
 		freshStart = NO;
 		[self configureControlViewAtIndex:currentIndex];
-		[self configureControlViewAtIndex:currentIndex + 1];
-		[self configureControlViewAtIndex:currentIndex + 2];
-		UIScrollView * s = (UIScrollView *)self.view;
-		s.scrollEnabled = YES;
-		s.contentSize = CGSizeMake((CGFloat)(numVideos * 1024), 768.0f);
+	} else {
+		NSUInteger prevCount = numberOfVideos;
+		numberOfVideos = [sectionInfo numberOfObjects];
+		// check if we has new "near" video added
+		if ( currentIndex + 1 >= prevCount && currentIndex + 1 < numberOfVideos ) {
+			[self configureControlViewAtIndex:currentIndex + 1];
+		}
+		if ( currentIndex + 2 >= prevCount && currentIndex + 2 < numberOfVideos ) {
+			[self configureControlViewAtIndex:currentIndex + 2];
+		}
+		if ( numberOfVideos != prevCount ) {
+			UIScrollView * s = (UIScrollView *)self.view;
+			s.scrollEnabled = YES;
+			s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+		}
 	}
 }
 

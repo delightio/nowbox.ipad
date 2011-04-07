@@ -21,6 +21,7 @@
 @dynamic total_mentions;
 @dynamic nm_direct_url;
 @dynamic nm_sort_order;
+@dynamic nm_player_item;
 @dynamic service_name;
 @dynamic vid;
 @dynamic reason_included;

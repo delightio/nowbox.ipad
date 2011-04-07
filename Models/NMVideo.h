@@ -7,6 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
+#import <AVFoundation/AVFoundation.h>
 
 @class NMChannel;
 
@@ -23,6 +24,7 @@
 @property (nonatomic, retain) NSNumber * total_mentions;
 @property (nonatomic, retain) NSString * nm_direct_url;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
+@property (nonatomic, retain) AVPlayerItem * nm_player_item;
 @property (nonatomic, retain) NSString * service_name;
 @property (nonatomic, retain) NSNumber * vid;
 @property (nonatomic, retain) NSString * reason_included;

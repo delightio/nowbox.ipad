@@ -28,6 +28,7 @@
 
 - (void)issueGetChannels;
 - (void)issueGetLiveChannel;
+- (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
 - (void)issueGetVideoInfo:(NMVideo *)aVideo;
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;

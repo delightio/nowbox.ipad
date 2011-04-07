@@ -37,6 +37,9 @@
 @property (nonatomic, assign) NSInteger duration;
 @property (nonatomic, assign) NSInteger timeElapsed;
 
+@property (nonatomic, assign) UIButton * channelViewButton;
+@property (nonatomic, assign) UIButton * shareButton;
+
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;

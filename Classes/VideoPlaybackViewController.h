@@ -26,6 +26,7 @@
 	BOOL freshStart;
 	
 	NSUInteger currentIndex;
+	NSUInteger numberOfVideos;
 	NMChannel * currentChannel;
 	NMTaskQueueController * nowmovTaskController;
 	

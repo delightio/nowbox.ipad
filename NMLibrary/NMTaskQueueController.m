@@ -65,13 +65,13 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 	[task release];
 }
 
-//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj isNew:(BOOL)aNewChn {
-//	// if it's a new channel, we should have special handling on fail
-//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
+- (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
+	// if it's a new channel, we should have special handling on fail
+	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
 //	task.newChannel = aNewChn;
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
 
 - (void)issueGetLiveChannel {
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] init];

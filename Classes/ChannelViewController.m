@@ -15,6 +15,7 @@
 @implementation ChannelViewController
 
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext=managedObjectContext_;
+@synthesize videoViewController;
 
 /*
 // The designated initializer. Override to perform setup that is required before the view is loaded.
@@ -48,9 +49,19 @@
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	// check number of channels
 	numberOfChannels = [sectionInfo numberOfObjects];
+	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+	self.videoViewController = appDel.viewController;
+	
 	if ( numberOfChannels == 0 ) {
+		// create default channel - Live
+		NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
+		NMChannel * chnObj = [ctrl.dataController insertNewChannel];
+		chnObj.channel_name = @"live";
+		
+		videoViewController.currentChannel = chnObj;
+		[self presentModalViewController:videoViewController animated:NO];
 		// get channel
-		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+		[ctrl issueGetChannels];
 	}
 	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
 	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
@@ -80,6 +91,7 @@
 
 
 - (void)dealloc {
+	[videoViewController release];
     [fetchedResultsController_ release];
     [managedObjectContext_ release];
     [tableOverlayImageView release];
@@ -91,12 +103,12 @@
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 	NSLog(@"got the channels");
 	// we should have the first video for live channel. show the live channel
-	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"live_channel"];
-	if ( chnObj ) {
-		ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
-		appDel.viewController.currentChannel = chnObj;
-		[self presentModalViewController:appDel.viewController animated:NO];
-	}
+//	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"live_channel"];
+//	if ( chnObj ) {
+//		ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+//		appDel.viewController.currentChannel = chnObj;
+//		[self presentModalViewController:appDel.viewController animated:NO];
+//	}
 }
 
 #pragma mark Target-action methods
@@ -155,15 +167,8 @@
 - (void)tableViewCell:(ChannelTableCellView *)cell didSelectChannelAtIndex:(NSUInteger)index {
 	NSIndexPath * idxPath = [channelTableView indexPathForCell:cell];
 	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idxPath.row * 3 + index inSection:0]];
-	//TODO: for testing - get video list when tapped
-	// there's some video. just load the first video for testing purpose
-	VideoPlaybackViewController * vidCtrl = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
-//	if ( [chnObj.videos count] ) {
-//		vidCtrl.sortedVideoList = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:chnObj];
-//	}
-	vidCtrl.currentChannel = chnObj;
-	[self presentModalViewController:vidCtrl animated:YES];
-	[vidCtrl release];
+	videoViewController.currentChannel = chnObj;
+	[self presentModalViewController:videoViewController animated:YES];
 }
 
 #pragma mark -
