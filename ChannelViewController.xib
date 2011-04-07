@@ -44,6 +44,21 @@
 				<int key="NSvFlags">274</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
+					<object class="IBUIImageView" id="996561451">
+						<reference key="NSNextResponder" ref="766721923"/>
+						<int key="NSvFlags">289</int>
+						<string key="NSFrameSize">{1024, 96}</string>
+						<reference key="NSSuperview" ref="766721923"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="810689592"/>
+						<int key="IBUIContentMode">10</int>
+						<bool key="IBUIUserInteractionEnabled">NO</bool>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<object class="NSCustomResource" key="IBUIImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">background_header.png</string>
+						</object>
+					</object>
 					<object class="IBUIButton" id="142044664">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">292</int>
@@ -120,21 +135,6 @@
 							<string key="NSResourceName">back_to_video.png</string>
 						</object>
 					</object>
-					<object class="IBUIImageView" id="996561451">
-						<reference key="NSNextResponder" ref="766721923"/>
-						<int key="NSvFlags">289</int>
-						<string key="NSFrame">{{840, 0}, {184, 96}}</string>
-						<reference key="NSSuperview" ref="766721923"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="81412557"/>
-						<int key="IBUIContentMode">10</int>
-						<bool key="IBUIUserInteractionEnabled">NO</bool>
-						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-						<object class="NSCustomResource" key="IBUIImage">
-							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">top_right_corner.png</string>
-						</object>
-					</object>
 					<object class="IBUIImageView" id="709601648">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">266</int>
@@ -175,7 +175,7 @@
 						<string key="NSFrame">{{0, 62}, {1024, 34}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="996561451"/>
+						<reference key="NSNextKeyView" ref="81412557"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -205,10 +205,10 @@
 				<string key="NSFrame">{{0, 20}, {1024, 748}}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView" ref="810689592"/>
+				<reference key="NSNextKeyView" ref="996561451"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">2</int>
-					<bytes key="NSRGB">MC4wODIzNTI5NDM3MiAwLjEwMTk2MDc5MzEgMC4xMTM3MjU0OTgzAA</bytes>
+					<bytes key="NSRGB">MC4xMDk4MDM5Mjk5IDAuMTMzMzMzMzQwMyAwLjE0NTA5ODA0NTUAA</bytes>
 				</object>
 				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics">
 					<int key="IBUIStatusBarStyle">2</int>
@@ -325,13 +325,13 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="479697433"/>
-							<reference ref="996561451"/>
 							<reference ref="108103267"/>
 							<reference ref="142044664"/>
 							<reference ref="431240230"/>
 							<reference ref="709601648"/>
 							<reference ref="81412557"/>
 							<reference ref="810689592"/>
+							<reference ref="996561451"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -555,14 +555,14 @@
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>back_to_video.png</string>
+				<string>background_header.png</string>
 				<string>btn_connect_facebook.png</string>
-				<string>top_right_corner.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{156, 545}</string>
+				<string>{1024, 96}</string>
 				<string>{141, 96}</string>
-				<string>{184, 96}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">301</string>
