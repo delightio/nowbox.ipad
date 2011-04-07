@@ -24,6 +24,7 @@
 	BOOL isAspectFill;
 	BOOL firstShowControlView;
 	BOOL freshStart;
+	BOOL isReloadWithData;	// set isReloadWithData to YES after loading a video list from Nowmov
 	
 	NSUInteger currentIndex;
 	NSUInteger numberOfVideos;
@@ -62,6 +63,6 @@
 
 // playback view update
 - (void)setCurrentTime:(NSInteger)sec;
-- (void)updateControlsForVideoAtIndex:(NSUInteger)idx;
+//- (void)updateControlsForVideoAtIndex:(NSUInteger)idx;
 
 @end

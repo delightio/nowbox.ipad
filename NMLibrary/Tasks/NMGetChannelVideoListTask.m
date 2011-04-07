@@ -113,8 +113,8 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 			[vidObj setValuesForKeysWithDictionary:[parsedObjects objectAtIndex:idx]];
 			vidObj.nm_sort_order = [NSNumber numberWithInteger:idx];
 			// associate data objects
-//			vidObj.channel = channel;
-//			[channel addVideosObject:vidObj];
+			vidObj.channel = channel;
+			[channel addVideosObject:vidObj];
 			idx++;
 		}
 	ctrl.sortedVideoList = nil;

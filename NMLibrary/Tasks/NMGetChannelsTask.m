@@ -9,6 +9,7 @@
 #import "NMGetChannelsTask.h"
 #import "NMGetChannelVideoListTask.h"
 #import "NMChannel.h"
+#import "NMVideo.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
@@ -80,6 +81,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	NSDictionary * fetchedChannels = [ctrl fetchChannelsForNames:ay];
 	// save channel with new data
 	NMChannel * chnObj;
+	NMVideo * vidObj;
 	NSDictionary * vidDict;
 	NSMutableArray * foundAy = [NSMutableArray array];
 //	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
@@ -87,20 +89,24 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"channel_name"]];
 		if ( chnObj ) {
 			[foundAy addObject:chnObj.channel_name];
+			// remove all existing videos
+			[ctrl deleteAllVideos];
+			vidDict = [[dict objectForKey:@"first_video"] retain];
 		} else {
 			// create a new channel object
 			chnObj = [ctrl insertNewChannel];
 			vidDict = [[dict objectForKey:@"first_video"] retain];
 			[dict removeObjectForKey:@"first_video"];
-			
-			// set value
+			// set channel value
 			[chnObj setValuesForKeysWithDictionary:dict];
-			// insert the video
-			[vidDict release];
-			// if it's a new channel, we should get the list of video
-			//TODO: uncomment this
-			//[queueCtrl issueGetVideoListForChannel:chnObj isNew:YES];
 		}
+		// insert the video
+		vidObj = [ctrl insertNewVideo];
+		[vidObj setValuesForKeysWithDictionary:vidDict];
+		[chnObj addVideosObject:vidObj];
+		vidObj.channel = chnObj;
+		[vidDict release];
+		// this will insert the first 
 		if ( [chnObj.channel_name isEqualToString:@"live"] ) {
 			self.liveChannel = chnObj;
 		}

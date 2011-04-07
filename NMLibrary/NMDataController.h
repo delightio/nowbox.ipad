@@ -20,10 +20,12 @@
 	NSPredicate * channelNamesPredicateTemplate;
 	
 	NSArray * sortedVideoList;
+	NMChannel * liveChannel;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSArray * sortedVideoList;
+@property (nonatomic, readonly) NMChannel * liveChannel;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 

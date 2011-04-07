@@ -119,13 +119,13 @@
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">background_header.png</string>
+									<string key="NSResourceName">background_video_control_header.png</string>
 								</object>
 							</object>
 							<object class="IBUILabel" id="88250425">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{106, 21}, {744, 30}}</string>
+								<string key="NSFrame">{{148, 21}, {712, 30}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="165877140"/>
@@ -149,13 +149,12 @@
 								</object>
 								<reference key="IBUIHighlightedColor" ref="513829447"/>
 								<int key="IBUIBaselineAdjustment">1</int>
-								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
 							</object>
 							<object class="IBUILabel" id="165877140">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{114, 51}, {20, 24}}</string>
+								<string key="NSFrame">{{140, 51}, {20, 24}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="645936183"/>
@@ -182,7 +181,7 @@
 							<object class="IBUILabel" id="936637580">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{263, 51}, {25, 24}}</string>
+								<string key="NSFrame">{{289, 51}, {25, 24}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="889151304"/>
@@ -202,7 +201,7 @@
 							<object class="IBUILabel" id="889151304">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{292, 52}, {300, 21}}</string>
+								<string key="NSFrame">{{318, 52}, {300, 21}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="31136321"/>
@@ -253,7 +252,7 @@
 							<object class="IBUIButton" id="645936183">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{136, 54}, {126, 18}}</string>
+								<string key="NSFrame">{{162, 54}, {126, 18}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="936637580"/>
@@ -1119,8 +1118,8 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>background_header.png</string>
 				<string>background_video_control_footer.png</string>
+				<string>background_video_control_header.png</string>
 				<string>btn_connect_facebook.png</string>
 				<string>btn_explore.png</string>
 				<string>btn_explore_active.png</string>

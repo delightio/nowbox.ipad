@@ -16,6 +16,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
+@synthesize liveChannel;
 
 - (id)init {
 	self = [super init];
@@ -30,6 +31,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 }
 
 - (void)dealloc {
+	[liveChannel release];
 	[channelNamePredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
@@ -85,6 +87,25 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	
 	[request release];
 	return nil;
+}
+
+- (NMChannel *)liveChannel {
+	if ( liveChannel == nil ) {
+		NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+		[fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+		[fetchRequest setPredicate:[channelNamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:@"live" forKey:@"NM_CHANNEL_NAME"]]];
+		[fetchRequest setReturnsObjectsAsFaults:NO];
+		NSArray * result = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
+		if ( result == nil || [result count] == 0 ) {
+			// insert channel
+			liveChannel = [[self insertNewChannel] retain];
+			liveChannel.channel_name = @"live";
+		} else {
+			liveChannel = [[result objectAtIndex:0] retain];
+		}
+		[fetchRequest release];
+	}
+	return liveChannel;
 }
 
 #pragma mark Video 

@@ -163,6 +163,7 @@
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
+		A9F2499F134E44DE004BC497 /* background_video_control_header.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F2499E134E44DE004BC497 /* background_video_control_header.png */; };
 		A9F9EDE7134DC8E900A2D68D /* ChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501113438F860022BF2C /* ChannelViewController.m */; };
 		A9F9EE30134DCC9000A2D68D /* background_header.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F9EE2E134DCC9000A2D68D /* background_header.png */; };
 		A9F9EE31134DCC9000A2D68D /* background_video_control_footer.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F9EE2F134DCC9000A2D68D /* background_video_control_footer.png */; };
@@ -453,6 +454,7 @@
 		A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A9DB20CA1348B8980018AA4A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A9DB20CB1348B8990018AA4A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		A9F2499E134E44DE004BC497 /* background_video_control_header.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_video_control_header.png; sourceTree = "<group>"; };
 		A9F9EE2E134DCC9000A2D68D /* background_header.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_header.png; sourceTree = "<group>"; };
 		A9F9EE2F134DCC9000A2D68D /* background_video_control_footer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_video_control_footer.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -589,6 +591,7 @@
 		A970501813438F860022BF2C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A9F2499E134E44DE004BC497 /* background_video_control_header.png */,
 				A9F9EE2E134DCC9000A2D68D /* background_header.png */,
 				A9F9EE2F134DCC9000A2D68D /* background_video_control_footer.png */,
 				A970501913438F860022BF2C /* back_to_video.png */,
@@ -1276,6 +1279,7 @@
 				A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */,
 				A9F9EE30134DCC9000A2D68D /* background_header.png in Resources */,
 				A9F9EE31134DCC9000A2D68D /* background_video_control_footer.png in Resources */,
+				A9F2499F134E44DE004BC497 /* background_video_control_header.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1533,7 +1537,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					DEBUG_PLAYBACK_NETWORK_CALL,
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

@@ -27,6 +27,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
@@ -34,7 +35,6 @@
 	application.statusBarHidden = YES;
     
 	self.window.rootViewController = self.channelViewController;
-	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[self.window makeKeyAndVisible];
     return YES;
 }
