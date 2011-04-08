@@ -79,6 +79,7 @@ typedef enum {
 		[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
 		[loadedControlView.channelViewButton addTarget:self action:@selector(backToChannelView:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.shareButton addTarget:self action:@selector(showSharePopover:) forControlEvents:UIControlEventTouchUpInside];
+		[loadedControlView.playPauseButton addTarget:self action:@selector(playStopVideo:) forControlEvents:UIControlEventTouchUpInside];
 		[controlViewArray addObject:loadedControlView];
 		// put the view to scroll view
 		theFrame = loadedControlView.frame;
@@ -600,7 +601,6 @@ typedef enum {
 
 - (void)handleMovieViewPinched:(id)sender {
 	UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
-	NSLog(@"s %f v %f", rcr.scale, rcr.velocity);
 	if ( rcr.velocity < -2.0 && rcr.scale < 0.6 ) {
 		// quit this view
 		[self backToChannelView:sender];

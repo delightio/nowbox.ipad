@@ -16,7 +16,7 @@
 @implementation NMControlsView
 
 @synthesize title, duration, timeElapsed, authorProfileURLString;
-@synthesize channelViewButton, shareButton;
+@synthesize channelViewButton, shareButton, playPauseButton;
 
 - (void)awakeFromNib {
 	// load the progress bar image

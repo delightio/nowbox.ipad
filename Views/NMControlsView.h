@@ -39,6 +39,7 @@
 
 @property (nonatomic, assign) UIButton * channelViewButton;
 @property (nonatomic, assign) UIButton * shareButton;
+@property (nonatomic, assign) UIButton * playPauseButton;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
