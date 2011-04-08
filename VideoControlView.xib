@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">10J869</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1306</string>
+		<string key="IBDocument.SystemVersion">10J567</string>
+		<string key="IBDocument.InterfaceBuilderVersion">1305</string>
 		<string key="IBDocument.AppKitVersion">1038.35</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<string key="IBDocument.HIToolboxVersion">462.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">301</string>
+			<string key="NS.object.0">300</string>
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -154,7 +154,7 @@
 							<object class="IBUILabel" id="165877140">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{140, 51}, {20, 24}}</string>
+								<string key="NSFrame">{{140, 53}, {20, 24}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="645936183"/>
@@ -169,9 +169,12 @@
 									<double key="NSSize">14</double>
 									<int key="NSfFlags">16</int>
 								</object>
-								<object class="NSColor" key="IBUITextColor" id="602067092">
-									<int key="NSColorSpace">2</int>
-									<bytes key="NSRGB">MC4yNzQ1MDk4MTc0IDAuMzAxOTYwNzk2MSAwLjMxNzY0NzA2OTcAA</bytes>
+								<object class="NSColor" key="IBUITextColor">
+									<int key="NSColorSpace">3</int>
+									<bytes key="NSWhite">MC41AA</bytes>
+									<object class="NSColorSpace" key="NSCustomColorSpace" id="196087151">
+										<int key="NSID">2</int>
+									</object>
 								</object>
 								<reference key="IBUIHighlightedColor" ref="513829447"/>
 								<int key="IBUIBaselineAdjustment">1</int>
@@ -181,7 +184,7 @@
 							<object class="IBUILabel" id="936637580">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{289, 51}, {25, 24}}</string>
+								<string key="NSFrame">{{289, 53}, {25, 24}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="889151304"/>
@@ -192,7 +195,11 @@
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<string key="IBUIText"> on </string>
 								<reference key="IBUIFont" ref="478312228"/>
-								<reference key="IBUITextColor" ref="602067092"/>
+								<object class="NSColor" key="IBUITextColor">
+									<int key="NSColorSpace">3</int>
+									<bytes key="NSWhite">MC41AA</bytes>
+									<reference key="NSCustomColorSpace" ref="196087151"/>
+								</object>
 								<reference key="IBUIHighlightedColor" ref="513829447"/>
 								<int key="IBUIBaselineAdjustment">1</int>
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
@@ -201,7 +208,7 @@
 							<object class="IBUILabel" id="889151304">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{318, 52}, {300, 21}}</string>
+								<string key="NSFrame">{{318, 54}, {300, 21}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="31136321"/>
@@ -256,7 +263,7 @@
 							<object class="IBUIButton" id="645936183">
 								<reference key="NSNextResponder" ref="696872123"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{162, 54}, {126, 18}}</string>
+								<string key="NSFrame">{{161, 56}, {126, 18}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="936637580"/>
@@ -1216,6 +1223,6 @@
 				<string>{45, 46}</string>
 			</object>
 		</object>
-		<string key="IBCocoaTouchPluginVersion">301</string>
+		<string key="IBCocoaTouchPluginVersion">300</string>
 	</data>
 </archive>
