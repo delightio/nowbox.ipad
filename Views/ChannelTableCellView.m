@@ -27,8 +27,13 @@
 		//TODO: replace image view with one that support caching
 		UIImage * img = [UIImage imageNamed:@"channel_border"];
 		UIImageView * iv;
+		UILabel * lbl;
 		NMTouchImageView * tiv;
 		CGFloat idx = 0.0;
+		UIFont * ft = [UIFont fontWithName:@"Futura-MediumItalic" size:15.0f];
+		UIColor * clearColor = [UIColor clearColor];
+		UIColor * whiteColor = [UIColor whiteColor];
+		UIColor * blackColor = [UIColor blackColor];
 		for (NSInteger i = 0; i < 3; i++) {
 			borderFrame.origin.x = idx * (275.0 + NM_CHANNEL_CELL_MARGIN);
 			iv = [[UIImageView alloc] initWithFrame:borderFrame];
@@ -43,6 +48,16 @@
 			[self.contentView addSubview:tiv];
 			[tiv addTarget:self action:@selector(channelTouchUp:)];
 			[tiv release];
+			
+			lbl = [[UILabel alloc] initWithFrame:CGRectMake(idx * (275.0 + NM_CHANNEL_CELL_MARGIN) + 15.0, 12.0f, 275.0f, 22.0f)];
+			lbl.tag = 3000 + i;
+			lbl.font = ft;
+			lbl.shadowOffset = CGSizeMake(0.0, 1.0f);
+			lbl.shadowColor = blackColor;
+			lbl.backgroundColor = clearColor;
+			lbl.textColor = whiteColor;
+			[self.contentView addSubview:lbl];
+			[lbl release];
 			
 			idx += 1.0;
 		}
@@ -68,12 +83,16 @@
 	NMChannel * chan;
 	NSInteger i = 0;
 	UIImageView * imv;
+	UILabel * lbl;
 	for (chan in chns) {
 		imv = (UIImageView *)[self.contentView viewWithTag:1000 + i];
 		imv.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:chan.thumbnail]]];
+		lbl = (UILabel *)[self.contentView viewWithTag:3000 + i];
+		lbl.text = chan.title;
 		if ( imv.hidden ) {
 			imv.hidden = NO;
 			[self.contentView viewWithTag:2000 + i].hidden = NO;
+			lbl.hidden = NO;
 		}
 		i++;
 	}
@@ -84,6 +103,7 @@
 			imv.hidden = YES;
 			imv.image = nil;
 			[self.contentView viewWithTag:2000 + i].hidden = YES;
+			[self.contentView viewWithTag:3000 + i].hidden = YES;
 		}
 	}
 }

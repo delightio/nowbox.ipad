@@ -24,7 +24,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 - (id)init {
 	self = [super init];
 	command = NMCommandGetChannels;
-	channelJSONKeys = [[NSArray alloc] initWithObjects:@"channel_name", @"count", @"reason", @"thumbnail", nil];
+	channelJSONKeys = [[NSArray alloc] initWithObjects:@"channel_name", @"count", @"reason", @"thumbnail", @"channel_type", @"channel_url", @"title", nil];
 	return self;
 }
 

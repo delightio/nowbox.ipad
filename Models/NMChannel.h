@@ -20,6 +20,9 @@
 @property (nonatomic, retain) NSString * thumbnail;
 @property (nonatomic, retain) NSString * channel_name;
 @property (nonatomic, retain) NSSet* videos;
+@property (nonatomic, retain) NSString * channel_url;
+@property (nonatomic, retain) NSString * channel_type;
+@property (nonatomic, retain) NSString * title;
 
 @end
 

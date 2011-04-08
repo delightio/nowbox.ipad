@@ -18,5 +18,8 @@
 @dynamic thumbnail;
 @dynamic channel_name;
 @dynamic videos;
+@dynamic channel_url;
+@dynamic channel_type;
+@dynamic title;
 
 @end
