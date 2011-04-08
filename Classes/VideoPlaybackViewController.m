@@ -99,7 +99,8 @@ typedef enum {
 	
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
-	[movieView addGestureRecognizer:pinRcr];
+//	[movieView addGestureRecognizer:pinRcr];
+	[self.view addGestureRecognizer:pinRcr];
 	[pinRcr release];
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
