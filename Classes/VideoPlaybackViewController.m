@@ -102,10 +102,10 @@ typedef enum {
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-}
+//- (void)viewWillDisappear:(BOOL)animated {
+//	[super viewWillDisappear:animated];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self];
+//}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
@@ -226,9 +226,9 @@ typedef enum {
 	vid.nm_playback_status = NMVideoQueueStatusQueued;
 	movieView.player = player;
 	// observe status change in player
-	[movieView.player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
-	[movieView.player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
-	[movieView.player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
+	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
+	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+	[player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
 		// print the time
 		CMTime t = [movieView.player currentTime];
 		NSUInteger sec = 0;
@@ -629,6 +629,8 @@ typedef enum {
 	[movieView.player pause];
 	// release the player object, a new AVQueuePlayer object will be created with preparePlayer method is called
 	movieView.player = nil;
+	currentIndex = 0;
+	firstShowControlView = YES;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -661,10 +663,10 @@ typedef enum {
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:socialCtrl];
 	
 	UIPopoverController * popCtrl = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
-	popCtrl.popoverContentSize = CGSizeMake(320.0f, 154.0f);
+	popCtrl.popoverContentSize = CGSizeMake(320.0f, 178.0f);
 	popCtrl.delegate = self;
 	
-	[popCtrl presentPopoverFromRect:btn.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+	[popCtrl presentPopoverFromRect:btn.frame inView:btn.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 	
 	[socialCtrl release];
 	[navCtrl release];
