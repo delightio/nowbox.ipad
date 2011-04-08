@@ -289,7 +289,7 @@ typedef enum {
 	[mv resetView];
 	mv.title = v.title;
 	mv.authorProfileURLString = v.author_profile_link;
-	[mv setChannel:v.channel.channel_name author:v.author_username];
+	[mv setChannel:v.channel.title author:v.author_username];
 	// update the position
 	CGRect theFrame = mv.frame;
 	theFrame.origin.x = (CGFloat)idx * theFrame.size.width;
