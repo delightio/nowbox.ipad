@@ -55,10 +55,10 @@
 	 */
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
-}
+//- (void)applicationWillEnterForeground:(UIApplication *)application
+//{
+//	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
+//}
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
