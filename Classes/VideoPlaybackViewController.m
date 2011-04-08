@@ -34,6 +34,7 @@ typedef enum {
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewAtIndex:(NSInteger)idx;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
+- (void)translateMovieViewByOffset:(CGFloat)offset;
 
 @end
 
@@ -104,10 +105,16 @@ typedef enum {
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 }
 
-//- (void)viewWillDisappear:(BOOL)animated {
-//	[super viewWillDisappear:animated];
-//	[[NSNotificationCenter defaultCenter] removeObserver:self];
-//}
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	movieView.player = nil;
+	currentIndex = 0;
+	firstShowControlView = YES;
+	// reset player position
+	CGRect theFrame = movieView.frame;
+	theFrame.origin.x = 0.0f;
+	movieView.frame = theFrame;
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
@@ -168,6 +175,9 @@ typedef enum {
 	// reset movie control view
 	for (NMControlsView * ctrlView in controlViewArray) {
 		[ctrlView resetView];
+	}
+	if ( numberOfVideos == 1 ) {
+		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
 	}
 	// update the video list
 	if ( numberOfVideos ) {
@@ -247,7 +257,7 @@ typedef enum {
 			}
 		}
 		ctrlView.timeElapsed = sec;
-		if ( firstShowControlView && (sec + 1) % 10 == 0) {
+		if ( firstShowControlView && (sec + 1) % 3 == 0) {
 			firstShowControlView = NO;
 			ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 			if ( !ctrlView.hidden && ctrlView.alpha > 0.0 ) {
@@ -293,17 +303,23 @@ typedef enum {
 		
 		return;
 	}
+	// visually transit to next video just like the user has tapped next button
+	UIScrollView * sv = (UIScrollView *)self.view;
+	[sv setContentOffset:CGPointMake(sv.contentOffset.x + sv.bounds.size.width, 0.0f) animated:YES];
+	[self translateMovieViewByOffset:1.0f];
+	firstShowControlView = YES;
 	// advance the index
 	currentIndex++;
 	if ( didPlayToEnd ) {
-		// visually transit to next video just like the user has tapped next button
 	} else {
 		// show the next video in the player
 		[movieView.player advanceToNextItem];
+		[movieView.player play];
 	}
 	// update the movie control view
 	if ( currentIndex + 2 < numberOfVideos ) {
 		[self configureControlViewAtIndex:currentIndex + 2];
+		[self requestAddVideoAtIndex:currentIndex + 2];
 	} else {
 		// get more video here
 	}
@@ -629,9 +645,6 @@ typedef enum {
 - (IBAction)backToChannelView:(id)sender {
 	[movieView.player pause];
 	// release the player object, a new AVQueuePlayer object will be created with preparePlayer method is called
-	movieView.player = nil;
-	currentIndex = 0;
-	firstShowControlView = YES;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
@@ -644,17 +657,8 @@ typedef enum {
 	if ( btn.tag == 1000 ) {
 		// prev
 	} else {
-		// programatically scroll to next
-		UIScrollView * sv = (UIScrollView *)self.view;
-		[sv setContentOffset:CGPointMake(sv.contentOffset.x + sv.bounds.size.width, 0.0f) animated:YES];
-		[self translateMovieViewByOffset:1.0f];
-		firstShowControlView = YES;
-		currentIndex++;		// update the currentIndex before calling advanceToNextItem
-		[movieView.player advanceToNextItem];
-		[movieView.player play];
-		[self configureControlViewAtIndex:currentIndex + 2];
-		[self requestAddVideoAtIndex:currentIndex + 2];
 		// next
+		[self showNextVideo:NO];
 		// buffer the next next video
 //		[self requestAddVideoAtIndex:currentIndex + 2];
 //		if ( currentIndex < numberOfVideos ) {

@@ -91,15 +91,14 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 			[foundAy addObject:chnObj.channel_name];
 			// remove all existing videos
 			[ctrl deleteAllVideos];
-			vidDict = [[dict objectForKey:@"first_video"] retain];
 		} else {
 			// create a new channel object
 			chnObj = [ctrl insertNewChannel];
-			vidDict = [[dict objectForKey:@"first_video"] retain];
-			[dict removeObjectForKey:@"first_video"];
-			// set channel value
-			[chnObj setValuesForKeysWithDictionary:dict];
 		}
+		vidDict = [[dict objectForKey:@"first_video"] retain];
+		[dict removeObjectForKey:@"first_video"];
+		// set channel value
+		[chnObj setValuesForKeysWithDictionary:dict];
 		// insert the video
 		vidObj = [ctrl insertNewVideo];
 		[vidObj setValuesForKeysWithDictionary:vidDict];

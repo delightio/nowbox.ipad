@@ -17,7 +17,7 @@ NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoLi
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 @implementation NMGetChannelVideoListTask
-@synthesize channel, channelName, newChannel;
+@synthesize channel, channelName, newChannel, urlString;
 
 + (NSPredicate *)outdatedVideoPredicateTempate {
 	if ( outdatedVideoPredicateTempate_ == nil ) {
@@ -46,12 +46,14 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	command = NMCommandGetChannelVideoList;
 	self.channel = aChn;
 	self.channelName = aChn.channel_name;
+	self.urlString = aChn.channel_url;
 	return self;
 }
 
 - (void)dealloc {
 	[channel release];
 	[channelName release];
+	[urlString release];
 	[super dealloc];
 }
 
@@ -59,7 +61,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 #ifdef NOWMOV_USE_BETA_SITE
 	NSString * urlStr = [NSString stringWithFormat:@"http://beta.nowmov.com/live/videos?target=mobile", channelName];
 #else
-	NSString * urlStr = [NSString stringWithFormat:@"http://nowmov.com/%@/videos?target=mobile", channelName];
+	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile", urlString];
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	

@@ -13,11 +13,13 @@
 @interface NMGetChannelVideoListTask : NMTask {
 	NMChannel * channel;
 	NSString * channelName;
+	NSString * urlString;
 	BOOL newChannel;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSString * channelName;
+@property (nonatomic, retain) NSString * urlString;
 @property (nonatomic) BOOL newChannel;
 
 // in this wind-down version. we only have one single channel - Live
