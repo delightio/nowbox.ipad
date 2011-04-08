@@ -16,6 +16,14 @@
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT		101
 
+typedef enum {
+	NMVideoQueueStatusNone,
+	NMVideoQueueStatusResolvingDirectURL,
+	NMVideoQueueStatusQueued,
+	NMVideoQueueStatusPlaying,
+	NMVideoQueueStatusPlayed,
+} NMVideoQueueStatusType;
+
 #define RRIndex(idx) idx % 4
 
 @interface VideoPlaybackViewController (PrivateMethods)
@@ -162,7 +170,6 @@
 	if ( numberOfVideos ) {
 		// we should play video at currentIndex
 		// get the direct URL
-		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
 		[self configureControlViewAtIndex:currentIndex];
 		[self requestAddVideoAtIndex:currentIndex];
 		//TODO: configure other view
@@ -215,6 +222,7 @@
 - (void)preparePlayer {
 	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:self.currentIndexPath];
 	AVQueuePlayer * player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
+	vid.nm_playback_status = NMVideoQueueStatusQueued;
 	movieView.player = player;
 	// observe status change in player
 	[movieView.player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
@@ -249,8 +257,8 @@
 	[player play];
 	
 	// get other video's direct URL
-	[self requestAddVideoAtIndex:currentIndex + 1];
-	[self requestAddVideoAtIndex:currentIndex + 2];
+//	[self requestAddVideoAtIndex:currentIndex + 1];
+//	[self requestAddVideoAtIndex:currentIndex + 2];
 }
 
 - (void)translateMovieViewByOffset:(CGFloat)offset {
@@ -303,7 +311,11 @@
 	if ( idx >= numberOfVideos ) return;
 	// request to add the video to queue. If the direct URL does not exists, fetch from the server
 	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
-	if ( vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""] ) {
+	if ( (vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""]) && vid.nm_playback_status == NMVideoQueueStatusNone ) {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+		NSLog(@"issue resolve direct URL: %@", vid.title);
+#endif
+		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 		[nowmovTaskController issueGetDirectURLForVideo:vid];
 	} else {
 		[self queueVideoToPlayer:vid];
@@ -315,26 +327,69 @@
 	// don't queue any video for play if there's more than 3 queued
 	NSUInteger c = [[movieView.player items] count];
 	if ( c > 3 ) return;
-	for (NSUInteger i = 0; i < 3 - c; i++) {
-		// there's enough video stored in MOC
-		if ( currentIndex + i + 1 < numberOfVideos ) {
-			// check if there's URL
-			if ( [vid.nm_direct_url length] ) {
+	// since this method is called NOT-IN-ORDER, we should transverse the whole list to queue items
+	NSUInteger sortOrder = [vid.nm_sort_order unsignedIntegerValue];
+	if ( sortOrder - currentIndex > 3 ) return;
+	for (NSUInteger i = 0; i < sortOrder - currentIndex; i++) {
+		if ( sortOrder == currentIndex + i + 1 ) {
+			if ( vid.nm_playback_status == NMVideoQueueStatusResolvingDirectURL ) {
+				// queue
 				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
 				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
 					[movieView.player insertItem:item afterItem:nil];
+					vid.nm_playback_status = NMVideoQueueStatusQueued;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-					NSLog(@"added video to queue player: %@", vid.nm_sort_order );
+					NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
 #endif
 				}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 				else {
-					NSLog(@"can't add video to queue player: %d", vid.nm_sort_order);
+					NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
+				}
+#endif
+			}
+		} else {
+			NMVideo * theVid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:currentIndex + i + 1 inSection:0]];
+			if ( theVid.nm_playback_status == NMVideoQueueStatusResolvingDirectURL ) {
+				// queue
+				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:theVid.nm_direct_url]];
+				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
+					[movieView.player insertItem:item afterItem:nil];
+					theVid.nm_playback_status = NMVideoQueueStatusQueued;
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+					NSLog(@"added video to queue player: %@, %@", theVid.nm_sort_order, theVid.title );
+#endif
+				}
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+				else {
+					NSLog(@"can't add video to queue player: %@", theVid.nm_sort_order);
 				}
 #endif
 			}
 		}
 	}
+//	if ( c > 3 || vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) return;
+//	for (NSUInteger i = 0; i < 3 - c; i++) {
+//		// there's enough video stored in MOC
+//		if ( currentIndex + i + 1 < numberOfVideos ) {
+//			// check if there's URL
+//			if ( [vid.nm_direct_url length] ) {
+//				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
+//				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
+//					[movieView.player insertItem:item afterItem:nil];
+//					vid.nm_playback_status = NMVideoQueueStatusQueued;
+//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+//					NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
+//#endif
+//				}
+//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+//				else {
+//					NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
+//				}
+//#endif
+//			}
+//		}
+//	}
 }
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx {
@@ -364,12 +419,19 @@
 
 #pragma mark Notification handling
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
+	NMVideo * vid = [[aNotification userInfo] objectForKey:@"target_object"];
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"resolved: %@", vid.title);
+#endif
 	if ( movieView.player == nil ) {
-		[self preparePlayer];
+		if ( currentIndex == [vid.nm_sort_order integerValue] )
+			[self preparePlayer];
 	} else {
 		// check if we need to queue the video to player
-		NMVideo * vid = [[aNotification userInfo] objectForKey:@"target_object"];
 		// queue the item
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+		NSLog(@"should queue video: %@", vid.title);
+#endif
 		[self queueVideoToPlayer:vid];
 	}
 }
@@ -380,6 +442,14 @@
 
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
 	// don't do anything for now. when a new video list is saved in MOC. the fetched results controller will call its delegate to handle the data change.
+	[self configureControlViewAtIndex:currentIndex + 1];
+	// queue the item for play
+	[self requestAddVideoAtIndex:currentIndex + 1];
+	[self configureControlViewAtIndex:currentIndex + 2];
+	[self requestAddVideoAtIndex:currentIndex + 2];
+	UIScrollView * s = (UIScrollView *)self.view;
+	s.scrollEnabled = YES;
+	s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 }
 
 //- (void)handleDidGetVideoInfoNotification:(NSNotification *)aNotification {
@@ -687,95 +757,96 @@
     return fetchedResultsController_;
 }    
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
-	switch (type) {
+//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+//	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
+//	switch (type) {
+////		case NSFetchedResultsChangeDelete:
+////			rowCountHasChanged = YES;
+////			break;
+//			
 //		case NSFetchedResultsChangeDelete:
+//		case NSFetchedResultsChangeInsert:
+//		case NSFetchedResultsChangeUpdate:
+//		{
 //			rowCountHasChanged = YES;
+//			if ( freshStart ) {
+//				// we now have the first video.
+//				// launching the app with empty video list.
+//				[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+//				// now, get the direct url for some videos
+//				[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
+//				// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
+//				freshStart = NO;
+//				[self configureControlViewAtIndex:currentIndex];
+//			} else {
+//				// check if we has new "near" video added
+//				if ( currentIndex + 1 == newIndexPath.row ) {
+//					[self configureControlViewAtIndex:currentIndex + 1];
+//					// queue the item for play
+//					[self requestAddVideoAtIndex:currentIndex + 1];
+//				}
+//				if ( currentIndex + 2 == newIndexPath.row ) {
+//					[self configureControlViewAtIndex:currentIndex + 2];
+//					[self requestAddVideoAtIndex:currentIndex + 2];
+//				}
+//			}
 //			break;
-			
-		case NSFetchedResultsChangeDelete:
-		case NSFetchedResultsChangeInsert:
-		case NSFetchedResultsChangeUpdate:
-		{
-			rowCountHasChanged = YES;
-			if ( freshStart ) {
-				// we now have the first video.
-				// launching the app with empty video list.
-				[nowmovTaskController issueGetVideoListForChannel:currentChannel];
-				// now, get the direct url for some videos
-				[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
-				// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
-				freshStart = NO;
-				[self configureControlViewAtIndex:currentIndex];
-			} else {
-				// check if we has new "near" video added
-				if ( currentIndex + 1 == newIndexPath.row ) {
-					[self configureControlViewAtIndex:currentIndex + 1];
-					// queue the item for play
-					[self requestAddVideoAtIndex:currentIndex + 1];
-				}
-				if ( currentIndex + 2 == newIndexPath.row ) {
-					[self configureControlViewAtIndex:currentIndex + 2];
-					[self requestAddVideoAtIndex:currentIndex + 2];
-				}
-			}
-			break;
-		}
-			
-		default:
-			NSLog(@"default case");
-			break;
-	}
-}
+//		}
+//			
+//		default:
+//			NSLog(@"default case");
+//			break;
+//	}
+//}
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	NSLog(@"controllerDidChangeContent");
-	if ( rowCountHasChanged ) {
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-		NSUInteger prevCount = numberOfVideos;
-		numberOfVideos = [sectionInfo numberOfObjects];
-		if ( numberOfVideos != prevCount ) {
-			UIScrollView * s = (UIScrollView *)self.view;
-			s.scrollEnabled = YES;
-			s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
-		}
-		rowCountHasChanged = NO;
-	}
-//	if ( freshStart ) {
-//		numberOfVideos = [sectionInfo numberOfObjects];
-//		if ( numberOfVideos == 0 ) {
-//			return;
-//		}
-//		
-//		// launching the app with empty video list.
-//		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
-//		// now, get the direct url for some videos
-//		[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
-//		// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
-//		freshStart = NO;
-//		isReloadWithData = YES;
-//		[self configureControlViewAtIndex:currentIndex];
-//	} else if ( isReloadWithData ) {
-//		isReloadWithData = NO;
+//	if ( rowCountHasChanged ) {
+//		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 //		NSUInteger prevCount = numberOfVideos;
 //		numberOfVideos = [sectionInfo numberOfObjects];
-//		// check if we has new "near" video added
-//		if ( currentIndex + 1 >= prevCount && currentIndex + 1 < numberOfVideos ) {
-//			[self configureControlViewAtIndex:currentIndex + 1];
-//			// queue the item for play
-//			[self requestAddVideoAtIndex:currentIndex + 1];
-//		}
-//		if ( currentIndex + 2 >= prevCount && currentIndex + 2 < numberOfVideos ) {
-//			[self configureControlViewAtIndex:currentIndex + 2];
-//			[self requestAddVideoAtIndex:currentIndex + 2];
-//		}
 //		if ( numberOfVideos != prevCount ) {
 //			UIScrollView * s = (UIScrollView *)self.view;
 //			s.scrollEnabled = YES;
 //			s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 //		}
+//		rowCountHasChanged = NO;
 //	}
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
+	numberOfVideos = [sectionInfo numberOfObjects];
+	if ( freshStart ) {
+		if ( numberOfVideos == 0 ) {
+			return;
+		}
+		
+		// launching the app with empty video list.
+		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+		// now, get the direct url for some videos
+		[self requestAddVideoAtIndex:currentIndex];
+		// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
+		freshStart = NO;
+//		isReloadWithData = YES;
+		[self configureControlViewAtIndex:currentIndex];
+	} /*else if ( isReloadWithData ) {
+//		isReloadWithData = NO;
+		NSUInteger prevCount = numberOfVideos;
+		numberOfVideos = [sectionInfo numberOfObjects];
+		// check if we has new "near" video added
+		if ( currentIndex + 1 >= prevCount && currentIndex + 1 < numberOfVideos ) {
+			[self configureControlViewAtIndex:currentIndex + 1];
+			// queue the item for play
+			[self requestAddVideoAtIndex:currentIndex + 1];
+		}
+		if ( currentIndex + 2 >= prevCount && currentIndex + 2 < numberOfVideos ) {
+			[self configureControlViewAtIndex:currentIndex + 2];
+			[self requestAddVideoAtIndex:currentIndex + 2];
+		}
+		if ( numberOfVideos != prevCount ) {
+			UIScrollView * s = (UIScrollView *)self.view;
+			s.scrollEnabled = YES;
+			s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+		}
+	}*/
 }
 
 @end
