@@ -38,6 +38,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	freshStart = YES;
 	channelTableView.rowHeight = 218.0;
 	// set inset so that the top of the channel thunbmail aligns with the left button
 	channelTableView.contentInset = UIEdgeInsetsMake(15.0, 0.0, 0.0, 0.0);
@@ -78,7 +79,10 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self performSelector:@selector(showVideoView) withObject:nil afterDelay:0.1];
+	if ( freshStart ) {
+		[self performSelector:@selector(showVideoView) withObject:nil afterDelay:0.1];
+		freshStart = NO;
+	}
 }
 
 // Override to allow orientations other than the default portrait orientation.

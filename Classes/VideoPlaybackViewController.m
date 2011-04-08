@@ -19,6 +19,7 @@
 typedef enum {
 	NMVideoQueueStatusNone,
 	NMVideoQueueStatusResolvingDirectURL,
+	NMVideoQueueStatusDirectURLReady,
 	NMVideoQueueStatusQueued,
 	NMVideoQueueStatusPlaying,
 	NMVideoQueueStatusPlayed,
@@ -94,7 +95,7 @@ typedef enum {
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	
 	// setup gesture recognizer
-	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewZoom:)];
+	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
 	[movieView addGestureRecognizer:pinRcr];
 	[pinRcr release];
 	// set target-action methods
@@ -318,6 +319,7 @@ typedef enum {
 		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 		[nowmovTaskController issueGetDirectURLForVideo:vid];
 	} else {
+		vid.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 		[self queueVideoToPlayer:vid];
 	}
 }
@@ -332,7 +334,7 @@ typedef enum {
 	if ( sortOrder - currentIndex > 3 ) return;
 	for (NSUInteger i = 0; i < sortOrder - currentIndex; i++) {
 		if ( sortOrder == currentIndex + i + 1 ) {
-			if ( vid.nm_playback_status == NMVideoQueueStatusResolvingDirectURL ) {
+			if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
 				// queue
 				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
 				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
@@ -350,7 +352,7 @@ typedef enum {
 			}
 		} else {
 			NMVideo * theVid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:currentIndex + i + 1 inSection:0]];
-			if ( theVid.nm_playback_status == NMVideoQueueStatusResolvingDirectURL ) {
+			if ( theVid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
 				// queue
 				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:theVid.nm_direct_url]];
 				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
@@ -420,6 +422,7 @@ typedef enum {
 #pragma mark Notification handling
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
 	NMVideo * vid = [[aNotification userInfo] objectForKey:@"target_object"];
+	vid.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"resolved: %@", vid.title);
 #endif
@@ -504,29 +507,6 @@ typedef enum {
 		}
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-	}
-}
-
-- (void)handleMovieViewZoom:(id)sender {
-	UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
-	NSLog(@"s %f v %f", rcr.scale, rcr.velocity);
-	CGRect theFrame;
-	CGSize theSize;
-	if ( rcr.velocity > 0 && rcr.scale > 1.2 && isAspectFill ) {
-		// scale the player layer down
-		isAspectFill = NO;
-		theFrame = movieView.bounds;
-		// calculate the size
-		theSize = movieView.player.currentItem.presentationSize;
-		theSize.width = floorf(768.0 / theSize.height * theSize.width);
-		theSize.height = 768.0;
-		theFrame.size = theSize;
-		movieView.bounds = theFrame;
-	} else if ( rcr.velocity < 0 && rcr.scale < 0.8 && !isAspectFill ) {
-		isAspectFill = YES;
-		// restore the original size
-		theFrame = self.view.bounds;
-		movieView.bounds = theFrame;
 	}
 }
 
@@ -617,6 +597,34 @@ typedef enum {
 //	}
 //}
 //
+
+- (void)handleMovieViewPinched:(id)sender {
+	UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
+	NSLog(@"s %f v %f", rcr.scale, rcr.velocity);
+	if ( rcr.velocity < -2.0 && rcr.scale < 0.6 ) {
+		// quit this view
+		[self backToChannelView:sender];
+	}
+//	CGRect theFrame;
+//	CGSize theSize;
+//	if ( rcr.velocity > 0 && rcr.scale > 1.2 && isAspectFill ) {
+//		// scale the player layer down
+//		isAspectFill = NO;
+//		theFrame = movieView.bounds;
+//		// calculate the size
+//		theSize = movieView.player.currentItem.presentationSize;
+//		theSize.width = floorf(768.0 / theSize.height * theSize.width);
+//		theSize.height = 768.0;
+//		theFrame.size = theSize;
+//		movieView.bounds = theFrame;
+//	} else if ( rcr.velocity < 0 && rcr.scale < 0.8 && !isAspectFill ) {
+//		isAspectFill = YES;
+//		// restore the original size
+//		theFrame = self.view.bounds;
+//		movieView.bounds = theFrame;
+//	}
+}
+
 - (IBAction)backToChannelView:(id)sender {
 	[movieView.player pause];
 	// release the player object, a new AVQueuePlayer object will be created with preparePlayer method is called

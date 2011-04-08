@@ -17,6 +17,8 @@
     IBOutlet UIImageView *headerOverlayImageView;
 	VideoPlaybackViewController * videoViewController;
 	
+	BOOL freshStart;
+	
 @private
 	NSUInteger numberOfChannels;
     NSFetchedResultsController *fetchedResultsController_;
