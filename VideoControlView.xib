@@ -46,7 +46,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="IBUIButton" id="87122060">
 						<reference key="NSNextResponder" ref="802969940"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">-2147483356</int>
 						<string key="NSFrame">{{0, 112}, {156, 545}}</string>
 						<reference key="NSSuperview" ref="802969940"/>
 						<reference key="NSWindow"/>
@@ -334,7 +334,7 @@
 								<string key="NSFrame">{{99, 26}, {45, 46}}</string>
 								<reference key="NSSuperview" ref="385128608"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="717440155"/>
+								<reference key="NSNextKeyView" ref="50047166"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -413,7 +413,7 @@
 									<string key="NSResourceName">btn_explore.png</string>
 								</object>
 							</object>
-							<object class="IBUIButton" id="717440155">
+							<object class="IBUIButton" id="50047166">
 								<reference key="NSNextResponder" ref="385128608"/>
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{152, 26}, {45, 46}}</string>
@@ -574,14 +574,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">prevVideoButton</string>
-						<reference key="source" ref="802969940"/>
-						<reference key="destination" ref="87122060"/>
-					</object>
-					<int key="connectionID">27</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">nextVideoButton</string>
 						<reference key="source" ref="802969940"/>
 						<reference key="destination" ref="38699862"/>
@@ -708,7 +700,7 @@
 							<reference ref="1041989742"/>
 							<reference ref="754736919"/>
 							<reference ref="355713626"/>
-							<reference ref="717440155"/>
+							<reference ref="50047166"/>
 						</object>
 						<reference key="parent" ref="802969940"/>
 					</object>
@@ -814,7 +806,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">43</int>
-						<reference key="object" ref="717440155"/>
+						<reference key="object" ref="50047166"/>
 						<reference key="parent" ref="385128608"/>
 					</object>
 				</object>

@@ -80,6 +80,7 @@ typedef enum {
 		[loadedControlView.channelViewButton addTarget:self action:@selector(backToChannelView:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.shareButton addTarget:self action:@selector(showSharePopover:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.playPauseButton addTarget:self action:@selector(playStopVideo:) forControlEvents:UIControlEventTouchUpInside];
+		[loadedControlView.nextVideoButton addTarget:self action:@selector(skipCurrentVideo:) forControlEvents:UIControlEventTouchUpInside];
 		[controlViewArray addObject:loadedControlView];
 		// put the view to scroll view
 		theFrame = loadedControlView.frame;
@@ -643,13 +644,23 @@ typedef enum {
 	if ( btn.tag == 1000 ) {
 		// prev
 	} else {
+		// programatically scroll to next
+		UIScrollView * sv = (UIScrollView *)self.view;
+		[sv setContentOffset:CGPointMake(sv.contentOffset.x + sv.bounds.size.width, 0.0f) animated:YES];
+		[self translateMovieViewByOffset:1.0f];
+		firstShowControlView = YES;
+		currentIndex++;		// update the currentIndex before calling advanceToNextItem
+		[movieView.player advanceToNextItem];
+		[movieView.player play];
+		[self configureControlViewAtIndex:currentIndex + 2];
+		[self requestAddVideoAtIndex:currentIndex + 2];
 		// next
 		// buffer the next next video
-		[self requestAddVideoAtIndex:currentIndex + 2];
-		if ( currentIndex < numberOfVideos ) {
-			currentIndex++;
-		}
-		[movieView.player advanceToNextItem];
+//		[self requestAddVideoAtIndex:currentIndex + 2];
+//		if ( currentIndex < numberOfVideos ) {
+//			currentIndex++;
+//		}
+//		[movieView.player advanceToNextItem];
 	}
 }
 
@@ -689,6 +700,7 @@ typedef enum {
 }
 
 #pragma mark Scroll View Delegate
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	[self stopVideo];
 //	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
@@ -709,7 +721,8 @@ typedef enum {
 		[self requestAddVideoAtIndex:currentIndex + 2];
 //		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 	} else {
-		[self translateMovieViewByOffset:-1.0f];
+		[self playVideo];
+		//[self translateMovieViewByOffset:-1.0f];
 	}
 }
 

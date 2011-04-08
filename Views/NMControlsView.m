@@ -17,6 +17,7 @@
 
 @synthesize title, duration, timeElapsed, authorProfileURLString;
 @synthesize channelViewButton, shareButton, playPauseButton;
+@synthesize nextVideoButton;
 
 - (void)awakeFromNib {
 	// load the progress bar image
