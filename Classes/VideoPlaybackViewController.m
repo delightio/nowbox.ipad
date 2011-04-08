@@ -343,14 +343,15 @@ typedef enum {
 	if ( idx >= numberOfVideos ) return;
 	// request to add the video to queue. If the direct URL does not exists, fetch from the server
 	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
-	if ( (vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""]) && vid.nm_playback_status == NMVideoQueueStatusNone ) {
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-		NSLog(@"issue resolve direct URL: %@", vid.title);
-#endif
-		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
-		[nowmovTaskController issueGetDirectURLForVideo:vid];
+	if ( (vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""]) ) {
+		if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
+	#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+			NSLog(@"issue resolve direct URL: %@", vid.title);
+	#endif
+			vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
+			[nowmovTaskController issueGetDirectURLForVideo:vid];
+		}
 	} else {
-		vid.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 		[self queueVideoToPlayer:vid];
 	}
 }
