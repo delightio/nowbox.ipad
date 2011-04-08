@@ -464,11 +464,15 @@ typedef enum {
 
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
 	// don't do anything for now. when a new video list is saved in MOC. the fetched results controller will call its delegate to handle the data change.
-	[self configureControlViewAtIndex:currentIndex + 1];
-	// queue the item for play
-	[self requestAddVideoAtIndex:currentIndex + 1];
-	[self configureControlViewAtIndex:currentIndex + 2];
-	[self requestAddVideoAtIndex:currentIndex + 2];
+	if ( currentIndex + 1 < numberOfVideos )	{
+		[self configureControlViewAtIndex:currentIndex + 1];
+		// queue the item for play
+		[self requestAddVideoAtIndex:currentIndex + 1];
+	}
+	if ( currentIndex + 2 < numberOfVideos )	{
+		[self configureControlViewAtIndex:currentIndex + 2];
+		[self requestAddVideoAtIndex:currentIndex + 2];
+	}
 	UIScrollView * s = (UIScrollView *)self.view;
 	s.scrollEnabled = YES;
 	s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
@@ -709,7 +713,6 @@ typedef enum {
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	[self stopVideo];
 //	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
-	NSLog(@"decelerate: %d", decelerate);
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {

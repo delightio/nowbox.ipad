@@ -56,6 +56,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	NSMutableDictionary * pDict;
 	NSString * theKey;
 	for (cDict in theChs) {
+		if ( [cDict objectForKey:@"first_video"] == nil ) continue;
 		pDict = [NSMutableDictionary dictionary];
 		for (theKey in channelJSONKeys) {
 			[pDict setObject:[cDict objectForKey:theKey] forKey:theKey];
@@ -85,6 +86,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	NSDictionary * vidDict;
 	NSMutableArray * foundAy = [NSMutableArray array];
 //	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
+	NSInteger idx = 0;
 	for (dict in parsedObjects) {
 		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"channel_name"]];
 		if ( chnObj ) {
@@ -95,6 +97,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 			// create a new channel object
 			chnObj = [ctrl insertNewChannel];
 		}
+		chnObj.nm_sort_order = [NSNumber numberWithInteger:idx];
 		vidDict = [[dict objectForKey:@"first_video"] retain];
 		[dict removeObjectForKey:@"first_video"];
 		// set channel value
@@ -109,6 +112,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 		if ( [chnObj.channel_name isEqualToString:@"live"] ) {
 			self.liveChannel = chnObj;
 		}
+		idx++;
 	}
 	// remove channel no longer here
 	NSArray * allKeys = [fetchedChannels allKeys];

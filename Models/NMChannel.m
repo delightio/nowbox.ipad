@@ -13,6 +13,7 @@
 @implementation NMChannel 
 
 @dynamic nm_description;
+@dynamic nm_sort_order;
 @dynamic count;
 @dynamic reason;
 @dynamic thumbnail;
