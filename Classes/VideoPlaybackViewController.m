@@ -76,12 +76,15 @@ typedef enum {
 	NSBundle * mb = [NSBundle mainBundle];
 	controlViewArray = [[NSMutableArray alloc] initWithCapacity:4]; // 4 in total, 1 for prev, 1 for current, 2 for upcoming
 	for (CGFloat i = 0.0; i < 4.0; i += 1.0) {
+		// load the nib
 		[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
+		// hook up with target-action
 		[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
 		[loadedControlView.channelViewButton addTarget:self action:@selector(backToChannelView:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.shareButton addTarget:self action:@selector(showSharePopover:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.playPauseButton addTarget:self action:@selector(playStopVideo:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.nextVideoButton addTarget:self action:@selector(skipCurrentVideo:) forControlEvents:UIControlEventTouchUpInside];
+		
 		[controlViewArray addObject:loadedControlView];
 		// put the view to scroll view
 		theFrame = loadedControlView.frame;
@@ -241,6 +244,10 @@ typedef enum {
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+	// all control view should observe to player changes
+	for (NMControlsView * ctrlView in controlViewArray) {
+		[player addObserver:ctrlView forKeyPath:@"rate" options:0 context:(void *)11111];
+	}
 	[player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
 		// print the time
 		CMTime t = [movieView.player currentTime];
@@ -270,9 +277,14 @@ typedef enum {
 	// player layer
 	[player play];
 	
+	// check if we should other items into the player
+	
+	// =================
+	// commented out because we are not sure i
 	// get other video's direct URL
-//	[self requestAddVideoAtIndex:currentIndex + 1];
-//	[self requestAddVideoAtIndex:currentIndex + 2];
+	[self requestAddVideoAtIndex:currentIndex + 1];
+	[self requestAddVideoAtIndex:currentIndex + 2];
+	// ====================
 }
 
 - (void)translateMovieViewByOffset:(CGFloat)offset {
@@ -371,7 +383,7 @@ typedef enum {
 			}
 		} else {
 			NMVideo * theVid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:currentIndex + i + 1 inSection:0]];
-			if ( theVid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
+			if ( [theVid.nm_sort_order integerValue] == currentIndex + i + 1 && theVid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
 				// queue
 				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:theVid.nm_direct_url]];
 				if ( [movieView.player canInsertItem:item afterItem:nil] ) {

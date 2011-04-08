@@ -100,38 +100,21 @@
 //	[mvView.player removeTimeObserver:self];
 //}
 //
-//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-//	NSInteger c = (NSInteger)context;
-//	NMMovieView * movieView = (NMMovieView *)object;
-//	if ( c == NM_PLAYER_STATUS_CONTEXT ) {
-//		switch (movieView.player.status) {
-//			case AVPlayerStatusReadyToPlay:
-//			{
-//				// the instance is ready to play. yeah!
-//				//[self updateControlsForVideoAtIndex:currentIndex];
-//				if ( firstShowControlView ) {
-//					firstShowControlView = NO;
-//					if ( !self.hidden && self.alpha > 0.0 ) {
-//						// hide the control
-//						[self performSelector:action withObject:target];
-//					}
-//				}
-//				break;
-//			}
-//			default:
-//				break;
-//		}
-//		if ( firstShowControlView ) {
-//			firstShowControlView = NO;
-//		}
-//	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//		NSLog(@"current item changed");
-//#endif
-//		[self updateControlsForVideoAtIndex:currentIndex];
-//	}
-//	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-//}
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger c = (NSInteger)context;
+	if ( c == 11111 ) {
+		AVPlayer * player = object;
+		if ( player.rate > 0.0 ) {
+			// set button to play
+			playPauseButton.selected = NO;
+		} else {
+			// set button to pause 
+			playPauseButton.selected = YES;
+		}
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
+}
 
 #pragma mark properties
 - (void)resetView {

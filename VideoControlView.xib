@@ -323,6 +323,10 @@
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">btn_play_active.png</string>
 								</object>
+								<object class="NSCustomResource" key="IBUISelectedImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">btn_pause.png</string>
+								</object>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">btn_play.png</string>
@@ -831,6 +835,7 @@
 					<string>17.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
 					<string>17.IBViewBoundsToFrameTransform</string>
 					<string>18.IBPluginDependency</string>
+					<string>18.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
 					<string>18.IBViewBoundsToFrameTransform</string>
 					<string>19.IBPluginDependency</string>
 					<string>19.IBViewBoundsToFrameTransform</string>
@@ -888,6 +893,7 @@
 						<bytes key="NSTransformStruct">P4AAAL+AAABCxgAAwpgAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<real value="2"/>
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABBoAAAwrAAAA</bytes>
 					</object>
@@ -1171,6 +1177,7 @@
 				<string>background_video_control_header.png</string>
 				<string>btn_explore.png</string>
 				<string>btn_explore_active.png</string>
+				<string>btn_pause.png</string>
 				<string>btn_play.png</string>
 				<string>btn_play_active.png</string>
 				<string>btn_share.png</string>
@@ -1192,6 +1199,7 @@
 				<string>{1024, 96}</string>
 				<string>{90, 78}</string>
 				<string>{90, 78}</string>
+				<string>{71, 70}</string>
 				<string>{71, 70}</string>
 				<string>{71, 70}</string>
 				<string>{90, 78}</string>
