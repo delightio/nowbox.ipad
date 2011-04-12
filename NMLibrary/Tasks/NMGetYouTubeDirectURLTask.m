@@ -37,6 +37,7 @@ NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectU
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?v=%@&xl=xl_blazer&ajax=1&tsp=1&tspv=v2&xl=xl_blazer", externalID];
+	NSLog(@"%@", urlStr);
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setValue:NMYoutubeUserAgent forHTTPHeaderField:@"User-Agent"];
 	
@@ -71,6 +72,7 @@ NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectU
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
 	}
+	NSLog(@"resolved URL: %@", self.externalID);
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
