@@ -141,7 +141,6 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	NMTask * task = (NMTask *)data;
-	id parsedObject = nil;
 	if ( [task.buffer length] ) {
 		// parse the JSON string
 		[task processDownloadedDataInBuffer];
@@ -151,7 +150,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	
 	if ( task.encountersErrorDuringProcessing ) {
 		// there's error, check if there's "error" object
-		NSDictionary * errDict = [parsedObject objectForKey:@"error"];
+		NSDictionary * errDict = task.errorInfo;
 		NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:self userInfo:errDict];
 		// post notification from main thread. we must use performSelectorOnMainThread
 		[notificationCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];

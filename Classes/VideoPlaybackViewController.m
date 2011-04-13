@@ -96,9 +96,10 @@ typedef enum {
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	// listen to item finish up playing notificaiton
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -473,6 +474,17 @@ typedef enum {
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 	[self showNextVideo:YES];
+}
+
+- (void)handleErrorNotification:(NSNotification *)aNotification {
+	if ( [[aNotification name] isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
+		NSDictionary * info = [aNotification userInfo];
+		NSLog(@"direct URL resolution failed: %@", [info objectForKey:@"error"]);
+	} else {
+		NSLog(@"error playing video");
+	}
+	[self showNextVideo:YES];
+	//TODO: remove the video from playlist
 }
 
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {

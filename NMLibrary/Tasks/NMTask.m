@@ -15,6 +15,7 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 @synthesize state, command, buffer;
 @synthesize encountersErrorDuringProcessing;
 @synthesize httpStatusCode;
+@synthesize errorInfo;
 
 
 - (NSDate *)dateTimeFromString:(NSString *)str {
@@ -48,6 +49,14 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 		[buffer release];
 		buffer = nil;
 	}
+}
+
+- (NSDictionary *)errorInfo {
+	if ( encountersErrorDuringProcessing && [parsedObjects count] ) {
+		NSDictionary * errDict = [parsedObjects objectAtIndex:0];
+		return errDict;
+	}
+	return nil;
 }
 
 - (void)dealloc {

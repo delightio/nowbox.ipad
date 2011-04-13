@@ -13,6 +13,7 @@ static NSString * const NMYoutubeUserAgent = @"Mozilla/5.0 (iPad; U; CPU OS 4_2_
 
 NSString * const NMWillGetYouTubeDirectURLNotification = @"NMWillGetYouTubeDirectURLNotification";
 NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectURLNotification";
+NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTubeDirectURLNotification";
 
 @implementation NMGetYouTubeDirectURLTask
 
@@ -62,17 +63,30 @@ NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectU
 		encountersErrorDuringProcessing = YES;
 		return;
 	}
+	if ( [[dict objectForKey:@"result"] isEqualToString:@"error"] ) {
+		encountersErrorDuringProcessing = YES;
+		NSArray * ay = [dict objectForKey:@"errors"];
+		if ( [ay count] ) {
+			NSDictionary * dict = [NSDictionary dictionaryWithObject:[ay objectAtIndex:0] forKey:@"error"];
+			parsedObjects = [[NSArray alloc] initWithObjects:dict, nil];
+		}
+		return;
+	}
 	NSDictionary * contentDict = [dict objectForKey:@"content"];
 	if ( contentDict == nil || [contentDict count] == 0) {
 		encountersErrorDuringProcessing = YES;
+		parsedObjects = [[NSArray alloc] initWithObjects:[NSDictionary dictionaryWithObject:@"No video content" forKey:@"error"], nil];
 		return;
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	if ( directURLString == nil ) {
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
+		NSDictionary * dict = [NSDictionary dictionaryWithObject:@"Cannot locate HQ video stream" forKey:@"error"];
+		parsedObjects = [[NSArray alloc] initWithObjects:dict, nil];
+	} else {
+		NSLog(@"resolved URL: %@", self.externalID);
 	}
-	NSLog(@"resolved URL: %@", self.externalID);
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
@@ -85,6 +99,10 @@ NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectU
 
 - (NSString *)didLoadNotificationName {
 	return NMDidGetYouTubeDirectURLNotification;
+}
+
+- (NSString *)didFailNotificationName {
+	return NMDidFailGetYouTubeDirectURLNotification;
 }
 
 - (NSDictionary *)userInfo {

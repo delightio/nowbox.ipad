@@ -29,6 +29,7 @@
 }
 
 @property (nonatomic, readonly) BOOL encountersErrorDuringProcessing;
+@property (nonatomic, readonly) NSDictionary * errorInfo;
 @property (nonatomic) NSInteger httpStatusCode;
 @property (nonatomic, assign) NMTaskExecutionState state;
 @property (nonatomic, readonly) NMCommand command;
