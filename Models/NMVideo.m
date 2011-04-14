@@ -23,11 +23,29 @@
 @dynamic nm_direct_url;
 @dynamic nm_sort_order;
 @dynamic nm_error;
-@synthesize nm_playback_status=nm_playback_status_;
-@synthesize nm_retry_count=nm_retry_count_;
+@dynamic nm_playback_status;
+@dynamic nm_retry_count;
 @dynamic service_name;
 @dynamic vid;
 @dynamic reason_included;
 @dynamic channel;
+
+- (void)setNm_playback_status:(NSInteger)anInt {
+	[self willChangeValueForKey:@"nm_playback_status"];
+	nm_playback_status = anInt;
+	[self didChangeValueForKey:@"nm_playback_status"];
+}
+
+- (NSInteger)nm_playback_status {
+	[self willAccessValueForKey:@"nm_playback_status"];
+	NSInteger i = nm_playback_status;
+	[self didAccessValueForKey:@"nm_playback_status"];
+	return i;
+}
+
+- (void)willSave {
+	[self setPrimitiveValue:[NSNumber numberWithInteger:nm_playback_status] forKey:@"nm_playback_status"];
+	[super willSave];
+}
 
 @end

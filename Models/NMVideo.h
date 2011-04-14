@@ -13,8 +13,7 @@
 
 @interface NMVideo :  NSManagedObject  
 {
-	NSInteger nm_playback_status_;
-	NSInteger nm_retry_count_;
+	NSInteger nm_playback_status;
 }
 
 @property (nonatomic, retain) NSString * author_profile_link;
@@ -27,7 +26,7 @@
 @property (nonatomic, retain) NSNumber * total_mentions;
 @property (nonatomic, retain) NSString * nm_direct_url;
 @property (nonatomic, retain) NSNumber * nm_error;
-@property (nonatomic) NSInteger nm_retry_count;
+@property (nonatomic, retain) NSNumber * nm_retry_count;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSString * service_name;

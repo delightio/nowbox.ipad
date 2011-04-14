@@ -33,7 +33,8 @@ typedef enum {
 @interface VideoPlaybackViewController (PrivateMethods)
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx;
-- (void)queueVideoToPlayer:(NMVideo *)vid;
+//- (void)queueVideoToPlayer:(NMVideo *)vid;
+- (void)playerQueueVideos;
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewAtIndex:(NSInteger)idx;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
@@ -321,21 +322,6 @@ typedef enum {
 }
 
 #pragma mark Video queuing
-- (void)checkUpdateVideoQueue {
-	NSUInteger c = [movieView.player.items count];
-	if ( c < NM_MAX_VIDEO_IN_QUEUE) {
-		// we need to queue more video in the player
-		for ( NSInteger i = currentIndex + c; i < NM_MAX_VIDEO_IN_QUEUE + currentIndex; i++ ) {
-			// queue the video
-			[self queueVideoToPlayer:(NMVideo *)[self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:i]]];
-		}
-	}
-	// get more video from Nowmov server
-	if ( numberOfVideos - currentIndex < 4 ) {
-		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
-	}
-}
-
 - (void)showNextVideo:(BOOL)didPlayToEnd {
 	if ( !(currentIndex + 1 < numberOfVideos) ) {
 		// there's no more video available
@@ -359,7 +345,6 @@ typedef enum {
 	// update the movie control view
 	if ( currentIndex + 2 < numberOfVideos ) {
 		[self configureControlViewAtIndex:currentIndex + 2];
-		[self requestAddVideoAtIndex:currentIndex + 2];
 	} else {
 		// get more video here
 	}
@@ -379,18 +364,48 @@ typedef enum {
 			[nowmovTaskController issueGetDirectURLForVideo:vid];
 		}
 	} else {
-		[self queueVideoToPlayer:vid];
+		[self playerQueueVideos];
 	}
 }
 
+- (void)playerQueueVideos {
+	// creates player item and insert them into the queue orderly
+	// don't queue any video for play if there's more than 3 queued
+	NSUInteger c = [[movieView.player items] count];
+	if ( c > NM_MAX_VIDEO_IN_QUEUE - 1 ) return;
+	// since this method is called NOT-IN-ORDER, we should transverse the whole list to queue items
+	NMVideo * vid;
+	for ( NSInteger i = currentIndex + c; i < NM_MAX_VIDEO_IN_QUEUE + currentIndex; i++ ) {
+		vid = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:i]];
+		if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
+			// queue
+			AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
+			if ( [movieView.player canInsertItem:item afterItem:nil] ) {
+				[movieView.player insertItem:item afterItem:nil];
+				vid.nm_playback_status = NMVideoQueueStatusQueued;
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+				NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
+#endif
+			}
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+			else {
+				NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
+			}
+#endif
+		} else {
+			break;
+		}
+	}
+}
+/*
 - (void)queueVideoToPlayer:(NMVideo *)vid {
 	// creates player item and insert them into the queue orderly
 	// don't queue any video for play if there's more than 3 queued
 	NSUInteger c = [[movieView.player items] count];
-	if ( c > 3 ) return;
+	if ( c > NM_MAX_VIDEO_IN_QUEUE - 1 ) return;
 	// since this method is called NOT-IN-ORDER, we should transverse the whole list to queue items
 	NSUInteger sortOrder = [vid.nm_sort_order unsignedIntegerValue];
-	if ( sortOrder - currentIndex > 3 ) return;
+	if ( sortOrder - currentIndex > NM_MAX_VIDEO_IN_QUEUE - 1 ) return;
 	for (NSUInteger i = 0; i < sortOrder - currentIndex; i++) {
 		if ( sortOrder == currentIndex + i + 1 ) {
 			if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
@@ -452,7 +467,7 @@ typedef enum {
 //		}
 //	}
 }
-
+*/
 //- (void)insertVideoAtIndex:(NSUInteger)idx {
 //	// buffer the next next video
 //	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
@@ -485,16 +500,18 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"resolved: %@", vid.title);
 #endif
+	// check if we should queue the video resolved
 	if ( movieView.player == nil ) {
 		if ( currentIndex == [vid.nm_sort_order integerValue] )
 			[self preparePlayer];
+		// else - ignore the resolution result. we just want the first video
 	} else {
 		// check if we need to queue the video to player
 		// queue the item
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"should queue video: %@", vid.title);
 #endif
-		[self queueVideoToPlayer:vid];
+		[self playerQueueVideos];
 	}
 }
 
@@ -569,7 +586,11 @@ typedef enum {
 		NSLog(@"current item changed");
 #endif
 		// ====== video queuing ======
-		[self checkUpdateVideoQueue];
+		[self playerQueueVideos];
+		// get more video from Nowmov server
+		if ( numberOfVideos - currentIndex < 4 ) {
+			[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+		}
 		// ====== update interface ======
 		// update the time
 		ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
