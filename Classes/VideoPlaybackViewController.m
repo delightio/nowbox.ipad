@@ -14,8 +14,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
-#define NM_PLAYER_STATUS_CONTEXT			100
-#define NM_PLAYER_CURRENT_ITEM_CONTEXT		101
+#define NM_PLAYER_STATUS_CONTEXT				100
+#define NM_PLAYER_CURRENT_ITEM_CONTEXT			101
+#define NM_PLAYBACK_BUFFER_EMPTY_CONTEXT		102
+#define NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT	103
+#define NM_LOADED_TIME_RANGES_CONTEXT			104
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
@@ -257,6 +260,9 @@ typedef enum {
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+	[player addObserver:self forKeyPath:@"currentItem.playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
+	[player addObserver:self forKeyPath:@"currentItem.playbackBufferEmpty" options:0 context:(void *)NM_PLAYBACK_BUFFER_EMPTY_CONTEXT];
+	[player addObserver:self forKeyPath:@"currentItem.loadedTimeRanges" options:0 context:(void *)NM_LOADED_TIME_RANGES_CONTEXT];
 	// all control view should observe to player changes
 	for (NMControlsView * ctrlView in controlViewArray) {
 		[player addObserver:ctrlView forKeyPath:@"rate" options:0 context:(void *)11111];
@@ -542,8 +548,10 @@ typedef enum {
 		[self requestAddVideoAtIndex:currentIndex + 2];
 	}
 	UIScrollView * s = (UIScrollView *)self.view;
-	s.scrollEnabled = YES;
-	s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+	if ( !s.scrollEnabled ) {
+		s.scrollEnabled = YES;
+		s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+	}
 }
 
 //- (void)handleDidGetVideoInfoNotification:(NSNotification *)aNotification {
@@ -603,6 +611,19 @@ typedef enum {
 		} else {
 			videoDurationInvalid = YES;
 		}
+	} else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
+		BOOL bffEmpty = [[object valueForKeyPath:keyPath] boolValue];
+		if ( !bffEmpty ) {
+			// check if we should continue playback
+			if ( [[object valueForKeyPath:@"currentItem.playbackLikelyToKeepUp"] boolValue] ) {
+				[self playVideo];
+			}
+		}
+		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
+	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
+		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
+	} else if ( c == NM_LOADED_TIME_RANGES_CONTEXT ) {
+		NSLog(@"%d", [[object valueForKeyPath:keyPath] count]);
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -865,47 +886,21 @@ typedef enum {
     return fetchedResultsController_;
 }    
 
-//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-//	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
-//	switch (type) {
-////		case NSFetchedResultsChangeDelete:
-////			rowCountHasChanged = YES;
-////			break;
-//			
-//		case NSFetchedResultsChangeDelete:
-//		case NSFetchedResultsChangeInsert:
-//		case NSFetchedResultsChangeUpdate:
-//		{
-//			rowCountHasChanged = YES;
-//			if ( freshStart ) {
-//				// we now have the first video.
-//				// launching the app with empty video list.
-//				[nowmovTaskController issueGetVideoListForChannel:currentChannel];
-//				// now, get the direct url for some videos
-//				[nowmovTaskController issueGetDirectURLForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath]];
-//				// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
-//				freshStart = NO;
-//				[self configureControlViewAtIndex:currentIndex];
-//			} else {
-//				// check if we has new "near" video added
-//				if ( currentIndex + 1 == newIndexPath.row ) {
-//					[self configureControlViewAtIndex:currentIndex + 1];
-//					// queue the item for play
-//					[self requestAddVideoAtIndex:currentIndex + 1];
-//				}
-//				if ( currentIndex + 2 == newIndexPath.row ) {
-//					[self configureControlViewAtIndex:currentIndex + 2];
-//					[self requestAddVideoAtIndex:currentIndex + 2];
-//				}
-//			}
-//			break;
-//		}
-//			
-//		default:
-//			NSLog(@"default case");
-//			break;
-//	}
-//}
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
+	switch (type) {
+		case NSFetchedResultsChangeInsert:
+		case NSFetchedResultsChangeMove:
+		{
+			NMVideo * vid = (NMVideo *)anObject;
+			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
+			break;
+		}
+		default:
+			NSLog(@"default case");
+			break;
+	}
+}
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	NSLog(@"controllerDidChangeContent");

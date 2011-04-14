@@ -36,6 +36,10 @@
     
 	self.window.rootViewController = self.channelViewController;
 	[self.window makeKeyAndVisible];
+	
+	// listen to error notification
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleErrorNotification:) name:NMTaskFailNotification object:nil];
+	
     return YES;
 }
 
@@ -92,7 +96,14 @@
             abort();
         } 
     }
-}    
+}
+
+- (void)handleErrorNotification:(NSNotification *)aNotification {
+	NSDictionary * info = [aNotification userInfo];
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[info objectForKey:@"message"] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+	[alert show];
+	[alert release];
+}
 
 #pragma mark -
 #pragma mark Memory management

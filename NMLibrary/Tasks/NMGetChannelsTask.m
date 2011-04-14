@@ -65,9 +65,10 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 		
 		fvDict = [cDict objectForKey:@"first_video"];
 		if ( fvDict ) {
-			[pDict setObject:[NMGetChannelVideoListTask normalizeVideoDictionary:fvDict] forKey:@"first_video"];
-			[pDict setObject:[NSNumber numberWithUnsignedInteger:0] forKey:@"nm_sort_order"];
-			[pDict setObject:[NSDate date] forKey:@"nm_playback_status"];
+			NSMutableDictionary * theVidDict = [NMGetChannelVideoListTask normalizeVideoDictionary:fvDict];
+			[pDict setObject:theVidDict forKey:@"first_video"];
+//			[fvDict setObject:[NSNumber numberWithUnsignedInteger:0] forKey:@"nm_sort_order"];
+			[theVidDict setObject:[NSDate date] forKey:@"nm_fetch_timestamp"];
 		}
 		[parsedObjects addObject:pDict];
 	}
