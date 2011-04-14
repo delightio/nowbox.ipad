@@ -25,6 +25,7 @@
 	BOOL firstShowControlView;
 	BOOL freshStart;
 	BOOL rowCountHasChanged;
+	NSIndexPath ** indexPathCache;
 	
 	NSUInteger currentIndex;
 	NSUInteger numberOfVideos;

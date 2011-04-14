@@ -10,11 +10,14 @@
 #import "SocialSignInViewController.h"
 #import "NMLibrary.h"
 #import "NMVideo.h"
+#import "NMMovieView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
-#define NM_PLAYER_STATUS_CONTEXT		100
+#define NM_PLAYER_STATUS_CONTEXT			100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT		101
+#define NM_MAX_VIDEO_IN_QUEUE				3
+#define NM_INDEX_PATH_CACHE_SIZE			4
 
 typedef enum {
 	NMVideoQueueStatusNone,
@@ -35,6 +38,10 @@ typedef enum {
 - (void)configureControlViewAtIndex:(NSInteger)idx;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
 - (void)translateMovieViewByOffset:(CGFloat)offset;
+
+// index path cache
+- (NSIndexPath *)indexPathAtIndex:(NSUInteger)idx;
+- (void)freeIndexPathCache;
 
 @end
 
@@ -64,6 +71,9 @@ typedef enum {
 	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	firstShowControlView = YES;
+	
+	indexPathCache = CFAllocatorAllocate(NULL, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE, 0);
+	bzero(indexPathCache, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE);
 	
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	// create movie view
@@ -143,6 +153,7 @@ typedef enum {
 
 
 - (void)dealloc {
+	[self freeIndexPathCache];
     [fetchedResultsController_ release];
     [managedObjectContext_ release];
 	[currentIndexPath_ release];
@@ -310,6 +321,21 @@ typedef enum {
 }
 
 #pragma mark Video queuing
+- (void)checkUpdateVideoQueue {
+	NSUInteger c = [movieView.player.items count];
+	if ( c < NM_MAX_VIDEO_IN_QUEUE) {
+		// we need to queue more video in the player
+		for ( NSInteger i = currentIndex + c; i < NM_MAX_VIDEO_IN_QUEUE + currentIndex; i++ ) {
+			// queue the video
+			[self queueVideoToPlayer:(NMVideo *)[self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:i]]];
+		}
+	}
+	// get more video from Nowmov server
+	if ( numberOfVideos - currentIndex < 4 ) {
+		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+	}
+}
+
 - (void)showNextVideo:(BOOL)didPlayToEnd {
 	if ( !(currentIndex + 1 < numberOfVideos) ) {
 		// there's no more video available
@@ -542,11 +568,14 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"current item changed");
 #endif
+		// ====== video queuing ======
+		[self checkUpdateVideoQueue];
+		// ====== update interface ======
 		// update the time
 		ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 		[ctrlView setControlsHidden:NO animated:YES];
 		t = movieView.player.currentItem.asset.duration;
-		// check if the time is value
+		// check if the time is valid
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			ctrlView.duration = t.value / t.timescale;
 			videoDurationInvalid = NO;
@@ -905,6 +934,31 @@ typedef enum {
 			s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 		}
 	}*/
+}
+
+#pragma mark NSIndexPath cache
+- (NSIndexPath *)indexPathAtIndex:(NSUInteger)idx {
+	// cache recent NM_MAX_VIDEO_IN_QUEUE + 1 index
+	NSIndexPath * idxPath = indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE];
+	if ( idxPath == nil ) {
+		// create the path
+		idxPath = [NSIndexPath indexPathForRow:idx inSection:0];
+		indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE] = [idxPath retain];
+	} else if ( idxPath.row != idx ) {
+		// remove the old one
+		[indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE] release];
+		// put the new one in cache
+		idxPath = [NSIndexPath indexPathForRow:idx inSection:0];
+		indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE] = [idxPath retain];
+	}
+	return idxPath;
+}
+
+- (void)freeIndexPathCache {
+	for ( NSInteger i = 0; i < NM_INDEX_PATH_CACHE_SIZE; i++ ) {
+		[indexPathCache[i] release];
+	}
+	CFAllocatorDeallocate(NULL, indexPathCache);
 }
 
 @end
