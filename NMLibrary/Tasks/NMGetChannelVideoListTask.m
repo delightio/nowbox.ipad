@@ -74,7 +74,6 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	NSArray * chVideos = [buffer objectFromJSONData];
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
-	NSUInteger idx = 0;
 	NSDate * timestamp = [NSDate date];
 	for (NSDictionary * dict in chVideos) {
 		mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];

@@ -270,7 +270,7 @@ typedef enum {
 	[player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
 		// print the time
 		CMTime t = [movieView.player currentTime];
-		NSUInteger sec = 0;
+		NSInteger sec = 0;
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = t.value / t.timescale;
 		}
@@ -623,7 +623,12 @@ typedef enum {
 	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
 		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
 	} else if ( c == NM_LOADED_TIME_RANGES_CONTEXT ) {
-		NSLog(@"%d", [[object valueForKeyPath:keyPath] count]);
+		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+		if ( !ctrlView.controlsHidden ) {
+			// progress bar should show the buffering progress
+			NSValue * theVal = [[object valueForKeyPath:keyPath] objectAtIndex:0];
+			ctrlView.timeRangeBuffered = [theVal CMTimeRangeValue];
+		}
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}

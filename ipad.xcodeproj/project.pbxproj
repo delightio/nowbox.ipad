@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A9042616135754710067E53F /* progress_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = A9042615135754710067E53F /* progress_bar.png */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A9250145134385BF001759F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
@@ -190,6 +191,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A9042615135754710067E53F /* progress_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_bar.png; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* ipad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ipad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -651,6 +653,7 @@
 				A970503113438F860022BF2C /* friend_videos.png */,
 				A970503213438F860022BF2C /* Icon.png */,
 				A970503413438F860022BF2C /* playback_progress_background.png */,
+				A9042615135754710067E53F /* progress_bar.png */,
 				A970503513438F860022BF2C /* surprise_me.png */,
 			);
 			path = Images;
@@ -1320,6 +1323,7 @@
 				A9840FCB134EA1CA00CFF1EA /* thumb_up.png in Resources */,
 				A9840FCF134EA2D500CFF1EA /* share_callout_active.png in Resources */,
 				A9840FD0134EA2D500CFF1EA /* share_callout_normal.png in Resources */,
+				A9042616135754710067E53F /* progress_bar.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

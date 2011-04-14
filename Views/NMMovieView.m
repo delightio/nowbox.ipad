@@ -31,15 +31,6 @@
 	[super dealloc];
 }
 
-- (void)swipeGestureAction:(id)sender {
-	UIPanGestureRecognizer * panRcr = (UIPanGestureRecognizer *)sender;
-	CGPoint pos = [panRcr translationInView:self.superview];
-	CGPoint theCenter = initialCenter;
-	theCenter.x += pos.x;
-	self.center = theCenter;
-	NSLog(@"%f, %f", pos.x, pos.y);
-}
-
 + (Class)layerClass {
 	return [AVPlayerLayer class];
 }

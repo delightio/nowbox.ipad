@@ -10,19 +10,28 @@
 #import "NMMovieView.h"
 
 #define NM_PLAYER_STATUS_CONTEXT		100
-#define NM_PLAYER_CURRENT_ITEM_CONTEXT		101
+#define NM_PLAYER_CURRENT_ITEM_CONTEXT	101
+#define NM_PLAYER_PROGRESS_BAR_WIDTH	544
 
 
 @implementation NMControlsView
 
 @synthesize title, duration, timeElapsed, authorProfileURLString;
 @synthesize channelViewButton, shareButton, playPauseButton;
-@synthesize nextVideoButton;
+@synthesize nextVideoButton, controlsHidden, timeRangeBuffered;
 
 - (void)awakeFromNib {
 	// load the progress bar image
 	UIImage * img = [UIImage imageNamed:@"playback_progress_background"];
 	progressView.image = [img stretchableImageWithLeftCapWidth:98 topCapHeight:0];
+	progressBarLayer = [[CALayer layer] retain];
+	img = [UIImage imageNamed:@"progress_bar"];
+	progressBarLayer.contents = (id)img.CGImage;
+	progressBarLayer.contentsCenter = CGRectMake(0.35, 0.0, 0.3, 1.0);
+	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH;
+	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 0.0, img.size.height);
+	progressBarLayer.position = CGPointMake(96.0f, 25.0f);
+	[progressView.layer addSublayer:progressBarLayer];
 }
 
 //- (id)initWithFrame:(CGRect)frame {
@@ -44,6 +53,7 @@
 
 - (void)dealloc {
 	[authorProfileURLString release];
+	[progressBarLayer release];
     [super dealloc];
 }
 
@@ -79,6 +89,10 @@
 	if ( animated ) {
 		[UIView commitAnimations];
 	}
+}
+
+- (BOOL)controlsHidden {
+	return progressView.alpha == 0.0f || self.alpha == 0.0f || self.hidden;
 }
 
 #pragma mark KVO
@@ -123,6 +137,10 @@
 	[authorButton setTitle:@"" forState:UIControlStateNormal];
 	durationLabel.text = @"--:--";
 	currentTimeLabel.text = @"--:--";
+	// reset progress bar
+	CGRect theFrame = progressBarLayer.bounds;
+	theFrame.size.width = 0.0;
+	progressBarLayer.bounds = theFrame;
 	self.alpha = 1.0;
 	self.hidden = NO;
 	[self setControlsHidden:YES animated:NO];
@@ -157,11 +175,26 @@
 }
 
 - (void)setDuration:(NSInteger)aDur {
+	pxWidthPerSecond = progressBarWidth / aDur;
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", aDur / 60, aDur % 60];
 }
 
 - (void)setTimeElapsed:(NSInteger)aTime {
+	CGFloat barWidth = floorf(pxWidthPerSecond * aTime);
+	CGRect theFrame = progressBarLayer.frame;
+	if ( barWidth > theFrame.size.width ) {
+		[CATransaction begin];
+		[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+		theFrame.size.width = barWidth;
+		progressBarLayer.frame = theFrame;
+		[CATransaction commit];
+	}
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", aTime / 60, aTime % 60];
+	
+}
+
+- (void)setTimeRangeBuffered:(CMTimeRange)aRange {
+	NSLog(@"%lld %lld", aRange.start.value / aRange.start.timescale, aRange.duration.value / aRange.duration.timescale);
 }
 
 @end
