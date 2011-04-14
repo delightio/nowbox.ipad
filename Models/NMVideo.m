@@ -17,11 +17,14 @@
 @dynamic service_external_id;
 @dynamic nm_description;
 @dynamic created_at;
+@dynamic nm_fetch_timestamp;
 @dynamic title;
 @dynamic total_mentions;
 @dynamic nm_direct_url;
 @dynamic nm_sort_order;
+@dynamic nm_error;
 @synthesize nm_playback_status=nm_playback_status_;
+@synthesize nm_retry_count=nm_retry_count_;
 @dynamic service_name;
 @dynamic vid;
 @dynamic reason_included;

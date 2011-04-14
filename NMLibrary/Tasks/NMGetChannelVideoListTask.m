@@ -74,8 +74,12 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	NSArray * chVideos = [buffer objectFromJSONData];
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
+	NSUInteger idx = 0;
+	NSDate * timestamp = [NSDate date];
 	for (NSDictionary * dict in chVideos) {
 		mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
+		[mdict setObject:[NSNumber numberWithUnsignedInteger:idx++] forKey:@"nm_sort_order"];
+		[mdict setObject:timestamp forKey:@"nm_playback_status"];
 		[parsedObjects addObject:mdict];
 	}
 	
@@ -85,11 +89,11 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	// add all video from server for now
 	NSDictionary * dict;
 	NMVideo * vidObj;
-	NSUInteger idx = [channel.videos count];
+	//NSUInteger idx = [channel.videos count];
 	for (dict in parsedObjects) {
 		vidObj = [ctrl insertNewVideo];
 		[vidObj setValuesForKeysWithDictionary:dict];
-		vidObj.nm_sort_order = [NSNumber numberWithInteger:idx++];
+		//vidObj.nm_sort_order = [NSNumber numberWithInteger:idx++];
 		vidObj.channel = channel;
 		[channel addVideosObject:vidObj];
 	}

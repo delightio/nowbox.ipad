@@ -784,7 +784,8 @@ typedef enum {
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_fetch_timestamp" ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, timestampDesc, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
     
@@ -797,6 +798,7 @@ typedef enum {
     [aFetchedResultsController release];
     [fetchRequest release];
     [sortDescriptor release];
+	[timestampDesc release];
     [sortDescriptors release];
     
     NSError *error = nil;

@@ -32,6 +32,11 @@ typedef enum {
 	NMEventView,
 } NMEventType;
 
+typedef enum {
+	NMErrorNone,
+	NMVideoTakenDownError,
+} NMErrorType;
+
 // Notifications
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;
