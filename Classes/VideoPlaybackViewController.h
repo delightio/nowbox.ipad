@@ -33,6 +33,7 @@
 	NMTaskQueueController * nowmovTaskController;
 	
 	BOOL videoDurationInvalid;
+	BOOL bufferEmpty;
 	
 	@private
     NSManagedObjectContext *managedObjectContext_;

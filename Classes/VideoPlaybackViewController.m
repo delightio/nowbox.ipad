@@ -260,9 +260,9 @@ typedef enum {
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
-	[player addObserver:self forKeyPath:@"currentItem.playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
-	[player addObserver:self forKeyPath:@"currentItem.playbackBufferEmpty" options:0 context:(void *)NM_PLAYBACK_BUFFER_EMPTY_CONTEXT];
-	[player addObserver:self forKeyPath:@"currentItem.loadedTimeRanges" options:0 context:(void *)NM_LOADED_TIME_RANGES_CONTEXT];
+//	[player addObserver:self forKeyPath:@"currentItem.playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
+//	[player addObserver:self forKeyPath:@"currentItem.playbackBufferEmpty" options:0 context:(void *)NM_PLAYBACK_BUFFER_EMPTY_CONTEXT];
+//	[player addObserver:self forKeyPath:@"currentItem.loadedTimeRanges" options:0 context:(void *)NM_LOADED_TIME_RANGES_CONTEXT];
 	// all control view should observe to player changes
 	for (NMControlsView * ctrlView in controlViewArray) {
 		[player addObserver:ctrlView forKeyPath:@"rate" options:0 context:(void *)11111];
@@ -611,25 +611,27 @@ typedef enum {
 		} else {
 			videoDurationInvalid = YES;
 		}
-	} else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
-		BOOL bffEmpty = [[object valueForKeyPath:keyPath] boolValue];
-		if ( !bffEmpty ) {
+	} /*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
+		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
+	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
+		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
+	} else if ( c == NM_LOADED_TIME_RANGES_CONTEXT ) {
+		if ( movieView.player.rate == 0.0 && bufferEmpty ) {
+			NSValue * theVal = [[object valueForKeyPath:keyPath] objectAtIndex:0];
+			if ( 
 			// check if we should continue playback
 			if ( [[object valueForKeyPath:@"currentItem.playbackLikelyToKeepUp"] boolValue] ) {
 				[self playVideo];
 			}
+			
 		}
-		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
-	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
-	} else if ( c == NM_LOADED_TIME_RANGES_CONTEXT ) {
 		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 		if ( !ctrlView.controlsHidden ) {
 			// progress bar should show the buffering progress
 			NSValue * theVal = [[object valueForKeyPath:keyPath] objectAtIndex:0];
 			ctrlView.timeRangeBuffered = [theVal CMTimeRangeValue];
 		}
-	} else {
+	} */else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }

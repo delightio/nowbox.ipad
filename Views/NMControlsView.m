@@ -27,10 +27,13 @@
 	progressBarLayer = [[CALayer layer] retain];
 	img = [UIImage imageNamed:@"progress_bar"];
 	progressBarLayer.contents = (id)img.CGImage;
-	progressBarLayer.contentsCenter = CGRectMake(0.35, 0.0, 0.3, 1.0);
+	progressBarLayer.contentsCenter = CGRectMake(0.3, 0.0, 0.4, 1.0);
 	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH;
 	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 0.0, img.size.height);
 	progressBarLayer.position = CGPointMake(96.0f, 25.0f);
+	progressBarLayer.shadowOpacity = 1.0;
+	progressBarLayer.shadowOffset = CGSizeZero;
+	
 	[progressView.layer addSublayer:progressBarLayer];
 }
 
