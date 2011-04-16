@@ -15,6 +15,7 @@
 @class NMTaskQueueController;
 
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
+	IBOutlet UIScrollView * controlScrollView;
 	NMMovieView * movieView;
 	
 	NMControlsView * loadedControlView;
@@ -34,6 +35,7 @@
 	
 	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
+	BOOL didPlayToEnd;
 	
 	@private
     NSManagedObjectContext *managedObjectContext_;

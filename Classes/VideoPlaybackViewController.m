@@ -22,6 +22,8 @@
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
+#define NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT	200
+
 typedef enum {
 	NMVideoQueueStatusNone,
 	NMVideoQueueStatusResolvingDirectURL,
@@ -81,9 +83,9 @@ typedef enum {
 	
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:self.view.bounds];
+	movieView = [[NMMovieView alloc] initWithFrame:controlScrollView.bounds];
 	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	[self.view addSubview:movieView];
+	[controlScrollView addSubview:movieView];
 	
 	// pre-load some control view
 	CGRect theFrame;
@@ -104,7 +106,7 @@ typedef enum {
 		theFrame = loadedControlView.frame;
 		theFrame.origin.x = i * theFrame.size.width;
 		loadedControlView.frame = theFrame;
-		[self.view addSubview:loadedControlView];
+		[controlScrollView addSubview:loadedControlView];
 	}
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
@@ -112,13 +114,13 @@ typedef enum {
 	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	// listen to item finish up playing notificaiton
-	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
-	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
 //	[movieView addGestureRecognizer:pinRcr];
-	[self.view addGestureRecognizer:pinRcr];
+	[controlScrollView addGestureRecognizer:pinRcr];
 	[pinRcr release];
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
@@ -218,9 +220,8 @@ typedef enum {
 			[self configureControlViewAtIndex:currentIndex + 2];
 			[self requestAddVideoAtIndex:currentIndex + 2];
 		}
-		UIScrollView * s = (UIScrollView *)self.view;
-		s.scrollEnabled = YES;
-		s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+		controlScrollView.scrollEnabled = YES;
+		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 		
 		//TODO: check if need to queue fetch video list
 	} else {
@@ -255,6 +256,7 @@ typedef enum {
 - (void)preparePlayer {
 	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:self.currentIndexPath];
 	AVQueuePlayer * player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
+	player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 	vid.nm_playback_status = NMVideoQueueStatusQueued;
 	movieView.player = player;
 	// observe status change in player
@@ -278,7 +280,9 @@ typedef enum {
 		if ( videoDurationInvalid ) {
 			t = movieView.player.currentItem.asset.duration;
 			if ( t.flags & kCMTimeFlags_Valid ) {
+#ifdef DEBUG_PLAYBACK_QUEUE
 				NSLog(@"invalid time, get duration again: %lld", t.value / t.timescale);
+#endif
 				ctrlView.duration = t.value / t.timescale;
 				videoDurationInvalid = NO;
 			}
@@ -307,9 +311,40 @@ typedef enum {
 }
 
 - (void)translateMovieViewByOffset:(CGFloat)offset {
-	CGRect theFrame = movieView.frame;
-	theFrame.origin.x += theFrame.size.width * offset;
-	movieView.frame = theFrame;
+	CGPoint pos = movieView.center;
+	pos.x += movieView.bounds.size.width * offset;
+	movieView.center = pos;
+//	CGRect theFrame = movieView.frame;
+//	theFrame.origin.x += theFrame.size.width * offset;
+//	movieView.frame = theFrame;
+}
+
+- (void)showPlayerAndControl {
+	controlScrollView.alpha = 1.0;	// don't perform transition yet
+	controlScrollView.scrollEnabled = YES;
+	didPlayToEnd = NO;
+}
+
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+	NSInteger c = (NSInteger)context;
+	switch (c) {
+		case NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT:
+			currentIndex++;
+			// scroll to next video
+			// translate the movie view
+			[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:NO];
+			[self translateMovieViewByOffset:1.0f];
+			
+			[movieView.player advanceToNextItem];
+			[movieView.player play];
+			
+			// make the view visible
+			[self performSelector:@selector(showPlayerAndControl) withObject:nil afterDelay:0.1];
+			break;
+			
+		default:
+			break;
+	}
 }
 
 #pragma mark Control Views Management
@@ -328,31 +363,40 @@ typedef enum {
 }
 
 #pragma mark Video queuing
-- (void)showNextVideo:(BOOL)didPlayToEnd {
+- (void)showNextVideo:(BOOL)aEndOfVideo {
 	if ( !(currentIndex + 1 < numberOfVideos) ) {
 		// there's no more video available
 		//TODO: get more video here. issue fetch video list request
 		
 		return;
 	}
-	// visually transit to next video just like the user has tapped next button
-	UIScrollView * sv = (UIScrollView *)self.view;
-	[sv setContentOffset:CGPointMake(sv.contentOffset.x + sv.bounds.size.width, 0.0f) animated:YES];
-	[self translateMovieViewByOffset:1.0f];
 	firstShowControlView = YES;
-	// advance the index
-	currentIndex++;
-	if ( didPlayToEnd ) {
+	// visually transit to next video just like the user has tapped next button
+	if ( aEndOfVideo ) {
+		// disable interface scrolling
+		// will activate again on "currentItem" change kvo notification
+		controlScrollView.scrollEnabled = NO;
+		// fade out the view
+		[UIView beginAnimations:nil context:(void *)NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT];
+		controlScrollView.alpha = 0.0;
+		[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+		[UIView setAnimationDelegate:self];
+		[UIView commitAnimations];
+		// when traisition is done. move shift the scroll view and reveals the video player again
 	} else {
+		[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:YES];
+		[self translateMovieViewByOffset:1.0f];
+		// advance the index
+		currentIndex++;
 		// show the next video in the player
 		[movieView.player advanceToNextItem];
 		[movieView.player play];
-	}
-	// update the movie control view
-	if ( currentIndex + 2 < numberOfVideos ) {
-		[self configureControlViewAtIndex:currentIndex + 2];
-	} else {
-		// get more video here
+		// update the movie control view
+		if ( currentIndex + 2 < numberOfVideos ) {
+			[self configureControlViewAtIndex:currentIndex + 2];
+		} else {
+			// get more video here
+		}
 	}
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
 }
@@ -522,15 +566,23 @@ typedef enum {
 }
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
+#ifdef DEBUG_PLAYBACK_QUEUE
+	NSLog(@"did play notification");
+#endif
+	didPlayToEnd = YES;
 	[self showNextVideo:YES];
 }
 
 - (void)handleErrorNotification:(NSNotification *)aNotification {
 	if ( [[aNotification name] isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSDictionary * info = [aNotification userInfo];
 		NSLog(@"direct URL resolution failed: %@", [info objectForKey:@"error"]);
+#endif
 	} else {
+#ifdef DEBUG_PLAYBACK_QUEUE
 		NSLog(@"error playing video");
+#endif
 	}
 	[self showNextVideo:YES];
 	//TODO: remove the video from playlist
@@ -590,7 +642,7 @@ typedef enum {
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		// never change currentIndex here!!
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+#ifdef DEBUG_PLAYBACK_QUEUE
 		NSLog(@"current item changed");
 #endif
 		// ====== video queuing ======
@@ -610,6 +662,9 @@ typedef enum {
 			videoDurationInvalid = NO;
 		} else {
 			videoDurationInvalid = YES;
+		}
+		if ( didPlayToEnd ) {
+			controlScrollView.scrollEnabled = YES;
 		}
 	} /*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
 		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
@@ -894,7 +949,9 @@ typedef enum {
 }    
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
+#endif
 	switch (type) {
 		case NSFetchedResultsChangeInsert:
 		case NSFetchedResultsChangeMove:
@@ -904,13 +961,17 @@ typedef enum {
 			break;
 		}
 		default:
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 			NSLog(@"default case");
+#endif
 			break;
 	}
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"controllerDidChangeContent");
+#endif
 //	if ( rowCountHasChanged ) {
 //		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 //		NSUInteger prevCount = numberOfVideos;
