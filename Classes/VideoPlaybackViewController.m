@@ -404,7 +404,7 @@ typedef enum {
 - (void)requestAddVideoAtIndex:(NSUInteger)idx {
 	if ( idx >= numberOfVideos ) return;
 	// request to add the video to queue. If the direct URL does not exists, fetch from the server
-	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
+	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:idx]];
 	if ( (vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""]) ) {
 		if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
 	#ifdef DEBUG_PLAYBACK_NETWORK_CALL
@@ -425,25 +425,36 @@ typedef enum {
 	if ( c > NM_MAX_VIDEO_IN_QUEUE - 1 ) return;
 	// since this method is called NOT-IN-ORDER, we should transverse the whole list to queue items
 	NMVideo * vid;
+	BOOL enableQueuing = YES;
 	for ( NSInteger i = currentIndex + c; i < NM_MAX_VIDEO_IN_QUEUE + currentIndex; i++ ) {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+		NSLog(@"add/issue resolve items: %d", i);
+#endif
 		vid = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:i]];
-		if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
-			// queue
-			AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
-			if ( [movieView.player canInsertItem:item afterItem:nil] ) {
-				[movieView.player insertItem:item afterItem:nil];
-				vid.nm_playback_status = NMVideoQueueStatusQueued;
+		if ( enableQueuing ) {
+			if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
+				// queue
+				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
+				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
+					[movieView.player insertItem:item afterItem:nil];
+					vid.nm_playback_status = NMVideoQueueStatusQueued;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-				NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
+					NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
 #endif
-			}
+				}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-			else {
-				NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
-			}
+				else {
+					NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
+				}
 #endif
+			} else if ( vid.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
+				[self requestAddVideoAtIndex:i];
+				// exit the loop. don't have to queue other video in the list. the queuing process must be in-order
+				enableQueuing = NO;
+			}
 		} else {
-			break;
+			// just check if we should resolve the direct URL
+			[self requestAddVideoAtIndex:i];
 		}
 	}
 }
@@ -599,10 +610,9 @@ typedef enum {
 		[self configureControlViewAtIndex:currentIndex + 2];
 		[self requestAddVideoAtIndex:currentIndex + 2];
 	}
-	UIScrollView * s = (UIScrollView *)self.view;
-	if ( !s.scrollEnabled ) {
-		s.scrollEnabled = YES;
-		s.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+	if ( !controlScrollView.scrollEnabled ) {
+		controlScrollView.scrollEnabled = YES;
+		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 	}
 }
 
@@ -949,9 +959,9 @@ typedef enum {
 }    
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
-#endif
+//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+//	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
+//#endif
 	switch (type) {
 		case NSFetchedResultsChangeInsert:
 		case NSFetchedResultsChangeMove:
@@ -961,9 +971,9 @@ typedef enum {
 			break;
 		}
 		default:
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-			NSLog(@"default case");
-#endif
+//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+//			NSLog(@"default case");
+//#endif
 			break;
 	}
 }
