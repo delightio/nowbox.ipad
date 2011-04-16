@@ -171,10 +171,10 @@ typedef enum {
 
 - (NSIndexPath *)currentIndexPath {
 	if ( currentIndexPath_ == nil ) {
-		currentIndexPath_ = [[NSIndexPath indexPathForRow:currentIndex inSection:0] retain];
+		currentIndexPath_ = [[self indexPathAtIndex:currentIndex] retain];
 	} else if ( currentIndexPath_.row != currentIndex ) {
 		[currentIndexPath_ release];
-		currentIndexPath_ = [[NSIndexPath indexPathForRow:currentIndex inSection:0] retain];
+		currentIndexPath_ = [[self indexPathAtIndex:currentIndex] retain];
 	}
 	
 	return currentIndexPath_;
@@ -330,6 +330,7 @@ typedef enum {
 	switch (c) {
 		case NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT:
 			currentIndex++;
+			firstShowControlView = YES;
 			// scroll to next video
 			// translate the movie view
 			[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:NO];
@@ -338,6 +339,12 @@ typedef enum {
 			[movieView.player advanceToNextItem];
 			[movieView.player play];
 			
+			// update the movie control view
+			if ( currentIndex + 2 < numberOfVideos ) {
+				[self configureControlViewAtIndex:currentIndex + 2];
+			} else {
+				// get more video here
+			}
 			// make the view visible
 			[self performSelector:@selector(showPlayerAndControl) withObject:nil afterDelay:0.1];
 			break;
@@ -351,7 +358,7 @@ typedef enum {
 - (void)configureControlViewAtIndex:(NSInteger)idx {
 	NMControlsView * mv = [controlViewArray objectAtIndex:RRIndex(idx)];
 	// set title and stuff
-	NMVideo * v = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
+	NMVideo * v = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:idx]];
 	[mv resetView];
 	mv.title = v.title;
 	mv.authorProfileURLString = v.author_profile_link;
@@ -364,13 +371,12 @@ typedef enum {
 
 #pragma mark Video queuing
 - (void)showNextVideo:(BOOL)aEndOfVideo {
-	if ( !(currentIndex + 1 < numberOfVideos) ) {
+	if ( currentIndex + 1 >= numberOfVideos ) {
 		// there's no more video available
 		//TODO: get more video here. issue fetch video list request
 		
 		return;
 	}
-	firstShowControlView = YES;
 	// visually transit to next video just like the user has tapped next button
 	if ( aEndOfVideo ) {
 		// disable interface scrolling
@@ -388,6 +394,7 @@ typedef enum {
 		[self translateMovieViewByOffset:1.0f];
 		// advance the index
 		currentIndex++;
+		firstShowControlView = YES;	// change this together with currentIndex
 		// show the next video in the player
 		[movieView.player advanceToNextItem];
 		[movieView.player play];
@@ -430,31 +437,36 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"add/issue resolve items: %d", i);
 #endif
-		vid = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:i]];
-		if ( enableQueuing ) {
-			if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
-				// queue
-				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
-				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
-					[movieView.player insertItem:item afterItem:nil];
-					vid.nm_playback_status = NMVideoQueueStatusQueued;
+		// check if there's enough video here to queue to.
+		if ( i < numberOfVideos ) {
+			vid = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:i]];
+			if ( enableQueuing ) {
+				if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
+					// queue
+					AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
+					if ( [movieView.player canInsertItem:item afterItem:nil] ) {
+						[movieView.player insertItem:item afterItem:nil];
+						vid.nm_playback_status = NMVideoQueueStatusQueued;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-					NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
+						NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
 #endif
-				}
+					}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-				else {
-					NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
-				}
+					else {
+						NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
+					}
 #endif
-			} else if ( vid.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
+				} else if ( vid.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
+					[self requestAddVideoAtIndex:i];
+					// exit the loop. don't have to queue other video in the list. the queuing process must be in-order
+					enableQueuing = NO;
+				}
+			} else {
+				// just check if we should resolve the direct URL
 				[self requestAddVideoAtIndex:i];
-				// exit the loop. don't have to queue other video in the list. the queuing process must be in-order
-				enableQueuing = NO;
 			}
 		} else {
-			// just check if we should resolve the direct URL
-			[self requestAddVideoAtIndex:i];
+			break;
 		}
 	}
 }
@@ -653,12 +665,15 @@ typedef enum {
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		// never change currentIndex here!!
 #ifdef DEBUG_PLAYBACK_QUEUE
-		NSLog(@"current item changed");
+		NSLog(@"current item changed. t: %d c: %d", numberOfVideos, currentIndex);
 #endif
 		// ====== video queuing ======
 		[self playerQueueVideos];
 		// get more video from Nowmov server
-		if ( numberOfVideos - currentIndex < 4 ) {
+		if ( numberOfVideos - currentIndex < 3 ) {
+#ifdef DEBUG_PLAYBACK_QUEUE
+			NSLog(@"fetch video list for this channel");
+#endif
 			[nowmovTaskController issueGetVideoListForChannel:currentChannel];
 		}
 		// ====== update interface ======
@@ -923,12 +938,12 @@ typedef enum {
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", currentChannel]];
     
     // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:20];
+    [fetchRequest setFetchBatchSize:4];
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
 	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_fetch_timestamp" ascending:YES];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, timestampDesc, nil];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
     
@@ -1033,17 +1048,17 @@ typedef enum {
 #pragma mark NSIndexPath cache
 - (NSIndexPath *)indexPathAtIndex:(NSUInteger)idx {
 	// cache recent NM_MAX_VIDEO_IN_QUEUE + 1 index
-	NSIndexPath * idxPath = indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE];
+	NSIndexPath * idxPath = indexPathCache[idx % NM_INDEX_PATH_CACHE_SIZE];
 	if ( idxPath == nil ) {
 		// create the path
 		idxPath = [NSIndexPath indexPathForRow:idx inSection:0];
-		indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE] = [idxPath retain];
+		indexPathCache[idx % NM_INDEX_PATH_CACHE_SIZE] = [idxPath retain];
 	} else if ( idxPath.row != idx ) {
 		// remove the old one
-		[indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE] release];
+		[indexPathCache[idx % NM_INDEX_PATH_CACHE_SIZE] release];
 		// put the new one in cache
 		idxPath = [NSIndexPath indexPathForRow:idx inSection:0];
-		indexPathCache[idx / NM_INDEX_PATH_CACHE_SIZE] = [idxPath retain];
+		indexPathCache[idx % NM_INDEX_PATH_CACHE_SIZE] = [idxPath retain];
 	}
 	return idxPath;
 }

@@ -143,7 +143,13 @@
 	// reset progress bar
 	CGRect theFrame = progressBarLayer.bounds;
 	theFrame.size.width = 0.0;
+	
+	[CATransaction begin];
+	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	progressBarLayer.bounds = theFrame;
+	progressBarLayer.position = CGPointMake(96.0f, 25.0f);
+	[CATransaction commit];
+	
 	self.alpha = 1.0;
 	self.hidden = NO;
 	[self setControlsHidden:YES animated:NO];
