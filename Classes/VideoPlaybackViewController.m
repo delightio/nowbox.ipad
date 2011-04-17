@@ -1021,6 +1021,16 @@ typedef enum {
 		case NSFetchedResultsChangeUpdate:
 			rowCountHasChanged = NO;
 			break;
+		case NSFetchedResultsChangeMove:
+			rowCountHasChanged = NO;
+			NMVideo * vid = (NMVideo *)anObject;
+			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
+			// check if the new position makes the video become ready to be queued
+			if ( newIndexPath.row - currentIndex < 3 ) {
+				[self configureControlViewAtIndex:newIndexPath.row];
+				[self requestAddVideoAtIndex:newIndexPath.row];
+			}
+			break;
 		default:
 		{
 			rowCountHasChanged = YES;
