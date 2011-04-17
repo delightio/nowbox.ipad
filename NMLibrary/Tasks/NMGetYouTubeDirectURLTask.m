@@ -38,7 +38,9 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?v=%@&xl=xl_blazer&ajax=1&tsp=1&tspv=v2&xl=xl_blazer", externalID];
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"%@", urlStr);
+#endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setValue:NMYoutubeUserAgent forHTTPHeaderField:@"User-Agent"];
 	

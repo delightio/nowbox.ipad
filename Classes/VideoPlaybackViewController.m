@@ -201,9 +201,6 @@ typedef enum {
 	for (NMControlsView * ctrlView in controlViewArray) {
 		[ctrlView resetView];
 	}
-	if ( numberOfVideos == 1 ) {
-		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
-	}
 	// update the video list
 	if ( numberOfVideos ) {
 		// we should play video at currentIndex
@@ -426,7 +423,7 @@ typedef enum {
 			vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 			[nowmovTaskController issueGetDirectURLForVideo:vid];
 		}
-	} else {
+	} else if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
 		[self playerQueueVideos];
 	}
 }
@@ -462,14 +459,14 @@ typedef enum {
 						NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
 					}
 #endif
-				} else if ( vid.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
+				} else if ( vid.nm_playback_status < NMVideoQueueStatusDirectURLReady ) {
 					[self requestAddVideoAtIndex:i];
 					// exit the loop. don't have to queue other video in the list. the queuing process must be in-order
 					enableQueuing = NO;
 				}
 			} else {
 				// just check if we should resolve the direct URL
-				[self requestAddVideoAtIndex:i];
+//				[self requestAddVideoAtIndex:i];
 			}
 		} else {
 			break;
@@ -606,16 +603,13 @@ typedef enum {
 	NSDictionary * userInfo = [aNotification userInfo];
 	if ( [[aNotification name] isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-		NSLog(@"direct URL resolution failed: %@", [info objectForKey:@"error"]);
+		NSLog(@"direct URL resolution failed: %@", [userInfo objectForKey:@"error"]);
 #endif
 		// skip the video by marking the resolution status
 		if ( userInfo ) {
 			NMVideo * vid = [userInfo objectForKey:@"target_object"];
 			vid.nm_error = [userInfo objectForKey:@"errorNum"];
-			// remove the item from the list
-			if ( [vid.nm_sort_order integerValue] - currentIndex < 4 ) {
-				
-			}
+			[self.managedObjectContext save:nil];
 		}
 	} else if ( [[aNotification name] isEqualToString:NMURLConnectionErrorNotification] ) {
 		// network error, we should retry
@@ -642,7 +636,11 @@ typedef enum {
 	if ( numVideo == 0 ) {
 		// we can't get any new video from the server. try getting by doubling the count
 		NSUInteger vidReq = [[userInfo objectForKey:@"num_video_requested"] unsignedIntegerValue];
-		[nowmovTaskController issueGetVideoListForChannel:currentChannel numberOfVideos:vidReq * 2];
+		if ( vidReq < 41 ) {
+			[nowmovTaskController issueGetVideoListForChannel:currentChannel numberOfVideos:vidReq * 2];
+		} else {
+			// we have finish up this channel
+		}
 	} else {
 		if ( currentIndex + 1 < numberOfVideos )	{
 			[self configureControlViewAtIndex:currentIndex + 1];
@@ -948,8 +946,10 @@ typedef enum {
 		currentIndex++;		// update the currentIndex before calling advanceToNextItem
 		[movieView.player advanceToNextItem];
 		[movieView.player play];
-		[self configureControlViewAtIndex:currentIndex + 2];
-		[self requestAddVideoAtIndex:currentIndex + 2];
+		if ( currentIndex + 2 < numberOfVideos ) {
+			[self configureControlViewAtIndex:currentIndex + 2];
+			[self requestAddVideoAtIndex:currentIndex + 2];
+		}
 //		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 	} else {
 		[self playVideo];
@@ -975,7 +975,7 @@ typedef enum {
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	
 	// set predicate
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", currentChannel]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", currentChannel]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];
@@ -1026,7 +1026,7 @@ typedef enum {
 			NMVideo * vid = (NMVideo *)anObject;
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
 			// check if the new position makes the video become ready to be queued
-			if ( newIndexPath.row - currentIndex < 3 ) {
+			if ( currentIndex + 2 >= newIndexPath.row ) {
 				[self configureControlViewAtIndex:newIndexPath.row];
 				[self requestAddVideoAtIndex:newIndexPath.row];
 			}
@@ -1056,6 +1056,7 @@ typedef enum {
 	if ( rowCountHasChanged ) {
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 		numberOfVideos = [sectionInfo numberOfObjects];
+		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 		NSLog(@"controllerDidChangeContent: %d", numberOfVideos);
 	}
 	if ( freshStart ) {
