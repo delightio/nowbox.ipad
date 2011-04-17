@@ -67,7 +67,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		encountersErrorDuringProcessing = YES;
 		NSArray * ay = [dict objectForKey:@"errors"];
 		if ( [ay count] ) {
-			NSDictionary * dict = [NSDictionary dictionaryWithObject:[ay objectAtIndex:0] forKey:@"error"];
+			NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:[ay objectAtIndex:0], @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
 			parsedObjects = [[NSArray alloc] initWithObjects:dict, nil];
 		}
 		return;
@@ -75,18 +75,19 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	NSDictionary * contentDict = [dict objectForKey:@"content"];
 	if ( contentDict == nil || [contentDict count] == 0) {
 		encountersErrorDuringProcessing = YES;
-		parsedObjects = [[NSArray alloc] initWithObjects:[NSDictionary dictionaryWithObject:@"No video content" forKey:@"error"], nil];
+		parsedObjects = [[NSArray alloc] initWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil], nil];
 		return;
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	if ( directURLString == nil ) {
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
-		NSDictionary * dict = [NSDictionary dictionaryWithObject:@"Cannot locate HQ video stream" forKey:@"error"];
+		NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate HQ video stream", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
+		NSLog(@"resolution failed: %@", contentDict);
 		parsedObjects = [[NSArray alloc] initWithObjects:dict, nil];
-	} else {
+	} /*else {
 		NSLog(@"resolved URL: %@", self.externalID);
-	}
+	}*/
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {

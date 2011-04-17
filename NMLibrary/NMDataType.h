@@ -34,7 +34,7 @@ typedef enum {
 
 typedef enum {
 	NMErrorNone,
-	NMVideoTakenDownError,
+	NMVideoDirectURLResolutionError,
 } NMErrorType;
 
 // Notifications
@@ -50,6 +50,8 @@ extern NSString * const NMDidGetVideoInfoNotification;
 
 extern NSString * const NMTaskFailNotification;
 extern NSString * const NMDidFailSendEventNotification;
+
+extern NSString * const NMURLConnectionErrorNotification;
 
 // Entity names
 extern NSString * const NMChannelEntityName;

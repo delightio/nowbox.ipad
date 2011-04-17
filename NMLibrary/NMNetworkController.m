@@ -187,7 +187,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 }
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task {
-	NSNotification * n = [NSNotification notificationWithName:NMURLConnectionErrorNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription], @"message", [NSNumber numberWithInteger:[error code]], @"code", nil]];
+	NSNotification * n = [NSNotification notificationWithName:NMURLConnectionErrorNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription], @"message", [NSNumber numberWithInteger:[error code]], @"code", task, @"task", nil]];
 	[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 }
 
@@ -266,7 +266,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)connection];
 	[connectionPool removeObjectForKey:key];
 	NMTask *task = [taskPool objectForKey:key];
-	NSLog(@"error received");
 	// call error handling
 	[self postConnectionErrorNotificationOnMainThread:error forTask:task];
 	// release the task

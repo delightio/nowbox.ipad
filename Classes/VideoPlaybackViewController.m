@@ -115,8 +115,9 @@ typedef enum {
 	[nc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
-	// listen to item finish up playing notificaiton
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
+	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
+	// listen to item finish up playing notificaiton
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	
 	// setup gesture recognizer
@@ -602,17 +603,32 @@ typedef enum {
 }
 
 - (void)handleErrorNotification:(NSNotification *)aNotification {
+	NSDictionary * userInfo = [aNotification userInfo];
 	if ( [[aNotification name] isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-		NSDictionary * info = [aNotification userInfo];
 		NSLog(@"direct URL resolution failed: %@", [info objectForKey:@"error"]);
 #endif
+		// skip the video by marking the resolution status
+		if ( userInfo ) {
+			NMVideo * vid = [userInfo objectForKey:@"target_object"];
+			vid.nm_error = [userInfo objectForKey:@"errorNum"];
+			// remove the item from the list
+			if ( [vid.nm_sort_order integerValue] - currentIndex < 4 ) {
+				
+			}
+		}
+	} else if ( [[aNotification name] isEqualToString:NMURLConnectionErrorNotification] ) {
+		// network error, we should retry
+		NSLog(@"network error in resolving direct URL");
+	} else if ( [[aNotification name] isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
+		NSLog(@"can't finish playing video. just skip it!");
+		didPlayToEnd = YES;
+		[self showNextVideo:YES];
 	} else {
 #ifdef DEBUG_PLAYBACK_QUEUE
-		NSLog(@"error playing video");
+		NSLog(@"other error playing video");
 #endif
 	}
-	[self showNextVideo:YES];
 	//TODO: remove the video from playlist
 }
 
