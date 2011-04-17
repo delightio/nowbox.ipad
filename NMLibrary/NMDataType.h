@@ -49,6 +49,7 @@ extern NSString * const NMWillGetVideoInfoNotification;
 extern NSString * const NMDidGetVideoInfoNotification;
 
 extern NSString * const NMTaskFailNotification;
+extern NSString * const NMDidFailSendEventNotification;
 
 // Entity names
 extern NSString * const NMChannelEntityName;

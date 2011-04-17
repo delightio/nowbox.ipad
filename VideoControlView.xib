@@ -311,7 +311,7 @@
 							<object class="IBUIButton" id="982439972">
 								<reference key="NSNextResponder" ref="385128608"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{19, 14}, {71, 70}}</string>
+								<string key="NSFrame">{{19, 15}, {71, 70}}</string>
 								<reference key="NSSuperview" ref="385128608"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="355713626"/>
@@ -347,6 +347,7 @@
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="50047166"/>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUITag">1017</int>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -432,6 +433,7 @@
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1041989742"/>
 								<bool key="IBUIOpaque">NO</bool>
+								<int key="IBUITag">1043</int>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
@@ -663,6 +665,22 @@
 						<int key="IBEventType">7</int>
 					</object>
 					<int key="connectionID">42</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">voteUpButton</string>
+						<reference key="source" ref="802969940"/>
+						<reference key="destination" ref="355713626"/>
+					</object>
+					<int key="connectionID">44</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">voteDownButton</string>
+						<reference key="source" ref="802969940"/>
+						<reference key="destination" ref="50047166"/>
+					</object>
+					<int key="connectionID">45</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -961,7 +979,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">43</int>
+			<int key="maxID">45</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -997,6 +1015,8 @@
 							<string>shareButton</string>
 							<string>socialLoginButton</string>
 							<string>videoTitleLabel</string>
+							<string>voteDownButton</string>
+							<string>voteUpButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1013,6 +1033,8 @@
 							<string>UIButton</string>
 							<string>UIButton</string>
 							<string>UILabel</string>
+							<string>UIButton</string>
+							<string>UIButton</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1032,6 +1054,8 @@
 							<string>shareButton</string>
 							<string>socialLoginButton</string>
 							<string>videoTitleLabel</string>
+							<string>voteDownButton</string>
+							<string>voteUpButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1086,6 +1110,14 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">videoTitleLabel</string>
 								<string key="candidateClassName">UILabel</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">voteDownButton</string>
+								<string key="candidateClassName">UIButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">voteUpButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 						</object>
 					</object>
@@ -1151,14 +1183,35 @@
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">loadedControlView</string>
-						<string key="NS.object.0">NMControlsView</string>
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>controlScrollView</string>
+							<string>loadedControlView</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>UIScrollView</string>
+							<string>NMControlsView</string>
+						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">loadedControlView</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">loadedControlView</string>
-							<string key="candidateClassName">NMControlsView</string>
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>controlScrollView</string>
+							<string>loadedControlView</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">controlScrollView</string>
+								<string key="candidateClassName">UIScrollView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">loadedControlView</string>
+								<string key="candidateClassName">NMControlsView</string>
+							</object>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

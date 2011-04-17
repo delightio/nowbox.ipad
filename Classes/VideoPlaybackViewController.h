@@ -56,7 +56,7 @@
 //- (IBAction)showShareActionView:(id)sender;
 - (IBAction)backToChannelView:(id)sender;
 - (IBAction)playStopVideo:(id)sender;
-- (IBAction)setLikeVideo:(id)sender;
+- (IBAction)vote:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)showSharePopover:(id)sender;
 

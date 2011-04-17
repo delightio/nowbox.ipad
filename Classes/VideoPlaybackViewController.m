@@ -100,6 +100,8 @@ typedef enum {
 		[loadedControlView.shareButton addTarget:self action:@selector(showSharePopover:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.playPauseButton addTarget:self action:@selector(playStopVideo:) forControlEvents:UIControlEventTouchUpInside];
 		[loadedControlView.nextVideoButton addTarget:self action:@selector(skipCurrentVideo:) forControlEvents:UIControlEventTouchUpInside];
+		[loadedControlView.voteDownButton addTarget:self action:@selector(vote:) forControlEvents:UIControlEventTouchUpInside];
+		[loadedControlView.voteUpButton addTarget:self action:@selector(vote:) forControlEvents:UIControlEventTouchUpInside];
 		
 		[controlViewArray addObject:loadedControlView];
 		// put the view to scroll view
@@ -377,6 +379,9 @@ typedef enum {
 		
 		return;
 	}
+	// send tracking event
+	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+	[nowmovTaskController issueSendViewEventForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath] duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed];
 	// visually transit to next video just like the user has tapped next button
 	if ( aEndOfVideo ) {
 		// disable interface scrolling
@@ -847,8 +852,16 @@ typedef enum {
 	[self dismissModalViewControllerAnimated:YES];
 }
 
-- (IBAction)setLikeVideo:(id)sender {
-	
+- (IBAction)vote:(id)sender {
+	UIView * v = (UIView *)sender;
+	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+	if ( v.tag == 1017 ) {
+		// vote up
+		[nowmovTaskController issueSendUpVoteEventForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath] duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed];
+	} else {
+		// vote down
+		[nowmovTaskController issueSendDownVoteEventForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath] duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed];
+	}
 }
 
 - (IBAction)skipCurrentVideo:(id)sender {
@@ -990,30 +1003,15 @@ typedef enum {
 //#endif
 	switch (type) {
 		case NSFetchedResultsChangeUpdate:
+			rowCountHasChanged = NO;
 			break;
 		default:
 		{
+			rowCountHasChanged = YES;
 			NMVideo * vid = (NMVideo *)anObject;
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
 			break;
 		}
-//		case NSFetchedResultsChangeInsert:
-//		case NSFetchedResultsChangeMove:
-//		{
-//			NMVideo * vid = (NMVideo *)anObject;
-//			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
-//			break;
-//		}
-//		default:
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//			NSLog(@"default case");
-//#endif
-//			break;
-	}
-	if ( type == NSFetchedResultsChangeUpdate ) {
-		rowCountHasChanged = YES;
-	} else {
-		NO;
 	}
 }
 
@@ -1029,9 +1027,11 @@ typedef enum {
 //		}
 //		rowCountHasChanged = NO;
 //	}
-	id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-	numberOfVideos = [sectionInfo numberOfObjects];
-	NSLog(@"controllerDidChangeContent: %d", numberOfVideos);
+	if ( rowCountHasChanged ) {
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
+		numberOfVideos = [sectionInfo numberOfObjects];
+		NSLog(@"controllerDidChangeContent: %d", numberOfVideos);
+	}
 	if ( freshStart ) {
 		if ( numberOfVideos == 0 ) {
 			return;

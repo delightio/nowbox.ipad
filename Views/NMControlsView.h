@@ -23,6 +23,8 @@
 	IBOutlet UIButton *playPauseButton;
 	IBOutlet UIButton *channelViewButton;
 	IBOutlet UIButton *shareButton;
+	IBOutlet UIButton *voteUpButton;
+	IBOutlet UIButton *voteDownButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIImageView *progressView;
@@ -33,6 +35,8 @@
 	
 	NSString * authorProfileURLString;
 	CMTimeRange timeRangeBuffered;
+	NSInteger duration;
+	NSInteger timeElapsed;
 	
 	SEL action;
 	id target;
@@ -49,6 +53,8 @@
 @property (nonatomic, assign) UIButton * shareButton;
 @property (nonatomic, assign) UIButton * playPauseButton;
 @property (nonatomic, assign) UIButton * nextVideoButton;
+@property (nonatomic, assign) UIButton * voteUpButton;
+@property (nonatomic, assign) UIButton * voteDownButton;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 

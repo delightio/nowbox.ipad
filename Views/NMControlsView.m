@@ -19,6 +19,7 @@
 @synthesize title, duration, timeElapsed, authorProfileURLString;
 @synthesize channelViewButton, shareButton, playPauseButton;
 @synthesize nextVideoButton, controlsHidden, timeRangeBuffered;
+@synthesize voteUpButton, voteDownButton;
 
 - (void)awakeFromNib {
 	// load the progress bar image
@@ -184,11 +185,13 @@
 }
 
 - (void)setDuration:(NSInteger)aDur {
+	duration = aDur;
 	pxWidthPerSecond = progressBarWidth / aDur;
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", aDur / 60, aDur % 60];
 }
 
 - (void)setTimeElapsed:(NSInteger)aTime {
+	timeElapsed = aTime;
 	CGFloat barWidth = floorf(pxWidthPerSecond * aTime);
 	CGRect theFrame = progressBarLayer.frame;
 	if ( barWidth > theFrame.size.width ) {

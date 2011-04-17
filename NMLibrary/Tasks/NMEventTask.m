@@ -9,6 +9,7 @@
 #import "NMEventTask.h"
 #import "NMVideo.h"
 
+NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
 
 @implementation NMEventTask
 
@@ -31,10 +32,46 @@
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%d&trigger_name=touch", videoID, elapsedSeconds, duration, eventType];
+	NSString * evtStr;
+	switch (eventType) {
+		case NMEventUpVote:
+			evtStr = @"upvote";
+			break;
+		case NMEventDownVote:
+			evtStr = @"downvote";
+			break;
+		case NMEventRewind:
+			evtStr = @"rewind";
+			break;
+		case NMEventShare:
+			evtStr = @"share";
+			break;
+		case NMEventView:
+			evtStr = @"view";
+			break;
+	}
+	NSString * urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%@&trigger_name=touch", videoID, elapsedSeconds, duration, evtStr];
+#ifdef DEBUG_EVENT_TRACKING
+	NSLog(@"send event: %@", urlStr);
+#endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
 	return request;
+}
+
+- (void)processDownloadedDataInBuffer {
+	if ( [buffer length] == 0 ) return;
+	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+	NSDictionary * dict = [str objectFromJSONString];
+	[str release];
+	
+	if ( ![[dict objectForKey:@"status"] isEqualToString:@"OK"] ) {
+		encountersErrorDuringProcessing = YES;
+	}
+}
+
+- (NSString *)didFailNotificationName {
+	return NMDidFailSendEventNotification;
 }
 
 @end
