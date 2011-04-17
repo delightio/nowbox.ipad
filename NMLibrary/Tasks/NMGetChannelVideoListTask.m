@@ -17,7 +17,9 @@ NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoLi
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 @implementation NMGetChannelVideoListTask
-@synthesize channel, channelName, newChannel, urlString;
+@synthesize channel, channelName;
+@synthesize newChannel, urlString;
+@synthesize numberOfVideoRequested;
 
 + (NSPredicate *)outdatedVideoPredicateTempate {
 	if ( outdatedVideoPredicateTempate_ == nil ) {
@@ -47,6 +49,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	self.channel = aChn;
 	self.channelName = aChn.channel_name;
 	self.urlString = aChn.channel_url;
+	numberOfVideoRequested = 5;
 	return self;
 }
 
@@ -61,7 +64,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 #ifdef NOWMOV_USE_BETA_SITE
 	NSString * urlStr = [NSString stringWithFormat:@"http://beta.nowmov.com/live/videos?target=mobile", channelName];
 #else
-	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile&limit=5", urlString];
+	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile&limit=%d", urlString, numberOfVideoRequested];
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
@@ -75,9 +78,11 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
 	NSDate * timestamp = [NSDate date];
+	NSInteger idx = 0;
 	for (NSDictionary * dict in chVideos) {
 		mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
 		[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
+		[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
 		[parsedObjects addObject:mdict];
 	}
 	
@@ -94,11 +99,12 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 		for (vidObj in channel.videos) {
 			[idIndexSet addIndex:[vidObj.vid unsignedIntegerValue]];
 		}
+		numberOfVideoAdded = 0;
 		for (dict in parsedObjects) {
 			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"vid"] unsignedIntegerValue]] ) {
+				numberOfVideoAdded++;
 				vidObj = [ctrl insertNewVideo];
 				[vidObj setValuesForKeysWithDictionary:dict];
-				vidObj.nm_sort_order = [NSNumber numberWithInteger:idx++];
 				vidObj.channel = channel;
 				[channel addVideosObject:vidObj];
 			}
@@ -107,7 +113,6 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 		for (dict in parsedObjects) {
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
-			vidObj.nm_sort_order = [NSNumber numberWithInteger:idx++];
 			vidObj.channel = channel;
 			[channel addVideosObject:vidObj];
 		}
@@ -162,6 +167,10 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 - (NSString *)didLoadNotificationName {
 	return NMDidGetChannelVideoListNotification;
+}
+
+- (NSDictionary *)userInfo {
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", nil];
 }
 
 @end

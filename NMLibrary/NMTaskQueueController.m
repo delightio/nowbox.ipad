@@ -68,7 +68,13 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
 	// if it's a new channel, we should have special handling on fail
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
-//	task.newChannel = aNewChn;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
+	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
+	task.numberOfVideoRequested = numVid;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

@@ -613,18 +613,29 @@ typedef enum {
 
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
 	// don't do anything for now. when a new video list is saved in MOC. the fetched results controller will call its delegate to handle the data change.
-	if ( currentIndex + 1 < numberOfVideos )	{
-		[self configureControlViewAtIndex:currentIndex + 1];
-		// queue the item for play
-		[self requestAddVideoAtIndex:currentIndex + 1];
-	}
-	if ( currentIndex + 2 < numberOfVideos )	{
-		[self configureControlViewAtIndex:currentIndex + 2];
-		[self requestAddVideoAtIndex:currentIndex + 2];
-	}
-	if ( !controlScrollView.scrollEnabled ) {
-		controlScrollView.scrollEnabled = YES;
-		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+	NSDictionary * userInfo = [aNotification userInfo];
+	NSInteger numVideo = [[userInfo objectForKey:@"num_video_added"] integerValue];
+#ifdef DEBUG_PLAYBACK_QUEUE
+	NSLog(@"received video list: %d", numVideo);
+#endif
+	if ( numVideo == 0 ) {
+		// we can't get any new video from the server. try getting by doubling the count
+		NSUInteger vidReq = [[userInfo objectForKey:@"num_video_requested"] unsignedIntegerValue];
+		[nowmovTaskController issueGetVideoListForChannel:currentChannel numberOfVideos:vidReq * 2];
+	} else {
+		if ( currentIndex + 1 < numberOfVideos )	{
+			[self configureControlViewAtIndex:currentIndex + 1];
+			// queue the item for play
+			[self requestAddVideoAtIndex:currentIndex + 1];
+		}
+		if ( currentIndex + 2 < numberOfVideos )	{
+			[self configureControlViewAtIndex:currentIndex + 2];
+			[self requestAddVideoAtIndex:currentIndex + 2];
+		}
+		if ( !controlScrollView.scrollEnabled ) {
+			controlScrollView.scrollEnabled = YES;
+			controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+		}
 	}
 }
 
@@ -670,7 +681,7 @@ typedef enum {
 		// ====== video queuing ======
 		[self playerQueueVideos];
 		// get more video from Nowmov server
-		if ( numberOfVideos - currentIndex < 3 ) {
+		if ( numberOfVideos - currentIndex < 4 ) {
 #ifdef DEBUG_PLAYBACK_QUEUE
 			NSLog(@"fetch video list for this channel");
 #endif
@@ -938,7 +949,7 @@ typedef enum {
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", currentChannel]];
     
     // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:4];
+    [fetchRequest setFetchBatchSize:5];
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
@@ -978,25 +989,35 @@ typedef enum {
 //	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
 //#endif
 	switch (type) {
-		case NSFetchedResultsChangeInsert:
-		case NSFetchedResultsChangeMove:
+		case NSFetchedResultsChangeUpdate:
+			break;
+		default:
 		{
 			NMVideo * vid = (NMVideo *)anObject;
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
 			break;
 		}
-		default:
+//		case NSFetchedResultsChangeInsert:
+//		case NSFetchedResultsChangeMove:
+//		{
+//			NMVideo * vid = (NMVideo *)anObject;
+//			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
+//			break;
+//		}
+//		default:
 //#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 //			NSLog(@"default case");
 //#endif
-			break;
+//			break;
+	}
+	if ( type == NSFetchedResultsChangeUpdate ) {
+		rowCountHasChanged = YES;
+	} else {
+		NO;
 	}
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"controllerDidChangeContent");
-#endif
 //	if ( rowCountHasChanged ) {
 //		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 //		NSUInteger prevCount = numberOfVideos;
@@ -1010,6 +1031,7 @@ typedef enum {
 //	}
 	id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 	numberOfVideos = [sectionInfo numberOfObjects];
+	NSLog(@"controllerDidChangeContent: %d", numberOfVideos);
 	if ( freshStart ) {
 		if ( numberOfVideos == 0 ) {
 			return;
