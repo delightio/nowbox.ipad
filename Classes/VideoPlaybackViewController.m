@@ -423,9 +423,9 @@ typedef enum {
 			vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 			[nowmovTaskController issueGetDirectURLForVideo:vid];
 		}
-	} else if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
+	} /*else if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
 		[self playerQueueVideos];
-	}
+	}*/
 }
 
 - (void)playerQueueVideos {
@@ -466,7 +466,7 @@ typedef enum {
 				}
 			} else {
 				// just check if we should resolve the direct URL
-//				[self requestAddVideoAtIndex:i];
+				[self requestAddVideoAtIndex:i];
 			}
 		} else {
 			break;
@@ -948,7 +948,6 @@ typedef enum {
 		[movieView.player play];
 		if ( currentIndex + 2 < numberOfVideos ) {
 			[self configureControlViewAtIndex:currentIndex + 2];
-			[self requestAddVideoAtIndex:currentIndex + 2];
 		}
 //		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 	} else {
