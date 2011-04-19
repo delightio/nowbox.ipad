@@ -332,11 +332,11 @@
 								</object>
 								<object class="NSCustomResource" key="IBUISelectedImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">btn_pause.png</string>
+									<string key="NSResourceName">btn_play.png</string>
 								</object>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">btn_play.png</string>
+									<string key="NSResourceName">btn_pause.png</string>
 								</object>
 							</object>
 							<object class="IBUIButton" id="355713626">
@@ -404,7 +404,6 @@
 								<string key="NSFrame">{{932, 16}, {90, 78}}</string>
 								<reference key="NSSuperview" ref="385128608"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -918,7 +917,7 @@
 						<bytes key="NSTransformStruct">P4AAAL+AAABCxgAAwpgAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="2"/>
+					<real value="1"/>
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAABBoAAAwrAAAA</bytes>
 					</object>
@@ -1135,9 +1134,9 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>backToChannelView:</string>
 							<string>playStopVideo:</string>
-							<string>setLikeVideo:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
+							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1154,9 +1153,9 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>backToChannelView:</string>
 							<string>playStopVideo:</string>
-							<string>setLikeVideo:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
+							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1169,15 +1168,15 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">setLikeVideo:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
 								<string key="name">showSharePopover:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">skipCurrentVideo:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">vote:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>
