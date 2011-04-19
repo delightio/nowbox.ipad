@@ -379,7 +379,7 @@ typedef enum {
 	}
 	// send tracking event
 	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
-	[nowmovTaskController issueSendViewEventForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath] duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed];
+	[nowmovTaskController issueSendViewEventForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath] duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed playedToEnd:aEndOfVideo];
 	// visually transit to next video just like the user has tapped next button
 	if ( aEndOfVideo ) {
 		// disable interface scrolling
@@ -709,7 +709,10 @@ typedef enum {
 		// ====== update interface ======
 		// update the time
 		ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
-		[ctrlView setControlsHidden:NO animated:YES];
+		[UIView beginAnimations:nil context:nil];
+		[ctrlView setControlsHidden:NO animated:NO];
+		movieView.alpha = 1.0;
+		[UIView commitAnimations];
 		t = movieView.player.currentItem.asset.duration;
 		// check if the time is valid
 		if ( t.flags & kCMTimeFlags_Valid ) {
@@ -930,6 +933,13 @@ typedef enum {
 }
 
 #pragma mark Scroll View Delegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+	beginDraggingContentOffset = scrollView.contentOffset;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	movieView.alpha = (1024.0 - scrollView.contentOffset.x + beginDraggingContentOffset.x) / 1024.0;
+}
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	[self stopVideo];

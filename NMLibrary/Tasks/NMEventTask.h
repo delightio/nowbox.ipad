@@ -18,11 +18,13 @@
 	CGFloat duration;	// duration of video
 	CGFloat elapsedSeconds;	// time elapse
 	NMVideo * video;
+	BOOL playedToEnd;
 }
 
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic) CGFloat elapsedSeconds;
 @property (nonatomic) CGFloat duration;
+@property (nonatomic) BOOL playedToEnd;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v;
 

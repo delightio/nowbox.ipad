@@ -30,6 +30,7 @@
 	
 	NSUInteger currentIndex;
 	NSUInteger numberOfVideos;
+	CGPoint beginDraggingContentOffset;
 	NMChannel * currentChannel;
 	NMTaskQueueController * nowmovTaskController;
 	

@@ -129,9 +129,10 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 	[task release];
 }
 
-- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec playedToEnd:(BOOL)aEnd {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
 	task.duration = vdur;
+	task.playedToEnd = aEnd;
 	// how long the user has watched a video
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];

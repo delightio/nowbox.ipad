@@ -78,17 +78,19 @@
 		[UIView beginAnimations:nil context:nil];
 	}
 	if ( hidden ) {
-		prevVideoButton.alpha = 0.0;
-		nextVideoButton.alpha = 0.0;
-		progressView.alpha = 0.0;
-		durationLabel.alpha = 0.0;
-		currentTimeLabel.alpha = 0.0;
+		self.alpha = 0.0;
+//		prevVideoButton.alpha = 0.0;
+//		nextVideoButton.alpha = 0.0;
+//		progressView.alpha = 0.0;
+//		durationLabel.alpha = 0.0;
+//		currentTimeLabel.alpha = 0.0;
 	} else {
-		prevVideoButton.alpha = 1.0;
-		nextVideoButton.alpha = 1.0;
-		progressView.alpha = 1.0;
-		durationLabel.alpha = 1.0;
-		currentTimeLabel.alpha = 1.0;
+		self.alpha = 1.0;
+//		prevVideoButton.alpha = 1.0;
+//		nextVideoButton.alpha = 1.0;
+//		progressView.alpha = 1.0;
+//		durationLabel.alpha = 1.0;
+//		currentTimeLabel.alpha = 1.0;
 	}
 	if ( animated ) {
 		[UIView commitAnimations];
