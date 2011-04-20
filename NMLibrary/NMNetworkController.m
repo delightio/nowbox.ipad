@@ -22,6 +22,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 
 - (id)init {
 	self = [super init];
+	activeChannelThumbnailDownloadSet = [[NSMutableSet alloc] init];
 	taskPool = [[NSMutableDictionary alloc] init];
 	connectionPool = [[NSMutableDictionary alloc] init];
 	pendingTaskBuffer = [[NSMutableArray alloc] init];
@@ -36,6 +37,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 
 - (void)dealloc {
 	isDone = YES;
+	[activeChannelThumbnailDownloadSet release];
 	[defaultCenter release];
 	[taskPool release];
 	[connectionPool release];
@@ -76,6 +78,14 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[[NSNotificationCenter defaultCenter] postNotification:arg];
 }
 
+- (BOOL)downloadInProgressForURLString:(NSString *)urlStr {
+	BOOL b;
+	@synchronized(activeChannelThumbnailDownloadSet) {
+		b = [activeChannelThumbnailDownloadSet containsObject:urlStr];
+	}
+	return b;
+}
+
 #pragma mark Connection management
 - (void)addNewConnectionForTasks:(NSArray *)tasks {
 	@synchronized(pendingTaskBuffer) {
@@ -83,6 +93,12 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 		NMTask *t;
 		for (t in tasks) {
 			t.state = NMTaskExecutionStateWaitingInConnectionQueue;
+			if ( t.command == NMCommandGetChannelThumbnail ) {
+				@synchronized(activeChannelThumbnailDownloadSet) {
+					NMImageDownloadTask * imgTask = (NMImageDownloadTask *)t;
+					[activeChannelThumbnailDownloadSet addObject:imgTask.imageURLString];
+				}
+			}
 		}
 	}
 	[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
@@ -92,6 +108,12 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	@synchronized(pendingTaskBuffer) {
 		[pendingTaskBuffer addObject:aTask];
 		aTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
+		if ( aTask.command == NMCommandGetChannelThumbnail ) {
+			@synchronized(activeChannelThumbnailDownloadSet) {
+				NMImageDownloadTask * imgTask = (NMImageDownloadTask *)aTask;
+				[activeChannelThumbnailDownloadSet addObject:imgTask.imageURLString];
+			}
+		}
 	}
 	[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
 }
@@ -303,6 +325,12 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 #endif
 	
 	theTask.state = NMTaskExecutionStateConnectionCompleted;
+	
+	if ( theTask.command == NMCommandGetChannelThumbnail ) {
+		@synchronized(activeChannelThumbnailDownloadSet) {
+			[activeChannelThumbnailDownloadSet removeObject:((NMImageDownloadTask *)theTask).imageURLString];
+		}
+	}
 	
 	// pass the completed task to data controller for processing
 //	if ( theTask.command > NMCommandImageDownloadCommandBoundary ) {

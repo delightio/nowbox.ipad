@@ -32,6 +32,11 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 - (id)init {
 	self = [super init];
 	
+	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:nil];
+	[nc addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:nil];
+	
 	// check if the cache directory is here or not. If not, create it.
 	NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 	NSString * cacheBaseDir = [docDir stringByAppendingPathComponent:@"image_cache"];
@@ -90,18 +95,53 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 //	}
 //}
 //
-- (void)setImageInChannel:(NMChannel *)chn forImageView:(NMTouchImageView *)iv {
+
+#pragma mark load image
+- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(NMTouchImageView *)iv {
 	// check if the image is in local file system
 	NSString * fPath = [channelThumbnailCacheDir stringByAppendingPathComponent:chn.nm_thumbnail_file_name];
 	if ( [fileManager fileExistsAtPath:fPath] ) {
-		// file exists in path, load the file
-		iv.image = [UIImage imageWithContentsOfFile:fPath];
-	} else {
-		// issue image load request
-		
-		// note: the Task Queue Controller should check if we have already queued the task!!
-	}
+		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+		if ( img ) {
+			// file exists in path, load the file
+			iv.image = img;
+			return YES;
+		} else {
+			// the file specified by the cache does not exist
+			chn.nm_thumbnail_file_name = nil;
+		}
+	} 
+	// issue image load request
+	[nowmovTaskController issueGetThumbnailForChannel:chn];
+	// note: the Task Queue Controller should check if we have already queued the task!!
+	
 	[channelImageViewMap setObject:iv forKey:[NSNumber numberWithUnsignedInteger:[chn hash]]];
+	return NO;
+}
+
+- (void)handleImageDownloadNotification:(NSNotification *)aNotification {
+	// update the view
+	NSDictionary * userInfo = [aNotification userInfo];
+	NMTouchImageView * iv = [channelImageViewMap objectForKey:[NSNumber numberWithUnsignedInteger:[[userInfo objectForKey:@"target_object"] hash]]];
+}
+
+- (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {
+	// try again?
+}
+
+#pragma mark save downloaded image
+- (void)writeImageData:(NSData *)aData withFilename:(NSString *)fname {
+	[aData writeToFile:[channelThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
+- (void)saveThumbnailImage:(UIImage *)img withFilename:(NSString *)fname forChannel:(NMChannel *)chn {
+	// check if a previous thumbnail file exist
+	if ( chn.nm_thumbnail_file_name == nil || [chn.nm_thumbnail_file_name isEqualToString:@""] ) {
+		// save the image direction
+	} else {
+		// remove the previous file
+		
+	}
 }
 
 #pragma mark housekeeping methods

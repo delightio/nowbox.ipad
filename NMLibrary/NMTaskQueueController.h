@@ -26,14 +26,18 @@
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 
+// Channel
 - (void)issueGetChannels;
 - (void)issueGetLiveChannel;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid;
+- (void)issueGetThumbnailForChannel:(NMChannel *)chnObj;
+
+// Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
 //- (void)issueGetVideoInfo:(NMVideo *)aVideo;
 
-// event
+// Event tracking
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;

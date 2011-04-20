@@ -29,12 +29,17 @@
 	NSLock *networkConnectionLock;
 	NSInteger numberOfConnections, maxNumberOfConnection;
 	NSMutableArray *connectionDateLog;
+	
+	// channel thumbnail cache
+	NSMutableSet * activeChannelThumbnailDownloadSet;
 }
 
 @property (nonatomic, retain) NSTimer *connectionExecutionTimer;
 //@property (nonatomic, assign) NMTaskQueueScheduler *scheduler;
 @property (nonatomic, retain) NMDataController * dataController;
 @property (nonatomic, assign) NSThread *controlThread;
+
+- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 
 - (void)addNewConnectionForTasks:(NSArray *)tasks;
 /*!

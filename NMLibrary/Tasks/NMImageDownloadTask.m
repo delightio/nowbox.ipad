@@ -10,16 +10,21 @@
 #import "NMCacheController.h"
 #import "NMChannel.h"
 
+NSString * const NMWillDownloadImageNotification = @"NMWillDownloadImageNotification";
+NSString * const NMDidDownloadImageNotification = @"NMDidDownloadImageNotification";
+NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNotification";
 
 @implementation NMImageDownloadTask
 
 @synthesize channel, imageURLString;
-@synthesize httpResponse;
+@synthesize httpResponse, originalImagePath;
 
 - (id)initWithChannel:(NMChannel *)chn {
-	self = [super init];
+	self = [self init];
 	
+	cacheController = [NMCacheController sharedCacheController];
 	self.imageURLString = chn.thumbnail;
+	self.originalImagePath = chn.nm_thumbnail_file_name;
 	self.channel = chn;
 	command = NMCommandGetChannelThumbnail;
 	
@@ -39,13 +44,34 @@
 }
 
 - (void)processDownloadedDataInBuffer {
-	
+	if ( originalImagePath ) {
+		// delete the original image
+		NSFileManager * fm = [[NSFileManager alloc] init];
+		[fm removeItemAtPath:originalImagePath error:nil];
+	}
+	[cacheController writeImageData:buffer withFilename:[httpResponse suggestedFilename]];
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	// save the file in file system
 	NSString * imgFName = [httpResponse suggestedFilename];
-	
+	channel.nm_thumbnail_file_name = imgFName;
+}
+
+- (NSString *)willLoadNotificationName {
+	return NMWillDownloadImageNotification;
+}
+
+- (NSString *)didLoadNotificationName {
+	return NMDidDownloadImageNotification;
+}
+
+- (NSString *)didFailNotificationName {
+	return NMDidFailDownloadImageNotification;
+}
+
+- (NSDictionary *)userInfo {
+	return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", buffer, @"image_data", [NSNumber numberWithInteger:command], @"command", nil];
 }
 
 @end

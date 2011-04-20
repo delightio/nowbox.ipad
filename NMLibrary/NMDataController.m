@@ -109,16 +109,6 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	return liveChannel;
 }
 
-- (void)saveThumbnailImage:(UIImage *)img withFilename:(NSString *)fname forChannel:(NMChannel *)chn {
-	// check if a previous thumbnail file exist
-	if ( chn.nm_thumbnail_file_name == nil || [chn.nm_thumbnail_file_name isEqualToString:@""] ) {
-		// save the image direction
-	} else {
-		// remove the previous file
-		
-	}
-}
-
 #pragma mark Video 
 - (NMVideo *)insertNewVideo {
 	NMVideo * vid = (NMVideo *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext];
@@ -155,7 +145,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 		// parse the JSON string
 		[task processDownloadedDataInBuffer];
 		// remove data buffer to save memory
-		[task clearDataBuffer];
+		if ( task.command != NMCommandGetChannelThumbnail ) [task clearDataBuffer];
 	}
 	
 	if ( task.encountersErrorDuringProcessing ) {

@@ -9,6 +9,7 @@
 @class NMImageDownloadTask;
 @class NMTouchImageView;
 @class NMChannel;
+@class NMTaskQueueController;
 
 @protocol NMImageDownloadDelegate;
 @interface NMCacheController : NSObject {
@@ -16,6 +17,7 @@
 	NSFileManager * fileManager;
 	
 	NSMutableDictionary * channelImageViewMap;
+	NMTaskQueueController * nowmovTaskController;
 	
 	id <NMImageDownloadDelegate> delegate;
 		
@@ -28,7 +30,12 @@
 
 + (NMCacheController *)sharedCacheController;
 
-- (void)setImageInChannel:(NMChannel *)chn forImageView:(NMTouchImageView *)iv;
+// display image from file cache
+- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(NMTouchImageView *)iv;
+
+// saving image from server
+- (void)writeImageData:(NSData *)aData withFilename:(NSString *)fname;
+- (void)saveThumbnailImage:(UIImage *)img withFilename:(NSString *)fname forChannel:(NMChannel *)chn;
 
 - (void)cacheWakeUpCheck;
 

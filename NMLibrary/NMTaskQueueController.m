@@ -10,6 +10,7 @@
 #import "NMTaskType.h"
 #import "NMNetworkController.h"
 #import "NMDataController.h"
+#import "NMChannel.h"
 
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
 
@@ -96,6 +97,14 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 //	[networkController addNewConnectionForTask:task];
 //	[task release];
 //}
+
+- (void)issueGetThumbnailForChannel:(NMChannel *)chnObj {
+	if ( ![networkController downloadInProgressForURLString:chnObj.thumbnail] ) {
+		NMImageDownloadTask * task = [[NMImageDownloadTask alloc] initWithChannel:chnObj];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+}
 
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventUpVote forVideo:aVideo];
