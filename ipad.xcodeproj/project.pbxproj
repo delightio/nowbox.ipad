@@ -173,6 +173,8 @@
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
+		A9ECD610135E9611004B7F78 /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
+		A9ECD614135E9703004B7F78 /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
 		A9F2499F134E44DE004BC497 /* background_video_control_header.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F2499E134E44DE004BC497 /* background_video_control_header.png */; };
 		A9F9EDE7134DC8E900A2D68D /* ChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501113438F860022BF2C /* ChannelViewController.m */; };
 		A9F9EE30134DCC9000A2D68D /* background_header.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F9EE2E134DCC9000A2D68D /* background_header.png */; };
@@ -474,6 +476,10 @@
 		A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A9DB20CA1348B8980018AA4A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A9DB20CB1348B8990018AA4A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		A9ECD60E135E9611004B7F78 /* NMCacheController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCacheController.h; sourceTree = "<group>"; };
+		A9ECD60F135E9611004B7F78 /* NMCacheController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCacheController.m; sourceTree = "<group>"; };
+		A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMImageDownloadTask.h; sourceTree = "<group>"; };
+		A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMImageDownloadTask.m; sourceTree = "<group>"; };
 		A9F2499E134E44DE004BC497 /* background_video_control_header.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_video_control_header.png; sourceTree = "<group>"; };
 		A9F9EE2E134DCC9000A2D68D /* background_header.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_header.png; sourceTree = "<group>"; };
 		A9F9EE2F134DCC9000A2D68D /* background_video_control_footer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_video_control_footer.png; sourceTree = "<group>"; };
@@ -676,6 +682,8 @@
 				A970504213438F860022BF2C /* NMDataController.h */,
 				A970504313438F860022BF2C /* NMDataController.m */,
 				A970504413438F860022BF2C /* NMDataType.h */,
+				A9ECD60E135E9611004B7F78 /* NMCacheController.h */,
+				A9ECD60F135E9611004B7F78 /* NMCacheController.m */,
 				A970504513438F860022BF2C /* NMLibrary.h */,
 				A970504613438F860022BF2C /* NMNetworkController.h */,
 				A970504713438F860022BF2C /* NMNetworkController.m */,
@@ -708,6 +716,8 @@
 				A970505B13438F860022BF2C /* NMTaskType.h */,
 				A9B1963F134C6B0B00CA17A0 /* NMEventTask.h */,
 				A9B19640134C6B0B00CA17A0 /* NMEventTask.m */,
+				A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */,
+				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1458,6 +1468,8 @@
 				A9DB20C61348B4D10018AA4A /* SHKShareMenu.m in Sources */,
 				A9DB20C71348B4D10018AA4A /* SHKViewControllerWrapper.m in Sources */,
 				A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */,
+				A9ECD610135E9611004B7F78 /* NMCacheController.m in Sources */,
+				A9ECD614135E9703004B7F78 /* NMImageDownloadTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

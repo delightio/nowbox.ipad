@@ -31,7 +31,9 @@
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid;
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
-- (void)issueGetVideoInfo:(NMVideo *)aVideo;
+//- (void)issueGetVideoInfo:(NMVideo *)aVideo;
+
+// event
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;

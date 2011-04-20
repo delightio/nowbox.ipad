@@ -12,7 +12,6 @@
 
 @implementation NMTouchImageView
 
-
 - (id)initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
@@ -23,6 +22,7 @@
 		highlightLayer.backgroundColor = [UIColor blackColor].CGColor;
 		highlightLayer.opacity = 0.5f;
 		highlightLayer.frame = CGRectMake(0.0, 0.0, frame.size.width, frame.size.height);
+		self.contentMode = UIViewContentModeScaleAspectFill;
     }
     return self;
 }

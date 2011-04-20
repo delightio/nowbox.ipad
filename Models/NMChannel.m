@@ -17,6 +17,7 @@
 @dynamic count;
 @dynamic reason;
 @dynamic thumbnail;
+@dynamic nm_thumbnail_file_name;
 @dynamic channel_name;
 @dynamic videos;
 @dynamic channel_url;

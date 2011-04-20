@@ -91,11 +91,11 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 	[task release];
 }
 
-- (void)issueGetVideoInfo:(NMVideo *)aVideo {
-	NMGetVideoInfoTask * task = [[NMGetVideoInfoTask alloc] initWithVideo:aVideo];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueGetVideoInfo:(NMVideo *)aVideo {
+//	NMGetVideoInfoTask * task = [[NMGetVideoInfoTask alloc] initWithVideo:aVideo];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventUpVote forVideo:aVideo];

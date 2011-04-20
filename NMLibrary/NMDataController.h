@@ -35,6 +35,8 @@
 // channels
 - (NMChannel *)insertNewChannel;
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
+// image
+- (void)saveThumbnailImage:(UIImage *)img withFilename:(NSString *)fname forChannel:(NMChannel *)chn;
 // video
 - (NMVideo *)insertNewVideo;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;

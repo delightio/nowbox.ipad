@@ -19,6 +19,7 @@
 @property (nonatomic, retain) NSNumber * count;
 @property (nonatomic, retain) NSString * reason;
 @property (nonatomic, retain) NSString * thumbnail;
+@property (nonatomic, retain) NSString * nm_thumbnail_file_name;
 @property (nonatomic, retain) NSString * channel_name;
 @property (nonatomic, retain) NSSet* videos;
 @property (nonatomic, retain) NSString * channel_url;

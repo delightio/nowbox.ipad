@@ -13,6 +13,7 @@
 	CALayer * highlightLayer;
 	SEL action;
 	id target;
+	
 }
 
 - (void)addTarget:(id)aTarget action:(SEL)anAction;
