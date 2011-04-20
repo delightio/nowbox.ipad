@@ -111,6 +111,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			chn.nm_thumbnail_file_name = nil;
 		}
 	} 
+	iv.image = nil;
 	// issue image load request
 	[nowmovTaskController issueGetThumbnailForChannel:chn];
 	// note: the Task Queue Controller should check if we have already queued the task!!

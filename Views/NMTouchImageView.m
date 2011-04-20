@@ -45,7 +45,7 @@
 		minChannelNameSize = img.size;
 		img = [img stretchableImageWithLeftCapWidth:10 topCapHeight:0];
 		channelNameBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-		channelNameBtn.titleLabel.font = [UIFont fontWithName:@"Futura-MediumItalic" size:15.0f];
+		channelNameBtn.titleLabel.font = [UIFont boldSystemFontOfSize:16.0f];
 		channelNameBtn.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
 		[channelNameBtn setBackgroundImage:img forState:UIControlStateNormal];
 		channelNameBtn.bounds = CGRectMake(0.0, 0.0, minChannelNameSize.width, minChannelNameSize.height);
@@ -108,7 +108,7 @@
 		[channelNameBtn setTitle:@"" forState:UIControlStateNormal];
 		return;
 	}
-	chn = [NSString stringWithFormat:@" %@ ", chn];
+	chn = [NSString stringWithFormat:@"   %@   ", chn];
 	[channelNameBtn setTitle:chn forState:UIControlStateNormal];
 	CGSize theSize = [chn sizeWithFont:channelNameBtn.titleLabel.font];
 	if ( theSize.width > minChannelNameSize.width && theSize.width > NM_CHANNEL_THUMBNAIL_WIDTH - 10.0f) {

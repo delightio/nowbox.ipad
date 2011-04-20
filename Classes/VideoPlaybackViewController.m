@@ -77,7 +77,7 @@ typedef enum {
 	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	firstShowControlView = YES;
-	
+		
 	indexPathCache = CFAllocatorAllocate(NULL, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE, 0);
 	bzero(indexPathCache, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE);
 	

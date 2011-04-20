@@ -14,6 +14,7 @@
 @class NMChannel;
 @class NMTaskQueueController;
 
+
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	NMMovieView * movieView;

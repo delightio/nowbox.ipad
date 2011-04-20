@@ -38,7 +38,12 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
+	channelFilterPredicateTemplate = [[NSPredicate predicateWithFormat:@"reason LIKE $CHANNEL_TYPE"] retain];
+
 	freshStart = YES;
+	currentChannelType = NMTrendingChannelType;
+	
 	channelTableView.rowHeight = 218.0;
 	// set inset so that the top of the channel thunbmail aligns with the left button
 	channelTableView.contentInset = UIEdgeInsetsMake(20.0, 0.0, 60.0, 0.0);
@@ -109,6 +114,7 @@
 
 
 - (void)dealloc {
+	[channelFilterPredicateTemplate release];
 	[videoViewController release];
     [fetchedResultsController_ release];
     [managedObjectContext_ release];
@@ -149,6 +155,15 @@
 	
 	[socialCtrl release];
 	[navCtrl release];
+}
+
+- (IBAction)switchChannel:(id)sender {
+	UIButton * btn = (UIButton *)sender;
+	if ( btn.tag != currentChannelType ) {
+		currentChannelType = btn.tag;
+		self.fetchedResultsController = nil;
+		[channelTableView reloadData];
+	}
 }
 
 - (IBAction)getFacebookProfile:(id)sender {
@@ -297,7 +312,26 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	
+	NSString * typeStr;
+	switch (currentChannelType) {
+		case NMTrendingChannelType:
+			typeStr = @"live";
+			break;
+		case NMTopicsChannelType:
+			typeStr = @"topic";
+			break;
+		case NMFriendsChannelType:
+			typeStr = @"friend";
+			break;
+		case NMFeaturedChannelType:
+			typeStr = @"featured";
+			break;
+		default:
+			break;
+	}
+	[fetchRequest setPredicate:[channelFilterPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:typeStr forKey:@"CHANNEL_TYPE"]]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
