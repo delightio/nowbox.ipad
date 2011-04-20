@@ -25,7 +25,6 @@
 		A970506713438F860022BF2C /* ChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970500E13438F860022BF2C /* ChannelViewController.xib */; };
 		A970506A13438F860022BF2C /* SocialSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501513438F860022BF2C /* SocialSignInViewController.m */; };
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
-		A970506C13438F860022BF2C /* back_to_video.png in Resources */ = {isa = PBXBuildFile; fileRef = A970501913438F860022BF2C /* back_to_video.png */; };
 		A970506F13438F860022BF2C /* btn_explore.png in Resources */ = {isa = PBXBuildFile; fileRef = A970501C13438F860022BF2C /* btn_explore.png */; };
 		A970507013438F860022BF2C /* btn_explore_active.png in Resources */ = {isa = PBXBuildFile; fileRef = A970501D13438F860022BF2C /* btn_explore_active.png */; };
 		A970507113438F860022BF2C /* btn_heart.png in Resources */ = {isa = PBXBuildFile; fileRef = A970501E13438F860022BF2C /* btn_heart.png */; };
@@ -217,7 +216,6 @@
 		A970501513438F860022BF2C /* SocialSignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialSignInViewController.m; sourceTree = "<group>"; };
 		A970501613438F860022BF2C /* VideoPlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackViewController.h; sourceTree = "<group>"; };
 		A970501713438F860022BF2C /* VideoPlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackViewController.m; sourceTree = "<group>"; };
-		A970501913438F860022BF2C /* back_to_video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_to_video.png; sourceTree = "<group>"; };
 		A970501C13438F860022BF2C /* btn_explore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_explore.png; sourceTree = "<group>"; };
 		A970501D13438F860022BF2C /* btn_explore_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_explore_active.png; sourceTree = "<group>"; };
 		A970501E13438F860022BF2C /* btn_heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_heart.png; sourceTree = "<group>"; };
@@ -628,7 +626,6 @@
 				A9F2499E134E44DE004BC497 /* background_video_control_header.png */,
 				A9F9EE2E134DCC9000A2D68D /* background_header.png */,
 				A9F9EE2F134DCC9000A2D68D /* background_video_control_footer.png */,
-				A970501913438F860022BF2C /* back_to_video.png */,
 				A970501C13438F860022BF2C /* btn_explore.png */,
 				A970501D13438F860022BF2C /* btn_explore_active.png */,
 				A970501E13438F860022BF2C /* btn_heart.png */,
@@ -1275,7 +1272,6 @@
 				A925014B134385BF001759F5 /* InfoPlist.strings in Resources */,
 				A9250154134385BF001759F5 /* MainWindow.xib in Resources */,
 				A970506713438F860022BF2C /* ChannelViewController.xib in Resources */,
-				A970506C13438F860022BF2C /* back_to_video.png in Resources */,
 				A970506F13438F860022BF2C /* btn_explore.png in Resources */,
 				A970507013438F860022BF2C /* btn_explore_active.png in Resources */,
 				A970507113438F860022BF2C /* btn_heart.png in Resources */,
