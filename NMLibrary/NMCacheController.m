@@ -122,7 +122,12 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 	// update the view
 	NSDictionary * userInfo = [aNotification userInfo];
-	NMTouchImageView * iv = [channelImageViewMap objectForKey:[NSNumber numberWithUnsignedInteger:[[userInfo objectForKey:@"target_object"] hash]]];
+	NSNumber * hashNum = [NSNumber numberWithUnsignedInteger:[[userInfo objectForKey:@"target_object"] hash]];
+	NMTouchImageView * iv = [channelImageViewMap objectForKey:hashNum];
+	if ( iv ) {
+		iv.image = [userInfo objectForKey:@"image"];
+		[channelImageViewMap removeObjectForKey:hashNum];
+	}
 }
 
 - (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {
@@ -132,16 +137,6 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 #pragma mark save downloaded image
 - (void)writeImageData:(NSData *)aData withFilename:(NSString *)fname {
 	[aData writeToFile:[channelThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
-}
-
-- (void)saveThumbnailImage:(UIImage *)img withFilename:(NSString *)fname forChannel:(NMChannel *)chn {
-	// check if a previous thumbnail file exist
-	if ( chn.nm_thumbnail_file_name == nil || [chn.nm_thumbnail_file_name isEqualToString:@""] ) {
-		// save the image direction
-	} else {
-		// remove the previous file
-		
-	}
 }
 
 #pragma mark housekeeping methods

@@ -145,7 +145,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 		// parse the JSON string
 		[task processDownloadedDataInBuffer];
 		// remove data buffer to save memory
-		if ( task.command != NMCommandGetChannelThumbnail ) [task clearDataBuffer];
+		[task clearDataBuffer];
 	}
 	
 	if ( task.encountersErrorDuringProcessing ) {

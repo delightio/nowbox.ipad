@@ -18,6 +18,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
+@synthesize image;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [self init];
@@ -32,6 +33,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 - (void)dealloc {
+	[image release];
 	[httpResponse release];
 	[channel release];
 	[imageURLString release];
@@ -48,8 +50,11 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		// delete the original image
 		NSFileManager * fm = [[NSFileManager alloc] init];
 		[fm removeItemAtPath:originalImagePath error:nil];
+		[fm release];
 	}
 	[cacheController writeImageData:buffer withFilename:[httpResponse suggestedFilename]];
+	// create the image object
+	self.image = [UIImage imageWithData:buffer];
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
@@ -71,7 +76,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", buffer, @"image_data", [NSNumber numberWithInteger:command], @"command", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
 }
 
 @end

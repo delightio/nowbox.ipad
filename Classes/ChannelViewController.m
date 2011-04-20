@@ -41,7 +41,7 @@
 	freshStart = YES;
 	channelTableView.rowHeight = 218.0;
 	// set inset so that the top of the channel thunbmail aligns with the left button
-	channelTableView.contentInset = UIEdgeInsetsMake(15.0, 0.0, 0.0, 0.0);
+	channelTableView.contentInset = UIEdgeInsetsMake(20.0, 0.0, 60.0, 0.0);
     UIImage * img = [[UIImage imageNamed:@"channel_table_overlay"] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
     tableOverlayImageView.image = img;
     img = [[UIImage imageNamed:@"channel_header_shadow"] stretchableImageWithLeftCapWidth:1 topCapHeight:0];

@@ -15,12 +15,14 @@
 	NSString * imageURLString;
 	NSString * originalImagePath;
 	NMChannel * channel;
+	UIImage * image;
 	NSHTTPURLResponse * httpResponse;
 	NMCacheController * cacheController;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSString * imageURLString;
+@property (nonatomic, retain) UIImage * image;
 @property (nonatomic, retain) NSString * originalImagePath;
 @property (nonatomic, retain) NSHTTPURLResponse * httpResponse;
 

@@ -35,7 +35,6 @@
 
 // saving image from server
 - (void)writeImageData:(NSData *)aData withFilename:(NSString *)fname;
-- (void)saveThumbnailImage:(UIImage *)img withFilename:(NSString *)fname forChannel:(NMChannel *)chn;
 
 - (void)cacheWakeUpCheck;
 
