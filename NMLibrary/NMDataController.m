@@ -93,14 +93,14 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	if ( liveChannel == nil ) {
 		NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
 		[fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
-		[fetchRequest setPredicate:[channelNamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:@"testnm1" forKey:@"NM_CHANNEL_NAME"]]];
+		[fetchRequest setPredicate:[channelNamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:@"live" forKey:@"NM_CHANNEL_NAME"]]];
 		[fetchRequest setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
 		if ( result == nil || [result count] == 0 ) {
 			// insert channel
 			liveChannel = [[self insertNewChannel] retain];
-			liveChannel.channel_name = @"testnm1";
-			liveChannel.channel_url = @"http://nowmov.com/testnm1";
+			liveChannel.channel_name = @"live";
+			liveChannel.channel_url = @"http://nowmov.com/live";
 		} else {
 			liveChannel = [[result objectAtIndex:0] retain];
 		}

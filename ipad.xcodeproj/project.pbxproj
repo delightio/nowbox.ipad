@@ -23,6 +23,7 @@
 		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A9677829135F592E000810A4 /* channel_title.png in Resources */ = {isa = PBXBuildFile; fileRef = A9677828135F592E000810A4 /* channel_title.png */; };
+		A96A93FD136028E500254CA5 /* progress_bar_nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A96A93FC136028E500254CA5 /* progress_bar_nub.png */; };
 		A970506713438F860022BF2C /* ChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970500E13438F860022BF2C /* ChannelViewController.xib */; };
 		A970506A13438F860022BF2C /* SocialSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501513438F860022BF2C /* SocialSignInViewController.m */; };
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
@@ -54,7 +55,6 @@
 		A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
 		A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
 		A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A970509513438F860022BF2C /* NMGetNextVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505013438F860022BF2C /* NMGetNextVideo.m */; };
 		A970509613438F860022BF2C /* NMGetVideoInfoTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505213438F860022BF2C /* NMGetVideoInfoTask.m */; };
 		A970509713438F860022BF2C /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505413438F860022BF2C /* NMGetVideoReasonTask.m */; };
 		A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
@@ -218,6 +218,7 @@
 		A925016F134385BF001759F5 /* ipadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadTests.m; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A9677828135F592E000810A4 /* channel_title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_title.png; sourceTree = "<group>"; };
+		A96A93FC136028E500254CA5 /* progress_bar_nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_bar_nub.png; sourceTree = "<group>"; };
 		A970500E13438F860022BF2C /* ChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelViewController.xib; sourceTree = "<group>"; };
 		A970501013438F860022BF2C /* ChannelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelViewController.h; sourceTree = "<group>"; };
 		A970501113438F860022BF2C /* ChannelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelViewController.m; sourceTree = "<group>"; };
@@ -263,8 +264,6 @@
 		A970504C13438F860022BF2C /* NMGetChannelsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelsTask.m; sourceTree = "<group>"; };
 		A970504D13438F860022BF2C /* NMGetChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelVideoListTask.h; sourceTree = "<group>"; };
 		A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideoListTask.m; sourceTree = "<group>"; };
-		A970504F13438F860022BF2C /* NMGetNextVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetNextVideo.h; sourceTree = "<group>"; };
-		A970505013438F860022BF2C /* NMGetNextVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetNextVideo.m; sourceTree = "<group>"; };
 		A970505113438F860022BF2C /* NMGetVideoInfoTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVideoInfoTask.h; sourceTree = "<group>"; };
 		A970505213438F860022BF2C /* NMGetVideoInfoTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVideoInfoTask.m; sourceTree = "<group>"; };
 		A970505313438F860022BF2C /* NMGetVideoReasonTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVideoReasonTask.h; sourceTree = "<group>"; };
@@ -676,6 +675,7 @@
 				A970503213438F860022BF2C /* Icon.png */,
 				A970503413438F860022BF2C /* playback_progress_background.png */,
 				A9042615135754710067E53F /* progress_bar.png */,
+				A96A93FC136028E500254CA5 /* progress_bar_nub.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -719,8 +719,6 @@
 				A970504C13438F860022BF2C /* NMGetChannelsTask.m */,
 				A970504D13438F860022BF2C /* NMGetChannelVideoListTask.h */,
 				A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */,
-				A970504F13438F860022BF2C /* NMGetNextVideo.h */,
-				A970505013438F860022BF2C /* NMGetNextVideo.m */,
 				A970505113438F860022BF2C /* NMGetVideoInfoTask.h */,
 				A970505213438F860022BF2C /* NMGetVideoInfoTask.m */,
 				A970505313438F860022BF2C /* NMGetVideoReasonTask.h */,
@@ -1354,6 +1352,7 @@
 				A9A810A4135F34AE004F569C /* channel_return_playback_normal.png in Resources */,
 				A9A810D9135F4997004F569C /* channel_thumbnail_background.png in Resources */,
 				A9677829135F592E000810A4 /* channel_title.png in Resources */,
+				A96A93FD136028E500254CA5 /* progress_bar_nub.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1403,7 +1402,6 @@
 				A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */,
 				A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */,
 				A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */,
-				A970509513438F860022BF2C /* NMGetNextVideo.m in Sources */,
 				A970509613438F860022BF2C /* NMGetVideoInfoTask.m in Sources */,
 				A970509713438F860022BF2C /* NMGetVideoReasonTask.m in Sources */,
 				A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */,

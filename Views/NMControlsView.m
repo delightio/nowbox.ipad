@@ -11,7 +11,7 @@
 
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT	101
-#define NM_PLAYER_PROGRESS_BAR_WIDTH	544
+#define NM_PLAYER_PROGRESS_BAR_WIDTH	330
 
 
 @implementation NMControlsView
@@ -24,18 +24,26 @@
 - (void)awakeFromNib {
 	// load the progress bar image
 	UIImage * img = [UIImage imageNamed:@"playback_progress_background"];
-	progressView.image = [img stretchableImageWithLeftCapWidth:98 topCapHeight:0];
+	progressView.image = [img stretchableImageWithLeftCapWidth:6 topCapHeight:0];
 	progressBarLayer = [[CALayer layer] retain];
 	img = [UIImage imageNamed:@"progress_bar"];
 	progressBarLayer.contents = (id)img.CGImage;
-	progressBarLayer.contentsCenter = CGRectMake(0.3, 0.0, 0.4, 1.0);
-	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH;
-	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 0.0, img.size.height);
-	progressBarLayer.position = CGPointMake(96.0f, 25.0f);
+	progressBarLayer.contentsCenter = CGRectMake(0.4, 0.0, 0.2, 1.0);
+	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH - 18;
+	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 18.0, img.size.height);
+	progressBarLayer.position = CGPointMake(0.0, 9.0);
+	progressBarLayer.anchorPoint = CGPointMake(0.0f, 0.5f);
 	progressBarLayer.shadowOpacity = 1.0;
 	progressBarLayer.shadowOffset = CGSizeZero;
-	
 	[progressView.layer addSublayer:progressBarLayer];
+	
+	nubLayer = [[CALayer layer] retain];
+	img = [UIImage imageNamed:@"progress_bar_nub"];
+	nubLayer.contents = (id)img.CGImage;
+	nubLayer.bounds = CGRectMake(0.0, 0.0, img.size.width, img.size.height);
+	nubLayer.position = CGPointMake(floorf(img.size.width / 2.0), floorf(img.size.height / 2.0));
+	
+	[progressView.layer addSublayer:nubLayer];
 }
 
 //- (id)initWithFrame:(CGRect)frame {
@@ -58,6 +66,7 @@
 - (void)dealloc {
 	[authorProfileURLString release];
 	[progressBarLayer release];
+	[nubLayer release];
     [super dealloc];
 }
 
@@ -145,12 +154,12 @@
 	currentTimeLabel.text = @"--:--";
 	// reset progress bar
 	CGRect theFrame = progressBarLayer.bounds;
-	theFrame.size.width = 0.0;
+	theFrame.size.width = 18.0;
 	
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	progressBarLayer.bounds = theFrame;
-	progressBarLayer.position = CGPointMake(96.0f, 25.0f);
+	progressBarLayer.position = CGPointMake(0.0, 9.0);
 	[CATransaction commit];
 	
 	self.alpha = 1.0;
@@ -194,13 +203,14 @@
 
 - (void)setTimeElapsed:(NSInteger)aTime {
 	timeElapsed = aTime;
-	CGFloat barWidth = floorf(pxWidthPerSecond * aTime);
+	CGFloat barWidth = floorf(pxWidthPerSecond * aTime) + 9.0; // 9.0 is the offset of the nub radius
 	CGRect theFrame = progressBarLayer.frame;
 	if ( barWidth > theFrame.size.width ) {
 		[CATransaction begin];
 		[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 		theFrame.size.width = barWidth;
 		progressBarLayer.frame = theFrame;
+		nubLayer.position = CGPointMake(barWidth - 9.0, 9.0);
 		[CATransaction commit];
 	}
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", aTime / 60, aTime % 60];

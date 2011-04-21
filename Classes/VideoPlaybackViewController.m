@@ -203,6 +203,21 @@ typedef enum {
 	}
 	// update the video list
 	if ( numberOfVideos ) {
+//		if ( currentIndex + 2 < numberOfVideos ) {
+//			[self configureControlViewAtIndex:currentIndex + 2];
+//			[self requestAddVideoAtIndex:currentIndex + 2];
+//		}
+//		if ( currentIndex ) {
+//			[self configureControlViewAtIndex:currentIndex - 1];
+//			[self requestAddVideoAtIndex:currentIndex - 1];
+//		}
+//		if ( currentIndex + 1 < numberOfVideos )	{
+//			[self configureControlViewAtIndex:currentIndex + 1];
+//			[self requestAddVideoAtIndex:currentIndex + 1];
+//		}
+//		[NSThread sleepForTimeInterval:1.0];
+//		[self configureControlViewAtIndex:currentIndex];
+//		[self requestAddVideoAtIndex:currentIndex];
 		// we should play video at currentIndex
 		// get the direct URL
 		[self configureControlViewAtIndex:currentIndex];
@@ -473,101 +488,6 @@ typedef enum {
 		}
 	}
 }
-/*
-- (void)queueVideoToPlayer:(NMVideo *)vid {
-	// creates player item and insert them into the queue orderly
-	// don't queue any video for play if there's more than 3 queued
-	NSUInteger c = [[movieView.player items] count];
-	if ( c > NM_MAX_VIDEO_IN_QUEUE - 1 ) return;
-	// since this method is called NOT-IN-ORDER, we should transverse the whole list to queue items
-	NSUInteger sortOrder = [vid.nm_sort_order unsignedIntegerValue];
-	if ( sortOrder - currentIndex > NM_MAX_VIDEO_IN_QUEUE - 1 ) return;
-	for (NSUInteger i = 0; i < sortOrder - currentIndex; i++) {
-		if ( sortOrder == currentIndex + i + 1 ) {
-			if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
-				// queue
-				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
-				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
-					[movieView.player insertItem:item afterItem:nil];
-					vid.nm_playback_status = NMVideoQueueStatusQueued;
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-					NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
-#endif
-				}
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-				else {
-					NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
-				}
-#endif
-			}
-		} else {
-			NMVideo * theVid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:currentIndex + i + 1 inSection:0]];
-			if ( [theVid.nm_sort_order integerValue] == currentIndex + i + 1 && theVid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
-				// queue
-				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:theVid.nm_direct_url]];
-				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
-					[movieView.player insertItem:item afterItem:nil];
-					theVid.nm_playback_status = NMVideoQueueStatusQueued;
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-					NSLog(@"added video to queue player: %@, %@", theVid.nm_sort_order, theVid.title );
-#endif
-				}
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-				else {
-					NSLog(@"can't add video to queue player: %@", theVid.nm_sort_order);
-				}
-#endif
-			}
-		}
-	}
-//	if ( c > 3 || vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) return;
-//	for (NSUInteger i = 0; i < 3 - c; i++) {
-//		// there's enough video stored in MOC
-//		if ( currentIndex + i + 1 < numberOfVideos ) {
-//			// check if there's URL
-//			if ( [vid.nm_direct_url length] ) {
-//				AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
-//				if ( [movieView.player canInsertItem:item afterItem:nil] ) {
-//					[movieView.player insertItem:item afterItem:nil];
-//					vid.nm_playback_status = NMVideoQueueStatusQueued;
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//					NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
-//#endif
-//				}
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//				else {
-//					NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
-//				}
-//#endif
-//			}
-//		}
-//	}
-}
-*/
-//- (void)insertVideoAtIndex:(NSUInteger)idx {
-//	// buffer the next next video
-//	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
-//	AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
-//	if ( [movieView.player canInsertItem:item afterItem:nil] ) {
-//		[movieView.player insertItem:item afterItem:nil];
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//		NSLog(@"added video to queue player: %d", idx);
-//#endif
-//	}
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//	else {
-//		NSLog(@"can't add video to queue player: %d", idx);
-//	}
-//#endif
-//}
-
-//- (void)getVideoInfoAtIndex:(NSUInteger)idx {
-//	NMVideo * v = [sortedVideoList objectAtIndex:idx];
-//	// check if video info already exists
-//	if ( v.title == nil ) {
-//		[nowmovTaskController issueGetVideoInfo:v];
-//	}
-//}
 
 #pragma mark Notification handling
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {

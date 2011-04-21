@@ -30,6 +30,7 @@
 	IBOutlet UIImageView *progressView;
 	
 	CALayer * progressBarLayer;
+	CALayer * nubLayer;
 	CGFloat pxWidthPerSecond;
 	CGFloat progressBarWidth;
 	

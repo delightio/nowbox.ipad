@@ -66,19 +66,18 @@
 	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 	
 	// create a covering view
-//	UIView * coveringView = [[UIView alloc] initWithFrame:self.view.bounds];
-//	coveringView.backgroundColor = self.view.backgroundColor;
-//	coveringView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-//	coveringView.tag = 9001;
-//	[self.view addSubview:coveringView];
-//	[coveringView release];
+	UIView * coveringView = [[UIView alloc] initWithFrame:self.view.bounds];
+	coveringView.backgroundColor = self.view.backgroundColor;
+	coveringView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+	coveringView.tag = 9001;
+	[self.view addSubview:coveringView];
+	[coveringView release];
 }
 
 - (void)showVideoView {
-//	[self presentModalViewController:videoViewController animated:NO];
+	[self presentModalViewController:videoViewController animated:NO];
 	// always default to LIVE channel
-	//MARK: debug
-//	videoViewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.liveChannel;
+	videoViewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.liveChannel;
 	UIView * cv = [self.view viewWithTag:9001];
 	[cv removeFromSuperview];
 }
@@ -86,7 +85,7 @@
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	if ( freshStart ) {
-//		[self performSelector:@selector(showVideoView) withObject:nil afterDelay:0.1];
+		[self performSelector:@selector(showVideoView) withObject:nil afterDelay:0.1];
 		freshStart = NO;
 	}
 }
