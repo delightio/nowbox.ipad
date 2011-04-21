@@ -39,6 +39,8 @@
 	NSInteger duration;
 	NSInteger timeElapsed;
 	
+	UIButton * lastVideoMessage;
+	
 	SEL action;
 	id target;
 }
@@ -66,5 +68,7 @@
 //- (void)stopObservingMovieView:(NMMovieView *)mvView;
 
 - (IBAction)goToAuthorProfilePage:(id)sender;
+
+- (void)showLastVideoMessage;
 
 @end

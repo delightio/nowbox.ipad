@@ -66,6 +66,9 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 #else
 	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile&limit=%d", urlString, numberOfVideoRequested];
 #endif
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"Get Channel Video List: %@", urlStr);
+#endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
 	return request;

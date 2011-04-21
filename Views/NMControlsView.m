@@ -29,7 +29,7 @@
 	img = [UIImage imageNamed:@"progress_bar"];
 	progressBarLayer.contents = (id)img.CGImage;
 	progressBarLayer.contentsCenter = CGRectMake(0.4, 0.0, 0.2, 1.0);
-	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH - 18;
+	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH - 9;
 	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 18.0, img.size.height);
 	progressBarLayer.position = CGPointMake(0.0, 9.0);
 	progressBarLayer.anchorPoint = CGPointMake(0.0f, 0.5f);
@@ -67,6 +67,7 @@
 	[authorProfileURLString release];
 	[progressBarLayer release];
 	[nubLayer release];
+	[lastVideoMessage release];
     [super dealloc];
 }
 
@@ -108,6 +109,25 @@
 
 - (BOOL)controlsHidden {
 	return progressView.alpha == 0.0f || self.alpha == 0.0f || self.hidden;
+}
+
+- (void)showLastVideoMessage {
+	UIImage * img = [[UIImage imageNamed:@"channel_title"] stretchableImageWithLeftCapWidth:10 topCapHeight:0];
+	if ( lastVideoMessage == nil ) {
+		lastVideoMessage = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		lastVideoMessage.userInteractionEnabled = NO;
+		lastVideoMessage.titleLabel.font = [UIFont fontWithName:@"Futura-MediumItalic" size:16.0f];
+		lastVideoMessage.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
+		[lastVideoMessage setBackgroundImage:img forState:UIControlStateNormal];
+		CGRect theFrame = nextVideoButton.frame;
+		theFrame.origin.y = nextVideoButton.center.y - floorf(img.size.height / 2.0);
+		theFrame.origin.x -= 190.0f;
+		theFrame.size.width = 180.0;
+		theFrame.size.height = img.size.height;
+		lastVideoMessage.frame = theFrame;
+		[lastVideoMessage setTitle:@"Playing Last Video" forState:UIControlStateNormal];
+		[self addSubview:lastVideoMessage];
+	}
 }
 
 #pragma mark KVO
@@ -152,6 +172,11 @@
 	[authorButton setTitle:@"" forState:UIControlStateNormal];
 	durationLabel.text = @"--:--";
 	currentTimeLabel.text = @"--:--";
+	if ( lastVideoMessage ) {
+		[lastVideoMessage removeFromSuperview];
+		[lastVideoMessage release];
+		lastVideoMessage = nil;
+	}
 	// reset progress bar
 	CGRect theFrame = progressBarLayer.bounds;
 	theFrame.size.width = 18.0;

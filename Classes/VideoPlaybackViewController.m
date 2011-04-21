@@ -238,6 +238,9 @@ typedef enum {
 		controlScrollView.scrollEnabled = YES;
 		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
 		
+		if ( numberOfVideos < NM_INDEX_PATH_CACHE_SIZE ) {
+			[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+		}
 		//TODO: check if need to queue fetch video list
 	} else {
 		// there's no video. fetch video right now
@@ -515,8 +518,13 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NSLog(@"did play notification");
 #endif
-	didPlayToEnd = YES;
-	[self showNextVideo:YES];
+	if ( currentIndex + 1 == numberOfVideos ) {
+		// finish up playing the whole channel
+		[self dismissModalViewControllerAnimated:YES];
+	} else {
+		didPlayToEnd = YES;
+		[self showNextVideo:YES];
+	}
 }
 
 - (void)handleErrorNotification:(NSNotification *)aNotification {
@@ -806,8 +814,13 @@ typedef enum {
 	if ( btn.tag == 1000 ) {
 		// prev
 	} else {
-		// next
-		[self showNextVideo:NO];
+		if ( currentIndex + 1 == numberOfVideos ) {
+			NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+			[ctrlView showLastVideoMessage];
+		} else {
+			// next
+			[self showNextVideo:NO];
+		}
 		// buffer the next next video
 //		[self requestAddVideoAtIndex:currentIndex + 2];
 //		if ( currentIndex < numberOfVideos ) {
