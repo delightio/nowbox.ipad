@@ -29,7 +29,7 @@
 		self.layer.contents = (id)img.CGImage;
 		
 		// create highlight layer
-		highlightLayer = [CALayer layer];
+		highlightLayer = [[CALayer layer] retain];
 		highlightLayer.backgroundColor = [UIColor blackColor].CGColor;
 		highlightLayer.opacity = 0.5f;
 		highlightLayer.frame = CGRectMake(8.0, 11.0, NM_CHANNEL_THUMBNAIL_WIDTH, NM_CHANNEL_THUMBNAIL_HEIGHT);
@@ -64,9 +64,10 @@
 }
 */
 
-//- (void)dealloc {
-//    [super dealloc];
-//}
+- (void)dealloc {
+	[highlightLayer release];
+    [super dealloc];
+}
 
 - (void)addTarget:(id)aTarget action:(SEL)anAction {
 	target = aTarget;
