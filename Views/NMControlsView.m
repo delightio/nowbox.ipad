@@ -160,6 +160,7 @@
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	progressBarLayer.bounds = theFrame;
 	progressBarLayer.position = CGPointMake(0.0, 9.0);
+	nubLayer.position = CGPointMake(9.0, 9.0);
 	[CATransaction commit];
 	
 	self.alpha = 1.0;

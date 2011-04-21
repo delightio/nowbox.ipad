@@ -21,12 +21,13 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 @synthesize image;
 
 - (id)initWithChannel:(NMChannel *)chn {
-	self = [self init];
+	self = [super init];
 	
 	cacheController = [NMCacheController sharedCacheController];
 	self.imageURLString = chn.thumbnail;
 	self.originalImagePath = chn.nm_thumbnail_file_name;
 	self.channel = chn;
+	NSLog(@"channel to get image: %@", chn.title);
 	command = NMCommandGetChannelThumbnail;
 	
 	return self;
@@ -45,6 +46,17 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return request;
 }
 
+- (NSString *)suggestedFilename {
+	NSString * imgFName = nil;
+	if ( [imageURLString rangeOfString:@"youtube"].location == NSNotFound ) {
+		imgFName = [httpResponse suggestedFilename];
+	} else {
+		NSArray * ay = [[httpResponse URL] pathComponents];
+		imgFName = [NSString stringWithFormat:@"%@_%@", [ay objectAtIndex:[ay count] - 2], [httpResponse suggestedFilename]];
+	}
+	return imgFName;
+}
+
 - (void)processDownloadedDataInBuffer {
 	if ( originalImagePath ) {
 		// delete the original image
@@ -52,15 +64,16 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		[fm removeItemAtPath:originalImagePath error:nil];
 		[fm release];
 	}
-	[cacheController writeImageData:buffer withFilename:[httpResponse suggestedFilename]];
-	// create the image object
-	self.image = [UIImage imageWithData:buffer];
+	// save the file in file system
+	[cacheController writeImageData:buffer withFilename:[self suggestedFilename]];
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	// save the file in file system
-	NSString * imgFName = [httpResponse suggestedFilename];
-	channel.nm_thumbnail_file_name = imgFName;
+	// create the image object
+	self.image = [UIImage imageWithData:buffer];	// seems that it's not safe to use UIImage in worker thread
+	NSLog(@"img name: %@", [self suggestedFilename]);
+	// update channel MOC with new file name
+	channel.nm_thumbnail_file_name = [self suggestedFilename];
 }
 
 - (NSString *)willLoadNotificationName {
