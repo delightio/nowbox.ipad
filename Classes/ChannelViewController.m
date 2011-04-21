@@ -39,7 +39,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	channelFilterPredicateTemplate = [[NSPredicate predicateWithFormat:@"reason LIKE $CHANNEL_TYPE"] retain];
+	channelFilterPredicateTemplate = [[NSPredicate predicateWithFormat:@"reason IN $CHANNEL_TYPES"] retain];
 
 	freshStart = YES;
 	currentChannelType = NMTrendingChannelType;
@@ -314,24 +314,24 @@
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 //	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-	NSString * typeStr;
+	NSArray * typeStr;
 	switch (currentChannelType) {
 		case NMTrendingChannelType:
-			typeStr = @"live";
+			typeStr = [NSArray arrayWithObjects:@"live", @"trending", nil];
 			break;
 		case NMTopicsChannelType:
-			typeStr = @"topic";
+			typeStr = [NSArray arrayWithObject:@"topic"];
 			break;
 		case NMFriendsChannelType:
-			typeStr = @"friend";
+			typeStr = [NSArray arrayWithObject:@"friend"];
 			break;
 		case NMFeaturedChannelType:
-			typeStr = @"featured";
+			typeStr = [NSArray arrayWithObjects:@"own", @"featured", nil];
 			break;
 		default:
 			break;
 	}
-	[fetchRequest setPredicate:[channelFilterPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:typeStr forKey:@"CHANNEL_TYPE"]]];
+	[fetchRequest setPredicate:[channelFilterPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:typeStr forKey:@"CHANNEL_TYPES"]]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
