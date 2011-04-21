@@ -43,6 +43,8 @@
 
 	freshStart = YES;
 	currentChannelType = NMTrendingChannelType;
+	UIButton * btn = (UIButton *)[self.view viewWithTag:300];
+	btn.selected = YES;
 	
 	channelTableView.rowHeight = 218.0;
 	// set inset so that the top of the channel thunbmail aligns with the left button
@@ -162,6 +164,14 @@
 		currentChannelType = btn.tag;
 		self.fetchedResultsController = nil;
 		[channelTableView reloadData];
+		UIButton * otherBtn;
+		for (NSInteger i = NMTrendingChannelType; i <= NMFeaturedChannelType; i++) {
+			otherBtn = (UIButton *)[self.view viewWithTag:i];
+			if ( otherBtn.selected && otherBtn != btn ) {
+				otherBtn.selected = NO;
+			}
+		}
+		btn.selected = YES;
 	}
 }
 

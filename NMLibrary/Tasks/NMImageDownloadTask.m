@@ -27,7 +27,6 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self.imageURLString = chn.thumbnail;
 	self.originalImagePath = chn.nm_thumbnail_file_name;
 	self.channel = chn;
-	NSLog(@"channel to get image: %@", chn.title);
 	command = NMCommandGetChannelThumbnail;
 	
 	return self;
@@ -71,7 +70,6 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	// create the image object
 	self.image = [UIImage imageWithData:buffer];	// seems that it's not safe to use UIImage in worker thread
-	NSLog(@"img name: %@", [self suggestedFilename]);
 	// update channel MOC with new file name
 	channel.nm_thumbnail_file_name = [self suggestedFilename];
 }
