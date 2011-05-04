@@ -411,7 +411,7 @@ typedef enum {
 	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 	[nowmovTaskController issueSendViewEventForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath] duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed playedToEnd:aEndOfVideo];
 	// visually transit to next video just like the user has tapped next button
-	if ( aEndOfVideo ) {
+	//if ( aEndOfVideo ) {
 		// disable interface scrolling
 		// will activate again on "currentItem" change kvo notification
 		controlScrollView.scrollEnabled = NO;
@@ -422,7 +422,7 @@ typedef enum {
 		[UIView setAnimationDelegate:self];
 		[UIView commitAnimations];
 		// when traisition is done. move shift the scroll view and reveals the video player again
-	} else {
+	/*} else {
 		[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:YES];
 		[self translateMovieViewByOffset:1.0f];
 		// advance the index
@@ -438,7 +438,7 @@ typedef enum {
 		} else {
 			// get more video here
 		}
-	}
+	}*/
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
 }
 
@@ -847,6 +847,7 @@ typedef enum {
 		// prev
 	} else {
 		if ( currentIndex + 1 == numberOfVideos ) {
+			// already playing the last video in the channel
 			NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 			[ctrlView showLastVideoMessage];
 		} else {
