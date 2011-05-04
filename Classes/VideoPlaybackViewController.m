@@ -904,7 +904,7 @@ typedef enum {
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if ( scrollView.contentOffset.x < currentXOffset ) {
-		
+		[scrollView setContentOffset:CGPointMake(currentXOffset, 0.0) animated:NO];
 	} else {
 		movieView.alpha = (1024.0 - scrollView.contentOffset.x + beginDraggingContentOffset.x) / 1024.0;
 	}
