@@ -17,6 +17,7 @@
 
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
+	IBOutlet UITextView * debugMessageView;
 	NMMovieView * movieView;
 	
 	NMControlsView * loadedControlView;
@@ -30,6 +31,7 @@
 	NSIndexPath ** indexPathCache;
 	
 	NSUInteger currentIndex;
+	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
 	CGPoint beginDraggingContentOffset;
 	NMChannel * currentChannel;

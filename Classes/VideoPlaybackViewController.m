@@ -49,6 +49,9 @@ typedef enum {
 - (NSIndexPath *)indexPathAtIndex:(NSUInteger)idx;
 - (void)freeIndexPathCache;
 
+// debug message
+- (void)printDebugMessage:(NSString *)str;
+
 @end
 
 
@@ -77,6 +80,7 @@ typedef enum {
 	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	firstShowControlView = YES;
+	currentXOffset = 0.0f;
 		
 	indexPathCache = CFAllocatorAllocate(NULL, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE, 0);
 	bzero(indexPathCache, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE);
@@ -245,9 +249,16 @@ typedef enum {
 	} else {
 		// there's no video. fetch video right now
 		freshStart = YES;
-		//		[nowmovTaskController issueGetVideoListForChannel:currentChannel isNew:YES];
-		//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+		[nowmovTaskController issueGetVideoListForChannel:currentChannel];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	}
+}
+
+#pragma mark Debug message
+- (void)printDebugMessage:(NSString *)str {
+	NSLog(@"%@", str);
+	debugMessageView.text = str;//[debugMessageView.text stringByAppendingFormat:@"\n", str];
+	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
 }
 
 #pragma mark Playback Control
@@ -348,6 +359,7 @@ typedef enum {
 	switch (c) {
 		case NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT:
 			currentIndex++;
+			currentXOffset += 1024.0f;
 			firstShowControlView = YES;
 			// scroll to next video
 			// translate the movie view
@@ -415,6 +427,7 @@ typedef enum {
 		[self translateMovieViewByOffset:1.0f];
 		// advance the index
 		currentIndex++;
+		currentXOffset += 1024.0f;
 		firstShowControlView = YES;	// change this together with currentIndex
 		// show the next video in the player
 		[movieView.player advanceToNextItem];
@@ -438,6 +451,9 @@ typedef enum {
 	#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 			NSLog(@"issue resolve direct URL: %@", vid.title);
 	#endif
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+			[self performSelectorOnMainThread:@selector(printDebugMessage:) withObject:[NSString stringWithFormat:@"issue resolve direct URL: %@", vid.title] waitUntilDone:NO];
+#endif
 			vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 			[nowmovTaskController issueGetDirectURLForVideo:vid];
 		}
@@ -471,6 +487,9 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 						NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
 #endif
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+						[self performSelectorOnMainThread:@selector(printDebugMessage:) withObject:[NSString stringWithFormat:@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title] waitUntilDone:NO];
+#endif
 					}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 					else {
@@ -498,6 +517,9 @@ typedef enum {
 	vid.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"resolved: %@", vid.title);
+#endif
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+	[self performSelectorOnMainThread:@selector(printDebugMessage:) withObject:[NSString stringWithFormat:@"resolved URL: %@", vid.title] waitUntilDone:NO];
 #endif
 	// check if we should queue the video resolved
 	if ( movieView.player == nil ) {
@@ -533,6 +555,9 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"direct URL resolution failed: %@", [userInfo objectForKey:@"error"]);
 #endif
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [[aNotification userInfo] objectForKey:@"error"]];
+#endif
 		// skip the video by marking the resolution status
 		if ( userInfo ) {
 			NMVideo * vid = [userInfo objectForKey:@"target_object"];
@@ -540,10 +565,17 @@ typedef enum {
 			[self.managedObjectContext save:nil];
 		}
 	} else if ( [[aNotification name] isEqualToString:NMURLConnectionErrorNotification] ) {
-		// network error, we should retry
-		NSLog(@"network error in resolving direct URL");
+		// general network error. 
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [[aNotification userInfo] objectForKey:@"message"]];
+		NSLog(@"general connection error: %@", [[aNotification userInfo] objectForKey:@"message"]);
+#endif
 	} else if ( [[aNotification name] isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+		NSError * theErr = [[aNotification userInfo] objectForKey:AVPlayerItemFailedToPlayToEndTimeErrorKey];
+		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [theErr localizedDescription]];
 		NSLog(@"can't finish playing video. just skip it!");
+#endif
 		didPlayToEnd = YES;
 		[self showNextVideo:YES];
 	} else {
@@ -871,7 +903,11 @@ typedef enum {
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	movieView.alpha = (1024.0 - scrollView.contentOffset.x + beginDraggingContentOffset.x) / 1024.0;
+	if ( scrollView.contentOffset.x < currentXOffset ) {
+		
+	} else {
+		movieView.alpha = (1024.0 - scrollView.contentOffset.x + beginDraggingContentOffset.x) / 1024.0;
+	}
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -881,12 +917,12 @@ typedef enum {
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
-	NSUInteger curIdx = (NSUInteger)(scrollView.contentOffset.x / scrollView.bounds.size.width);
-	if ( curIdx > currentIndex ) {
+	if ( scrollView.contentOffset.x > currentXOffset ) {
 		// moved to next video
 		[self translateMovieViewByOffset:1.0f];
 		firstShowControlView = YES;
 		currentIndex++;		// update the currentIndex before calling advanceToNextItem
+		currentXOffset += 1024.0f;
 		[movieView.player advanceToNextItem];
 		[movieView.player play];
 		if ( currentIndex + 2 < numberOfVideos ) {

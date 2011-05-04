@@ -18,7 +18,6 @@
 	IBOutlet UILabel * onLabel;
 	IBOutlet UIButton *authorButton;
 	IBOutlet UIButton *socialLoginButton;
-	IBOutlet UIButton *prevVideoButton;
 	IBOutlet UIButton *nextVideoButton;
 	IBOutlet UIButton *playPauseButton;
 	IBOutlet UIButton *channelViewButton;

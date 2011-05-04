@@ -11,6 +11,7 @@
 #import "NMNetworkController.h"
 #import "NMDataController.h"
 #import "NMChannel.h"
+#import "NMVideo.h"
 
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
 
@@ -67,6 +68,9 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 }
 
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+	NSLog(@"get video list - %@", chnObj.channel_name);
+#endif
 	// if it's a new channel, we should have special handling on fail
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
@@ -74,6 +78,9 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 }
 
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+	NSLog(@"get video list - %@", chnObj.channel_name);
+#endif
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
 	task.numberOfVideoRequested = numVid;
 	[networkController addNewConnectionForTask:task];
@@ -87,6 +94,9 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 }
 
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo {
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+	NSLog(@"resolve direct URL - %@", aVideo.vid);
+#endif
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
 	[task release];

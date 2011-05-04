@@ -44,15 +44,15 @@
 				<int key="NSvFlags">292</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="IBUIButton" id="87122060">
+					<object class="IBUIButton" id="38699862">
 						<reference key="NSNextResponder" ref="802969940"/>
-						<int key="NSvFlags">-2147483356</int>
-						<string key="NSFrame">{{0, 112}, {156, 545}}</string>
+						<int key="NSvFlags">289</int>
+						<string key="NSFrame">{{868, 112}, {156, 545}}</string>
 						<reference key="NSSuperview" ref="802969940"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="38699862"/>
+						<reference key="NSNextKeyView" ref="385128608"/>
 						<bool key="IBUIOpaque">NO</bool>
-						<int key="IBUITag">1000</int>
+						<int key="IBUITag">1001</int>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
@@ -73,30 +73,6 @@
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MC41AA</bytes>
 						</object>
-						<object class="NSCustomResource" key="IBUINormalImage">
-							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">cntrl_prev.png</string>
-						</object>
-					</object>
-					<object class="IBUIButton" id="38699862">
-						<reference key="NSNextResponder" ref="802969940"/>
-						<int key="NSvFlags">289</int>
-						<string key="NSFrame">{{868, 112}, {156, 545}}</string>
-						<reference key="NSSuperview" ref="802969940"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="385128608"/>
-						<bool key="IBUIOpaque">NO</bool>
-						<int key="IBUITag">1001</int>
-						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-						<int key="IBUIContentHorizontalAlignment">0</int>
-						<int key="IBUIContentVerticalAlignment">0</int>
-						<reference key="IBUIFont" ref="509354331"/>
-						<reference key="IBUIHighlightedTitleColor" ref="513829447"/>
-						<object class="NSColor" key="IBUINormalTitleColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-						</object>
-						<reference key="IBUINormalTitleShadowColor" ref="88211353"/>
 						<object class="NSCustomResource" key="IBUINormalImage">
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">cntrl_next.png</string>
@@ -239,7 +215,7 @@
 								<string key="NSFrame">{{883, 0}, {139, 93}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="87122060"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -404,7 +380,6 @@
 								<string key="NSFrame">{{932, 8}, {90, 78}}</string>
 								<reference key="NSSuperview" ref="385128608"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -709,7 +684,6 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="696872123"/>
-							<reference ref="87122060"/>
 							<reference ref="38699862"/>
 							<reference ref="385128608"/>
 						</object>
@@ -746,11 +720,6 @@
 							<reference ref="612179351"/>
 							<reference ref="645936183"/>
 						</object>
-						<reference key="parent" ref="802969940"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">6</int>
-						<reference key="object" ref="87122060"/>
 						<reference key="parent" ref="802969940"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -881,8 +850,6 @@
 					<string>43.IBViewBoundsToFrameTransform</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.IBViewBoundsToFrameTransform</string>
-					<string>6.IBPluginDependency</string>
-					<string>6.IBViewBoundsToFrameTransform</string>
 					<string>7.IBPluginDependency</string>
 					<string>7.IBViewBoundsToFrameTransform</string>
 					<string>8.IBPluginDependency</string>
@@ -954,10 +921,6 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAAAAAAAAwrwAAA</bytes>
-					</object>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<object class="NSAffineTransform">
-						<bytes key="NSTransformStruct">P4AAAL+AAAAAAAAAxCWAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
@@ -1187,11 +1150,13 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>controlScrollView</string>
+							<string>debugMessageView</string>
 							<string>loadedControlView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UIScrollView</string>
+							<string>UITextView</string>
 							<string>NMControlsView</string>
 						</object>
 					</object>
@@ -1200,6 +1165,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>controlScrollView</string>
+							<string>debugMessageView</string>
 							<string>loadedControlView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1207,6 +1173,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">controlScrollView</string>
 								<string key="candidateClassName">UIScrollView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">debugMessageView</string>
+								<string key="candidateClassName">UITextView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">loadedControlView</string>
@@ -1243,7 +1213,6 @@
 				<string>btn_share.png</string>
 				<string>btn_share_active.png</string>
 				<string>cntrl_next.png</string>
-				<string>cntrl_prev.png</string>
 				<string>share_callout_active.png</string>
 				<string>share_callout_normal.png</string>
 				<string>thumb_down.png</string>
@@ -1264,7 +1233,6 @@
 				<string>{71, 70}</string>
 				<string>{90, 78}</string>
 				<string>{90, 78}</string>
-				<string>{156, 545}</string>
 				<string>{156, 545}</string>
 				<string>{139, 93}</string>
 				<string>{139, 93}</string>
