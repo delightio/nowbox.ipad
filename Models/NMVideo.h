@@ -33,8 +33,6 @@
 @property (nonatomic, retain) NSNumber * vid;
 @property (nonatomic, retain) NSString * reason_included;
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NSString * thumbnail;
 
 @end
-
-
-

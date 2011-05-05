@@ -39,6 +39,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
 	[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
 	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
+	[mdict setObject:[dict objectForKey:@"thumbnail"] forKey:@"thumbnail"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
 	return mdict;
 }

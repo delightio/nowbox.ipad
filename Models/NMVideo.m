@@ -29,6 +29,7 @@
 @dynamic vid;
 @dynamic reason_included;
 @dynamic channel;
+@dynamic thumbnail;
 
 - (void)setNm_playback_status:(NSInteger)anInt {
 	[self willChangeValueForKey:@"nm_playback_status"];
