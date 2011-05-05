@@ -42,6 +42,7 @@ enum {
 - (IBAction)showLoginView:(id)sender;
 - (IBAction)getFacebookProfile:(id)sender;
 - (IBAction)switchChannel:(id)sender;
+- (IBAction)back:(id)sender;
 
 @end
 

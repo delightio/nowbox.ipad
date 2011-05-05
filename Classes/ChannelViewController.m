@@ -165,6 +165,8 @@
 		self.fetchedResultsController = nil;
 		[channelTableView reloadData];
 		UIButton * otherBtn;
+		// the enum value has the match "tag" value in XIB
+		
 		for (NSInteger i = NMTrendingChannelType; i <= NMFeaturedChannelType; i++) {
 			otherBtn = (UIButton *)[self.view viewWithTag:i];
 			if ( otherBtn.selected && otherBtn != btn ) {
@@ -173,6 +175,10 @@
 		}
 		btn.selected = YES;
 	}
+}
+
+- (IBAction)back:(id)sender {
+	[self presentModalViewController:videoViewController animated:YES];
 }
 
 - (IBAction)getFacebookProfile:(id)sender {

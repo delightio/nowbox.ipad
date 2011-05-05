@@ -44,6 +44,8 @@ typedef enum {
 - (void)configureControlViewAtIndex:(NSInteger)idx;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
 - (void)translateMovieViewByOffset:(CGFloat)offset;
+- (void)playVideo;
+- (void)stopVideo;
 
 // index path cache
 - (NSIndexPath *)indexPathAtIndex:(NSUInteger)idx;
@@ -133,18 +135,10 @@ typedef enum {
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-	movieView.player = nil;
-	currentIndex = 0;
-	currentXOffset = 0.0f;
-	firstShowControlView = YES;
-	// reset player position
-	CGRect theFrame = movieView.frame;
-	theFrame.origin.x = 0.0f;
-	movieView.frame = theFrame;
+- (void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	[self playVideo];
 }
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
 	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
@@ -197,6 +191,14 @@ typedef enum {
 	} else {
 		currentChannel = [chnObj retain];
 	}
+	movieView.player = nil;
+	currentIndex = 0;
+	currentXOffset = 0.0f;
+	firstShowControlView = YES;
+	// reset player position
+	CGRect theFrame = movieView.frame;
+	theFrame.origin.x = 0.0f;
+	movieView.frame = theFrame;
 	// reset fetch result
 	self.fetchedResultsController = nil;
 	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
