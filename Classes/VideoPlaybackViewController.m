@@ -137,6 +137,7 @@ typedef enum {
 	[super viewWillDisappear:animated];
 	movieView.player = nil;
 	currentIndex = 0;
+	currentXOffset = 0.0f;
 	firstShowControlView = YES;
 	// reset player position
 	CGRect theFrame = movieView.frame;
@@ -241,6 +242,7 @@ typedef enum {
 		}
 		controlScrollView.scrollEnabled = YES;
 		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
+		controlScrollView.contentOffset = CGPointZero;
 		
 		if ( numberOfVideos < NM_INDEX_PATH_CACHE_SIZE ) {
 			[nowmovTaskController issueGetVideoListForChannel:currentChannel];
@@ -256,7 +258,6 @@ typedef enum {
 
 #pragma mark Debug message
 - (void)printDebugMessage:(NSString *)str {
-	NSLog(@"%@", str);
 	debugMessageView.text = str;//[debugMessageView.text stringByAppendingFormat:@"\n", str];
 	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
 }
@@ -412,16 +413,16 @@ typedef enum {
 	[nowmovTaskController issueSendViewEventForVideo:[self.fetchedResultsController objectAtIndexPath:self.currentIndexPath] duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed playedToEnd:aEndOfVideo];
 	// visually transit to next video just like the user has tapped next button
 	//if ( aEndOfVideo ) {
-		// disable interface scrolling
-		// will activate again on "currentItem" change kvo notification
-		controlScrollView.scrollEnabled = NO;
-		// fade out the view
-		[UIView beginAnimations:nil context:(void *)NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT];
-		controlScrollView.alpha = 0.0;
-		[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-		[UIView setAnimationDelegate:self];
-		[UIView commitAnimations];
-		// when traisition is done. move shift the scroll view and reveals the video player again
+	// disable interface scrolling
+	// will activate again on "currentItem" change kvo notification
+	controlScrollView.scrollEnabled = NO;
+	// fade out the view
+	[UIView beginAnimations:nil context:(void *)NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT];
+	controlScrollView.alpha = 0.0;
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView setAnimationDelegate:self];
+	[UIView commitAnimations];
+	// when traisition is done. move shift the scroll view and reveals the video player again
 	/*} else {
 		[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:YES];
 		[self translateMovieViewByOffset:1.0f];
@@ -669,10 +670,12 @@ typedef enum {
 		// ====== update interface ======
 		// update the time
 		ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+
 		[UIView beginAnimations:nil context:nil];
 		[ctrlView setControlsHidden:NO animated:NO];
 		movieView.alpha = 1.0;
 		[UIView commitAnimations];
+		
 		t = movieView.player.currentItem.asset.duration;
 		// check if the time is valid
 		if ( t.flags & kCMTimeFlags_Valid ) {
@@ -913,19 +916,33 @@ typedef enum {
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	[self stopVideo];
+	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
+	scrollView.scrollEnabled = NO;
 //	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
+	scrollView.scrollEnabled = YES;
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		// moved to next video
 		[self translateMovieViewByOffset:1.0f];
 		firstShowControlView = YES;
-		currentIndex++;		// update the currentIndex before calling advanceToNextItem
-		currentXOffset += 1024.0f;
-		[movieView.player advanceToNextItem];
-		[movieView.player play];
+		CGFloat offsetDiff = scrollView.contentOffset.x - currentXOffset;
+		if ( offsetDiff > 1024.0f ) {
+			NSInteger i = (NSInteger)(offsetDiff / 1024.0f);
+			for ( NSInteger j = 0 ; j < i; j++ ) {
+				[movieView.player advanceToNextItem];
+			}
+			[movieView.player play];
+			currentIndex += i;
+			currentXOffset = scrollView.contentOffset.x;
+		} else {
+			currentIndex++;		// update the currentIndex before calling advanceToNextItem
+			currentXOffset += 1024.0f;
+			[movieView.player advanceToNextItem];
+			[movieView.player play];
+		}
 		if ( currentIndex + 2 < numberOfVideos ) {
 			[self configureControlViewAtIndex:currentIndex + 2];
 		}

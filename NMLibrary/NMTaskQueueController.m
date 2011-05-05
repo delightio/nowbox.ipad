@@ -94,9 +94,6 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 }
 
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo {
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-	NSLog(@"resolve direct URL - %@", aVideo.vid);
-#endif
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
 	[task release];
