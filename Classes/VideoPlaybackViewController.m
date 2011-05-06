@@ -315,8 +315,10 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_QUEUE
 				NSLog(@"invalid time, get duration again: %lld", t.value / t.timescale);
 #endif
-				ctrlView.duration = t.value / t.timescale;
-				videoDurationInvalid = NO;
+				NSInteger d = t.value / t.timescale;
+				ctrlView.duration = d;
+				// duration of video should never be 0. Do NOT set the flag to YES if duration == 0.
+				if ( d ) videoDurationInvalid = NO;
 			}
 		}
 		ctrlView.timeElapsed = sec;

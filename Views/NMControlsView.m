@@ -223,7 +223,11 @@
 
 - (void)setDuration:(NSInteger)aDur {
 	duration = aDur;
-	pxWidthPerSecond = progressBarWidth / aDur;
+	if ( aDur ) {
+		pxWidthPerSecond = progressBarWidth / (CGFloat)aDur;
+	} else {
+		pxWidthPerSecond = 0.0f;
+	}
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", aDur / 60, aDur % 60];
 }
 
