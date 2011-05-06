@@ -9,6 +9,7 @@
 #import "NMDataController.h"
 #import "NMTask.h"
 #import "NMChannel.h"
+#import "NMVideo.h"
 
 
 NSString * const NMChannelEntityName = @"NMChannel";
@@ -44,6 +45,13 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	NSManagedObject * mobj;
 	for (mobj in objs) {
 		[managedObjectContext deleteObject:mobj];
+	}
+}
+
+- (void)deleteVideoInChannel:(NMChannel *)chnObj {
+	NMVideo * vdo;
+	for (vdo in chnObj.videos) {
+		[managedObjectContext deleteObject:vdo];
 	}
 }
 

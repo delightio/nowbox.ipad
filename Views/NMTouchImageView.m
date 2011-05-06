@@ -90,7 +90,7 @@
 	imageLayer.backgroundColor = [UIColor blackColor].CGColor;
 	imageLayer.frame = CGRectMake(8.0, 11.0, NM_CHANNEL_THUMBNAIL_WIDTH, NM_CHANNEL_THUMBNAIL_HEIGHT);
 	imageLayer.masksToBounds = YES;
-	imageLayer.contentsGravity = kCAGravityCenter;
+	imageLayer.contentsGravity = kCAGravityResizeAspect;
 	[self.layer insertSublayer:imageLayer below:borderLayer];
 }
 

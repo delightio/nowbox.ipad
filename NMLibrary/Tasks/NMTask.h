@@ -23,6 +23,7 @@
 	NMCommand command;
 	BOOL encountersErrorDuringProcessing;
 	NSInteger httpStatusCode;
+	id notificationSender;
 @private
 	NSDateFormatter * _dateTimeFormatter;
 	NSDateFormatter * _dateFormatter;
@@ -34,6 +35,7 @@
 @property (nonatomic, assign) NMTaskExecutionState state;
 @property (nonatomic, readonly) NMCommand command;
 @property (nonatomic, readonly) NSMutableData * buffer;
+@property (nonatomic, retain) id notificationSender;
 
 - (void)prepareDataBuffer;
 - (void)clearDataBuffer;

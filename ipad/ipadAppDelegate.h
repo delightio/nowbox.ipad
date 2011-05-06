@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString * const NM_CHANNEL_LAST_UPDATE;
+
 @class VideoPlaybackViewController;
 @class ChannelViewController;
 

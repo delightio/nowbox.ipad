@@ -44,5 +44,7 @@ enum {
 - (IBAction)switchChannel:(id)sender;
 - (IBAction)back:(id)sender;
 
+- (void)checkUpdateChannels;
+
 @end
 

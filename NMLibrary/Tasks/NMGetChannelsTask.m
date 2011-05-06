@@ -37,18 +37,19 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 #ifdef NOWMOV_USE_BETA_SITE
 	NSString * urlStr = @"http://beta.nowmov.com/channel/listings/recommended";
 #else
-//	NSString * urlStr = @"http://nowmov.com/channel/listings/?as_user_screenname=testnm1&target=mobile";
+//	NSString * urlStr = @"http://nowmov.com/channel/listings/all?as_user_screenname=testnm1&target=mobile";
 	NSString * urlStr = @"http://nowmov.com/channel/listings/all?as_user_screenname=dapunster&target=mobile";
 //	NSString * urlStr = @"http://nowmov.com/channel/listings/recommended&target=mobile";
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
-	
 	return request;
 }
 
 - (void)processDownloadedDataInBuffer {
 	// parse JSON
-	if ( [buffer length] == 0 ) return;
+	if ( [buffer length] == 0 ) {
+		return;
+	}
 	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	NSArray * theChs = [str objectFromJSONString];
 	[str release];
@@ -89,15 +90,16 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	NMChannel * chnObj;
 	NMVideo * vidObj;
 	NSDictionary * vidDict;
-	NSMutableArray * foundAy = [NSMutableArray array];
+	NSMutableSet * foundSet = [NSMutableSet set];
 //	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
 	NSInteger idx = 0;
 	for (dict in parsedObjects) {
 		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"channel_name"]];
 		if ( chnObj ) {
-			[foundAy addObject:chnObj.channel_name];
+			[foundSet addObject:chnObj.channel_name];
+			// check if the channel is playing
 			// remove all existing videos
-			[ctrl deleteAllVideos];
+			//[ctrl deleteVideoInChannel:chnObj];
 		} else {
 			// create a new channel object
 			chnObj = [ctrl insertNewChannel];
@@ -121,7 +123,7 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	}
 	// remove channel no longer here
 	NSArray * allKeys = [fetchedChannels allKeys];
-	NSArray * untouchedKeys = [allKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"!SELF IN %@", foundAy]];
+	NSArray * untouchedKeys = [allKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"!SELF IN %@", foundSet]];
 	if ( [untouchedKeys count] ) {
 		[ctrl deleteManagedObjects:untouchedKeys];
 	}

@@ -11,6 +11,8 @@
 #import "ChannelViewController.h"
 #import "NMLibrary.h"
 
+NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
+
 @implementation ipadAppDelegate
 
 
@@ -18,6 +20,11 @@
 @synthesize viewController;
 @synthesize channelViewController;
 @synthesize managedObjectContext=managedObjectContext_;
+
++ (void)initialize {
+	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, nil]];
+}
 
 - (void)awakeFromNib {
 	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
@@ -36,9 +43,6 @@
     
 	self.window.rootViewController = self.channelViewController;
 	[self.window makeKeyAndVisible];
-	
-	// listen to error notification
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleErrorNotification:) name:NMTaskFailNotification object:nil];
 	
     return YES;
 }
@@ -96,13 +100,6 @@
             abort();
         } 
     }
-}
-
-- (void)handleErrorNotification:(NSNotification *)aNotification {
-	NSDictionary * info = [aNotification userInfo];
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[info objectForKey:@"message"] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-	[alert show];
-	[alert release];
 }
 
 #pragma mark -

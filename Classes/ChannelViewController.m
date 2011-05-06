@@ -12,6 +12,8 @@
 #import "NMLibrary.h"
 #import "ipadAppDelegate.h"
 
+#define GP_CHANNEL_UPDATE_INTERVAL	-12.0f * 3600.0f
+
 @implementation ChannelViewController
 
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext=managedObjectContext_;
@@ -60,12 +62,11 @@
 	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
 	self.videoViewController = appDel.viewController;
 	
-	if ( numberOfChannels == 0 ) {
-		// get channel
-		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
-	}
+	[self checkUpdateChannels];
+	
 	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
 	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
+	[dc addObserver:self selector:@selector(handleDidFailNotification:) name:NMTaskFailNotification object:self];
 	
 	// create a covering view
 	UIView * coveringView = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -74,6 +75,9 @@
 	coveringView.tag = 9001;
 	[self.view addSubview:coveringView];
 	[coveringView release];
+	
+	// listen to App status change notification
+	[dc addObserver:self selector:@selector(handleAppStatusNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
 - (void)showVideoView {
@@ -124,9 +128,19 @@
     [super dealloc];
 }
 
+- (void)checkUpdateChannels {
+	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
+	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL ) { // 12 hours
+		// get channel
+		[[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForObject:self];
+	}
+}
+
 #pragma mark Notification handler
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 	NSLog(@"got the channels");
+	// update the timestamp
+	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 	// we should have the first video for live channel. show the live channel
 //	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"live_channel"];
 //	if ( chnObj ) {
@@ -136,9 +150,28 @@
 //	}
 }
 
+- (void)handleDidFailNotification:(NSNotification *)aNotification {
+	// error updating channel
+	NSDictionary * userInfo = [aNotification userInfo];
+	NSInteger errCode = [[userInfo objectForKey:@"code"] integerValue];
+	if ( errCode >= 400 && errCode < 600 ) {
+		// HTTP server returns error status code
+		// it doesn't make sense to retry immediately. show a prompt in channel view if there's no channel there?
+		NSLog(@"server error %d, can't get channel", errCode);
+	}
+}
+
+- (void)handleAppStatusNotification:(NSNotification *)aNotification {
+	NSString * notName = [aNotification name];
+	if ( [notName isEqualToString:UIApplicationWillEnterForegroundNotification] ) {
+		// check if we need to update channel list
+		[self checkUpdateChannels];
+	}
+}
+
 #pragma mark Target-action methods
 - (IBAction)getChannels:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForObject:self];
 }
 
 - (IBAction)showLoginView:(id)sender {
@@ -352,7 +385,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

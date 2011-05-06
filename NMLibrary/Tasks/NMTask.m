@@ -15,7 +15,7 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 @synthesize state, command, buffer;
 @synthesize encountersErrorDuringProcessing;
 @synthesize httpStatusCode;
-@synthesize errorInfo;
+@synthesize errorInfo, notificationSender;
 
 
 - (NSDate *)dateTimeFromString:(NSString *)str {
@@ -60,6 +60,7 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 }
 
 - (void)dealloc {
+	[notificationSender release];
 	[_dateFormatter release];
 	[_dateTimeFormatter release];
 	[buffer release];

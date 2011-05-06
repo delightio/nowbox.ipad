@@ -61,8 +61,9 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 }
 
 #pragma mark Queue tasks to network controller
-- (void)issueGetChannels {
+- (void)issueGetChannelsForObject:(id)srcObj {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] init];
+	task.notificationSender = srcObj;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -79,7 +80,7 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-	NSLog(@"get video list - %@", chnObj.channel_name);
+	NSLog(@"get video list - %@ %d", chnObj.channel_name, numVid);
 #endif
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
 	task.numberOfVideoRequested = numVid;
