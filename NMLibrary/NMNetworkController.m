@@ -209,7 +209,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 }
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task {
-	NSNotification * n = [NSNotification notificationWithName:NMURLConnectionErrorNotification object:(task.notificationSender == nil ? self : task.notificationSender) userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription], @"message", [NSNumber numberWithInteger:[error code]], @"code", task, @"task", nil]];
+	NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:(task.notificationSender == nil ? self : task.notificationSender) userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription], @"message", [NSNumber numberWithInteger:[error code]], @"code", task, @"task", nil]];
 	[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 }
 

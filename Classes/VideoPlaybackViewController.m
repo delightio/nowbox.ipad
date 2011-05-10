@@ -260,7 +260,7 @@ typedef enum {
 
 #pragma mark Debug message
 - (void)printDebugMessage:(NSString *)str {
-	debugMessageView.text = str;//[debugMessageView.text stringByAppendingFormat:@"\n", str];
+	debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", str];
 	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
 }
 
@@ -528,7 +528,8 @@ typedef enum {
 #endif
 	// check if we should queue the video resolved
 	if ( movieView.player == nil ) {
-		if ( currentIndex == [vid.nm_sort_order integerValue] )
+		NSIndexPath * idxPath = [self.fetchedResultsController indexPathForObject:vid];
+		if ( currentIndex == idxPath.row )
 			[self preparePlayer];
 		// else - ignore the resolution result. we just want the first video
 	} else {
@@ -560,14 +561,14 @@ typedef enum {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"direct URL resolution failed: %@", [userInfo objectForKey:@"error"]);
 #endif
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [[aNotification userInfo] objectForKey:@"error"]];
-#endif
 		// skip the video by marking the resolution status
 		if ( userInfo ) {
 			NMVideo * vid = [userInfo objectForKey:@"target_object"];
 			vid.nm_error = [userInfo objectForKey:@"errorNum"];
 			[self.managedObjectContext save:nil];
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+			debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\ndirect URL resolution failed: %@ %@", [[aNotification userInfo] objectForKey:@"error"], vid.title];
+#endif
 		}
 	} else if ( [[aNotification name] isEqualToString:NMURLConnectionErrorNotification] ) {
 		// general network error. 
@@ -1011,26 +1012,30 @@ typedef enum {
     }
     
     return fetchedResultsController_;
-}    
+}
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//	NSLog(@"type %d, indexPath %d, %d newIndexPath %d, %d", type, indexPath.row, indexPath.section, newIndexPath.row, newIndexPath.section);
-//#endif
 	switch (type) {
-		case NSFetchedResultsChangeUpdate:
-			rowCountHasChanged = NO;
-			break;
-		case NSFetchedResultsChangeMove:
-			rowCountHasChanged = NO;
+		case NSFetchedResultsChangeDelete:
+			rowCountHasChanged = YES;
 			NMVideo * vid = (NMVideo *)anObject;
+			// setting nm_sort_order will trigger another call to the FRC's delegate method
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
 			// check if the new position makes the video become ready to be queued
-			if ( currentIndex + 2 >= newIndexPath.row ) {
-				[self configureControlViewAtIndex:newIndexPath.row];
-				[self requestAddVideoAtIndex:newIndexPath.row];
+			if ( currentIndex + 2 >= indexPath.row ) {
+				[self configureControlViewAtIndex:indexPath.row];
+				[self requestAddVideoAtIndex:indexPath.row];
+				if ( currentIndex == 0 && vid.nm_playback_status == NMVideoQueueStatusDirectURLReady && movieView.player == nil ) {
+					// we should start playing the video
+					[self preparePlayer];
+				}
 			}
 			break;
+		case NSFetchedResultsChangeUpdate:
+		case NSFetchedResultsChangeMove:
+			rowCountHasChanged = NO;
+			break;
+			
 		default:
 		{
 			rowCountHasChanged = YES;

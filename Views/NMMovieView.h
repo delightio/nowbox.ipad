@@ -13,11 +13,15 @@
 	SEL action;
 	id target;
 	CGPoint initialCenter;
+	UIActivityIndicatorView * activityIndicator;
+	UILabel * statusLabel;
 @private
 	AVQueuePlayer * player_;
 }
 
 @property (nonatomic, retain) AVQueuePlayer * player;
+@property (nonatomic, readonly) UILabel * statusLabel;
+@property (nonatomic, readonly) UIActivityIndicatorView * activityIndicator;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
