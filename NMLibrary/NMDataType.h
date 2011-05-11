@@ -31,6 +31,7 @@ typedef enum {
 	NMEventRewind,
 	NMEventShare,
 	NMEventView,
+	NMEventViewing,
 } NMEventType;
 
 typedef enum {

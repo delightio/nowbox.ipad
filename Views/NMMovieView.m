@@ -33,7 +33,7 @@
 	activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	activityIndicator.center = pos;
 	[activityIndicator startAnimating];
-	[self addSubview:activityIndicator];
+//	[self addSubview:activityIndicator];
 	
 	statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 640.0, 22.0)];
 	statusLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -46,7 +46,7 @@
 	pos.y += activityIndicator.bounds.size.height;
 	statusLabel.center = pos;
 	statusLabel.text = @"Test message";
-	[self addSubview:statusLabel];
+//	[self addSubview:statusLabel];
 	
 	return self;
 }

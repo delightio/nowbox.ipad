@@ -11,7 +11,16 @@
 @class NMDataController;
 @class NMChannel;
 @class NMVideo;
+@class NMGetChannelVideoListTask;
 
+@protocol NMVideoListUpdateDelegate <NSObject>
+
+- (BOOL)task:(NMGetChannelVideoListTask *)vidListTask shouldBeginPlaybackSafeUpdateForChannel:(NMChannel *)chnl;
+- (NMVideo *)currentVideoForTask:(NMGetChannelVideoListTask *)vidListTask;
+- (void)taskBeginPlaybackSafeUpdate:(NMGetChannelVideoListTask *)vidListTask;
+- (void)taskEndPlaybackSafeUpate:(NMGetChannelVideoListTask *)vidListTask;
+
+@end
 
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
@@ -42,5 +51,6 @@
 - (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec playedToEnd:(BOOL)aEnd;
+- (void)issueSendViewingEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 
 @end

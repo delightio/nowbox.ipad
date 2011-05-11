@@ -10,6 +10,7 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMDataController.h"
+#import "NMTaskQueueController.h"
 
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
@@ -20,6 +21,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 @synthesize channel, channelName;
 @synthesize newChannel, urlString;
 @synthesize numberOfVideoRequested;
+@synthesize delegate;
 
 + (NSPredicate *)outdatedVideoPredicateTempate {
 	if ( outdatedVideoPredicateTempate_ == nil ) {
@@ -120,6 +122,16 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 			vidObj.channel = channel;
 			[channel addVideosObject:vidObj];
 		}
+	}
+	BOOL pbSafe = [delegate task:self shouldBeginPlaybackSafeUpdateForChannel:channel];
+	if ( pbSafe ) {
+		// user is currently viewing this channel
+		[delegate taskBeginPlaybackSafeUpdate:self];
+	}
+	vidObj = [delegate currentVideoForTask:self];
+	
+	if ( pbSafe ) {
+		[delegate taskEndPlaybackSafeUpate:self];
 	}
 //	if ( newChannel ) {
 		// update existing video

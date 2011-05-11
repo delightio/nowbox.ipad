@@ -50,6 +50,9 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 		case NMEventView:
 			evtStr = @"view";
 			break;
+		case NMEventViewing:
+			evtStr = @"viewing";
+			break;
 	}
 	NSString * urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%@&trigger_name=%@", videoID, elapsedSeconds, duration, evtStr, eventType == NMEventView && playedToEnd ? @"auto" : @"touch"];
 #ifdef DEBUG_EVENT_TRACKING

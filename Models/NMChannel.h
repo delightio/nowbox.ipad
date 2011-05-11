@@ -16,6 +16,8 @@
 
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
+@property (nonatomic, retain) NSNumber *  nm_last_vid;
+@property (nonatomic, retain) NSNumber *  nm_time_elapsed;
 @property (nonatomic, retain) NSNumber * count;
 @property (nonatomic, retain) NSString * reason;
 @property (nonatomic, retain) NSString * thumbnail;

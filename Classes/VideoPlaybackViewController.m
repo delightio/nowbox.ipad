@@ -125,6 +125,10 @@ typedef enum {
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
 	// listen to item finish up playing notificaiton
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+	// listen to system notification
+	[nc addObserver:self selector:@selector(handleApplicationDoneNotification:) name:UIApplicationWillTerminateNotification object:nil];
+	[nc addObserver:self selector:@selector(handleApplicationDoneNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+	[nc addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 	
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -169,6 +173,18 @@ typedef enum {
 	[movieView release];
 	[currentChannel release];
     [super dealloc];
+}
+
+- (NMVideo *)currentVideo {
+	return [self.fetchedResultsController objectAtIndexPath:self.currentIndexPath];
+}
+
+- (void)setPlaybackCheckpoint {
+	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+	currentChannel.nm_time_elapsed = [NSNumber numberWithInteger:ctrlView.timeElapsed];
+	currentChannel.nm_last_vid = self.currentVideo.vid;
+	// send event back to nowmov server
+	[nowmovTaskController issueSendViewingEventForVideo:self.currentVideo duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed];
 }
 
 - (NSIndexPath *)currentIndexPath {
@@ -565,7 +581,6 @@ typedef enum {
 		if ( userInfo ) {
 			NMVideo * vid = [userInfo objectForKey:@"target_object"];
 			vid.nm_error = [userInfo objectForKey:@"errorNum"];
-			[self.managedObjectContext save:nil];
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 			debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\ndirect URL resolution failed: %@ %@", [[aNotification userInfo] objectForKey:@"error"], vid.title];
 #endif
@@ -717,6 +732,22 @@ typedef enum {
 	}
 }
 
+- (void)handleApplicationDoneNotification:(NSNotification *)aNotification {
+	if ( self.parentViewController ) {
+		// this view is currently showing on screen
+		// save the playback stuff
+		[self setPlaybackCheckpoint];
+	}
+}
+
+- (void)handleApplicationDidBecomeActiveNotification:(NSNotification *)aNotification {
+	// resume playing the video
+	[self playVideo];
+	// send event back to server
+	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
+	[nowmovTaskController issueSendViewingEventForVideo:self.currentVideo duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed];
+}
+
 #pragma mark Playback view UI update
 - (void)setCurrentTime:(NSInteger)sec {
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
@@ -833,6 +864,7 @@ typedef enum {
 
 - (IBAction)backToChannelView:(id)sender {
 	[movieView.player pause];
+	[self setPlaybackCheckpoint];
 	// release the player object, a new AVQueuePlayer object will be created with preparePlayer method is called
 	[self dismissModalViewControllerAnimated:YES];
 }

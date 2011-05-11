@@ -14,6 +14,8 @@
 
 @dynamic nm_description;
 @dynamic nm_sort_order;
+@dynamic nm_last_vid;
+@dynamic nm_time_elapsed;
 @dynamic count;
 @dynamic reason;
 @dynamic thumbnail;
