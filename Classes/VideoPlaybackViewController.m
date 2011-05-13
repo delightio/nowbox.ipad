@@ -232,6 +232,7 @@ typedef enum {
 		currentIndex = idxPath.row;
 		currentXOffset = (CGFloat)(currentIndex * 1024);
 	}
+	[request release];
 	// reset player position
 	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = currentXOffset;
@@ -243,21 +244,6 @@ typedef enum {
 	}
 	// update the video list
 	if ( numberOfVideos ) {
-//		if ( currentIndex + 2 < numberOfVideos ) {
-//			[self configureControlViewAtIndex:currentIndex + 2];
-//			[self requestAddVideoAtIndex:currentIndex + 2];
-//		}
-//		if ( currentIndex ) {
-//			[self configureControlViewAtIndex:currentIndex - 1];
-//			[self requestAddVideoAtIndex:currentIndex - 1];
-//		}
-//		if ( currentIndex + 1 < numberOfVideos )	{
-//			[self configureControlViewAtIndex:currentIndex + 1];
-//			[self requestAddVideoAtIndex:currentIndex + 1];
-//		}
-//		[NSThread sleepForTimeInterval:1.0];
-//		[self configureControlViewAtIndex:currentIndex];
-//		[self requestAddVideoAtIndex:currentIndex];
 		// we should play video at currentIndex
 		// get the direct URL
 		[self configureControlViewAtIndex:currentIndex];
@@ -271,8 +257,11 @@ typedef enum {
 			[self requestAddVideoAtIndex:currentIndex + 2];
 		}
 		controlScrollView.scrollEnabled = YES;
+		// init the drag offset so that when scrollViewDidScroll delegate is called, alpha of movieView will not be set to a weird value
+		beginDraggingContentOffset.x = currentXOffset;
+		// set offset to the last viewed video place
 		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
-		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
+		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);	// this will trigger delegate method "scrollViewDidScroll"
 		
 		if ( numberOfVideos < NM_INDEX_PATH_CACHE_SIZE ) {
 			[nowmovTaskController issueGetVideoListForChannel:currentChannel];
@@ -668,6 +657,7 @@ typedef enum {
 	NSInteger c = (NSInteger)context;
 	NMControlsView * ctrlView;
 	CMTime t;
+	NSLog(@"movie view position %f %f %f", movieView.frame.origin.x, controlScrollView.contentOffset.x, movieView.alpha);
 	if ( c == NM_PLAYER_STATUS_CONTEXT ) {
 		switch (movieView.player.status) {
 			case AVPlayerStatusReadyToPlay:
