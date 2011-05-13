@@ -16,6 +16,7 @@
 
 NSString * const NMWillGetChannelsNotification = @"NMWillGetChannelsNotification";
 NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
+NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotification";
 
 @implementation NMGetChannelsTask
 
@@ -23,8 +24,26 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 
 - (id)init {
 	self = [super init];
-	command = NMCommandGetChannels;
+	command = NMCommandGetAllChannels;
 	channelJSONKeys = [[NSArray alloc] initWithObjects:@"channel_name", @"count", @"reason", @"thumbnail", @"channel_type", @"channel_url", @"title", nil];
+	return self;
+}
+
+- (id)initGetFriendChannels {
+	self = [self init];
+	command = NMCommandGetFriendChannels;
+	return self;
+}
+
+- (id)initGetTopicChannels {
+	self = [self init];
+	command = NMCommandGetTopicChannels;
+	return self;
+}
+
+- (id)initGetTrendingChannels {
+	self = [self init];
+	command = NMCommandGetTrendingChannels;
 	return self;
 }
 
@@ -34,13 +53,23 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 }
 
 - (NSMutableURLRequest *)URLRequest {
-#ifdef NOWMOV_USE_BETA_SITE
-	NSString * urlStr = @"http://beta.nowmov.com/channel/listings/recommended";
-#else
-//	NSString * urlStr = @"http://nowmov.com/channel/listings/all?as_user_screenname=testnm1&target=mobile";
-	NSString * urlStr = @"http://nowmov.com/channel/listings/all?as_user_screenname=dapunster&target=mobile";
-//	NSString * urlStr = @"http://nowmov.com/channel/listings/recommended&target=mobile";
-#endif
+	NSString * urlStr;
+	switch (command) {
+		case NMCommandGetFriendChannels:
+			urlStr = @"http://nowmov.com/channel/listings/friends?as_user_screenname=dapunster&target=mobile";
+			break;
+		case NMCommandGetTopicChannels:
+			urlStr = @"http://nowmov.com/channel/listings/topics?as_user_screenname=dapunster&target=mobile";
+			break;
+		case NMCommandGetTrendingChannels:
+			urlStr = @"http://nowmov.com/channel/listings/trending?as_user_screenname=dapunster&target=mobile";
+			break;
+			
+		default:
+			urlStr = @"http://nowmov.com/channel/listings/all?as_user_screenname=dapunster&target=mobile";
+			break;
+	}
+
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	return request;
 }
@@ -137,9 +166,15 @@ NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 	return NMDidGetChannelsNotification;
 }
 
+- (NSString *)didFailNotificationName {
+	return NMDidFailGetChannelNotification;
+}
+
 - (NSDictionary *)userInfo {
 	if ( liveChannel ) {
-		return [NSDictionary dictionaryWithObject:liveChannel forKey:@"live_channel"];
+		return [NSDictionary dictionaryWithObjectsAndKeys:liveChannel, @"live_channel", [NSNumber numberWithInteger:command], @"channel_type", nil];
+	} else {
+		return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"channel_type"];
 	}
 	return nil;
 }

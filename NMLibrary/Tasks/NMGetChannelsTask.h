@@ -17,4 +17,8 @@
 
 @property (nonatomic, retain) NMChannel * liveChannel;
 
+- (id)initGetFriendChannels;
+- (id)initGetTopicChannels;
+- (id)initGetTrendingChannels;
+
 @end

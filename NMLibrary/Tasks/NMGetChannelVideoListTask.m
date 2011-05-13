@@ -64,11 +64,8 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 }
 
 - (NSMutableURLRequest *)URLRequest {
-#ifdef NOWMOV_USE_BETA_SITE
-	NSString * urlStr = [NSString stringWithFormat:@"http://beta.nowmov.com/live/videos?target=mobile", channelName];
-#else
 	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile&limit=%d", urlString, numberOfVideoRequested];
-#endif
+
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Get Channel Video List: %@", urlStr);
 #endif

@@ -61,9 +61,8 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 }
 
 #pragma mark Queue tasks to network controller
-- (void)issueGetChannelsForObject:(id)srcObj {
+- (void)issueGetChannels {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] init];
-	task.notificationSender = srcObj;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

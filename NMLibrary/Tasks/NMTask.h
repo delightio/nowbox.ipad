@@ -23,7 +23,6 @@
 	NMCommand command;
 	BOOL encountersErrorDuringProcessing;
 	NSInteger httpStatusCode;
-	id notificationSender;
 @private
 	NSDateFormatter * _dateTimeFormatter;
 	NSDateFormatter * _dateFormatter;

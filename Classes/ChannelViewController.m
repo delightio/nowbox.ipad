@@ -66,7 +66,7 @@
 	
 	NSNotificationCenter * dc = [NSNotificationCenter defaultCenter];
 	[dc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
-	[dc addObserver:self selector:@selector(handleDidFailNotification:) name:NMTaskFailNotification object:self];
+	[dc addObserver:self selector:@selector(handleDidFailNotification:) name:NMDidFailGetChannelNotification object:nil];
 	
 	// create a covering view
 	UIView * coveringView = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -132,7 +132,7 @@
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
 	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL ) { // 12 hours
 		// get channel
-		[[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForObject:self];
+		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 	}
 }
 
@@ -171,7 +171,7 @@
 
 #pragma mark Target-action methods
 - (IBAction)getChannels:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForObject:self];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 }
 
 - (IBAction)showLoginView:(id)sender {

@@ -15,7 +15,10 @@ typedef enum {
 } NMTaskExecutionState;
 
 typedef enum {
-	NMCommandGetChannels			= 1,
+	NMCommandGetAllChannels			= 1,
+	NMCommandGetFriendChannels,
+	NMCommandGetTopicChannels,
+	NMCommandGetTrendingChannels,
 	NMCommandGetVideoInfo,
 	NMCommandGetChannelVideoList,
 	NMCommandGetNextVideo,
@@ -42,6 +45,7 @@ typedef enum {
 // Notifications
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;
+extern NSString * const NMDidFailGetChannelNotification;
 extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
 extern NSString * const NMWillGetYouTubeDirectURLNotification;

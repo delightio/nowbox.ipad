@@ -36,7 +36,7 @@
 + (NMTaskQueueController *)sharedTaskQueueController;
 
 // Channel
-- (void)issueGetChannelsForObject:(id)srcObj;
+- (void)issueGetChannels;
 - (void)issueGetLiveChannel;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid;
