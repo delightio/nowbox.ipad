@@ -15,7 +15,8 @@
 @dynamic nm_description;
 @dynamic nm_sort_order;
 @dynamic nm_last_vid;
-@dynamic nm_time_elapsed;
+@dynamic nm_time_elapsed_value;
+@dynamic nm_time_elapsed_timescale;
 @dynamic count;
 @dynamic reason;
 @dynamic thumbnail;
@@ -25,5 +26,6 @@
 @dynamic channel_url;
 @dynamic channel_type;
 @dynamic title;
+
 
 @end

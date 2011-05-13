@@ -181,7 +181,11 @@ typedef enum {
 
 - (void)setPlaybackCheckpoint {
 	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
-	currentChannel.nm_time_elapsed = [NSNumber numberWithInteger:ctrlView.timeElapsed];
+	CMTime aTime = movieView.player.currentTime;
+	if ( aTime.flags & kCMTimeFlags_Valid ) {
+		currentChannel.nm_time_elapsed_value = [NSNumber numberWithLongLong:aTime.value];
+		currentChannel.nm_time_elapsed_timescale = [NSNumber numberWithInteger:aTime.timescale];
+	}
 	currentChannel.nm_last_vid = self.currentVideo.vid;
 	// send event back to nowmov server
 	[nowmovTaskController issueSendViewingEventForVideo:self.currentVideo duration:ctrlView.duration elapsedSeconds:ctrlView.timeElapsed];
@@ -211,14 +215,27 @@ typedef enum {
 	currentIndex = 0;
 	currentXOffset = 0.0f;
 	firstShowControlView = YES;
-	// reset player position
-	CGRect theFrame = movieView.frame;
-	theFrame.origin.x = 0.0f;
-	movieView.frame = theFrame;
 	// reset fetch result
 	self.fetchedResultsController = nil;
 	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	numberOfVideos = [sectionInfo numberOfObjects];
+	
+	// update status variable to point to the last video
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"vid = %@", currentChannel.nm_last_vid]];
+	[request setReturnsObjectsAsFaults:NO];
+	NSArray * result = [self.managedObjectContext executeFetchRequest:request error:nil];
+	if ( result && [result count] ) {
+		// we can find the last watched video.
+		NSIndexPath * idxPath = [self.fetchedResultsController indexPathForObject:[result objectAtIndex:0]];
+		currentIndex = idxPath.row;
+		currentXOffset = (CGFloat)(currentIndex * 1024);
+	}
+	// reset player position
+	CGRect theFrame = movieView.frame;
+	theFrame.origin.x = currentXOffset;
+	movieView.frame = theFrame;
 	
 	// reset movie control view
 	for (NMControlsView * ctrlView in controlViewArray) {
@@ -245,11 +262,6 @@ typedef enum {
 		// get the direct URL
 		[self configureControlViewAtIndex:currentIndex];
 		[self requestAddVideoAtIndex:currentIndex];
-		//TODO: configure other view
-		if ( currentIndex ) {
-			[self configureControlViewAtIndex:currentIndex - 1];
-			[self requestAddVideoAtIndex:currentIndex - 1];
-		}
 		if ( currentIndex + 1 < numberOfVideos )	{
 			[self configureControlViewAtIndex:currentIndex + 1];
 			[self requestAddVideoAtIndex:currentIndex + 1];
@@ -260,7 +272,7 @@ typedef enum {
 		}
 		controlScrollView.scrollEnabled = YES;
 		controlScrollView.contentSize = CGSizeMake((CGFloat)(numberOfVideos * 1024), 768.0f);
-		controlScrollView.contentOffset = CGPointZero;
+		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 		
 		if ( numberOfVideos < NM_INDEX_PATH_CACHE_SIZE ) {
 			[nowmovTaskController issueGetVideoListForChannel:currentChannel];
@@ -478,9 +490,13 @@ typedef enum {
 			vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 			[nowmovTaskController issueGetDirectURLForVideo:vid];
 		}
-	} /*else if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
-		[self playerQueueVideos];
-	}*/
+	} else if ( vid.nm_playback_status >= NMVideoQueueStatusDirectURLReady ) {
+		if ( idx == currentIndex && movieView.player == nil ) {
+			[self preparePlayer];
+		} else {
+			[self playerQueueVideos];
+		}
+	}
 }
 
 - (void)playerQueueVideos {
@@ -522,10 +538,10 @@ typedef enum {
 					// exit the loop. don't have to queue other video in the list. the queuing process must be in-order
 					enableQueuing = NO;
 				}
-			} else {
+			} /*else {
 				// just check if we should resolve the direct URL
 				[self requestAddVideoAtIndex:i];
-			}
+			}*/
 		} else {
 			break;
 		}
