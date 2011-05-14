@@ -537,6 +537,24 @@ typedef enum {
 	}
 }
 
+#pragma mark NMVideoListUpdateDelegate methods
+- (BOOL)task:(NMRefreshChannelVideoListTask *)vidListTask shouldBeginPlaybackSafeUpdateForChannel:(NMChannel *)chnl {
+	return chnl == currentChannel;
+}
+
+- (NMVideo *)currentVideoForTask:(NMRefreshChannelVideoListTask *)vidListTask {
+	return nil;
+}
+
+- (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask {
+	controlScrollView.scrollEnabled = NO;
+	// cancel Direct Resolution Task and Get Vdieo list task that may have been triggered when the user is waiting for videos
+}
+
+- (void)taskEndPlaybackSafeUpate:(NMRefreshChannelVideoListTask *)vidListTask {
+	controlScrollView.scrollEnabled = YES;
+}
+
 #pragma mark Notification handling
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
 	NMVideo * vid = [[aNotification userInfo] objectForKey:@"target_object"];

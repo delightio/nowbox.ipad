@@ -9,13 +9,14 @@
 #import <AVFoundation/AVFoundation.h>
 #import "NMMovieView.h"
 #import "NMControlsView.h"
+#import "NMLibrary.h"
 
 @class NMVideo;
 @class NMChannel;
 @class NMTaskQueueController;
 
 
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UITextView * debugMessageView;
 	NMMovieView * movieView;

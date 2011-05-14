@@ -32,6 +32,7 @@
 // general data manipulation
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 - (void)deleteVideoInChannel:(NMChannel *)chnObj;
+- (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo;
 - (void)deleteAllVideos;
 // channels
 - (NMChannel *)insertNewChannel;

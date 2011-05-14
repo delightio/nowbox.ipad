@@ -14,6 +14,7 @@
 
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
+NSString * const NMDidFailGetChannelVideoListNotification = @"NMDidFailGetChannelVideoListNotification";
 
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
@@ -120,58 +121,6 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 			[channel addVideosObject:vidObj];
 		}
 	}
-	BOOL pbSafe = [delegate task:self shouldBeginPlaybackSafeUpdateForChannel:channel];
-	if ( pbSafe ) {
-		// user is currently viewing this channel
-		[delegate taskBeginPlaybackSafeUpdate:self];
-	}
-	vidObj = [delegate currentVideoForTask:self];
-	
-	if ( pbSafe ) {
-		[delegate taskEndPlaybackSafeUpate:self];
-	}
-//	if ( newChannel ) {
-		// update existing video
-		// remove ALL old videos not in the list
-		
-/*		// prepare the array of ID
-		NSMutableArray * ay = [NSMutableArray array];
-		NSDictionary * dict;
-		for (dict in parsedObjects) {
-			[ay addObject:[dict objectForKey:@"vid"]];
-		}
-		
-		// delete outdated video
-		NSSet * outdatedVidSet = [channel.videos filteredSetUsingPredicate:[[NMGetChannelVideoListTask outdatedVideoPredicateTempate] predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:ay forKey:@"NM_VIDEO_ID_LIST"]]];
-		[ctrl deleteManagedObjects:outdatedVidSet];
-		
-		// get the array of remaining videos ID
-		NMVideo * vidObj;
-		NSMutableDictionary * overlappingVidIDDict = [NSMutableDictionary dictionary];
-		for (vidObj in ctrl.sortedVideoList) {
-			[overlappingVidIDDict setObject:vidObj forKey:vidObj.vid];
-		}
-		
-		NSNumber * vidID;
-		NSUInteger idx = 0;
-		for (vidID in ay) {
-			vidObj = [overlappingVidIDDict objectForKey:vidID];
-			if ( vidObj == nil ) {
-				// create a new video
-				vidObj = [ctrl insertNewVideo];
-			}
-			[vidObj setValuesForKeysWithDictionary:[parsedObjects objectAtIndex:idx]];
-			vidObj.nm_sort_order = [NSNumber numberWithInteger:idx];
-			// associate data objects
-			vidObj.channel = channel;
-			[channel addVideosObject:vidObj];
-			idx++;
-		}
-	ctrl.sortedVideoList = nil;
-*/		
-//	} else {
-		// this is an existing channel. We should append new videos and update the order. No need to remove old videos
-//	}
 }
 
 - (NSString *)willLoadNotificationName {
@@ -180,6 +129,10 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 - (NSString *)didLoadNotificationName {
 	return NMDidGetChannelVideoListNotification;
+}
+
+- (NSString *)didFailNotificationName {
+	return NMDidFailGetChannelVideoListNotification;
 }
 
 - (NSDictionary *)userInfo {

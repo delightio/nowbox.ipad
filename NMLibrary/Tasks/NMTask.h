@@ -9,7 +9,7 @@
 #import "NMDataType.h"
 #import "JSONKit.h"
 
-#define NM_URL_REQUEST_TIMEOUT		20.0f
+#define NM_URL_REQUEST_TIMEOUT		30.0f
 
 @class NMDataController;
 

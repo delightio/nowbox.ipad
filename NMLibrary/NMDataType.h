@@ -48,6 +48,11 @@ extern NSString * const NMDidGetChannelsNotification;
 extern NSString * const NMDidFailGetChannelNotification;
 extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
+extern NSString * const NMDidFailGetChannelVideoListNotification;
+extern NSString * const NMWillRefreshChannelVideListNotification;
+extern NSString * const NMDidRefreshChannelVideoListNotification;
+extern NSString * const NMDidFailRefreshChannelVideoListNotification;
+
 extern NSString * const NMWillGetYouTubeDirectURLNotification;
 extern NSString * const NMDidGetYouTubeDirectURLNotification;
 extern NSString * const NMDidFailGetYouTubeDirectURLNotification;

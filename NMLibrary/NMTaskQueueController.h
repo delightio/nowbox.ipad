@@ -11,14 +11,14 @@
 @class NMDataController;
 @class NMChannel;
 @class NMVideo;
-@class NMGetChannelVideoListTask;
+@class NMRefreshChannelVideoListTask;
 
 @protocol NMVideoListUpdateDelegate <NSObject>
 
-- (BOOL)task:(NMGetChannelVideoListTask *)vidListTask shouldBeginPlaybackSafeUpdateForChannel:(NMChannel *)chnl;
-- (NMVideo *)currentVideoForTask:(NMGetChannelVideoListTask *)vidListTask;
-- (void)taskBeginPlaybackSafeUpdate:(NMGetChannelVideoListTask *)vidListTask;
-- (void)taskEndPlaybackSafeUpate:(NMGetChannelVideoListTask *)vidListTask;
+- (BOOL)task:(NMRefreshChannelVideoListTask *)vidListTask shouldBeginPlaybackSafeUpdateForChannel:(NMChannel *)chnl;
+- (NMVideo *)currentVideoForTask:(NMRefreshChannelVideoListTask *)vidListTask;
+- (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask;
+- (void)taskEndPlaybackSafeUpate:(NMRefreshChannelVideoListTask *)vidListTask;
 
 @end
 

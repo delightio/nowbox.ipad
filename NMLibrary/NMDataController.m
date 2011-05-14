@@ -55,6 +55,14 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	}
 }
 
+- (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo {
+	NMVideo * vdo;
+	for (vdo in chnObj.videos) {
+		if ( vdo == aVideo ) continue;
+		[managedObjectContext deleteObject:vdo];
+	}
+}
+
 - (void)deleteAllVideos {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
