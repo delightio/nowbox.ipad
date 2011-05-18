@@ -65,6 +65,8 @@
 - (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)showSharePopover:(id)sender;
 
+- (IBAction)refreshVideoList:(id)sender;
+
 - (void)stopVideo;
 - (void)preparePlayer;	// prepare an AVPlayerLayer for the first time
 - (void)requestAddVideoAtIndex:(NSUInteger)idx;

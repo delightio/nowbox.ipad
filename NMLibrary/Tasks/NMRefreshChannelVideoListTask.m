@@ -100,6 +100,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	NMVideo * vidObj;
 	numberOfVideoAdded = 0;
 	if ( pbSafe ) {
+		NSLog(@"Begin safe update");
 		// user is currently viewing this channel
 		[delegate taskBeginPlaybackSafeUpdate:self];
 		// currently playing video in the channel
@@ -108,6 +109,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 		// insert new item
 		for (dict in parsedObjects) {
 			if ( [curVideo.vid isEqualToNumber:[dict objectForKey:@"vid"]] ) continue;
+			NSLog(@"add video - %@", [dict objectForKey:@"title"]);
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
 			vidObj.channel = channel;
@@ -115,6 +117,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 			numberOfVideoAdded++;
 		}
 		[delegate taskBeginPlaybackSafeUpdate:self];
+		NSLog(@"end safe update");
 	} else {
 		// the user is not playing the video in the channel requesting for new video list
 		// just delete everything in that channel and show the new list of video

@@ -88,8 +88,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueRefreshVideoListForChannel:(NMChannel *)chnObj {
+- (void)issueRefreshVideoListForChannel:(NMChannel *)chnObj delegate:(id <NMVideoListUpdateDelegate>)del {
 	NMRefreshChannelVideoListTask * task = [[NMRefreshChannelVideoListTask alloc] initWithChannel:chnObj];
+	task.delegate = del;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

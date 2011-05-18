@@ -120,6 +120,7 @@ typedef enum {
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidRefreshChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
@@ -532,6 +533,14 @@ typedef enum {
 - (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask {
 	controlScrollView.scrollEnabled = NO;
 	// cancel Direct Resolution Task and Get Vdieo list task that may have been triggered when the user is waiting for videos
+	BOOL firstPass = YES;
+	for (AVPlayerItem * pItem in movieView.player.items ) {
+		if ( firstPass ) {
+			firstPass = NO;
+		} else {
+			[movieView.player removeItem:pItem];
+		}
+	}
 }
 
 - (void)taskEndPlaybackSafeUpate:(NMRefreshChannelVideoListTask *)vidListTask {
@@ -929,6 +938,10 @@ typedef enum {
 	[navCtrl release];
 }
 
+- (IBAction)refreshVideoList:(id)sender {
+	[nowmovTaskController issueRefreshVideoListForChannel:currentChannel delegate:self];
+}
+
 - (void)movieViewTouchUp:(id)sender {
 	UIView * v = (UIView *)[controlViewArray objectAtIndex:RRIndex(currentIndex)];
 	// show the control view
@@ -1059,18 +1072,18 @@ typedef enum {
 		case NSFetchedResultsChangeDelete:
 			rowCountHasChanged = YES;
 			//MARK: code below seems useless base on findings studying FRCDeleteTest sample code
-			NMVideo * vid = (NMVideo *)anObject;
-			// setting nm_sort_order will trigger another call to the FRC's delegate method
-			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
-			// check if the new position makes the video become ready to be queued
-			if ( currentIndex + 2 >= indexPath.row ) {
-				[self configureControlViewAtIndex:indexPath.row];
-				[self requestAddVideoAtIndex:indexPath.row];
-				if ( currentIndex == 0 && vid.nm_playback_status == NMVideoQueueStatusDirectURLReady && movieView.player == nil ) {
-					// we should start playing the video
-					[self preparePlayer];
-				}
-			}
+//			NMVideo * vid = (NMVideo *)anObject;
+//			// setting nm_sort_order will trigger another call to the FRC's delegate method
+//			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
+//			// check if the new position makes the video become ready to be queued
+//			if ( currentIndex + 2 >= indexPath.row ) {
+//				[self configureControlViewAtIndex:indexPath.row];
+//				[self requestAddVideoAtIndex:indexPath.row];
+//				if ( currentIndex == 0 && vid.nm_playback_status == NMVideoQueueStatusDirectURLReady && movieView.player == nil ) {
+//					// we should start playing the video
+//					[self preparePlayer];
+//				}
+//			}
 			break;
 		case NSFetchedResultsChangeUpdate:
 		case NSFetchedResultsChangeMove:

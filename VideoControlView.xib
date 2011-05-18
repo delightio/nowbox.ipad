@@ -215,7 +215,7 @@
 								<string key="NSFrame">{{883, 0}, {139, 93}}</string>
 								<reference key="NSSuperview" ref="696872123"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="240315488"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -380,6 +380,7 @@
 								<string key="NSFrame">{{932, 8}, {90, 78}}</string>
 								<reference key="NSSuperview" ref="385128608"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -507,6 +508,27 @@
 							<bytes key="NSRGB">MC4wODIzNTI5NDM3MiAwLjEwMTk2MDc5MzEgMC4xMTM3MjU0OTgzAA</bytes>
 						</object>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+					</object>
+					<object class="IBUIButton" id="240315488">
+						<reference key="NSNextResponder" ref="802969940"/>
+						<int key="NSvFlags">292</int>
+						<string key="NSFrame">{{771, 620}, {80, 37}}</string>
+						<reference key="NSSuperview" ref="802969940"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="38699862"/>
+						<bool key="IBUIOpaque">NO</bool>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<int key="IBUIContentHorizontalAlignment">0</int>
+						<int key="IBUIContentVerticalAlignment">0</int>
+						<reference key="IBUIFont" ref="509354331"/>
+						<int key="IBUIButtonType">1</int>
+						<string key="IBUINormalTitle">Refresh</string>
+						<reference key="IBUIHighlightedTitleColor" ref="513829447"/>
+						<object class="NSColor" key="IBUINormalTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+						</object>
+						<reference key="IBUINormalTitleShadowColor" ref="88211353"/>
 					</object>
 				</object>
 				<string key="NSFrameSize">{1024, 768}</string>
@@ -657,6 +679,15 @@
 					</object>
 					<int key="connectionID">45</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">refreshVideoList:</string>
+						<reference key="source" ref="240315488"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">48</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -686,6 +717,7 @@
 							<reference ref="696872123"/>
 							<reference ref="38699862"/>
 							<reference ref="385128608"/>
+							<reference ref="240315488"/>
 						</object>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Controls View</string>
@@ -807,6 +839,11 @@
 						<reference key="object" ref="1009657548"/>
 						<reference key="parent" ref="385128608"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">47</int>
+						<reference key="object" ref="240315488"/>
+						<reference key="parent" ref="802969940"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -848,6 +885,7 @@
 					<string>43.IBPluginDependency</string>
 					<string>43.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
 					<string>43.IBViewBoundsToFrameTransform</string>
+					<string>47.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.IBViewBoundsToFrameTransform</string>
 					<string>7.IBPluginDependency</string>
@@ -919,6 +957,7 @@
 						<bytes key="NSTransformStruct">P4AAAL+AAABCxgAAwpgAAA</bytes>
 					</object>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<object class="NSAffineTransform">
 						<bytes key="NSTransformStruct">P4AAAL+AAAAAAAAAwrwAAA</bytes>
 					</object>
@@ -942,7 +981,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">46</int>
+			<int key="maxID">48</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -973,7 +1012,6 @@
 							<string>nextVideoButton</string>
 							<string>onLabel</string>
 							<string>playPauseButton</string>
-							<string>prevVideoButton</string>
 							<string>progressView</string>
 							<string>shareButton</string>
 							<string>socialLoginButton</string>
@@ -990,7 +1028,6 @@
 							<string>UILabel</string>
 							<string>UIButton</string>
 							<string>UILabel</string>
-							<string>UIButton</string>
 							<string>UIButton</string>
 							<string>UIImageView</string>
 							<string>UIButton</string>
@@ -1012,7 +1049,6 @@
 							<string>nextVideoButton</string>
 							<string>onLabel</string>
 							<string>playPauseButton</string>
-							<string>prevVideoButton</string>
 							<string>progressView</string>
 							<string>shareButton</string>
 							<string>socialLoginButton</string>
@@ -1055,10 +1091,6 @@
 								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">prevVideoButton</string>
-								<string key="candidateClassName">UIButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
 								<string key="name">progressView</string>
 								<string key="candidateClassName">UIImageView</string>
 							</object>
@@ -1098,12 +1130,14 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>backToChannelView:</string>
 							<string>playStopVideo:</string>
+							<string>refreshVideoList:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
 							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1117,6 +1151,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>backToChannelView:</string>
 							<string>playStopVideo:</string>
+							<string>refreshVideoList:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
 							<string>vote:</string>
@@ -1129,6 +1164,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">playStopVideo:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">refreshVideoList:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
