@@ -40,6 +40,7 @@
 - (void)issueGetLiveChannel;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid;
+- (void)issueRefreshVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 
 // Video

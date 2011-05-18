@@ -444,23 +444,6 @@ typedef enum {
 	[UIView setAnimationDelegate:self];
 	[UIView commitAnimations];
 	// when traisition is done. move shift the scroll view and reveals the video player again
-	/*} else {
-		[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:YES];
-		[self translateMovieViewByOffset:1.0f];
-		// advance the index
-		currentIndex++;
-		currentXOffset += 1024.0f;
-		firstShowControlView = YES;	// change this together with currentIndex
-		// show the next video in the player
-		[movieView.player advanceToNextItem];
-		[movieView.player play];
-		// update the movie control view
-		if ( currentIndex + 2 < numberOfVideos ) {
-			[self configureControlViewAtIndex:currentIndex + 2];
-		} else {
-			// get more video here
-		}
-	}*/
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
 }
 
@@ -543,7 +526,7 @@ typedef enum {
 }
 
 - (NMVideo *)currentVideoForTask:(NMRefreshChannelVideoListTask *)vidListTask {
-	return nil;
+	return self.currentVideo;
 }
 
 - (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask {
@@ -1031,6 +1014,7 @@ typedef enum {
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	
+	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
 	// set predicate
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", currentChannel]];
     
@@ -1074,6 +1058,7 @@ typedef enum {
 	switch (type) {
 		case NSFetchedResultsChangeDelete:
 			rowCountHasChanged = YES;
+			//MARK: code below seems useless base on findings studying FRCDeleteTest sample code
 			NMVideo * vid = (NMVideo *)anObject;
 			// setting nm_sort_order will trigger another call to the FRC's delegate method
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];

@@ -63,6 +63,38 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	}
 }
 
+- (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo {
+	NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", chnObj]];
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_fetch_timestamp" ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+	[sortDescriptor release];
+	[timestampDesc release];
+	
+	NSError * error = nil;
+	NSArray * results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+	
+	// delete those beyond the current video
+	NMVideo * theVideo;
+	BOOL deleteBeyond = NO;
+	for (theVideo in results) {
+		if ( deleteBeyond ) {
+			// delete the video object
+			[managedObjectContext deleteObject:theVideo];
+			continue;
+		}
+		if ( !deleteBeyond && theVideo == aVideo ) {
+			deleteBeyond = YES;
+		}
+	}
+
+}
+
 - (void)deleteAllVideos {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];

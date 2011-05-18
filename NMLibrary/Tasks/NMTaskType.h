@@ -9,6 +9,7 @@
 
 #import "NMGetChannelsTask.h"
 #import "NMGetChannelVideoListTask.h"
+#import "NMRefreshChannelVideoListTask.h"
 #import "NMGetVideoInfoTask.h"
 #import "NMGetVideoReasonTask.h"
 #import "NMGetYouTubeDirectURLTask.h"

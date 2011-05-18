@@ -14,6 +14,7 @@
 #import "NMVideo.h"
 
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
+BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 @implementation NMTaskQueueController
 
@@ -83,6 +84,12 @@ static NMTaskQueueController * sharedTaskQueueController_ = nil;
 #endif
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
 	task.numberOfVideoRequested = numVid;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueRefreshVideoListForChannel:(NMChannel *)chnObj {
+	NMRefreshChannelVideoListTask * task = [[NMRefreshChannelVideoListTask alloc] initWithChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
