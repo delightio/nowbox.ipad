@@ -127,8 +127,6 @@ typedef enum {
 	// listen to item finish up playing notificaiton
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	// listen to system notification
-	[nc addObserver:self selector:@selector(handleApplicationDoneNotification:) name:UIApplicationWillTerminateNotification object:nil];
-	[nc addObserver:self selector:@selector(handleApplicationDoneNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 	[nc addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 	
 	// setup gesture recognizer
@@ -144,11 +142,11 @@ typedef enum {
 	[super viewDidAppear:animated];
 	[self playVideo];
 }
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
 	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
-
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
@@ -193,19 +191,22 @@ typedef enum {
 }
 
 - (NSIndexPath *)currentIndexPath {
-	if ( currentIndexPath_ == nil ) {
-		currentIndexPath_ = [[self indexPathAtIndex:currentIndex] retain];
-	} else if ( currentIndexPath_.row != currentIndex ) {
-		[currentIndexPath_ release];
-		currentIndexPath_ = [[self indexPathAtIndex:currentIndex] retain];
-	}
-	
-	return currentIndexPath_;
+	return [self indexPathAtIndex:currentIndex];
+//	if ( currentIndexPath_ == nil ) {
+//		currentIndexPath_ = [[self indexPathAtIndex:currentIndex] retain];
+//	} else if ( currentIndexPath_.row != currentIndex ) {
+//		[currentIndexPath_ release];
+//		currentIndexPath_ = [[self indexPathAtIndex:currentIndex] retain];
+//	}
+//	
+//	return currentIndexPath_;
 }
 
 - (void)setCurrentChannel:(NMChannel *)chnObj {
 	if ( currentChannel ) {
 		if ( currentChannel != chnObj ) {
+			// clear all task related to the previous channel
+			[nowmovTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
 			currentChannel = [chnObj retain];
 		}
@@ -745,14 +746,6 @@ typedef enum {
 		}
 	} */else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-	}
-}
-
-- (void)handleApplicationDoneNotification:(NSNotification *)aNotification {
-	if ( self.parentViewController ) {
-		// this view is currently showing on screen
-		// save the playback stuff
-		[self setPlaybackCheckpoint];
 	}
 }
 

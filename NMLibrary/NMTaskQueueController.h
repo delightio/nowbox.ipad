@@ -35,6 +35,8 @@
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 
+- (void)cancelAllPlaybackTasksForChannel:(NMChannel *)chnObj;
+
 // Channel
 - (void)issueGetChannels;
 - (void)issueGetLiveChannel;

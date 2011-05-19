@@ -48,6 +48,7 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 }
 
 - (void)dealloc {
+	[channelJSONKeys release];
 	[liveChannel release];
 	[super dealloc];
 }
