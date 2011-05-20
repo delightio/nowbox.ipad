@@ -55,12 +55,15 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr;
+	NSTimeInterval t = NM_URL_REQUEST_TIMEOUT;
 	switch (command) {
 		case NMCommandGetFriendChannels:
 			urlStr = @"http://nowmov.com/channel/listings/friends?as_user_screenname=dapunster&target=mobile";
+			t = 60.0f;
 			break;
 		case NMCommandGetTopicChannels:
 			urlStr = @"http://nowmov.com/channel/listings/topics?as_user_screenname=dapunster&target=mobile";
+			t = 60.0f;
 			break;
 		case NMCommandGetTrendingChannels:
 			urlStr = @"http://nowmov.com/channel/listings/trending?as_user_screenname=dapunster&target=mobile";
@@ -68,10 +71,11 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 			
 		default:
 			urlStr = @"http://nowmov.com/channel/listings/all?as_user_screenname=dapunster&target=mobile";
+			t = 60.0f;
 			break;
 	}
 
-	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:t];
 	return request;
 }
 

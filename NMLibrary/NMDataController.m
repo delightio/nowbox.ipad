@@ -137,6 +137,16 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	return nil;
 }
 
+- (BOOL)emptyChannel {
+	// return bool whether there's any channel in the app at all
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setResultType:NSManagedObjectIDResultType];
+	NSError * error = nil;
+	NSArray * results = [managedObjectContext executeFetchRequest:request error:&error];
+	return [results count] < 2;		// the app should, at least, contain one single channel (trending)
+}
+
 - (NMChannel *)liveChannel {
 	if ( liveChannel == nil ) {
 		NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];

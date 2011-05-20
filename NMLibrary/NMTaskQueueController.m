@@ -68,7 +68,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 #pragma mark Queue tasks to network controller
 - (void)issueGetChannels {
-	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] init];
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFriendChannels];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+
+	task = [[NMGetChannelsTask alloc] initGetTopicChannels];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+
+	task = [[NMGetChannelsTask alloc] initGetTrendingChannels];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

@@ -38,6 +38,7 @@
 // channels
 - (NMChannel *)insertNewChannel;
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
+- (BOOL)emptyChannel;
 // video
 - (NMVideo *)insertNewVideo;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;

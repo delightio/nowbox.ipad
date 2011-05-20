@@ -130,7 +130,10 @@
 
 - (void)checkUpdateChannels {
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
-	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL ) { // 12 hours
+	NMDataController * dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL || // 12 hours
+		[dataController emptyChannel]
+		) { 
 		// get channel
 		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 	}
@@ -138,7 +141,6 @@
 
 #pragma mark Notification handler
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-	NSLog(@"got the channels");
 	// update the timestamp
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 	// we should have the first video for live channel. show the live channel

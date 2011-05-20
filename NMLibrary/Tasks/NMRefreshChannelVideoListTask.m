@@ -66,8 +66,8 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 }
 
 - (NSMutableURLRequest *)URLRequest {
-//	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile&limit=%d", urlString, numberOfVideoRequested];
-	NSString * urlStr = @"http://boogie.local/pipely/test_videos.json";
+	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile&limit=%d", urlString, numberOfVideoRequested];
+//	NSString * urlStr = @"http://boogie.local/pipely/test_videos.json";
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Get Channel Video List: %@", urlStr);
