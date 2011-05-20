@@ -84,6 +84,7 @@
 						<string key="NSFrame">{{909, 674}, {92, 70}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="795822883"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<int key="IBUITag">303</int>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -132,13 +133,15 @@
 						<string key="NSFrame">{{909, 674}, {92, 70}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="540511195"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<int key="IBUITag">302</int>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="511167094"/>
+						<bool key="IBUIAdjustsImageWhenHighlighted">NO</bool>
+						<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
 						<double key="IBUITitleEdgeInsets.top">0.0</double>
 						<double key="IBUITitleEdgeInsets.bottom">-48</double>
 						<double key="IBUITitleEdgeInsets.left">-46</double>
@@ -149,13 +152,19 @@
 						<double key="IBUIImageEdgeInsets.right">0.0</double>
 						<string key="IBUITitleShadowOffset">{0, 1}</string>
 						<string key="IBUINormalTitle">FRIENDS</string>
-						<reference key="IBUIHighlightedTitleColor" ref="337804553"/>
+						<object class="NSColor" key="IBUIHighlightedTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC42MjM1Mjk0MTE4IDAuNjMxMzcyNTQ5IDAuNjM1Mjk0MTE3NgA</bytes>
+						</object>
 						<object class="NSColor" key="IBUISelectedTitleColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC42MjM1Mjk0MTE4IDAuNjMxMzcyNTQ5IDAuNjM1Mjk0MTE3NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleColor" ref="337804553"/>
-						<reference key="IBUIHighlightedTitleShadowColor" ref="337804553"/>
+						<object class="NSColor" key="IBUIHighlightedTitleShadowColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4wNzA1ODgyMzUyOSAwLjA4NjI3NDUwOTggMC4wOTgwMzkyMTU2OQA</bytes>
+						</object>
 						<object class="NSColor" key="IBUISelectedTitleShadowColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4wNzA1ODgyMzUyOSAwLjA4NjI3NDUwOTggMC4wOTgwMzkyMTU2OQA</bytes>
@@ -177,13 +186,15 @@
 						<string key="NSFrame">{{817, 674}, {92, 70}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="795822883"/>
+						<reference key="NSNextKeyView" ref="540511195"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<int key="IBUITag">301</int>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="511167094"/>
+						<bool key="IBUIAdjustsImageWhenHighlighted">NO</bool>
+						<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
 						<double key="IBUITitleEdgeInsets.top">0.0</double>
 						<double key="IBUITitleEdgeInsets.bottom">-48</double>
 						<double key="IBUITitleEdgeInsets.left">-46</double>
@@ -194,13 +205,19 @@
 						<double key="IBUIImageEdgeInsets.right">0.0</double>
 						<string key="IBUITitleShadowOffset">{0, 1}</string>
 						<string key="IBUINormalTitle">TOPICS</string>
-						<reference key="IBUIHighlightedTitleColor" ref="337804553"/>
+						<object class="NSColor" key="IBUIHighlightedTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC42MjM1Mjk0MTE4IDAuNjMxMzcyNTQ5IDAuNjM1Mjk0MTE3NgA</bytes>
+						</object>
 						<object class="NSColor" key="IBUISelectedTitleColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC42MjM1Mjk0MTE4IDAuNjMxMzcyNTQ5IDAuNjM1Mjk0MTE3NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleColor" ref="337804553"/>
-						<reference key="IBUIHighlightedTitleShadowColor" ref="337804553"/>
+						<object class="NSColor" key="IBUIHighlightedTitleShadowColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4wNzA1ODgyMzUyOSAwLjA4NjI3NDUwOTggMC4wOTgwMzkyMTU2OQA</bytes>
+						</object>
 						<object class="NSColor" key="IBUISelectedTitleShadowColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4wNzA1ODgyMzUyOSAwLjA4NjI3NDUwOTggMC4wOTgwMzkyMTU2OQA</bytes>
@@ -230,6 +247,8 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="511167094"/>
+						<bool key="IBUIAdjustsImageWhenHighlighted">NO</bool>
+						<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
 						<double key="IBUITitleEdgeInsets.top">0.0</double>
 						<double key="IBUITitleEdgeInsets.bottom">-48</double>
 						<double key="IBUITitleEdgeInsets.left">-46</double>
@@ -240,13 +259,19 @@
 						<double key="IBUIImageEdgeInsets.right">0.0</double>
 						<string key="IBUITitleShadowOffset">{0, 1}</string>
 						<string key="IBUINormalTitle">TRENDING</string>
-						<reference key="IBUIHighlightedTitleColor" ref="337804553"/>
+						<object class="NSColor" key="IBUIHighlightedTitleColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC42MjM1Mjk0MTE4IDAuNjMxMzcyNTQ5IDAuNjM1Mjk0MTE3NgA</bytes>
+						</object>
 						<object class="NSColor" key="IBUISelectedTitleColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC42MjM1Mjk0MTE4IDAuNjMxMzcyNTQ5IDAuNjM1Mjk0MTE3NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleColor" ref="337804553"/>
-						<reference key="IBUIHighlightedTitleShadowColor" ref="337804553"/>
+						<object class="NSColor" key="IBUIHighlightedTitleShadowColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4wNzA1ODgyMzUyOSAwLjA4NjI3NDUwOTggMC4wOTgwMzkyMTU2OQA</bytes>
+						</object>
 						<object class="NSColor" key="IBUISelectedTitleShadowColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4wNzA1ODgyMzUyOSAwLjA4NjI3NDUwOTggMC4wOTgwMzkyMTU2OQA</bytes>
@@ -383,33 +408,6 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">switchChannel:</string>
-						<reference key="source" ref="502624382"/>
-						<reference key="destination" ref="841351856"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">32</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">switchChannel:</string>
-						<reference key="source" ref="992938512"/>
-						<reference key="destination" ref="841351856"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">33</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">switchChannel:</string>
-						<reference key="source" ref="795822883"/>
-						<reference key="destination" ref="841351856"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">34</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">switchChannel:</string>
 						<reference key="source" ref="540511195"/>
 						<reference key="destination" ref="841351856"/>
 						<int key="IBEventType">7</int>
@@ -424,6 +422,33 @@
 						<int key="IBEventType">7</int>
 					</object>
 					<int key="connectionID">36</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">switchChannel:</string>
+						<reference key="source" ref="502624382"/>
+						<reference key="destination" ref="841351856"/>
+						<int key="IBEventType">1</int>
+					</object>
+					<int key="connectionID">37</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">switchChannel:</string>
+						<reference key="source" ref="992938512"/>
+						<reference key="destination" ref="841351856"/>
+						<int key="IBEventType">1</int>
+					</object>
+					<int key="connectionID">38</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">switchChannel:</string>
+						<reference key="source" ref="795822883"/>
+						<reference key="destination" ref="841351856"/>
+						<int key="IBEventType">1</int>
+					</object>
+					<int key="connectionID">39</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -456,9 +481,9 @@
 							<reference ref="540511195"/>
 							<reference ref="502624382"/>
 							<reference ref="795822883"/>
-							<reference ref="992938512"/>
 							<reference ref="483150240"/>
 							<reference ref="35110401"/>
+							<reference ref="992938512"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -543,13 +568,13 @@
 					<real value="0.0"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<real value="1"/>
-					<real value="0.0"/>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="1"/>
 					<real value="1"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<real value="1"/>
-					<real value="0.0"/>
+					<real value="1"/>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<real value="1"/>
+					<real value="1"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<real value="1"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -571,7 +596,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">36</int>
+			<int key="maxID">39</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

@@ -200,13 +200,15 @@
 		UIButton * otherBtn;
 		// the enum value has the match "tag" value in XIB
 		
-		for (NSInteger i = NMTrendingChannelType; i <= NMFeaturedChannelType; i++) {
+		for (NSInteger i = NMTrendingChannelType; i < NMFeaturedChannelType; i++) {
 			otherBtn = (UIButton *)[self.view viewWithTag:i];
-			if ( otherBtn.selected && otherBtn != btn ) {
+			if ( otherBtn != btn ) {
 				otherBtn.selected = NO;
+				otherBtn.userInteractionEnabled = YES;
 			}
 		}
 		btn.selected = YES;
+		btn.userInteractionEnabled = NO;
 	}
 }
 
