@@ -17,7 +17,7 @@ NSString * const NMDidGetVideoInfoNotification = @"NMDidGetVideoInfoNotification
 
 @implementation NMGetVideoInfoTask
 
-@synthesize video, channelName;
+@synthesize video;
 
 - (id)initWithVideo:(NMVideo *)aVideo {
 	self = [super init];

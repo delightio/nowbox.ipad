@@ -258,6 +258,31 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	
 }
 
+- (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj {
+	NSString * chname = chnObj.channel_name;
+	@synchronized(pendingTaskBuffer) {
+		for (NMTask * task in pendingTaskBuffer) {
+			if ( task.state == NMTaskExecutionStateConnectionActive ) {
+				switch (task.command) {
+					case NMCommandGetAllChannels:
+					case NMCommandGetFriendChannels:
+					case NMCommandGetTopicChannels:
+					case NMCommandGetTrendingChannels:
+					case NMCommandGetChannelVideoList:
+					case NMCommandGetYouTubeDirectURL:
+						// cancel the task
+						if ( [task.channelName isEqualToString:chname]) {
+							task.state = NMTaskExecutionStateCanceled;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
+}
+
 #pragma mark NSURLConnection delegate methods
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	// network call rate control (5 calls/s)
@@ -283,7 +308,19 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
     // receivedData is an instance variable declared elsewhere.
  	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)connection];
 	NMTask * task = [taskPool objectForKey:key];
-	[task.buffer appendData:data];
+	// check if the task has been marked canceled
+	if ( task.state == NMTaskExecutionStateCanceled ) {
+		[connectionPool removeObjectForKey:key];
+		[connection cancel];
+		// release the connection, and the data object
+		[taskPool removeObjectForKey:key];
+		// remove task
+		@synchronized(pendingTaskBuffer) {
+			[pendingTaskBuffer removeObject:task];
+		}
+	} else {
+		[task.buffer appendData:data];
+	}
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -293,7 +330,10 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[connectionPool removeObjectForKey:key];
 	NMTask *task = [taskPool objectForKey:key];
 	// call error handling
-	[self postConnectionErrorNotificationOnMainThread:error forTask:task];
+	if ( task.state != NMTaskExecutionStateCanceled ) {
+		task.state = NMTaskExecutionStateConnectionFailed;
+		[self postConnectionErrorNotificationOnMainThread:error forTask:task];
+	}
 	// release the task
 	[taskPool removeObjectForKey:key];
 	@synchronized(pendingTaskBuffer) {
@@ -314,6 +354,16 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[connectionPool removeObjectForKey:key];
 	[self returnNetworkResource];
 	NMTask *theTask = [taskPool objectForKey:key];
+	
+	if ( theTask.state == NMTaskExecutionStateCanceled ) {
+		// release the connection, and the data object
+		[taskPool removeObjectForKey:key];
+		// remove task
+		@synchronized(pendingTaskBuffer) {
+			[pendingTaskBuffer removeObject:theTask];
+		}
+		return;
+	}
 	
 #ifdef DEBUG_CONNECTION_CONTROLLER
     NSLog(@"Succeeded! Received %d bytes of data, response code %d",[theTask.buffer length], theTask.httpStatusCode);

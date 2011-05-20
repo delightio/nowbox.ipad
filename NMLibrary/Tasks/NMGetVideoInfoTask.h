@@ -13,12 +13,10 @@
 
 @interface NMGetVideoInfoTask : NMTask {
 	NMVideo * video;
-	NSString * channelName;
 	NSInteger videoID;
 	NSDictionary * infoDictionary;
 }
 
 @property (nonatomic, retain) NMVideo * video;
-@property (nonatomic, retain) NSString * channelName;
 
 @end

@@ -11,7 +11,8 @@ typedef enum {
 	NMTaskExecutionStateWaitingInConnectionQueue,
 	NMTaskExecutionStateConnectionActive,
 	NMTaskExecutionStateConnectionCompleted,
-	
+	NMTaskExecutionStateConnectionFailed,
+	NMTaskExecutionStateCanceled,
 } NMTaskExecutionState;
 
 typedef enum {

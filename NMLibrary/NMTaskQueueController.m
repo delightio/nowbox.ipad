@@ -63,6 +63,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)cancelAllPlaybackTasksForChannel:(NMChannel *)chnObj {
 	// cancel all playback related tasks created for the chnObj.
+	[networkController cancelPlaybackRelatedTasksForChannel:chnObj];
 	// make sure NO notification will be sent after execution of this method. tasks do not have to be wiped out here. But they must not trigger and sending of notification if those tasks belong to the chnObj
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "NMTaskType.h"
+#import "NMChannel.h"
 
 
 @class NMDataController;
@@ -56,5 +57,7 @@
 //- (void)tryCancelDownloadWithCaller:(id)aCaller;
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
+
+- (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj;
 
 @end

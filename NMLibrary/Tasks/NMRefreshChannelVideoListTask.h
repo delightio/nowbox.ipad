@@ -13,7 +13,6 @@
 
 @interface NMRefreshChannelVideoListTask : NMTask {
 	NMChannel * channel;
-	NSString * channelName;
 	NSString * urlString;
 	BOOL newChannel;
 	NSUInteger numberOfVideoAdded;
@@ -22,7 +21,6 @@
 }
 
 @property (nonatomic, retain) NMChannel * channel;
-@property (nonatomic, retain) NSString * channelName;
 @property (nonatomic, retain) NSString * urlString;
 @property (nonatomic) NSUInteger numberOfVideoRequested;
 @property (nonatomic) BOOL newChannel;

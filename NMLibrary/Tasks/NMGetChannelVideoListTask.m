@@ -19,7 +19,7 @@ NSString * const NMDidFailGetChannelVideoListNotification = @"NMDidFailGetChanne
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 @implementation NMGetChannelVideoListTask
-@synthesize channel, channelName;
+@synthesize channel;
 @synthesize newChannel, urlString;
 @synthesize numberOfVideoRequested;
 @synthesize delegate;
@@ -59,7 +59,6 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 - (void)dealloc {
 	[channel release];
-	[channelName release];
 	[urlString release];
 	[super dealloc];
 }
