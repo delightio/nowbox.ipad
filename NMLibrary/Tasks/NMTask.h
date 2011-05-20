@@ -35,7 +35,6 @@
 @property (assign) NMTaskExecutionState state;
 @property (nonatomic, readonly) NMCommand command;
 @property (nonatomic, readonly) NSMutableData * buffer;
-@property (nonatomic, retain) id notificationSender;
 @property (nonatomic, retain) NSString * channelName;
 
 - (void)prepareDataBuffer;

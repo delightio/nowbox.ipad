@@ -209,7 +209,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 }
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task {
-	NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:(task.notificationSender == nil ? self : task.notificationSender) userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription], @"message", [NSNumber numberWithInteger:[error code]], @"code", task, @"task", nil]];
+	NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[error localizedDescription], @"message", [NSNumber numberWithInteger:[error code]], @"code", task, @"task", nil]];
 	[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 }
 
@@ -388,7 +388,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 //	} else {
 	if ( theTask.httpStatusCode >= 400 ) {
 		// fire error notification right here
-		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:(theTask.notificationSender == nil ? self : theTask.notificationSender) userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil]];
+		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil]];
 		[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 	} else {
 		[dataController createDataParsingOperationForTask:theTask];
