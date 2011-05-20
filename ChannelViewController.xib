@@ -140,6 +140,7 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="511167094"/>
+						<bool key="IBUIShowsTouchWhenHighlighted">YES</bool>
 						<bool key="IBUIAdjustsImageWhenHighlighted">NO</bool>
 						<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
 						<double key="IBUITitleEdgeInsets.top">0.0</double>
@@ -193,6 +194,7 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="511167094"/>
+						<bool key="IBUIShowsTouchWhenHighlighted">YES</bool>
 						<bool key="IBUIAdjustsImageWhenHighlighted">NO</bool>
 						<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
 						<double key="IBUITitleEdgeInsets.top">0.0</double>
@@ -247,6 +249,7 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="511167094"/>
+						<bool key="IBUIShowsTouchWhenHighlighted">YES</bool>
 						<bool key="IBUIAdjustsImageWhenHighlighted">NO</bool>
 						<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
 						<double key="IBUITitleEdgeInsets.top">0.0</double>
