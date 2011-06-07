@@ -239,6 +239,8 @@ typedef enum {
 	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = currentXOffset;
 	movieView.frame = theFrame;
+	// show activity indicator
+	[movieView setActivityIndicationHidden:NO animated:NO];
 	
 	// reset movie control view
 	for (NMControlsView * ctrlView in controlViewArray) {
@@ -684,6 +686,7 @@ typedef enum {
 				} else {
 					videoDurationInvalid = YES;
 				}
+				[movieView setActivityIndicationHidden:YES animated:YES];
 				break;
 			}
 			default:

@@ -32,8 +32,7 @@
 	activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	activityIndicator.center = pos;
-	[activityIndicator startAnimating];
-//	[self addSubview:activityIndicator];
+	[self addSubview:activityIndicator];
 	
 	statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 640.0, 22.0)];
 	statusLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -45,8 +44,8 @@
 	statusLabel.shadowOffset = CGSizeMake(0.0, 1.0);
 	pos.y += activityIndicator.bounds.size.height;
 	statusLabel.center = pos;
-	statusLabel.text = @"Test message";
-//	[self addSubview:statusLabel];
+	statusLabel.text = @"Loading";
+	[self addSubview:statusLabel];
 	
 	return self;
 }
@@ -113,6 +112,17 @@
 - (void)addTarget:(id)atarget action:(SEL)anAction {
 	target = atarget;
 	action = anAction;
+}
+
+- (void)setActivityIndicationHidden:(BOOL)hidden animated:(BOOL)animated {
+	if ( animated ) [UIView beginAnimations:nil context:nil];
+	
+	CGFloat f = hidden ? 0.0 : 1.0;
+	if ( hidden ) [activityIndicator stopAnimating];
+	else [activityIndicator startAnimating];
+	activityIndicator.alpha = f;
+	statusLabel.alpha = f;
+	if ( animated ) [UIView commitAnimations];
 }
 
 @end

@@ -24,5 +24,6 @@
 @property (nonatomic, readonly) UIActivityIndicatorView * activityIndicator;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
+- (void)setActivityIndicationHidden:(BOOL)hidden animated:(BOOL)animated;
 
 @end
