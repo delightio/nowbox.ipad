@@ -19,6 +19,7 @@
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UITextView * debugMessageView;
+	IBOutlet UIScrollView * prototypeChannelScrollView;
 	NMMovieView * movieView;
 	
 	NMControlsView * loadedControlView;
@@ -46,6 +47,8 @@
     NSManagedObjectContext *managedObjectContext_;
     NSFetchedResultsController *fetchedResultsController_;
 	NSIndexPath * currentIndexPath_;
+	UIView *prototypeChannelPanel;
+	UIView *prototypeChannelContent;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
@@ -54,6 +57,8 @@
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSIndexPath * currentIndexPath;
 
+@property (nonatomic, retain) IBOutlet UIView *prototypeChannelPanel;
+@property (nonatomic, retain) IBOutlet UIView *prototypeChannelContent;
 @property (nonatomic, assign) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 
 //- (IBAction)showTweetView:(id)sender;
@@ -64,6 +69,7 @@
 - (IBAction)vote:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)showSharePopover:(id)sender;
+- (IBAction)togglePrototypeChannelPanel:(id)sender;
 
 - (IBAction)refreshVideoList:(id)sender;
 

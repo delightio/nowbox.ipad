@@ -21,6 +21,13 @@
 		A925016B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250169134385BF001759F5 /* InfoPlist.strings */; };
 		A925016E134385BF001759F5 /* ipadTests.h in Resources */ = {isa = PBXBuildFile; fileRef = A925016D134385BF001759F5 /* ipadTests.h */; };
 		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
+		A93584CF139EE96D0009A264 /* ChannelPanelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A93584CE139EE96D0009A264 /* ChannelPanelView.xib */; };
+		A93584D8139EEA390009A264 /* channels-1.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D2139EEA390009A264 /* channels-1.PNG */; };
+		A93584D9139EEA390009A264 /* channels-2.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D3139EEA390009A264 /* channels-2.PNG */; };
+		A93584DA139EEA390009A264 /* videos-1a.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D4139EEA390009A264 /* videos-1a.PNG */; };
+		A93584DB139EEA390009A264 /* videos-1b.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D5139EEA390009A264 /* videos-1b.PNG */; };
+		A93584DC139EEA390009A264 /* videos-2a.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D6139EEA390009A264 /* videos-2a.PNG */; };
+		A93584DD139EEA390009A264 /* videos-2b.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D7139EEA390009A264 /* videos-2b.PNG */; };
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A9677829135F592E000810A4 /* channel_title.png in Resources */ = {isa = PBXBuildFile; fileRef = A9677828135F592E000810A4 /* channel_title.png */; };
 		A96A93FD136028E500254CA5 /* progress_bar_nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A96A93FC136028E500254CA5 /* progress_bar_nub.png */; };
@@ -217,6 +224,13 @@
 		A925016C134385BF001759F5 /* ipadTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ipadTests-Prefix.pch"; sourceTree = "<group>"; };
 		A925016D134385BF001759F5 /* ipadTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipadTests.h; sourceTree = "<group>"; };
 		A925016F134385BF001759F5 /* ipadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadTests.m; sourceTree = "<group>"; };
+		A93584CE139EE96D0009A264 /* ChannelPanelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelPanelView.xib; sourceTree = "<group>"; };
+		A93584D2139EEA390009A264 /* channels-1.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channels-1.PNG"; sourceTree = "<group>"; };
+		A93584D3139EEA390009A264 /* channels-2.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channels-2.PNG"; sourceTree = "<group>"; };
+		A93584D4139EEA390009A264 /* videos-1a.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-1a.PNG"; sourceTree = "<group>"; };
+		A93584D5139EEA390009A264 /* videos-1b.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-1b.PNG"; sourceTree = "<group>"; };
+		A93584D6139EEA390009A264 /* videos-2a.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-2a.PNG"; sourceTree = "<group>"; };
+		A93584D7139EEA390009A264 /* videos-2b.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-2b.PNG"; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A9677828135F592E000810A4 /* channel_title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_title.png; sourceTree = "<group>"; };
 		A96A93FC136028E500254CA5 /* progress_bar_nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_bar_nub.png; sourceTree = "<group>"; };
@@ -615,6 +629,19 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A93584D1139EEA390009A264 /* prototype_assets */ = {
+			isa = PBXGroup;
+			children = (
+				A93584D2139EEA390009A264 /* channels-1.PNG */,
+				A93584D3139EEA390009A264 /* channels-2.PNG */,
+				A93584D4139EEA390009A264 /* videos-1a.PNG */,
+				A93584D5139EEA390009A264 /* videos-1b.PNG */,
+				A93584D6139EEA390009A264 /* videos-2a.PNG */,
+				A93584D7139EEA390009A264 /* videos-2b.PNG */,
+			);
+			path = prototype_assets;
+			sourceTree = "<group>";
+		};
 		A970500F13438F860022BF2C /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -631,6 +658,7 @@
 		A970501813438F860022BF2C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A93584D1139EEA390009A264 /* prototype_assets */,
 				A9A810A1135F34AE004F569C /* channel_return_playback_active.png */,
 				A9A810A2135F34AE004F569C /* channel_return_playback_normal.png */,
 				A9A81091135F2D04004F569C /* channel_featured_active.png */,
@@ -765,6 +793,7 @@
 				A970505C13438F860022BF2C /* SocialSignInView.xib */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
+				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -1358,6 +1387,13 @@
 				A9A810D9135F4997004F569C /* channel_thumbnail_background.png in Resources */,
 				A9677829135F592E000810A4 /* channel_title.png in Resources */,
 				A96A93FD136028E500254CA5 /* progress_bar_nub.png in Resources */,
+				A93584CF139EE96D0009A264 /* ChannelPanelView.xib in Resources */,
+				A93584D8139EEA390009A264 /* channels-1.PNG in Resources */,
+				A93584D9139EEA390009A264 /* channels-2.PNG in Resources */,
+				A93584DA139EEA390009A264 /* videos-1a.PNG in Resources */,
+				A93584DB139EEA390009A264 /* videos-1b.PNG in Resources */,
+				A93584DC139EEA390009A264 /* videos-2a.PNG in Resources */,
+				A93584DD139EEA390009A264 /* videos-2b.PNG in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
