@@ -9,6 +9,8 @@
 #import <AVFoundation/AVFoundation.h>
 
 
+@class NMAVQueuePlayer;
+
 @interface NMMovieView : UIView {
 	SEL action;
 	id target;
@@ -16,10 +18,10 @@
 	UIActivityIndicatorView * activityIndicator;
 	UILabel * statusLabel;
 @private
-	AVQueuePlayer * player_;
+	NMAVQueuePlayer * player_;
 }
 
-@property (nonatomic, retain) AVQueuePlayer * player;
+@property (nonatomic, retain) NMAVQueuePlayer * player;
 @property (nonatomic, readonly) UILabel * statusLabel;
 @property (nonatomic, readonly) UIActivityIndicatorView * activityIndicator;
 

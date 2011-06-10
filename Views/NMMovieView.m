@@ -7,6 +7,7 @@
 //
 
 #import "NMMovieView.h"
+#import "NMAVQueuePlayer.h"
 
 
 @implementation NMMovieView
@@ -61,10 +62,10 @@
 	return [AVPlayerLayer class];
 }
 
-- (AVQueuePlayer *)player {
+- (NMAVQueuePlayer *)player {
     return player_;
 }
-- (void)setPlayer:(AVQueuePlayer *)aPlayer {
+- (void)setPlayer:(NMAVQueuePlayer *)aPlayer {
 	if ( player_ ) {
 		[player_ release];
 	}

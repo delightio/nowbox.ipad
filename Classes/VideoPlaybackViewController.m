@@ -11,6 +11,7 @@
 #import "NMLibrary.h"
 #import "NMVideo.h"
 #import "NMMovieView.h"
+#import "NMAVQueuePlayer.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -174,6 +175,8 @@ typedef enum {
     [super dealloc];
 }
 
+#pragma mark Playback data structure
+
 - (NMVideo *)currentVideo {
 	return [self.fetchedResultsController objectAtIndexPath:self.currentIndexPath];
 }
@@ -308,7 +311,7 @@ typedef enum {
 #pragma mark Movie View Management
 - (void)preparePlayer {
 	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:self.currentIndexPath];
-	AVQueuePlayer * player = [[AVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
+	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
 	player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 	vid.nm_playback_status = NMVideoQueueStatusQueued;
 	movieView.player = player;
@@ -449,6 +452,28 @@ typedef enum {
 	[UIView commitAnimations];
 	// when traisition is done. move shift the scroll view and reveals the video player again
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
+}
+
+- (void)showPreviousVideo {
+	currentIndex--;
+	currentXOffset -= 1024.0f;
+	firstShowControlView = YES;
+	// scroll to next video
+	// translate the movie view
+	[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:NO];
+	[self translateMovieViewByOffset:1.0f];
+	
+	[movieView.player revertPreviousItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentVideo.nm_direct_url]]];
+	[movieView.player play];
+	
+	// update the movie control view
+	if ( currentIndex + 2 < numberOfVideos ) {
+		[self configureControlViewAtIndex:currentIndex + 2];
+	} else {
+		// get more video here
+	}
+	// make the view visible
+	[self performSelector:@selector(showPlayerAndControl) withObject:nil afterDelay:0.1];
 }
 
 - (void)requestAddVideoAtIndex:(NSUInteger)idx {

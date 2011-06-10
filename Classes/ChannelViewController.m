@@ -223,9 +223,9 @@
 //	[appDel.facebook requestWithGraphPath:@"me" andDelegate:self];
 }
 
-- (void)request:(FBRequest *)request didLoad:(id)result {
-	NSLog(@"done graph %@", result);
-}
+//- (void)request:(FBRequest *)request didLoad:(id)result {
+//	NSLog(@"done graph %@", result);
+//}
 
 #pragma mark Popover delegate methods
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {

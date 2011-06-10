@@ -175,4 +175,8 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	[self cleanUpDirectoryAtPath:channelThumbnailCacheDir withLimit:CHANNEL_FILE_CACHE_SIZE];
 }
 
+- (void)cleanBeforeSignout {
+	
+}
+
 @end
