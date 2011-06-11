@@ -29,6 +29,32 @@
 		A93584DB139EEA390009A264 /* videos-1b.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D5139EEA390009A264 /* videos-1b.PNG */; };
 		A93584DC139EEA390009A264 /* videos-2a.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D6139EEA390009A264 /* videos-2a.PNG */; };
 		A93584DD139EEA390009A264 /* videos-2b.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D7139EEA390009A264 /* videos-2b.PNG */; };
+		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
+		A94D680013A2ED33003FC68F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
+		A94D680113A2ED33003FC68F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
+		A94D680213A2ED33003FC68F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
+		A94D680813A2ED33003FC68F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A94D680613A2ED33003FC68F /* InfoPlist.strings */; };
+		A94D680B13A2ED33003FC68F /* TestVideoPlaybackModelController.h in Resources */ = {isa = PBXBuildFile; fileRef = A94D680A13A2ED33003FC68F /* TestVideoPlaybackModelController.h */; };
+		A94D680D13A2ED33003FC68F /* TestVideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */; };
+		A94D681313A2EEF4003FC68F /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
+		A94D681713A2EEF4003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
+		A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
+		A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
+		A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
+		A94D681F13A2EEFF003FC68F /* NMGetVideoInfoTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505213438F860022BF2C /* NMGetVideoInfoTask.m */; };
+		A94D682113A2EF00003FC68F /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505413438F860022BF2C /* NMGetVideoReasonTask.m */; };
+		A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
+		A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
+		A94D682713A2EF00003FC68F /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
+		A94D682A13A2EF00003FC68F /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
+		A94D682C13A2EF00003FC68F /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
+		A94D682D13A2EF2E003FC68F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
+		A94D682E13A2EF2E003FC68F /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504313438F860022BF2C /* NMDataController.m */; };
+		A94D682F13A2EF2E003FC68F /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
+		A94D683013A2EF2E003FC68F /* NMNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504713438F860022BF2C /* NMNetworkController.m */; };
+		A94D683113A2EF2E003FC68F /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
+		A94D683313A2EFB1003FC68F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D683213A2EFB1003FC68F /* CoreData.framework */; };
+		A94D683513A2F02C003FC68F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D683413A2F02C003FC68F /* AVFoundation.framework */; };
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A9677829135F592E000810A4 /* channel_title.png in Resources */ = {isa = PBXBuildFile; fileRef = A9677828135F592E000810A4 /* channel_title.png */; };
 		A96A93FD136028E500254CA5 /* progress_bar_nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A96A93FC136028E500254CA5 /* progress_bar_nub.png */; };
@@ -152,6 +178,16 @@
 		A93584D5139EEA390009A264 /* videos-1b.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-1b.PNG"; sourceTree = "<group>"; };
 		A93584D6139EEA390009A264 /* videos-2a.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-2a.PNG"; sourceTree = "<group>"; };
 		A93584D7139EEA390009A264 /* videos-2b.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-2b.PNG"; sourceTree = "<group>"; };
+		A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackModelController.h; sourceTree = "<group>"; };
+		A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackModelController.m; sourceTree = "<group>"; };
+		A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestVideoPlaybackModelController.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A94D680513A2ED33003FC68F /* TestVideoPlaybackModelController-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestVideoPlaybackModelController-Info.plist"; sourceTree = "<group>"; };
+		A94D680713A2ED33003FC68F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A94D680913A2ED33003FC68F /* TestVideoPlaybackModelController-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestVideoPlaybackModelController-Prefix.pch"; sourceTree = "<group>"; };
+		A94D680A13A2ED33003FC68F /* TestVideoPlaybackModelController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestVideoPlaybackModelController.h; sourceTree = "<group>"; };
+		A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestVideoPlaybackModelController.m; sourceTree = "<group>"; };
+		A94D683213A2EFB1003FC68F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		A94D683413A2F02C003FC68F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A9677828135F592E000810A4 /* channel_title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_title.png; sourceTree = "<group>"; };
 		A96A93FC136028E500254CA5 /* progress_bar_nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_bar_nub.png; sourceTree = "<group>"; };
@@ -292,12 +328,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A94D67FB13A2ED33003FC68F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A94D683513A2F02C003FC68F /* AVFoundation.framework in Frameworks */,
+				A94D683313A2EFB1003FC68F /* CoreData.framework in Frameworks */,
+				A94D680013A2ED33003FC68F /* UIKit.framework in Frameworks */,
+				A94D680113A2ED33003FC68F /* Foundation.framework in Frameworks */,
+				A94D680213A2ED33003FC68F /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		A9250131134385BF001759F5 = {
 			isa = PBXGroup;
 			children = (
+				A94D683413A2F02C003FC68F /* AVFoundation.framework */,
+				A94D683213A2EFB1003FC68F /* CoreData.framework */,
 				A97050A213438F980022BF2C /* Interfaces */,
 				A970500F13438F860022BF2C /* Classes */,
 				A970501813438F860022BF2C /* Images */,
@@ -306,6 +356,7 @@
 				A970505E13438F860022BF2C /* Views */,
 				A9250146134385BF001759F5 /* ipad */,
 				A9250166134385BF001759F5 /* ipadTests */,
+				A94D680313A2ED33003FC68F /* TestVideoPlaybackModelController */,
 				A925013F134385BF001759F5 /* Frameworks */,
 				A925013D134385BF001759F5 /* Products */,
 			);
@@ -316,6 +367,7 @@
 			children = (
 				A925013C134385BF001759F5 /* ipad.app */,
 				A9250160134385BF001759F5 /* ipadTests.octest */,
+				A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -392,6 +444,26 @@
 			path = prototype_assets;
 			sourceTree = "<group>";
 		};
+		A94D680313A2ED33003FC68F /* TestVideoPlaybackModelController */ = {
+			isa = PBXGroup;
+			children = (
+				A94D680A13A2ED33003FC68F /* TestVideoPlaybackModelController.h */,
+				A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */,
+				A94D680413A2ED33003FC68F /* Supporting Files */,
+			);
+			path = TestVideoPlaybackModelController;
+			sourceTree = "<group>";
+		};
+		A94D680413A2ED33003FC68F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A94D680513A2ED33003FC68F /* TestVideoPlaybackModelController-Info.plist */,
+				A94D680613A2ED33003FC68F /* InfoPlist.strings */,
+				A94D680913A2ED33003FC68F /* TestVideoPlaybackModelController-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		A970500F13438F860022BF2C /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,6 +475,8 @@
 				A970501513438F860022BF2C /* SocialSignInViewController.m */,
 				A970501613438F860022BF2C /* VideoPlaybackViewController.h */,
 				A970501713438F860022BF2C /* VideoPlaybackViewController.m */,
+				A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */,
+				A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -589,6 +663,24 @@
 			productReference = A9250160134385BF001759F5 /* ipadTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
+		A94D67FE13A2ED33003FC68F /* TestVideoPlaybackModelController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A94D680E13A2ED33003FC68F /* Build configuration list for PBXNativeTarget "TestVideoPlaybackModelController" */;
+			buildPhases = (
+				A94D67FA13A2ED33003FC68F /* Sources */,
+				A94D67FB13A2ED33003FC68F /* Frameworks */,
+				A94D67FC13A2ED33003FC68F /* Resources */,
+				A94D67FD13A2ED33003FC68F /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestVideoPlaybackModelController;
+			productName = TestVideoPlaybackModelController;
+			productReference = A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -616,6 +708,7 @@
 			targets = (
 				A925013B134385BF001759F5 /* ipad */,
 				A925015F134385BF001759F5 /* ipadTests */,
+				A94D67FE13A2ED33003FC68F /* TestVideoPlaybackModelController */,
 			);
 		};
 /* End PBXProject section */
@@ -698,10 +791,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A94D67FC13A2ED33003FC68F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A94D680813A2ED33003FC68F /* InfoPlist.strings in Resources */,
+				A94D680B13A2ED33003FC68F /* TestVideoPlaybackModelController.h in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		A925015E134385BF001759F5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		A94D67FD13A2ED33003FC68F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -749,6 +864,7 @@
 				A9ECD614135E9703004B7F78 /* NMImageDownloadTask.m in Sources */,
 				A98154A8137E1607001FADB4 /* NMRefreshChannelVideoListTask.m in Sources */,
 				A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */,
+				A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,6 +873,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9250170134385BF001759F5 /* ipadTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A94D67FA13A2ED33003FC68F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A94D682D13A2EF2E003FC68F /* JSONKit.m in Sources */,
+				A94D682E13A2EF2E003FC68F /* NMDataController.m in Sources */,
+				A94D682F13A2EF2E003FC68F /* NMCacheController.m in Sources */,
+				A94D683013A2EF2E003FC68F /* NMNetworkController.m in Sources */,
+				A94D683113A2EF2E003FC68F /* NMTaskQueueController.m in Sources */,
+				A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */,
+				A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */,
+				A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */,
+				A94D681F13A2EEFF003FC68F /* NMGetVideoInfoTask.m in Sources */,
+				A94D682113A2EF00003FC68F /* NMGetVideoReasonTask.m in Sources */,
+				A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */,
+				A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */,
+				A94D682713A2EF00003FC68F /* NMTask.m in Sources */,
+				A94D682A13A2EF00003FC68F /* NMEventTask.m in Sources */,
+				A94D682C13A2EF00003FC68F /* NMImageDownloadTask.m in Sources */,
+				A94D681313A2EEF4003FC68F /* NMAVQueuePlayer.m in Sources */,
+				A94D681713A2EEF4003FC68F /* VideoPlaybackModelController.m in Sources */,
+				A94D680D13A2ED33003FC68F /* TestVideoPlaybackModelController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -791,6 +932,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				A925016A134385BF001759F5 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		A94D680613A2ED33003FC68F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A94D680713A2ED33003FC68F /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -967,6 +1116,70 @@
 			};
 			name = Release;
 		};
+		A94D680F13A2ED33003FC68F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				INFOPLIST_FILE = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Info.plist";
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		A94D681013A2ED33003FC68F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Prefix.pch";
+				INFOPLIST_FILE = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Info.plist";
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+		A94D681113A2ED33003FC68F /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Prefix.pch";
+				INFOPLIST_FILE = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Info.plist";
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = "Ad Hoc";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -999,6 +1212,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		A94D680E13A2ED33003FC68F /* Build configuration list for PBXNativeTarget "TestVideoPlaybackModelController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A94D680F13A2ED33003FC68F /* Debug */,
+				A94D681013A2ED33003FC68F /* Release */,
+				A94D681113A2ED33003FC68F /* Ad Hoc */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

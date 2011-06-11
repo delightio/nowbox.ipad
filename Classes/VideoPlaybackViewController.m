@@ -25,14 +25,6 @@
 
 #define NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT	200
 
-typedef enum {
-	NMVideoQueueStatusNone,
-	NMVideoQueueStatusResolvingDirectURL,
-	NMVideoQueueStatusDirectURLReady,
-	NMVideoQueueStatusQueued,
-	NMVideoQueueStatusPlaying,
-	NMVideoQueueStatusPlayed,
-} NMVideoQueueStatusType;
 
 #define RRIndex(idx) idx % 4
 
@@ -121,12 +113,12 @@ typedef enum {
 	}
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidRefreshChannelVideoListNotification object:nil];
-	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
-	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
-	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidRefreshChannelVideoListNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
 	// listen to item finish up playing notificaiton
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	// listen to system notification
