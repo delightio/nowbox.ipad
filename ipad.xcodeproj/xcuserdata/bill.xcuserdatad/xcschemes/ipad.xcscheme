@@ -28,12 +28,22 @@
       buildConfiguration = "Debug">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A925015F134385BF001759F5"
                BuildableName = "ipadTests.octest"
                BlueprintName = "ipadTests"
+               ReferencedContainer = "container:ipad.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A94D67FE13A2ED33003FC68F"
+               BuildableName = "TestVideoPlaybackModelController.octest"
+               BlueprintName = "TestVideoPlaybackModelController"
                ReferencedContainer = "container:ipad.xcodeproj">
             </BuildableReference>
          </TestableReference>

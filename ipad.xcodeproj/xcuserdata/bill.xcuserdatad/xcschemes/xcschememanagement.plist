@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>TestCaseBuild.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>ipad.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>A925015F134385BF001759F5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A94D67FE13A2ED33003FC68F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
