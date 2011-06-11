@@ -12,6 +12,13 @@
 
 static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 
+@interface VideoPlaybackModelController (PrivateMethods)
+
+- (void)initializePlayHead;
+- (void)requestResolveVideo:(NMVideo *)vid;
+	
+@end
+
 @implementation VideoPlaybackModelController
 
 @synthesize currentIndexPath, previousIndexPath, nextIndexPath, nextNextIndexPath;
@@ -71,6 +78,22 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			[channel release];
 			channel = nil;
 		}
+		return;
+		// return
+	}
+	
+	// 3 possible cases:
+	// 1. NO video at all
+	// 2. Just video list, haven't yet resolved the direct URL
+	// 3. All info ready
+	
+	// case 1
+	if ( channel.videos == nil || [channel.videos count] == 0 ) {
+		
+	} else {
+		[self initializePlayHead];
+		// case 2
+		// case 3
 	}
 }
 

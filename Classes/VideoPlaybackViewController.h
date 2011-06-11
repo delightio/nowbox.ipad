@@ -10,13 +10,14 @@
 #import "NMMovieView.h"
 #import "NMControlsView.h"
 #import "NMLibrary.h"
+#import "VideoPlaybackModelController.h"
 
 @class NMVideo;
 @class NMChannel;
 @class NMTaskQueueController;
 
 
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate, VideoPlaybackModelControllerDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UITextView * debugMessageView;
 	IBOutlet UIScrollView * prototypeChannelScrollView;
@@ -38,6 +39,7 @@
 	CGPoint beginDraggingContentOffset;
 	NMChannel * currentChannel;
 	NMTaskQueueController * nowmovTaskController;
+	VideoPlaybackModelController * playbackModelController;
 	
 	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
@@ -45,17 +47,12 @@
 	
 	@private
     NSManagedObjectContext *managedObjectContext_;
-    NSFetchedResultsController *fetchedResultsController_;
-	NSIndexPath * currentIndexPath_;
 	UIView *prototypeChannelPanel;
 	UIView *prototypeChannelContent;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
-@property (nonatomic, readonly) NMVideo * currentVideo;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) NSIndexPath * currentIndexPath;
 
 @property (nonatomic, retain) IBOutlet UIView *prototypeChannelPanel;
 @property (nonatomic, retain) IBOutlet UIView *prototypeChannelContent;

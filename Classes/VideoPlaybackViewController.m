@@ -51,12 +51,10 @@
 
 
 @implementation VideoPlaybackViewController
-@synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext=managedObjectContext_;
-@synthesize currentIndexPath=currentIndexPath_;
+@synthesize managedObjectContext=managedObjectContext_;
 @synthesize prototypeChannelPanel;
 @synthesize prototypeChannelContent;
 @synthesize currentChannel;
-@synthesize currentVideo;
 @synthesize loadedControlView;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -83,6 +81,9 @@
 	bzero(indexPathCache, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE);
 	
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
+	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
+	playbackModelController.managedObjectContext = self.managedObjectContext;
+	playbackModelController.debugMessageView = debugMessageView;
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:controlScrollView.bounds];
 	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -162,9 +163,7 @@
 
 - (void)dealloc {
 	[self freeIndexPathCache];
-    [fetchedResultsController_ release];
     [managedObjectContext_ release];
-	[currentIndexPath_ release];
 	
 	[movieView release];
 	[currentChannel release];
@@ -174,10 +173,6 @@
 }
 
 #pragma mark Playback data structure
-
-- (NMVideo *)currentVideo {
-	return [self.fetchedResultsController objectAtIndexPath:self.currentIndexPath];
-}
 
 - (void)setPlaybackCheckpoint {
 	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
@@ -218,8 +213,10 @@
 	currentIndex = 0;
 	currentXOffset = 0.0f;
 	firstShowControlView = YES;
-	// reset fetch result
-	self.fetchedResultsController = nil;
+	playbackModelController.channel = chnObj;
+	
+	if ( chnObj == nil ) return;	// return if the channel object is nil
+	
 	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	numberOfVideos = [sectionInfo numberOfObjects];
 	
