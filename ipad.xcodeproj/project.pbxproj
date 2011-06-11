@@ -55,6 +55,7 @@
 		A94D683113A2EF2E003FC68F /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
 		A94D683313A2EFB1003FC68F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D683213A2EFB1003FC68F /* CoreData.framework */; };
 		A94D683513A2F02C003FC68F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D683413A2F02C003FC68F /* AVFoundation.framework */; };
+		A94D683F13A2F63E003FC68F /* TestData.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = A94D683E13A2F63E003FC68F /* TestData.sqlite */; };
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A9677829135F592E000810A4 /* channel_title.png in Resources */ = {isa = PBXBuildFile; fileRef = A9677828135F592E000810A4 /* channel_title.png */; };
 		A96A93FD136028E500254CA5 /* progress_bar_nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A96A93FC136028E500254CA5 /* progress_bar_nub.png */; };
@@ -188,6 +189,7 @@
 		A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestVideoPlaybackModelController.m; sourceTree = "<group>"; };
 		A94D683213A2EFB1003FC68F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A94D683413A2F02C003FC68F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A94D683E13A2F63E003FC68F /* TestData.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestData.sqlite; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A9677828135F592E000810A4 /* channel_title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_title.png; sourceTree = "<group>"; };
 		A96A93FC136028E500254CA5 /* progress_bar_nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_bar_nub.png; sourceTree = "<group>"; };
@@ -457,6 +459,7 @@
 		A94D680413A2ED33003FC68F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A94D683E13A2F63E003FC68F /* TestData.sqlite */,
 				A94D680513A2ED33003FC68F /* TestVideoPlaybackModelController-Info.plist */,
 				A94D680613A2ED33003FC68F /* InfoPlist.strings */,
 				A94D680913A2ED33003FC68F /* TestVideoPlaybackModelController-Prefix.pch */,
@@ -686,6 +689,9 @@
 /* Begin PBXProject section */
 		A9250133134385BF001759F5 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Pipely Inc.";
+			};
 			buildConfigurationList = A9250136134385BF001759F5 /* Build configuration list for PBXProject "ipad" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -797,6 +803,7 @@
 			files = (
 				A94D680813A2ED33003FC68F /* InfoPlist.strings in Resources */,
 				A94D680B13A2ED33003FC68F /* TestVideoPlaybackModelController.h in Resources */,
+				A94D683F13A2F63E003FC68F /* TestData.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
