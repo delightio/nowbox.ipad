@@ -6,9 +6,13 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
 #import "VideoPlaybackModelController.h"
 #import "NMVideo.h"
 #import "NMChannel.h"
+
+#define NM_MAX_VIDEO_IN_QUEUE				3
+#define NM_NMVIDEO_CACHE_SIZE				4
 
 static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 
@@ -83,17 +87,61 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 	}
 	
 	// 3 possible cases:
-	// 1. NO video at all
-	// 2. Just video list, haven't yet resolved the direct URL
-	// 3. All info ready
+	// check if videos exists
+	// check if last video exists
+	// check if we need to get video list
 	
-	// case 1
-	if ( channel.videos == nil || [channel.videos count] == 0 ) {
-		
-	} else {
-		[self initializePlayHead];
-		// case 2
-		// case 3
+	numberOfVideos = [channel.videos count];
+	// check if there's video to play
+	if ( numberOfVideos ) {
+		// check if we need to go back to the last video
+		if ( aChn.nm_last_vid ) {
+			NSFetchRequest * request = [[NSFetchRequest alloc] init];
+			[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext]];
+			[request setPredicate:[NSPredicate predicateWithFormat:@"vid = %@", aChn.nm_last_vid]];
+			[request setReturnsObjectsAsFaults:NO];
+			NSArray * result = [self.managedObjectContext executeFetchRequest:request error:nil];
+			if ( result && [result count] ) {
+				// we can find the last watched video.
+				self.currentIndexPath = [self.fetchedResultsController indexPathForObject:[result objectAtIndex:0]];
+				self.currentVideo = [result objectAtIndex:0];
+				[self requestResolveVideo:currentVideo];
+				// init the playhead. sth similar to initializePlayHead
+				if ( currentIndexPath.row + 1 < numberOfVideos ) {
+					self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
+					self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+					[self requestResolveVideo:nextVideo];
+				}
+				if ( currentIndexPath.row + 2 < numberOfVideos ) {
+					self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+					self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+					[self requestResolveVideo:nextNextVideo];
+				}
+				if ( currentIndexPath.row - 1 > -1 ) {
+					self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
+					self.previousVideo = [self.fetchedResultsController objectAtIndexPath:self.previousIndexPath];
+					[self requestResolveVideo:previousVideo];
+				}
+			} else {
+				// we can't find the video from the vid stored. Start playing from the first video in the channel
+				[self initializePlayHead];
+				[self requestResolveVideo:previousVideo];
+				[self requestResolveVideo:currentVideo];
+				[self requestResolveVideo:nextVideo];
+				[self requestResolveVideo:nextNextVideo];
+			}
+		} else {
+			[self initializePlayHead];
+			[self requestResolveVideo:previousVideo];
+			[self requestResolveVideo:currentVideo];
+			[self requestResolveVideo:nextVideo];
+			[self requestResolveVideo:nextNextVideo];
+		}
+	}
+	// check if we need to download more. Or, in the case where there's no video, download
+	if ( numberOfVideos == 0 || numberOfVideos < NM_NMVIDEO_CACHE_SIZE ) {
+		// download more video from Nowmov
+		[nowmovTaskController issueGetVideoListForChannel:channel];
 	}
 }
 
@@ -107,8 +155,8 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
 	}
 	if ( numberOfVideos > 2 ) {
-		self.nextIndexPath = [NSIndexPath indexPathForRow:2 inSection:0];
-		self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+		self.nextNextIndexPath = [NSIndexPath indexPathForRow:2 inSection:0];
+		self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
 	}
 }
 
@@ -138,6 +186,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		if ( nextNextIndexPath.row < numberOfVideos ) {
 			self.nextNextIndexPath = [NSIndexPath indexPathForRow:nextNextIndexPath.row + 1 inSection:0];
 			self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+			[self requestResolveVideo:nextNextVideo];
 		} else {
 			self.nextNextIndexPath = nil;
 			self.nextNextVideo = nil;
@@ -160,6 +209,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			self.previousIndexPath = [NSIndexPath indexPathForRow:previousIndexPath.row - 1 inSection:0];
 			// we can set the previous video
 			self.previousVideo = [self.fetchedResultsController objectAtIndexPath:previousIndexPath];
+			[self requestResolveVideo:previousVideo];
 		} else {
 			self.previousIndexPath = nil;
 			self.previousVideo = nil;
@@ -174,10 +224,13 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 - (void)requestResolveVideo:(NMVideo *)vid {
 	if ( vid == nil ) return;
 	// request to resolve the direct URL of this video
-	if ( vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""] ) {
-		if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
-			vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
-			[nowmovTaskController issueGetDirectURLForVideo:vid];
+	if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
+		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
+		[nowmovTaskController issueGetDirectURLForVideo:vid];
+	} else if ( vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+		[dataDelegate controller:self didResolvedURLOfVideo:vid];
+		if ( vid == currentVideo ) {
+			[dataDelegate controller:self shouldBeginPlayingVideo:vid];
 		}
 	}
 	// task queue controller will check if there's an existing task for this
@@ -195,6 +248,9 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 	[self performSelectorOnMainThread:@selector(printDebugMessage:) withObject:[NSString stringWithFormat:@"resolved URL: %@", vid.title] waitUntilDone:NO];
 #endif
 	[dataDelegate controller:self didResolvedURLOfVideo:vid];
+	if ( vid == currentVideo ) {
+		[dataDelegate controller:self shouldBeginPlayingVideo:vid];
+	}
 }
 
 - (void)handleErrorNotification:(NSNotification *)aNotification {

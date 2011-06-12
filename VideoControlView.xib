@@ -718,6 +718,51 @@
 					</object>
 					<int key="connectionID">51</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">playStopVideo:</string>
+						<reference key="source" ref="982439972"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">52</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">vote:</string>
+						<reference key="source" ref="355713626"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">53</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">vote:</string>
+						<reference key="source" ref="50047166"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">54</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">backToChannelView:</string>
+						<reference key="source" ref="717210615"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">55</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">skipCurrentVideo:</string>
+						<reference key="source" ref="38699862"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">56</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1019,7 +1064,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">51</int>
+			<int key="maxID">56</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1171,10 +1216,12 @@
 							<string>refreshVideoList:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
+							<string>togglePrototypeChannelPanel:</string>
 							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1192,6 +1239,7 @@
 							<string>refreshVideoList:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
+							<string>togglePrototypeChannelPanel:</string>
 							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1217,6 +1265,10 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">togglePrototypeChannelPanel:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">vote:</string>
 								<string key="candidateClassName">id</string>
 							</object>
@@ -1229,12 +1281,18 @@
 							<string>controlScrollView</string>
 							<string>debugMessageView</string>
 							<string>loadedControlView</string>
+							<string>prototypeChannelContent</string>
+							<string>prototypeChannelPanel</string>
+							<string>prototypeChannelScrollView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UIScrollView</string>
 							<string>UITextView</string>
 							<string>NMControlsView</string>
+							<string>UIView</string>
+							<string>UIView</string>
+							<string>UIScrollView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1244,6 +1302,9 @@
 							<string>controlScrollView</string>
 							<string>debugMessageView</string>
 							<string>loadedControlView</string>
+							<string>prototypeChannelContent</string>
+							<string>prototypeChannelPanel</string>
+							<string>prototypeChannelScrollView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1258,6 +1319,18 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">loadedControlView</string>
 								<string key="candidateClassName">NMControlsView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">prototypeChannelContent</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">prototypeChannelPanel</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">prototypeChannelScrollView</string>
+								<string key="candidateClassName">UIScrollView</string>
 							</object>
 						</object>
 					</object>

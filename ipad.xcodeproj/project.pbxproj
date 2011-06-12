@@ -29,6 +29,7 @@
 		A93584DB139EEA390009A264 /* videos-1b.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D5139EEA390009A264 /* videos-1b.PNG */; };
 		A93584DC139EEA390009A264 /* videos-2a.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D6139EEA390009A264 /* videos-2a.PNG */; };
 		A93584DD139EEA390009A264 /* videos-2b.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D7139EEA390009A264 /* videos-2b.PNG */; };
+		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A94D680013A2ED33003FC68F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A94D680113A2ED33003FC68F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
@@ -179,6 +180,8 @@
 		A93584D5139EEA390009A264 /* videos-1b.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-1b.PNG"; sourceTree = "<group>"; };
 		A93584D6139EEA390009A264 /* videos-2a.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-2a.PNG"; sourceTree = "<group>"; };
 		A93584D7139EEA390009A264 /* videos-2b.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "videos-2b.PNG"; sourceTree = "<group>"; };
+		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
+		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
 		A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackModelController.h; sourceTree = "<group>"; };
 		A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackModelController.m; sourceTree = "<group>"; };
 		A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestVideoPlaybackModelController.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -472,6 +475,8 @@
 			children = (
 				A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */,
 				A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */,
+				A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */,
+				A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */,
 				A970501013438F860022BF2C /* ChannelViewController.h */,
 				A970501113438F860022BF2C /* ChannelViewController.m */,
 				A970501413438F860022BF2C /* SocialSignInViewController.h */,
@@ -872,6 +877,7 @@
 				A98154A8137E1607001FADB4 /* NMRefreshChannelVideoListTask.m in Sources */,
 				A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */,
 				A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */,
+				A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1228,6 +1234,7 @@
 				A94D681113A2ED33003FC68F /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -7,8 +7,9 @@
 //
 
 #import "NMVideo.h"
-
 #import "NMChannel.h"
+#import "NMDataType.h"
+#import "NMAVPlayerItem.h"
 
 @implementation NMVideo 
 
@@ -31,6 +32,16 @@
 @dynamic channel;
 @dynamic thumbnail;
 
+@synthesize nm_player_item;
+
+- (void)awakeFromInsert {
+	self.nm_player_item = nil;
+}
+
+- (void)awakeFromFetch {
+	self.nm_player_item = nil;
+}
+
 - (void)setNm_playback_status:(NSInteger)anInt {
 	[self willChangeValueForKey:@"nm_playback_status"];
 	nm_playback_status = anInt;
@@ -47,6 +58,17 @@
 - (void)willSave {
 	[self setPrimitiveValue:[NSNumber numberWithInteger:nm_playback_status] forKey:@"nm_playback_status"];
 	[super willSave];
+}
+
+- (NMAVPlayerItem *)createPlayerItem {
+	if ( nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+		NSString * urlStr = [self primitiveNm_direct_url];
+		if ( urlStr && ![urlStr isEqualToString:@""] ) {
+			NMAVPlayerItem * item = [[NMAVPlayerItem alloc] initWithURL:[NSURL URLWithString:urlStr]];
+			return item;
+		}
+	}
+	return nil;
 }
 
 @end

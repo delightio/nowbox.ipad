@@ -7,13 +7,15 @@
 //
 
 #import <CoreData/CoreData.h>
-#import <AVFoundation/AVFoundation.h>
 
 @class NMChannel;
+@class NMAVPlayerItem;
 
 @interface NMVideo :  NSManagedObject  
 {
 	NSInteger nm_playback_status;
+	
+	NMAVPlayerItem * nm_player_item;
 }
 
 @property (nonatomic, retain) NSString * author_profile_link;
@@ -34,5 +36,18 @@
 @property (nonatomic, retain) NSString * reason_included;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSString * thumbnail;
+
+@property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
+
+/*!
+ Create a new player item. The caller of this method owns the object. The caller takes full ownership of this object.
+ */
+- (NMAVPlayerItem *)createPlayerItem;
+
+@end
+
+@interface NMVideo (CoreDataAccessors)
+
+- (NSString *)primitiveNm_direct_url;
 
 @end

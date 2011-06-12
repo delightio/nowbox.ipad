@@ -24,7 +24,6 @@
 	NMMovieView * movieView;
 	
 	NMControlsView * loadedControlView;
-	NSMutableArray * controlViewArray;
 	
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
@@ -33,7 +32,6 @@
 	BOOL rowCountHasChanged;
 	NSIndexPath ** indexPathCache;
 	
-	NSUInteger currentIndex;
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
 	CGPoint beginDraggingContentOffset;
@@ -72,7 +70,7 @@
 
 - (void)stopVideo;
 - (void)preparePlayer;	// prepare an AVPlayerLayer for the first time
-- (void)requestAddVideoAtIndex:(NSUInteger)idx;
+//- (void)requestAddVideoAtIndex:(NSUInteger)idx;
 //- (void)getVideoInfoAtIndex:(NSUInteger)idx;
 
 // playback view update
