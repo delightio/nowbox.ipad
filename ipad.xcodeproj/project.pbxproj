@@ -30,6 +30,8 @@
 		A93584DC139EEA390009A264 /* videos-2a.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D6139EEA390009A264 /* videos-2a.PNG */; };
 		A93584DD139EEA390009A264 /* videos-2b.PNG in Resources */ = {isa = PBXBuildFile; fileRef = A93584D7139EEA390009A264 /* videos-2b.PNG */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
+		A941BD9613A47E7300BB3BE0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
+		A941BD9713A47E7900BB3BE0 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A94D680013A2ED33003FC68F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A94D680113A2ED33003FC68F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
@@ -42,7 +44,6 @@
 		A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
 		A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
 		A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
-		A94D681F13A2EEFF003FC68F /* NMGetVideoInfoTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505213438F860022BF2C /* NMGetVideoInfoTask.m */; };
 		A94D682113A2EF00003FC68F /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505413438F860022BF2C /* NMGetVideoReasonTask.m */; };
 		A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
 		A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
@@ -54,8 +55,6 @@
 		A94D682F13A2EF2E003FC68F /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
 		A94D683013A2EF2E003FC68F /* NMNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504713438F860022BF2C /* NMNetworkController.m */; };
 		A94D683113A2EF2E003FC68F /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
-		A94D683313A2EFB1003FC68F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D683213A2EFB1003FC68F /* CoreData.framework */; };
-		A94D683513A2F02C003FC68F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D683413A2F02C003FC68F /* AVFoundation.framework */; };
 		A94D683F13A2F63E003FC68F /* TestData.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = A94D683E13A2F63E003FC68F /* TestData.sqlite */; };
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A9677829135F592E000810A4 /* channel_title.png in Resources */ = {isa = PBXBuildFile; fileRef = A9677828135F592E000810A4 /* channel_title.png */; };
@@ -91,7 +90,6 @@
 		A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
 		A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
 		A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A970509613438F860022BF2C /* NMGetVideoInfoTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505213438F860022BF2C /* NMGetVideoInfoTask.m */; };
 		A970509713438F860022BF2C /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505413438F860022BF2C /* NMGetVideoReasonTask.m */; };
 		A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
 		A970509913438F860022BF2C /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
@@ -190,8 +188,6 @@
 		A94D680913A2ED33003FC68F /* TestVideoPlaybackModelController-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestVideoPlaybackModelController-Prefix.pch"; sourceTree = "<group>"; };
 		A94D680A13A2ED33003FC68F /* TestVideoPlaybackModelController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestVideoPlaybackModelController.h; sourceTree = "<group>"; };
 		A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestVideoPlaybackModelController.m; sourceTree = "<group>"; };
-		A94D683213A2EFB1003FC68F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		A94D683413A2F02C003FC68F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A94D683E13A2F63E003FC68F /* TestData.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestData.sqlite; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A9677828135F592E000810A4 /* channel_title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_title.png; sourceTree = "<group>"; };
@@ -241,8 +237,6 @@
 		A970504C13438F860022BF2C /* NMGetChannelsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelsTask.m; sourceTree = "<group>"; };
 		A970504D13438F860022BF2C /* NMGetChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelVideoListTask.h; sourceTree = "<group>"; };
 		A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideoListTask.m; sourceTree = "<group>"; };
-		A970505113438F860022BF2C /* NMGetVideoInfoTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVideoInfoTask.h; sourceTree = "<group>"; };
-		A970505213438F860022BF2C /* NMGetVideoInfoTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVideoInfoTask.m; sourceTree = "<group>"; };
 		A970505313438F860022BF2C /* NMGetVideoReasonTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVideoReasonTask.h; sourceTree = "<group>"; };
 		A970505413438F860022BF2C /* NMGetVideoReasonTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVideoReasonTask.m; sourceTree = "<group>"; };
 		A970505513438F860022BF2C /* NMGetVimeoDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURLTask.h; sourceTree = "<group>"; };
@@ -337,11 +331,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A94D683513A2F02C003FC68F /* AVFoundation.framework in Frameworks */,
-				A94D683313A2EFB1003FC68F /* CoreData.framework in Frameworks */,
 				A94D680013A2ED33003FC68F /* UIKit.framework in Frameworks */,
 				A94D680113A2ED33003FC68F /* Foundation.framework in Frameworks */,
 				A94D680213A2ED33003FC68F /* CoreGraphics.framework in Frameworks */,
+				A941BD9613A47E7300BB3BE0 /* AVFoundation.framework in Frameworks */,
+				A941BD9713A47E7900BB3BE0 /* CoreMedia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,8 +345,6 @@
 		A9250131134385BF001759F5 = {
 			isa = PBXGroup;
 			children = (
-				A94D683413A2F02C003FC68F /* AVFoundation.framework */,
-				A94D683213A2EFB1003FC68F /* CoreData.framework */,
 				A97050A213438F980022BF2C /* Interfaces */,
 				A970500F13438F860022BF2C /* Classes */,
 				A970501813438F860022BF2C /* Images */,
@@ -586,8 +578,6 @@
 				A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */,
 				A98154A6137E1607001FADB4 /* NMRefreshChannelVideoListTask.h */,
 				A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */,
-				A970505113438F860022BF2C /* NMGetVideoInfoTask.h */,
-				A970505213438F860022BF2C /* NMGetVideoInfoTask.m */,
 				A970505313438F860022BF2C /* NMGetVideoReasonTask.h */,
 				A970505413438F860022BF2C /* NMGetVideoReasonTask.m */,
 				A970505513438F860022BF2C /* NMGetVimeoDirectURLTask.h */,
@@ -862,7 +852,6 @@
 				A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */,
 				A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */,
 				A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */,
-				A970509613438F860022BF2C /* NMGetVideoInfoTask.m in Sources */,
 				A970509713438F860022BF2C /* NMGetVideoReasonTask.m in Sources */,
 				A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */,
 				A970509913438F860022BF2C /* NMGetYouTubeDirectURLTask.m in Sources */,
@@ -901,7 +890,6 @@
 				A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */,
 				A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */,
 				A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */,
-				A94D681F13A2EEFF003FC68F /* NMGetVideoInfoTask.m in Sources */,
 				A94D682113A2EF00003FC68F /* NMGetVideoReasonTask.m in Sources */,
 				A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */,
 				A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */,

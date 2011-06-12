@@ -33,8 +33,6 @@
 	NSIndexPath * nextIndexPath, * nextNextIndexPath;
 	NSIndexPath * previousIndexPath;
 	NMVideo * currentVideo, * nextVideo, * nextNextVideo, * previousVideo;
-	NSManagedObjectContext * managedObjectContext;
-	NSFetchedResultsController * fetchedResultsController_;
 	BOOL rowCountHasChanged;
 	NSUInteger numberOfVideos;
 	
@@ -46,6 +44,10 @@
 	
 	// task related
 	NMTaskQueueController * nowmovTaskController;
+	
+	@private
+	NSManagedObjectContext * managedObjectContext;
+	NSFetchedResultsController * fetchedResultsController_;
 }
 
 @property (nonatomic, retain) NSIndexPath * currentIndexPath;

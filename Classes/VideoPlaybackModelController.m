@@ -28,7 +28,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 @synthesize currentIndexPath, previousIndexPath, nextIndexPath, nextNextIndexPath;
 @synthesize currentVideo, nextVideo, nextNextVideo, previousVideo;
 @synthesize channel, dataDelegate;
-@synthesize fetchedResultsController, managedObjectContext;
+@synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext;
 @synthesize debugMessageView;
 
 + (VideoPlaybackModelController *)sharedVideoPlaybackModelController {
@@ -64,7 +64,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 	[nextNextIndexPath release];
 	[previousVideo release];
 	[previousIndexPath release];
-	[fetchedResultsController release];
+	[fetchedResultsController_ release];
 	[managedObjectContext release];
 	[super dealloc];
 }
@@ -105,6 +105,9 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 				// we can find the last watched video.
 				self.currentIndexPath = [self.fetchedResultsController indexPathForObject:[result objectAtIndex:0]];
 				self.currentVideo = [result objectAtIndex:0];
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+				NSLog(@"last viewed title: %@", self.currentVideo.title);
+#endif
 				[self requestResolveVideo:currentVideo];
 				// init the playhead. sth similar to initializePlayHead
 				if ( currentIndexPath.row + 1 < numberOfVideos ) {
@@ -426,5 +429,10 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 //	}
 }
 
+#pragma mark Debug message
+- (void)printDebugMessage:(NSString *)str {
+	debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", str];
+	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
+}
 
 @end

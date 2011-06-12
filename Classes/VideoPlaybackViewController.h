@@ -69,7 +69,7 @@
 - (IBAction)refreshVideoList:(id)sender;
 
 - (void)stopVideo;
-- (void)preparePlayer;	// prepare an AVPlayerLayer for the first time
+- (void)preparePlayerForVideo:(NMVideo *)vid;	// prepare an AVPlayerLayer for the first time
 //- (void)requestAddVideoAtIndex:(NSUInteger)idx;
 //- (void)getVideoInfoAtIndex:(NSUInteger)idx;
 

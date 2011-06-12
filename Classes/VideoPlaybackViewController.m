@@ -45,7 +45,7 @@
 - (NSIndexPath *)indexPathAtIndex:(NSUInteger)idx;
 - (void)freeIndexPathCache;
 
-- (NMVideo *)currentVideo;
+- (NMVideo *)playerCurrentVideo;
 
 // debug message
 - (void)printDebugMessage:(NSString *)str;
@@ -86,6 +86,7 @@
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
 	playbackModelController.managedObjectContext = self.managedObjectContext;
+	playbackModelController.dataDelegate = self;
 	playbackModelController.debugMessageView = debugMessageView;
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:controlScrollView.bounds];
@@ -157,7 +158,7 @@
 #pragma mark Playback data structure
 
 - (void)setPlaybackCheckpoint {
-	NMVideo * theVideo = [self currentVideo];
+	NMVideo * theVideo = [self playerCurrentVideo];
 	CMTime aTime = movieView.player.currentTime;
 	if ( aTime.flags & kCMTimeFlags_Valid ) {
 		currentChannel.nm_time_elapsed_value = [NSNumber numberWithLongLong:aTime.value];
@@ -204,15 +205,10 @@
 	//TODO: update the scroll view content size, set position of movie view and control view
 }
 
-#pragma mark Debug message
-- (void)printDebugMessage:(NSString *)str {
-	debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", str];
-	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
-}
 
 #pragma mark Playback Control
 
-- (NMVideo *)currentVideo {
+- (NMVideo *)playerCurrentVideo {
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
 	return item.nmVideo;
 }
@@ -236,8 +232,7 @@
 }
 
 #pragma mark Movie View Management
-- (void)preparePlayer {
-	NMVideo * vid = [self currentVideo];
+- (void)preparePlayerForVideo:(NMVideo *)vid {
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]]]];
 	player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 	vid.nm_playback_status = NMVideoQueueStatusQueued;
@@ -353,7 +348,7 @@
 		return;
 	}
 	// send tracking event
-//	NMVideo * theVideo = [self currentVideo];
+//	NMVideo * theVideo = [self playerCurrentVideo];
 //	[nowmovTaskController issueSendViewEventForVideo:theVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:aEndOfVideo];
 //	// visually transit to next video just like the user has tapped next button
 //	//if ( aEndOfVideo ) {
@@ -471,7 +466,7 @@
 - (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid {
 	if ( movieView.player == nil ) {
 		// create player
-		[self preparePlayer];
+		[self preparePlayerForVideo:vid];
 	}
 }
 
@@ -534,7 +529,7 @@
 }
 
 - (NMVideo *)currentVideoForTask:(NMRefreshChannelVideoListTask *)vidListTask {
-	return [self currentVideo];
+	return [self playerCurrentVideo];
 }
 
 - (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask {
@@ -784,10 +779,10 @@
 	UIView * v = (UIView *)sender;
 	if ( v.tag == 1017 ) {
 		// vote up
-		[nowmovTaskController issueSendUpVoteEventForVideo:[self currentVideo] duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+		[nowmovTaskController issueSendUpVoteEventForVideo:[self playerCurrentVideo] duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	} else {
 		// vote down
-		[nowmovTaskController issueSendDownVoteEventForVideo:[self currentVideo] duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+		[nowmovTaskController issueSendDownVoteEventForVideo:[self playerCurrentVideo] duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	}
 }
 
