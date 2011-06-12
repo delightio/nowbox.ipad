@@ -33,6 +33,7 @@
 	activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	activityIndicator.center = pos;
+	activityIndicator.hidesWhenStopped = YES;
 	[self addSubview:activityIndicator];
 	
 	statusLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 640.0, 22.0)];

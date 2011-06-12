@@ -53,7 +53,6 @@
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-						<bool key="IBUIScrollEnabled">NO</bool>
 						<bool key="IBUIPagingEnabled">YES</bool>
 						<bool key="IBUIShowsHorizontalScrollIndicator">NO</bool>
 						<bool key="IBUIShowsVerticalScrollIndicator">NO</bool>
@@ -359,12 +358,16 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>backToChannelView:</string>
 							<string>playStopVideo:</string>
+							<string>refreshVideoList:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
+							<string>togglePrototypeChannelPanel:</string>
 							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -378,8 +381,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>backToChannelView:</string>
 							<string>playStopVideo:</string>
+							<string>refreshVideoList:</string>
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
+							<string>togglePrototypeChannelPanel:</string>
 							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -393,11 +398,19 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">refreshVideoList:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">showSharePopover:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">skipCurrentVideo:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">togglePrototypeChannelPanel:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -413,12 +426,18 @@
 							<string>controlScrollView</string>
 							<string>debugMessageView</string>
 							<string>loadedControlView</string>
+							<string>prototypeChannelContent</string>
+							<string>prototypeChannelPanel</string>
+							<string>prototypeChannelScrollView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UIScrollView</string>
 							<string>UITextView</string>
 							<string>NMControlsView</string>
+							<string>UIView</string>
+							<string>UIView</string>
+							<string>UIScrollView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -428,6 +447,9 @@
 							<string>controlScrollView</string>
 							<string>debugMessageView</string>
 							<string>loadedControlView</string>
+							<string>prototypeChannelContent</string>
+							<string>prototypeChannelPanel</string>
+							<string>prototypeChannelScrollView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -442,6 +464,18 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">loadedControlView</string>
 								<string key="candidateClassName">NMControlsView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">prototypeChannelContent</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">prototypeChannelPanel</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">prototypeChannelScrollView</string>
+								<string key="candidateClassName">UIScrollView</string>
 							</object>
 						</object>
 					</object>

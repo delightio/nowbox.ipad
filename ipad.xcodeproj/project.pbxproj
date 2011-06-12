@@ -44,7 +44,6 @@
 		A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
 		A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
 		A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
-		A94D682113A2EF00003FC68F /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505413438F860022BF2C /* NMGetVideoReasonTask.m */; };
 		A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
 		A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
 		A94D682713A2EF00003FC68F /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
@@ -90,7 +89,6 @@
 		A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
 		A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
 		A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A970509713438F860022BF2C /* NMGetVideoReasonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505413438F860022BF2C /* NMGetVideoReasonTask.m */; };
 		A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
 		A970509913438F860022BF2C /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
 		A970509A13438F860022BF2C /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
@@ -237,8 +235,6 @@
 		A970504C13438F860022BF2C /* NMGetChannelsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelsTask.m; sourceTree = "<group>"; };
 		A970504D13438F860022BF2C /* NMGetChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelVideoListTask.h; sourceTree = "<group>"; };
 		A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelVideoListTask.m; sourceTree = "<group>"; };
-		A970505313438F860022BF2C /* NMGetVideoReasonTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVideoReasonTask.h; sourceTree = "<group>"; };
-		A970505413438F860022BF2C /* NMGetVideoReasonTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVideoReasonTask.m; sourceTree = "<group>"; };
 		A970505513438F860022BF2C /* NMGetVimeoDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetVimeoDirectURLTask.h; sourceTree = "<group>"; };
 		A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetVimeoDirectURLTask.m; sourceTree = "<group>"; };
 		A970505713438F860022BF2C /* NMGetYouTubeDirectURLTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetYouTubeDirectURLTask.h; sourceTree = "<group>"; };
@@ -578,8 +574,6 @@
 				A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */,
 				A98154A6137E1607001FADB4 /* NMRefreshChannelVideoListTask.h */,
 				A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */,
-				A970505313438F860022BF2C /* NMGetVideoReasonTask.h */,
-				A970505413438F860022BF2C /* NMGetVideoReasonTask.m */,
 				A970505513438F860022BF2C /* NMGetVimeoDirectURLTask.h */,
 				A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */,
 				A970505713438F860022BF2C /* NMGetYouTubeDirectURLTask.h */,
@@ -852,7 +846,6 @@
 				A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */,
 				A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */,
 				A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */,
-				A970509713438F860022BF2C /* NMGetVideoReasonTask.m in Sources */,
 				A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */,
 				A970509913438F860022BF2C /* NMGetYouTubeDirectURLTask.m in Sources */,
 				A970509A13438F860022BF2C /* NMTask.m in Sources */,
@@ -890,7 +883,6 @@
 				A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */,
 				A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */,
 				A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */,
-				A94D682113A2EF00003FC68F /* NMGetVideoReasonTask.m in Sources */,
 				A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */,
 				A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */,
 				A94D682713A2EF00003FC68F /* NMTask.m in Sources */,
@@ -1012,9 +1004,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_PLAYER_DEBUG_MESSAGE,
-					DEBUG_PLAYBACK_QUEUE,
-					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_EVENT_TRACKING,
+					DEBUG_PLAYER_NAVIGATION,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;

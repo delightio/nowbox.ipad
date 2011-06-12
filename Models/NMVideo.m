@@ -65,6 +65,8 @@
 		NSString * urlStr = [self primitiveNm_direct_url];
 		if ( urlStr && ![urlStr isEqualToString:@""] ) {
 			NMAVPlayerItem * item = [[NMAVPlayerItem alloc] initWithURL:[NSURL URLWithString:urlStr]];
+			item.nmVideo = self;
+			self.nm_player_item = item;
 			return item;
 		}
 	}

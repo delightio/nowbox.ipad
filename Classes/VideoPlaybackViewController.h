@@ -28,13 +28,10 @@
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
 	BOOL firstShowControlView;
-	BOOL freshStart;
-	BOOL rowCountHasChanged;
 	NSIndexPath ** indexPathCache;
 	
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
-	CGPoint beginDraggingContentOffset;
 	NMChannel * currentChannel;
 	NMTaskQueueController * nowmovTaskController;
 	VideoPlaybackModelController * playbackModelController;

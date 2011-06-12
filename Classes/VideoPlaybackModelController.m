@@ -146,6 +146,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		// download more video from Nowmov
 		[nowmovTaskController issueGetVideoListForChannel:channel];
 	}
+	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 }
 
 #pragma mark Video list management
@@ -410,6 +411,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 	if ( rowCountHasChanged ) {
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 		numberOfVideos = [sectionInfo numberOfObjects];
+		[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 		//TODO: do we need to update the caching variables - currentIndexPath, currentVideo, etc
 	}
 	
