@@ -655,6 +655,7 @@
 		[loadedControlView setControlsHidden:NO animated:NO];
 		movieView.alpha = 1.0;
 		[UIView commitAnimations];
+		firstShowControlView = YES;	// enable this so that the control will disappear later on after first count of 2 sec.
 		
 		t = movieView.player.currentItem.asset.duration;
 		// check if the time is valid
@@ -738,6 +739,7 @@
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+	// this delegate method is called when user has lifted their thumb out of the screen
 	[self stopVideo];
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 	scrollView.scrollEnabled = NO;
@@ -776,6 +778,11 @@
 			[playbackModelController moveToPreviousVideo];
 			[movieView.player play];
 		}
+	} else {
+		// play the video again
+		[self playVideo];
+		// this method pairs with "stopVideo" in scrollViewDidEndDragging
+		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 	}
 }
 
