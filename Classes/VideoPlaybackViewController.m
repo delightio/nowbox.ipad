@@ -308,15 +308,8 @@
 			
 			[movieView.player advanceToNextItem];
 			[movieView.player play];
+			controlScrollView.scrollEnabled = NO;
 			
-			// update the movie control view
-//			if ( currentIndex + 2 < numberOfVideos ) {
-//				[self configureControlViewAtIndex:currentIndex + 2];
-//			} else {
-//				// get more video here
-//			}
-			// make the view visible
-//			[self performSelector:@selector(showPlayerAndControl) withObject:nil afterDelay:0.1];
 			break;
 			
 		default:
