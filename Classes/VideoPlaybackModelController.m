@@ -91,14 +91,15 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 	// check if last video exists
 	// check if we need to get video list
 	
-	numberOfVideos = [channel.videos count];
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	numberOfVideos = [sectionInfo numberOfObjects];
 	// check if there's video to play
 	if ( numberOfVideos ) {
 		// check if we need to go back to the last video
 		if ( aChn.nm_last_vid ) {
 			NSFetchRequest * request = [[NSFetchRequest alloc] init];
 			[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext]];
-			[request setPredicate:[NSPredicate predicateWithFormat:@"vid = %@", aChn.nm_last_vid]];
+			[request setPredicate:[NSPredicate predicateWithFormat:@"vid == %@ AND nm_error == 0", aChn.nm_last_vid]];
 			[request setReturnsObjectsAsFaults:NO];
 			NSArray * result = [self.managedObjectContext executeFetchRequest:request error:nil];
 			[request release];
@@ -181,14 +182,14 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		// video
 		self.previousVideo = currentVideo;
 		self.currentVideo = nextVideo;
-		if ( nextIndexPath.row < numberOfVideos ) {
+		if ( nextIndexPath.row + 1 < numberOfVideos ) {
 			self.nextIndexPath = [NSIndexPath indexPathForRow:nextIndexPath.row + 1 inSection:0];
 			self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
 		} else {
 			self.nextIndexPath = nil;
 			self.nextVideo = nil;
 		}
-		if ( nextNextIndexPath.row < numberOfVideos ) {
+		if ( nextNextIndexPath.row + 1 < numberOfVideos ) {
 			self.nextNextIndexPath = [NSIndexPath indexPathForRow:nextNextIndexPath.row + 1 inSection:0];
 			self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
 			[self requestResolveVideo:nextNextVideo];
