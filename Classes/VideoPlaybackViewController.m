@@ -187,10 +187,10 @@
 	
 	// update the interface if necessary
 	[movieView setActivityIndicationHidden:NO animated:NO];
-	if ( playbackModelController.currentVideo == nil ) {
+//	if ( playbackModelController.currentVideo == nil ) {
 		// we need to wait for video to come. show loading view
 		controlScrollView.scrollEnabled = NO;
-	}
+//	}
 	
 	//TODO: update the scroll view content size, set position of movie view and control view
 }
@@ -639,6 +639,7 @@
 					videoDurationInvalid = YES;
 				}
 				[movieView setActivityIndicationHidden:YES animated:YES];
+				controlScrollView.scrollEnabled = YES;
 				break;
 			}
 			default:
