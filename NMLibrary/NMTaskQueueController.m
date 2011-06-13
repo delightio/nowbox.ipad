@@ -186,4 +186,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueReexamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventReexamine forVideo:aVideo];
+	task.errorCode = err;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 @end

@@ -185,12 +185,9 @@
 		return;	// return if the channel object is nil
 	}
 	
-	// update the interface is necessary
+	// update the interface if necessary
 	[movieView setActivityIndicationHidden:NO animated:NO];
-	if ( playbackModelController.currentVideo ) {
-		// update control UI
-		[self configureControlViewForVideo:playbackModelController.currentVideo];
-	} else {
+	if ( playbackModelController.currentVideo == nil ) {
 		// we need to wait for video to come. show loading view
 		controlScrollView.scrollEnabled = NO;
 	}
@@ -217,6 +214,7 @@
 }
 
 - (IBAction)playStopVideo:(id)sender {
+	NSLog(@"playback rate: %f", movieView.player.rate);
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
 	} else {
@@ -392,30 +390,6 @@
 //	[self performSelector:@selector(showPlayerAndControl) withObject:nil afterDelay:0.1];
 }
 
-//- (void)requestAddVideoAtIndex:(NSUInteger)idx {
-//	if ( idx >= numberOfVideos ) return;
-//	// request to add the video to queue. If the direct URL does not exists, fetch from the server
-//	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:idx]];
-//	if ( (vid.nm_direct_url == nil || [vid.nm_direct_url isEqualToString:@""]) ) {
-//		if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
-//	#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//			NSLog(@"issue resolve direct URL: %@", vid.title);
-//	#endif
-//#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-//			[self performSelectorOnMainThread:@selector(printDebugMessage:) withObject:[NSString stringWithFormat:@"issue resolve direct URL: %@", vid.title] waitUntilDone:NO];
-//#endif
-//			vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
-//			[nowmovTaskController issueGetDirectURLForVideo:vid];
-//		}
-//	} else if ( vid.nm_playback_status >= NMVideoQueueStatusDirectURLReady ) {
-//		if ( idx == currentIndex && movieView.player == nil ) {
-//			[self preparePlayer];
-//		} else {
-//			[self playerQueueVideos];
-//		}
-//	}
-//}
-
 - (void)playerQueueNextVideos {
 	// creates player item and insert them into the queue orderly
 	// don't queue any video for play if there's more than 3 queued
@@ -449,8 +423,8 @@
 			break;
 			
 		case 2:
-			vid = playbackModelController.nextVideo;
-			if ( vid == playbackModelController.nextNextVideo ) {
+			vid = playbackModelController.nextNextVideo;
+			if ( vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 				item = [vid createPlayerItem];
 				if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
 					[movieView.player insertItem:item afterItem:nil];
@@ -461,62 +435,38 @@
 			break;
 			
 		default:
+#ifdef DEBUG_PLAYER_NAVIGATION
+			NSLog(@"default case. problem!!! not queuing anything fuck");
+#endif
+//			if ( vid == playbackModelController.currentVideo ) {
+//				if ( movieView.player == nil ) {
+//					[self preparePlayerForVideo:vid];
+//				} else {
+//					item = [vid createPlayerItem];
+//					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
+//						[movieView.player insertItem:item afterItem:nil];
+//						[movieView.player play];
+//						vid.nm_playback_status = NMVideoQueueStatusQueued;
+//					}
+//					[item release];
+//				}
+//			}
 			break;
 	}
-//	if ( c > NM_MAX_VIDEO_IN_QUEUE - 1 ) return;
-//	// since this method is called NOT-IN-ORDER, we should transverse the whole list to queue items
-//	NMVideo * vid;
-//	BOOL enableQueuing = YES;
-//	for ( NSInteger i = currentIndex + c; i < NM_MAX_VIDEO_IN_QUEUE + currentIndex; i++ ) {
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//		NSLog(@"add/issue resolve items: %d", i);
-//#endif
-//		// check if there's enough video here to queue to.
-//		if ( i < numberOfVideos ) {
-//			vid = [self.fetchedResultsController objectAtIndexPath:[self indexPathAtIndex:i]];
-//			if ( enableQueuing ) {
-//				if ( vid.nm_playback_status == NMVideoQueueStatusDirectURLReady ) {
-//					// queue
-//					AVPlayerItem * item = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:vid.nm_direct_url]];
-//					if ( [movieView.player canInsertItem:item afterItem:nil] ) {
-//						[movieView.player insertItem:item afterItem:nil];
-//						vid.nm_playback_status = NMVideoQueueStatusQueued;
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//						NSLog(@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title );
-//#endif
-//#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-//						[self performSelectorOnMainThread:@selector(printDebugMessage:) withObject:[NSString stringWithFormat:@"added video to queue player: %@, %@", vid.nm_sort_order, vid.title] waitUntilDone:NO];
-//#endif
-//					}
-//#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-//					else {
-//						NSLog(@"can't add video to queue player: %@", vid.nm_sort_order);
-//					}
-//#endif
-//				} else if ( vid.nm_playback_status < NMVideoQueueStatusDirectURLReady ) {
-//					[self requestAddVideoAtIndex:i];
-//					// exit the loop. don't have to queue other video in the list. the queuing process must be in-order
-//					enableQueuing = NO;
-//				}
-//			} /*else {
-//				// just check if we should resolve the direct URL
-//				[self requestAddVideoAtIndex:i];
-//			}*/
-//		} else {
-//			break;
-//		}
-//	}
 }
 
 #pragma mark VideoPlaybackModelController delegate methods
 - (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid {
-	if ( movieView.player == nil ) {
-		// create player
-		[self preparePlayerForVideo:vid];
-	}
+//	if ( movieView.player == nil ) {
+//		// create player
+//		[self preparePlayerForVideo:vid];
+//	}
 }
 
 - (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid {
+	/*!
+	 check if we should queue video when we model controller informs about direct URL resolved. Similar operation is carried when user flick the screen.
+	 */
 //	if ( movieView.player == nil ) {
 //		return;
 //		// return immediately. the "shouldBeginPlayingVideo" delegate method will be called.
@@ -526,62 +476,100 @@
 		c = [[movieView.player items] count];
 	}
 	NMAVPlayerItem * item;
-	switch (c) {
-		case 1:
-			// check to queue items
-			if ( vid == playbackModelController.nextVideo ) {
-				// add video
-				item = [vid createPlayerItem];
-				if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-					[movieView.player insertItem:item afterItem:nil];
-					vid.nm_playback_status = NMVideoQueueStatusQueued;
-				}
-				[item release];
-				// add next next video
+	
+	if ( vid == playbackModelController.currentVideo ) {
+		// play the video
+		if ( movieView.player == nil ) {
+			[self preparePlayerForVideo:vid];
+		}
+		// insert other videos
+		if ( playbackModelController.nextVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+			vid = playbackModelController.nextVideo;
+			item = [vid createPlayerItem];
+			if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
+				[movieView.player insertItem:item afterItem:nil];
+				[movieView.player play];
+				vid.nm_playback_status = NMVideoQueueStatusQueued;
+			}
+			[item release];
+			if ( playbackModelController.nextNextVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 				vid = playbackModelController.nextNextVideo;
-				if ( vid && vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-					// queue the next next video as well
-					item = [vid createPlayerItem];
-					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-						[movieView.player insertItem:item afterItem:nil];
-						vid.nm_playback_status = NMVideoQueueStatusQueued;
-					}
-					[item release];
-				}
-			}
-			break;
-			
-		case 2:
-			if ( vid == playbackModelController.nextNextVideo ) {
 				item = [vid createPlayerItem];
 				if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
 					[movieView.player insertItem:item afterItem:nil];
+					[movieView.player play];
 					vid.nm_playback_status = NMVideoQueueStatusQueued;
 				}
 				[item release];
 			}
-			break;
-			
-		default:
-			if ( vid == playbackModelController.currentVideo ) {
-				if ( movieView.player == nil ) {
-					[self preparePlayerForVideo:vid];
-				} else {
+		}
+	} else {
+		switch (c) {
+			case 1:
+				// playing current video. check if the video is the "next" video
+				if ( vid == playbackModelController.nextVideo ) {
+					// add video
 					item = [vid createPlayerItem];
 					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
 						[movieView.player insertItem:item afterItem:nil];
-						[movieView.player play];
+						vid.nm_playback_status = NMVideoQueueStatusQueued;
+					}
+					[item release];
+					// add next next video
+					vid = playbackModelController.nextNextVideo;
+					if ( vid && vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+						// queue the next next video as well
+						item = [vid createPlayerItem];
+						if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
+							[movieView.player insertItem:item afterItem:nil];
+							vid.nm_playback_status = NMVideoQueueStatusQueued;
+						}
+						[item release];
+					}
+				}
+				break;
+			case 2:
+				if ( vid == playbackModelController.nextNextVideo ) {
+					item = [vid createPlayerItem];
+					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
+						[movieView.player insertItem:item afterItem:nil];
 						vid.nm_playback_status = NMVideoQueueStatusQueued;
 					}
 					[item release];
 				}
-			}
-			break;
+				break;
+			case 0:
+#ifdef DEBUG_PLAYBACK_QUEUE
+				NSLog(@"no more video to play. but got this request");
+#endif
+				if ( vid == playbackModelController.currentVideo ) {
+					item = [vid createPlayerItem];
+					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
+						[movieView.player insertItem:item afterItem:nil];
+						vid.nm_playback_status = NMVideoQueueStatusQueued;
+						[movieView.player play];
+					}
+					[item release];
+				}
+				break;
+			default:
+#ifdef DEBUG_PLAYBACK_QUEUE
+				NSLog(@"wow~ doing well~ resolving video faster than it is being consumed. no need to queue");
+#endif
+				break;
+		}
 	}
 }
 
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum {
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"current total num videos: %d", totalNum);
+#endif
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 768.0f);
+	currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
+	controlScrollView.contentOffset = thePoint;
+	[self configureControlViewForVideo:playbackModelController.currentVideo];
 }
 
 
@@ -768,9 +756,14 @@
 		if ( [[movieView.player items] count] > 1 ) {
 			[movieView.player advanceToNextItem];
 			[movieView.player play];
+			[playbackModelController moveToNextVideo];
+			// attempt to queue the new video covered by the playback window
+			[self playerQueueNextVideos];
 		}
-		[playbackModelController moveToNextVideo];
-		[self playerQueueNextVideos];
+#ifdef DEBUG_PLAYER_NAVIGATION
+		else
+			NSLog(@"can't move to next video. no video!!");
+#endif
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
@@ -779,6 +772,10 @@
 				[movieView.player revertPreviousItem:item];
 				[item release];
 			}
+#ifdef DEBUG_PLAYER_NAVIGATION
+			else
+				NSLog(@"can't add item: %@ %d", playbackModelController.previousVideo.title, playbackModelController.previousVideo.nm_playback_status);
+#endif
 			[playbackModelController moveToPreviousVideo];
 			[movieView.player play];
 		}

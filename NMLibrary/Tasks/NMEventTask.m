@@ -15,6 +15,7 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 
 @synthesize video, duration;
 @synthesize elapsedSeconds, playedToEnd;
+@synthesize errorCode;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v {
 	self = [super init];
@@ -52,9 +53,16 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 			break;
 		case NMEventViewing:
 			evtStr = @"viewing";
+		case NMEventReexamine:
+			evtStr = @"reexamine_video";
 			break;
 	}
-	NSString * urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%@&trigger_name=%@", videoID, elapsedSeconds, duration, evtStr, eventType == NMEventView && playedToEnd ? @"auto" : @"touch"];
+	NSString * urlStr = nil;
+	if ( eventType == NMEventReexamine ) {
+		urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&event_type=%@&error_code=%d", videoID, evtStr, errorCode];
+	} else {
+		urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%@&trigger_name=%@", videoID, elapsedSeconds, duration, evtStr, eventType == NMEventView && playedToEnd ? @"auto" : @"touch"];
+	}
 #ifdef DEBUG_EVENT_TRACKING
 	NSLog(@"send event: %@", urlStr);
 #endif

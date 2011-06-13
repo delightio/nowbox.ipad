@@ -18,6 +18,7 @@
 	CGFloat duration;	// duration of video
 	CGFloat elapsedSeconds;	// time elapse
 	NMVideo * video;
+	NSInteger errorCode;
 	BOOL playedToEnd;
 }
 
@@ -25,6 +26,7 @@
 @property (nonatomic) CGFloat elapsedSeconds;
 @property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL playedToEnd;
+@property (nonatomic) NSInteger errorCode;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v;
 

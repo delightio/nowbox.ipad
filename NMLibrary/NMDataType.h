@@ -36,6 +36,7 @@ typedef enum {
 	NMVideoQueueStatusQueued,
 	NMVideoQueueStatusPlaying,
 	NMVideoQueueStatusPlayed,
+	NMVideoQueueStatusError			= 999,
 } NMVideoQueueStatusType;
 
 typedef enum {
@@ -45,6 +46,7 @@ typedef enum {
 	NMEventShare,
 	NMEventView,
 	NMEventViewing,
+	NMEventReexamine,
 } NMEventType;
 
 typedef enum {

@@ -194,6 +194,8 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		} else {
 			self.nextNextIndexPath = nil;
 			self.nextNextVideo = nil;
+			// fetch more video
+			[nowmovTaskController issueGetVideoListForChannel:channel];
 		}
 		
 		return YES;
@@ -267,6 +269,8 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		if ( userInfo ) {
 			NMVideo * vid = [userInfo objectForKey:@"target_object"];
 			vid.nm_error = [userInfo objectForKey:@"errorNum"];
+			vid.nm_playback_status = NMVideoQueueStatusError;
+			[nowmovTaskController issueReexamineVideo:vid errorCode:[vid.nm_error integerValue]];
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 			debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\ndirect URL resolution failed: %@ %@", [[aNotification userInfo] objectForKey:@"error"], vid.title];
 #endif
@@ -374,24 +378,80 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
     return fetchedResultsController_;
 }
 
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+	changeSessionUpdateCount = YES;
+}
+
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+	static NSUInteger theCount = 0;
+	if ( changeSessionUpdateCount ) {
+		// just get the count once is enough
+		changeSessionUpdateCount = NO;
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
+		theCount = [sectionInfo numberOfObjects];
+	}
 	switch (type) {
 		case NSFetchedResultsChangeDelete:
+		{
 			rowCountHasChanged = YES;
-			//MARK: code below seems useless base on findings studying FRCDeleteTest sample code
-			//			NMVideo * vid = (NMVideo *)anObject;
-			//			// setting nm_sort_order will trigger another call to the FRC's delegate method
-			//			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
-			//			// check if the new position makes the video become ready to be queued
-			//			if ( currentIndex + 2 >= indexPath.row ) {
-			//				[self configureControlViewAtIndex:indexPath.row];
-			//				[self requestAddVideoAtIndex:indexPath.row];
-			//				if ( currentIndex == 0 && vid.nm_playback_status == NMVideoQueueStatusDirectURLReady && movieView.player == nil ) {
-			//					// we should start playing the video
-			//					[self preparePlayer];
-			//				}
-			//			}
+			if ( [indexPath isEqual:currentIndexPath] ) {
+				if ( currentIndexPath.row + 1 < theCount ) {
+					self.currentVideo = [controller objectAtIndexPath:indexPath];
+					if ( nextIndexPath.row + 1 < theCount ) {
+						self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
+						if ( nextNextIndexPath.row + 1 < theCount ) {
+							self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
+						} else {
+							self.nextNextVideo = nil;
+							self.nextNextIndexPath = nil;
+						}
+					} else {
+						self.nextVideo = nil;
+						self.nextNextVideo = nil;
+						self.nextIndexPath = nil;
+						self.nextNextIndexPath = nil;
+					}
+				} else {
+					// there's literally no need to do anything. no video is worth playing in this channel
+					//MARK: fatal channel error?
+					self.currentVideo = nil;
+					self.nextVideo = nil;
+					self.nextNextVideo = nil;
+					self.currentIndexPath = nil;
+					self.nextIndexPath = nil;
+					self.nextNextIndexPath = nil;
+				}
+				[self requestResolveVideo:currentVideo];
+				[self requestResolveVideo:nextVideo];
+				[self requestResolveVideo:nextNextVideo];
+			} else if ( [indexPath isEqual:nextIndexPath] ) {
+				if ( nextIndexPath.row + 1 < theCount ) {
+					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
+					if ( nextNextIndexPath.row + 1 < theCount ) {
+						self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
+					} else {
+						self.nextNextVideo = nil;
+						self.nextNextIndexPath = nil;
+					}
+				} else {
+					self.nextVideo = nil;
+					self.nextNextVideo = nil;
+					self.nextIndexPath = nil;
+					self.nextNextIndexPath = nil;
+				}
+				[self requestResolveVideo:nextVideo];
+				[self requestResolveVideo:nextNextVideo];
+			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
+				if ( nextNextIndexPath.row + 1 < theCount ) {
+					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
+				} else {
+					self.nextNextVideo = nil;
+					self.nextNextIndexPath = nil;
+				}
+				[self requestResolveVideo:nextNextVideo];
+			}
 			break;
+		}
 		case NSFetchedResultsChangeUpdate:
 		case NSFetchedResultsChangeMove:
 			rowCountHasChanged = NO;
@@ -414,21 +474,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 		//TODO: do we need to update the caching variables - currentIndexPath, currentVideo, etc
 	}
-	
-//	if ( freshStart ) {
-//		if ( numberOfVideos == 0 ) {
-//			return;
-//		}
-//		
-//		// launching the app with empty video list.
-//		[nowmovTaskController issueGetVideoListForChannel:channel];
-//		// now, get the direct url for some videos
-//		[self requestAddVideoAtIndex:currentIndex];
-//		// purposely don't queue fetch direct URL for other video in the list to avoid too much network traffic. Delay this till the video starts playing
-//		freshStart = NO;
-//		//		isReloadWithData = YES;
-//		[self configureControlViewAtIndex:currentIndex];
-//	}
+	changeSessionUpdateCount = NO;
 }
 
 #pragma mark Debug message

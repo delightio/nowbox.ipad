@@ -34,6 +34,7 @@
 	NSIndexPath * previousIndexPath;
 	NMVideo * currentVideo, * nextVideo, * nextNextVideo, * previousVideo;
 	BOOL rowCountHasChanged;
+	BOOL changeSessionUpdateCount;
 	NSUInteger numberOfVideos;
 	
 	NMChannel * channel;
