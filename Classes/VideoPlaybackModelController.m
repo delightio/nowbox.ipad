@@ -101,6 +101,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			[request setPredicate:[NSPredicate predicateWithFormat:@"vid = %@", aChn.nm_last_vid]];
 			[request setReturnsObjectsAsFaults:NO];
 			NSArray * result = [self.managedObjectContext executeFetchRequest:request error:nil];
+			[request release];
 			if ( result && [result count] ) {
 				// we can find the last watched video.
 				self.currentIndexPath = [self.fetchedResultsController indexPathForObject:[result objectAtIndex:0]];

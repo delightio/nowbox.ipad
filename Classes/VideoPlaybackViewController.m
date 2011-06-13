@@ -647,9 +647,6 @@
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		// never change currentIndex here!!
-#ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"changed current item");
-#endif
 		// ====== update interface ======
 		[self configureControlViewForVideo:[self playerCurrentVideo]];
 		// update the time
