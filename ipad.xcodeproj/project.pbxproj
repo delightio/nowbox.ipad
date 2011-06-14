@@ -52,7 +52,6 @@
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A9677829135F592E000810A4 /* channel_title.png in Resources */ = {isa = PBXBuildFile; fileRef = A9677828135F592E000810A4 /* channel_title.png */; };
 		A96A93FD136028E500254CA5 /* progress_bar_nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A96A93FC136028E500254CA5 /* progress_bar_nub.png */; };
-		A970506713438F860022BF2C /* ChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970500E13438F860022BF2C /* ChannelViewController.xib */; };
 		A970506A13438F860022BF2C /* SocialSignInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501513438F860022BF2C /* SocialSignInViewController.m */; };
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
 		A970506F13438F860022BF2C /* btn_explore.png in Resources */ = {isa = PBXBuildFile; fileRef = A970501C13438F860022BF2C /* btn_explore.png */; };
@@ -128,7 +127,6 @@
 		A9ECD610135E9611004B7F78 /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
 		A9ECD614135E9703004B7F78 /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
 		A9F2499F134E44DE004BC497 /* background_video_control_header.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F2499E134E44DE004BC497 /* background_video_control_header.png */; };
-		A9F9EDE7134DC8E900A2D68D /* ChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501113438F860022BF2C /* ChannelViewController.m */; };
 		A9F9EE30134DCC9000A2D68D /* background_header.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F9EE2E134DCC9000A2D68D /* background_header.png */; };
 		A9F9EE31134DCC9000A2D68D /* background_video_control_footer.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F9EE2F134DCC9000A2D68D /* background_video_control_footer.png */; };
 /* End PBXBuildFile section */
@@ -179,9 +177,6 @@
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A9677828135F592E000810A4 /* channel_title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_title.png; sourceTree = "<group>"; };
 		A96A93FC136028E500254CA5 /* progress_bar_nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progress_bar_nub.png; sourceTree = "<group>"; };
-		A970500E13438F860022BF2C /* ChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelViewController.xib; sourceTree = "<group>"; };
-		A970501013438F860022BF2C /* ChannelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelViewController.h; sourceTree = "<group>"; };
-		A970501113438F860022BF2C /* ChannelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelViewController.m; sourceTree = "<group>"; };
 		A970501413438F860022BF2C /* SocialSignInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialSignInViewController.h; sourceTree = "<group>"; };
 		A970501513438F860022BF2C /* SocialSignInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialSignInViewController.m; sourceTree = "<group>"; };
 		A970501613438F860022BF2C /* VideoPlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackViewController.h; sourceTree = "<group>"; };
@@ -443,8 +438,6 @@
 				A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */,
 				A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */,
 				A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */,
-				A970501013438F860022BF2C /* ChannelViewController.h */,
-				A970501113438F860022BF2C /* ChannelViewController.m */,
 				A970501413438F860022BF2C /* SocialSignInViewController.h */,
 				A970501513438F860022BF2C /* SocialSignInViewController.m */,
 				A970501613438F860022BF2C /* VideoPlaybackViewController.h */,
@@ -586,7 +579,6 @@
 		A97050A213438F980022BF2C /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
-				A970500E13438F860022BF2C /* ChannelViewController.xib */,
 				A970505C13438F860022BF2C /* SocialSignInView.xib */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
@@ -694,7 +686,6 @@
 			files = (
 				A925014B134385BF001759F5 /* InfoPlist.strings in Resources */,
 				A9250154134385BF001759F5 /* MainWindow.xib in Resources */,
-				A970506713438F860022BF2C /* ChannelViewController.xib in Resources */,
 				A970506F13438F860022BF2C /* btn_explore.png in Resources */,
 				A970507013438F860022BF2C /* btn_explore_active.png in Resources */,
 				A970507113438F860022BF2C /* btn_heart.png in Resources */,
@@ -809,7 +800,6 @@
 				A9250151134385BF001759F5 /* ipadAppDelegate.m in Sources */,
 				A970506A13438F860022BF2C /* SocialSignInViewController.m in Sources */,
 				A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */,
-				A9F9EDE7134DC8E900A2D68D /* ChannelViewController.m in Sources */,
 				A970508C13438F860022BF2C /* NMChannel.m in Sources */,
 				A970508D13438F860022BF2C /* NMVideo.m in Sources */,
 				A970508E13438F860022BF2C /* Nowmov.xcdatamodel in Sources */,

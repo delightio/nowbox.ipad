@@ -8,13 +8,29 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+	FullScreenPlaybackMode,
+	HalfScreenMode,
+	FullScreenChannelMode,
+} NMPlaybackViewModeType;
 
-@interface ChannelPanelController : NSObject {
+@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
     IBOutlet UITableView * tableView;
 	UIView *panelView;
+@private
+	NSUInteger numberOfChannels;
+    NSFetchedResultsController *fetchedResultsController_;
+    NSManagedObjectContext *managedObjectContext_;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *panelView;
+@property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
+@property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
+
+- (void)panelWillAppear;
+- (void)panelWillDisappear;
+- (void)panelWillBecomeFullScreen;
+- (void)panelWillHalfScreen:(NMPlaybackViewModeType)fromViewMode;
 
 - (IBAction)toggleTableEditMode:(id)sender;
 - (IBAction)debugRefreshChannel:(id)sender;
