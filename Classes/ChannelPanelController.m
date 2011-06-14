@@ -13,6 +13,8 @@
 #import "VideoRowController.h"
 
 
+#define VIDEO_ROW_LEFT_PADDING			68.0f
+
 @implementation ChannelPanelController
 @synthesize panelView;
 @synthesize managedObjectContext=managedObjectContext_;
@@ -56,7 +58,10 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.textLabel.text = theChannel.title;
-	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:cell.contentView.bounds];
+	CGRect theFrame = cell.contentView.bounds;
+	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
+	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel];
 	[cell.contentView addSubview:rowCtrl.videoTableView];
 }
 

@@ -6,21 +6,24 @@
 //  Copyright 2011 Pipely Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "EasyTableView.h"
 
 
-@interface VideoRowController : NSObject <EasyTableViewDelegate> {
+@class NMChannel;
+
+@interface VideoRowController : NSObject <EasyTableViewDelegate, NSFetchedResultsControllerDelegate> {
     EasyTableView * videoTableView;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
+	NMChannel * channel;
 }
 
 @property (nonatomic, readonly) EasyTableView * videoTableView;
+@property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
-- (id)initWithFrame:(CGRect)aframe;
+- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj;
 
 
 @end
