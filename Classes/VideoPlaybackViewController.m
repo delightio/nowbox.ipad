@@ -67,8 +67,8 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-	[[UIApplication sharedApplication] setStatusBarHidden:YES];
-	self.wantsFullScreenLayout = YES;
+//	[[UIApplication sharedApplication] setStatusBarHidden:YES];
+//	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	firstShowControlView = YES;
 	currentXOffset = 0.0f;
@@ -935,10 +935,13 @@
 		// assume the panel is visible
 		panelHidden = NO;
 	}
+	CGRect viewRect;
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
-//		movieView.center = CGPointMake(512.0f, 768.0f / 4.0f);
-//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 4.0f);
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+		viewRect = CGRectMake(movieView.frame.origin.x, 20.0f, 1024.0f, 428.0f);
+		movieView.frame = viewRect;
+		loadedControlView.frame = viewRect;
 		// slide in
 		theFrame.origin.y = 448.0f;
 		channelController.panelView.frame = theFrame;
@@ -947,8 +950,10 @@
 //		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 //		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 	} else {
-//		movieView.center = CGPointMake(512.0f, 768.0f / 2.0f);
-//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 2.0f);
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		viewRect = CGRectMake(movieView.frame.origin.x, 0.0f, 1024.0f, 768.0f);
+		movieView.frame = viewRect;
+		loadedControlView.frame = viewRect;
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;

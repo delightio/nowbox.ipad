@@ -14,6 +14,10 @@
 @interface LaunchViewController : UIViewController {
     
 }
+
 - (IBAction)showPlaybackController:(id)sender;
+
+- (void)showVideoView;
+- (void)checkUpdateChannels;
 
 @end

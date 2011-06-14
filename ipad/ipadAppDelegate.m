@@ -37,9 +37,7 @@ NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
-	
-	application.statusBarHidden = YES;
-    
+	    
 	self.window.rootViewController = self.launchViewController;
 	[self.window makeKeyAndVisible];
 	

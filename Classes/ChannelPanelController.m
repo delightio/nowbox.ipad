@@ -10,6 +10,7 @@
 #import "NMLibrary.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "VideoRowController.h"
 
 
 @implementation ChannelPanelController
@@ -55,6 +56,8 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.textLabel.text = theChannel.title;
+	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:cell.contentView.bounds];
+	[cell.contentView addSubview:rowCtrl.videoTableView];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
