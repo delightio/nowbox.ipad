@@ -11,6 +11,7 @@
 #import "NMLibrary.h"
 #import "NMVideo.h"
 #import "NMMovieView.h"
+#import "ChannelPanelController.h"
 #import "NMAVQueuePlayer.h"
 #import "NMAVPlayerItem.h"
 #import <QuartzCore/QuartzCore.h>
@@ -49,8 +50,6 @@
 
 @implementation VideoPlaybackViewController
 @synthesize managedObjectContext=managedObjectContext_;
-@synthesize prototypeChannelPanel;
-@synthesize prototypeChannelContent;
 @synthesize currentChannel;
 @synthesize loadedControlView;
 
@@ -130,8 +129,6 @@
 
 
 - (void)viewDidUnload {
-	[self setPrototypeChannelPanel:nil];
-	[self setPrototypeChannelContent:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -143,8 +140,7 @@
 	
 	[movieView release];
 	[currentChannel release];
-	[prototypeChannelPanel release];
-	[prototypeChannelContent release];
+	[channelController release];
     [super dealloc];
 }
 
@@ -923,17 +919,16 @@
 
 - (IBAction)togglePrototypeChannelPanel:(id)sender {
 	CGRect theFrame;
-	if ( self.prototypeChannelPanel == nil ) {
+	if ( channelController == nil ) {
 		// load the view
-		[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
-		[prototypeChannelScrollView addSubview:self.prototypeChannelContent];
-		prototypeChannelScrollView.contentSize = self.prototypeChannelContent.bounds.size;
-		theFrame = prototypeChannelPanel.frame;
+		channelController = [[ChannelPanelController alloc] init];
+		[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:channelController options:nil];
+		theFrame = channelController.panelView.frame;
 		theFrame.origin.y = self.view.bounds.size.height;
-		prototypeChannelPanel.frame = theFrame;
-		[self.view addSubview:self.prototypeChannelPanel];
+		channelController.panelView.frame = theFrame;
+		[self.view addSubview:channelController.panelView];
 	}
-	theFrame = prototypeChannelPanel.frame;
+	theFrame = channelController.panelView.frame;
 	BOOL panelHidden = YES;
 	if ( theFrame.origin.y < 768.0 ) {
 		// assume the panel is visible
@@ -941,23 +936,23 @@
 	}
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
-		movieView.center = CGPointMake(512.0f, 768.0f / 4.0f);
-		controlScrollView.center = CGPointMake(512.0f, 768.0f / 4.0f);
-		// slide in
-		theFrame.origin.y = 384.0f;
-		prototypeChannelPanel.frame = theFrame;
-		// scale down
-		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
-		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
+//		movieView.center = CGPointMake(512.0f, 768.0f / 4.0f);
+//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 4.0f);
+//		// slide in
+//		theFrame.origin.y = 384.0f;
+//		prototypeChannelPanel.frame = theFrame;
+//		// scale down
+//		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
+//		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 	} else {
-		movieView.center = CGPointMake(512.0f, 768.0f / 2.0f);
-		controlScrollView.center = CGPointMake(512.0f, 768.0f / 2.0f);
-		// slide out
-		theFrame.origin.y = 768.0;
-		prototypeChannelPanel.frame = theFrame;
-		// scale up
-		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
-		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
+//		movieView.center = CGPointMake(512.0f, 768.0f / 2.0f);
+//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 2.0f);
+//		// slide out
+//		theFrame.origin.y = 768.0;
+//		prototypeChannelPanel.frame = theFrame;
+//		// scale up
+//		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
+//		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
 	}
 	[UIView commitAnimations];
 	// slide in/out the prototype channel panel

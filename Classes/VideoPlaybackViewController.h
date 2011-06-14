@@ -15,15 +15,16 @@
 @class NMVideo;
 @class NMChannel;
 @class NMTaskQueueController;
+@class ChannelPanelController;
 
 
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate, VideoPlaybackModelControllerDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UITextView * debugMessageView;
-	IBOutlet UIScrollView * prototypeChannelScrollView;
 	NMMovieView * movieView;
 	
 	NMControlsView * loadedControlView;
+	ChannelPanelController * channelController;
 	
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
@@ -42,15 +43,11 @@
 	
 	@private
     NSManagedObjectContext *managedObjectContext_;
-	UIView *prototypeChannelPanel;
-	UIView *prototypeChannelContent;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
-@property (nonatomic, retain) IBOutlet UIView *prototypeChannelPanel;
-@property (nonatomic, retain) IBOutlet UIView *prototypeChannelContent;
 @property (nonatomic, assign) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 
 //- (IBAction)showTweetView:(id)sender;
