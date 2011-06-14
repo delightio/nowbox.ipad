@@ -7,7 +7,12 @@
 //
 
 #import "LaunchViewController.h"
+#import "NMLibrary.h"
+#import "ipadAppDelegate.h"
+#import "VideoPlaybackViewController.h"
 
+
+#define GP_CHANNEL_UPDATE_INTERVAL	-12.0f * 3600.0f
 
 @implementation LaunchViewController
 
@@ -60,7 +65,28 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
 
+- (void)showVideoView {
+	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[self presentModalViewController:appDelegate.viewController animated:NO];
+	// always default to LIVE channel
+	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.liveChannel;
+}
+
+- (void)checkUpdateChannels {
+	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
+	NMDataController * dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL || // 12 hours
+		[dataController emptyChannel]
+		) { 
+		// get channel
+		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+	}
+}
+
+- (IBAction)showPlaybackController:(id)sender {
+	[self showVideoView];
+}
 @end

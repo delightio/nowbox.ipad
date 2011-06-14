@@ -922,6 +922,7 @@
 	if ( channelController == nil ) {
 		// load the view
 		channelController = [[ChannelPanelController alloc] init];
+		channelController.managedObjectContext = self.managedObjectContext;
 		[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:channelController options:nil];
 		theFrame = channelController.panelView.frame;
 		theFrame.origin.y = self.view.bounds.size.height;
@@ -936,18 +937,18 @@
 	}
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
-		movieView.center = CGPointMake(512.0f, 768.0f / 4.0f);
-		controlScrollView.center = CGPointMake(512.0f, 768.0f / 4.0f);
+//		movieView.center = CGPointMake(512.0f, 768.0f / 4.0f);
+//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 4.0f);
 		// slide in
-		theFrame.origin.y = 384.0f;
+		theFrame.origin.y = 448.0f;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillEnterHalfScreen:FullScreenPlaybackMode];
 		// scale down
 //		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 //		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 	} else {
-		movieView.center = CGPointMake(512.0f, 768.0f / 2.0f);
-		controlScrollView.center = CGPointMake(512.0f, 768.0f / 2.0f);
+//		movieView.center = CGPointMake(512.0f, 768.0f / 2.0f);
+//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 2.0f);
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;

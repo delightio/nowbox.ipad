@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 
 
+@class VideoPlaybackViewController;
+
 @interface LaunchViewController : UIViewController {
     
 }
+- (IBAction)showPlaybackController:(id)sender;
 
 @end
