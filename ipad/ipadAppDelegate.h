@@ -11,11 +11,11 @@
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
 
 @class VideoPlaybackViewController;
-@class ChannelViewController;
+@class LaunchViewController;
 
 @interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
 	VideoPlaybackViewController *viewController;
-	ChannelViewController *channelViewController;
+	LaunchViewController *launchViewController;
 
 @private
     NSManagedObjectContext *managedObjectContext_;
@@ -24,8 +24,8 @@ extern NSString * const NM_CHANNEL_LAST_UPDATE;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet VideoPlaybackViewController *viewController;
-@property (nonatomic, retain) IBOutlet ChannelViewController *channelViewController;
+@property (nonatomic, retain) IBOutlet VideoPlaybackViewController * viewController;
+@property (nonatomic, retain) IBOutlet LaunchViewController * launchViewController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;

@@ -30,7 +30,7 @@ typedef enum {
 - (void)panelWillAppear;
 - (void)panelWillDisappear;
 - (void)panelWillBecomeFullScreen;
-- (void)panelWillHalfScreen:(NMPlaybackViewModeType)fromViewMode;
+- (void)panelWillEnterHalfScreen:(NMPlaybackViewModeType)fromViewMode;
 
 - (IBAction)toggleTableEditMode:(id)sender;
 - (IBAction)debugRefreshChannel:(id)sender;

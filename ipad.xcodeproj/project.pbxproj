@@ -109,6 +109,7 @@
 		A9840FCB134EA1CA00CFF1EA /* thumb_up.png in Resources */ = {isa = PBXBuildFile; fileRef = A9840FC1134EA1CA00CFF1EA /* thumb_up.png */; };
 		A9840FCF134EA2D500CFF1EA /* share_callout_active.png in Resources */ = {isa = PBXBuildFile; fileRef = A9840FCD134EA2D500CFF1EA /* share_callout_active.png */; };
 		A9840FD0134EA2D500CFF1EA /* share_callout_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A9840FCE134EA2D500CFF1EA /* share_callout_normal.png */; };
+		A994523913A734B600B117E2 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A994523813A734B600B117E2 /* LaunchViewController.m */; };
 		A9A81099135F2D05004F569C /* channel_featured_active.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A81091135F2D04004F569C /* channel_featured_active.png */; };
 		A9A8109A135F2D05004F569C /* channel_featured_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A81092135F2D04004F569C /* channel_featured_normal.png */; };
 		A9A8109B135F2D05004F569C /* channel_friends_active.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A81093135F2D04004F569C /* channel_friends_active.png */; };
@@ -256,6 +257,8 @@
 		A9840FC1134EA1CA00CFF1EA /* thumb_up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thumb_up.png; sourceTree = "<group>"; };
 		A9840FCD134EA2D500CFF1EA /* share_callout_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_callout_active.png; sourceTree = "<group>"; };
 		A9840FCE134EA2D500CFF1EA /* share_callout_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share_callout_normal.png; sourceTree = "<group>"; };
+		A994523713A734B600B117E2 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
+		A994523813A734B600B117E2 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		A9A81091135F2D04004F569C /* channel_featured_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_featured_active.png; sourceTree = "<group>"; };
 		A9A81092135F2D04004F569C /* channel_featured_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_featured_normal.png; sourceTree = "<group>"; };
 		A9A81093135F2D04004F569C /* channel_friends_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_friends_active.png; sourceTree = "<group>"; };
@@ -446,6 +449,8 @@
 				A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */,
 				A97E237E13A6E8F400EBA5EE /* ChannelPanelController.h */,
 				A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */,
+				A994523713A734B600B117E2 /* LaunchViewController.h */,
+				A994523813A734B600B117E2 /* LaunchViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -824,6 +829,7 @@
 				A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */,
 				A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */,
 				A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */,
+				A994523913A734B600B117E2 /* LaunchViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

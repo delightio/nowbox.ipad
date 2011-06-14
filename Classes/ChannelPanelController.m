@@ -36,7 +36,7 @@
 	
 }
 
-- (void)panelWillHalfScreen:(NMPlaybackViewModeType)fromViewMode {
+- (void)panelWillEnterHalfScreen:(NMPlaybackViewModeType)fromViewMode {
 	
 }
 

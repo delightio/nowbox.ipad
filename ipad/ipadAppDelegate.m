@@ -8,7 +8,7 @@
 
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
-#import "ChannelViewController.h"
+#import "LaunchViewController.h"
 #import "NMLibrary.h"
 
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
@@ -18,7 +18,7 @@ NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 
 @synthesize window=_window;
 @synthesize viewController;
-@synthesize channelViewController;
+@synthesize launchViewController;
 @synthesize managedObjectContext=managedObjectContext_;
 
 + (void)initialize {
@@ -29,7 +29,6 @@ NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 - (void)awakeFromNib {
 	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
 	viewController.managedObjectContext = self.managedObjectContext;
-	channelViewController.managedObjectContext = self.managedObjectContext;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -41,7 +40,7 @@ NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 	
 	application.statusBarHidden = YES;
     
-	self.window.rootViewController = self.channelViewController;
+	self.window.rootViewController = self.launchViewController;
 	[self.window makeKeyAndVisible];
 	
     return YES;
@@ -111,7 +110,8 @@ NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 - (void)dealloc
 {
 	[_window release];
-	[channelViewController release];
+	[launchViewController release];
+	[viewController release];
     [super dealloc];
 }
 

@@ -936,21 +936,23 @@
 	}
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
-//		movieView.center = CGPointMake(512.0f, 768.0f / 4.0f);
-//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 4.0f);
-//		// slide in
-//		theFrame.origin.y = 384.0f;
-//		prototypeChannelPanel.frame = theFrame;
-//		// scale down
+		movieView.center = CGPointMake(512.0f, 768.0f / 4.0f);
+		controlScrollView.center = CGPointMake(512.0f, 768.0f / 4.0f);
+		// slide in
+		theFrame.origin.y = 384.0f;
+		channelController.panelView.frame = theFrame;
+		[channelController panelWillEnterHalfScreen:FullScreenPlaybackMode];
+		// scale down
 //		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 //		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 	} else {
-//		movieView.center = CGPointMake(512.0f, 768.0f / 2.0f);
-//		controlScrollView.center = CGPointMake(512.0f, 768.0f / 2.0f);
-//		// slide out
-//		theFrame.origin.y = 768.0;
-//		prototypeChannelPanel.frame = theFrame;
-//		// scale up
+		movieView.center = CGPointMake(512.0f, 768.0f / 2.0f);
+		controlScrollView.center = CGPointMake(512.0f, 768.0f / 2.0f);
+		// slide out
+		theFrame.origin.y = 768.0;
+		channelController.panelView.frame = theFrame;
+		[channelController panelWillDisappear];
+		// scale up
 //		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
 //		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
 	}
