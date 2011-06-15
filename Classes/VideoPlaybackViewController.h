@@ -8,6 +8,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "NMMovieView.h"
+#import "NMMovieDetailView.h"
 #import "NMControlsView.h"
 #import "NMLibrary.h"
 #import "VideoPlaybackModelController.h"
@@ -23,13 +24,15 @@
 	IBOutlet UITextView * debugMessageView;
 	NMMovieView * movieView;
 	
+	NMMovieDetailView * loadedMovieDetailView;
+	NSMutableArray * movieDetailViewArray;
+	
 	NMControlsView * loadedControlView;
 	ChannelPanelController * channelController;
 	
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
 	BOOL firstShowControlView;
-	NSIndexPath ** indexPathCache;
 	
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
@@ -47,8 +50,8 @@
 
 @property (nonatomic, retain) NMChannel * currentChannel;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-
-@property (nonatomic, assign) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
+@property (nonatomic, retain) IBOutlet NMMovieDetailView * loadedMovieDetailView;
+@property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 
 //- (IBAction)showTweetView:(id)sender;
 //- (IBAction)showVolumeControlView:(id)sender;

@@ -52,6 +52,7 @@
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize currentChannel;
 @synthesize loadedControlView;
+@synthesize loadedMovieDetailView;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -72,9 +73,6 @@
 	isAspectFill = YES;
 	firstShowControlView = YES;
 	currentXOffset = 0.0f;
-		
-	indexPathCache = CFAllocatorAllocate(NULL, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE, 0);
-	bzero(indexPathCache, sizeof(NSIndexPath *) * NM_INDEX_PATH_CACHE_SIZE);
 	
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
@@ -86,7 +84,7 @@
 	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[controlScrollView addSubview:movieView];
 	
-	// pre-load some control view
+	// pre-load control view
 	NSBundle * mb = [NSBundle mainBundle];
 	// load the nib
 	[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
@@ -95,6 +93,14 @@
 	
 	// put the view to scroll view
 	[controlScrollView addSubview:loadedControlView];
+	
+	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
+	movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
+	for (NSInteger i = 0; i < 3; i++) {
+		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
+		[movieDetailViewArray addObject:self.loadedMovieDetailView];
+	}
+	self.loadedMovieDetailView = nil;
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
@@ -138,6 +144,8 @@
 - (void)dealloc {
     [managedObjectContext_ release];
 	
+	[loadedControlView release];
+	[movieDetailViewArray release];
 	[movieView release];
 	[currentChannel release];
 	[channelController release];
@@ -939,7 +947,7 @@
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		viewRect = CGRectMake(movieView.frame.origin.x, 20.0f, 1024.0f, 428.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x + 20.0f, 40.0f, 570.0f, 320.0f);
 		movieView.frame = viewRect;
 		loadedControlView.frame = viewRect;
 		// slide in
@@ -951,7 +959,7 @@
 //		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
 	} else {
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-		viewRect = CGRectMake(movieView.frame.origin.x, 0.0f, 1024.0f, 768.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x - 20.0f, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		loadedControlView.frame = viewRect;
 		// slide out

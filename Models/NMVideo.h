@@ -10,12 +10,14 @@
 
 @class NMChannel;
 @class NMAVPlayerItem;
+@class NMMovieDetailView;
 
 @interface NMVideo :  NSManagedObject  
 {
 	NSInteger nm_playback_status;
 	
 	NMAVPlayerItem * nm_player_item;
+	NMMovieDetailView * nm_movie_detail_view;
 }
 
 @property (nonatomic, retain) NSString * author_profile_link;
@@ -38,6 +40,7 @@
 @property (nonatomic, retain) NSString * thumbnail;
 
 @property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
+@property (nonatomic, assign) NMMovieDetailView * nm_movie_detail_view;
 
 /*!
  Create a new player item. The caller of this method owns the object. The caller takes full ownership of this object.

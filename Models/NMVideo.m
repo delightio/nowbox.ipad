@@ -33,6 +33,7 @@
 @dynamic thumbnail;
 
 @synthesize nm_player_item;
+@synthesize nm_movie_detail_view;
 
 - (void)awakeFromInsert {
 	self.nm_player_item = nil;
