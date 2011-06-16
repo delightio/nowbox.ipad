@@ -127,6 +127,7 @@
 		A9A810A4135F34AE004F569C /* channel_return_playback_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A810A2135F34AE004F569C /* channel_return_playback_normal.png */; };
 		A9A810D9135F4997004F569C /* channel_thumbnail_background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A810D8135F4997004F569C /* channel_thumbnail_background.png */; };
 		A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
+		A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */; };
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
@@ -285,6 +286,8 @@
 		A9A810D8135F4997004F569C /* channel_thumbnail_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = channel_thumbnail_background.png; sourceTree = "<group>"; };
 		A9B1963F134C6B0B00CA17A0 /* NMEventTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMEventTask.h; sourceTree = "<group>"; };
 		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
+		A9D9EE1C13AABEB0009ABBEA /* NMStyleUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMStyleUtility.h; sourceTree = "<group>"; };
+		A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMStyleUtility.m; sourceTree = "<group>"; };
 		A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A9DB20CA1348B8980018AA4A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A9DB20CB1348B8990018AA4A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -466,6 +469,8 @@
 				A99BA0A913A7540B0010F202 /* VideoRowController.m */,
 				A994523713A734B600B117E2 /* LaunchViewController.h */,
 				A994523813A734B600B117E2 /* LaunchViewController.m */,
+				A9D9EE1C13AABEB0009ABBEA /* NMStyleUtility.h */,
+				A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -856,6 +861,7 @@
 				A99BA0AA13A7540B0010F202 /* VideoRowController.m in Sources */,
 				A99BA0BD13A758FE0010F202 /* EasyTableView.m in Sources */,
 				A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */,
+				A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

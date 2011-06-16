@@ -8,17 +8,24 @@
 
 #import "ChannelPanelController.h"
 #import "NMLibrary.h"
-#import "NMChannel.h"
-#import "NMVideo.h"
 #import "VideoRowController.h"
 
 
 #define VIDEO_ROW_LEFT_PADDING			68.0f
+#define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
+#define NM_CHANNEL_CELL_TOP_PADDING		10.0f
+#define NM_CHANNEL_CELL_DETAIL_TOP_MARGIN	40.0f
 
 @implementation ChannelPanelController
 @synthesize panelView;
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
+
+- (id)init {
+	self = [super init];
+	styleUtility = [NMStyleUtility sharedStyleUtility];
+	return self;
+}
 
 - (void)dealloc {
 	[panelView release];
@@ -52,8 +59,34 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 }
 
-#pragma mark -
-#pragma mark Table view data source
+#pragma mark Other table methods
+- (void)setupCellContentView:(UIView *)aContentView {
+	// video title
+	UILabel * lbl = [[UILabel alloc] initWithFrame:CGRectMake(NM_CHANNEL_CELL_LEFT_PADDING, NM_CHANNEL_CELL_TOP_PADDING, aContentView.bounds.size.width, aContentView.bounds.size.height)];
+	lbl.font = styleUtility.videoTitleFont;
+	lbl.backgroundColor = styleUtility.clearColor;
+	lbl.textColor = styleUtility.channelPanelFontColor;
+	lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	[lbl release];
+	
+	// video date posted
+	lbl = [[UILabel alloc] initWithFrame:CGRectMake(NM_CHANNEL_CELL_LEFT_PADDING, NM_CHANNEL_CELL_DETAIL_TOP_MARGIN, aContentView.bounds.size.width, aContentView.bounds.size.height)];
+	lbl.font = styleUtility.videoDetailFont;
+	lbl.backgroundColor = styleUtility.clearColor;
+	lbl.textColor = styleUtility.channelPanelFontColor;
+	lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+	[lbl release];
+	
+	// video duration
+	lbl = [[UILabel alloc] initWithFrame:CGRectMake(NM_CHANNEL_CELL_LEFT_PADDING, NM_CHANNEL_CELL_DETAIL_TOP_MARGIN, aContentView.bounds.size.width, aContentView.bounds.size.height)];
+	lbl.font = styleUtility.videoDetailFont;
+	lbl.backgroundColor = styleUtility.clearColor;
+	lbl.textColor = styleUtility.channelPanelFontColor;
+	lbl.textAlignment = UITextAlignmentRight;
+	lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+	[lbl release];
+}
+
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.textLabel.text = theChannel.title;
@@ -64,6 +97,8 @@
 	[cell.contentView addSubview:rowCtrl.videoTableView];
 }
 
+#pragma mark -
+#pragma mark Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -83,6 +118,8 @@
 	UITableViewCell *cell = (UITableViewCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.textLabel.font = styleUtility.channelNameFont;
+		[self setupCellContentView:cell.contentView];
     }
     
     // Configure the cell.

@@ -8,6 +8,7 @@
 
 #import "NMMovieDetailView.h"
 #import "NMLibrary.h"
+#import "NMStyleUtility.h"
 
 
 @implementation NMMovieDetailView
@@ -62,8 +63,9 @@
 	channelLabel.text = theChannel.title;
 	// video info
 	titleLabel.text = aVideo.title;
-	NSLog(@"setting movie detail: %@", aVideo.title);
-	otherInfoLabel.text = [NSString stringWithFormat:@"1 day ago  |  xx,xxx views"];
+//	NSLog(@"setting movie detail: %@", aVideo.title);
+	
+	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  xx,xxx views", [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.created_at]];
 	descriptionTextView.text = aVideo.nm_description;
 }
 

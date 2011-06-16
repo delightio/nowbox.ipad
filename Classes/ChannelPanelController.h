@@ -6,7 +6,7 @@
 //  Copyright 2011 Pipely Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "NMStyleUtility.h"
 
 typedef enum {
 	FullScreenPlaybackMode,
@@ -18,6 +18,7 @@ typedef enum {
     IBOutlet UITableView * tableView;
 	UIView *panelView;
 @private
+	NMStyleUtility * styleUtility;
 	NSUInteger numberOfChannels;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;

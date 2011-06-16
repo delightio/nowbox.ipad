@@ -10,6 +10,7 @@
 #import "VideoPlaybackViewController.h"
 #import "LaunchViewController.h"
 #import "NMLibrary.h"
+#import "NMStyleUtility.h"
 
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 
@@ -33,6 +34,7 @@ NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	[NMStyleUtility sharedStyleUtility];
 	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
