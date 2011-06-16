@@ -79,13 +79,29 @@
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
 	playbackModelController.debugMessageView = debugMessageView;
-	// create movie view
+
+	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
+	NSBundle * mb = [NSBundle mainBundle];
+	CGRect theFrame;
+	movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
+	for (NSInteger i = 0; i < 3; i++) {
+		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
+		[movieDetailViewArray addObject:self.loadedMovieDetailView];
+		theFrame = loadedMovieDetailView.frame;
+		theFrame.origin.y = 20.0f;
+		loadedMovieDetailView.frame = theFrame;
+		//		loadedControlView.hidden = YES;
+		//		loadedControlView.alpha = 0.0f;
+		[controlScrollView addSubview:loadedMovieDetailView];
+	}
+	self.loadedMovieDetailView = nil;
+	
+// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(20.0f, 40.0f, 570.0f, 320.0f)];
 //	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[controlScrollView addSubview:movieView];
 	
 	// pre-load control view
-	NSBundle * mb = [NSBundle mainBundle];
 	// load the nib
 	[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
 	// hook up with target-action
@@ -95,24 +111,11 @@
 	// put the view to scroll view
 	[controlScrollView addSubview:loadedControlView];
 	
-	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
-	movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
-	for (NSInteger i = 0; i < 3; i++) {
-		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
-		[movieDetailViewArray addObject:self.loadedMovieDetailView];
-		loadedControlView.hidden = YES;
-		loadedControlView.alpha = 0.0f;
-		[controlScrollView addSubview:loadedControlView];
-	}
-	self.loadedMovieDetailView = nil;
-	playbackModelController.movieDetailViewArray = movieDetailViewArray;
-	
 	// load channel view
 	channelController = [[ChannelPanelController alloc] init];
 	channelController.managedObjectContext = self.managedObjectContext;
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:channelController options:nil];
-	CGRect theFrame = channelController.panelView.frame;
-	NSLog(@"heights: %f %f", self.view.bounds.size.height, controlScrollView.bounds.size.height);
+	theFrame = channelController.panelView.frame;
 	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
 	channelController.panelView.frame = theFrame;
 	[self.view addSubview:channelController.panelView];
@@ -199,6 +202,10 @@
 	firstShowControlView = YES;
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
+	
+	for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+		theDetailView.video = nil;
+	}
 	
 	if ( chnObj == nil ) {
 		[loadedControlView resetView];
@@ -348,8 +355,18 @@
 	loadedControlView.frame = theFrame;
 	// update the movie view too
 	theFrame = movieView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x;
+	theFrame.origin.x = controlScrollView.contentOffset.x + 20.0f;
 	movieView.frame = theFrame;
+}
+
+- (NMMovieDetailView *)getFreeMovieDetailView {
+	NMMovieDetailView * detailView = nil;
+	for (detailView in movieDetailViewArray) {
+		if ( detailView.video == nil ) {
+			break;
+		}
+	}
+	return detailView;
 }
 
 #pragma mark Video queuing
@@ -473,6 +490,52 @@
 //		// create player
 //		[self preparePlayerForVideo:vid];
 //	}
+}
+
+- (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
+	// update the movie detail view frame
+	NMMovieDetailView * theDetailView = ctrl.nextVideo.nm_movie_detail_view;
+	if ( theDetailView == nil ) {
+		theDetailView = [self getFreeMovieDetailView];
+		ctrl.nextVideo.nm_movie_detail_view = theDetailView;
+		theDetailView.video = ctrl.nextVideo;
+	}
+	NSLog(@"next detail view %@ super %@", theDetailView, theDetailView.superview);
+	
+	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
+	CGRect theFrame = theDetailView.frame;
+	theFrame.origin.x = xOffset;
+	theDetailView.frame = theFrame;
+}
+
+- (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
+	NMMovieDetailView * theDetailView = ctrl.previousVideo.nm_movie_detail_view;
+	if ( theDetailView == nil ) {
+		theDetailView = [self getFreeMovieDetailView];
+		ctrl.previousVideo.nm_movie_detail_view = theDetailView;
+		theDetailView.video = ctrl.previousVideo;
+	}
+	NSLog(@"previous detail view %@ super %@", theDetailView, theDetailView.superview);
+	
+	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
+	CGRect theFrame = theDetailView.frame;
+	theFrame.origin.x = xOffset;
+	theDetailView.frame = theFrame;
+}
+
+- (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
+	NMMovieDetailView * theDetailView = ctrl.currentVideo.nm_movie_detail_view;
+	if ( theDetailView == nil ) {
+		theDetailView = [self getFreeMovieDetailView];
+		ctrl.currentVideo.nm_movie_detail_view = theDetailView;
+		theDetailView.video = ctrl.currentVideo;
+	}
+	NSLog(@"current detail view %@ super %@", theDetailView, theDetailView.superview);
+	
+	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
+	CGRect theFrame = theDetailView.frame;
+	theFrame.origin.x = xOffset;
+	theDetailView.frame = theFrame;
 }
 
 - (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid {
@@ -1002,6 +1065,14 @@
 	// scale down movie control
 	// scale playback view
 	// slide in/out channel panel
+}
+
+- (IBAction)inspectViewStructure:(id)sender {
+	// check if the detail view is showing
+	NMMovieDetailView * theDetailView;
+	for (theDetailView in movieDetailViewArray) {
+		NSLog(@"hidden %d alpha %f super %@	frame %f %f %f %f", theDetailView.hidden, theDetailView.alpha, theDetailView.superview, theDetailView.frame.origin.x, theDetailView.frame.origin.y, theDetailView.frame.size.width, theDetailView.frame.size.height);
+	}
 }
 
 - (IBAction)refreshVideoList:(id)sender {

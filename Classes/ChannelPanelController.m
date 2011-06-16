@@ -52,7 +52,6 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 }
 
-
 #pragma mark -
 #pragma mark Table view data source
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {

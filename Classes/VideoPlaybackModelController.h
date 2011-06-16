@@ -18,6 +18,9 @@
 - (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid;
 - (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid;
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum;
+- (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
+- (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
+- (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 
 @end
 
@@ -36,7 +39,6 @@
 	BOOL rowCountHasChanged;
 	BOOL changeSessionUpdateCount;
 	NSUInteger numberOfVideos;
-	NSArray * movieDetailViewArray;
 	
 	NMChannel * channel;
 	id <VideoPlaybackModelControllerDelegate> dataDelegate;
@@ -67,7 +69,6 @@
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, assign) id<VideoPlaybackModelControllerDelegate> dataDelegate;
-@property (nonatomic, assign) NSArray * movieDetailViewArray;
 
 @property (nonatomic, retain) UITextView * debugMessageView;
 

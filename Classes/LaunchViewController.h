@@ -12,7 +12,7 @@
 @class VideoPlaybackViewController;
 
 @interface LaunchViewController : UIViewController {
-    
+    IBOutlet UILabel * debugLabel;
 }
 
 - (IBAction)showPlaybackController:(id)sender;

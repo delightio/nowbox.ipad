@@ -52,6 +52,9 @@
 {
     [super viewDidLoad];
 	
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
+	
 	[self checkUpdateChannels];
 }
 
@@ -79,14 +82,23 @@
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
 	NMDataController * dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
 	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL || // 12 hours
-		[dataController emptyChannel]
-		) { 
+		[dataController emptyChannel] ) { 
 		// get channel
 		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+		debugLabel.text = @"Fetching channels...";
 	}
 }
 
+#pragma mark Notification
+- (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
+	NSDictionary * userInfo = [aNotification userInfo];
+	debugLabel.text = [debugLabel.text stringByAppendingFormat:@"\ntype %@", [userInfo objectForKey:@"channel_type"]];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
+}
+
+#pragma mark Target action methods
 - (IBAction)showPlaybackController:(id)sender {
 	[self showVideoView];
 }
+
 @end
