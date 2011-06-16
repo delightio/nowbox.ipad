@@ -720,6 +720,9 @@
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
+#ifdef DEBUG_PLAYER_NAVIGATION
+		NSLog(@"changed current item");
+#endif
 		// never change currentIndex here!!
 		// ====== update interface ======
 		[self configureControlViewForVideo:[self playerCurrentVideo]];
