@@ -80,8 +80,8 @@
 	playbackModelController.dataDelegate = self;
 	playbackModelController.debugMessageView = debugMessageView;
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:controlScrollView.bounds];
-	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(20.0f, 40.0f, 570.0f, 320.0f)];
+//	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[controlScrollView addSubview:movieView];
 	
 	// pre-load control view
@@ -90,6 +90,7 @@
 	[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
 	// hook up with target-action
 	[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
+	loadedControlView.frame = movieView.frame;
 	
 	// put the view to scroll view
 	[controlScrollView addSubview:loadedControlView];
@@ -106,6 +107,16 @@
 	self.loadedMovieDetailView = nil;
 	playbackModelController.movieDetailViewArray = movieDetailViewArray;
 	
+	// load channel view
+	channelController = [[ChannelPanelController alloc] init];
+	channelController.managedObjectContext = self.managedObjectContext;
+	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:channelController options:nil];
+	CGRect theFrame = channelController.panelView.frame;
+	NSLog(@"heights: %f %f", self.view.bounds.size.height, controlScrollView.bounds.size.height);
+	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
+	channelController.panelView.frame = theFrame;
+	[self.view addSubview:channelController.panelView];
+	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
 	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
@@ -113,9 +124,9 @@
 	[nc addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 	
 	// setup gesture recognizer
-	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
-	[controlScrollView addGestureRecognizer:pinRcr];
-	[pinRcr release];
+//	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
+//	[controlScrollView addGestureRecognizer:pinRcr];
+//	[pinRcr release];
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 }
@@ -330,8 +341,7 @@
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
 	[loadedControlView resetView];
 	loadedControlView.title = aVideo.title;
-	loadedControlView.authorProfileURLString = aVideo.author_profile_link;
-	[loadedControlView setChannel:aVideo.channel.title author:aVideo.author_username];
+	loadedControlView.channel = aVideo.channel.title;
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x;
@@ -850,7 +860,7 @@
 	UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
 	if ( rcr.velocity < -2.0 && rcr.scale < 0.6 ) {
 		// quit this view
-		[self backToChannelView:sender];
+//		[self backToChannelView:sender];
 	}
 	//	CGRect theFrame;
 	//	CGSize theSize;
@@ -870,13 +880,6 @@
 	//		theFrame = self.view.bounds;
 	//		movieView.bounds = theFrame;
 	//	}
-}
-
-- (IBAction)backToChannelView:(id)sender {
-	[movieView.player pause];
-	[self setPlaybackCheckpoint];
-	// release the player object, a new AVQueuePlayer object will be created with preparePlayer method is called
-	[self dismissModalViewControllerAnimated:YES];
 }
 
 - (IBAction)vote:(id)sender {
@@ -932,16 +935,6 @@
 
 - (IBAction)togglePrototypeChannelPanel:(id)sender {
 	CGRect theFrame;
-	if ( channelController == nil ) {
-		// load the view
-		channelController = [[ChannelPanelController alloc] init];
-		channelController.managedObjectContext = self.managedObjectContext;
-		[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:channelController options:nil];
-		theFrame = channelController.panelView.frame;
-		theFrame.origin.y = self.view.bounds.size.height;
-		channelController.panelView.frame = theFrame;
-		[self.view addSubview:channelController.panelView];
-	}
 	theFrame = channelController.panelView.frame;
 	BOOL panelHidden = YES;
 	if ( theFrame.origin.y < 768.0 ) {

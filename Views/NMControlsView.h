@@ -16,14 +16,9 @@
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * videoTitleLabel;
 	IBOutlet UILabel * onLabel;
-	IBOutlet UIButton *authorButton;
-	IBOutlet UIButton *socialLoginButton;
-	IBOutlet UIButton *nextVideoButton;
 	IBOutlet UIButton *playPauseButton;
-	IBOutlet UIButton *channelViewButton;
 	IBOutlet UIButton *shareButton;
 	IBOutlet UIButton *voteUpButton;
-	IBOutlet UIButton *voteDownButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIImageView *progressView;
@@ -33,7 +28,6 @@
 	CGFloat pxWidthPerSecond;
 	CGFloat progressBarWidth;
 	
-	NSString * authorProfileURLString;
 	CMTimeRange timeRangeBuffered;
 	NSInteger duration;
 	NSInteger timeElapsed;
@@ -45,7 +39,7 @@
 }
 
 @property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSString * authorProfileURLString;
+@property (nonatomic, retain) NSString * channel;
 @property (nonatomic, assign) NSInteger duration;
 @property (nonatomic, assign) NSInteger timeElapsed;
 @property (nonatomic, assign) CMTimeRange timeRangeBuffered;
@@ -61,12 +55,9 @@
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;
-- (void)setChannel:(NSString *)cname author:(NSString *)authName;
 - (void)resetView;
 //- (void)observeMovieView:(NMMovieView *)mvView;
 //- (void)stopObservingMovieView:(NMMovieView *)mvView;
-
-- (IBAction)goToAuthorProfilePage:(id)sender;
 
 - (void)showLastVideoMessage;
 

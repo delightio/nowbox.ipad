@@ -16,7 +16,7 @@
 
 @implementation NMControlsView
 
-@synthesize title, duration, timeElapsed, authorProfileURLString;
+@synthesize channel, title, duration, timeElapsed;
 @synthesize channelViewButton, shareButton, playPauseButton;
 @synthesize nextVideoButton, controlsHidden, timeRangeBuffered;
 @synthesize voteUpButton, voteDownButton;
@@ -64,7 +64,6 @@
 */
 
 - (void)dealloc {
-	[authorProfileURLString release];
 	[progressBarLayer release];
 	[nubLayer release];
 	[lastVideoMessage release];
@@ -169,7 +168,6 @@
 - (void)resetView {
 	channelNameLabel.text = @"";
 	videoTitleLabel.text = @"";
-	[authorButton setTitle:@"" forState:UIControlStateNormal];
 	durationLabel.text = @"--:--";
 	currentTimeLabel.text = @"--:--";
 	if ( lastVideoMessage ) {
@@ -193,32 +191,20 @@
 	[self setControlsHidden:YES animated:NO];
 }
 
-- (void)setChannel:(NSString *)cname author:(NSString *)authName {
-	[authorButton setTitle:authName forState:UIControlStateNormal];
+- (void)setChannel:(NSString *)cname {
 	channelNameLabel.text = cname;
-	// author label
-	CGSize theSize = [authName sizeWithFont:authorButton.titleLabel.font];
-	CGRect theFrame = authorButton.frame;
-	theFrame.size.width = theSize.width;
-	authorButton.frame = theFrame;
-	// set the inbeetween "on" label position
-	CGRect otherFrame = onLabel.frame;
-	otherFrame.origin.x = theFrame.size.width + theFrame.origin.x;
-	onLabel.frame = otherFrame;
-	// set channel title
-	theFrame = channelNameLabel.frame;
-	theFrame.origin.x = otherFrame.origin.x + otherFrame.size.width;
-	channelNameLabel.frame = theFrame;
 }
 
-- (IBAction)goToAuthorProfilePage:(id)sender {
-	if ( authorProfileURLString ) {
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:authorProfileURLString]];
-	}
+- (NSString *)channel {
+	return channelNameLabel.text;
 }
 
 - (void)setTitle:(NSString *)aTitle {
 	videoTitleLabel.text = [aTitle uppercaseString];
+}
+
+- (NSString *)title {
+	return videoTitleLabel.text;
 }
 
 - (void)setDuration:(NSInteger)aDur {

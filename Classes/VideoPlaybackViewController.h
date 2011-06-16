@@ -61,7 +61,6 @@
 //- (IBAction)showTweetView:(id)sender;
 //- (IBAction)showVolumeControlView:(id)sender;
 //- (IBAction)showShareActionView:(id)sender;
-- (IBAction)backToChannelView:(id)sender;
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)vote:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;
