@@ -8,11 +8,12 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "VideoPlaybackModelController.h"
+#import "NMMovieDetailView.h"
 #import "NMVideo.h"
 #import "NMChannel.h"
 
 #define NM_MAX_VIDEO_IN_QUEUE				3
-#define NM_NMVIDEO_CACHE_SIZE				4
+#define NM_NMVIDEO_CACHE_SIZE				5
 
 static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 
@@ -29,7 +30,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 @synthesize currentVideo, nextVideo, nextNextVideo, previousVideo;
 @synthesize channel, dataDelegate;
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext;
-@synthesize debugMessageView;
+@synthesize debugMessageView, movieDetailViewArray;
 
 + (VideoPlaybackModelController *)sharedVideoPlaybackModelController {
 	if ( sharedVideoPlaybackModelController_ == nil ) {
@@ -82,6 +83,12 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			[channel release];
 			channel = nil;
 		}
+		self.currentIndexPath = nil;
+		self.currentVideo = nil;
+		self.nextIndexPath = nil;
+		self.nextVideo = nil;
+		self.nextNextIndexPath = nil;
+		self.nextNextVideo = nil;
 		return;
 		// return
 	}
@@ -104,9 +111,15 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			NSArray * result = [self.managedObjectContext executeFetchRequest:request error:nil];
 			[request release];
 			if ( result && [result count] ) {
+				NMMovieDetailView * theDetailView;
 				// we can find the last watched video.
 				self.currentIndexPath = [self.fetchedResultsController indexPathForObject:[result objectAtIndex:0]];
 				self.currentVideo = [result objectAtIndex:0];
+				[self requestResolveVideo:self.currentVideo];
+				theDetailView = [movieDetailViewArray objectAtIndex:0];
+				self.currentVideo.nm_movie_detail_view = theDetailView;
+				theDetailView.video = self.currentVideo;
+				
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 				NSLog(@"last viewed title: %@", self.currentVideo.title);
 #endif
@@ -116,6 +129,11 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 					self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
 					self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
 					[self requestResolveVideo:nextVideo];
+
+					// set the detail movie view for the next video
+					theDetailView = [movieDetailViewArray objectAtIndex:1];
+					self.currentVideo.nm_movie_detail_view = theDetailView;
+					theDetailView.video = self.currentVideo;
 				}
 				if ( currentIndexPath.row + 2 < numberOfVideos ) {
 					self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
@@ -126,6 +144,11 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 					self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
 					self.previousVideo = [self.fetchedResultsController objectAtIndexPath:self.previousIndexPath];
 					[self requestResolveVideo:previousVideo];
+
+					// set the detail movie view for the previous video
+					theDetailView = [movieDetailViewArray objectAtIndex:2];
+					self.currentVideo.nm_movie_detail_view = theDetailView;
+					theDetailView.video = self.currentVideo;
 				}
 			} else {
 				// we can't find the video from the vid stored. Start playing from the first video in the channel
@@ -142,23 +165,47 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			[self requestResolveVideo:nextVideo];
 			[self requestResolveVideo:nextNextVideo];
 		}
+	} else {
+		self.currentIndexPath = nil;
+		self.currentVideo = nil;
+		self.nextIndexPath = nil;
+		self.nextVideo = nil;
+		self.nextNextIndexPath = nil;
+		self.nextNextVideo = nil;
 	}
 	// check if we need to download more. Or, in the case where there's no video, download
-	if ( numberOfVideos == 0 || numberOfVideos < NM_NMVIDEO_CACHE_SIZE ) {
+	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
 		// download more video from Nowmov
 		[nowmovTaskController issueGetVideoListForChannel:channel];
 	}
 	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 }
 
+- (NMMovieDetailView *)getFreeMovieDetailView {
+	NMMovieDetailView * detailView = nil;
+	for (detailView in movieDetailViewArray) {
+		if ( detailView.video == nil ) {
+			break;
+		}
+	}
+	return detailView;
+}
+
 #pragma mark Video list management
 
 - (void)initializePlayHead {
+	NMMovieDetailView * theDetailView;
 	self.currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
 	self.currentVideo = [self.fetchedResultsController objectAtIndexPath:currentIndexPath];
+	theDetailView = [movieDetailViewArray objectAtIndex:0];
+	self.currentVideo.nm_movie_detail_view = theDetailView;
+	theDetailView.video = self.currentVideo;
 	if ( numberOfVideos > 1 ) {
 		self.nextIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
 		self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+		theDetailView = [movieDetailViewArray objectAtIndex:1];
+		self.currentVideo.nm_movie_detail_view = theDetailView;
+		theDetailView.video = self.currentVideo;
 	}
 	if ( numberOfVideos > 2 ) {
 		self.nextNextIndexPath = [NSIndexPath indexPathForRow:2 inSection:0];
@@ -176,6 +223,8 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 - (BOOL)moveToNextVideo {
 	if ( currentIndexPath.row < numberOfVideos ) {
 		// we can advance forward
+		NMMovieDetailView * detailView = self.previousVideo.nm_movie_detail_view;
+		self.previousVideo.nm_movie_detail_view = nil;
 		// purge next video path
 		self.previousIndexPath = currentIndexPath;
 		self.currentIndexPath = nextIndexPath;
@@ -185,9 +234,18 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		if ( nextIndexPath.row + 1 < numberOfVideos ) {
 			self.nextIndexPath = [NSIndexPath indexPathForRow:nextIndexPath.row + 1 inSection:0];
 			self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+			// pass the movie info view to the new one
+			if ( detailView == nil ) {
+				// this is the case where we start playing the very first video of the channel and now moving to the next.
+				detailView = [self getFreeMovieDetailView];
+			}
+			self.nextVideo.nm_movie_detail_view = detailView;
+			detailView.video = self.nextVideo;
 		} else {
 			self.nextIndexPath = nil;
 			self.nextVideo = nil;
+			detailView.video.nm_movie_detail_view = nil;
+			detailView.video = nil;
 		}
 		if ( nextNextIndexPath.row + 1 < numberOfVideos ) {
 			self.nextNextIndexPath = [NSIndexPath indexPathForRow:nextNextIndexPath.row + 1 inSection:0];
@@ -206,7 +264,10 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 }
 
 - (BOOL)moveToPreviousVideo {
-	if ( currentIndexPath.row ) {
+	if ( currentIndexPath.row  > 0) {
+		// movie detail view
+		NMMovieDetailView * detailView = self.nextVideo.nm_movie_detail_view;
+		self.nextVideo.nm_movie_detail_view = nil;
 		// purge the next video
 		self.nextIndexPath = currentIndexPath;
 		self.currentIndexPath = previousIndexPath;
@@ -214,13 +275,18 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		self.nextVideo = currentVideo;
 		self.currentVideo = previousVideo;
 		if ( previousIndexPath.row ) {
+			// fetch the new previous video
 			self.previousIndexPath = [NSIndexPath indexPathForRow:previousIndexPath.row - 1 inSection:0];
 			// we can set the previous video
 			self.previousVideo = [self.fetchedResultsController objectAtIndexPath:previousIndexPath];
 			[self requestResolveVideo:previousVideo];
+			self.previousVideo.nm_movie_detail_view = detailView;
+			detailView.video = self.previousVideo;
 		} else {
 			self.previousIndexPath = nil;
 			self.previousVideo = nil;
+			detailView.video.nm_movie_detail_view = nil;
+			detailView.video = nil;
 		}
 		return YES;
 	}
@@ -272,6 +338,10 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			NMVideo * vid = [userInfo objectForKey:@"target_object"];
 			vid.nm_error = [userInfo objectForKey:@"errorNum"];
 			vid.nm_playback_status = NMVideoQueueStatusError;
+			// reset the movie detail view
+			vid.nm_movie_detail_view.video = nil;
+			vid.nm_movie_detail_view = nil;
+			
 			[nowmovTaskController issueReexamineVideo:vid errorCode:[vid.nm_error integerValue]];
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 			debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\ndirect URL resolution failed: %@ %@", [[aNotification userInfo] objectForKey:@"error"], vid.title];
@@ -392,44 +462,38 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 		theCount = [sectionInfo numberOfObjects];
 	}
+	NMMovieDetailView * theDetailView;
 	switch (type) {
 		case NSFetchedResultsChangeDelete:
 		{
 			rowCountHasChanged = YES;
 			if ( [indexPath isEqual:currentIndexPath] ) {
-				if ( currentIndexPath.row + 1 < theCount ) {
-					self.currentVideo = [controller objectAtIndexPath:indexPath];
-					if ( nextIndexPath.row + 1 < theCount ) {
-						self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
-						if ( nextNextIndexPath.row + 1 < theCount ) {
-							self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
-						} else {
-							self.nextNextVideo = nil;
-							self.nextNextIndexPath = nil;
-						}
-					} else {
-						self.nextVideo = nil;
-						self.nextNextVideo = nil;
-						self.nextIndexPath = nil;
-						self.nextNextIndexPath = nil;
-					}
-				} else {
-					// there's literally no need to do anything. no video is worth playing in this channel
-					//MARK: fatal channel error?
-					self.currentVideo = nil;
-					self.nextVideo = nil;
-					self.nextNextVideo = nil;
-					self.currentIndexPath = nil;
-					self.nextIndexPath = nil;
-					self.nextNextIndexPath = nil;
-				}
-				[self requestResolveVideo:currentVideo];
+				self.currentVideo = [controller objectAtIndexPath:indexPath];
 				[self requestResolveVideo:nextVideo];
-				[self requestResolveVideo:nextNextVideo];
-			} else if ( [indexPath isEqual:nextIndexPath] ) {
-				if ( nextIndexPath.row + 1 < theCount ) {
+				// info the delegate about the current video change
+				[dataDelegate controller:self shouldBeginPlayingVideo:currentVideo];
+				if ( currentVideo.nm_movie_detail_view == nil ) {
+					theDetailView = [self getFreeMovieDetailView];
+					if ( theDetailView ) {
+						currentVideo.nm_movie_detail_view = theDetailView;
+						theDetailView.video = currentVideo;
+					}
+				}
+
+				// do NOT use nextIndexPath to check the condition
+				if ( indexPath.row + 1 < theCount ) {
+					self.nextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
-					if ( nextNextIndexPath.row + 1 < theCount ) {
+					if ( nextVideo.nm_movie_detail_view == nil ) {
+						theDetailView = [self getFreeMovieDetailView];
+						if ( theDetailView ) {
+							nextVideo.nm_movie_detail_view = theDetailView;
+							theDetailView.video = nextVideo;
+						}
+					}
+					// do NOT use nextNextIndexPath to check the condition
+					if ( indexPath.row + 2 < theCount ) {
+						self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 2 inSection:0];
 						self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 					} else {
 						self.nextNextVideo = nil;
@@ -441,16 +505,34 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 					self.nextIndexPath = nil;
 					self.nextNextIndexPath = nil;
 				}
+				[self requestResolveVideo:currentVideo];
 				[self requestResolveVideo:nextVideo];
 				[self requestResolveVideo:nextNextVideo];
-			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
-				if ( nextNextIndexPath.row + 1 < theCount ) {
+			} else if ( [indexPath isEqual:nextIndexPath] ) {
+				self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
+				[self requestResolveVideo:nextVideo];
+				theDetailView = [self getFreeMovieDetailView];
+				if ( theDetailView ) {
+					nextVideo.nm_movie_detail_view = theDetailView;
+					theDetailView.video = nextVideo;
+				}
+				if ( indexPath.row + 1 < theCount ) {
+					self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 				} else {
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
 				[self requestResolveVideo:nextNextVideo];
+			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
+				if ( nextNextIndexPath.row < theCount ) {
+					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
+					[self requestResolveVideo:nextNextVideo];
+					// no need to set movie detail view for next next video
+				} else {
+					self.nextNextVideo = nil;
+					self.nextNextIndexPath = nil;
+				}
 			}
 			break;
 		}
@@ -459,13 +541,80 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 			rowCountHasChanged = NO;
 			break;
 			
-		default:
+		case NSFetchedResultsChangeInsert:
 		{
 			rowCountHasChanged = YES;
 			NMVideo * vid = (NMVideo *)anObject;
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
+			if ( currentIndexPath == nil && newIndexPath.row == 0 ) {
+				// inserting the first video
+				self.currentIndexPath = newIndexPath;
+				self.currentVideo = (NMVideo *)anObject;
+				theDetailView = [self getFreeMovieDetailView];
+				if ( theDetailView ) {
+					currentVideo.nm_movie_detail_view = theDetailView;
+					theDetailView.video = currentVideo;
+				}
+				[self requestResolveVideo:currentVideo];
+				
+				if ( nextIndexPath == nil && newIndexPath.row + 1 < theCount ) {
+					// check if we should add tne next video too
+					self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
+					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
+					theDetailView = [self getFreeMovieDetailView];
+					if (theDetailView) {
+						nextVideo.nm_movie_detail_view = theDetailView;
+						theDetailView.video = nextVideo;
+					}
+					[self requestResolveVideo:nextVideo];
+				}
+				
+				if ( nextNextIndexPath == nil && newIndexPath.row + 2 < theCount ) {
+					self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
+					theDetailView = [self getFreeMovieDetailView];
+					if ( theDetailView ) {
+						nextNextVideo.nm_movie_detail_view = theDetailView;
+						theDetailView.video = nextNextVideo;
+					}
+					[self requestResolveVideo:nextNextVideo];
+				}
+			} else if ( nextIndexPath == nil && currentIndexPath && newIndexPath.row == currentIndexPath.row + 1) {
+				self.nextIndexPath = indexPath;
+				self.nextVideo = (NMVideo *)anObject;
+				theDetailView = [self getFreeMovieDetailView];
+				if (theDetailView) {
+					nextVideo.nm_movie_detail_view = theDetailView;
+					theDetailView.video = nextVideo;
+				}
+				[self requestResolveVideo:nextVideo];
+				
+ 				if ( nextNextIndexPath == nil && newIndexPath.row + 1 < theCount ) {
+					self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
+					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
+					theDetailView = [self getFreeMovieDetailView];
+					if ( theDetailView ) {
+						nextNextVideo.nm_movie_detail_view = theDetailView;
+						theDetailView.video = nextNextVideo;
+					}
+					[self requestResolveVideo:nextNextVideo];
+				}
+			} else if ( nextNextIndexPath == nil && nextIndexPath && newIndexPath.row == nextIndexPath.row + 1 ) {
+				// need to put the new object
+				self.nextNextIndexPath = newIndexPath;
+				self.nextNextVideo = (NMVideo *)anObject;
+				theDetailView = [self getFreeMovieDetailView];
+				if ( theDetailView ) {
+					nextNextVideo.nm_movie_detail_view = theDetailView;
+					theDetailView.video = nextNextVideo;
+				}
+				[self requestResolveVideo:nextNextVideo];
+			}
 			break;
 		}
+			
+		default:
+			break;
 	}
 }
 

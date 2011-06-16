@@ -36,6 +36,7 @@
 	BOOL rowCountHasChanged;
 	BOOL changeSessionUpdateCount;
 	NSUInteger numberOfVideos;
+	NSArray * movieDetailViewArray;
 	
 	NMChannel * channel;
 	id <VideoPlaybackModelControllerDelegate> dataDelegate;
@@ -66,6 +67,7 @@
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, assign) id<VideoPlaybackModelControllerDelegate> dataDelegate;
+@property (nonatomic, assign) NSArray * movieDetailViewArray;
 
 @property (nonatomic, retain) UITextView * debugMessageView;
 

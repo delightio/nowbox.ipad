@@ -9,4 +9,6 @@
 #import "NMDataType.h"
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
+#import "NMCacheController.h"
 #import "NMChannel.h"
+#import "NMVideo.h"

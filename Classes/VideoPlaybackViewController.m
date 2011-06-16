@@ -99,8 +99,12 @@
 	for (NSInteger i = 0; i < 3; i++) {
 		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
 		[movieDetailViewArray addObject:self.loadedMovieDetailView];
+		loadedControlView.hidden = YES;
+		loadedControlView.alpha = 0.0f;
+		[controlScrollView addSubview:loadedControlView];
 	}
 	self.loadedMovieDetailView = nil;
+	playbackModelController.movieDetailViewArray = movieDetailViewArray;
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
@@ -182,6 +186,7 @@
 	movieView.player = nil;
 	currentXOffset = 0.0f;
 	firstShowControlView = YES;
+	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
 	
 	if ( chnObj == nil ) {
@@ -943,7 +948,37 @@
 		// assume the panel is visible
 		panelHidden = NO;
 	}
+
 	CGRect viewRect;
+	// make the movie detail view visible
+	NMMovieDetailView * theDetailView;
+	theDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
+	theDetailView.hidden = NO;
+	theDetailView.alpha = 0.0f;
+	viewRect = theDetailView.frame;
+	viewRect.origin = controlScrollView.contentOffset;
+	theDetailView.frame = viewRect;
+	
+	if ( playbackModelController.previousVideo ) {
+		theDetailView = playbackModelController.previousVideo.nm_movie_detail_view;
+		theDetailView.hidden = NO;
+		theDetailView.alpha = 1.0f;
+		viewRect = theDetailView.frame;
+		viewRect.origin = controlScrollView.contentOffset;
+		viewRect.origin.x -= 1024.0f;
+		theDetailView.frame = viewRect;
+	}
+	
+	if ( playbackModelController.nextVideo ) {
+		theDetailView = playbackModelController.nextVideo.nm_movie_detail_view;
+		theDetailView.hidden = NO;
+		theDetailView.alpha = 1.0f;
+		viewRect = theDetailView.frame;
+		viewRect.origin = controlScrollView.contentOffset;
+		viewRect.origin.x += 1024.0f;
+		theDetailView.frame = viewRect;
+	}
+	
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
@@ -954,9 +989,8 @@
 		theFrame.origin.y = 448.0f;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillEnterHalfScreen:FullScreenPlaybackMode];
-		// scale down
-//		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
-//		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
+		
+		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x - 20.0f, 0.0f, 1024.0f, 768.0f);

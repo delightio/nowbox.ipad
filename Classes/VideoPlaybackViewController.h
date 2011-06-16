@@ -19,6 +19,11 @@
 @class ChannelPanelController;
 
 
+/*!
+ Things begin with "setCurrentChannel". This is where the app initialize the data structure for playback.
+ 
+ The viewDidLoad and class init methods are places where we create view objects for display purpose.
+ */
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, NSFetchedResultsControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate, VideoPlaybackModelControllerDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UITextView * debugMessageView;

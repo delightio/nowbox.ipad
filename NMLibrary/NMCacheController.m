@@ -97,7 +97,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 //
 
 #pragma mark load image
-- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(NMTouchImageView *)iv {
+- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv {
 	// check if the image is in local file system
 	NSString * fPath = [channelThumbnailCacheDir stringByAppendingPathComponent:chn.nm_thumbnail_file_name];
 	if ( [fileManager fileExistsAtPath:fPath] ) {

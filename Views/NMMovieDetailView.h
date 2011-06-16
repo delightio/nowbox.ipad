@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 
+@class NMVideo;
+
 @interface NMMovieDetailView : UIView {
     IBOutlet UIImageView * channelLogoView;
 	IBOutlet UILabel * channelLabel;
@@ -18,6 +20,11 @@
 	IBOutlet UIView * moviePlaceholderView;
 	IBOutlet UIButton * watchLaterButton;
 	IBOutlet UIButton * likeButton;
+	
+@private
+	NMVideo * video_;
 }
+
+@property (nonatomic, assign) NMVideo * video;
 
 @end

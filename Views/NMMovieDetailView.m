@@ -7,9 +7,11 @@
 //
 
 #import "NMMovieDetailView.h"
+#import "NMLibrary.h"
 
 
 @implementation NMMovieDetailView
+@synthesize video=video_;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -32,6 +34,36 @@
 - (void)dealloc
 {
     [super dealloc];
+}
+
+- (void)setVideo:(NMVideo *)aVideo {
+	if ( aVideo && aVideo != video_ ) {
+		// assigned property. no need to retain
+		video_ = aVideo;
+	} else if ( aVideo == nil ) {
+		video_ = nil;
+		
+		// reset the view
+		channelLogoView.image = nil;
+		channelLabel.text = nil;
+		titleLabel.text = nil;
+		otherInfoLabel.text = nil;
+		descriptionTextView.text = nil;
+		return;
+	} else {
+		return;
+	}
+	// update the view with the video's attribute
+	NMChannel * theChannel = aVideo.channel;
+	
+	// channel info
+	NMCacheController * cacheCtrl = [NMCacheController sharedCacheController];
+	[cacheCtrl setImageInChannel:theChannel forImageView:channelLogoView];
+	channelLabel.text = theChannel.title;
+	// video info
+	titleLabel.text = aVideo.title;
+	otherInfoLabel.text = [NSString stringWithFormat:@"1 day ago  |  xx,xxx views"];
+	descriptionTextView.text = aVideo.nm_description;
 }
 
 @end

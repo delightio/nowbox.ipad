@@ -31,7 +31,7 @@
 + (NMCacheController *)sharedCacheController;
 
 // display image from file cache
-- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(NMTouchImageView *)iv;
+- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv;
 
 // saving image from server
 - (void)writeImageData:(NSData *)aData withFilename:(NSString *)fname;
