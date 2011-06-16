@@ -62,6 +62,7 @@
 	channelLabel.text = theChannel.title;
 	// video info
 	titleLabel.text = aVideo.title;
+	NSLog(@"setting movie detail: %@", aVideo.title);
 	otherInfoLabel.text = [NSString stringWithFormat:@"1 day ago  |  xx,xxx views"];
 	descriptionTextView.text = aVideo.nm_description;
 }

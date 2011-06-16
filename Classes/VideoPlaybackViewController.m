@@ -89,6 +89,7 @@
 		[movieDetailViewArray addObject:self.loadedMovieDetailView];
 		theFrame = loadedMovieDetailView.frame;
 		theFrame.origin.y = 20.0f;
+		theFrame.origin.x = -1024.0f;
 		loadedMovieDetailView.frame = theFrame;
 		//		loadedControlView.hidden = YES;
 		//		loadedControlView.alpha = 0.0f;
@@ -203,11 +204,11 @@
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
 	
-	for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-		theDetailView.video = nil;
-	}
-	
 	if ( chnObj == nil ) {
+		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+			theDetailView.video = nil;
+		}
+		
 		[loadedControlView resetView];
 		return;	// return if the channel object is nil
 	}
@@ -498,9 +499,8 @@
 	if ( theDetailView == nil ) {
 		theDetailView = [self getFreeMovieDetailView];
 		ctrl.nextVideo.nm_movie_detail_view = theDetailView;
-		theDetailView.video = ctrl.nextVideo;
 	}
-	NSLog(@"next detail view %@ super %@", theDetailView, theDetailView.superview);
+	theDetailView.video = ctrl.nextVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
 	CGRect theFrame = theDetailView.frame;
@@ -513,9 +513,8 @@
 	if ( theDetailView == nil ) {
 		theDetailView = [self getFreeMovieDetailView];
 		ctrl.previousVideo.nm_movie_detail_view = theDetailView;
-		theDetailView.video = ctrl.previousVideo;
 	}
-	NSLog(@"previous detail view %@ super %@", theDetailView, theDetailView.superview);
+	theDetailView.video = ctrl.previousVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
 	CGRect theFrame = theDetailView.frame;
@@ -528,9 +527,8 @@
 	if ( theDetailView == nil ) {
 		theDetailView = [self getFreeMovieDetailView];
 		ctrl.currentVideo.nm_movie_detail_view = theDetailView;
-		theDetailView.video = ctrl.currentVideo;
 	}
-	NSLog(@"current detail view %@ super %@", theDetailView, theDetailView.superview);
+	theDetailView.video = ctrl.currentVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
 	CGRect theFrame = theDetailView.frame;
