@@ -68,12 +68,20 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return YES;
+    return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 - (void)showVideoView {
 	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
 	[self presentModalViewController:appDelegate.viewController animated:NO];
+	// always default to LIVE channel
+	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.liveChannel;
+}
+
+- (void)showVideoViewAnimated {
+	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
+	appDelegate.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+	[self presentModalViewController:appDelegate.viewController animated:YES];
 	// always default to LIVE channel
 	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.liveChannel;
 }
@@ -86,14 +94,18 @@
 		// get channel
 		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 		debugLabel.text = @"Fetching channels...";
+	} else {
+		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
 	}
 }
 
 #pragma mark Notification
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 	NSDictionary * userInfo = [aNotification userInfo];
-	debugLabel.text = [debugLabel.text stringByAppendingFormat:@"\ntype %@", [userInfo objectForKey:@"channel_type"]];
+//	debugLabel.text = [debugLabel.text stringByAppendingFormat:@"\ntype %@", [userInfo objectForKey:@"channel_type"]];
+	debugLabel.text = @"Ready to go...";
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
+	[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
 }
 
 #pragma mark Target action methods
