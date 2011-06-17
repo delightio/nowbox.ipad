@@ -9,19 +9,20 @@
 #import "NMMovieDetailView.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
+#import <QuartzCore/QuartzCore.h>
 
 
 @implementation NMMovieDetailView
 @synthesize video=video_;
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
+//- (id)initWithFrame:(CGRect)frame
+//{
+//    self = [super initWithFrame:frame];
+//    if (self) {
+//        // Initialization code
+//    }
+//    return self;
+//}
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -31,6 +32,12 @@
     // Drawing code
 }
 */
+
+- (void)awakeFromNib {
+	UIImage * img = [UIImage imageNamed:@"movie-detail-view-background"];
+	self.layer.contents = (id)img.CGImage;
+	self.layer.contentsCenter = CGRectMake(0.2, 0.0, 0.6, 1.0);
+}
 
 - (void)dealloc
 {

@@ -50,7 +50,7 @@
 						<string key="NSFrame">{{434, 0}, {72, 32}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="1064860965"/>
+						<reference key="NSNextKeyView" ref="605847261"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -78,7 +78,7 @@
 					<object class="IBUITableView" id="1064860965">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{0, 36}, {768, 380}}</string>
+						<string key="NSFrame">{{0, 36}, {768, 360}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1038706776"/>
@@ -117,7 +117,7 @@
 					<object class="IBUIButton" id="605847261">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">289</int>
-						<string key="NSFrame">{{591, 0}, {75, 37}}</string>
+						<string key="NSFrame">{{669, 0}, {36, 36}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1034181440"/>
@@ -126,35 +126,39 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="666212104"/>
-						<int key="IBUIButtonType">1</int>
-						<string key="IBUINormalTitle">Search</string>
 						<reference key="IBUIHighlightedTitleColor" ref="408660464"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="223098180"/>
+						<object class="NSCustomResource" key="IBUINormalImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">channel-search-button.png</string>
+						</object>
 					</object>
 					<object class="IBUIButton" id="1034181440">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">289</int>
-						<string key="NSFrame">{{671, 0}, {79, 37}}</string>
+						<string key="NSFrame">{{710, -2}, {36, 36}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="1064860965"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<reference key="IBUIFont" ref="666212104"/>
-						<int key="IBUIButtonType">1</int>
-						<string key="IBUINormalTitle">Expand</string>
 						<reference key="IBUIHighlightedTitleColor" ref="408660464"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="223098180"/>
+						<object class="NSCustomResource" key="IBUINormalImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">channel-expand.png</string>
+						</object>
 					</object>
 					<object class="IBUIImageView" id="1038706776">
 						<reference key="NSNextResponder" ref="191373211"/>
@@ -162,7 +166,7 @@
 						<string key="NSFrame">{{0, 36}, {768, 380}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="605847261"/>
+						<reference key="NSNextKeyView"/>
 						<int key="IBUIContentMode">9</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -172,7 +176,7 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{768, 416}</string>
+				<string key="NSFrameSize">{768, 396}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="892109789"/>
@@ -251,8 +255,8 @@
 							<reference ref="31972435"/>
 							<reference ref="892109789"/>
 							<reference ref="605847261"/>
-							<reference ref="1034181440"/>
 							<reference ref="1038706776"/>
+							<reference ref="1034181440"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -435,8 +439,19 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">channel-panel-mock.png</string>
-			<string key="NS.object.0">{1024, 380}</string>
+			<bool key="EncodedWithXMLCoder">YES</bool>
+			<object class="NSArray" key="dict.sortedKeys">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>channel-expand.png</string>
+				<string>channel-panel-mock.png</string>
+				<string>channel-search-button.png</string>
+			</object>
+			<object class="NSMutableArray" key="dict.values">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{18, 11}</string>
+				<string>{1024, 380}</string>
+				<string>{21, 21}</string>
+			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">301</string>
 	</data>
