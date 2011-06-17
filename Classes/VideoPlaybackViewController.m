@@ -88,7 +88,7 @@
 		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
 		[movieDetailViewArray addObject:self.loadedMovieDetailView];
 		theFrame = loadedMovieDetailView.frame;
-		theFrame.origin.y = 20.0f;
+		theFrame.origin.y = 0.0f;
 		theFrame.origin.x = -1024.0f;
 		loadedMovieDetailView.frame = theFrame;
 		//		loadedControlView.hidden = YES;
@@ -98,7 +98,7 @@
 	self.loadedMovieDetailView = nil;
 	
 // create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(20.0f, 40.0f, 570.0f, 320.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(40.0f, 20.0f, 570.0f, 320.0f)];
 //	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[controlScrollView addSubview:movieView];
 	
@@ -358,7 +358,7 @@
 	loadedControlView.frame = theFrame;
 	// update the movie view too
 	theFrame = movieView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + 20.0f;
+	theFrame.origin.x = controlScrollView.contentOffset.x + 40.0f;
 	movieView.frame = theFrame;
 }
 
@@ -1040,7 +1040,7 @@
 	
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x + 20.0f, 40.0f, 570.0f, 320.0f);
 		movieView.frame = viewRect;
 		loadedControlView.frame = viewRect;
@@ -1051,7 +1051,7 @@
 		
 		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x - 20.0f, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		loadedControlView.frame = viewRect;

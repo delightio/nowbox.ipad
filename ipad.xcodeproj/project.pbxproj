@@ -97,6 +97,7 @@
 		A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
 		A97050D2134399050022BF2C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
 		A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
+		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
 		A9776A4113AAEBDC004FA2F3 /* channel-expand.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A3F13AAEBDC004FA2F3 /* channel-expand.png */; };
 		A9776A4213AAEBDC004FA2F3 /* channel-search-button.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4013AAEBDC004FA2F3 /* channel-search-button.png */; };
 		A9776A4913AAF0AF004FA2F3 /* fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4413AAF0AF004FA2F3 /* fullscreen.png */; };
@@ -260,6 +261,8 @@
 		A97050CF134398DD0022BF2C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A97050D1134399050022BF2C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A97050D313439B540022BF2C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		A973AC2513AAFAD90050025B /* NMChannelPanelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelPanelView.h; sourceTree = "<group>"; };
+		A973AC2613AAFAD90050025B /* NMChannelPanelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelPanelView.m; sourceTree = "<group>"; };
 		A9776A3F13AAEBDC004FA2F3 /* channel-expand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-expand.png"; sourceTree = "<group>"; };
 		A9776A4013AAEBDC004FA2F3 /* channel-search-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-search-button.png"; sourceTree = "<group>"; };
 		A9776A4413AAF0AF004FA2F3 /* fullscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullscreen.png; sourceTree = "<group>"; };
@@ -622,6 +625,8 @@
 				A970506613438F860022BF2C /* NMTouchImageView.m */,
 				A962DD7013A82D3A004CC111 /* NMMovieDetailView.h */,
 				A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */,
+				A973AC2513AAFAD90050025B /* NMChannelPanelView.h */,
+				A973AC2613AAFAD90050025B /* NMChannelPanelView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -910,6 +915,7 @@
 				A99BA0BD13A758FE0010F202 /* EasyTableView.m in Sources */,
 				A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */,
 				A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */,
+				A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

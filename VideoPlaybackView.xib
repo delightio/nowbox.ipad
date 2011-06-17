@@ -57,6 +57,7 @@
 						<bool key="IBUIPagingEnabled">YES</bool>
 						<bool key="IBUIShowsHorizontalScrollIndicator">NO</bool>
 						<bool key="IBUIShowsVerticalScrollIndicator">NO</bool>
+						<bool key="IBUIDelaysContentTouches">NO</bool>
 					</object>
 					<object class="IBUIButton" id="668669041">
 						<reference key="NSNextResponder" ref="685744623"/>
@@ -64,7 +65,6 @@
 						<string key="NSFrame">{{880, 240}, {120, 37}}</string>
 						<reference key="NSSuperview" ref="685744623"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -271,26 +271,24 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelNameLabel</string>
+							<string>controlBackgroundImageView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
-							<string>onLabel</string>
 							<string>playPauseButton</string>
 							<string>progressView</string>
 							<string>shareButton</string>
 							<string>videoTitleLabel</string>
-							<string>voteUpButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UILabel</string>
-							<string>UILabel</string>
+							<string>UIImageView</string>
 							<string>UILabel</string>
 							<string>UILabel</string>
 							<string>UIButton</string>
 							<string>UIImageView</string>
 							<string>UIButton</string>
 							<string>UILabel</string>
-							<string>UIButton</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -298,14 +296,13 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelNameLabel</string>
+							<string>controlBackgroundImageView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
-							<string>onLabel</string>
 							<string>playPauseButton</string>
 							<string>progressView</string>
 							<string>shareButton</string>
 							<string>videoTitleLabel</string>
-							<string>voteUpButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -314,15 +311,15 @@
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">controlBackgroundImageView</string>
+								<string key="candidateClassName">UIImageView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">currentTimeLabel</string>
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">durationLabel</string>
-								<string key="candidateClassName">UILabel</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">onLabel</string>
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -340,10 +337,6 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">videoTitleLabel</string>
 								<string key="candidateClassName">UILabel</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">voteUpButton</string>
-								<string key="candidateClassName">UIButton</string>
 							</object>
 						</object>
 					</object>
