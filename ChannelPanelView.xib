@@ -86,6 +86,7 @@
 								<string key="NSFrameSize">{768, 380}</string>
 								<reference key="NSSuperview" ref="1064860965"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<int key="IBUIContentMode">9</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -179,7 +180,7 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{768, 416}</string>
+				<string key="NSFrameSize">{768, 408}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="892109789"/>
