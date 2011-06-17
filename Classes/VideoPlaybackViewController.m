@@ -334,9 +334,11 @@
 #endif
 //			[self translateMovieViewByOffset:1.0f];
 			
+			[playbackModelController moveToNextVideo];
 			[movieView.player advanceToNextItem];
 			[movieView.player play];
-			controlScrollView.scrollEnabled = NO;
+			[self playerQueueNextVideos];
+			controlScrollView.scrollEnabled = YES;
 			
 			break;
 			
@@ -682,6 +684,7 @@
 		[self dismissModalViewControllerAnimated:YES];
 	} else {
 		didPlayToEnd = YES;
+		controlScrollView.scrollEnabled = NO;
 		[self showNextVideo:YES];
 	}
 }
@@ -825,7 +828,6 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
-	scrollView.scrollEnabled = YES;
 	scrollView.scrollEnabled = YES;
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		currentXOffset += 1024.0f;

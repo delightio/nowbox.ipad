@@ -16,6 +16,8 @@ typedef enum {
 
 @interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
     IBOutlet UITableView * tableView;
+	IBOutlet UIImageView * demoChannelMockView;
+	
 	UIView *panelView;
 @private
 	NMStyleUtility * styleUtility;

@@ -15,13 +15,12 @@
 @interface NMControlsView : UIView {
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * videoTitleLabel;
-	IBOutlet UILabel * onLabel;
 	IBOutlet UIButton *playPauseButton;
 	IBOutlet UIButton *shareButton;
-	IBOutlet UIButton *voteUpButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIImageView *progressView;
+	IBOutlet UIImageView * controlBackgroundImageView;
 	
 	CALayer * progressBarLayer;
 	CALayer * nubLayer;
@@ -49,8 +48,6 @@
 @property (nonatomic, assign) UIButton * shareButton;
 @property (nonatomic, assign) UIButton * playPauseButton;
 @property (nonatomic, assign) UIButton * nextVideoButton;
-@property (nonatomic, assign) UIButton * voteUpButton;
-@property (nonatomic, assign) UIButton * voteDownButton;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 

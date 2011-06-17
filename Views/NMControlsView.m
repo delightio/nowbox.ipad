@@ -19,7 +19,6 @@
 @synthesize channel, title, duration, timeElapsed;
 @synthesize channelViewButton, shareButton, playPauseButton;
 @synthesize nextVideoButton, controlsHidden, timeRangeBuffered;
-@synthesize voteUpButton, voteDownButton;
 
 - (void)awakeFromNib {
 	// load the progress bar image
@@ -44,6 +43,11 @@
 	nubLayer.position = CGPointMake(floorf(img.size.width / 2.0), floorf(img.size.height / 2.0));
 	
 	[progressView.layer addSublayer:nubLayer];
+	
+	// the control background
+	img = [[UIImage imageNamed:@"playback-control-background"] stretchableImageWithLeftCapWidth:12 topCapHeight:0];
+	controlBackgroundImageView.image = img;
+	
 }
 
 //- (id)initWithFrame:(CGRect)frame {
