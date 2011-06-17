@@ -73,6 +73,7 @@
 	isAspectFill = YES;
 	firstShowControlView = YES;
 	currentXOffset = 0.0f;
+	movieXOffset = 40.0f;
 	
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
@@ -98,7 +99,7 @@
 	self.loadedMovieDetailView = nil;
 	
 // create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(40.0f, 20.0f, 570.0f, 320.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 570.0f, 320.0f)];
 //	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[controlScrollView addSubview:movieView];
 	
@@ -353,11 +354,11 @@
 	loadedControlView.channel = aVideo.channel.title;
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + 40.0f;
+	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	loadedControlView.frame = theFrame;
 	// update the movie view too
 	theFrame = movieView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + 40.0f;
+	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
 }
 
@@ -1039,21 +1040,26 @@
 	
 	[UIView beginAnimations:nil context:nil];
 	if ( panelHidden ) {
+		// slide in the channel view with animation
+		movieXOffset = 40.0f;
 //		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		viewRect = CGRectMake(movieView.frame.origin.x + 20.0f, 40.0f, 570.0f, 320.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 570.0f, 320.0f);
 		movieView.frame = viewRect;
 		loadedControlView.frame = viewRect;
 		// slide in
-		theFrame.origin.y = 448.0f;
+		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillEnterHalfScreen:FullScreenPlaybackMode];
 		
 		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
+		// slide out the channel view
 //		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-		viewRect = CGRectMake(movieView.frame.origin.x - 20.0f, 0.0f, 1024.0f, 768.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		loadedControlView.frame = viewRect;
+		// reset offset value
+		movieXOffset = 0.0f;
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
@@ -1063,6 +1069,15 @@
 //		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
 	}
 	[UIView commitAnimations];
+	if ( panelHidden ) {
+		for (theDetailView in movieDetailViewArray) {
+			theDetailView.hidden = NO;
+		}
+	} else {
+		for (theDetailView in movieDetailViewArray) {
+			theDetailView.hidden = YES;
+		}
+	}
 	// slide in/out the prototype channel panel
 	// scale down movie control
 	// scale playback view

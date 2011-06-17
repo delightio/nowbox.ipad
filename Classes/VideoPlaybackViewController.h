@@ -38,6 +38,7 @@
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
 	BOOL firstShowControlView;
+	CGFloat movieXOffset;
 	
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
