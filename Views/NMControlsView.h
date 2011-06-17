@@ -21,6 +21,8 @@
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIImageView *progressView;
 	IBOutlet UIImageView * controlBackgroundImageView;
+	
+	IBOutlet UISlider * progressSlider;
 		
 	CALayer * progressBarLayer;
 	CALayer * nubLayer;
@@ -30,6 +32,7 @@
 	CMTimeRange timeRangeBuffered;
 	NSInteger duration;
 	NSInteger timeElapsed;
+	CGFloat fduration;
 	
 	UIButton * lastVideoMessage;
 	

@@ -46,7 +46,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<object class="IBUIButton" id="31972435">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">289</int>
+						<int key="NSvFlags">-2147483359</int>
 						<string key="NSFrame">{{434, 0}, {72, 32}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
@@ -86,7 +86,6 @@
 								<string key="NSFrameSize">{768, 380}</string>
 								<reference key="NSSuperview" ref="1064860965"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<int key="IBUIContentMode">9</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -114,7 +113,7 @@
 					</object>
 					<object class="IBUIButton" id="892109789">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">289</int>
+						<int key="NSvFlags">-2147483359</int>
 						<string key="NSFrame">{{316, -2}, {110, 34}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>

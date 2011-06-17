@@ -22,30 +22,34 @@
 
 - (void)awakeFromNib {
 	// load the progress bar image
-	UIImage * img = [UIImage imageNamed:@"demo_progress_dark_side"];
-	progressView.image = [img stretchableImageWithLeftCapWidth:6 topCapHeight:0];
-	progressBarLayer = [[CALayer layer] retain];
-	img = [UIImage imageNamed:@"demo_progress_bright_side"];
-	progressBarLayer.contents = (id)img.CGImage;
-	progressBarLayer.contentsCenter = CGRectMake(0.4, 0.0, 0.2, 1.0);
-	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH - 9;
-	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 10.0f, img.size.height);
-	progressBarLayer.position = CGPointMake(0.0, 3.0);
-	progressBarLayer.anchorPoint = CGPointMake(0.0f, 0.5f);
-	progressBarLayer.shadowOpacity = 1.0;
-	progressBarLayer.shadowOffset = CGSizeZero;
-	[progressView.layer addSublayer:progressBarLayer];
+//	UIImage * img = [UIImage imageNamed:@"demo_progress_dark_side"];
+//	progressView.image = [img stretchableImageWithLeftCapWidth:6 topCapHeight:0];
+//	progressBarLayer = [[CALayer layer] retain];
+//	img = [UIImage imageNamed:@"demo_progress_bright_side"];
+//	progressBarLayer.contents = (id)img.CGImage;
+//	progressBarLayer.contentsCenter = CGRectMake(0.4, 0.0, 0.2, 1.0);
+//	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH - 9;
+//	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 10.0f, img.size.height);
+//	progressBarLayer.position = CGPointMake(0.0, 3.0);
+//	progressBarLayer.anchorPoint = CGPointMake(0.0f, 0.5f);
+//	progressBarLayer.shadowOpacity = 1.0;
+//	progressBarLayer.shadowOffset = CGSizeZero;
+//	[progressView.layer addSublayer:progressBarLayer];
+//	
+//	nubLayer = [[CALayer layer] retain];
+//	img = [UIImage imageNamed:@"demo_progress_nub"];
+//	nubLayer.contents = (id)img.CGImage;
+//	nubLayer.bounds = CGRectMake(0.0, 0.0, img.size.width, img.size.height);
+//	nubLayer.position = CGPointMake(floorf((6.0f - img.size.width) / 2.0), floorf((6.0f - img.size.height) / 2.0));
+//	
+//	[progressView.layer addSublayer:nubLayer];
 	
-	nubLayer = [[CALayer layer] retain];
-	img = [UIImage imageNamed:@"demo_progress_nub"];
-	nubLayer.contents = (id)img.CGImage;
-	nubLayer.bounds = CGRectMake(0.0, 0.0, img.size.width, img.size.height);
-	nubLayer.position = CGPointMake(floorf((6.0f - img.size.width) / 2.0), floorf((6.0f - img.size.height) / 2.0));
-	
-	[progressView.layer addSublayer:nubLayer];
+	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"demo_progress_bright_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
+	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"demo_progress_dark_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
+	[progressSlider setThumbImage:[UIImage imageNamed:@"demo_progress_nub"] forState:UIControlStateNormal];
 		
 	// the control background
-	img = [[UIImage imageNamed:@"playback-control-background"] stretchableImageWithLeftCapWidth:12 topCapHeight:0];
+	UIImage * img = [[UIImage imageNamed:@"playback-control-background"] stretchableImageWithLeftCapWidth:12 topCapHeight:0];
 	controlBackgroundImageView.image = img;
 	
 }
@@ -183,12 +187,13 @@
 	CGRect theFrame = progressBarLayer.bounds;
 	theFrame.size.width = 18.0;
 	
-	[CATransaction begin];
-	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-	progressBarLayer.bounds = theFrame;
-	progressBarLayer.position = CGPointMake(0.0, 9.0);
-	nubLayer.position = CGPointMake(9.0, 9.0);
-	[CATransaction commit];
+//	[CATransaction begin];
+//	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+//	progressBarLayer.bounds = theFrame;
+//	progressBarLayer.position = CGPointMake(0.0, 9.0);
+//	nubLayer.position = CGPointMake(9.0, 9.0);
+//	progressSlider.value = 0.0f;
+//	[CATransaction commit];
 	
 	self.alpha = 1.0;
 	self.hidden = NO;
@@ -213,6 +218,7 @@
 
 - (void)setDuration:(NSInteger)aDur {
 	duration = aDur;
+	fduration = (CGFloat)aDur;
 	if ( aDur ) {
 		pxWidthPerSecond = progressBarWidth / (CGFloat)aDur;
 	} else {
@@ -223,18 +229,18 @@
 
 - (void)setTimeElapsed:(NSInteger)aTime {
 	timeElapsed = aTime;
-	CGFloat barWidth = floorf(pxWidthPerSecond * aTime) + 9.0; // 9.0 is the offset of the nub radius
-	CGRect theFrame = progressBarLayer.frame;
-	if ( barWidth > theFrame.size.width ) {
-		[CATransaction begin];
-		[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-		theFrame.size.width = barWidth;
-		progressBarLayer.frame = theFrame;
-		nubLayer.position = CGPointMake(barWidth - 9.0, 9.0);
-		[CATransaction commit];
-	}
+//	CGFloat barWidth = floorf(pxWidthPerSecond * aTime) + 9.0; // 9.0 is the offset of the nub radius
+//	CGRect theFrame = progressBarLayer.frame;
+//	if ( barWidth > theFrame.size.width ) {
+//		[CATransaction begin];
+//		[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+//		theFrame.size.width = barWidth;
+//		progressBarLayer.frame = theFrame;
+//		nubLayer.position = CGPointMake(barWidth - 9.0, 9.0);
+//		[CATransaction commit];
+//	}
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", aTime / 60, aTime % 60];
-	
+	if ( fduration > 0.0f ) progressSlider.value = ((CGFloat)aTime)/fduration;
 }
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {
