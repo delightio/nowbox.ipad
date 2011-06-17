@@ -129,9 +129,9 @@
 	[nc addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 	
 	// setup gesture recognizer
-//	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
-//	[controlScrollView addGestureRecognizer:pinRcr];
-//	[pinRcr release];
+	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
+	[controlScrollView addGestureRecognizer:pinRcr];
+	[pinRcr release];
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 }
@@ -924,9 +924,12 @@
 
 - (void)handleMovieViewPinched:(id)sender {
 	UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
-	if ( rcr.velocity < -2.0 && rcr.scale < 0.6 ) {
+	if ( rcr.velocity < -2.0 && rcr.scale < 0.6 && channelController.panelView.center.y > 768.0f ) {
 		// quit this view
 //		[self backToChannelView:sender];
+		[self togglePrototypeChannelPanel:sender];
+	} else if ( rcr.velocity < 1.0 && rcr.scale > 0.35 && channelController.panelView.center.y < 768.0f ) {
+		[self togglePrototypeChannelPanel:sender];
 	}
 	//	CGRect theFrame;
 	//	CGSize theSize;
