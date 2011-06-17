@@ -242,7 +242,6 @@
 }
 
 - (IBAction)playStopVideo:(id)sender {
-	NSLog(@"playback rate: %f", movieView.player.rate);
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
 	} else {
@@ -354,7 +353,7 @@
 	loadedControlView.channel = aVideo.channel.title;
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x;
+	theFrame.origin.x = controlScrollView.contentOffset.x + 40.0f;
 	loadedControlView.frame = theFrame;
 	// update the movie view too
 	theFrame = movieView.frame;

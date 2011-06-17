@@ -21,7 +21,7 @@
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIImageView *progressView;
 	IBOutlet UIImageView * controlBackgroundImageView;
-	
+		
 	CALayer * progressBarLayer;
 	CALayer * nubLayer;
 	CGFloat pxWidthPerSecond;

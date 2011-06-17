@@ -11,7 +11,7 @@
 
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT	101
-#define NM_PLAYER_PROGRESS_BAR_WIDTH	330
+#define NM_PLAYER_PROGRESS_BAR_WIDTH	632
 
 
 @implementation NMControlsView
@@ -22,28 +22,28 @@
 
 - (void)awakeFromNib {
 	// load the progress bar image
-	UIImage * img = [UIImage imageNamed:@"playback_progress_background"];
+	UIImage * img = [UIImage imageNamed:@"demo_progress_dark_side"];
 	progressView.image = [img stretchableImageWithLeftCapWidth:6 topCapHeight:0];
 	progressBarLayer = [[CALayer layer] retain];
-	img = [UIImage imageNamed:@"progress_bar"];
+	img = [UIImage imageNamed:@"demo_progress_bright_side"];
 	progressBarLayer.contents = (id)img.CGImage;
 	progressBarLayer.contentsCenter = CGRectMake(0.4, 0.0, 0.2, 1.0);
 	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH - 9;
-	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 18.0, img.size.height);
-	progressBarLayer.position = CGPointMake(0.0, 9.0);
+	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 10.0f, img.size.height);
+	progressBarLayer.position = CGPointMake(0.0, 3.0);
 	progressBarLayer.anchorPoint = CGPointMake(0.0f, 0.5f);
 	progressBarLayer.shadowOpacity = 1.0;
 	progressBarLayer.shadowOffset = CGSizeZero;
 	[progressView.layer addSublayer:progressBarLayer];
 	
 	nubLayer = [[CALayer layer] retain];
-	img = [UIImage imageNamed:@"progress_bar_nub"];
+	img = [UIImage imageNamed:@"demo_progress_nub"];
 	nubLayer.contents = (id)img.CGImage;
 	nubLayer.bounds = CGRectMake(0.0, 0.0, img.size.width, img.size.height);
-	nubLayer.position = CGPointMake(floorf(img.size.width / 2.0), floorf(img.size.height / 2.0));
+	nubLayer.position = CGPointMake(floorf((6.0f - img.size.width) / 2.0), floorf((6.0f - img.size.height) / 2.0));
 	
 	[progressView.layer addSublayer:nubLayer];
-	
+		
 	// the control background
 	img = [[UIImage imageNamed:@"playback-control-background"] stretchableImageWithLeftCapWidth:12 topCapHeight:0];
 	controlBackgroundImageView.image = img;
