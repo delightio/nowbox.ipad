@@ -66,7 +66,7 @@
 - (IBAction)vote:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)showSharePopover:(id)sender;
-- (IBAction)togglePrototypeChannelPanel:(id)sender;
+- (IBAction)toggleChannelPanel:(id)sender;
 - (IBAction)inspectViewStructure:(id)sender;
 
 - (IBAction)refreshVideoList:(id)sender;

@@ -9,9 +9,9 @@
 #import "NMStyleUtility.h"
 
 typedef enum {
-	FullScreenPlaybackMode,
-	HalfScreenMode,
-	FullScreenChannelMode,
+	NMFullScreenPlaybackMode,
+	NMHalfScreenMode,
+	NMFullScreenChannelMode,
 } NMPlaybackViewModeType;
 
 @interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {

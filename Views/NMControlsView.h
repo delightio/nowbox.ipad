@@ -8,6 +8,7 @@
 
 #import <CoreMedia/CoreMedia.h>
 #import <QuartzCore/QuartzCore.h>
+#import "ChannelPanelController.h"
 
 @class NMMovieView;
 
@@ -15,12 +16,12 @@
 @interface NMControlsView : UIView {
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * videoTitleLabel;
+	IBOutlet UILabel * otherInfoLabel;
 	IBOutlet UIButton *playPauseButton;
 	IBOutlet UIButton *shareButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
-	IBOutlet UIImageView *progressView;
-	IBOutlet UIImageView * controlBackgroundImageView;
+	IBOutlet UIView * controlContainerView;
 	
 	IBOutlet UISlider * progressSlider;
 		
@@ -36,8 +37,10 @@
 	
 	UIButton * lastVideoMessage;
 	
+	@private
 	SEL action;
 	id target;
+	NMPlaybackViewModeType playbackMode_;
 }
 
 @property (nonatomic, retain) NSString * title;
@@ -54,6 +57,7 @@
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
+- (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated;
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)resetView;
 //- (void)observeMovieView:(NMMovieView *)mvView;

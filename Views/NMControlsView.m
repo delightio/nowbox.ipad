@@ -8,11 +8,15 @@
 
 #import "NMControlsView.h"
 #import "NMMovieView.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT	101
 #define NM_PLAYER_PROGRESS_BAR_WIDTH	632
 
+
+#define NM_CONTROL_VIEW_FULL_SCREEN_ANIMATION_CONTEXT			1001
+#define NM_CONTROL_VIEW_HALF_SCREEN_ANIMATION_CONTEXT			1002
 
 @implementation NMControlsView
 
@@ -21,37 +25,19 @@
 @synthesize nextVideoButton, controlsHidden, timeRangeBuffered;
 
 - (void)awakeFromNib {
+	playbackMode_ = NMFullScreenPlaybackMode;
+	[self setPlaybackMode:NMHalfScreenMode animated:NO];
 	// load the progress bar image
-//	UIImage * img = [UIImage imageNamed:@"demo_progress_dark_side"];
-//	progressView.image = [img stretchableImageWithLeftCapWidth:6 topCapHeight:0];
-//	progressBarLayer = [[CALayer layer] retain];
-//	img = [UIImage imageNamed:@"demo_progress_bright_side"];
-//	progressBarLayer.contents = (id)img.CGImage;
-//	progressBarLayer.contentsCenter = CGRectMake(0.4, 0.0, 0.2, 1.0);
-//	progressBarWidth = NM_PLAYER_PROGRESS_BAR_WIDTH - 9;
-//	progressBarLayer.bounds = CGRectMake(0.0, 0.0, 10.0f, img.size.height);
-//	progressBarLayer.position = CGPointMake(0.0, 3.0);
-//	progressBarLayer.anchorPoint = CGPointMake(0.0f, 0.5f);
-//	progressBarLayer.shadowOpacity = 1.0;
-//	progressBarLayer.shadowOffset = CGSizeZero;
-//	[progressView.layer addSublayer:progressBarLayer];
-//	
-//	nubLayer = [[CALayer layer] retain];
-//	img = [UIImage imageNamed:@"demo_progress_nub"];
-//	nubLayer.contents = (id)img.CGImage;
-//	nubLayer.bounds = CGRectMake(0.0, 0.0, img.size.width, img.size.height);
-//	nubLayer.position = CGPointMake(floorf((6.0f - img.size.width) / 2.0), floorf((6.0f - img.size.height) / 2.0));
-//	
-//	[progressView.layer addSublayer:nubLayer];
-	
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"demo_progress_bright_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"demo_progress_dark_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setThumbImage:[UIImage imageNamed:@"demo_progress_nub"] forState:UIControlStateNormal];
 		
 	// the control background
-	UIImage * img = [[UIImage imageNamed:@"playback-control-background"] stretchableImageWithLeftCapWidth:12 topCapHeight:0];
-	controlBackgroundImageView.image = img;
-	
+	CALayer * ctrlBgLayer = controlContainerView.layer;
+	ctrlBgLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.7f].CGColor;
+	ctrlBgLayer.borderWidth = 1.0f;
+	ctrlBgLayer.borderColor = [UIColor colorWithRed:153.0f/255.0f green:153.0f/255.0f blue:153.0f/255.0f alpha:0.7f].CGColor;
+	ctrlBgLayer.cornerRadius = 8.0f;
 }
 
 //- (id)initWithFrame:(CGRect)frame {
@@ -115,7 +101,7 @@
 }
 
 - (BOOL)controlsHidden {
-	return progressView.alpha == 0.0f || self.alpha == 0.0f || self.hidden;
+	return controlContainerView.alpha == 0.0f || self.alpha == 0.0f || self.hidden;
 }
 
 - (void)showLastVideoMessage {
@@ -135,6 +121,65 @@
 		[lastVideoMessage setTitle:@"Playing Last Video" forState:UIControlStateNormal];
 		[self addSubview:lastVideoMessage];
 	}
+}
+
+- (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated {
+	if ( aMode == playbackMode_ ) return;
+	
+	CGRect viewRect;
+	switch (aMode) {
+		case NMFullScreenPlaybackMode:
+		{
+			// show stuff
+			otherInfoLabel.hidden = NO;
+			channelNameLabel.hidden = NO;
+			videoTitleLabel.hidden = NO;
+			// set to play video in full screen
+			if ( animated ) [UIView beginAnimations:nil context:(void *)NM_CONTROL_VIEW_FULL_SCREEN_ANIMATION_CONTEXT];
+			// set its own size
+			viewRect = CGRectMake(self.frame.origin.x - 40.0f, 0.0f, 1024.0f, 768.0f);
+			self.frame = viewRect;
+			// resize the container view
+			controlContainerView.center = CGPointMake(49.0f + 926.0f / 2.0f, 640.0f + 98.0f / 2.0f);
+			controlContainerView.bounds = CGRectMake(0.0f, 0.0f, 926.0f, 98.0f);
+//			viewRect = controlContainerView.bounds;
+//			viewRect.size.height += 52.0;
+//			controlContainerView.bounds = viewRect;
+			otherInfoLabel.alpha = 1.0f;
+			channelNameLabel.alpha = 1.0f;
+			videoTitleLabel.alpha = 1.0f;
+			if ( animated ) [UIView commitAnimations];
+			break;
+		}
+			
+		case NMHalfScreenMode:
+		{
+			// set to play video in full screen
+			if ( animated ) [UIView beginAnimations:nil context:(void *)NM_CONTROL_VIEW_HALF_SCREEN_ANIMATION_CONTEXT];
+			// set its own size
+			viewRect = CGRectMake(self.frame.origin.x + 40.0f, 20.0f, 570.0f, 320.0f);
+			self.frame = viewRect;
+			// resize the container view
+			controlContainerView.center = CGPointMake(48.0f + 474.0f / 2.0f, 248.0f + 48.0f / 2.0f);
+			controlContainerView.bounds = CGRectMake(0.0f, 0.0f, 474.0f, 48.0f);
+//			viewRect = controlContainerView.bounds;
+//			viewRect.size.height -= 52.0;
+//			controlContainerView.bounds = viewRect;
+			if ( animated ) [UIView commitAnimations];
+			// hide stuff
+			otherInfoLabel.hidden = YES;
+			channelNameLabel.hidden = YES;
+			videoTitleLabel.hidden = YES;
+			otherInfoLabel.alpha = 0.0f;
+			channelNameLabel.alpha = 0.0f;
+			videoTitleLabel.alpha = 0.0f;
+			break;
+		}
+			
+		default:
+			break;
+	}
+	playbackMode_ = aMode;
 }
 
 #pragma mark KVO

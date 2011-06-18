@@ -927,9 +927,9 @@
 	if ( rcr.velocity < -2.0 && rcr.scale < 0.6 && channelController.panelView.center.y > 768.0f ) {
 		// quit this view
 //		[self backToChannelView:sender];
-		[self togglePrototypeChannelPanel:sender];
+		[self toggleChannelPanel:sender];
 	} else if ( rcr.velocity < 1.0 && rcr.scale > 0.35 && channelController.panelView.center.y < 768.0f ) {
-		[self togglePrototypeChannelPanel:sender];
+		[self toggleChannelPanel:sender];
 	}
 	//	CGRect theFrame;
 	//	CGSize theSize;
@@ -1002,7 +1002,7 @@
 	[navCtrl release];
 }
 
-- (IBAction)togglePrototypeChannelPanel:(id)sender {
+- (IBAction)toggleChannelPanel:(id)sender {
 	CGRect theFrame;
 	theFrame = channelController.panelView.frame;
 	BOOL panelHidden = YES;
@@ -1042,17 +1042,20 @@
 	}
 	
 	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationDuration:1.0f];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
 		movieXOffset = 40.0f;
+		//MARK: not sure if we still need to show/hide status bar
 //		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 570.0f, 320.0f);
 		movieView.frame = viewRect;
-		loadedControlView.frame = viewRect;
+		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
+//		loadedControlView.frame = viewRect;
 		// slide in
 		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height;
 		channelController.panelView.frame = theFrame;
-		[channelController panelWillEnterHalfScreen:FullScreenPlaybackMode];
+		[channelController panelWillEnterHalfScreen:NMFullScreenPlaybackMode];
 		
 		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
@@ -1060,7 +1063,8 @@
 //		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
-		loadedControlView.frame = viewRect;
+		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];
+//		loadedControlView.frame = viewRect;
 		// reset offset value
 		movieXOffset = 0.0f;
 		// slide out

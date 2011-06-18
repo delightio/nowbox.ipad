@@ -37,6 +37,8 @@
 	UIImage * img = [UIImage imageNamed:@"movie-detail-view-background"];
 	self.layer.contents = (id)img.CGImage;
 	self.layer.contentsCenter = CGRectMake(0.2, 0.0, 0.6, 1.0);
+	moviePlaceholderView.layer.borderColor = [UIColor colorWithRed:102.0f/255.0f green:102.0f/255.0f blue:102.0f/255.0f alpha:1.0f].CGColor;
+	moviePlaceholderView.layer.borderWidth = 1.0f;
 }
 
 - (void)dealloc

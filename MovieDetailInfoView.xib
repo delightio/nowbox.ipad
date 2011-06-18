@@ -48,7 +48,7 @@
 					<object class="IBUILabel" id="311955743">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{650, 117}, {334, 21}}</string>
+						<string key="NSFrame">{{650, 101}, {334, 12}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1039759310"/>
@@ -69,12 +69,13 @@
 						</object>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
+						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 					</object>
 					<object class="IBUILabel" id="887890948">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{714, 20}, {270, 56}}</string>
+						<string key="NSFrame">{{698, 20}, {286, 40}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="720460834"/>
@@ -101,7 +102,7 @@
 					<object class="IBUILabel" id="720460834">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{650, 86}, {354, 21}}</string>
+						<string key="NSFrame">{{650, 70}, {354, 20}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="311955743"/>
@@ -110,7 +111,7 @@
 						<int key="IBUIContentMode">7</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-						<string key="IBUIText">Label</string>
+						<string key="IBUIText">Label yygg</string>
 						<object class="NSFont" key="IBUIFont">
 							<string key="NSName">Helvetica-Bold</string>
 							<double key="NSSize">18</double>
@@ -122,12 +123,13 @@
 						</object>
 						<nil key="IBUIHighlightedColor"/>
 						<int key="IBUIBaselineAdjustment">1</int>
+						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 					</object>
 					<object class="IBUIImageView" id="296144937">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{650, 20}, {56, 56}}</string>
+						<string key="NSFrame">{{650, 20}, {40, 40}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="887890948"/>
@@ -137,10 +139,10 @@
 					<object class="IBUITextView" id="1039759310">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{643, 142}, {347, 133}}</string>
+						<string key="NSFrame">{{643, 123}, {347, 133}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="340423294"/>
+						<reference key="NSNextKeyView" ref="515014753"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MCAwAA</bytes>
@@ -172,7 +174,7 @@
 						<string key="NSFrame">{{650, 303}, {37, 37}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="340423294"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -199,10 +201,10 @@
 					<object class="IBUIButton" id="340423294">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{714, 303}, {37, 37}}</string>
+						<string key="NSFrame">{{697, 303}, {37, 37}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="515014753"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -222,7 +224,7 @@
 					<object class="IBUIView" id="642244507">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{40, 20}, {570, 320}}</string>
+						<string key="NSFrame">{{39, 19}, {572, 323}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="296144937"/>
@@ -339,12 +341,12 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="642244507"/>
-							<reference ref="311955743"/>
 							<reference ref="887890948"/>
-							<reference ref="720460834"/>
 							<reference ref="296144937"/>
 							<reference ref="1039759310"/>
 							<reference ref="515014753"/>
+							<reference ref="720460834"/>
+							<reference ref="311955743"/>
 							<reference ref="340423294"/>
 						</object>
 						<reference key="parent" ref="0"/>
@@ -465,22 +467,22 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelNameLabel</string>
-							<string>controlBackgroundImageView</string>
+							<string>controlContainerView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
 							<string>playPauseButton</string>
-							<string>progressView</string>
+							<string>progressSlider</string>
 							<string>shareButton</string>
 							<string>videoTitleLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UILabel</string>
-							<string>UIImageView</string>
+							<string>UIView</string>
 							<string>UILabel</string>
 							<string>UILabel</string>
 							<string>UIButton</string>
-							<string>UIImageView</string>
+							<string>UISlider</string>
 							<string>UIButton</string>
 							<string>UILabel</string>
 						</object>
@@ -490,11 +492,11 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelNameLabel</string>
-							<string>controlBackgroundImageView</string>
+							<string>controlContainerView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
 							<string>playPauseButton</string>
-							<string>progressView</string>
+							<string>progressSlider</string>
 							<string>shareButton</string>
 							<string>videoTitleLabel</string>
 						</object>
@@ -505,8 +507,8 @@
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">controlBackgroundImageView</string>
-								<string key="candidateClassName">UIImageView</string>
+								<string key="name">controlContainerView</string>
+								<string key="candidateClassName">UIView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">currentTimeLabel</string>
@@ -521,8 +523,8 @@
 								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">progressView</string>
-								<string key="candidateClassName">UIImageView</string>
+								<string key="name">progressSlider</string>
+								<string key="candidateClassName">UISlider</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">shareButton</string>
