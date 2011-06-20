@@ -56,7 +56,6 @@
 								<string key="NSFrame">{{880, 52}, {46, 46}}</string>
 								<reference key="NSSuperview" ref="289875608"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -240,7 +239,7 @@
 							</object>
 							<object class="IBUILabel" id="207720284">
 								<reference key="NSNextResponder" ref="289875608"/>
-								<int key="NSvFlags">292</int>
+								<int key="NSvFlags">289</int>
 								<string key="NSFrame">{{741, 0}, {185, 21}}</string>
 								<reference key="NSSuperview" ref="289875608"/>
 								<reference key="NSWindow"/>

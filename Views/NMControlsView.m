@@ -26,7 +26,7 @@
 
 - (void)awakeFromNib {
 	playbackMode_ = NMFullScreenPlaybackMode;
-	[self setPlaybackMode:NMHalfScreenMode animated:NO];
+//	[self setPlaybackMode:NMHalfScreenMode animated:NO];
 	// load the progress bar image
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"demo_progress_bright_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"demo_progress_dark_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
@@ -131,20 +131,20 @@
 		case NMFullScreenPlaybackMode:
 		{
 			// show stuff
-			otherInfoLabel.hidden = NO;
-			channelNameLabel.hidden = NO;
-			videoTitleLabel.hidden = NO;
+//			otherInfoLabel.hidden = NO;
+//			channelNameLabel.hidden = NO;
+//			videoTitleLabel.hidden = NO;
 			// set to play video in full screen
-			if ( animated ) [UIView beginAnimations:nil context:(void *)NM_CONTROL_VIEW_FULL_SCREEN_ANIMATION_CONTEXT];
+			if ( animated ) {
+				[UIView beginAnimations:nil context:(void *)NM_CONTROL_VIEW_FULL_SCREEN_ANIMATION_CONTEXT];
+				[UIView setAnimationBeginsFromCurrentState:YES];
+			}
 			// set its own size
 			viewRect = CGRectMake(self.frame.origin.x - 40.0f, 0.0f, 1024.0f, 768.0f);
 			self.frame = viewRect;
 			// resize the container view
-			controlContainerView.center = CGPointMake(49.0f + 926.0f / 2.0f, 640.0f + 98.0f / 2.0f);
-			controlContainerView.bounds = CGRectMake(0.0f, 0.0f, 926.0f, 98.0f);
-//			viewRect = controlContainerView.bounds;
-//			viewRect.size.height += 52.0;
-//			controlContainerView.bounds = viewRect;
+			viewRect = CGRectMake(49.0f, 640.0f, 926.0f, 98.0f);
+			controlContainerView.frame = viewRect;
 			otherInfoLabel.alpha = 1.0f;
 			channelNameLabel.alpha = 1.0f;
 			videoTitleLabel.alpha = 1.0f;
@@ -155,24 +155,24 @@
 		case NMHalfScreenMode:
 		{
 			// set to play video in full screen
-			if ( animated ) [UIView beginAnimations:nil context:(void *)NM_CONTROL_VIEW_HALF_SCREEN_ANIMATION_CONTEXT];
+			if ( animated ) {
+				[UIView beginAnimations:nil context:(void *)NM_CONTROL_VIEW_HALF_SCREEN_ANIMATION_CONTEXT];
+				[UIView setAnimationBeginsFromCurrentState:YES];
+			}
 			// set its own size
 			viewRect = CGRectMake(self.frame.origin.x + 40.0f, 20.0f, 570.0f, 320.0f);
 			self.frame = viewRect;
 			// resize the container view
-			controlContainerView.center = CGPointMake(48.0f + 474.0f / 2.0f, 248.0f + 48.0f / 2.0f);
-			controlContainerView.bounds = CGRectMake(0.0f, 0.0f, 474.0f, 48.0f);
-//			viewRect = controlContainerView.bounds;
-//			viewRect.size.height -= 52.0;
-//			controlContainerView.bounds = viewRect;
-			if ( animated ) [UIView commitAnimations];
-			// hide stuff
-			otherInfoLabel.hidden = YES;
-			channelNameLabel.hidden = YES;
-			videoTitleLabel.hidden = YES;
+			viewRect = CGRectMake(49.0f, 248.0f, 474.0f, 48.0f);
+			controlContainerView.frame = viewRect;
 			otherInfoLabel.alpha = 0.0f;
 			channelNameLabel.alpha = 0.0f;
 			videoTitleLabel.alpha = 0.0f;
+			if ( animated ) [UIView commitAnimations];
+			// hide stuff
+//			otherInfoLabel.hidden = YES;
+//			channelNameLabel.hidden = YES;
+//			videoTitleLabel.hidden = YES;
 			break;
 		}
 			

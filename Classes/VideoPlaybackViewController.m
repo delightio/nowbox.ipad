@@ -109,6 +109,7 @@
 	// hook up with target-action
 	[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
 	loadedControlView.frame = movieView.frame;
+	[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 	
 	// put the view to scroll view
 	[controlScrollView addSubview:loadedControlView];
@@ -1042,7 +1043,7 @@
 	}
 	
 	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:1.0f];
+	[UIView setAnimationBeginsFromCurrentState:YES];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
 		movieXOffset = 40.0f;
@@ -1051,13 +1052,12 @@
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 570.0f, 320.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
-//		loadedControlView.frame = viewRect;
 		// slide in
 		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillEnterHalfScreen:NMFullScreenPlaybackMode];
 		
-		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
+//		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
 		// slide out the channel view
 //		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
@@ -1071,6 +1071,7 @@
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillDisappear];
+		
 		// scale up
 //		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
 //		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
@@ -1079,6 +1080,7 @@
 	if ( panelHidden ) {
 		for (theDetailView in movieDetailViewArray) {
 			theDetailView.hidden = NO;
+			theDetailView.alpha = 1.0f;
 		}
 	} else {
 		for (theDetailView in movieDetailViewArray) {
