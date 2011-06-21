@@ -38,6 +38,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	[mdict setObject:[dict objectForKey:@"author_profile_link"] forKey:@"author_profile_link"];
 	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
 	[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
+	[mdict setObject:[dict objectForKey:@"duration"] forKey:@"duration"];
 	[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
 	[mdict setObject:[dict objectForKey:@"service_name"] forKey:@"service_name"];
 	[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];

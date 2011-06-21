@@ -31,6 +31,7 @@
 @dynamic reason_included;
 @dynamic channel;
 @dynamic thumbnail;
+@dynamic duration;
 
 @synthesize nm_player_item;
 @synthesize nm_movie_detail_view;

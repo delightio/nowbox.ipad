@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
+		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
+		A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A9250145134385BF001759F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
@@ -118,6 +120,9 @@
 /* Begin PBXFileReference section */
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
 		A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVQueuePlayer.m; sourceTree = "<group>"; };
+		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
+		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
+		A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoContainerView.m; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* ipad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ipad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -492,6 +497,8 @@
 				A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */,
 				A973AC2513AAFAD90050025B /* NMChannelPanelView.h */,
 				A973AC2613AAFAD90050025B /* NMChannelPanelView.m */,
+				A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */,
+				A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -512,6 +519,7 @@
 		A9EB20F413AAE1E000BC2E29 /* demo_graphics */ = {
 			isa = PBXGroup;
 			children = (
+				A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */,
 				A951454213AB1E0500327288 /* nowmov-eye-transparent.png */,
 				A951453C13AB07D500327288 /* demo_progress_bright_side.png */,
 				A951453D13AB07D500327288 /* demo_progress_dark_side.png */,
@@ -648,6 +656,7 @@
 				A951454013AB07D600327288 /* demo_progress_dark_side.png in Resources */,
 				A951454113AB07D600327288 /* demo_progress_nub.png in Resources */,
 				A951454313AB1E0500327288 /* nowmov-eye-transparent.png in Resources */,
+				A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -740,6 +749,7 @@
 				A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */,
 				A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */,
 				A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */,
+				A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

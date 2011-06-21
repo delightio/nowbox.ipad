@@ -7,15 +7,16 @@
 //
 
 #import "EasyTableView.h"
+#import "NMLibrary.h"
+#import "NMStyleUtility.h"
 
-
-@class NMChannel;
 
 @interface VideoRowController : NSObject <EasyTableViewDelegate, NSFetchedResultsControllerDelegate> {
     EasyTableView * videoTableView;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
 	NMChannel * channel;
+	NMStyleUtility * styleUtility;
 }
 
 @property (nonatomic, readonly) EasyTableView * videoTableView;

@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSString * author_username;
 @property (nonatomic, retain) NSString * service_external_id;
 @property (nonatomic, retain) NSString * nm_description;
+@property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSDate * created_at;
 @property (nonatomic, retain) NSDate * nm_fetch_timestamp;
 @property (nonatomic, retain) NSString * title;

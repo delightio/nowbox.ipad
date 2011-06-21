@@ -7,9 +7,7 @@
 //
 
 #import "VideoRowController.h"
-#import "NMVideo.h"
-#import "NMChannel.h"
-#import "NMLibrary.h"
+#import "PanelVideoContainerView.h"
 
 
 @implementation VideoRowController
@@ -20,14 +18,16 @@
 
 - (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj {
 	self = [super init];
+	styleUtility = [NMStyleUtility sharedStyleUtility];
 	
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
 	self.channel = chnObj;
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	videoTableView	= [[EasyTableView alloc] initWithFrame:aframe numberOfColumns:[sectionInfo numberOfObjects] ofWidth:98.0f];
+	videoTableView	= [[EasyTableView alloc] initWithFrame:aframe numberOfColumns:[sectionInfo numberOfObjects] ofWidth:240.0f];
 	
 	videoTableView.delegate					= self;
-//	videoTableView.tableView.backgroundColor	= ;
+	videoTableView.tableView.backgroundColor	= [UIColor viewFlipsideBackgroundColor];
+	videoTableView.cellBackgroundColor = styleUtility.channelPanelBackgroundColor;
 	videoTableView.tableView.allowsSelection	= YES;
 //	videoTableView.tableView.separatorColor	= [[UIColor blackColor] colorWithAlphaComponent:0.1];
 //	videoTableView.cellBackgroundColor		= [[UIColor blackColor] colorWithAlphaComponent:0.1];
@@ -50,14 +50,17 @@
 // These delegate methods support both example views - first delegate method creates the necessary views
 
 - (UIView *)easyTableView:(EasyTableView *)easyTableView viewForRect:(CGRect)rect {
-	CGRect labelRect		= CGRectMake(10, 10, rect.size.width-20, rect.size.height-20);
-	UILabel *label			= [[[UILabel alloc] initWithFrame:labelRect] autorelease];
-	label.textAlignment		= UITextAlignmentCenter;
-	label.textColor			= [UIColor whiteColor];
-	label.font				= [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]];
+	PanelVideoContainerView * ctnView = [[PanelVideoContainerView alloc] initWithFrame:rect];
+	
+	return [ctnView autorelease];
+//	CGRect labelRect		= CGRectMake(10, 10, rect.size.width-20, rect.size.height-20);
+//	UILabel *label			= [[[UILabel alloc] initWithFrame:labelRect] autorelease];
+//	label.textAlignment		= UITextAlignmentLeft;
+//	label.textColor			= styleUtility.channelPanelFontColor;
+//	label.font				= styleUtility.videoTitleFont;
 	
 	// Use a different color for the two different examples
-	label.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
+//	label.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
 	
 //	UIImageView *borderView		= [[UIImageView alloc] initWithFrame:label.bounds];
 //	borderView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -66,15 +69,19 @@
 //	[label addSubview:borderView];
 //	[borderView release];
 	
-	return label;
+//	return label;
 }
 
 // Second delegate populates the views with data from a data source
 
 - (void)easyTableView:(EasyTableView *)easyTableView setDataForView:(UIView *)view forIndex:(NSUInteger)index {
-	UILabel *label	= (UILabel *)view;
+	PanelVideoContainerView * ctnView = (PanelVideoContainerView *)view;
 	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-	label.text		= theVideo.title;
+	[ctnView setVideoInfo:theVideo];
+//	UILabel *label	= (UILabel *)view;
+//	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+//	label.text		= theVideo.title;
+//	NSLog(@"%@ %@", [styleUtility.videoDateFormatter stringFromDate:theVideo.created_at], theVideo.duration);
 	
 	// selectedIndexPath can be nil so we need to test for that condition
 //	BOOL isSelected = (easyTableView.selectedIndexPath) ? (easyTableView.selectedIndexPath.row == index) : NO;

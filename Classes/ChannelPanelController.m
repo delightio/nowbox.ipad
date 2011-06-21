@@ -11,7 +11,7 @@
 #import "VideoRowController.h"
 
 
-#define VIDEO_ROW_LEFT_PADDING			68.0f
+#define VIDEO_ROW_LEFT_PADDING			168.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
 #define NM_CHANNEL_CELL_TOP_PADDING		10.0f
 #define NM_CHANNEL_CELL_DETAIL_TOP_MARGIN	40.0f
@@ -21,10 +21,10 @@
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
 
-- (id)init {
-	self = [super init];
+- (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-	return self;
+	tableView.rowHeight = 80.0f;
+	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 }
 
 - (void)dealloc {
@@ -93,6 +93,7 @@
 	CGRect theFrame = cell.contentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+	cell.imageView.image = styleUtility.userPlaceholderImage;
 	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel];
 	[cell.contentView addSubview:rowCtrl.videoTableView];
 }

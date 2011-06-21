@@ -8,6 +8,7 @@
 
 #import "NMTouchImageView.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NMStyleUtility.h"
 
 #define NM_CHANNEL_THUMBNAIL_WIDTH		248.0f
 #define NM_CHANNEL_THUMBNAIL_HEIGHT		174.0f
@@ -19,7 +20,7 @@
 @dynamic channelName, image;
 
 - (id)init {
-	UIImage * img = [UIImage imageNamed:@"channel_thumbnail_background"];
+	UIImage * img = [NMStyleUtility sharedStyleUtility].userPlaceholderImage;
 	CGRect frame = CGRectMake(0.0, 0.0, img.size.width, img.size.height);
 	self = [super initWithFrame:frame];
     if (self) {

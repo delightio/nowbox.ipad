@@ -34,7 +34,7 @@
 }
 
 - (id)initWithFrame:(CGRect)frame numberOfColumns:(NSUInteger)numCols ofWidth:(CGFloat)width {
-    if (self = [super initWithFrame:frame]) {
+    if ((self = [super initWithFrame:frame])) {
 		_numItems			= numCols;
 		_cellWidthOrHeight	= width;
 
@@ -45,7 +45,7 @@
 
 
 - (id)initWithFrame:(CGRect)frame numberOfRows:(NSUInteger)numRows ofHeight:(CGFloat)height {
-    if (self = [super initWithFrame:frame]) {
+    if ((self = [super initWithFrame:frame])) {
 		_numItems			= numRows;
 		_cellWidthOrHeight	= height;
 		

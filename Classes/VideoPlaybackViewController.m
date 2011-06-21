@@ -51,6 +51,7 @@
 @implementation VideoPlaybackViewController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize currentChannel;
+@synthesize channelController;
 @synthesize loadedControlView;
 @synthesize loadedMovieDetailView;
 
@@ -115,9 +116,8 @@
 	[controlScrollView addSubview:loadedControlView];
 	
 	// load channel view
-	channelController = [[ChannelPanelController alloc] init];
-	channelController.managedObjectContext = self.managedObjectContext;
-	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:channelController options:nil];
+	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
+//	channelController.managedObjectContext = self.managedObjectContext;
 	theFrame = channelController.panelView.frame;
 	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
 	channelController.panelView.frame = theFrame;
