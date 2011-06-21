@@ -128,7 +128,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 //}
 
 - (void)issueGetThumbnailForChannel:(NMChannel *)chnObj {
-	if ( ![networkController downloadInProgressForURLString:chnObj.thumbnail] ) {
+	if ( chnObj.thumbnail && ![networkController downloadInProgressForURLString:chnObj.thumbnail] ) {
 		NMImageDownloadTask * task = [[NMImageDownloadTask alloc] initWithChannel:chnObj];
 		[networkController addNewConnectionForTask:task];
 		[task release];

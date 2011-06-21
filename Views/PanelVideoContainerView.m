@@ -23,22 +23,25 @@
 		titleMaxSize = titleLabel.bounds.size;
 		titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		titleLabel.textColor = styleUtility.channelPanelFontColor;
+		titleLabel.font = styleUtility.videoTitleFont;
 		titleLabel.numberOfLines = 0;
 		titleLabel.lineBreakMode = UILineBreakModeTailTruncation;
 		titleLabel.backgroundColor = styleUtility.clearColor;
 		[self addSubview:titleLabel];
 		
-        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 10.0f, frame.size.width - 20.0f, frame.size.height - 20.0f)];
+        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 60.0f, frame.size.width - 20.0f, 12.0f)];
 		datePostedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		datePostedLabel.textColor = styleUtility.channelPanelFontColor;
 		datePostedLabel.backgroundColor = styleUtility.clearColor;
+		datePostedLabel.font = styleUtility.videoDetailFont;
 		[self addSubview:datePostedLabel];
 
-        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 10.0f, frame.size.width - 20.0f, frame.size.height - 20.0f)];
+        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 60.0f, frame.size.width - 20.0f, 12.0f)];
 		durationLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		durationLabel.textAlignment = UITextAlignmentRight;
 		durationLabel.textColor = styleUtility.channelPanelFontColor;
 		durationLabel.backgroundColor = styleUtility.clearColor;
+		durationLabel.font = styleUtility.videoDetailFont;
 		[self addSubview:durationLabel];
     }
     return self;
