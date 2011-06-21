@@ -157,6 +157,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 		if ( result == nil || [result count] == 0 ) {
 			// insert channel
 			liveChannel = [[self insertNewChannel] retain];
+			liveChannel.title = @"Live";
 			liveChannel.channel_name = @"live";
 			liveChannel.channel_url = @"http://nowmov.com/live";
 		} else {
