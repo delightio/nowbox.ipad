@@ -29,6 +29,7 @@
 	videoTableView.tableView.backgroundColor	= [UIColor viewFlipsideBackgroundColor];
 	videoTableView.cellBackgroundColor = styleUtility.channelPanelBackgroundColor;
 	videoTableView.tableView.allowsSelection	= YES;
+	videoTableView.tableView.pagingEnabled		= YES;
 //	videoTableView.tableView.separatorColor	= [[UIColor blackColor] colorWithAlphaComponent:0.1];
 //	videoTableView.cellBackgroundColor		= [[UIColor blackColor] colorWithAlphaComponent:0.1];
 	videoTableView.autoresizingMask			= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
