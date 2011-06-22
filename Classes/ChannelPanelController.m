@@ -125,6 +125,7 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.textLabel.font = styleUtility.channelNameFont;
+		cell.selectionStyle = UITableViewCellEditingStyleNone;
 		[self setupCellContentView:cell.contentView];
     }
     
