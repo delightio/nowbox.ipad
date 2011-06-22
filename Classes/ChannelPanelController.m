@@ -96,6 +96,11 @@
 	cell.imageView.image = styleUtility.userPlaceholderImage;
 	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel];
 	[cell.contentView addSubview:rowCtrl.videoTableView];
+	
+	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
+	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
+		[schdlr issueGetVideoListForChannel:theChannel];
+	}
 }
 
 #pragma mark -
@@ -206,6 +211,8 @@
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"videos.@count > 0"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];

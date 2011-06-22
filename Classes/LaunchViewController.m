@@ -106,6 +106,8 @@
 	debugLabel.text = @"Ready to go...";
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 	[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
+	// fetch other channels
+	
 }
 
 #pragma mark Target action methods

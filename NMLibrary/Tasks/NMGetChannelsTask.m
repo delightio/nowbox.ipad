@@ -89,24 +89,16 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	[str release];
 	
 	parsedObjects = [[NSMutableArray alloc] init];
-	NSDictionary * cDict, * fvDict;
+	NSDictionary * cDict;
 	NSMutableDictionary * pDict;
 	NSString * theKey;
 	for (cDict in theChs) {
-		if ( [cDict objectForKey:@"first_video"] == nil ) continue;
 		pDict = [NSMutableDictionary dictionary];
 		for (theKey in channelJSONKeys) {
 			[pDict setObject:[cDict objectForKey:theKey] forKey:theKey];
 		}
 		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
 		
-		fvDict = [cDict objectForKey:@"first_video"];
-		if ( fvDict ) {
-			NSMutableDictionary * theVidDict = [NMGetChannelVideoListTask normalizeVideoDictionary:fvDict];
-			[pDict setObject:theVidDict forKey:@"first_video"];
-//			[fvDict setObject:[NSNumber numberWithUnsignedInteger:0] forKey:@"nm_sort_order"];
-			[theVidDict setObject:[NSDate date] forKey:@"nm_fetch_timestamp"];
-		}
 		[parsedObjects addObject:pDict];
 	}
 }
@@ -122,8 +114,6 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	NSDictionary * fetchedChannels = [ctrl fetchChannelsForNames:ay];
 	// save channel with new data
 	NMChannel * chnObj;
-	NMVideo * vidObj;
-	NSDictionary * vidDict;
 	NSMutableSet * foundSet = [NSMutableSet set];
 //	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
 	NSInteger idx = 0;
@@ -139,16 +129,8 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 			chnObj = [ctrl insertNewChannel];
 		}
 		chnObj.nm_sort_order = [NSNumber numberWithInteger:idx];
-		vidDict = [[dict objectForKey:@"first_video"] retain];
-		[dict removeObjectForKey:@"first_video"];
 		// set channel value
 		[chnObj setValuesForKeysWithDictionary:dict];
-		// insert the video
-		vidObj = [ctrl insertNewVideo];
-		[vidObj setValuesForKeysWithDictionary:vidDict];
-		[chnObj addVideosObject:vidObj];
-		vidObj.channel = chnObj;
-		[vidDict release];
 		// this will insert the first 
 		if ( [chnObj.channel_name isEqualToString:@"live"] ) {
 			self.liveChannel = chnObj;
