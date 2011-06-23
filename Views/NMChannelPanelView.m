@@ -31,6 +31,7 @@
 */
 
 - (void)awakeFromNib {
+	self.layer.shouldRasterize = YES;
 	self.layer.shadowOffset = CGSizeZero;
 	self.layer.shadowOpacity = 0.75f;
 	self.layer.shadowRadius = 5.0f;
