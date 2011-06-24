@@ -17,6 +17,7 @@
 	CGPoint initialCenter;
 	UIActivityIndicatorView * activityIndicator;
 	UILabel * statusLabel;
+	UIImageView * logoView;
 @private
 	NMAVQueuePlayer * player_;
 }

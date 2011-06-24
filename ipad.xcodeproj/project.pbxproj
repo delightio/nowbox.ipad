@@ -23,6 +23,7 @@
 		A925016B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250169134385BF001759F5 /* InfoPlist.strings */; };
 		A925016E134385BF001759F5 /* ipadTests.h in Resources */ = {isa = PBXBuildFile; fileRef = A925016D134385BF001759F5 /* ipadTests.h */; };
 		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
+		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A93584CF139EE96D0009A264 /* ChannelPanelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A93584CE139EE96D0009A264 /* ChannelPanelView.xib */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
 		A941BD9613A47E7300BB3BE0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
@@ -140,6 +141,7 @@
 		A925016C134385BF001759F5 /* ipadTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ipadTests-Prefix.pch"; sourceTree = "<group>"; };
 		A925016D134385BF001759F5 /* ipadTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipadTests.h; sourceTree = "<group>"; };
 		A925016F134385BF001759F5 /* ipadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadTests.m; sourceTree = "<group>"; };
+		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
 		A93584CE139EE96D0009A264 /* ChannelPanelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelPanelView.xib; sourceTree = "<group>"; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 			children = (
 				A9EB20F413AAE1E000BC2E29 /* demo_graphics */,
 				A970503213438F860022BF2C /* Icon.png */,
+				A92BDA2413B431C500B846DF /* youtube_logo_36.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -657,6 +660,7 @@
 				A951454113AB07D600327288 /* demo_progress_nub.png in Resources */,
 				A951454313AB1E0500327288 /* nowmov-eye-transparent.png in Resources */,
 				A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */,
+				A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
