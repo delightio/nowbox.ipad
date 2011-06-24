@@ -49,6 +49,14 @@
 	statusLabel.text = @"Loading";
 	[self addSubview:statusLabel];
 	
+	UIImage * ytLogo = [UIImage imageNamed:@"youtube_logo_36"];
+	logoView = [[UIImageView alloc] initWithImage:ytLogo];
+	CGRect theFrame = logoView.frame;
+	theFrame.origin = CGPointMake(frame.size.width - 10.0f - ytLogo.size.width, frame.size.height - 10.0f - ytLogo.size.height);
+	logoView.frame = theFrame;
+	logoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
+	[self addSubview:logoView];
+	
 	return self;
 }
 
