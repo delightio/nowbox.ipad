@@ -23,7 +23,7 @@
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-	tableView.rowHeight = 80.0f;
+	tableView.rowHeight = 106.0f;
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 }
 

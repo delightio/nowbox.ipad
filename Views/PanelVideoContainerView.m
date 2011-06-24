@@ -10,6 +10,8 @@
 #import "NMStyleUtility.h"
 #import "NMLibrary.h"
 
+#define NM_VIDEO_CELL_PADDING	10.0f
+#define NM_VIDEO_CELL_HEIGHT	106.0f
 
 @implementation PanelVideoContainerView
 @synthesize titleLabel, datePostedLabel, durationLabel;
@@ -19,7 +21,7 @@
     self = [super initWithFrame:frame];
 	NMStyleUtility * styleUtility = [NMStyleUtility sharedStyleUtility];
     if (self) {
-        titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 10.0f, frame.size.width - 20.0f, frame.size.height - 20.0f)];
+        titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, frame.size.height - NM_VIDEO_CELL_PADDING * 2.0f)];
 		titleMaxSize = titleLabel.bounds.size;
 		titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		titleLabel.textColor = styleUtility.channelPanelFontColor;
@@ -29,14 +31,14 @@
 		titleLabel.backgroundColor = styleUtility.clearColor;
 		[self addSubview:titleLabel];
 		
-        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 60.0f, frame.size.width - 20.0f, 12.0f)];
+        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
 		datePostedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		datePostedLabel.textColor = styleUtility.channelPanelFontColor;
 		datePostedLabel.backgroundColor = styleUtility.clearColor;
 		datePostedLabel.font = styleUtility.videoDetailFont;
 		[self addSubview:datePostedLabel];
 
-        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(10.0f, 60.0f, frame.size.width - 20.0f, 12.0f)];
+        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
 		durationLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		durationLabel.textAlignment = UITextAlignmentRight;
 		durationLabel.textColor = styleUtility.channelPanelFontColor;
