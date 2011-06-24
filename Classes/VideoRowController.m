@@ -22,18 +22,14 @@
 	
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
 	self.channel = chnObj;
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	videoTableView	= [[EasyTableView alloc] initWithFrame:aframe numberOfColumns:[sectionInfo numberOfObjects] ofWidth:240.0f];
+	videoTableView	= [[HorizontalTableView alloc] initWithFrame:aframe];
 	
-	videoTableView.delegate					= self;
-	videoTableView.tableView.backgroundColor	= [UIColor viewFlipsideBackgroundColor];
-	videoTableView.cellBackgroundColor = styleUtility.channelPanelBackgroundColor;
-	videoTableView.tableView.allowsSelection	= YES;
-	videoTableView.tableView.pagingEnabled		= YES;
-//	videoTableView.tableView.separatorColor	= [[UIColor blackColor] colorWithAlphaComponent:0.1];
-//	videoTableView.cellBackgroundColor		= [[UIColor blackColor] colorWithAlphaComponent:0.1];
+	videoTableView.delegate	= self;
+	videoTableView.backgroundColor	= [UIColor viewFlipsideBackgroundColor];
 	videoTableView.autoresizingMask			= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-		
+	
+	[videoTableView performSelector:@selector(refreshData) withObject:nil afterDelay:0.25f];
+	
 	return self;
 }
 
@@ -46,59 +42,27 @@
 }
 
 #pragma mark -
-#pragma mark EasyTableViewDelegate
+#pragma mark HorizontalTableViewDelegate methods
 
-// These delegate methods support both example views - first delegate method creates the necessary views
-
-- (UIView *)easyTableView:(EasyTableView *)easyTableView viewForRect:(CGRect)rect {
-	PanelVideoContainerView * ctnView = [[PanelVideoContainerView alloc] initWithFrame:rect];
-	
-	return [ctnView autorelease];
-//	CGRect labelRect		= CGRectMake(10, 10, rect.size.width-20, rect.size.height-20);
-//	UILabel *label			= [[[UILabel alloc] initWithFrame:labelRect] autorelease];
-//	label.textAlignment		= UITextAlignmentLeft;
-//	label.textColor			= styleUtility.channelPanelFontColor;
-//	label.font				= styleUtility.videoTitleFont;
-	
-	// Use a different color for the two different examples
-//	label.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
-	
-//	UIImageView *borderView		= [[UIImageView alloc] initWithFrame:label.bounds];
-//	borderView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-//	borderView.tag				= BORDER_VIEW_TAG;
-//	
-//	[label addSubview:borderView];
-//	[borderView release];
-	
-//	return label;
+- (NSInteger)numberOfColumnsForTableView:(HorizontalTableView *)tableView {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	return [sectionInfo numberOfObjects];
 }
 
-// Second delegate populates the views with data from a data source
-
-- (void)easyTableView:(EasyTableView *)easyTableView setDataForView:(UIView *)view forIndex:(NSUInteger)index {
-	PanelVideoContainerView * ctnView = (PanelVideoContainerView *)view;
+- (UIView *)tableView:(HorizontalTableView *)aTableView viewForIndex:(NSInteger)index {
+	PanelVideoContainerView * ctnView = (PanelVideoContainerView *)[aTableView dequeueColumnView];
+	
+	if ( ctnView == nil ) {
+		ctnView = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 240.0, 80.0)] autorelease];
+	}
+	
 	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 	[ctnView setVideoInfo:theVideo];
-//	UILabel *label	= (UILabel *)view;
-//	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-//	label.text		= theVideo.title;
-//	NSLog(@"%@ %@", [styleUtility.videoDateFormatter stringFromDate:theVideo.created_at], theVideo.duration);
-	
-	// selectedIndexPath can be nil so we need to test for that condition
-//	BOOL isSelected = (easyTableView.selectedIndexPath) ? (easyTableView.selectedIndexPath.row == index) : NO;
-//	[self borderIsSelected:isSelected forView:view];		
+	return ctnView;
 }
 
-// Optional - Tracks the selection of a particular cell
-
-- (void)easyTableView:(EasyTableView *)easyTableView selectedView:(UIView *)selectedView atIndex:(NSUInteger)index deselectedView:(UIView *)deselectedView {
-//	[self borderIsSelected:YES forView:selectedView];		
-//	
-//	if (deselectedView) 
-//		[self borderIsSelected:NO forView:deselectedView];
-//	
-//	UILabel *label	= (UILabel *)selectedView;
-//	bigLabel.text	= label.text;
+- (CGFloat)columnWidthForTableView:(HorizontalTableView *)tableView {
+    return 240.0f;
 }
 
 #pragma mark Fetched Results Controller

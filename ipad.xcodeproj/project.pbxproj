@@ -23,6 +23,7 @@
 		A925016B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250169134385BF001759F5 /* InfoPlist.strings */; };
 		A925016E134385BF001759F5 /* ipadTests.h in Resources */ = {isa = PBXBuildFile; fileRef = A925016D134385BF001759F5 /* ipadTests.h */; };
 		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
+		A925FEA313B47E3900ACC039 /* HorizontalTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A925FEA213B47E3900ACC039 /* HorizontalTableView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A93584CF139EE96D0009A264 /* ChannelPanelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A93584CE139EE96D0009A264 /* ChannelPanelView.xib */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
@@ -97,7 +98,6 @@
 		A98154A8137E1607001FADB4 /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
 		A994523913A734B600B117E2 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A994523813A734B600B117E2 /* LaunchViewController.m */; };
 		A99BA0AA13A7540B0010F202 /* VideoRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A99BA0A913A7540B0010F202 /* VideoRowController.m */; };
-		A99BA0BD13A758FE0010F202 /* EasyTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A99BA0BC13A758FE0010F202 /* EasyTableView.m */; };
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
 		A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */; };
@@ -141,6 +141,8 @@
 		A925016C134385BF001759F5 /* ipadTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ipadTests-Prefix.pch"; sourceTree = "<group>"; };
 		A925016D134385BF001759F5 /* ipadTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipadTests.h; sourceTree = "<group>"; };
 		A925016F134385BF001759F5 /* ipadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadTests.m; sourceTree = "<group>"; };
+		A925FEA113B47E3900ACC039 /* HorizontalTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HorizontalTableView.h; sourceTree = "<group>"; };
+		A925FEA213B47E3900ACC039 /* HorizontalTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HorizontalTableView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
 		A93584CE139EE96D0009A264 /* ChannelPanelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelPanelView.xib; sourceTree = "<group>"; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
@@ -226,8 +228,6 @@
 		A994523813A734B600B117E2 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		A99BA0A813A7540B0010F202 /* VideoRowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowController.h; sourceTree = "<group>"; };
 		A99BA0A913A7540B0010F202 /* VideoRowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowController.m; sourceTree = "<group>"; };
-		A99BA0BB13A758FE0010F202 /* EasyTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EasyTableView.h; sourceTree = "<group>"; };
-		A99BA0BC13A758FE0010F202 /* EasyTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EasyTableView.m; sourceTree = "<group>"; };
 		A9A73FA413A73A3D005D9013 /* LaunchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchView.xib; sourceTree = "<group>"; };
 		A9B1963F134C6B0B00CA17A0 /* NMEventTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMEventTask.h; sourceTree = "<group>"; };
 		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
@@ -486,8 +486,8 @@
 		A970505E13438F860022BF2C /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A99BA0BB13A758FE0010F202 /* EasyTableView.h */,
-				A99BA0BC13A758FE0010F202 /* EasyTableView.m */,
+				A925FEA113B47E3900ACC039 /* HorizontalTableView.h */,
+				A925FEA213B47E3900ACC039 /* HorizontalTableView.m */,
 				A970505F13438F860022BF2C /* ChannelTableCellView.h */,
 				A970506013438F860022BF2C /* ChannelTableCellView.m */,
 				A970506113438F860022BF2C /* NMControlsView.h */,
@@ -749,11 +749,11 @@
 				A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */,
 				A994523913A734B600B117E2 /* LaunchViewController.m in Sources */,
 				A99BA0AA13A7540B0010F202 /* VideoRowController.m in Sources */,
-				A99BA0BD13A758FE0010F202 /* EasyTableView.m in Sources */,
 				A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */,
 				A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */,
 				A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */,
 				A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */,
+				A925FEA313B47E3900ACC039 /* HorizontalTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

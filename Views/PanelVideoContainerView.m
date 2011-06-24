@@ -43,6 +43,8 @@
 		durationLabel.backgroundColor = styleUtility.clearColor;
 		durationLabel.font = styleUtility.videoDetailFont;
 		[self addSubview:durationLabel];
+		
+		self.backgroundColor = styleUtility.channelPanelBackgroundColor;
     }
     return self;
 }
