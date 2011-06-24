@@ -22,7 +22,8 @@
 	
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
 	self.channel = chnObj;
-	videoTableView	= [[HorizontalTableView alloc] initWithFrame:aframe];
+	videoTableView	= [[HorizontalTableView alloc] init];
+	videoTableView.frame = aframe;
 	
 	videoTableView.delegate	= self;
 	videoTableView.backgroundColor	= [UIColor viewFlipsideBackgroundColor];
@@ -54,6 +55,7 @@
 	
 	if ( ctnView == nil ) {
 		ctnView = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 240.0, 80.0)] autorelease];
+		ctnView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 	}
 	
 	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];

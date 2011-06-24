@@ -2,6 +2,8 @@
 #import "HorizontalTableView.h"
 
 #define kColumnPoolSize 3
+//#define DLog(...) NSLog(@"%s %@", __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])
+
 
 @interface HorizontalTableView() <UIScrollViewDelegate>
 
@@ -210,7 +212,7 @@
 #pragma mark UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    ////DLog(@"Did Scroll");
+    //DLog(@"Did Scroll");
 	
 	NSUInteger newPageIndex = self.physicalPageIndex;
 	if (newPageIndex == _currentPhysicalPageIndex) return;
