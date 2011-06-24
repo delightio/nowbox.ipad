@@ -17,6 +17,7 @@
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * videoTitleLabel;
 	IBOutlet UILabel * otherInfoLabel;
+	IBOutlet UIButton * channelViewButton;
 	IBOutlet UIButton *playPauseButton;
 	IBOutlet UIButton *shareButton;
 	IBOutlet UILabel * durationLabel;
