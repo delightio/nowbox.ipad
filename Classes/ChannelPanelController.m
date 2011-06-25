@@ -9,7 +9,7 @@
 #import "ChannelPanelController.h"
 #import "NMLibrary.h"
 #import "VideoRowController.h"
-#import "ChannelTableCellView.h"
+#import "ChannelContainerView.h"
 
 
 #define VIDEO_ROW_LEFT_PADDING			168.0f
@@ -62,41 +62,23 @@
 
 #pragma mark Other table methods
 - (void)setupCellContentView:(UIView *)aContentView {
-	// video title
-	UILabel * lbl = [[UILabel alloc] initWithFrame:CGRectMake(NM_CHANNEL_CELL_LEFT_PADDING, NM_CHANNEL_CELL_TOP_PADDING, aContentView.bounds.size.width, aContentView.bounds.size.height)];
-	lbl.font = styleUtility.videoTitleFont;
-	lbl.backgroundColor = styleUtility.clearColor;
-	lbl.textColor = styleUtility.channelPanelFontColor;
-	lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	[lbl release];
-	
-	// video date posted
-	lbl = [[UILabel alloc] initWithFrame:CGRectMake(NM_CHANNEL_CELL_LEFT_PADDING, NM_CHANNEL_CELL_DETAIL_TOP_MARGIN, aContentView.bounds.size.width, aContentView.bounds.size.height)];
-	lbl.font = styleUtility.videoDetailFont;
-	lbl.backgroundColor = styleUtility.clearColor;
-	lbl.textColor = styleUtility.channelPanelFontColor;
-	lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-	[lbl release];
-	
-	// video duration
-	lbl = [[UILabel alloc] initWithFrame:CGRectMake(NM_CHANNEL_CELL_LEFT_PADDING, NM_CHANNEL_CELL_DETAIL_TOP_MARGIN, aContentView.bounds.size.width, aContentView.bounds.size.height)];
-	lbl.font = styleUtility.videoDetailFont;
-	lbl.backgroundColor = styleUtility.clearColor;
-	lbl.textColor = styleUtility.channelPanelFontColor;
-	lbl.textAlignment = UITextAlignmentRight;
-	lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-	[lbl release];
+	ChannelContainerView * ctnView = [[ChannelContainerView alloc] initWithHeight:aContentView.bounds.size.height];
+	ctnView.tag = 1001;
+	[aContentView addSubview:ctnView];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+	// channel
+	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = theChannel.title;
+	ctnView.textLabel.text = theChannel.title;
+	ctnView.imageView.image = styleUtility.userPlaceholderImage;
 	CGRect theFrame = cell.contentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-	cell.imageView.image = styleUtility.userPlaceholderImage;
+	//MARK: memory leak here!!
 	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel];
-	[cell.contentView addSubview:rowCtrl.videoTableView];
+	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
 	
 	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
@@ -124,10 +106,8 @@
     
 	UITableViewCell *cell = (UITableViewCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-		cell = [[ChannelTableCellView alloc] initWithReuseIdentifier:CellIdentifier];
-//        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.textLabel.font = styleUtility.channelNameFont;
-		cell.selectionStyle = UITableViewCellEditingStyleNone;
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.clipsToBounds = YES;
 		[self setupCellContentView:cell.contentView];
     }
     

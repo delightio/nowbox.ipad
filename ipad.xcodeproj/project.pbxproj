@@ -24,6 +24,7 @@
 		A925016E134385BF001759F5 /* ipadTests.h in Resources */ = {isa = PBXBuildFile; fileRef = A925016D134385BF001759F5 /* ipadTests.h */; };
 		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
 		A925FEA313B47E3900ACC039 /* HorizontalTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A925FEA213B47E3900ACC039 /* HorizontalTableView.m */; };
+		A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A93584CF139EE96D0009A264 /* ChannelPanelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A93584CE139EE96D0009A264 /* ChannelPanelView.xib */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
@@ -77,7 +78,6 @@
 		A970509A13438F860022BF2C /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
 		A970509B13438F860022BF2C /* SocialSignInView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970505C13438F860022BF2C /* SocialSignInView.xib */; };
 		A970509C13438F860022BF2C /* VideoPlaybackView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970505D13438F860022BF2C /* VideoPlaybackView.xib */; };
-		A970509D13438F860022BF2C /* ChannelTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506013438F860022BF2C /* ChannelTableCellView.m */; };
 		A970509E13438F860022BF2C /* NMControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506213438F860022BF2C /* NMControlsView.m */; };
 		A970509F13438F860022BF2C /* NMMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506413438F860022BF2C /* NMMovieView.m */; };
 		A97050A013438F860022BF2C /* NMTouchImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506613438F860022BF2C /* NMTouchImageView.m */; };
@@ -143,6 +143,8 @@
 		A925016F134385BF001759F5 /* ipadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadTests.m; sourceTree = "<group>"; };
 		A925FEA113B47E3900ACC039 /* HorizontalTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HorizontalTableView.h; sourceTree = "<group>"; };
 		A925FEA213B47E3900ACC039 /* HorizontalTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HorizontalTableView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
+		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
 		A93584CE139EE96D0009A264 /* ChannelPanelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelPanelView.xib; sourceTree = "<group>"; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
@@ -198,8 +200,6 @@
 		A970505B13438F860022BF2C /* NMTaskType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTaskType.h; sourceTree = "<group>"; };
 		A970505C13438F860022BF2C /* SocialSignInView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialSignInView.xib; sourceTree = "<group>"; };
 		A970505D13438F860022BF2C /* VideoPlaybackView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoPlaybackView.xib; sourceTree = "<group>"; };
-		A970505F13438F860022BF2C /* ChannelTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelTableCellView.h; sourceTree = "<group>"; };
-		A970506013438F860022BF2C /* ChannelTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelTableCellView.m; sourceTree = "<group>"; };
 		A970506113438F860022BF2C /* NMControlsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMControlsView.h; sourceTree = "<group>"; };
 		A970506213438F860022BF2C /* NMControlsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMControlsView.m; sourceTree = "<group>"; };
 		A970506313438F860022BF2C /* NMMovieView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMovieView.h; sourceTree = "<group>"; };
@@ -488,8 +488,6 @@
 			children = (
 				A925FEA113B47E3900ACC039 /* HorizontalTableView.h */,
 				A925FEA213B47E3900ACC039 /* HorizontalTableView.m */,
-				A970505F13438F860022BF2C /* ChannelTableCellView.h */,
-				A970506013438F860022BF2C /* ChannelTableCellView.m */,
 				A970506113438F860022BF2C /* NMControlsView.h */,
 				A970506213438F860022BF2C /* NMControlsView.m */,
 				A970506313438F860022BF2C /* NMMovieView.h */,
@@ -502,6 +500,8 @@
 				A973AC2613AAFAD90050025B /* NMChannelPanelView.m */,
 				A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */,
 				A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */,
+				A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */,
+				A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -735,7 +735,6 @@
 				A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */,
 				A970509913438F860022BF2C /* NMGetYouTubeDirectURLTask.m in Sources */,
 				A970509A13438F860022BF2C /* NMTask.m in Sources */,
-				A970509D13438F860022BF2C /* ChannelTableCellView.m in Sources */,
 				A970509E13438F860022BF2C /* NMControlsView.m in Sources */,
 				A970509F13438F860022BF2C /* NMMovieView.m in Sources */,
 				A97050A013438F860022BF2C /* NMTouchImageView.m in Sources */,
@@ -754,6 +753,7 @@
 				A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */,
 				A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */,
 				A925FEA313B47E3900ACC039 /* HorizontalTableView.m in Sources */,
+				A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
