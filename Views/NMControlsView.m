@@ -149,8 +149,6 @@
 			channelNameLabel.alpha = 1.0f;
 			videoTitleLabel.alpha = 1.0f;
 			if ( animated ) [UIView commitAnimations];
-			// demo purpose - remove scale button
-			channelViewButton.hidden = YES;
 			break;
 		}
 			

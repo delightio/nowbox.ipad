@@ -116,11 +116,11 @@
 	[controlScrollView addSubview:loadedControlView];
 	
 	// load channel view
-//	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
-//	theFrame = channelController.panelView.frame;
-//	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
-//	channelController.panelView.frame = theFrame;
-//	[self.view addSubview:channelController.panelView];
+	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
+	theFrame = channelController.panelView.frame;
+	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
+	channelController.panelView.frame = theFrame;
+	[self.view addSubview:channelController.panelView];
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
