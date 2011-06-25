@@ -9,6 +9,7 @@
 #import "ChannelPanelController.h"
 #import "NMLibrary.h"
 #import "VideoRowController.h"
+#import "ChannelTableCellView.h"
 
 
 #define VIDEO_ROW_LEFT_PADDING			168.0f
@@ -23,7 +24,7 @@
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-	tableView.rowHeight = 106.0f;
+	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 }
 
@@ -123,7 +124,8 @@
     
 	UITableViewCell *cell = (UITableViewCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell = [[ChannelTableCellView alloc] initWithReuseIdentifier:CellIdentifier];
+//        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.textLabel.font = styleUtility.channelNameFont;
 		cell.selectionStyle = UITableViewCellEditingStyleNone;
 		[self setupCellContentView:cell.contentView];

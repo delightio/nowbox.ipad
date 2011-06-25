@@ -55,6 +55,7 @@
 	theFrame.origin = CGPointMake(frame.size.width - 10.0f - ytLogo.size.width, frame.size.height - 10.0f - ytLogo.size.height);
 	logoView.frame = theFrame;
 	logoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
+	logoView.alpha = 0.5f;
 	[self addSubview:logoView];
 
 	return self;

@@ -11,7 +11,6 @@
 #import "NMLibrary.h"
 
 #define NM_VIDEO_CELL_PADDING	10.0f
-#define NM_VIDEO_CELL_HEIGHT	106.0f
 
 @implementation PanelVideoContainerView
 @synthesize titleLabel, datePostedLabel, durationLabel;

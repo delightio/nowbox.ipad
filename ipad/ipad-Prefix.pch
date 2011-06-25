@@ -12,4 +12,8 @@
 	#import <UIKit/UIKit.h>
 	#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+
+#define NM_VIDEO_CELL_HEIGHT		106.0f
+#define NM_CHANNEL_COLUMN_WIDTH		168.0f
+
 #endif
