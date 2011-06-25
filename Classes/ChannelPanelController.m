@@ -25,6 +25,7 @@
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
+	tableView.separatorColor = [UIColor grayColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 }
 
