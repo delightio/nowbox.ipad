@@ -59,9 +59,9 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 	}
 	NSString * urlStr = nil;
 	if ( eventType == NMEventReexamine ) {
-		urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&event_type=%@&error_code=%d", videoID, evtStr, errorCode];
+		urlStr = [NSString stringWithFormat:@"http://%@/events/track?video_id=%d&event_type=%@&error_code=%d&user_id=%d", NM_BASE_URL, videoID, evtStr, errorCode, NM_USER_ACCOUNT_ID];
 	} else {
-		urlStr = [NSString stringWithFormat:@"http://nowmov.com/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%@&trigger_name=%@", videoID, elapsedSeconds, duration, evtStr, eventType == NMEventView && playedToEnd ? @"auto" : @"touch"];
+		urlStr = [NSString stringWithFormat:@"http://%@/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%@&trigger_name=%@&user_id=%d", NM_BASE_URL, videoID, elapsedSeconds, duration, evtStr, eventType == NMEventView && playedToEnd ? @"auto" : @"touch", NM_USER_ACCOUNT_ID];
 	}
 #ifdef DEBUG_EVENT_TRACKING
 	NSLog(@"send event: %@", urlStr);

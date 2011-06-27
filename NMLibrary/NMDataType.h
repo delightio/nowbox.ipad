@@ -19,7 +19,7 @@ typedef enum {
 	NMCommandGetAllChannels			= 1,
 	NMCommandGetFriendChannels,
 	NMCommandGetTopicChannels,
-	NMCommandGetTrendingChannels,
+	NMCommandGetDefaultChannels,
 	NMCommandGetVideoInfo,
 	NMCommandGetChannelVideoList,
 	NMCommandGetNextVideo,

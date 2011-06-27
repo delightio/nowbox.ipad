@@ -18,7 +18,7 @@ NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
-@synthesize liveChannel;
+@synthesize trendingChannel;
 
 - (id)init {
 	self = [super init];
@@ -33,7 +33,7 @@ NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 }
 
 - (void)dealloc {
-	[liveChannel release];
+	[trendingChannel release];
 	[channelNamePredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
@@ -148,25 +148,23 @@ NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 	return [results count] < 2;		// the app should, at least, contain one single channel (trending)
 }
 
-- (NMChannel *)liveChannel {
-	if ( liveChannel == nil ) {
+- (NMChannel *)trendingChannel {
+	if ( trendingChannel == nil ) {
 		NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
 		[fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
-		[fetchRequest setPredicate:[channelNamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:@"live" forKey:@"NM_CHANNEL_NAME"]]];
+		[fetchRequest setFetchLimit:1];
+		
+		NSSortDescriptor * sortDsrpt = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+		
+		[fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDsrpt]];
+		[sortDsrpt release];
+		
 		[fetchRequest setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
-		if ( result == nil || [result count] == 0 ) {
-			// insert channel
-			liveChannel = [[self insertNewChannel] retain];
-			liveChannel.title = @"Live";
-			liveChannel.title = @"live";
-			liveChannel.resource_uri = @"http://nowmov.com/live";
-		} else {
-			liveChannel = [[result objectAtIndex:0] retain];
-		}
+		trendingChannel = [[result objectAtIndex:0] retain];
 		[fetchRequest release];
 	}
-	return liveChannel;
+	return trendingChannel;
 }
 
 #pragma mark Video 

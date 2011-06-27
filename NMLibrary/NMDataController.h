@@ -21,12 +21,12 @@
 	NSPredicate * channelNamesPredicateTemplate;
 	
 	NSArray * sortedVideoList;
-	NMChannel * liveChannel;
+	NMChannel * trendingChannel;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSArray * sortedVideoList;
-@property (nonatomic, readonly) NMChannel * liveChannel;
+@property (nonatomic, readonly) NMChannel * trendingChannel;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 

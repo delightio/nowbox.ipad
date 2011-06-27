@@ -13,6 +13,7 @@
 #import "NMStyleUtility.h"
 
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
+const NSInteger NM_USER_ACCOUNT_ID			= 1;
 
 @implementation ipadAppDelegate
 

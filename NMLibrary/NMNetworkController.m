@@ -267,7 +267,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 					case NMCommandGetAllChannels:
 					case NMCommandGetFriendChannels:
 					case NMCommandGetTopicChannels:
-					case NMCommandGetTrendingChannels:
+					case NMCommandGetDefaultChannels:
 					case NMCommandGetChannelVideoList:
 					case NMCommandGetYouTubeDirectURL:
 						// cancel the task

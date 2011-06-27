@@ -66,7 +66,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?target=mobile&limit=%d", urlString, numberOfVideoRequested];
+	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
 //	NSString * urlStr = @"http://boogie.local/pipely/test_videos.json";
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL

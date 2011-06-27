@@ -75,7 +75,7 @@
 	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
 	[self presentModalViewController:appDelegate.viewController animated:NO];
 	// always default to LIVE channel
-	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.liveChannel;
+	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
 }
 
 - (void)showVideoViewAnimated {
@@ -83,7 +83,7 @@
 	appDelegate.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[self presentModalViewController:appDelegate.viewController animated:YES];
 	// always default to LIVE channel
-	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.liveChannel;
+	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
 }
 
 - (void)checkUpdateChannels {

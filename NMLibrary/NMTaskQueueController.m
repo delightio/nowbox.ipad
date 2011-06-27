@@ -77,7 +77,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 //	[networkController addNewConnectionForTask:task];
 //	[task release];
 
-	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetTrendingChannels];
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetDefaultChannels];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

@@ -20,7 +20,7 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 
 @implementation NMGetChannelsTask
 
-@synthesize liveChannel;
+@synthesize trendingChannel;
 
 - (id)init {
 	self = [super init];
@@ -41,15 +41,15 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	return self;
 }
 
-- (id)initGetTrendingChannels {
+- (id)initGetDefaultChannels {
 	self = [self init];
-	command = NMCommandGetTrendingChannels;
+	command = NMCommandGetDefaultChannels;
 	return self;
 }
 
 - (void)dealloc {
 	[channelJSONKeys release];
-	[liveChannel release];
+	[trendingChannel release];
 	[super dealloc];
 }
 
@@ -57,21 +57,10 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	NSString * urlStr;
 	NSTimeInterval t = NM_URL_REQUEST_TIMEOUT;
 	switch (command) {
-		case NMCommandGetFriendChannels:
-			urlStr = @"http://nowmov.com/channel/listings/friends?as_user_screenname=dapunster&target=mobile";
-			t = 60.0f;
+		case NMCommandGetDefaultChannels:
+			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 			break;
-		case NMCommandGetTopicChannels:
-			urlStr = @"http://nowmov.com/channel/listings/topics?as_user_screenname=dapunster&target=mobile";
-			t = 60.0f;
-			break;
-		case NMCommandGetTrendingChannels:
-			urlStr = @"http://nowmov.com/channel/listings/trending?as_user_screenname=dapunster&target=mobile";
-			break;
-			
 		default:
-			urlStr = @"http://nowmov.com/channel/listings/all?as_user_screenname=dapunster&target=mobile";
-			t = 60.0f;
 			break;
 	}
 
@@ -136,7 +125,7 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 		[chnObj setValuesForKeysWithDictionary:dict];
 		// this will insert the first 
 		if ( [chnObj.title isEqualToString:@"live"] ) {
-			self.liveChannel = chnObj;
+			self.trendingChannel = chnObj;
 		}
 		idx++;
 	}
@@ -161,8 +150,8 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 }
 
 - (NSDictionary *)userInfo {
-	if ( liveChannel ) {
-		return [NSDictionary dictionaryWithObjectsAndKeys:liveChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
+	if ( trendingChannel ) {
+		return [NSDictionary dictionaryWithObjectsAndKeys:trendingChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
 	} else {
 		return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"type"];
 	}

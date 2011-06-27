@@ -10,6 +10,7 @@
 #import "JSONKit.h"
 
 #define NM_URL_REQUEST_TIMEOUT		30.0f
+#define NM_BASE_URL					@"aji.herokuapp.com/1"
 
 @class NMDataController;
 

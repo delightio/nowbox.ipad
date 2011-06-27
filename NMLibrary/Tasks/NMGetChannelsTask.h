@@ -12,13 +12,13 @@
 
 @interface NMGetChannelsTask : NMTask {
 	NSArray * channelJSONKeys;
-	NMChannel * liveChannel;
+	NMChannel * trendingChannel;
 }
 
-@property (nonatomic, retain) NMChannel * liveChannel;
+@property (nonatomic, retain) NMChannel * trendingChannel;
 
 - (id)initGetFriendChannels;
 - (id)initGetTopicChannels;
-- (id)initGetTrendingChannels;
+- (id)initGetDefaultChannels;
 
 @end
