@@ -14,6 +14,7 @@
 
 NSString * const NMChannelEntityName = @"NMChannel";
 NSString * const NMVideoEntityName = @"NMVideo";
+NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
@@ -171,6 +172,11 @@ NSString * const NMVideoEntityName = @"NMVideo";
 #pragma mark Video 
 - (NMVideo *)insertNewVideo {
 	NMVideo * vid = (NMVideo *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext];
+	return vid;
+}
+
+- (NMVideoDetail *)insertNewVideoDetail {
+	NMVideoDetail * vid = (NMVideoDetail *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoDetailEntityName inManagedObjectContext:managedObjectContext];
 	return vid;
 }
 

@@ -40,12 +40,12 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
 	[mdict setObject:[dict objectForKey:@"duration"] forKey:@"duration"];
 	[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
-	[mdict setObject:[dict objectForKey:@"service_name"] forKey:@"service_name"];
-	[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
+	[mdict setObject:[dict objectForKey:@"source"] forKey:@"source"];
+	[mdict setObject:[dict objectForKey:@"external_id"] forKey:@"external_id"];
 	[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
 	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
 	[mdict setObject:[dict objectForKey:@"thumbnail_uri"] forKey:@"thumbnail_uri"];
-	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
+	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
 	return mdict;
 }
 

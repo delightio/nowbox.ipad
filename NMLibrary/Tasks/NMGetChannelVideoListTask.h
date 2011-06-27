@@ -14,6 +14,7 @@
 @interface NMGetChannelVideoListTask : NMTask {
 	NMChannel * channel;
 	NSString * urlString;
+	NSMutableArray * parsedDetailObjects;
 	BOOL newChannel;
 	NSUInteger numberOfVideoAdded;
 	NSUInteger numberOfVideoRequested;

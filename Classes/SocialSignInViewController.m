@@ -71,10 +71,10 @@
 //	[videoViewController stopVideo];
 //	NSString * urlStr;
 //	NMVideo * video = videoViewController.currentVideo;
-//	if ( [video.service_name isEqualToString:@"youtube"] ) {
-//		urlStr = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", video.service_external_id];
-//	} else if ( [video.service_name isEqualToString:@"vimeo"] ) {
-//		urlStr = [NSString stringWithFormat:@"http://vimeo.com/%@", video.service_external_id];
+//	if ( [video.source isEqualToString:@"youtube"] ) {
+//		urlStr = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", video.external_id];
+//	} else if ( [video.source isEqualToString:@"vimeo"] ) {
+//		urlStr = [NSString stringWithFormat:@"http://vimeo.com/%@", video.external_id];
 //	}
 //	[SHKFacebook shareURL:[NSURL URLWithString:urlStr] title:video.title];
 }
@@ -84,10 +84,10 @@
 //	[videoViewController stopVideo];
 //	NSString * urlStr;
 //	NMVideo * video = videoViewController.currentVideo;
-//	if ( [video.service_name isEqualToString:@"youtube"] ) {
-//		urlStr = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", video.service_external_id];
-//	} else if ( [video.service_name isEqualToString:@"vimeo"] ) {
-//		urlStr = [NSString stringWithFormat:@"http://vimeo.com/%@", video.service_external_id];
+//	if ( [video.source isEqualToString:@"youtube"] ) {
+//		urlStr = [NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@", video.external_id];
+//	} else if ( [video.source isEqualToString:@"vimeo"] ) {
+//		urlStr = [NSString stringWithFormat:@"http://vimeo.com/%@", video.external_id];
 //	}
 //	[SHKTwitter shareURL:[NSURL URLWithString:urlStr] title:video.title];
 }

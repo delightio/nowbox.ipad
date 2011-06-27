@@ -80,3 +80,4 @@ extern NSString * const NMURLConnectionErrorNotification;
 // Entity names
 extern NSString * const NMChannelEntityName;
 extern NSString * const NMVideoEntityName;
+extern NSString * const NMVideoDetailEntityName;

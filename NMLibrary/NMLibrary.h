@@ -12,3 +12,4 @@
 #import "NMCacheController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMVideoDetail.h"

@@ -24,7 +24,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	
 	command = NMCommandGetYouTubeDirectURL;
 	self.video = vdo;
-	self.externalID = vdo.service_external_id;
+	self.externalID = vdo.external_id;
 	
 	return self;
 }

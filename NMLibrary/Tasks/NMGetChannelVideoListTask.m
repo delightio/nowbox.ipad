@@ -9,6 +9,7 @@
 #import "NMGetChannelVideoListTask.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMVideoDetail.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
@@ -33,18 +34,22 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict {
 	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:10];
-	[mdict setObject:[dict objectForKey:@"author_username"] forKey:@"author_username"];
-	[mdict setObject:[dict objectForKey:@"author_profile_link"] forKey:@"author_profile_link"];
-	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
 	[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
 	[mdict setObject:[dict objectForKey:@"duration"] forKey:@"duration"];
-	[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
-	[mdict setObject:[dict objectForKey:@"service_name"] forKey:@"service_name"];
-	[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
-	[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
+	[mdict setObject:[dict objectForKey:@"nm_id"] forKey:@"id"];
+	[mdict setObject:[dict objectForKey:@"source"] forKey:@"source"];
+	[mdict setObject:[dict objectForKey:@"external_id"] forKey:@"external_id"];
 	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
 	[mdict setObject:[dict objectForKey:@"thumbnail_uri"] forKey:@"thumbnail_uri"];
-	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
+	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
+	return mdict;
+}
+
++ (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict {
+	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:4];
+	[mdict setObject:[dict valueForKeyPath:@"author.username"] forKey:@"author_username"];
+	[mdict setObject:[dict valueForKeyPath:@"author.profile_uri"] forKey:@"author_profile_uri"];
+	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
 	return mdict;
 }
 
@@ -60,6 +65,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 - (void)dealloc {
 	[channel release];
+	[parsedDetailObjects release];
 	[urlString release];
 	[super dealloc];
 }
@@ -80,14 +86,20 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
+	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
 	NSDate * timestamp = [NSDate date];
 	NSInteger idx = 0;
-	for (NSDictionary * dict in chVideos) {
-		mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
-		[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
-		[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
-		[parsedObjects addObject:mdict];
+	NSDictionary * dict;
+	for (NSDictionary * parentDict in chVideos) {
+		for (NSString * theKey in parentDict) {
+			dict = [parentDict objectForKey:theKey];
+			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
+			[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
+			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
+			[parsedObjects addObject:mdict];
+			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
+		}
 	}
 	
 }
@@ -96,7 +108,9 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	// add all video from server for now
 	NSDictionary * dict;
 	NMVideo * vidObj;
+	NMVideoDetail * dtlObj;
 	NSUInteger idx = [channel.videos count];
+	NSUInteger vidCount = 0;
 	// insert video but do not insert duplicate item
 	if ( idx ) {
 		NSMutableIndexSet * idIndexSet = [NSMutableIndexSet indexSet];
@@ -105,13 +119,19 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 		}
 		numberOfVideoAdded = 0;
 		for (dict in parsedObjects) {
-			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"vid"] unsignedIntegerValue]] ) {
+			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"nm_id"] unsignedIntegerValue]] ) {
 				numberOfVideoAdded++;
 				vidObj = [ctrl insertNewVideo];
 				[vidObj setValuesForKeysWithDictionary:dict];
 				vidObj.channel = channel;
 				[channel addVideosObject:vidObj];
+				dtlObj = [ctrl insertNewVideoDetail];
+				dict = [parsedDetailObjects objectAtIndex:vidCount];
+				[dtlObj setValuesForKeysWithDictionary:dict];
+				dtlObj.video = vidObj;
+				vidObj.detail = dtlObj;
 			}
+			vidCount++;
 		}
 	} else {
 		for (dict in parsedObjects) {
@@ -119,6 +139,11 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 			[vidObj setValuesForKeysWithDictionary:dict];
 			vidObj.channel = channel;
 			[channel addVideosObject:vidObj];
+			dtlObj = [ctrl insertNewVideoDetail];
+			dict = [parsedDetailObjects objectAtIndex:vidCount];
+			[dtlObj setValuesForKeysWithDictionary:dict];
+			dtlObj.video = vidObj;
+			vidObj.detail = dtlObj;
 		}
 	}
 }

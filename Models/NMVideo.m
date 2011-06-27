@@ -8,30 +8,27 @@
 
 #import "NMVideo.h"
 #import "NMChannel.h"
+#import "NMVideoDetail.h"
 #import "NMDataType.h"
 #import "NMAVPlayerItem.h"
 
 @implementation NMVideo 
 
-@dynamic author_profile_link;
-@dynamic author_username;
-@dynamic service_external_id;
-@dynamic nm_description;
-@dynamic created_at;
+@dynamic external_id;
+@dynamic published_at;
 @dynamic nm_fetch_timestamp;
 @dynamic title;
-@dynamic total_mentions;
 @dynamic nm_direct_url;
 @dynamic nm_sort_order;
 @dynamic nm_error;
 @dynamic nm_playback_status;
 @dynamic nm_retry_count;
-@dynamic service_name;
+@dynamic source;
 @dynamic nm_id;
-@dynamic reason_included;
 @dynamic channel;
 @dynamic thumbnail_uri;
 @dynamic duration;
+@dynamic detail;
 
 @synthesize nm_player_item;
 @synthesize nm_movie_detail_view;

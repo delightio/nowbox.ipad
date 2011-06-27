@@ -89,18 +89,20 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	[str release];
 	
 	parsedObjects = [[NSMutableArray alloc] init];
-	NSDictionary * cDict;
+	NSDictionary * cDict, * chnCtnDict;
 	NSMutableDictionary * pDict;
 	NSString * theKey;
 	for (cDict in theChs) {
-		pDict = [NSMutableDictionary dictionary];
-		for (theKey in channelJSONKeys) {
-			[pDict setObject:[cDict objectForKey:theKey] forKey:theKey];
+		for (NSString * rKey in cDict) {
+			chnCtnDict = [cDict objectForKey:rKey];
+			pDict = [NSMutableDictionary dictionary];
+			for (theKey in channelJSONKeys) {
+				[pDict setObject:[chnCtnDict objectForKey:theKey] forKey:theKey];
+			}
+			[pDict setObject:[chnCtnDict objectForKey:@"id"] forKey:@"nm_id"];
+			
+			[parsedObjects addObject:pDict];
 		}
-		[pDict setObject:[cDict objectForKey:@"id"] forKey:@"nm_id"];
-//		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
-		
-		[parsedObjects addObject:pDict];
 	}
 }
 

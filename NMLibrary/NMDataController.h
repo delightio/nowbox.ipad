@@ -10,6 +10,7 @@
 
 @class NMChannel;
 @class NMVideo;
+@class NMVideoDetail;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -41,6 +42,7 @@
 - (BOOL)emptyChannel;
 // video
 - (NMVideo *)insertNewVideo;
+- (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
 //- (NSArray *)sortedLiveChannelVideoList;
 

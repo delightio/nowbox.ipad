@@ -74,8 +74,8 @@
 	titleLabel.text = aVideo.title;
 //	NSLog(@"setting movie detail: %@", aVideo.title);
 	
-	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  xx,xxx views", [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.created_at]];
-	descriptionTextView.text = aVideo.nm_description;
+	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  xx,xxx views", [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at]];
+	descriptionTextView.text = aVideo.detail.nm_description;
 }
 
 @end

@@ -74,7 +74,7 @@
 	titleLabel.frame = theFrame;
 	titleLabel.text = aVideo.title;
 	
-	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.created_at];
+	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at];
 	NSInteger dur = [aVideo.duration integerValue];
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", dur / 60, dur % 60];
 }
