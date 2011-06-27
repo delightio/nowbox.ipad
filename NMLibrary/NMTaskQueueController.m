@@ -84,7 +84,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-	NSLog(@"get video list - %@", chnObj.channel_name);
+	NSLog(@"get video list - %@", chnObj.title);
 #endif
 	// if it's a new channel, we should have special handling on fail
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
@@ -94,7 +94,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-	NSLog(@"get video list - %@ %d", chnObj.channel_name, numVid);
+	NSLog(@"get video list - %@ %d", chnObj.title, numVid);
 #endif
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
 	task.numberOfVideoRequested = numVid;
@@ -128,7 +128,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 //}
 
 - (void)issueGetThumbnailForChannel:(NMChannel *)chnObj {
-	if ( chnObj.thumbnail && ![networkController downloadInProgressForURLString:chnObj.thumbnail] ) {
+	if ( chnObj.thumbnail_uri && ![networkController downloadInProgressForURLString:chnObj.thumbnail_uri] ) {
 		NMImageDownloadTask * task = [[NMImageDownloadTask alloc] initWithChannel:chnObj];
 		[networkController addNewConnectionForTask:task];
 		[task release];

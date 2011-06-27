@@ -182,7 +182,7 @@
 		currentChannel.nm_time_elapsed_timescale = [NSNumber numberWithInteger:aTime.timescale];
 	}
 	// send event back to nowmov server
-	currentChannel.nm_last_vid = theVideo.vid;
+	currentChannel.nm_last_vid = theVideo.nm_id;
 	// send event back to nowmov server
 	[nowmovTaskController issueSendViewingEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 }
@@ -789,7 +789,7 @@
 
 //- (void)updateControlsForVideoAtIndex:(NSUInteger)idx {
 //	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
-////	channelNameLabel.text = [currentChannel.channel_name capitalizedString];
+////	channelNameLabel.text = [currentChannel.title capitalizedString];
 ////	videoTitleLabel.text = [vid.title uppercaseString];
 //	CMTime t = movieView.player.currentItem.asset.duration;
 //	// check if the time is value

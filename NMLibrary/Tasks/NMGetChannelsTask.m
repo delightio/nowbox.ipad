@@ -25,7 +25,7 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 - (id)init {
 	self = [super init];
 	command = NMCommandGetAllChannels;
-	channelJSONKeys = [[NSArray alloc] initWithObjects:@"channel_name", @"count", @"reason", @"thumbnail", @"channel_type", @"channel_url", @"title", nil];
+	channelJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"thumbnail_uri", @"type", @"resource_uri", @"category", nil];
 	return self;
 }
 
@@ -97,7 +97,8 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 		for (theKey in channelJSONKeys) {
 			[pDict setObject:[cDict objectForKey:theKey] forKey:theKey];
 		}
-		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
+		[pDict setObject:[cDict objectForKey:@"id"] forKey:@"nm_id"];
+//		[pDict setObject:[cDict objectForKey:@"description"] forKey:@"nm_description"];
 		
 		[parsedObjects addObject:pDict];
 	}
@@ -109,7 +110,7 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	NSMutableDictionary * dict;
 	// prepare channel names for batch fetch request
 	for (dict in parsedObjects) {
-		[ay addObject:[dict objectForKey:@"channel_name"]];
+		[ay addObject:[dict objectForKey:@"title"]];
 	}
 	NSDictionary * fetchedChannels = [ctrl fetchChannelsForNames:ay];
 	// save channel with new data
@@ -118,9 +119,9 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 //	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
 	NSInteger idx = 0;
 	for (dict in parsedObjects) {
-		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"channel_name"]];
+		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"title"]];
 		if ( chnObj ) {
-			[foundSet addObject:chnObj.channel_name];
+			[foundSet addObject:chnObj.title];
 			// check if the channel is playing
 			// remove all existing videos
 			//[ctrl deleteVideoInChannel:chnObj];
@@ -132,7 +133,7 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 		// set channel value
 		[chnObj setValuesForKeysWithDictionary:dict];
 		// this will insert the first 
-		if ( [chnObj.channel_name isEqualToString:@"live"] ) {
+		if ( [chnObj.title isEqualToString:@"live"] ) {
 			self.liveChannel = chnObj;
 		}
 		idx++;
@@ -159,9 +160,9 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 
 - (NSDictionary *)userInfo {
 	if ( liveChannel ) {
-		return [NSDictionary dictionaryWithObjectsAndKeys:liveChannel, @"live_channel", [NSNumber numberWithInteger:command], @"channel_type", nil];
+		return [NSDictionary dictionaryWithObjectsAndKeys:liveChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
 	} else {
-		return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"channel_type"];
+		return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"type"];
 	}
 	return nil;
 }

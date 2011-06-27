@@ -17,15 +17,12 @@
 @dynamic nm_last_vid;
 @dynamic nm_time_elapsed_value;
 @dynamic nm_time_elapsed_timescale;
-@dynamic count;
-@dynamic reason;
-@dynamic thumbnail;
+@dynamic thumbnail_uri;
 @dynamic nm_thumbnail_file_name;
-@dynamic channel_name;
-@dynamic videos;
-@dynamic channel_url;
-@dynamic channel_type;
 @dynamic title;
+@dynamic videos;
+@dynamic resource_uri;
+@dynamic type;
 
 
 @end

@@ -20,15 +20,12 @@
 @property (nonatomic, retain) NSNumber * nm_last_vid;
 @property (nonatomic, retain) NSNumber * nm_time_elapsed_value;
 @property (nonatomic, retain) NSNumber * nm_time_elapsed_timescale;
-@property (nonatomic, retain) NSNumber * count;
-@property (nonatomic, retain) NSString * reason;
-@property (nonatomic, retain) NSString * thumbnail;
+@property (nonatomic, retain) NSString * thumbnail_uri;
 @property (nonatomic, retain) NSString * nm_thumbnail_file_name;
-@property (nonatomic, retain) NSString * channel_name;
-@property (nonatomic, retain) NSSet* videos;
-@property (nonatomic, retain) NSString * channel_url;
-@property (nonatomic, retain) NSString * channel_type;
 @property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSSet* videos;
+@property (nonatomic, retain) NSString * resource_uri;
+@property (nonatomic, retain) NSString * type;
 
 @end
 

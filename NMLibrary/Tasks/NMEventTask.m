@@ -22,7 +22,7 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 	
 	self.video = v;
 	// grab values in the video object to be used in the thread
-	videoID = [v.vid integerValue];
+	videoID = [v.nm_id integerValue];
 	eventType = evtType;
 	
 	return self;

@@ -24,7 +24,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self = [super init];
 	
 	cacheController = [NMCacheController sharedCacheController];
-	self.imageURLString = chn.thumbnail;
+	self.imageURLString = chn.thumbnail_uri;
 	self.originalImagePath = chn.nm_thumbnail_file_name;
 	self.channel = chn;
 	command = NMCommandGetChannelThumbnail;

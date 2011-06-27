@@ -25,8 +25,8 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	
-	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"channel_name like $NM_CHANNEL_NAME"] retain];
-	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel_name IN $NM_CHANNEL_NAMES"] retain];
+	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
+	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
 	
 	return self;
 }
@@ -127,7 +127,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 	if ( results && [results count] ) {
 		dict = [NSMutableDictionary dictionary];
 		for (channelObj in results) {
-			[dict setObject:channelObj forKey:channelObj.channel_name];
+			[dict setObject:channelObj forKey:channelObj.title];
 		}
 		[request release];
 		return dict;
@@ -158,8 +158,8 @@ NSString * const NMVideoEntityName = @"NMVideo";
 			// insert channel
 			liveChannel = [[self insertNewChannel] retain];
 			liveChannel.title = @"Live";
-			liveChannel.channel_name = @"live";
-			liveChannel.channel_url = @"http://nowmov.com/live";
+			liveChannel.title = @"live";
+			liveChannel.resource_uri = @"http://nowmov.com/live";
 		} else {
 			liveChannel = [[result objectAtIndex:0] retain];
 		}

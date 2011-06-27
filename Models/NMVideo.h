@@ -35,10 +35,10 @@
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSString * service_name;
-@property (nonatomic, retain) NSNumber * vid;
+@property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSString * reason_included;
 @property (nonatomic, retain) NMChannel * channel;
-@property (nonatomic, retain) NSString * thumbnail;
+@property (nonatomic, retain) NSString * thumbnail_uri;
 
 @property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
 @property (nonatomic, assign) NMMovieDetailView * nm_movie_detail_view;

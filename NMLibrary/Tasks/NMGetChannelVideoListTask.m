@@ -43,7 +43,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
 	[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
 	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
-	[mdict setObject:[dict objectForKey:@"thumbnail"] forKey:@"thumbnail"];
+	[mdict setObject:[dict objectForKey:@"thumbnail_uri"] forKey:@"thumbnail_uri"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
 	return mdict;
 }
@@ -52,8 +52,8 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	self = [super init];
 	command = NMCommandGetChannelVideoList;
 	self.channel = aChn;
-	self.channelName = aChn.channel_name;
-	self.urlString = aChn.channel_url;
+	self.channelName = aChn.title;
+	self.urlString = aChn.resource_uri;
 	numberOfVideoRequested = 5;
 	return self;
 }
@@ -101,7 +101,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 	if ( idx ) {
 		NSMutableIndexSet * idIndexSet = [NSMutableIndexSet indexSet];
 		for (vidObj in channel.videos) {
-			[idIndexSet addIndex:[vidObj.vid unsignedIntegerValue]];
+			[idIndexSet addIndex:[vidObj.nm_id unsignedIntegerValue]];
 		}
 		numberOfVideoAdded = 0;
 		for (dict in parsedObjects) {

@@ -259,7 +259,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 }
 
 - (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj {
-	NSString * chname = chnObj.channel_name;
+	NSString * chname = chnObj.title;
 	@synchronized(pendingTaskBuffer) {
 		for (NMTask * task in pendingTaskBuffer) {
 			if ( task.state == NMTaskExecutionStateConnectionActive ) {

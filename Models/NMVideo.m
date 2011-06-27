@@ -27,10 +27,10 @@
 @dynamic nm_playback_status;
 @dynamic nm_retry_count;
 @dynamic service_name;
-@dynamic vid;
+@dynamic nm_id;
 @dynamic reason_included;
 @dynamic channel;
-@dynamic thumbnail;
+@dynamic thumbnail_uri;
 @dynamic duration;
 
 @synthesize nm_player_item;

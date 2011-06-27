@@ -44,7 +44,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	[mdict setObject:[dict objectForKey:@"service_external_id"] forKey:@"service_external_id"];
 	[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
 	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
-	[mdict setObject:[dict objectForKey:@"thumbnail"] forKey:@"thumbnail"];
+	[mdict setObject:[dict objectForKey:@"thumbnail_uri"] forKey:@"thumbnail_uri"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created_at"] floatValue]] forKey:@"created_at"];
 	return mdict;
 }
@@ -53,8 +53,8 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	self = [super init];
 	command = NMCommandGetChannelVideoList;
 	self.channel = aChn;
-	self.channelName = aChn.channel_name;
-	self.urlString = aChn.channel_url;
+	self.channelName = aChn.title;
+	self.urlString = aChn.resource_uri;
 	numberOfVideoRequested = 5;
 	return self;
 }
@@ -108,7 +108,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 		[ctrl deleteVideoInChannel:channel afterVideo:curVideo];
 		// insert new item
 		for (dict in parsedObjects) {
-			if ( [curVideo.vid isEqualToNumber:[dict objectForKey:@"vid"]] ) continue;
+			if ( [curVideo.nm_id isEqualToNumber:[dict objectForKey:@"vid"]] ) continue;
 			NSLog(@"add video - %@", [dict objectForKey:@"title"]);
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
