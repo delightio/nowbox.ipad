@@ -13,7 +13,11 @@
 #define NM_VIDEO_CELL_PADDING	10.0f
 
 @implementation PanelVideoContainerView
-@synthesize titleLabel, datePostedLabel, durationLabel;
+@synthesize titleLabel, datePostedLabel;
+@synthesize highlightColor, durationLabel;
+@synthesize normalColor, indexInTable;
+@synthesize panelDelegate, tableView;
+@synthesize highlighted;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -46,6 +50,8 @@
 		[self addSubview:durationLabel];
 		
 		self.backgroundColor = styleUtility.channelPanelBackgroundColor;
+		self.normalColor = styleUtility.channelPanelBackgroundColor;
+		self.highlightColor = styleUtility.channelPanelHighlightColor;
     }
     return self;
 }
@@ -64,6 +70,8 @@
 	[titleLabel release];
 	[datePostedLabel release];
 	[durationLabel release];
+	[highlightColor release];
+	[normalColor release];
     [super dealloc];
 }
 
@@ -77,6 +85,40 @@
 	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at];
 	NSInteger dur = [aVideo.duration integerValue];
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", dur / 60, dur % 60];
+}
+
+- (BOOL)highlighted {
+	return highlighted_;
+}
+
+- (void)setHighlighted:(BOOL)abool {
+	// set highlighted state for subviews as well
+	titleLabel.highlighted = abool;
+	datePostedLabel.highlighted = abool;
+	durationLabel.highlighted = abool;
+	highlighted_ = abool;
+	if ( highlighted_ ) {
+		self.backgroundColor = highlightColor;
+	} else {
+		self.backgroundColor = normalColor;
+	}
+}
+#pragma mark UIResponder
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	// highlight
+	self.backgroundColor = highlightColor;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	// check if touch up inside the view itself
+	if ( panelDelegate ) {
+		[panelDelegate tableView:tableView didSelectCellAtIndex:indexInTable];
+	}
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+	// remove highlight
+	self.backgroundColor = normalColor;
 }
 
 @end

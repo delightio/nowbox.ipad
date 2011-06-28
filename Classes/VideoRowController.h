@@ -11,20 +11,23 @@
 #import "NMStyleUtility.h"
 
 
+@class ChannelPanelController;
+
 @interface VideoRowController : NSObject <HorizontalTableViewDelegate, NSFetchedResultsControllerDelegate> {
 	HorizontalTableView * videoTableView;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
 	NMChannel * channel;
 	NMStyleUtility * styleUtility;
+	ChannelPanelController * panelController;
 }
 
 @property (nonatomic, readonly) HorizontalTableView * videoTableView;
+@property (nonatomic, assign) ChannelPanelController * panelController;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
-- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj;
-
+- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate;
 
 @end

@@ -7,6 +7,9 @@
 //
 
 #import "NMStyleUtility.h"
+#import "HorizontalTableView.h"
+
+@class VideoPlaybackViewController;
 
 typedef enum {
 	NMFullScreenPlaybackMode,
@@ -14,7 +17,7 @@ typedef enum {
 	NMFullScreenChannelMode,
 } NMPlaybackViewModeType;
 
-@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, HorizontalTableViewParentPanelDelegate> {
     IBOutlet UITableView * tableView;
 	
 	UIView *panelView;
@@ -23,11 +26,16 @@ typedef enum {
 	NSUInteger numberOfChannels;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
+	NSMutableArray *containerViewPool;
+	VideoPlaybackViewController * videoViewController;
+	NSInteger selectedIndex;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *panelView;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
+@property (nonatomic, assign) VideoPlaybackViewController * videoViewController;
+@property (nonatomic, readonly) NSInteger selectedIndex;
 
 - (void)panelWillAppear;
 - (void)panelWillDisappear;

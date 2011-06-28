@@ -1,5 +1,6 @@
 
 #import "HorizontalTableView.h"
+#import "PanelVideoContainerView.h"
 
 #define kColumnPoolSize 3
 //#define DLog(...) NSLog(@"%s %@", __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])
@@ -30,6 +31,7 @@
 @synthesize scrollView=_scrollView;
 @synthesize currentPageIndex=_currentPageIndex;
 @synthesize delegate=_delegate;
+@synthesize panelDelegate=_panelDelegate;
 @synthesize columnPool=_columnPool;
 
 
@@ -62,7 +64,6 @@
             pageView = [_delegate tableView:self viewForIndex:pageIndex];
             [self.pageViews replaceObjectAtIndex:pageIndex withObject:pageView];
             [self.scrollView addSubview:pageView];
-            //DLog(@"View loaded for page %d", pageIndex);
         }
 	} else {
 		pageView = [self.pageViews objectAtIndex:pageIndex];
@@ -104,19 +105,27 @@
 }
 
 - (void)queueColumnView:(UIView *)vw {
-    if ([self.columnPool count] >= kColumnPoolSize) {
-        return;
-    }
-    [self.columnPool addObject:vw];
+	if ( _panelDelegate ) {
+		[_panelDelegate queueColumnView:vw];
+	} else {
+		if ([self.columnPool count] >= kColumnPoolSize) {
+			return;
+		}
+		[self.columnPool addObject:vw];
+	}
 }
 
 - (UIView *)dequeueColumnView {
-    UIView *vw = [[self.columnPool lastObject] retain];
-    if (vw) {
-        [self.columnPool removeLastObject];
-        //DLog(@"Supply from reuse pool");
-    }
-    return [vw autorelease];
+	if ( _panelDelegate ) {
+		return [_panelDelegate dequeueColumnView];
+	} else {
+		UIView *vw = [[self.columnPool lastObject] retain];
+		if (vw) {
+			[self.columnPool removeLastObject];
+			//DLog(@"Supply from reuse pool");
+		}
+		return [vw autorelease];
+	}
 }
 
 - (void)removeColumn:(NSInteger)index {
@@ -189,8 +198,9 @@
     scroller.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
 	//self.scrollView.pagingEnabled = YES;
-	scroller.showsHorizontalScrollIndicator = YES;
+	scroller.showsHorizontalScrollIndicator = NO;
 	scroller.showsVerticalScrollIndicator = NO;
+	scroller.delaysContentTouches = NO;
     scroller.alwaysBounceVertical = NO;
     self.scrollView = scroller;
 	[self addSubview:scroller];

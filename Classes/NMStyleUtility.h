@@ -16,6 +16,7 @@
 	UIColor * clearColor, * channelPanelFontColor;
 	// channel panel
 	UIColor * channelPanelBackgroundColor;
+	UIColor * channelPanelHighlightColor;
 	UIImage * userPlaceholderImage;
 }
 
@@ -26,6 +27,7 @@
 @property (nonatomic, readonly) UIColor * clearColor;
 @property (nonatomic, readonly) UIColor * channelPanelFontColor;
 @property (nonatomic, readonly) UIColor * channelPanelBackgroundColor;
+@property (nonatomic, readonly) UIColor * channelPanelHighlightColor;
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
 
 + (NMStyleUtility *)sharedStyleUtility;

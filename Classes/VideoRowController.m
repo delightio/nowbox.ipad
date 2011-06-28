@@ -8,15 +8,17 @@
 
 #import "VideoRowController.h"
 #import "PanelVideoContainerView.h"
+#import "ChannelContainerView.h"
+#import "VideoPlaybackViewController.h"
 
 
 @implementation VideoRowController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoTableView;
-@synthesize channel;
+@synthesize channel, panelController;
 
-- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj {
+- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate {
 	self = [super init];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	
@@ -26,8 +28,9 @@
 	videoTableView.frame = aframe;
 	
 	videoTableView.delegate	= self;
-	videoTableView.backgroundColor	= [UIColor viewFlipsideBackgroundColor];
-	videoTableView.autoresizingMask			= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	videoTableView.panelDelegate = pDelegate;
+	videoTableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
+	videoTableView.autoresizingMask	= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	
 	[videoTableView performSelector:@selector(refreshData) withObject:nil afterDelay:0.25f];
 	
@@ -50,15 +53,24 @@
 	return [sectionInfo numberOfObjects];
 }
 
-- (UIView *)tableView:(HorizontalTableView *)aTableView viewForIndex:(NSInteger)index {
+- (PanelVideoContainerView *)tableView:(HorizontalTableView *)aTableView viewForIndex:(NSInteger)index {
 	PanelVideoContainerView * ctnView = (PanelVideoContainerView *)[aTableView dequeueColumnView];
 	
 	if ( ctnView == nil ) {
 		ctnView = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 240.0, 80.0)] autorelease];
 		ctnView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+		ctnView.tableView = aTableView;
+		ctnView.panelDelegate = aTableView.panelDelegate;
 	}
 	
+	if ( panelController.videoViewController.currentChannel == channel && index == panelController.selectedIndex ) {
+		ctnView.highlighted = YES;
+	} else {
+		ctnView.highlighted = NO;
+	}
+		
 	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+	ctnView.indexInTable = index;
 	[ctnView setVideoInfo:theVideo];
 	return ctnView;
 }

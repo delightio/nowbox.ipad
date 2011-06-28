@@ -120,6 +120,7 @@
 	theFrame = channelController.panelView.frame;
 	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
 	channelController.panelView.frame = theFrame;
+	channelController.videoViewController = self;
 	[self.view addSubview:channelController.panelView];
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];

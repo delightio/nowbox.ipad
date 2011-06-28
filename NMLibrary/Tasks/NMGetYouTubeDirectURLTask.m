@@ -80,8 +80,8 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		parsedObjects = [[NSArray alloc] initWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil], nil];
 		return;
 	}
-	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
-//	self.directURLString = [contentDict valueForKeyPath:@"video.stream_url"];
+//	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
+	self.directURLString = [contentDict valueForKeyPath:@"video.stream_url"];
 	if ( directURLString == nil ) {
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;

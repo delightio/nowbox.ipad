@@ -8,6 +8,7 @@
 
 #import "ChannelPanelController.h"
 #import "NMLibrary.h"
+#import "VideoPlaybackViewController.h"
 #import "VideoRowController.h"
 #import "ChannelContainerView.h"
 
@@ -16,20 +17,25 @@
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
 #define NM_CHANNEL_CELL_TOP_PADDING		10.0f
 #define NM_CHANNEL_CELL_DETAIL_TOP_MARGIN	40.0f
+#define NM_CONTAINER_VIEW_POOL_SIZE		8
 
 @implementation ChannelPanelController
 @synthesize panelView;
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
+@synthesize videoViewController;
+@synthesize selectedIndex;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
 	tableView.separatorColor = [UIColor grayColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
+	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
 }
 
 - (void)dealloc {
+	[containerViewPool release];
 	[panelView release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
@@ -61,6 +67,29 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 }
 
+#pragma mark Horizontal View delegate
+- (void)tableView:(HorizontalTableView *)tableView didSelectCellAtIndex:(NSInteger)index {
+	// clear the previous selection
+	selectedIndex = index;
+	NSLog(@"selected column at index %d", index);
+}
+
+- (void)queueColumnView:(UIView *)vw {
+    if ([containerViewPool count] >= NM_CONTAINER_VIEW_POOL_SIZE) {
+        return;
+    }
+    [containerViewPool addObject:vw];
+}
+
+- (UIView *)dequeueColumnView {
+    UIView *vw = [[containerViewPool lastObject] retain];
+    if (vw) {
+        [containerViewPool removeLastObject];
+		[vw autorelease];
+    }
+    return vw;
+}
+
 #pragma mark Other table methods
 - (void)setupCellContentView:(UIView *)aContentView {
 	ChannelContainerView * ctnView = [[ChannelContainerView alloc] initWithHeight:aContentView.bounds.size.height];
@@ -78,7 +107,8 @@
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
 	//MARK: memory leak here!!
-	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel];
+	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
+	rowCtrl.panelController = self;
 	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
 	
 	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];

@@ -20,6 +20,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize clearColor;
 @synthesize channelPanelFontColor;
 @synthesize channelPanelBackgroundColor;
+@synthesize channelPanelHighlightColor;
 @synthesize userPlaceholderImage;
 
 + (NMStyleUtility *)sharedStyleUtility {
@@ -42,6 +43,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	videoTitleFont = [[UIFont boldSystemFontOfSize:13.0f] retain];
 	clearColor = [[UIColor clearColor] retain];
 	channelPanelFontColor = [[UIColor colorWithRed:90.0f / 255.0f green:90.0f / 255.0f blue:90.0f / 255.0f alpha:1.0] retain];
+	channelPanelHighlightColor = [[UIColor grayColor] retain];
 	channelPanelBackgroundColor = [[UIColor colorWithRed:232.0f/255.0f green:233.0f / 255.0f blue:237.0f / 255.0f alpha:1.0] retain];
 	userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
 	
@@ -55,6 +57,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[videoTitleFont release];
 	[clearColor release];
 	[channelPanelFontColor release];
+	[channelPanelHighlightColor release];
 	[channelPanelBackgroundColor release];
 	[userPlaceholderImage release];
 	[super dealloc];
