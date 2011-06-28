@@ -196,7 +196,7 @@
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"videos.@count > 0"]];
+//	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"videos.@count > 0"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
