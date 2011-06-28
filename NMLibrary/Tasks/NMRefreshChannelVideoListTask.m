@@ -12,6 +12,7 @@
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
+#import "NMGetChannelVideoListTask.h"
 
 NSString * const NMWillRefreshChannelVideListNotification = @"NMWillRefreshChannelVideListNotification";
 NSString * const NMDidRefreshChannelVideoListNotification = @"NMDidRefreshChannelVideoListNotification";
@@ -30,23 +31,6 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 		refreshOutdatedVideoPredicateTempate_ = [[NSPredicate predicateWithFormat:@"!vid IN $NM_VIDEO_ID_LIST"] retain];
 	}
 	return refreshOutdatedVideoPredicateTempate_;
-}
-
-+ (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict {
-	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:10];
-	[mdict setObject:[dict objectForKey:@"author_username"] forKey:@"author_username"];
-	[mdict setObject:[dict objectForKey:@"author_profile_link"] forKey:@"author_profile_link"];
-	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
-	[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
-	[mdict setObject:[dict objectForKey:@"duration"] forKey:@"duration"];
-	[mdict setObject:[dict objectForKey:@"vid"] forKey:@"vid"];
-	[mdict setObject:[dict objectForKey:@"source"] forKey:@"source"];
-	[mdict setObject:[dict objectForKey:@"external_id"] forKey:@"external_id"];
-	[mdict setObject:[dict objectForKey:@"total_mentions"] forKey:@"total_mentions"];
-	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
-	[mdict setObject:[dict objectForKey:@"thumbnail_uri"] forKey:@"thumbnail_uri"];
-	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
-	return mdict;
 }
 
 - (id)initWithChannel:(NMChannel *)aChn {
@@ -86,7 +70,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	NSDate * timestamp = [NSDate date];
 	NSInteger idx = 0;
 	for (NSDictionary * dict in chVideos) {
-		mdict = [NMRefreshChannelVideoListTask normalizeVideoDictionary:dict];
+		mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
 		[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
 		[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
 		[parsedObjects addObject:mdict];
@@ -100,7 +84,6 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	NMVideo * vidObj;
 	numberOfVideoAdded = 0;
 	if ( pbSafe ) {
-		NSLog(@"Begin safe update");
 		// user is currently viewing this channel
 		[delegate taskBeginPlaybackSafeUpdate:self];
 		// currently playing video in the channel
@@ -108,8 +91,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 		[ctrl deleteVideoInChannel:channel afterVideo:curVideo];
 		// insert new item
 		for (dict in parsedObjects) {
-			if ( [curVideo.nm_id isEqualToNumber:[dict objectForKey:@"vid"]] ) continue;
-			NSLog(@"add video - %@", [dict objectForKey:@"title"]);
+			if ( [curVideo.nm_id isEqualToNumber:[dict objectForKey:@"nm_id"]] ) continue;
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
 			vidObj.channel = channel;
@@ -117,7 +99,6 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 			numberOfVideoAdded++;
 		}
 		[delegate taskBeginPlaybackSafeUpdate:self];
-		NSLog(@"end safe update");
 	} else {
 		// the user is not playing the video in the channel requesting for new video list
 		// just delete everything in that channel and show the new list of video

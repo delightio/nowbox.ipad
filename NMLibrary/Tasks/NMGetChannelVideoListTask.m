@@ -19,11 +19,21 @@ NSString * const NMDidFailGetChannelVideoListNotification = @"NMDidFailGetChanne
 
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
+static NSArray * sharedVideoDirectJSONKeys = nil;
+
 @implementation NMGetChannelVideoListTask
 @synthesize channel;
 @synthesize newChannel, urlString;
 @synthesize numberOfVideoRequested;
 @synthesize delegate;
+
++ (NSArray *)directJSONKeys {
+	if ( sharedVideoDirectJSONKeys == nil ) {
+		sharedVideoDirectJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"duration", @"source", @"external_id", @"thumbnail_uri", @"view_count", nil];
+	}
+	
+	return sharedVideoDirectJSONKeys;
+}
 
 + (NSPredicate *)outdatedVideoPredicateTempate {
 	if ( outdatedVideoPredicateTempate_ == nil ) {
@@ -34,13 +44,11 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict {
 	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:10];
-	[mdict setObject:[dict objectForKey:@"title"] forKey:@"title"];
-	[mdict setObject:[dict objectForKey:@"duration"] forKey:@"duration"];
-	[mdict setObject:[dict objectForKey:@"nm_id"] forKey:@"id"];
-	[mdict setObject:[dict objectForKey:@"source"] forKey:@"source"];
-	[mdict setObject:[dict objectForKey:@"external_id"] forKey:@"external_id"];
-	[mdict setObject:[dict objectForKey:@"reason_included"] forKey:@"reason_included"];
-	[mdict setObject:[dict objectForKey:@"thumbnail_uri"] forKey:@"thumbnail_uri"];
+	NSArray * allKeys = [NMGetChannelVideoListTask directJSONKeys];
+	for (NSString * theKey in allKeys) {
+		[mdict setObject:[dict objectForKey:theKey] forKey:theKey];
+	}
+	[mdict setObject:[dict objectForKey:@"id"] forKey:@"nm_id"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
 	return mdict;
 }

@@ -106,7 +106,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 		if ( aChn.nm_last_vid ) {
 			NSFetchRequest * request = [[NSFetchRequest alloc] init];
 			[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext]];
-			[request setPredicate:[NSPredicate predicateWithFormat:@"vid == %@ AND nm_error == 0", aChn.nm_last_vid]];
+			[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id == %@ AND nm_error == 0", aChn.nm_last_vid]];
 			[request setReturnsObjectsAsFaults:NO];
 			NSArray * result = [self.managedObjectContext executeFetchRequest:request error:nil];
 			[request release];
@@ -397,7 +397,7 @@ static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", channel]];
     
     // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:5];
+    [fetchRequest setFetchBatchSize:10];
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
