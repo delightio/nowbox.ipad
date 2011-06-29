@@ -33,6 +33,7 @@
 @synthesize delegate=_delegate;
 @synthesize panelDelegate=_panelDelegate;
 @synthesize columnPool=_columnPool;
+@synthesize tableController;
 
 
 
@@ -192,7 +193,7 @@
     UIScrollView *scroller = [[UIScrollView alloc] init];
     CGRect rect = self.bounds;
     scroller.frame = rect;
-    scroller.backgroundColor = [UIColor blackColor];
+    scroller.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	scroller.delegate = self;
     scroller.autoresizesSubviews = YES;
     scroller.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -269,6 +270,7 @@
 
 
 - (void)dealloc {
+	[tableController release];
     [_columnPool release], _columnPool = nil;
     [_columnWidth release], _columnWidth = nil;
     [_pageViews release], _pageViews = nil;

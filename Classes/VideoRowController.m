@@ -18,28 +18,38 @@
 @synthesize videoTableView;
 @synthesize channel, panelController;
 
-- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate {
+//- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate {
+//	self = [super init];
+//	styleUtility = [NMStyleUtility sharedStyleUtility];
+//	
+//	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
+//	self.channel = chnObj;
+//	videoTableView	= [[HorizontalTableView alloc] init];
+//	videoTableView.frame = aframe;
+//	
+//	videoTableView.delegate	= self;
+//	videoTableView.panelDelegate = pDelegate;
+//	videoTableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
+//	videoTableView.autoresizingMask	= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+//	videoTableView.tableController = self;
+//	
+//	[videoTableView performSelector:@selector(refreshData) withObject:nil afterDelay:0.25f];
+//	
+//	return self;
+//}
+
+- (id)init {
 	self = [super init];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
-	self.channel = chnObj;
-	videoTableView	= [[HorizontalTableView alloc] init];
-	videoTableView.frame = aframe;
-	
-	videoTableView.delegate	= self;
-	videoTableView.panelDelegate = pDelegate;
-	videoTableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-	videoTableView.autoresizingMask	= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	
-	[videoTableView performSelector:@selector(refreshData) withObject:nil afterDelay:0.25f];
 	
 	return self;
 }
 
+
 - (void)dealloc {
 	[channel release];
-	[videoTableView release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
 	[super dealloc];
@@ -49,6 +59,7 @@
 #pragma mark HorizontalTableViewDelegate methods
 
 - (NSInteger)numberOfColumnsForTableView:(HorizontalTableView *)tableView {
+//	return 20;
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	return [sectionInfo numberOfObjects];
 }
@@ -72,6 +83,7 @@
 	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 	ctnView.indexInTable = index;
 	[ctnView setVideoInfo:theVideo];
+//	[ctnView setTestInfo];
 	return ctnView;
 }
 
@@ -140,7 +152,7 @@
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-	static NSUInteger theCount = 0;
+//	static NSUInteger theCount = 0;
 	switch (type) {
 		case NSFetchedResultsChangeDelete:
 		{

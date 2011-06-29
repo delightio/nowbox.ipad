@@ -11,6 +11,7 @@
 #import "VideoPlaybackViewController.h"
 #import "VideoRowController.h"
 #import "ChannelContainerView.h"
+#import "HorizontalTableView.h"
 
 
 #define VIDEO_ROW_LEFT_PADDING			168.0f
@@ -30,6 +31,7 @@
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
 	tableView.separatorColor = [UIColor grayColor];
+	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
 }
@@ -95,6 +97,28 @@
 	ChannelContainerView * ctnView = [[ChannelContainerView alloc] initWithHeight:aContentView.bounds.size.height];
 	ctnView.tag = 1001;
 	[aContentView addSubview:ctnView];
+	// create horizontal table controller
+	VideoRowController * vdoCtrl = [[VideoRowController alloc] init];
+	vdoCtrl.panelController = self;
+	// create horizontal table view
+	CGRect theFrame = aContentView.bounds;
+	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
+	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+	HorizontalTableView * videoTableView = [[HorizontalTableView alloc] init];
+	videoTableView.frame = theFrame;
+	
+	videoTableView.delegate	= vdoCtrl;
+	videoTableView.panelDelegate = self;
+	videoTableView.autoresizingMask	= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	videoTableView.tableController = vdoCtrl;
+	vdoCtrl.videoTableView = videoTableView;
+	
+	videoTableView.tag = 1009;
+	[aContentView insertSubview:videoTableView belowSubview:ctnView];
+	
+	// release everything
+	[videoTableView release];
+	[vdoCtrl release];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -103,13 +127,19 @@
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
 	ctnView.imageView.image = styleUtility.userPlaceholderImage;
-	CGRect theFrame = cell.contentView.bounds;
-	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
-	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-	//MARK: memory leak here!!
-	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
-	rowCtrl.panelController = self;
-	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
+	
+	// video row
+	HorizontalTableView * htView = (HorizontalTableView *)[cell viewWithTag:1009];
+	htView.tableController.fetchedResultsController = nil;
+	htView.tableController.channel = theChannel;
+	[htView refreshData];
+//	
+//	CGRect theFrame = cell.contentView.bounds;
+//	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
+//	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+//	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
+//	rowCtrl.panelController = self;
+//	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
 	
 	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
@@ -139,6 +169,7 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 		cell.clipsToBounds = YES;
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		[self setupCellContentView:cell.contentView];
     }
     

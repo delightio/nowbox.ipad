@@ -75,6 +75,19 @@
     [super dealloc];
 }
 
+- (void)setTestInfo {
+	NSString * testTitle = @"My Test Title";
+	CGSize theSize = [testTitle sizeWithFont:titleLabel.font constrainedToSize:titleMaxSize];
+	CGRect theFrame = titleLabel.frame;
+	theFrame.size = theSize;
+	titleLabel.frame = theFrame;
+	titleLabel.text = testTitle;
+	
+	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:[NSDate date]];
+	NSInteger dur = 94;
+	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", dur / 60, dur % 60];
+}
+
 - (void)setVideoInfo:(NMVideo *)aVideo {
 	CGSize theSize = [aVideo.title sizeWithFont:titleLabel.font constrainedToSize:titleMaxSize];
 	CGRect theFrame = titleLabel.frame;

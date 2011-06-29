@@ -3,6 +3,7 @@
 
 @class HorizontalTableView;
 @class PanelVideoContainerView;
+@class VideoRowController;
 
 @protocol HorizontalTableViewDelegate
 
@@ -33,12 +34,14 @@
     
     id _delegate;
 	id<HorizontalTableViewParentPanelDelegate> _panelDelegate;
+	VideoRowController * tableController;
     
     NSMutableArray *_columnPool;
 }
 
 @property (nonatomic, assign) IBOutlet id<HorizontalTableViewDelegate> delegate;
 @property (nonatomic, assign) id<HorizontalTableViewParentPanelDelegate> panelDelegate;
+@property (nonatomic, retain) VideoRowController * tableController;
 
 - (void)refreshData;
 - (UIView *)dequeueColumnView;

@@ -35,6 +35,7 @@
 			color = [UIColor colorWithRed:214.0f / 255.0f green:214.0f / 255.0f blue:214.0f / 255.0f alpha:1.0];
 			[colors addObject:(id)[color CGColor]];
 		}
+		theLayer.shouldRasterize = YES;
 		[theLayer setColors:colors];
 		[theLayer setLocations:[NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0], [NSNumber numberWithFloat:1.0], nil]];
 		theLayer.startPoint = CGPointMake(0.0f, 0.277385657345732f);

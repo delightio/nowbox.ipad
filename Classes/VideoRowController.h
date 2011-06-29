@@ -22,12 +22,13 @@
 	ChannelPanelController * panelController;
 }
 
-@property (nonatomic, readonly) HorizontalTableView * videoTableView;
+@property (nonatomic, assign) HorizontalTableView * videoTableView;
 @property (nonatomic, assign) ChannelPanelController * panelController;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
-- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate;
+//- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate;
+- (id)init;
 
 @end
