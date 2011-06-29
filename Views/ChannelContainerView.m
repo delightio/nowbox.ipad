@@ -44,17 +44,17 @@
 		
 		// shadow
 		CALayer * theLayer = self.layer;
-		theLayer.shouldRasterize = YES;
-		theLayer.shadowOffset = CGSizeZero;
-		theLayer.shadowOpacity = 0.8f;
-		theLayer.shadowRadius = 4.0f;
+//		theLayer.shouldRasterize = YES;
+//		theLayer.shadowOffset = CGSizeZero;
+//		theLayer.shadowOpacity = 0.8f;
+//		theLayer.shadowRadius = 4.0f;
 		
 //		CALayer * theLayer = self.layer;
 		theLayer.contents = (id)styleUtility.channelContainerBackgroundImage.CGImage;
 		theLayer.contentsRect = CGRectMake(0.0, 0.1, 1.0, 0.8);
 		
 		// subviews
-		textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80.0f, 0.0f, NM_CHANNEL_COLUMN_WIDTH - 80.0f, aHeight)];
+		textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80.0f, 0.0f, NM_CHANNEL_COLUMN_WIDTH - 80.0f - 10.0f, aHeight)];
 		textLabel.numberOfLines = 2;
 		textLabel.font = styleUtility.channelNameFont;
 		textLabel.textColor = styleUtility.channelPanelFontColor;

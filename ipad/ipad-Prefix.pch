@@ -14,7 +14,7 @@
 #import <CoreData/CoreData.h>
 
 #define NM_VIDEO_CELL_HEIGHT		106.0f
-#define NM_CHANNEL_COLUMN_WIDTH		167.0f
+#define NM_CHANNEL_COLUMN_WIDTH		177.0f
 
 extern const NSInteger NM_USER_ACCOUNT_ID;
 
