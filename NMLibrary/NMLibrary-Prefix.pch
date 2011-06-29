@@ -1,0 +1,12 @@
+//
+// Prefix header for all source files of the 'NMLibrary' target in the 'NMLibrary' project
+//
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
+extern const NSInteger NM_USER_ACCOUNT_ID;
+
+#endif

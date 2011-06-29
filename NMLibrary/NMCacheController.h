@@ -6,6 +6,7 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
+
 @class NMImageDownloadTask;
 @class NMTouchImageView;
 @class NMChannel;
