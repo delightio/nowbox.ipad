@@ -22,6 +22,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize channelPanelBackgroundColor;
 @synthesize channelPanelHighlightColor;
 @synthesize userPlaceholderImage;
+@synthesize channelContainerBackgroundImage;
 
 + (NMStyleUtility *)sharedStyleUtility {
 	if ( sharedStyleUtility_ == nil ) {
@@ -46,11 +47,14 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	channelPanelHighlightColor = [[UIColor grayColor] retain];
 	channelPanelBackgroundColor = [[UIColor colorWithRed:232.0f/255.0f green:233.0f / 255.0f blue:237.0f / 255.0f alpha:1.0] retain];
 	userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
+//	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-shadow-background"] retain];
+	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-background"] retain];
 	
 	return self;
 }
 
 - (void)dealloc {
+	[channelContainerBackgroundImage release];
 	[videoDateFormatter release];
 	[channelNameFont release];
 	[videoDetailFont release];

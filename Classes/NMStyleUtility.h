@@ -17,7 +17,7 @@
 	// channel panel
 	UIColor * channelPanelBackgroundColor;
 	UIColor * channelPanelHighlightColor;
-	UIImage * userPlaceholderImage;
+	UIImage * userPlaceholderImage, * channelContainerBackgroundImage;
 }
 
 @property (nonatomic, readonly) NSDateFormatter * videoDateFormatter;
@@ -29,6 +29,7 @@
 @property (nonatomic, readonly) UIColor * channelPanelBackgroundColor;
 @property (nonatomic, readonly) UIColor * channelPanelHighlightColor;
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
+@property (nonatomic, readonly) UIImage * channelContainerBackgroundImage;
 
 + (NMStyleUtility *)sharedStyleUtility;
 

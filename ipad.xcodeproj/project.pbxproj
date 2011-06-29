@@ -101,6 +101,8 @@
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
+		A9C2788B13BABC920024DCB2 /* channel-shadow-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */; };
+		A9C2788E13BAC1700024DCB2 /* channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788D13BAC1700024DCB2 /* channel-background.png */; };
 		A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */; };
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
@@ -234,6 +236,8 @@
 		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
 		A9B3EE6D13B91C330058E114 /* NMVideoDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideoDetail.h; sourceTree = "<group>"; };
 		A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideoDetail.m; sourceTree = "<group>"; };
+		A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-shadow-background.png"; sourceTree = "<group>"; };
+		A9C2788D13BAC1700024DCB2 /* channel-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-background.png"; sourceTree = "<group>"; };
 		A9D9EE1C13AABEB0009ABBEA /* NMStyleUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMStyleUtility.h; sourceTree = "<group>"; };
 		A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMStyleUtility.m; sourceTree = "<group>"; };
 		A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -426,6 +430,8 @@
 				A9EB20F413AAE1E000BC2E29 /* demo_graphics */,
 				A970503213438F860022BF2C /* Icon.png */,
 				A92BDA2413B431C500B846DF /* youtube_logo_36.png */,
+				A9C2788D13BAC1700024DCB2 /* channel-background.png */,
+				A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -666,6 +672,8 @@
 				A951454313AB1E0500327288 /* nowmov-eye-transparent.png in Resources */,
 				A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */,
 				A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */,
+				A9C2788B13BABC920024DCB2 /* channel-shadow-background.png in Resources */,
+				A9C2788E13BAC1700024DCB2 /* channel-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
