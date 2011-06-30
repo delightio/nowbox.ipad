@@ -16,6 +16,7 @@
 #define NM_NMVIDEO_CACHE_SIZE				5
 
 static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
+NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideoNotification";
 
 @interface VideoPlaybackModelController (PrivateMethods)
 

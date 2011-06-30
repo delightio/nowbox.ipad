@@ -81,3 +81,6 @@ extern NSString * const NMURLConnectionErrorNotification;
 extern NSString * const NMChannelEntityName;
 extern NSString * const NMVideoEntityName;
 extern NSString * const NMVideoDetailEntityName;
+
+// Playback Notification
+extern NSString * const NMWillBeginPlayingVideoNotification;

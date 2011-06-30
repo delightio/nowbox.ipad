@@ -67,20 +67,8 @@
 		A970508C13438F860022BF2C /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A970503B13438F860022BF2C /* NMChannel.m */; };
 		A970508D13438F860022BF2C /* NMVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A970503D13438F860022BF2C /* NMVideo.m */; };
 		A970508E13438F860022BF2C /* Nowmov.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A970503E13438F860022BF2C /* Nowmov.xcdatamodel */; };
-		A970508F13438F860022BF2C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
-		A970509013438F860022BF2C /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504313438F860022BF2C /* NMDataController.m */; };
-		A970509113438F860022BF2C /* NMNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504713438F860022BF2C /* NMNetworkController.m */; };
-		A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
-		A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
-		A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
-		A970509913438F860022BF2C /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
-		A970509A13438F860022BF2C /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
 		A970509B13438F860022BF2C /* SocialSignInView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970505C13438F860022BF2C /* SocialSignInView.xib */; };
 		A970509C13438F860022BF2C /* VideoPlaybackView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970505D13438F860022BF2C /* VideoPlaybackView.xib */; };
-		A970509E13438F860022BF2C /* NMControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506213438F860022BF2C /* NMControlsView.m */; };
-		A970509F13438F860022BF2C /* NMMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506413438F860022BF2C /* NMMovieView.m */; };
-		A97050A013438F860022BF2C /* NMTouchImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506613438F860022BF2C /* NMTouchImageView.m */; };
 		A97050A4134392FA0022BF2C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050A3134392FA0022BF2C /* CoreData.framework */; };
 		A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
 		A97050D2134399050022BF2C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
@@ -95,11 +83,28 @@
 		A9776A4D13AAF0AF004FA2F3 /* watch-later.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4813AAF0AF004FA2F3 /* watch-later.png */; };
 		A9776A4F13AAF23C004FA2F3 /* movie-detail-view-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4E13AAF23C004FA2F3 /* movie-detail-view-background.png */; };
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
-		A98154A8137E1607001FADB4 /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
 		A994523913A734B600B117E2 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A994523813A734B600B117E2 /* LaunchViewController.m */; };
+		A9976EFD13BB355200B06DFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
+		A9976F0613BB35AD00B06DFF /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
+		A9976F0713BB35AD00B06DFF /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504313438F860022BF2C /* NMDataController.m */; };
+		A9976F0813BB35AD00B06DFF /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
+		A9976F0913BB35AD00B06DFF /* NMNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504713438F860022BF2C /* NMNetworkController.m */; };
+		A9976F0A13BB35AD00B06DFF /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
+		A9976F0B13BB35AD00B06DFF /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
+		A9976F0C13BB35AD00B06DFF /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
+		A9976F0D13BB35AD00B06DFF /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
+		A9976F0E13BB35AD00B06DFF /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
+		A9976F0F13BB35AD00B06DFF /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
+		A9976F1013BB35AD00B06DFF /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
+		A9976F1113BB35AD00B06DFF /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
+		A9976F1213BB35AD00B06DFF /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
+		A9976F1E13BB360200B06DFF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050A3134392FA0022BF2C /* CoreData.framework */; };
+		A9976F1F13BB366300B06DFF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
+		A9976F2213BB388000B06DFF /* NMMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506413438F860022BF2C /* NMMovieView.m */; };
+		A9976F2313BB38BE00B06DFF /* libNMLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9976EFC13BB355200B06DFF /* libNMLibrary.a */; };
+		A9976F2413BB3A2800B06DFF /* NMControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506213438F860022BF2C /* NMControlsView.m */; };
 		A99BA0AA13A7540B0010F202 /* VideoRowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A99BA0A913A7540B0010F202 /* VideoRowController.m */; };
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
-		A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
 		A9C2788B13BABC920024DCB2 /* channel-shadow-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */; };
 		A9C2788E13BAC1700024DCB2 /* channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788D13BAC1700024DCB2 /* channel-background.png */; };
@@ -107,8 +112,6 @@
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
-		A9ECD610135E9611004B7F78 /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
-		A9ECD614135E9703004B7F78 /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +121,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = A925013B134385BF001759F5;
 			remoteInfo = ipad;
+		};
+		A9976F2013BB380600B06DFF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A9250133134385BF001759F5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A9976EFB13BB355200B06DFF;
+			remoteInfo = NMLibrary;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -229,6 +239,8 @@
 		A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMRefreshChannelVideoListTask.m; sourceTree = "<group>"; };
 		A994523713A734B600B117E2 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		A994523813A734B600B117E2 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
+		A9976EFC13BB355200B06DFF /* libNMLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNMLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9976F0013BB355200B06DFF /* NMLibrary-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMLibrary-Prefix.pch"; sourceTree = "<group>"; };
 		A99BA0A813A7540B0010F202 /* VideoRowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowController.h; sourceTree = "<group>"; };
 		A99BA0A913A7540B0010F202 /* VideoRowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowController.m; sourceTree = "<group>"; };
 		A9A73FA413A73A3D005D9013 /* LaunchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchView.xib; sourceTree = "<group>"; };
@@ -254,6 +266,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9976F2313BB38BE00B06DFF /* libNMLibrary.a in Frameworks */,
 				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */,
 				A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */,
@@ -289,6 +302,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A9976EF913BB355200B06DFF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9976EFD13BB355200B06DFF /* Foundation.framework in Frameworks */,
+				A9976F1E13BB360200B06DFF /* CoreData.framework in Frameworks */,
+				A9976F1F13BB366300B06DFF /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -315,6 +338,7 @@
 				A925013C134385BF001759F5 /* ipad.app */,
 				A9250160134385BF001759F5 /* ipadTests.octest */,
 				A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */,
+				A9976EFC13BB355200B06DFF /* libNMLibrary.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -465,6 +489,7 @@
 				A970504713438F860022BF2C /* NMNetworkController.m */,
 				A970504813438F860022BF2C /* NMTaskQueueController.h */,
 				A970504913438F860022BF2C /* NMTaskQueueController.m */,
+				A9976EFF13BB355200B06DFF /* Supporting Files */,
 				A970504A13438F860022BF2C /* Tasks */,
 			);
 			path = NMLibrary;
@@ -530,6 +555,14 @@
 			name = Interfaces;
 			sourceTree = "<group>";
 		};
+		A9976EFF13BB355200B06DFF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A9976F0013BB355200B06DFF /* NMLibrary-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		A9EB20F413AAE1E000BC2E29 /* demo_graphics */ = {
 			isa = PBXGroup;
 			children = (
@@ -553,6 +586,16 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		A9976EFA13BB355200B06DFF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		A925013B134385BF001759F5 /* ipad */ = {
 			isa = PBXNativeTarget;
@@ -565,6 +608,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				A9976F2113BB380600B06DFF /* PBXTargetDependency */,
 			);
 			name = ipad;
 			productName = ipad;
@@ -608,6 +652,23 @@
 			productReference = A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
+		A9976EFB13BB355200B06DFF /* NMLibrary */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9976F0413BB355200B06DFF /* Build configuration list for PBXNativeTarget "NMLibrary" */;
+			buildPhases = (
+				A9976EF813BB355200B06DFF /* Sources */,
+				A9976EF913BB355200B06DFF /* Frameworks */,
+				A9976EFA13BB355200B06DFF /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NMLibrary;
+			productName = NMLibrary;
+			productReference = A9976EFC13BB355200B06DFF /* libNMLibrary.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -639,6 +700,7 @@
 				A925013B134385BF001759F5 /* ipad */,
 				A925015F134385BF001759F5 /* ipadTests */,
 				A94D67FE13A2ED33003FC68F /* TestVideoPlaybackModelController */,
+				A9976EFB13BB355200B06DFF /* NMLibrary */,
 			);
 		};
 /* End PBXProject section */
@@ -739,22 +801,6 @@
 				A970508C13438F860022BF2C /* NMChannel.m in Sources */,
 				A970508D13438F860022BF2C /* NMVideo.m in Sources */,
 				A970508E13438F860022BF2C /* Nowmov.xcdatamodel in Sources */,
-				A970508F13438F860022BF2C /* JSONKit.m in Sources */,
-				A970509013438F860022BF2C /* NMDataController.m in Sources */,
-				A970509113438F860022BF2C /* NMNetworkController.m in Sources */,
-				A970509213438F860022BF2C /* NMTaskQueueController.m in Sources */,
-				A970509313438F860022BF2C /* NMGetChannelsTask.m in Sources */,
-				A970509413438F860022BF2C /* NMGetChannelVideoListTask.m in Sources */,
-				A970509813438F860022BF2C /* NMGetVimeoDirectURLTask.m in Sources */,
-				A970509913438F860022BF2C /* NMGetYouTubeDirectURLTask.m in Sources */,
-				A970509A13438F860022BF2C /* NMTask.m in Sources */,
-				A970509E13438F860022BF2C /* NMControlsView.m in Sources */,
-				A970509F13438F860022BF2C /* NMMovieView.m in Sources */,
-				A97050A013438F860022BF2C /* NMTouchImageView.m in Sources */,
-				A9B19641134C6B0B00CA17A0 /* NMEventTask.m in Sources */,
-				A9ECD610135E9611004B7F78 /* NMCacheController.m in Sources */,
-				A9ECD614135E9703004B7F78 /* NMImageDownloadTask.m in Sources */,
-				A98154A8137E1607001FADB4 /* NMRefreshChannelVideoListTask.m in Sources */,
 				A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */,
 				A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */,
 				A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */,
@@ -763,6 +809,8 @@
 				A99BA0AA13A7540B0010F202 /* VideoRowController.m in Sources */,
 				A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */,
 				A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */,
+				A9976F2413BB3A2800B06DFF /* NMControlsView.m in Sources */,
+				A9976F2213BB388000B06DFF /* NMMovieView.m in Sources */,
 				A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */,
 				A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */,
 				A925FEA313B47E3900ACC039 /* HorizontalTableView.m in Sources */,
@@ -802,6 +850,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A9976EF813BB355200B06DFF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9976F0613BB35AD00B06DFF /* JSONKit.m in Sources */,
+				A9976F0713BB35AD00B06DFF /* NMDataController.m in Sources */,
+				A9976F0813BB35AD00B06DFF /* NMCacheController.m in Sources */,
+				A9976F0913BB35AD00B06DFF /* NMNetworkController.m in Sources */,
+				A9976F0A13BB35AD00B06DFF /* NMTaskQueueController.m in Sources */,
+				A9976F0B13BB35AD00B06DFF /* NMGetChannelsTask.m in Sources */,
+				A9976F0C13BB35AD00B06DFF /* NMGetChannelVideoListTask.m in Sources */,
+				A9976F0D13BB35AD00B06DFF /* NMRefreshChannelVideoListTask.m in Sources */,
+				A9976F0E13BB35AD00B06DFF /* NMGetVimeoDirectURLTask.m in Sources */,
+				A9976F0F13BB35AD00B06DFF /* NMGetYouTubeDirectURLTask.m in Sources */,
+				A9976F1013BB35AD00B06DFF /* NMTask.m in Sources */,
+				A9976F1113BB35AD00B06DFF /* NMEventTask.m in Sources */,
+				A9976F1213BB35AD00B06DFF /* NMImageDownloadTask.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -809,6 +877,11 @@
 			isa = PBXTargetDependency;
 			target = A925013B134385BF001759F5 /* ipad */;
 			targetProxy = A9250164134385BF001759F5 /* PBXContainerItemProxy */;
+		};
+		A9976F2113BB380600B06DFF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A9976EFB13BB355200B06DFF /* NMLibrary */;
+			targetProxy = A9976F2013BB380600B06DFF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -874,6 +947,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
@@ -953,6 +1027,7 @@
 					DEBUG_PLAYBACK_NETWORK_CALL,
 				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -966,6 +1041,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
@@ -1082,6 +1158,46 @@
 			};
 			name = "Ad Hoc";
 		};
+		A9976F0113BB355200B06DFF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/NMLibrary.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A9976F0213BB355200B06DFF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/NMLibrary.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		A9976F0313BB355200B06DFF /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/NMLibrary.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = "Ad Hoc";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1121,6 +1237,16 @@
 				A94D680F13A2ED33003FC68F /* Debug */,
 				A94D681013A2ED33003FC68F /* Release */,
 				A94D681113A2ED33003FC68F /* Ad Hoc */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9976F0413BB355200B06DFF /* Build configuration list for PBXNativeTarget "NMLibrary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9976F0113BB355200B06DFF /* Debug */,
+				A9976F0213BB355200B06DFF /* Release */,
+				A9976F0313BB355200B06DFF /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
