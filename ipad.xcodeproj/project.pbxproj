@@ -74,6 +74,7 @@
 		A97050D2134399050022BF2C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
 		A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
 		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
+		A9758C4D13BD4FBC000503A5 /* NMMovieBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9758C4C13BD4FBC000503A5 /* NMMovieBackgroundView.m */; };
 		A9776A4113AAEBDC004FA2F3 /* channel-expand.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A3F13AAEBDC004FA2F3 /* channel-expand.png */; };
 		A9776A4213AAEBDC004FA2F3 /* channel-search-button.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4013AAEBDC004FA2F3 /* channel-search-button.png */; };
 		A9776A4913AAF0AF004FA2F3 /* fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4413AAF0AF004FA2F3 /* fullscreen.png */; };
@@ -225,6 +226,8 @@
 		A97050D313439B540022BF2C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		A973AC2513AAFAD90050025B /* NMChannelPanelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelPanelView.h; sourceTree = "<group>"; };
 		A973AC2613AAFAD90050025B /* NMChannelPanelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelPanelView.m; sourceTree = "<group>"; };
+		A9758C4B13BD4FBC000503A5 /* NMMovieBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMovieBackgroundView.h; sourceTree = "<group>"; };
+		A9758C4C13BD4FBC000503A5 /* NMMovieBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMovieBackgroundView.m; sourceTree = "<group>"; };
 		A9776A3F13AAEBDC004FA2F3 /* channel-expand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-expand.png"; sourceTree = "<group>"; };
 		A9776A4013AAEBDC004FA2F3 /* channel-search-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-search-button.png"; sourceTree = "<group>"; };
 		A9776A4413AAF0AF004FA2F3 /* fullscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullscreen.png; sourceTree = "<group>"; };
@@ -538,6 +541,8 @@
 				A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */,
 				A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */,
 				A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */,
+				A9758C4B13BD4FBC000503A5 /* NMMovieBackgroundView.h */,
+				A9758C4C13BD4FBC000503A5 /* NMMovieBackgroundView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -816,6 +821,7 @@
 				A925FEA313B47E3900ACC039 /* HorizontalTableView.m in Sources */,
 				A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */,
 				A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */,
+				A9758C4D13BD4FBC000503A5 /* NMMovieBackgroundView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

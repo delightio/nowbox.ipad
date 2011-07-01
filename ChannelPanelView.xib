@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1056</int>
-		<string key="IBDocument.SystemVersion">10J869</string>
+		<string key="IBDocument.SystemVersion">10K540</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1306</string>
-		<string key="IBDocument.AppKitVersion">1038.35</string>
+		<string key="IBDocument.AppKitVersion">1038.36</string>
 		<string key="IBDocument.HIToolboxVersion">461.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -80,8 +80,8 @@
 					</object>
 					<object class="IBUITableView" id="1064860965">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{0, 36}, {768, 380}}</string>
+						<int key="NSvFlags">274</int>
+						<string key="NSFrame">{{0, 36}, {768, 319}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -164,7 +164,7 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{768, 408}</string>
+				<string key="NSFrameSize">{768, 347}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="892109789"/>
@@ -447,6 +447,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelNameLabel</string>
+							<string>channelViewButton</string>
 							<string>controlContainerView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
@@ -459,6 +460,7 @@
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UILabel</string>
+							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
 							<string>UILabel</string>
@@ -474,6 +476,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelNameLabel</string>
+							<string>channelViewButton</string>
 							<string>controlContainerView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
@@ -488,6 +491,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">channelNameLabel</string>
 								<string key="candidateClassName">UILabel</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">channelViewButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">controlContainerView</string>
@@ -537,7 +544,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelLabel</string>
 							<string>channelLogoView</string>
-							<string>descriptionTextView</string>
+							<string>descriptionLabel</string>
 							<string>likeButton</string>
 							<string>moviePlaceholderView</string>
 							<string>otherInfoLabel</string>
@@ -548,7 +555,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UILabel</string>
 							<string>UIImageView</string>
-							<string>UITextView</string>
+							<string>UILabel</string>
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
@@ -562,7 +569,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelLabel</string>
 							<string>channelLogoView</string>
-							<string>descriptionTextView</string>
+							<string>descriptionLabel</string>
 							<string>likeButton</string>
 							<string>moviePlaceholderView</string>
 							<string>otherInfoLabel</string>
@@ -580,8 +587,8 @@
 								<string key="candidateClassName">UIImageView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">descriptionTextView</string>
-								<string key="candidateClassName">UITextView</string>
+								<string key="name">descriptionLabel</string>
+								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">likeButton</string>

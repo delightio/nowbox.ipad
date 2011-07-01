@@ -69,12 +69,12 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-//	[[UIApplication sharedApplication] setStatusBarHidden:YES];
+	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 //	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	firstShowControlView = YES;
 	currentXOffset = 0.0f;
-	movieXOffset = 40.0f;
+	movieXOffset = 35.0f;
 	
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
@@ -100,7 +100,7 @@
 	self.loadedMovieDetailView = nil;
 	
 // create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 570.0f, 320.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 49.0f, 616.0f, 341.0f)];
 //	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[controlScrollView addSubview:movieView];
 	
@@ -1047,10 +1047,10 @@
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
-		movieXOffset = 40.0f;
+		movieXOffset = 35.0f;
 		//MARK: not sure if we still need to show/hide status bar
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 570.0f, 320.0f);
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 49.0f, 570.0f, 320.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 		// slide in
@@ -1061,7 +1061,7 @@
 //		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
 		// slide out the channel view
-//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];

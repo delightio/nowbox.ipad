@@ -33,18 +33,10 @@
 }
 */
 
-- (void)awakeFromNib {
-	UIImage * img = [UIImage imageNamed:@"movie-detail-view-background"];
-	self.layer.contents = (id)img.CGImage;
-	self.layer.contentsCenter = CGRectMake(0.2, 0.0, 0.6, 1.0);
-	moviePlaceholderView.layer.borderColor = [UIColor colorWithRed:102.0f/255.0f green:102.0f/255.0f blue:102.0f/255.0f alpha:1.0f].CGColor;
-	moviePlaceholderView.layer.borderWidth = 1.0f;
-}
-
-- (void)dealloc
-{
-    [super dealloc];
-}
+//- (void)dealloc
+//{
+//    [super dealloc];
+//}
 
 - (void)setVideo:(NMVideo *)aVideo {
 	if ( aVideo && aVideo != video_ ) {
@@ -58,7 +50,7 @@
 		channelLabel.text = nil;
 		titleLabel.text = nil;
 		otherInfoLabel.text = nil;
-		descriptionTextView.text = nil;
+		descriptionLabel.text = nil;
 		return;
 	} else {
 		return;
@@ -75,7 +67,7 @@
 //	NSLog(@"setting movie detail: %@", aVideo.title);
 	
 	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  xx,xxx views", [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at]];
-	descriptionTextView.text = aVideo.detail.nm_description;
+	descriptionLabel.text = aVideo.detail.nm_description;
 }
 
 @end

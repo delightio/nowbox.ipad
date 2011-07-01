@@ -160,10 +160,10 @@
 				[UIView setAnimationBeginsFromCurrentState:YES];
 			}
 			// set its own size
-			viewRect = CGRectMake(self.frame.origin.x + 40.0f, 20.0f, 570.0f, 320.0f);
+			viewRect = CGRectMake(self.frame.origin.x + 35.0f, 49.0f, 616.0f, 341.0f);
 			self.frame = viewRect;
 			// resize the container view
-			viewRect = CGRectMake(49.0f, 248.0f, 474.0f, 48.0f);
+			viewRect = CGRectMake(40.0f, 248.0f, 474.0f, 48.0f);
 			controlContainerView.frame = viewRect;
 			otherInfoLabel.alpha = 0.0f;
 			channelNameLabel.alpha = 0.0f;

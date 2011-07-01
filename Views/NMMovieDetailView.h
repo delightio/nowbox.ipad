@@ -16,7 +16,7 @@
 	IBOutlet UILabel * channelLabel;
 	IBOutlet UILabel * titleLabel;
 	IBOutlet UILabel * otherInfoLabel;
-	IBOutlet UITextView * descriptionTextView;
+	IBOutlet UILabel * descriptionLabel;
 	IBOutlet UIView * moviePlaceholderView;
 	IBOutlet UIButton * watchLaterButton;
 	IBOutlet UIButton * likeButton;
