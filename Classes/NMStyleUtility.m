@@ -14,6 +14,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @implementation NMStyleUtility
 
 @synthesize videoDateFormatter;
+@synthesize viewCountFormatter;
 @synthesize channelNameFont;
 @synthesize videoTitleFont;
 @synthesize videoDetailFont;
@@ -38,6 +39,10 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	videoDateFormatter = [[NSDateFormatter alloc] init];
 	[videoDateFormatter setDateStyle:NSDateFormatterShortStyle];
 	[videoDateFormatter setDoesRelativeDateFormatting:YES];
+	
+	viewCountFormatter = [[NSNumberFormatter alloc] init];
+	[viewCountFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+	
 	// video detail view font
 	channelNameFont = [[UIFont boldSystemFontOfSize:14.0f] retain];
 	videoDetailFont = [[UIFont systemFontOfSize:11.0f] retain];
@@ -56,6 +61,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 - (void)dealloc {
 	[channelContainerBackgroundImage release];
 	[videoDateFormatter release];
+	[viewCountFormatter release];
 	[channelNameFont release];
 	[videoDetailFont release];
 	[videoTitleFont release];

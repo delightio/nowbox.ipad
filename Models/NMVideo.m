@@ -18,6 +18,7 @@
 @dynamic published_at;
 @dynamic nm_fetch_timestamp;
 @dynamic title;
+@dynamic view_count;
 @dynamic nm_direct_url;
 @dynamic nm_sort_order;
 @dynamic nm_error;

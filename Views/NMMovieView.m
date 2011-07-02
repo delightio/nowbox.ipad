@@ -40,7 +40,7 @@
 	statusLabel.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	statusLabel.backgroundColor = [UIColor clearColor];
 	statusLabel.textAlignment = UITextAlignmentCenter;
-	statusLabel.font = [UIFont fontWithName:@"Futura-MediumItalic" size:15.0f];
+	statusLabel.font = [UIFont boldSystemFontOfSize:15.0];
 	statusLabel.textColor = [UIColor whiteColor];
 	statusLabel.shadowColor = [UIColor darkGrayColor];
 	statusLabel.shadowOffset = CGSizeMake(0.0, 1.0);

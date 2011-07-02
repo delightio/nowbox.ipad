@@ -76,6 +76,14 @@
 	currentXOffset = 0.0f;
 	movieXOffset = 35.0f;
 	
+	// view background
+	CAGradientLayer * gradientLayer = [CAGradientLayer layer];
+	gradientLayer.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 421.0f);
+	gradientLayer.shouldRasterize = YES;
+	gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:72.0f / 255.0f green:72.0f / 255.0f blue:72.0f / 255.0f alpha:1.0f].CGColor, nil];
+	[self.view.layer insertSublayer:gradientLayer below:controlScrollView.layer];
+	
+	// playback data model controller
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
 	playbackModelController.managedObjectContext = self.managedObjectContext;
@@ -1050,7 +1058,7 @@
 		movieXOffset = 35.0f;
 		//MARK: not sure if we still need to show/hide status bar
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 49.0f, 570.0f, 320.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 49.0f, 616.0f, 341.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 		// slide in

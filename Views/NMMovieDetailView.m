@@ -38,6 +38,10 @@
 //    [super dealloc];
 //}
 
+- (void)awakeFromNib {
+	descriptionDefaultFrame  = descriptionLabel.frame;
+}
+
 - (void)setVideo:(NMVideo *)aVideo {
 	if ( aVideo && aVideo != video_ ) {
 		// assigned property. no need to retain
@@ -66,8 +70,19 @@
 	titleLabel.text = aVideo.title;
 //	NSLog(@"setting movie detail: %@", aVideo.title);
 	
-	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  xx,xxx views", [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at]];
-	descriptionLabel.text = aVideo.detail.nm_description;
+	NMStyleUtility * style = [NMStyleUtility sharedStyleUtility];
+	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  %@ views", [style.videoDateFormatter stringFromDate:aVideo.published_at], [style.viewCountFormatter stringFromNumber:aVideo.view_count]];
+	// set position of the description
+	if ( aVideo.detail.nm_description ) {
+		CGRect theFrame;
+		theFrame.size = [aVideo.detail.nm_description sizeWithFont:descriptionLabel.font constrainedToSize:descriptionDefaultFrame.size];
+		theFrame.origin = descriptionDefaultFrame.origin;
+		descriptionLabel.frame = theFrame;
+		descriptionLabel.text = aVideo.detail.nm_description;
+		
+	} else {
+		descriptionLabel.text = @"";
+	}
 }
 
 @end

@@ -11,6 +11,7 @@
 
 @interface NMStyleUtility : NSObject {
     NSDateFormatter * videoDateFormatter;
+	NSNumberFormatter * viewCountFormatter;
 	// video detail
 	UIFont * channelNameFont, * videoTitleFont, * videoDetailFont;
 	UIColor * clearColor, * channelPanelFontColor;
@@ -21,6 +22,7 @@
 }
 
 @property (nonatomic, readonly) NSDateFormatter * videoDateFormatter;
+@property (nonatomic, readonly) NSNumberFormatter * viewCountFormatter;
 @property (nonatomic, readonly) UIFont * channelNameFont;
 @property (nonatomic, readonly) UIFont * videoTitleFont;
 @property (nonatomic, readonly) UIFont * videoDetailFont;

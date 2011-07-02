@@ -23,6 +23,7 @@
 	
 @private
 	NMVideo * video_;
+	CGRect descriptionDefaultFrame;
 }
 
 @property (nonatomic, assign) NMVideo * video;
