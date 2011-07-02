@@ -610,17 +610,8 @@
 				break;
 			case 0:
 #ifdef DEBUG_PLAYBACK_QUEUE
-				NSLog(@"no more video to play. but got this request");
+				NSLog(@"queue player has no current item. but received resolution notification");
 #endif
-				if ( vid == playbackModelController.currentVideo ) {
-					item = [vid createPlayerItem];
-					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-						[movieView.player insertItem:item afterItem:nil];
-						vid.nm_playback_status = NMVideoQueueStatusQueued;
-						[movieView.player play];
-					}
-					[item release];
-				}
 				break;
 			default:
 #ifdef DEBUG_PLAYBACK_QUEUE
