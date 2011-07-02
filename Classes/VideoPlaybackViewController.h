@@ -83,4 +83,7 @@
 //- (void)updateControlsForVideoAtIndex:(NSUInteger)idx;
 - (void)setPlaybackCheckpoint;
 
+// interface for Channel List View
+- (void)playVideo:(NMVideo *)aVideo;
+
 @end

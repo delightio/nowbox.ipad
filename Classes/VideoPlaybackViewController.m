@@ -233,7 +233,6 @@
 	//TODO: update the scroll view content size, set position of movie view and control view
 }
 
-
 #pragma mark Playback Control
 
 - (NMVideo *)playerCurrentVideo {
@@ -407,30 +406,6 @@
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
 }
 
-- (void)showPreviousVideo {
-	if ( playbackModelController.previousVideo == nil ) 
-		return;
-
-//	currentXOffset -= 1024.0f;
-//	firstShowControlView = YES;
-//	// scroll to next video
-//	// translate the movie view
-//	[controlScrollView setContentOffset:CGPointMake(controlScrollView.contentOffset.x + controlScrollView.bounds.size.width, 0.0f) animated:NO];
-//	[self translateMovieViewByOffset:1.0f];
-//	
-//	[movieView.player revertPreviousItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentVideo.nm_direct_url]]];
-//	[movieView.player play];
-//	
-//	// update the movie control view
-//	if ( currentIndex + 2 < numberOfVideos ) {
-//		[self configureControlViewAtIndex:currentIndex + 2];
-//	} else {
-//		// get more video here
-//	}
-//	// make the view visible
-//	[self performSelector:@selector(showPlayerAndControl) withObject:nil afterDelay:0.1];
-}
-
 - (void)playerQueueNextVideos {
 	// creates player item and insert them into the queue orderly
 	// don't queue any video for play if there's more than 3 queued
@@ -493,6 +468,15 @@
 //				}
 //			}
 			break;
+	}
+}
+
+- (void)playVideo:(NMVideo *)aVideo {
+	// play the specified video
+	if ( currentChannel != aVideo.channel ) {
+		// we need to flush the queue video player for sure
+		// stop playback
+		self.currentChannel = aVideo.channel;
 	}
 }
 
@@ -733,7 +717,7 @@
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"changed current item");
+		NSLog(@"changed current item, playback rate: %f", movieView.player.rate);
 #endif
 		// never change currentIndex here!!
 		// ====== update interface ======

@@ -54,6 +54,7 @@ typedef enum {
 	NMVideoDirectURLResolutionError,
 } NMErrorType;
 
+
 // Notifications
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;

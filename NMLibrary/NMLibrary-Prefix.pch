@@ -7,6 +7,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-extern const NSInteger NM_USER_ACCOUNT_ID;
+extern NSInteger NM_USER_ACCOUNT_ID;
 
 #endif
