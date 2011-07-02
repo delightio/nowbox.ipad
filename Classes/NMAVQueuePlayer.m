@@ -15,13 +15,7 @@
 	// move back to the previous item
 	AVPlayerItem * cItem = [self.currentItem retain];
 	if ( [self canInsertItem:anItem afterItem:cItem] ) {
-#ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"insert previous video");
-#endif
 		[self insertItem:anItem afterItem:cItem];
-#ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"move to previous video");
-#endif
 		[self advanceToNextItem];
 		if ( [self canInsertItem:cItem afterItem:self.currentItem] ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
@@ -29,7 +23,9 @@
 #endif
 			[self insertItem:cItem afterItem:self.currentItem];
 		} else {
+#ifdef DEBUG_PLAYER_NAVIGATION
 			NSLog(@"CANNOT insert back");
+#endif
 		}
 	}
 }

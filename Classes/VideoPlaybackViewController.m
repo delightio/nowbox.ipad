@@ -22,6 +22,7 @@
 #define NM_PLAYBACK_BUFFER_EMPTY_CONTEXT		102
 #define NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT	103
 #define NM_LOADED_TIME_RANGES_CONTEXT			104
+#define NM_VIDEO_READY_FOR_DISPLAY_CONTEXT		105
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
@@ -227,7 +228,7 @@
 	[movieView setActivityIndicationHidden:NO animated:NO];
 //	if ( playbackModelController.currentVideo == nil ) {
 		// we need to wait for video to come. show loading view
-		controlScrollView.scrollEnabled = NO;
+		//controlScrollView.scrollEnabled = NO;
 //	}
 	
 	//TODO: update the scroll view content size, set position of movie view and control view
@@ -270,6 +271,7 @@
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
 	// all control view should observe to player changes
 //	[player addObserver:loadedControlView forKeyPath:@"rate" options:0 context:(void *)11111];
 	[player addPeriodicTimeObserverForInterval:CMTimeMake(600, 600) queue:NULL usingBlock:^(CMTime aTime){
@@ -717,7 +719,10 @@
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"changed current item, playback rate: %f", movieView.player.rate);
+		AVPlayerItem * theItem = ((NMAVQueuePlayer *)object).currentItem;
+		NSLog(@"changed current item, playback rate: %f keep up: %d, full: %d, empty: %d", movieView.player.rate, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull, theItem.playbackBufferEmpty);
+		// observe property of the current item
+		[theItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 #endif
 		// never change currentIndex here!!
 		// ====== update interface ======
@@ -743,6 +748,14 @@
 			didPlayToEnd = NO;
 		}
 		[defaulNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
+	} else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {
+#ifdef DEBUG_PLAYER_NAVIGATION
+		AVPlayerLayer * theLayer = (AVPlayerLayer *)object;
+		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
+#endif
+	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
+		AVPlayerItem * theItem = (AVPlayerItem *)object;
+		NSLog(@"item buffer status - keep up: %d full: %d", theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull);
 	} /*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
 		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
 	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
