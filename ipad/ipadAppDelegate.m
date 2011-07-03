@@ -169,6 +169,14 @@ NSInteger NM_USER_ACCOUNT_ID			= 1;
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Nowmov.sqlite"];
     
+	//MARK: debug code
+	NSLog(@"debug!!!!!!  removing local cache");
+	NSFileManager * fm = [NSFileManager defaultManager];
+	if ( [fm fileExistsAtPath:[storeURL path]] ) {
+		// remove the file
+		[fm removeItemAtURL:storeURL error:nil];
+	}
+
     NSError *error = nil;
     persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {

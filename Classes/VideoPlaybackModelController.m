@@ -364,16 +364,18 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		} else {
 			// we have finish up this channel
 		}
-	} else {
-		// check if the new videos are in the play window. If so, get their direct URL
-		if ( currentVideo == nil ) {
-			// initial case
-			[self initializePlayHead];
-			[self requestResolveVideo:self.currentVideo];
-			[self requestResolveVideo:self.nextVideo];
-			[self requestResolveVideo:self.nextNextVideo];
-		}
-	}
+	} 
+	// FRC delegate methods will be notified. Video queuing is handled there.
+//	else {
+//		// check if the new videos are in the play window. If so, get their direct URL
+//		if ( currentVideo == nil ) {
+//			// initial case
+//			[self initializePlayHead];
+//			[self requestResolveVideo:self.currentVideo];
+//			[self requestResolveVideo:self.nextVideo];
+//			[self requestResolveVideo:self.nextNextVideo];
+//		}
+//	}
 }
 
 #pragma mark Fetched Results Controller
@@ -512,6 +514,9 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		{
 			rowCountHasChanged = YES;
 			NMVideo * vid = (NMVideo *)anObject;
+#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+			NSLog(@"inserted video: %@ row: %d", vid.title, newIndexPath.row);
+#endif
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
 			if ( currentIndexPath == nil && newIndexPath.row == 0 ) {
 				// inserting the first video
@@ -524,6 +529,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					// check if we should add tne next video too
 					self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
 					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
+					[self requestResolveVideo:nextVideo];
 					[dataDelegate didLoadNextVideoManagedObjectForController:self];
 				}
 				
