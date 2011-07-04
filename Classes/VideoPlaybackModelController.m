@@ -514,9 +514,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		{
 			rowCountHasChanged = YES;
 			NMVideo * vid = (NMVideo *)anObject;
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-			NSLog(@"inserted video: %@ row: %d", vid.title, newIndexPath.row);
-#endif
 			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
 			if ( currentIndexPath == nil && newIndexPath.row == 0 ) {
 				// inserting the first video
@@ -525,6 +522,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 				[self requestResolveVideo:currentVideo];
 				
+				// insert the next and next next video in this call too. If subsequent call for indexPath of next or next next video happens, we will not insert the same video again. 
 				if ( nextIndexPath == nil && newIndexPath.row + 1 < theCount ) {
 					// check if we should add tne next video too
 					self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];

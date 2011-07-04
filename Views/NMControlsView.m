@@ -33,8 +33,9 @@
 	[progressSlider setThumbImage:[UIImage imageNamed:@"demo_progress_nub"] forState:UIControlStateNormal];
 		
 	// the control background
+	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
 	CALayer * ctrlBgLayer = controlContainerView.layer;
-	ctrlBgLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.7f].CGColor;
+	ctrlBgLayer.backgroundColor = [theStyle.blackColor colorWithAlphaComponent:0.7f].CGColor;
 	ctrlBgLayer.borderWidth = 1.0f;
 	ctrlBgLayer.borderColor = [UIColor colorWithRed:153.0f/255.0f green:153.0f/255.0f blue:153.0f/255.0f alpha:0.7f].CGColor;
 	ctrlBgLayer.cornerRadius = 8.0f;
