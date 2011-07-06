@@ -9,6 +9,7 @@
 #import "NMRefreshChannelVideoListTask.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMVideoDetail.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
@@ -45,6 +46,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 
 - (void)dealloc {
 	[channel release];
+	[parsedDetailObjects release];
 	[urlString release];
 	[super dealloc];
 }
@@ -54,7 +56,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 //	NSString * urlStr = @"http://boogie.local/pipely/test_videos.json";
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"Get Channel Video List: %@", urlStr);
+	NSLog(@"Get Channel Video List (refresh): %@", urlStr);
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
@@ -66,14 +68,20 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
+	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
 	NSDate * timestamp = [NSDate date];
 	NSInteger idx = 0;
-	for (NSDictionary * dict in chVideos) {
-		mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
-		[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
-		[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
-		[parsedObjects addObject:mdict];
+	NSDictionary * dict;
+	for (NSDictionary * parentDict in chVideos) {
+		for (NSString * theKey in parentDict) {
+			dict = [parentDict objectForKey:theKey];
+			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
+			[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
+			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
+			[parsedObjects addObject:mdict];
+			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
+		}
 	}
 	
 }
@@ -82,7 +90,9 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	BOOL pbSafe = [delegate task:self shouldBeginPlaybackSafeUpdateForChannel:channel];
 	NSDictionary * dict;
 	NMVideo * vidObj;
+	NMVideoDetail * dtlObj;
 	numberOfVideoAdded = 0;
+	NSUInteger vidCount = 0;
 	if ( pbSafe ) {
 		// user is currently viewing this channel
 		[delegate taskBeginPlaybackSafeUpdate:self];
@@ -91,12 +101,24 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 		[ctrl deleteVideoInChannel:channel afterVideo:curVideo];
 		// insert new item
 		for (dict in parsedObjects) {
-			if ( [curVideo.nm_id isEqualToNumber:[dict objectForKey:@"nm_id"]] ) continue;
+			if ( [curVideo.nm_id isEqualToNumber:[dict objectForKey:@"nm_id"]] ) {
+				vidCount++;
+				continue;
+			}
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
+			// channel
 			vidObj.channel = channel;
 			[channel addVideosObject:vidObj];
+			// video detail
+			dtlObj = [ctrl insertNewVideoDetail];
+			dict = [parsedDetailObjects objectAtIndex:vidCount];
+			[dtlObj setValuesForKeysWithDictionary:dict];
+			dtlObj.video = vidObj;
+			vidObj.detail = dtlObj;
+
 			numberOfVideoAdded++;
+			vidCount++;
 		}
 		[delegate taskBeginPlaybackSafeUpdate:self];
 	} else {
@@ -106,8 +128,17 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 		for (dict in parsedObjects) {
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
+			// channel
 			vidObj.channel = channel;
 			[channel addVideosObject:vidObj];
+			// video detail
+			dtlObj = [ctrl insertNewVideoDetail];
+			dict = [parsedDetailObjects objectAtIndex:vidCount];
+			[dtlObj setValuesForKeysWithDictionary:dict];
+			dtlObj.video = vidObj;
+			vidObj.detail = dtlObj;
+			
+			vidCount++;
 		}
 		numberOfVideoAdded = [parsedObjects count];
 	}

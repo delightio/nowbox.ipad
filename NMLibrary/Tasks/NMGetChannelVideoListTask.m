@@ -93,6 +93,9 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"video list downloaded - %@, %d", channelName, [chVideos count]);
+#endif
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
@@ -131,8 +134,10 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				numberOfVideoAdded++;
 				vidObj = [ctrl insertNewVideo];
 				[vidObj setValuesForKeysWithDictionary:dict];
+				// channel
 				vidObj.channel = channel;
 				[channel addVideosObject:vidObj];
+				// video detail
 				dtlObj = [ctrl insertNewVideoDetail];
 				dict = [parsedDetailObjects objectAtIndex:vidCount];
 				[dtlObj setValuesForKeysWithDictionary:dict];
@@ -145,14 +150,19 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		for (dict in parsedObjects) {
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
+			// channel
 			vidObj.channel = channel;
 			[channel addVideosObject:vidObj];
+			// video detail
 			dtlObj = [ctrl insertNewVideoDetail];
 			dict = [parsedDetailObjects objectAtIndex:vidCount];
 			[dtlObj setValuesForKeysWithDictionary:dict];
 			dtlObj.video = vidObj;
 			vidObj.detail = dtlObj;
+			
+			vidCount++;
 		}
+		numberOfVideoAdded = [parsedObjects count];
 	}
 }
 

@@ -31,5 +31,6 @@
 - (id)initWithChannel:(NMChannel *)aChn;
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict;
++ (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict;
 
 @end
