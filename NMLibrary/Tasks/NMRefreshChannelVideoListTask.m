@@ -67,6 +67,9 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
+#ifdef DEBUG_VIDEO_LIST_REFRESH
+	NSLog(@"video list downloaded (refresh) - %@, %d", channelName, [chVideos count]);
+#endif
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
@@ -142,6 +145,9 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 		}
 		numberOfVideoAdded = [parsedObjects count];
 	}
+#ifdef DEBUG_VIDEO_LIST_REFRESH
+	NSLog(@"video list added (refresh) - %@ %d", channelName, numberOfVideoAdded);
+#endif
 }
 
 - (NSString *)willLoadNotificationName {
@@ -157,7 +163,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", channel, @"channel", nil];
 }
 
 @end

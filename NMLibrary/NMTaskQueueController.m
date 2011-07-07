@@ -83,7 +83,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+#if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@", chnObj.title);
 #endif
 	// if it's a new channel, we should have special handling on fail
@@ -93,7 +93,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
+#if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@ %d", chnObj.title, numVid);
 #endif
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];

@@ -93,7 +93,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+#ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list downloaded - %@, %d", channelName, [chVideos count]);
 #endif
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
@@ -164,6 +164,10 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		}
 		numberOfVideoAdded = [parsedObjects count];
 	}
+#ifdef DEBUG_VIDEO_LIST_REFRESH
+	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
+#endif
+
 }
 
 - (NSString *)willLoadNotificationName {
@@ -179,7 +183,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", channel, @"channel", nil];
 }
 
 @end

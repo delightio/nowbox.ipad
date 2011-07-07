@@ -87,9 +87,12 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		encountersErrorDuringProcessing = YES;
 		NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate HQ video stream", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
 		parsedObjects = [[NSArray alloc] initWithObjects:dict, nil];
-	} /*else {
-		NSLog(@"resolved URL: %@", self.externalID);
-	}*/
+	}
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	else {
+		NSLog(@"resolved URL: %@", self.directURLString);
+	}
+#endif
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {

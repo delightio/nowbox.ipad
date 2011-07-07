@@ -8,6 +8,7 @@
 
 #import "NMMovieView.h"
 #import "NMAVQueuePlayer.h"
+#import "NMStyleUtility.h"
 
 
 @implementation NMMovieView
@@ -24,7 +25,8 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
-	self.backgroundColor = [UIColor blackColor];
+	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
+	self.backgroundColor = theStyle.blackColor;
 	
 	CGPoint pos;
 	pos.x = floorf(frame.size.width / 2.0);

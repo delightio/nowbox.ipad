@@ -24,6 +24,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize channelPanelHighlightColor;
 @synthesize userPlaceholderImage;
 @synthesize channelContainerBackgroundImage;
+@synthesize blackColor;
 
 + (NMStyleUtility *)sharedStyleUtility {
 	if ( sharedStyleUtility_ == nil ) {
@@ -55,6 +56,8 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-shadow-background"] retain];
 //	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-background"] retain];
 	
+	blackColor = [[UIColor blackColor] retain];
+	
 	return self;
 }
 
@@ -70,6 +73,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[channelPanelHighlightColor release];
 	[channelPanelBackgroundColor release];
 	[userPlaceholderImage release];
+	[blackColor release];
 	[super dealloc];
 }
 
