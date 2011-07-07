@@ -860,7 +860,7 @@
 		if ( playbackModelController.previousVideo ) {
 			NMAVPlayerItem * item = [playbackModelController.previousVideo createPlayerItem];
 			if ( item ) {
-				[self stopObservingPlayerItem:movieView.player.currentItem];
+				// start observing the previous playback item. But do NOT remove the current item from being observed.
 				[self observePlayerItem:item];
 				[movieView.player revertPreviousItem:item];
 				[item release];

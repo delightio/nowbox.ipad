@@ -28,6 +28,7 @@
 #endif
 		}
 	}
+	[cItem release];
 }
 
 @end
