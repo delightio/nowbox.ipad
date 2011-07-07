@@ -355,8 +355,9 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
 	// MOC changes were made where notification is received
 	NSDictionary * userInfo = [aNotification userInfo];
+	NMChannel * srcChannel = [userInfo objectForKey:@"channel"];
 	NSInteger numVideo = [[userInfo objectForKey:@"num_video_added"] integerValue];
-	if ( numVideo == 0 ) {
+	if ( srcChannel == channel && numVideo == 0 ) {
 		// we can't get any new video from the server. try getting by doubling the count
 		NSUInteger vidReq = [[userInfo objectForKey:@"num_video_requested"] unsignedIntegerValue];
 		if ( vidReq < 41 ) {
