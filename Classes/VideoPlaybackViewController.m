@@ -105,8 +105,7 @@
 		theFrame.origin.y = 0.0f;
 		theFrame.origin.x = -1024.0f;
 		loadedMovieDetailView.frame = theFrame;
-		//		loadedControlView.hidden = YES;
-		//		loadedControlView.alpha = 0.0f;
+		loadedMovieDetailView.alpha = 0.0f;
 		[controlScrollView addSubview:loadedMovieDetailView];
 	}
 	self.loadedMovieDetailView = nil;
@@ -328,12 +327,6 @@
 //	movieView.frame = theFrame;
 }
 
-- (void)showPlayerAndControl {
-	controlScrollView.alpha = 1.0;	// don't perform transition yet
-	controlScrollView.scrollEnabled = YES;
-	didPlayToEnd = NO;
-}
-
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger c = (NSInteger)context;
 	switch (c) {
@@ -399,6 +392,7 @@
 }
 
 - (void)showNextVideo:(BOOL)aEndOfVideo {
+	// called when we need to switch to next video triggered by finished playing the current video or 
 	if ( playbackModelController.nextVideo == nil ) {
 		// there's no more video available
 		//TODO: get more video here. issue fetch video list request
@@ -693,7 +687,6 @@
 		[self dismissModalViewControllerAnimated:YES];
 	} else {
 		didPlayToEnd = YES;
-		controlScrollView.scrollEnabled = NO;
 		[self showNextVideo:YES];
 	}
 }
@@ -724,7 +717,6 @@
 					videoDurationInvalid = YES;
 				}
 				[movieView setActivityIndicationHidden:YES animated:YES];
-				controlScrollView.scrollEnabled = YES;
 				break;
 			}
 			default:

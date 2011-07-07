@@ -83,6 +83,8 @@
 	} else {
 		descriptionLabel.text = @"";
 	}
+	
+	if ( self.alpha == 0.0f ) self.alpha = 1.0f;
 }
 
 @end
