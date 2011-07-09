@@ -7,11 +7,13 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import "NMLibrary.h"
 #import "NMMovieView.h"
 #import "NMMovieDetailView.h"
 #import "NMControlsView.h"
-#import "NMLibrary.h"
 #import "VideoPlaybackModelController.h"
+#import "NMAVQueuePlayer.h"
+#import "NMAVPlayerItem.h"
 
 @class NMVideo;
 @class NMChannel;
@@ -24,7 +26,7 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate, VideoPlaybackModelControllerDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UITextView * debugMessageView;
 	NMMovieView * movieView;
@@ -49,6 +51,7 @@
 	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
+	id timeObserver;
 	
 	@private
     NSManagedObjectContext *managedObjectContext_;
@@ -74,7 +77,6 @@
 - (IBAction)refreshVideoList:(id)sender;
 
 - (void)stopVideo;
-- (void)preparePlayerForVideo:(NMVideo *)vid;	// prepare an AVPlayerLayer for the first time
 //- (void)requestAddVideoAtIndex:(NSUInteger)idx;
 //- (void)getVideoInfoAtIndex:(NSUInteger)idx;
 
