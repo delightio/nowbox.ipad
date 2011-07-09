@@ -17,6 +17,7 @@
  Insert the video to the end of the playback queue. It does NOT trigger URL resolution request.
  */
 - (void)insertVideoToEndOfQueue:(NMVideo *)vid;
+- (void)revertPreviousItem:(AVPlayerItem *)item;
 - (void)queueVideo:(NMVideo *)vid;
 
 @end
@@ -77,6 +78,7 @@
 		}
 	} else {
 		[self advanceToNextItem];
+		[self play];
 	}
 	[self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 	[self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextNextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
@@ -92,6 +94,10 @@
 	for (NMVideo * theVideo in vidAy) {
 		[self requestResolveVideo:theVideo];
 	}
+}
+
+- (void)resolveAndQueueVideo:(NMVideo *)vid {
+	[self requestResolveVideo:vid];
 }
 
 #pragma Video Switching

@@ -67,9 +67,6 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
-#ifdef DEBUG_VIDEO_LIST_REFRESH
-	NSLog(@"video list downloaded (refresh) - %@, %d", channelName, [chVideos count]);
-#endif
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
