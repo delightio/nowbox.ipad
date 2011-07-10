@@ -101,7 +101,7 @@
 	[self requestResolveVideo:vid];
 }
 
-#pragma Video Switching
+#pragma mark Video Switching
 - (void)revertPreviousItem:(AVPlayerItem *)anItem {
 	// move back to the previous item
 	AVPlayerItem * cItem = [self.currentItem retain];
@@ -156,6 +156,7 @@
 			if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
 				// play the video
 				[self insertVideoToEndOfQueue:vid];
+				[self play];
 				// insert other videos
 				otherVideo = [playbackDelegate nextVideoForPlayer:self];
 				if ( otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
