@@ -19,7 +19,7 @@
 - (NMVideo *)nextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 - (NMVideo *)nextNextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 
-- (void)observePlayerItem:(NMAVPlayerItem *)anItem;
+- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(NMAVPlayerItem *)anItem;
 
 @end
 

@@ -16,6 +16,8 @@ NSString * const NMChannelEntityName = @"NMChannel";
 NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 
+BOOL NMVideoPlaybackViewIsScrolling = NO;
+
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
 @synthesize trendingChannel;
@@ -218,10 +220,18 @@ NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 		// post notification from main thread. we must use performSelectorOnMainThread
 		[notificationCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 	} else {
-		[self performSelectorOnMainThread:@selector(saveCacheForTask:) withObject:task waitUntilDone:NO];
+		if ( NMVideoPlaybackViewIsScrolling ) {
+			[self performSelector:@selector(delayedSaveCacheForTask:) withObject:task afterDelay:0.25f];
+		} else {
+			[self performSelectorOnMainThread:@selector(saveCacheForTask:) withObject:task waitUntilDone:NO];
+		}
 	}
 	
 	[pool release];
+}
+
+- (void)delayedSaveCacheForTask:(NMTask *)task {
+	[self performSelectorOnMainThread:@selector(saveCacheForTask:) withObject:task waitUntilDone:NO];
 }
 
 - (void)saveCacheForTask:(NMTask *)task {

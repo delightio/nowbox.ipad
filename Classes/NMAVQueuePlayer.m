@@ -45,7 +45,7 @@
 - (void)insertVideoToEndOfQueue:(NMVideo *)vid {
 	NMAVPlayerItem * item = [vid createPlayerItem];
 	if ( item && [self canInsertItem:item afterItem:nil] ) {
-		[playbackDelegate observePlayerItem:item];
+		[playbackDelegate player:self observePlayerItem:item];
 		
 		[self insertItem:item afterItem:nil];
 		vid.nm_playback_status = NMVideoQueueStatusQueued;
@@ -53,6 +53,7 @@
 	[item release];
 }
 
+#pragma mark Public interface
 - (NMAVPlayerItem *)advanceToVideo:(NMVideo *)aVideo {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	AVPlayerItem * curItem = self.currentItem;
@@ -155,7 +156,6 @@
 			if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
 				// play the video
 				[self insertVideoToEndOfQueue:vid];
-				[self play];
 				// insert other videos
 				otherVideo = [playbackDelegate nextVideoForPlayer:self];
 				if ( otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {

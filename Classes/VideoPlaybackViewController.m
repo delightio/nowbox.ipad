@@ -348,13 +348,8 @@
 }
 
 #pragma mark Video queuing
-- (void)observePlayerItem:(NMAVPlayerItem *)anItem {
-	// observe property of the current item
-	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
-	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
-}
-
 - (void)stopObservingPlayerItem:(AVPlayerItem *)anItem {
+	((NMAVPlayerItem *)anItem).nmVideo.nm_playback_status = NMVideoQueueStatusPlayed;
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"status"];
 }
@@ -463,100 +458,6 @@
 	[movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }
 
-//- (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid {
-//	/*!
-//	 check if we should queue video when we model controller informs about direct URL resolved. Similar operation is carried when user flick the screen.
-//	 */
-////	if ( movieView.player == nil ) {
-////		return;
-////		// return immediately. the "shouldBeginPlayingVideo" delegate method will be called.
-////	}
-//	NSUInteger c = 0;
-//	if ( movieView.player ) {
-//		c = [[movieView.player items] count];
-//	}
-//	NMAVPlayerItem * item;
-//	
-//	if ( vid == playbackModelController.currentVideo ) {
-//		// play the video
-//		if ( movieView.player == nil ) {
-//			[self preparePlayerForVideo:vid];
-//		}
-//		// insert other videos
-//		if ( playbackModelController.nextVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-//			vid = playbackModelController.nextVideo;
-//			item = [vid createPlayerItem];
-//			if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-//				[self observePlayerItem:item];
-//				[movieView.player insertItem:item afterItem:nil];
-//				[movieView.player play];
-//				vid.nm_playback_status = NMVideoQueueStatusQueued;
-//			}
-//			[item release];
-//			if ( playbackModelController.nextNextVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-//				vid = playbackModelController.nextNextVideo;
-//				item = [vid createPlayerItem];
-//				if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-//					[self observePlayerItem:item];
-//					[movieView.player insertItem:item afterItem:nil];
-//					[movieView.player play];
-//					vid.nm_playback_status = NMVideoQueueStatusQueued;
-//				}
-//				[item release];
-//			}
-//		}
-//	} else {
-//		switch (c) {
-//			case 1:
-//				// playing current video. check if the video is the "next" video
-//				if ( vid == playbackModelController.nextVideo ) {
-//					// add video
-//					item = [vid createPlayerItem];
-//					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-//						[self observePlayerItem:item];
-//						[movieView.player insertItem:item afterItem:nil];
-//						vid.nm_playback_status = NMVideoQueueStatusQueued;
-//					}
-//					[item release];
-//					// add next next video
-//					vid = playbackModelController.nextNextVideo;
-//					if ( vid && vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-//						// queue the next next video as well
-//						item = [vid createPlayerItem];
-//						if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-//							[self observePlayerItem:item];
-//							[movieView.player insertItem:item afterItem:nil];
-//							vid.nm_playback_status = NMVideoQueueStatusQueued;
-//						}
-//						[item release];
-//					}
-//				}
-//				break;
-//			case 2:
-//				if ( vid == playbackModelController.nextNextVideo ) {
-//					item = [vid createPlayerItem];
-//					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-//						[self observePlayerItem:item];
-//						[movieView.player insertItem:item afterItem:nil];
-//						vid.nm_playback_status = NMVideoQueueStatusQueued;
-//					}
-//					[item release];
-//				}
-//				break;
-//			case 0:
-//#ifdef DEBUG_PLAYBACK_QUEUE
-//				NSLog(@"queue player has no current item. but received resolution notification");
-//#endif
-//				break;
-//			default:
-//#ifdef DEBUG_PLAYBACK_QUEUE
-//				NSLog(@"wow~ doing well~ resolving video faster than it is being consumed. no need to queue");
-//#endif
-//				break;
-//		}
-//	}
-//}
-
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum {
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"current total num videos: %d", totalNum);
@@ -596,6 +497,12 @@
 }
 
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
+
+- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(NMAVPlayerItem *)anItem {
+	// observe property of the current item
+	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
+	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
+}
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
 	
@@ -758,6 +665,7 @@
 		dx = scrollView.contentOffset.x - currentXOffset;
 	}
 	movieView.alpha = (1024.0 - dx) / 1024.0;
+	NMVideoPlaybackViewIsScrolling = YES;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -771,6 +679,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 	scrollView.scrollEnabled = YES;
+	NMVideoPlaybackViewIsScrolling = NO;
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
