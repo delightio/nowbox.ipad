@@ -233,9 +233,17 @@ NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 		[pool release];
 		
 		NSError * error = nil;
-		if ( ![managedObjectContext save:&error] ) {
-			NSLog(@"can't save cache %@", error);
-		}
+	switch (task.command) {
+		case NMCommandGetAllChannels:
+		case NMCommandGetDefaultChannels:
+			if ( ![managedObjectContext save:&error] ) {
+				NSLog(@"can't save cache %@", error);
+			}
+			break;
+			
+		default:
+			break;
+	}
 		// send notification
 		[notificationCenter postNotificationName:[task didLoadNotificationName] object:self userInfo:[task userInfo]];
 //	}

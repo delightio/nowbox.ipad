@@ -660,10 +660,6 @@
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
-#ifdef DEBUG_PLAYER_NAVIGATION
-		AVPlayerItem * theItem = ((NMAVQueuePlayer *)object).currentItem;
-		NSLog(@"changed current item, playback rate: %f keep up: %d, full: %d, empty: %d", movieView.player.rate, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull, theItem.playbackBufferEmpty);
-#endif
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusPlaying;
