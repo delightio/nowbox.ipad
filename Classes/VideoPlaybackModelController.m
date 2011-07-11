@@ -21,7 +21,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 @interface VideoPlaybackModelController (PrivateMethods)
 
 - (void)initializePlayHead;
-//- (void)requestResolveVideo:(NMVideo *)vid;
 	
 @end
 
@@ -189,77 +188,79 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 
 - (BOOL)moveToNextVideo {
-	if ( currentIndexPath.row < numberOfVideos ) {
-		// we can advance forward
-		NMMovieDetailView * detailView = self.previousVideo.nm_movie_detail_view;
-		self.previousVideo.nm_movie_detail_view = nil;
-		// purge next video path
-		self.previousIndexPath = currentIndexPath;
-		self.currentIndexPath = nextIndexPath;
-		// video
-		self.previousVideo = currentVideo;
-		self.currentVideo = nextVideo;
-		if ( nextIndexPath.row + 1 < numberOfVideos ) {
-			self.nextIndexPath = [NSIndexPath indexPathForRow:nextIndexPath.row + 1 inSection:0];
-			self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
-			// pass the movie info view to the new one
-			if ( detailView ) {
-				self.nextVideo.nm_movie_detail_view = detailView;
-				detailView.video = self.nextVideo;
-			}
-			[dataDelegate didLoadNextVideoManagedObjectForController:self];
-		} else {
-			self.nextIndexPath = nil;
-			self.nextVideo = nil;
-			detailView.video.nm_movie_detail_view = nil;
-			detailView.video = nil;
-		}
-		if ( nextNextIndexPath.row + 1 < numberOfVideos ) {
-			self.nextNextIndexPath = [NSIndexPath indexPathForRow:nextNextIndexPath.row + 1 inSection:0];
-			self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
-		} else {
-			self.nextNextIndexPath = nil;
-			self.nextNextVideo = nil;
-			// fetch more video
-			[nowmovTaskController issueGetVideoListForChannel:channel];
-		}
-		
-		return YES;
+	if ( nextIndexPath == nil ) {
+		// we can't move forward. This may not mean we have no more items. It could be the data has not been loaded to Core Data.
+		return NO;
 	}
-	return NO;
+	
+	// we can advance forward
+	NMMovieDetailView * detailView = self.previousVideo.nm_movie_detail_view;
+	detailView.video = nil;
+	self.previousVideo.nm_movie_detail_view = nil;
+	// purge next video path
+	self.previousIndexPath = currentIndexPath;
+	self.currentIndexPath = nextIndexPath;
+	// video
+	self.previousVideo = currentVideo;
+	self.currentVideo = nextVideo;
+	
+	// update next video
+	self.nextIndexPath = nextNextIndexPath;
+	self.nextVideo = nextNextVideo;
+	if ( nextIndexPath ) {
+		[dataDelegate didLoadNextVideoManagedObjectForController:self];
+	}
+	
+	// update next next video
+	if ( nextNextIndexPath && nextNextIndexPath.row + 1 < numberOfVideos ) {
+		// load next next video
+		self.nextNextIndexPath = [NSIndexPath indexPathForRow:nextNextIndexPath.row + 1 inSection:0];
+		self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+	} else {
+		self.nextNextIndexPath = nil;
+		self.nextNextVideo = nil;
+		// fetch more video
+		[nowmovTaskController issueGetVideoListForChannel:channel];
+	}
+	return YES;
 }
 
 - (BOOL)moveToPreviousVideo {
-	if ( currentIndexPath.row  > 0) {
-		// movie detail view
-		NMMovieDetailView * detailView = self.nextVideo.nm_movie_detail_view;
-		self.nextVideo.nm_movie_detail_view = nil;
-		// purge the next video
-		self.nextIndexPath = currentIndexPath;
-		self.currentIndexPath = previousIndexPath;
-		// videos
-		self.nextVideo = currentVideo;
-		self.currentVideo = previousVideo;
-		if ( previousIndexPath.row ) {
-			// fetch the new previous video
-			self.previousIndexPath = [NSIndexPath indexPathForRow:previousIndexPath.row - 1 inSection:0];
-			// we can set the previous video
-			self.previousVideo = [self.fetchedResultsController objectAtIndexPath:previousIndexPath];
-//			[self requestResolveVideo:previousVideo];
-			if ( detailView ) {
-				self.previousVideo.nm_movie_detail_view = detailView;
-				detailView.video = self.previousVideo;
-			}
-			[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
-		} else {
-			self.previousIndexPath = nil;
-			self.previousVideo = nil;
-			detailView.video.nm_movie_detail_view = nil;
-			detailView.video = nil;
-		}
-		return YES;
+	if ( previousIndexPath == nil ) {
+		return NO;
 	}
-	return NO;
+	
+	// move next-next video
+	self.nextNextIndexPath = nextIndexPath;
+	self.nextNextVideo = nextVideo;
+	
+	// move next video
+	NMMovieDetailView * detailView = nil;
+	if ( nextVideo ) {
+		detailView = nextVideo.nm_movie_detail_view;
+		detailView.video = nil;
+		nextVideo.nm_movie_detail_view = nil;
+	}
+	self.nextIndexPath = currentIndexPath;
+	self.nextVideo = currentVideo;
+	
+	// move current video
+	self.currentIndexPath = previousIndexPath;
+	self.currentVideo = previousVideo;
+	
+	// move previous video
+	if ( previousIndexPath && previousIndexPath.row > 0 ) {
+		// fetch the new previous video
+		self.previousIndexPath = [NSIndexPath indexPathForRow:previousIndexPath.row - 1 inSection:0];
+		// we can set the previous video
+		self.previousVideo = [self.fetchedResultsController objectAtIndexPath:previousIndexPath];
+		[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
+	} else {
+		self.previousIndexPath = nil;
+		self.previousVideo = nil;
+	}
+	
+	return YES;
 }
 
 - (NSArray *)videosForBuffering {
@@ -318,17 +319,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			// we have finish up this channel
 		}
 	} 
-	// FRC delegate methods will be notified. Video queuing is handled there.
-//	else {
-//		// check if the new videos are in the play window. If so, get their direct URL
-//		if ( currentVideo == nil ) {
-//			// initial case
-//			[self initializePlayHead];
-//			[self requestResolveVideo:self.currentVideo];
-//			[self requestResolveVideo:self.nextVideo];
-//			[self requestResolveVideo:self.nextNextVideo];
-//		}
-//	}
 }
 
 #pragma mark Fetched Results Controller
@@ -364,7 +354,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"VideoPlaybackModel"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
@@ -406,7 +396,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			rowCountHasChanged = YES;
 			if ( [indexPath isEqual:currentIndexPath] ) {
 				self.currentVideo = [controller objectAtIndexPath:indexPath];
-//				[self requestResolveVideo:nextVideo];
 				// info the delegate about the current video change
 				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 

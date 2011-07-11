@@ -439,6 +439,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
+	// play this video
+	[movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
 
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
@@ -453,7 +455,6 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
-	
 	// play this video
 	[movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }

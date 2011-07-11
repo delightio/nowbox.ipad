@@ -74,6 +74,7 @@
 			}
 			[item release];
 		} else {
+			NSLog(@"issue delayed resolution to current video: %@", aVideo.title);
 			// we need to resolve the direct URL
 			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 		}
@@ -123,6 +124,7 @@
 }
 
 - (void)requestResolveVideo:(NMVideo *)vid {
+	NSLog(@"issue resolution request - %@", vid.title);
 	if ( vid == nil ) return;
 	// request to resolve the direct URL of this video
 	if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
