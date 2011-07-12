@@ -216,6 +216,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		// load next next video
 		self.nextNextIndexPath = [NSIndexPath indexPathForRow:nextNextIndexPath.row + 1 inSection:0];
 		self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+		[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
 	} else {
 		self.nextNextIndexPath = nil;
 		self.nextNextVideo = nil;

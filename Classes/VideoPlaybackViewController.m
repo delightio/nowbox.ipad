@@ -407,7 +407,7 @@
 
 - (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
 	// queue this video
-	[movieView.player resolveAndQueueVideo:ctrl.nextNextVideo];
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextNextVideo];
 }
 
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
@@ -423,8 +423,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
-	// queue this video
-	[movieView.player resolveAndQueueVideo:ctrl.nextVideo];
+	// resolve the URL
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
 
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
@@ -439,8 +439,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
-	// play this video
-	[movieView.player resolveAndQueueVideo:ctrl.previousVideo];
+	// resolve the URL
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
 
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
@@ -455,8 +455,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
-	// play this video
-	[movieView.player resolveAndQueueVideo:ctrl.currentVideo];
+	// when scrolling is inflight, do not issue the URL resolution request. Playback View Controller will call "advanceToNextVideo" later on which will trigger sending of resolution request.
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }
 
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum {
@@ -680,7 +680,6 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 	scrollView.scrollEnabled = YES;
-	NMVideoPlaybackViewIsScrolling = NO;
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
@@ -702,6 +701,7 @@
 		// this method pairs with "stopVideo" in scrollViewDidEndDragging
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 	}
+	NMVideoPlaybackViewIsScrolling = NO;
 }
 
 

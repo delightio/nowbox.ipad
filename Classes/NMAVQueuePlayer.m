@@ -82,8 +82,8 @@
 		[self advanceToNextItem];
 		[self play];
 	}
-	[self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
-	[self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextNextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+	if ( [playbackDelegate nextVideoForPlayer:self] ) [self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+	if ( [playbackDelegate nextNextVideoForPlayer:self] ) [self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextNextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 	return item;
 }
 
@@ -99,7 +99,7 @@
 }
 
 - (void)resolveAndQueueVideo:(NMVideo *)vid {
-	[self requestResolveVideo:vid];
+	[self performSelector:@selector(requestResolveVideo:) withObject:vid afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 }
 
 #pragma mark Video Switching
@@ -210,6 +210,7 @@
 	[self queueVideo:vid];
 	if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
 		[playbackDelegate player:self willBeginPlayingVideo:vid];
+		[self play];
 	}
 }
 
