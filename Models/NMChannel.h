@@ -15,6 +15,7 @@
 {
 }
 
+@property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSNumber * nm_last_vid;

@@ -22,6 +22,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 
 - (id)init {
 	self = [super init];
+	commandIndexPool = [[NSMutableIndexSet alloc] init];
 	activeChannelThumbnailDownloadSet = [[NSMutableSet alloc] init];
 	taskPool = [[NSMutableDictionary alloc] init];
 	connectionPool = [[NSMutableDictionary alloc] init];
@@ -37,6 +38,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 
 - (void)dealloc {
 	isDone = YES;
+	[commandIndexPool release];
 	[activeChannelThumbnailDownloadSet release];
 	[defaultCenter release];
 	[taskPool release];
@@ -144,9 +146,18 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	NSURLConnection *conn;
 	NSNumber *key;
 	BOOL transverseWholeArray = YES;
+	NSMutableArray * rmTaskAy = nil;
 	@synchronized(pendingTaskBuffer) {
 		for (theTask in pendingTaskBuffer) {
 			if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {
+				if ( [commandIndexPool containsIndex:[theTask commandIndex]] ) {
+					// remove the task without performing it
+					if ( rmTaskAy == nil ) {
+						rmTaskAy = [NSMutableArray arrayWithCapacity:2];
+					}
+					[rmTaskAy addObject:theTask];
+					continue;
+				}
 				if ( [self tryGetNetworkResource] ) {
 					theTask.state = NMTaskExecutionStateConnectionActive;
 					request = [theTask URLRequest];
@@ -164,6 +175,8 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 				}
 			}
 		}
+		// remove these commands
+		if ( rmTaskAy ) [pendingTaskBuffer removeObjectsInArray:rmTaskAy];
 	}
 	if ( transverseWholeArray ) {
 		// remove the timer
@@ -181,9 +194,18 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	NSURLConnection *conn;
 	NSNumber *key;
 	BOOL didRunOutResource = NO;
+	NSMutableArray * rmTaskAy = nil;
 	@synchronized(pendingTaskBuffer) {
 		for (theTask in pendingTaskBuffer) {
 			if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {
+				if ( [commandIndexPool containsIndex:[theTask commandIndex]] ) {
+					// remove the task without performing it
+					if ( rmTaskAy == nil ) {
+						rmTaskAy = [NSMutableArray arrayWithCapacity:2];
+					}
+					[rmTaskAy addObject:theTask];
+					continue;
+				}
 				if ( [self tryGetNetworkResource] ) {
 					theTask.state = NMTaskExecutionStateConnectionActive;
 					request = [theTask URLRequest];
@@ -259,7 +281,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 }
 
 - (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj {
-	NSString * chname = chnObj.title;
 	@synchronized(pendingTaskBuffer) {
 		for (NMTask * task in pendingTaskBuffer) {
 			if ( task.state == NMTaskExecutionStateConnectionActive ) {
@@ -269,11 +290,14 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 					case NMCommandGetTopicChannels:
 					case NMCommandGetDefaultChannels:
 					case NMCommandGetChannelVideoList:
-					case NMCommandGetYouTubeDirectURL:
 						// cancel the task
-						if ( [task.channelName isEqualToString:chname]) {
+						if ( [task.targetID isEqualToNumber:chnObj.nm_id]) {
 							task.state = NMTaskExecutionStateCanceled;
 						}
+						break;
+					case NMCommandGetYouTubeDirectURL:
+						// cancel the task
+						task.state = NMTaskExecutionStateCanceled;
 						break;
 					default:
 						break;
@@ -336,6 +360,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	}
 	// release the task
 	[taskPool removeObjectForKey:key];
+	[commandIndexPool removeIndex:[task commandIndex]];
 	@synchronized(pendingTaskBuffer) {
 		[pendingTaskBuffer removeObject:task];
 	}
@@ -358,6 +383,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	if ( theTask.state == NMTaskExecutionStateCanceled ) {
 		// release the connection, and the data object
 		[taskPool removeObjectForKey:key];
+		[commandIndexPool removeIndex:[theTask commandIndex]];
 		// remove task
 		@synchronized(pendingTaskBuffer) {
 			[pendingTaskBuffer removeObject:theTask];
@@ -396,6 +422,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	
     // release the connection, and the data object
 	[taskPool removeObjectForKey:key];
+	[commandIndexPool removeIndex:[theTask commandIndex]];
 	// remove task
 	@synchronized(pendingTaskBuffer) {
 		[pendingTaskBuffer removeObject:theTask];

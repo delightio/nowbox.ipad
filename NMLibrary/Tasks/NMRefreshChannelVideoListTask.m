@@ -22,7 +22,7 @@ NSString * const NMDidFailRefreshChannelVideoListNotification = @"NMDidFailRefre
 NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 
 @implementation NMRefreshChannelVideoListTask
-@synthesize channel;
+@synthesize channel, channelName;
 @synthesize newChannel, urlString;
 @synthesize numberOfVideoRequested;
 @synthesize delegate;
@@ -39,12 +39,14 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	command = NMCommandGetChannelVideoList;
 	self.channel = aChn;
 	self.channelName = aChn.title;
+	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
 	numberOfVideoRequested = 5;
 	return self;
 }
 
 - (void)dealloc {
+	[channelName release];
 	[channel release];
 	[parsedDetailObjects release];
 	[urlString release];
