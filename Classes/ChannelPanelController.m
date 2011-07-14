@@ -11,8 +11,7 @@
 #import "VideoPlaybackViewController.h"
 #import "VideoRowController.h"
 #import "ChannelContainerView.h"
-#import "HorizontalTableView.h"
-
+#import "AGOrientedTableView.h"
 
 #define VIDEO_ROW_LEFT_PADDING			167.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -69,13 +68,6 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
 }
 
-#pragma mark Horizontal View delegate
-- (void)tableView:(HorizontalTableView *)tableView didSelectCellAtIndex:(NSInteger)index {
-	// clear the previous selection
-	selectedIndex = index;
-	NSLog(@"selected column at index %d", index);
-}
-
 - (void)queueColumnView:(UIView *)vw {
     if ([containerViewPool count] >= NM_CONTAINER_VIEW_POOL_SIZE) {
         return;
@@ -104,18 +96,24 @@
 	CGRect theFrame = aContentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-	HorizontalTableView * videoTableView = [[HorizontalTableView alloc] init];
+    NSLog(@"%@", NSStringFromCGRect(theFrame));
+	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
-	
-	videoTableView.delegate	= vdoCtrl;
-	videoTableView.panelDelegate = self;
-	videoTableView.autoresizingMask	= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    videoTableView.orientedTableViewDataSource = vdoCtrl;
+    [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
+    [videoTableView setShowsVerticalScrollIndicator:NO];
+    [videoTableView setShowsHorizontalScrollIndicator:NO];
+    
+    videoTableView.delegate	= vdoCtrl;
+//	videoTableView.panelDelegate = self; // this was used for in horizontaltableview to queue/dequeue and didselectrow which shouldn't be needed now
 	videoTableView.tableController = vdoCtrl;
 	vdoCtrl.videoTableView = videoTableView;
 	
 	videoTableView.tag = 1009;
 	[aContentView insertSubview:videoTableView belowSubview:ctnView];
 	
+    
 	// release everything
 	[videoTableView release];
 	[vdoCtrl release];
@@ -129,10 +127,11 @@
 	ctnView.imageView.image = styleUtility.userPlaceholderImage;
 	
 	// video row
-	HorizontalTableView * htView = (HorizontalTableView *)[cell viewWithTag:1009];
+	AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
 	htView.tableController.fetchedResultsController = nil;
 	htView.tableController.channel = theChannel;
-	[htView refreshData];
+	[htView reloadData];
+    [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
 //	
 //	CGRect theFrame = cell.contentView.bounds;
 //	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
@@ -163,12 +162,13 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"WholeVideoRow";
     
 	UITableViewCell *cell = (UITableViewCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.clipsToBounds = YES;
+        [cell setFrame:CGRectMake(0, 0, 1024, NM_VIDEO_CELL_HEIGHT)];
+		cell.clipsToBounds = NO;
 		cell.selectionStyle = UITableViewCellSelectionStyleNone;
 		[self setupCellContentView:cell.contentView];
     }
@@ -225,17 +225,11 @@
 #pragma mark -
 #pragma mark Table view delegate
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-// Navigation logic may go here -- for example, create and push another view controller.
-/*
- <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
- NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath:indexPath];
- // ...
- // Pass the selected object to the new view controller.
- [self.navigationController pushViewController:detailViewController animated:YES];
- [detailViewController release];
- */
-//}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	// clear the previous selection
+	selectedIndex = [indexPath row];
+	NSLog(@"selected column at index %d", [indexPath row]);
+}
 
 #pragma mark -
 #pragma mark Fetched results controller

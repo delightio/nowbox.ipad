@@ -6,10 +6,10 @@
 //  Copyright 2011 Pipely Inc. All rights reserved.
 //
 
-#import "HorizontalTableView.h"
+#import "AGOrientedTableView.h"
 @class NMVideo;
 
-@interface PanelVideoContainerView : UIView {
+@interface PanelVideoContainerView : UITableViewCell {
     UILabel * titleLabel;
 	UILabel * datePostedLabel;
 	UILabel * durationLabel;
@@ -17,8 +17,8 @@
 	UIColor * highlightColor, * normalColor;
 	NSInteger indexInTable;
 	id panelDelegate;
-	HorizontalTableView * tableView;
-	
+	AGOrientedTableView * tableView;
+	CGRect initialFrame;
 	@private
 	BOOL highlighted_;
 }
@@ -29,9 +29,7 @@
 @property (nonatomic, retain) UIColor * highlightColor;
 @property (nonatomic, retain) UIColor * normalColor;
 @property (nonatomic, assign) NSInteger indexInTable;
-@property (nonatomic, assign) id<HorizontalTableViewParentPanelDelegate> panelDelegate;
-@property (nonatomic, assign) HorizontalTableView * tableView;
-@property (nonatomic, assign) BOOL highlighted;
+@property (nonatomic, assign) AGOrientedTableView * tableView;
 
 - (void)setVideoInfo:(NMVideo *)aVideo;
 

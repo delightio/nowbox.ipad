@@ -16,24 +16,32 @@
 @synthesize titleLabel, datePostedLabel;
 @synthesize highlightColor, durationLabel;
 @synthesize normalColor, indexInTable;
-@synthesize panelDelegate, tableView;
-@synthesize highlighted;
+@synthesize tableView;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
 	NMStyleUtility * styleUtility = [NMStyleUtility sharedStyleUtility];
     if (self) {
-        titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, frame.size.height - NM_VIDEO_CELL_PADDING * 2.0f)];
+        initialFrame = frame;
+
+        CGFloat angle = M_PI/2.0;
+        CGRect frame = self.frame;
+        frame.origin = CGPointMake(abs(frame.size.width - frame.size.height) / 2.0, 
+                                   (frame.size.height - frame.size.width) / 2.0);
+        super.frame = frame;
+        self.transform = CGAffineTransformMakeRotation(angle);
+
+        titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - NM_VIDEO_CELL_PADDING * 2.0f)];
 		titleMaxSize = titleLabel.bounds.size;
-		titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+//		titleLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 		titleLabel.textColor = styleUtility.channelPanelFontColor;
 		titleLabel.font = styleUtility.videoTitleFont;
 		titleLabel.numberOfLines = 0;
 		titleLabel.lineBreakMode = UILineBreakModeTailTruncation;
 		titleLabel.backgroundColor = styleUtility.clearColor;
 		[self addSubview:titleLabel];
-		
+        
         datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
 		datePostedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		datePostedLabel.textColor = styleUtility.channelPanelFontColor;
@@ -52,6 +60,7 @@
 		self.backgroundColor = styleUtility.channelPanelBackgroundColor;
 		self.normalColor = styleUtility.channelPanelBackgroundColor;
 		self.highlightColor = styleUtility.channelPanelHighlightColor;
+        
     }
     return self;
 }
@@ -64,6 +73,11 @@
     // Drawing code
 }
 */
+
+-(void)setFrame:(CGRect)frame {
+    initialFrame = frame;
+    [super setFrame:frame];
+}
 
 - (void)dealloc
 {
@@ -89,12 +103,13 @@
 }
 
 - (void)setVideoInfo:(NMVideo *)aVideo {
-	CGSize theSize = [aVideo.title sizeWithFont:titleLabel.font constrainedToSize:titleMaxSize];
-	CGRect theFrame = titleLabel.frame;
-	theFrame.size = theSize;
-	titleLabel.frame = theFrame;
-	titleLabel.text = aVideo.title;
-	
+    CGSize labelSize = CGSizeMake(initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - NM_VIDEO_CELL_PADDING * 2.0f);
+    CGSize theStringSize = [aVideo.title  sizeWithFont:titleLabel.font constrainedToSize:labelSize lineBreakMode:titleLabel.lineBreakMode];
+    titleLabel.frame = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, theStringSize.width, theStringSize.height);
+    titleLabel.text = aVideo.title;
+    
+    NSLog(@"BBB%@",NSStringFromCGRect(titleLabel.frame));
+    	
 	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at];
 	NSInteger dur = [aVideo.duration integerValue];
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", dur / 60, dur % 60];

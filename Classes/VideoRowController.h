@@ -6,15 +6,15 @@
 //  Copyright 2011 Pipely Inc. All rights reserved.
 //
 
-#import "HorizontalTableView.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
 
 
 @class ChannelPanelController;
+@class AGOrientedTableView;
 
-@interface VideoRowController : NSObject <HorizontalTableViewDelegate, NSFetchedResultsControllerDelegate> {
-	HorizontalTableView * videoTableView;
+@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+	AGOrientedTableView * videoTableView;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
 	NMChannel * channel;
@@ -22,13 +22,12 @@
 	ChannelPanelController * panelController;
 }
 
-@property (nonatomic, assign) HorizontalTableView * videoTableView;
+@property (nonatomic, assign) AGOrientedTableView * videoTableView;
 @property (nonatomic, assign) ChannelPanelController * panelController;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
-//- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate;
 - (id)init;
 
 @end

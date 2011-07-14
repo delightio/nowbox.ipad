@@ -7,7 +7,7 @@
 //
 
 #import "NMStyleUtility.h"
-#import "HorizontalTableView.h"
+#import "AGOrientedTableView.h"
 
 @class VideoPlaybackViewController;
 
@@ -17,7 +17,7 @@ typedef enum {
 	NMFullScreenChannelMode,
 } NMPlaybackViewModeType;
 
-@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, HorizontalTableViewParentPanelDelegate> {
+@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
     IBOutlet UITableView * tableView;
 	
 	UIView *panelView;

@@ -18,25 +18,15 @@
 @synthesize videoTableView;
 @synthesize channel, panelController;
 
-//- (id)initWithFrame:(CGRect)aframe channel:(NMChannel *)chnObj panelDelegate:(id<HorizontalTableViewParentPanelDelegate>)pDelegate {
-//	self = [super init];
-//	styleUtility = [NMStyleUtility sharedStyleUtility];
-//	
-//	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
-//	self.channel = chnObj;
-//	videoTableView	= [[HorizontalTableView alloc] init];
-//	videoTableView.frame = aframe;
-//	
-//	videoTableView.delegate	= self;
-//	videoTableView.panelDelegate = pDelegate;
-//	videoTableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-//	videoTableView.autoresizingMask	= UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-//	videoTableView.tableController = self;
-//	
-//	[videoTableView performSelector:@selector(refreshData) withObject:nil afterDelay:0.25f];
-//	
-//	return self;
-//}
+
+#define kShortVideoLengthSeconds   60
+#define kMediumVideoLengthSeconds   300
+#define kShortVideoCellWidth    150.0f
+#define kMediumVideoCellWidth    225.0f
+#define kLongVideoCellWidth    300.0f
+
+
+
 
 - (id)init {
 	self = [super init];
@@ -56,39 +46,62 @@
 }
 
 #pragma mark -
-#pragma mark HorizontalTableViewDelegate methods
-
-- (NSInteger)numberOfColumnsForTableView:(HorizontalTableView *)tableView {
-//	return 20;
+#pragma mark UITableViewDelegate and UITableViewDatasource methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	return [sectionInfo numberOfObjects];
 }
 
-- (PanelVideoContainerView *)tableView:(HorizontalTableView *)aTableView viewForIndex:(NSInteger)index {
-	PanelVideoContainerView * ctnView = (PanelVideoContainerView *)[aTableView dequeueColumnView];
+- (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
+{
+    PanelVideoContainerView *result = (PanelVideoContainerView *)[aTableView dequeueReusableCellWithIdentifier:@"Reuse"];
+    if (nil == result)
+    {
+        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 267.0, 80.0)] autorelease];
+		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+		result.tableView = aTableView;
+    }
+    
 	
-	if ( ctnView == nil ) {
-		ctnView = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 240.0, 80.0)] autorelease];
-		ctnView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-		ctnView.tableView = aTableView;
-		ctnView.panelDelegate = aTableView.panelDelegate;
-	}
-	
-	if ( panelController.videoViewController.currentChannel == channel && index == panelController.selectedIndex ) {
-		ctnView.highlighted = YES;
+	if ( panelController.videoViewController.currentChannel == channel && [anIndexPath row] == panelController.selectedIndex ) {
+		result.highlighted = YES;
 	} else {
-		ctnView.highlighted = NO;
+		result.highlighted = NO;
 	}
-		
-	NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-	ctnView.indexInTable = index;
-	[ctnView setVideoInfo:theVideo];
-//	[ctnView setTestInfo];
-	return ctnView;
+    
+    NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
+	result.indexInTable = [anIndexPath row];
+    if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
+        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, 80)];
+    }
+    else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
+        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 80)];
+    }
+    else {
+        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 80)];
+    }
+	[result setVideoInfo:theVideo];
+    return (UITableViewCell *)result;
 }
 
-- (CGFloat)columnWidthForTableView:(HorizontalTableView *)tableView {
-    return 240.0f;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
+
+    if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
+        return kShortVideoCellWidth;
+    }
+    else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
+        return kMediumVideoCellWidth;
+    }
+    else {
+        return kLongVideoCellWidth;
+    }
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
 }
 
 #pragma mark Fetched Results Controller
