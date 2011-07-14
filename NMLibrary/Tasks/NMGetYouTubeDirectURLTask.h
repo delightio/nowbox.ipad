@@ -14,11 +14,13 @@
 	NMVideo * video;
 	NSString * externalID;
 	NSString * directURLString;
+	NSString * directSDURLString;
 }
 
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) NSString * directURLString;
+@property (nonatomic, retain) NSString * directSDURLString;
 
 - (id)initWithVideo:(NMVideo *)vdo;
 

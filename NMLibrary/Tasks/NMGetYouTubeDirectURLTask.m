@@ -17,7 +17,8 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 
 @implementation NMGetYouTubeDirectURLTask
 
-@synthesize video, externalID, directURLString;
+@synthesize video, externalID;
+@synthesize directSDURLString, directURLString;
 
 - (id)initWithVideo:(NMVideo *)vdo {
 	self = [super init];
@@ -34,6 +35,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	[video release];
 	[externalID release];
 	[directURLString release];
+	[directSDURLString release];
 	[super dealloc];
 }
 
@@ -81,13 +83,15 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		parsedObjects = [[NSMutableArray alloc] initWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil], nil];
 		return;
 	}
-//	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
-	self.directURLString = [contentDict valueForKeyPath:@"video.stream_url"];
-	if ( directURLString == nil ) {
+	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
+	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
+	if ( directURLString == nil && directSDURLString == nil ) {
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
 		NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate HQ video stream", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
 		parsedObjects = [[NSMutableArray alloc] initWithObjects:dict, nil];
+	} else if ( directURLString == nil && directSDURLString ) {
+		self.directURLString = directSDURLString;
 	}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	else {
@@ -98,6 +102,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	video.nm_direct_url = directURLString;
+	video.nm_direct_sd_url = directSDURLString;
 }
 
 - (NSString *)willLoadNotificationName {

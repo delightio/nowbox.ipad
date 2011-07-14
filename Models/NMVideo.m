@@ -20,6 +20,7 @@
 @dynamic title;
 @dynamic view_count;
 @dynamic nm_direct_url;
+@dynamic nm_direct_sd_url;
 @dynamic nm_sort_order;
 @dynamic nm_error;
 @dynamic nm_playback_status;
