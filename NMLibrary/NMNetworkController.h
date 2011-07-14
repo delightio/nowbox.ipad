@@ -31,6 +31,8 @@
 	NSInteger numberOfConnections, maxNumberOfConnection;
 	NSMutableArray *connectionDateLog;
 	
+	NSMutableIndexSet * commandIndexPool;
+	
 	// channel thumbnail_uri cache
 	NSMutableSet * activeChannelThumbnailDownloadSet;
 }

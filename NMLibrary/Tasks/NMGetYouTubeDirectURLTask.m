@@ -25,6 +25,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	command = NMCommandGetYouTubeDirectURL;
 	self.video = vdo;
 	self.externalID = vdo.external_id;
+	self.targetID = vdo.nm_id;
 	
 	return self;
 }
@@ -70,14 +71,14 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		NSArray * ay = [dict objectForKey:@"errors"];
 		if ( [ay count] ) {
 			NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:[ay objectAtIndex:0], @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
-			parsedObjects = [[NSArray alloc] initWithObjects:dict, nil];
+			parsedObjects = [[NSMutableArray alloc] initWithObjects:dict, nil];
 		}
 		return;
 	}
 	NSDictionary * contentDict = [dict objectForKey:@"content"];
 	if ( contentDict == nil || [contentDict count] == 0) {
 		encountersErrorDuringProcessing = YES;
-		parsedObjects = [[NSArray alloc] initWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil], nil];
+		parsedObjects = [[NSMutableArray alloc] initWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil], nil];
 		return;
 	}
 //	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
@@ -86,7 +87,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
 		NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate HQ video stream", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
-		parsedObjects = [[NSArray alloc] initWithObjects:dict, nil];
+		parsedObjects = [[NSMutableArray alloc] initWithObjects:dict, nil];
 	}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	else {

@@ -24,7 +24,7 @@
 	NMCommand command;
 	BOOL encountersErrorDuringProcessing;
 	NSInteger httpStatusCode;
-	NSString * channelName;
+	NSNumber * targetID;
 @private
 	NSDateFormatter * _dateTimeFormatter;
 	NSDateFormatter * _dateFormatter;
@@ -36,7 +36,7 @@
 @property (assign) NMTaskExecutionState state;
 @property (nonatomic, readonly) NMCommand command;
 @property (nonatomic, readonly) NSMutableData * buffer;
-@property (nonatomic, retain) NSString * channelName;
+@property (nonatomic, retain) NSNumber * targetID;
 
 - (void)prepareDataBuffer;
 - (void)clearDataBuffer;
@@ -44,6 +44,7 @@
 - (void)processDownloadedDataInBuffer;
 - (void)saveProcessedDataInController:(NMDataController *)ctrl;
 - (BOOL)checkDictionaryContainsError:(NSDictionary *)dict;
+- (NSUInteger)commandIndex;
 
 - (NSString *)willLoadNotificationName;
 - (NSString *)didLoadNotificationName;

@@ -22,7 +22,7 @@ NSString * const NMDidFailRefreshChannelVideoListNotification = @"NMDidFailRefre
 NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 
 @implementation NMRefreshChannelVideoListTask
-@synthesize channel;
+@synthesize channel, channelName;
 @synthesize newChannel, urlString;
 @synthesize numberOfVideoRequested;
 @synthesize delegate;
@@ -39,12 +39,14 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	command = NMCommandGetChannelVideoList;
 	self.channel = aChn;
 	self.channelName = aChn.title;
+	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
 	numberOfVideoRequested = 5;
 	return self;
 }
 
 - (void)dealloc {
+	[channelName release];
 	[channel release];
 	[parsedDetailObjects release];
 	[urlString release];
@@ -67,9 +69,6 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
-#ifdef DEBUG_VIDEO_LIST_REFRESH
-	NSLog(@"video list downloaded (refresh) - %@, %d", channelName, [chVideos count]);
-#endif
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;

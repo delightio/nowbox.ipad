@@ -7,16 +7,39 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import "NMAVPlayerItem.h"
+#import "NMLibrary.h"
 
+@class NMAVQueuePlayer;
+
+@protocol NMAVQueuePlayerPlaybackDelegate <NSObject>
+
+- (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid;
+- (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
+- (NMVideo *)nextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
+- (NMVideo *)nextNextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
+
+- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(NMAVPlayerItem *)anItem;
+
+@end
 
 /*!
  It maintains, in all time, at most 3 pending queue item
  */
 
 @interface NMAVQueuePlayer : AVQueuePlayer {
-    
+	NMTaskQueueController * nowmovTaskController;
+	id<NMAVQueuePlayerPlaybackDelegate> playbackDelegate;
 }
 
-- (void)revertPreviousItem:(AVPlayerItem *)item;
+@property (nonatomic, assign) id<NMAVQueuePlayerPlaybackDelegate> playbackDelegate;
+
+- (NMAVPlayerItem *)advanceToVideo:(NMVideo *)aVideo;
+- (NMAVPlayerItem *)revertToVideo:(NMVideo *)aVideo;
+/*!
+ When channel content already exists, we can just set the list of videos to be resolved and queue in the player
+ */
+- (void)resolveAndQueueVideos:(NSArray *)vidAy;
+- (void)resolveAndQueueVideo:(NMVideo *)vid;
 
 @end
