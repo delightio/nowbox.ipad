@@ -108,8 +108,6 @@
     titleLabel.frame = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, theStringSize.width, theStringSize.height);
     titleLabel.text = aVideo.title;
     
-    NSLog(@"BBB%@",NSStringFromCGRect(titleLabel.frame));
-    	
 	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at];
 	NSInteger dur = [aVideo.duration integerValue];
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", dur / 60, dur % 60];
