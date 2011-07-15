@@ -22,7 +22,7 @@ NSPredicate * outdatedVideoPredicateTempate_ = nil;
 static NSArray * sharedVideoDirectJSONKeys = nil;
 
 @implementation NMGetChannelVideoListTask
-@synthesize channel;
+@synthesize channel, channelName;
 @synthesize newChannel, urlString;
 @synthesize numberOfVideoRequested;
 @synthesize delegate;
@@ -66,12 +66,14 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	command = NMCommandGetChannelVideoList;
 	self.channel = aChn;
 	self.channelName = aChn.title;
+	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
 	numberOfVideoRequested = 5;
 	return self;
 }
 
 - (void)dealloc {
+	[channelName release];
 	[channel release];
 	[parsedDetailObjects release];
 	[urlString release];
@@ -131,8 +133,10 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				numberOfVideoAdded++;
 				vidObj = [ctrl insertNewVideo];
 				[vidObj setValuesForKeysWithDictionary:dict];
+				// channel
 				vidObj.channel = channel;
 				[channel addVideosObject:vidObj];
+				// video detail
 				dtlObj = [ctrl insertNewVideoDetail];
 				dict = [parsedDetailObjects objectAtIndex:vidCount];
 				[dtlObj setValuesForKeysWithDictionary:dict];
@@ -145,15 +149,24 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		for (dict in parsedObjects) {
 			vidObj = [ctrl insertNewVideo];
 			[vidObj setValuesForKeysWithDictionary:dict];
+			// channel
 			vidObj.channel = channel;
 			[channel addVideosObject:vidObj];
+			// video detail
 			dtlObj = [ctrl insertNewVideoDetail];
 			dict = [parsedDetailObjects objectAtIndex:vidCount];
 			[dtlObj setValuesForKeysWithDictionary:dict];
 			dtlObj.video = vidObj;
 			vidObj.detail = dtlObj;
+			
+			vidCount++;
 		}
+		numberOfVideoAdded = [parsedObjects count];
 	}
+#ifdef DEBUG_VIDEO_LIST_REFRESH
+	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
+#endif
+
 }
 
 - (NSString *)willLoadNotificationName {
@@ -169,7 +182,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", channel, @"channel", nil];
 }
 
 @end

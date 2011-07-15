@@ -16,7 +16,7 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 @synthesize encountersErrorDuringProcessing;
 @synthesize httpStatusCode;
 @synthesize errorInfo;
-@synthesize channelName;
+@synthesize targetID;
 
 
 - (NSDate *)dateTimeFromString:(NSString *)str {
@@ -61,6 +61,7 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 }
 
 - (void)dealloc {
+	[targetID release];
 	[_dateFormatter release];
 	[_dateTimeFormatter release];
 	[buffer release];
@@ -84,6 +85,14 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 	NSNumber * c = [dict valueForKeyPath:@"status.code"];
 	encountersErrorDuringProcessing = ( c == nil || [c integerValue] );
 	return encountersErrorDuringProcessing;
+}
+
+- (NSUInteger)commandIndex {
+	if ( targetID ) {
+		NSUInteger tid = [self.targetID unsignedIntegerValue];
+		return tid << 5 | (NSUInteger)command;
+	}
+	return (NSUInteger)command;
 }
 
 - (NSString *)willLoadNotificationName {

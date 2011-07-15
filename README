@@ -1,0 +1,3 @@
+0.7.11b1
+
+This is the release where URL resolution is still done in the playback model controller.

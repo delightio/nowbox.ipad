@@ -439,6 +439,7 @@
 				A970501713438F860022BF2C /* VideoPlaybackViewController.m */,
 				A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */,
 				A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */,
+				A9CD253813C5958700570FDF /* New Group */,
 				A97E237E13A6E8F400EBA5EE /* ChannelPanelController.h */,
 				A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */,
 				A99BA0A813A7540B0010F202 /* VideoRowController.h */,
@@ -566,6 +567,13 @@
 				A9976F0013BB355200B06DFF /* NMLibrary-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A9CD253813C5958700570FDF /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 		A9EB20F413AAE1E000BC2E29 /* demo_graphics */ = {
@@ -1028,7 +1036,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_PLAYER_DEBUG_MESSAGE,
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_PLAYBACK_QUEUE,
 					DEBUG_PLAYBACK_NETWORK_CALL,
@@ -1173,7 +1180,7 @@
 				DSTROOT = /tmp/NMLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_VIDEO_LIST_REFRESH;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

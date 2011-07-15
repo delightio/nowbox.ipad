@@ -7,6 +7,7 @@
 //
 
 #import "NMMovieBackgroundView.h"
+#import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -40,6 +41,11 @@
 	// border
 	theLayer.borderColor = [UIColor colorWithRed:55.0f/255.0f green:55.0f/255.0f blue:55.0f/255.0f alpha:1.0f].CGColor;
 	theLayer.borderWidth = 1.0f;
+	// center black rect
+	CALayer * rectLayer = [CALayer layer];
+	rectLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
+	rectLayer.frame = CGRectInset(theLayer.bounds, 13.0f, 13.0f);
+	[theLayer addSublayer:rectLayer];
 }
 
 /*

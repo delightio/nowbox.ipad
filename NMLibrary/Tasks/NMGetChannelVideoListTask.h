@@ -13,6 +13,7 @@
 
 @interface NMGetChannelVideoListTask : NMTask {
 	NMChannel * channel;
+	NSString * channelName;
 	NSString * urlString;
 	NSMutableArray * parsedDetailObjects;
 	BOOL newChannel;
@@ -22,6 +23,7 @@
 }
 
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NSString * channelName;
 @property (nonatomic, retain) NSString * urlString;
 @property (nonatomic) NSUInteger numberOfVideoRequested;
 @property (nonatomic) BOOL newChannel;
@@ -31,5 +33,6 @@
 - (id)initWithChannel:(NMChannel *)aChn;
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict;
++ (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict;
 
 @end

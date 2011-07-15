@@ -28,6 +28,7 @@
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * view_count;
 @property (nonatomic, retain) NSString * nm_direct_url;
+@property (nonatomic, retain) NSString * nm_direct_sd_url;
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_retry_count;
 @property (nonatomic, retain) NSNumber * nm_sort_order;

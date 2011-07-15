@@ -20,7 +20,8 @@
 @dynamic channelName, image;
 
 - (id)init {
-	UIImage * img = [NMStyleUtility sharedStyleUtility].userPlaceholderImage;
+	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
+	UIImage * img = theStyle.userPlaceholderImage;
 	CGRect frame = CGRectMake(0.0, 0.0, img.size.width, img.size.height);
 	self = [super initWithFrame:frame];
     if (self) {
@@ -31,7 +32,7 @@
 		
 		// create highlight layer
 		highlightLayer = [[CALayer layer] retain];
-		highlightLayer.backgroundColor = [UIColor blackColor].CGColor;
+		highlightLayer.backgroundColor = theStyle.blackColor.CGColor;
 		highlightLayer.opacity = 0.5f;
 		highlightLayer.frame = CGRectMake(8.0, 11.0, NM_CHANNEL_THUMBNAIL_WIDTH, NM_CHANNEL_THUMBNAIL_HEIGHT);
 		[self.layer addSublayer:highlightLayer];
@@ -88,7 +89,7 @@
 	}
 	imageLayer = [CALayer layer];
 	imageLayer.contents = (id)img.CGImage;
-	imageLayer.backgroundColor = [UIColor blackColor].CGColor;
+	imageLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
 	imageLayer.frame = CGRectMake(8.0, 11.0, NM_CHANNEL_THUMBNAIL_WIDTH, NM_CHANNEL_THUMBNAIL_HEIGHT);
 	imageLayer.masksToBounds = YES;
 	imageLayer.contentsGravity = kCAGravityResizeAspect;

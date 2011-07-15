@@ -13,3 +13,5 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+
+extern BOOL NMVideoPlaybackViewIsScrolling;

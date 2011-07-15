@@ -27,6 +27,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self.imageURLString = chn.thumbnail_uri;
 	self.originalImagePath = chn.nm_thumbnail_file_name;
 	self.channel = chn;
+	self.targetID = chn.nm_id;
 	command = NMCommandGetChannelThumbnail;
 	
 	return self;

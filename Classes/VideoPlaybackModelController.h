@@ -15,9 +15,10 @@
 
 @protocol VideoPlaybackModelControllerDelegate <NSObject>
 
-- (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid;
-- (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid;
+//- (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid;
+//- (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid;
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum;
+- (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
@@ -84,5 +85,10 @@
  Returns YES if move is successful. No if the currentVideo is the first video;
  */
 - (BOOL)moveToPreviousVideo;
+
+/*!
+ Return list of videos that should be buffered in the queue player. The queue video player should enqueue the videos in the order specified in the returned array.
+ */
+- (NSArray *)videosForBuffering;
 
 @end

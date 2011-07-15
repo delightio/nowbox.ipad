@@ -8,12 +8,8 @@
 
 #import "VideoPlaybackViewController.h"
 #import "SocialSignInViewController.h"
-#import "NMLibrary.h"
-#import "NMVideo.h"
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
-#import "NMAVQueuePlayer.h"
-#import "NMAVPlayerItem.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -21,8 +17,9 @@
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT			101
 #define NM_PLAYBACK_BUFFER_EMPTY_CONTEXT		102
 #define NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT	103
-#define NM_LOADED_TIME_RANGES_CONTEXT			104
 #define NM_VIDEO_READY_FOR_DISPLAY_CONTEXT		105
+#define NM_PLAYER_ITEM_STATUS_CONTEXT			106
+#define NM_PLAYER_RATE_CONTEXT					107
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
@@ -33,13 +30,13 @@
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx;
 //- (void)queueVideoToPlayer:(NMVideo *)vid;
-- (void)playerQueueNextVideos;
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewForVideo:(NMVideo *)aVideo;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
 - (void)translateMovieViewByOffset:(CGFloat)offset;
-- (void)playVideo;
+- (void)playCurrentVideo;
 - (void)stopVideo;
+- (void)setupPlayer;
 
 - (NMVideo *)playerCurrentVideo;
 
@@ -102,15 +99,14 @@
 		theFrame.origin.y = 0.0f;
 		theFrame.origin.x = -1024.0f;
 		loadedMovieDetailView.frame = theFrame;
-		//		loadedControlView.hidden = YES;
-		//		loadedControlView.alpha = 0.0f;
+		loadedMovieDetailView.alpha = 0.0f;
 		[controlScrollView addSubview:loadedMovieDetailView];
 	}
 	self.loadedMovieDetailView = nil;
 	
-// create movie view
+	// === don't change the sequence in this block ===
+	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 49.0f, 616.0f, 341.0f)];
-//	movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[controlScrollView addSubview:movieView];
 	
 	// pre-load control view
@@ -123,6 +119,11 @@
 	
 	// put the view to scroll view
 	[controlScrollView addSubview:loadedControlView];
+	
+	// set up player
+	[self setupPlayer];
+	
+	// ======
 	
 	// load channel view
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
@@ -139,16 +140,16 @@
 	[nc addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 	
 	// setup gesture recognizer
-	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
-	[controlScrollView addGestureRecognizer:pinRcr];
-	[pinRcr release];
+//	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
+//	[controlScrollView addGestureRecognizer:pinRcr];
+//	[pinRcr release];
 	// set target-action methods
 	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self playVideo];
+	[self playCurrentVideo];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -176,10 +177,14 @@
 	
 	[loadedControlView release];
 	[movieDetailViewArray release];
-	[movieView release];
 	[currentChannel release];
 	[channelController release];
-    [super dealloc];
+	// get rid of time observer of video player
+ 	[movieView.player removeTimeObserver:timeObserver];
+	[timeObserver release];
+	// remove movie view. only allow this to happen after we have removed the time observer
+	[movieView release];
+   [super dealloc];
 }
 
 #pragma mark Playback data structure
@@ -209,11 +214,14 @@
 	} else {
 		currentChannel = [chnObj retain];
 	}
-	movieView.player = nil;
 	currentXOffset = 0.0f;
 	firstShowControlView = YES;
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
+	NSArray * vidAy = [playbackModelController videosForBuffering];
+	if ( vidAy ) {
+		[movieView.player resolveAndQueueVideos:vidAy];
+	}
 	
 	if ( chnObj == nil ) {
 		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
@@ -245,7 +253,7 @@
 	[movieView.player pause];
 }
 
-- (void)playVideo {
+- (void)playCurrentVideo {
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
 	}
@@ -260,21 +268,19 @@
 }
 
 #pragma mark Movie View Management
-- (void)preparePlayerForVideo:(NMVideo *)vid {
-	NMAVPlayerItem * item = [vid createPlayerItem];
-	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] initWithItems:[NSArray arrayWithObject:item]];
-	[item release];
-	
+- (void)setupPlayer {
+	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
+	player.playbackDelegate = self;
+	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
 	player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
-	vid.nm_playback_status = NMVideoQueueStatusQueued;
 	movieView.player = player;
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
 	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
 	// all control view should observe to player changes
-//	[player addObserver:loadedControlView forKeyPath:@"rate" options:0 context:(void *)11111];
-	[player addPeriodicTimeObserverForInterval:CMTimeMake(600, 600) queue:NULL usingBlock:^(CMTime aTime){
+	[player addObserver:self forKeyPath:@"rate" options:0 context:(void *)NM_PLAYER_RATE_CONTEXT];
+	timeObserver = [player addPeriodicTimeObserverForInterval:CMTimeMake(600, 600) queue:NULL usingBlock:^(CMTime aTime){
 		// print the time
 		CMTime t = [movieView.player currentTime];
 		NSInteger sec = 0;
@@ -302,17 +308,8 @@
 			}
 		}
 	}];
-	// player layer
-	[player play];
-	
-	// check if we should other items into the player
-	
-	// =================
-	// commented out because we are not sure i
-	// get other video's direct URL
-//	[self requestAddVideoAtIndex:currentIndex + 1];
-//	[self requestAddVideoAtIndex:currentIndex + 2];
-	// ====================
+	// retain the time observer
+	[timeObserver retain];
 }
 
 - (void)translateMovieViewByOffset:(CGFloat)offset {
@@ -322,39 +319,6 @@
 //	CGRect theFrame = movieView.frame;
 //	theFrame.origin.x += theFrame.size.width * offset;
 //	movieView.frame = theFrame;
-}
-
-- (void)showPlayerAndControl {
-	controlScrollView.alpha = 1.0;	// don't perform transition yet
-	controlScrollView.scrollEnabled = YES;
-	didPlayToEnd = NO;
-}
-
-- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-	NSInteger c = (NSInteger)context;
-	switch (c) {
-		case NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT:
-			currentXOffset += 1024.0f;
-			firstShowControlView = YES;
-			// scroll to next video
-			// translate the movie view
-			controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
-#ifdef DEBUG_PLAYER_NAVIGATION
-			NSLog(@"animation stopped");
-#endif
-//			[self translateMovieViewByOffset:1.0f];
-			
-			[playbackModelController moveToNextVideo];
-			[movieView.player advanceToNextItem];
-			[movieView.player play];
-			[self playerQueueNextVideos];
-			controlScrollView.scrollEnabled = YES;
-			
-			break;
-			
-		default:
-			break;
-	}
 }
 
 #pragma mark Control Views Management
@@ -384,6 +348,7 @@
 
 #pragma mark Video queuing
 - (void)showNextVideo:(BOOL)aEndOfVideo {
+	// called when we need to switch to next video triggered by finished playing the current video or 
 	if ( playbackModelController.nextVideo == nil ) {
 		// there's no more video available
 		//TODO: get more video here. issue fetch video list request
@@ -399,78 +364,21 @@
 	// will activate again on "currentItem" change kvo notification
 	controlScrollView.scrollEnabled = NO;
 	// fade out the view
-	[UIView beginAnimations:nil context:(void *)NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT];
-	movieView.alpha = 0.0;
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView setAnimationDelegate:self];
-	[UIView commitAnimations];
+	[UIView animateWithDuration:0.25f animations:^(void) {
+		movieView.alpha = 0.0f;
+	} completion:^(BOOL finished) {
+		currentXOffset += 1024.0f;
+		firstShowControlView = YES;
+		// scroll to next video
+		// translate the movie view
+		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
+		if ( [playbackModelController moveToNextVideo] ) {
+			[movieView.player advanceToVideo:playbackModelController.currentVideo];
+		}
+		controlScrollView.scrollEnabled = YES;
+	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
-}
-
-- (void)playerQueueNextVideos {
-	// creates player item and insert them into the queue orderly
-	// don't queue any video for play if there's more than 3 queued
-	NSUInteger c = [[movieView.player items] count];
-	NMAVPlayerItem * item;
-	NMVideo * vid;
-	switch (c) {
-		case 1:
-			// check to queue items
-			vid = playbackModelController.nextVideo;
-			if ( vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-				// add video
-				item = [vid createPlayerItem];
-				if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-					[movieView.player insertItem:item afterItem:nil];
-					vid.nm_playback_status = NMVideoQueueStatusQueued;
-				}
-				[item release];
-				// add next next video
-				vid = playbackModelController.nextNextVideo;
-				if ( vid && vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-					// queue the next next video as well
-					item = [vid createPlayerItem];
-					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-						[movieView.player insertItem:item afterItem:nil];
-						vid.nm_playback_status = NMVideoQueueStatusQueued;
-					}
-					[item release];
-				}
-			}
-			break;
-			
-		case 2:
-			vid = playbackModelController.nextNextVideo;
-			if ( vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-				item = [vid createPlayerItem];
-				if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-					[movieView.player insertItem:item afterItem:nil];
-					vid.nm_playback_status = NMVideoQueueStatusQueued;
-				}
-				[item release];
-			}
-			break;
-			
-		default:
-#ifdef DEBUG_PLAYER_NAVIGATION
-			NSLog(@"default case. problem!!! not queuing anything fuck");
-#endif
-//			if ( vid == playbackModelController.currentVideo ) {
-//				if ( movieView.player == nil ) {
-//					[self preparePlayerForVideo:vid];
-//				} else {
-//					item = [vid createPlayerItem];
-//					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-//						[movieView.player insertItem:item afterItem:nil];
-//						[movieView.player play];
-//						vid.nm_playback_status = NMVideoQueueStatusQueued;
-//					}
-//					[item release];
-//				}
-//			}
-			break;
-	}
 }
 
 - (void)playVideo:(NMVideo *)aVideo {
@@ -483,11 +391,16 @@
 }
 
 #pragma mark VideoPlaybackModelController delegate methods
-- (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid {
-//	if ( movieView.player == nil ) {
-//		// create player
-//		[self preparePlayerForVideo:vid];
-//	}
+//- (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid {
+////	if ( movieView.player == nil ) {
+////		// create player
+////		[self preparePlayerForVideo:vid];
+////	}
+//}
+
+- (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
+	// queue this video
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextNextVideo];
 }
 
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
@@ -503,6 +416,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
+	// resolve the URL
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
 
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
@@ -517,6 +432,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
+	// resolve the URL
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
 
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
@@ -531,95 +448,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
-}
-
-- (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid {
-	/*!
-	 check if we should queue video when we model controller informs about direct URL resolved. Similar operation is carried when user flick the screen.
-	 */
-//	if ( movieView.player == nil ) {
-//		return;
-//		// return immediately. the "shouldBeginPlayingVideo" delegate method will be called.
-//	}
-	NSUInteger c = 0;
-	if ( movieView.player ) {
-		c = [[movieView.player items] count];
-	}
-	NMAVPlayerItem * item;
-	
-	if ( vid == playbackModelController.currentVideo ) {
-		// play the video
-		if ( movieView.player == nil ) {
-			[self preparePlayerForVideo:vid];
-		}
-		// insert other videos
-		if ( playbackModelController.nextVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-			vid = playbackModelController.nextVideo;
-			item = [vid createPlayerItem];
-			if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-				[movieView.player insertItem:item afterItem:nil];
-				[movieView.player play];
-				vid.nm_playback_status = NMVideoQueueStatusQueued;
-			}
-			[item release];
-			if ( playbackModelController.nextNextVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-				vid = playbackModelController.nextNextVideo;
-				item = [vid createPlayerItem];
-				if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-					[movieView.player insertItem:item afterItem:nil];
-					[movieView.player play];
-					vid.nm_playback_status = NMVideoQueueStatusQueued;
-				}
-				[item release];
-			}
-		}
-	} else {
-		switch (c) {
-			case 1:
-				// playing current video. check if the video is the "next" video
-				if ( vid == playbackModelController.nextVideo ) {
-					// add video
-					item = [vid createPlayerItem];
-					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-						[movieView.player insertItem:item afterItem:nil];
-						vid.nm_playback_status = NMVideoQueueStatusQueued;
-					}
-					[item release];
-					// add next next video
-					vid = playbackModelController.nextNextVideo;
-					if ( vid && vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-						// queue the next next video as well
-						item = [vid createPlayerItem];
-						if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-							[movieView.player insertItem:item afterItem:nil];
-							vid.nm_playback_status = NMVideoQueueStatusQueued;
-						}
-						[item release];
-					}
-				}
-				break;
-			case 2:
-				if ( vid == playbackModelController.nextNextVideo ) {
-					item = [vid createPlayerItem];
-					if ( item && [movieView.player canInsertItem:item afterItem:nil] ) {
-						[movieView.player insertItem:item afterItem:nil];
-						vid.nm_playback_status = NMVideoQueueStatusQueued;
-					}
-					[item release];
-				}
-				break;
-			case 0:
-#ifdef DEBUG_PLAYBACK_QUEUE
-				NSLog(@"queue player has no current item. but received resolution notification");
-#endif
-				break;
-			default:
-#ifdef DEBUG_PLAYBACK_QUEUE
-				NSLog(@"wow~ doing well~ resolving video faster than it is being consumed. no need to queue");
-#endif
-				break;
-		}
-	}
+	// when scrolling is inflight, do not issue the URL resolution request. Playback View Controller will call "advanceToNextVideo" later on which will trigger sending of resolution request.
+	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }
 
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum {
@@ -660,6 +490,36 @@
 	controlScrollView.scrollEnabled = YES;
 }
 
+#pragma mark NMAVQueuePlayerPlaybackDelegate methods
+
+- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
+	// observe property of the current item
+	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
+	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
+}
+
+- (void)player:(NMAVQueuePlayer *)aPlayer stopObservingPlayerItem:(AVPlayerItem *)anItem {
+	((NMAVPlayerItem *)anItem).nmVideo.nm_playback_status = NMVideoQueueStatusPlayed;
+	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+	[anItem removeObserver:self forKeyPath:@"status"];
+}
+
+- (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
+	
+}
+
+- (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
+	return playbackModelController.currentVideo;
+}
+
+- (NMVideo *)nextVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
+	return playbackModelController.nextVideo;
+}
+
+- (NMVideo *)nextNextVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
+	return playbackModelController.nextNextVideo;
+}
+
 #pragma mark Notification handling
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 #ifdef DEBUG_PLAYBACK_QUEUE
@@ -670,14 +530,13 @@
 		[self dismissModalViewControllerAnimated:YES];
 	} else {
 		didPlayToEnd = YES;
-		controlScrollView.scrollEnabled = NO;
 		[self showNextVideo:YES];
 	}
 }
 
 - (void)handleApplicationDidBecomeActiveNotification:(NSNotification *)aNotification {
 	// resume playing the video
-	[self playVideo];
+	[self playCurrentVideo];
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
 	// send event back to server
 	[nowmovTaskController issueSendViewingEventForVideo:item.nmVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
@@ -701,7 +560,6 @@
 					videoDurationInvalid = YES;
 				}
 				[movieView setActivityIndicationHidden:YES animated:YES];
-				controlScrollView.scrollEnabled = YES;
 				break;
 			}
 			default:
@@ -709,12 +567,9 @@
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
-#ifdef DEBUG_PLAYER_NAVIGATION
-		AVPlayerItem * theItem = ((NMAVQueuePlayer *)object).currentItem;
-		NSLog(@"changed current item, playback rate: %f keep up: %d, full: %d, empty: %d", movieView.player.rate, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull, theItem.playbackBufferEmpty);
-		// observe property of the current item
-		[theItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
-#endif
+		// update video status
+		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
+		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusPlaying;
 		// never change currentIndex here!!
 		// ====== update interface ======
 		[self configureControlViewForVideo:[self playerCurrentVideo]];
@@ -722,7 +577,10 @@
 
 		[UIView beginAnimations:nil context:nil];
 		[loadedControlView setControlsHidden:NO animated:NO];
-		movieView.alpha = 1.0;
+		
+		// make the movie view visible - in the case of finish playing to the end of video, the movie view is set invisible
+		if ( movieView.alpha < 1.0 ) movieView.alpha = 1.0;
+		
 		[UIView commitAnimations];
 		firstShowControlView = YES;	// enable this so that the control will disappear later on after first count of 2 sec.
 		
@@ -739,35 +597,28 @@
 			didPlayToEnd = NO;
 		}
 		[defaulNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
-	} else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {
+	} 
+	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
+	else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {
 #ifdef DEBUG_PLAYER_NAVIGATION
-		AVPlayerLayer * theLayer = (AVPlayerLayer *)object;
-		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
+//		AVPlayerLayer * theLayer = (AVPlayerLayer *)object;
+//		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
 #endif
 	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		AVPlayerItem * theItem = (AVPlayerItem *)object;
-		NSLog(@"item buffer status - keep up: %d full: %d", theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull);
-	} /*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
+//		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+//		NSLog(@"%@ buffer status - keep up: %d full: %d", theItem.nmVideo.title, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull);
+	} else if ( c == NM_PLAYER_ITEM_STATUS_CONTEXT ) {
+//		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+//		NSLog(@"%@ status: %d", theItem.nmVideo.title, theItem.status);
+	} else if ( c == NM_PLAYER_RATE_CONTEXT ) {
+//		NSLog(@"playback rate: %f", movieView.player.rate);
+	}
+	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
 		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
 	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
 		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
-	} else if ( c == NM_LOADED_TIME_RANGES_CONTEXT ) {
-		if ( movieView.player.rate == 0.0 && bufferEmpty ) {
-			NSValue * theVal = [[object valueForKeyPath:keyPath] objectAtIndex:0];
-			if ( 
-			// check if we should continue playback
-			if ( [[object valueForKeyPath:@"currentItem.playbackLikelyToKeepUp"] boolValue] ) {
-				[self playVideo];
-			}
-			
-		}
-		NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
-		if ( !ctrlView.controlsHidden ) {
-			// progress bar should show the buffering progress
-			NSValue * theVal = [[object valueForKeyPath:keyPath] objectAtIndex:0];
-			ctrlView.timeRangeBuffered = [theVal CMTimeRangeValue];
-		}
-	} */else {
+	}*/
+	else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
@@ -801,7 +652,7 @@
 //
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-	[self playVideo];
+	[self playCurrentVideo];
 }
 
 #pragma mark Scroll View Delegate
@@ -814,6 +665,7 @@
 		dx = scrollView.contentOffset.x - currentXOffset;
 	}
 	movieView.alpha = (1024.0 - dx) / 1024.0;
+	NMVideoPlaybackViewIsScrolling = YES;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -829,12 +681,8 @@
 	scrollView.scrollEnabled = YES;
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		currentXOffset += 1024.0f;
-		if ( [[movieView.player items] count] > 1 ) {
-			[movieView.player advanceToNextItem];
-			[movieView.player play];
-			[playbackModelController moveToNextVideo];
-			// attempt to queue the new video covered by the playback window
-			[self playerQueueNextVideos];
+		if ( [playbackModelController moveToNextVideo] ) {
+			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -843,24 +691,16 @@
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
-			NMAVPlayerItem * item = [playbackModelController.previousVideo createPlayerItem];
-			if ( item ) {
-				[movieView.player revertPreviousItem:item];
-				[item release];
-			}
-#ifdef DEBUG_PLAYER_NAVIGATION
-			else
-				NSLog(@"can't add item: %@ %d", playbackModelController.previousVideo.title, playbackModelController.previousVideo.nm_playback_status);
-#endif
 			[playbackModelController moveToPreviousVideo];
-			[movieView.player play];
+			[movieView.player revertToVideo:playbackModelController.currentVideo];
 		}
 	} else {
 		// play the video again
-		[self playVideo];
+		[self playCurrentVideo];
 		// this method pairs with "stopVideo" in scrollViewDidEndDragging
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 	}
+	NMVideoPlaybackViewIsScrolling = NO;
 }
 
 
