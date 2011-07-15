@@ -34,7 +34,6 @@
 - (void)configureControlViewForVideo:(NMVideo *)aVideo;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
 - (void)translateMovieViewByOffset:(CGFloat)offset;
-- (void)stopObservingPlayerItem:(AVPlayerItem *)anItem;
 - (void)playCurrentVideo;
 - (void)stopVideo;
 - (void)setupPlayer;
@@ -348,12 +347,6 @@
 }
 
 #pragma mark Video queuing
-- (void)stopObservingPlayerItem:(AVPlayerItem *)anItem {
-	((NMAVPlayerItem *)anItem).nmVideo.nm_playback_status = NMVideoQueueStatusPlayed;
-	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-	[anItem removeObserver:self forKeyPath:@"status"];
-}
-
 - (void)showNextVideo:(BOOL)aEndOfVideo {
 	// called when we need to switch to next video triggered by finished playing the current video or 
 	if ( playbackModelController.nextVideo == nil ) {
@@ -379,9 +372,9 @@
 		// scroll to next video
 		// translate the movie view
 		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
-		[self stopObservingPlayerItem:movieView.player.currentItem];
-		[playbackModelController moveToNextVideo];
-		[movieView.player advanceToVideo:playbackModelController.currentVideo];
+		if ( [playbackModelController moveToNextVideo] ) {
+			[movieView.player advanceToVideo:playbackModelController.currentVideo];
+		}
 		controlScrollView.scrollEnabled = YES;
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -499,10 +492,16 @@
 
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
 
-- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(NMAVPlayerItem *)anItem {
+- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
+}
+
+- (void)player:(NMAVQueuePlayer *)aPlayer stopObservingPlayerItem:(AVPlayerItem *)anItem {
+	((NMAVPlayerItem *)anItem).nmVideo.nm_playback_status = NMVideoQueueStatusPlayed;
+	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+	[anItem removeObserver:self forKeyPath:@"status"];
 }
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
@@ -692,8 +691,8 @@
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
-			[movieView.player revertToVideo:playbackModelController.previousVideo];
 			[playbackModelController moveToPreviousVideo];
+			[movieView.player revertToVideo:playbackModelController.currentVideo];
 		}
 	} else {
 		// play the video again

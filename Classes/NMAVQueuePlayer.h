@@ -19,7 +19,8 @@
 - (NMVideo *)nextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 - (NMVideo *)nextNextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 
-- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(NMAVPlayerItem *)anItem;
+- (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem;
+- (void)player:(NMAVQueuePlayer *)aPlayer stopObservingPlayerItem:(AVPlayerItem *)anItem;
 
 @end
 
@@ -34,8 +35,8 @@
 
 @property (nonatomic, assign) id<NMAVQueuePlayerPlaybackDelegate> playbackDelegate;
 
-- (NMAVPlayerItem *)advanceToVideo:(NMVideo *)aVideo;
-- (NMAVPlayerItem *)revertToVideo:(NMVideo *)aVideo;
+- (void)advanceToVideo:(NMVideo *)aVideo;
+- (void)revertToVideo:(NMVideo *)aVideo;
 /*!
  When channel content already exists, we can just set the list of videos to be resolved and queue in the player
  */
