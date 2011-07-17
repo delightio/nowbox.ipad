@@ -91,4 +91,9 @@
  */
 - (NSArray *)videosForBuffering;
 
+/*!
+ Set the video for playback.
+ */
+- (void)setVideo:(NMVideo *)aVideo;
+
 @end

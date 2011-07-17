@@ -383,11 +383,7 @@
 
 - (void)playVideo:(NMVideo *)aVideo {
 	// play the specified video
-	if ( currentChannel != aVideo.channel ) {
-		// we need to flush the queue video player for sure
-		// stop playback
-		self.currentChannel = aVideo.channel;
-	}
+	[playbackModelController setVideo:aVideo];
 }
 
 #pragma mark VideoPlaybackModelController delegate methods
