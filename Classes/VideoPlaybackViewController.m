@@ -75,11 +75,13 @@
 	movieXOffset = 35.0f;
 	
 	// view background
-	CAGradientLayer * gradientLayer = [CAGradientLayer layer];
-	gradientLayer.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 421.0f);
-	gradientLayer.shouldRasterize = YES;
-	gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:72.0f / 255.0f green:72.0f / 255.0f blue:72.0f / 255.0f alpha:1.0f].CGColor, nil];
-	[self.view.layer insertSublayer:gradientLayer below:controlScrollView.layer];
+	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
+	self.view.backgroundColor = bgColor;
+//	CAGradientLayer * gradientLayer = [CAGradientLayer layer];
+//	gradientLayer.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 421.0f);
+//	gradientLayer.shouldRasterize = YES;
+//	gradientLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor colorWithRed:72.0f / 255.0f green:72.0f / 255.0f blue:72.0f / 255.0f alpha:1.0f].CGColor, nil];
+//	[self.view.layer insertSublayer:gradientLayer below:controlScrollView.layer];
 	
 	// playback data model controller
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
