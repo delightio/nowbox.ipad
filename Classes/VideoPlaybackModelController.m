@@ -163,6 +163,57 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 }
 
+- (void)setVideo:(NMVideo *)aVideo {
+	if ( aVideo == nil ) return;
+	NMChannel * aChn = aVideo.channel;
+	if ( channel != aChn ) {
+		[channel release];
+		channel = [aChn retain];
+		
+		// need to refetch data
+		self.fetchedResultsController = nil;
+		
+	}
+	// else - use the existing FRC
+	
+	self.currentIndexPath = [self.fetchedResultsController indexPathForObject:aVideo];
+	self.currentVideo = aVideo;
+	[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
+	
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"last viewed title: %@", self.currentVideo.title);
+#endif
+	// init the playhead. sth similar to initializePlayHead
+	if ( currentIndexPath.row + 1 < numberOfVideos ) {
+		self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
+		self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+		
+		// set the detail movie view for the next video
+		[dataDelegate didLoadNextVideoManagedObjectForController:self];
+		
+	}
+	if ( currentIndexPath.row + 2 < numberOfVideos ) {
+		self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+		self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+		[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
+		// no need to set detail video object
+	}
+	if ( currentIndexPath.row - 1 > -1 ) {
+		self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
+		self.previousVideo = [self.fetchedResultsController objectAtIndexPath:self.previousIndexPath];
+		
+		// set the detail movie view for the previous video
+		[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
+	}
+	
+	// check if we need to download more. Or, in the case where there's no video, download
+	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
+		// download more video from Nowmov
+		[nowmovTaskController issueGetVideoListForChannel:channel];
+	}
+	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
+}
+
 #pragma mark Video list management
 
 - (void)initializePlayHead {
