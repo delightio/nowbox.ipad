@@ -20,6 +20,7 @@
 	IBOutlet UIView * moviePlaceholderView;
 	IBOutlet UIButton * watchLaterButton;
 	IBOutlet UIButton * likeButton;
+	IBOutlet UIImageView * shadowImageView;
 	
 @private
 	NMVideo * video_;

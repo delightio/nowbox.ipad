@@ -40,6 +40,7 @@
 
 - (void)awakeFromNib {
 	descriptionDefaultFrame  = descriptionLabel.frame;
+	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
 }
 
 - (void)setVideo:(NMVideo *)aVideo {

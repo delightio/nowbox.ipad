@@ -113,6 +113,7 @@
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
 		A9F4966113D2E83400A56F50 /* playback_background_pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966013D2E83400A56F50 /* playback_background_pattern.png */; };
+		A9F4966313D2EE5900A56F50 /* playback_video_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +263,7 @@
 		A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMImageDownloadTask.h; sourceTree = "<group>"; };
 		A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMImageDownloadTask.m; sourceTree = "<group>"; };
 		A9F4966013D2E83400A56F50 /* playback_background_pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playback_background_pattern.png; sourceTree = "<group>"; };
+		A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playback_video_shadow.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -460,6 +462,7 @@
 				A9C2788D13BAC1700024DCB2 /* channel-background.png */,
 				A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */,
 				A9F4966013D2E83400A56F50 /* playback_background_pattern.png */,
+				A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -741,6 +744,7 @@
 				A9C2788B13BABC920024DCB2 /* channel-shadow-background.png in Resources */,
 				A9C2788E13BAC1700024DCB2 /* channel-background.png in Resources */,
 				A9F4966113D2E83400A56F50 /* playback_background_pattern.png in Resources */,
+				A9F4966313D2EE5900A56F50 /* playback_video_shadow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

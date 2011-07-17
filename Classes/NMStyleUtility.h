@@ -15,6 +15,7 @@
 	// video detail
 	UIFont * channelNameFont, * videoTitleFont, * videoDetailFont;
 	UIColor * clearColor, * channelPanelFontColor;
+	UIImage * videoShadowImage;
 	// channel panel
 	UIColor * channelPanelBackgroundColor;
 	UIColor * channelPanelHighlightColor;
@@ -28,6 +29,8 @@
 @property (nonatomic, readonly) UIFont * channelNameFont;
 @property (nonatomic, readonly) UIFont * videoTitleFont;
 @property (nonatomic, readonly) UIFont * videoDetailFont;
+@property (nonatomic, readonly) UIImage * videoShadowImage;
+
 @property (nonatomic, readonly) UIColor * clearColor;
 @property (nonatomic, readonly) UIColor * channelPanelFontColor;
 @property (nonatomic, readonly) UIColor * channelPanelBackgroundColor;
