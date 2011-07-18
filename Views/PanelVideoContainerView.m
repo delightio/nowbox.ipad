@@ -35,16 +35,17 @@
         titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - NM_VIDEO_CELL_PADDING * 2.0f)];
 		titleMaxSize = titleLabel.bounds.size;
 //		titleLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-		titleLabel.textColor = styleUtility.channelPanelFontColor;
+		titleLabel.textColor = styleUtility.videoTitleFontColor;
 		titleLabel.font = styleUtility.videoTitleFont;
 		titleLabel.numberOfLines = 0;
 		titleLabel.lineBreakMode = UILineBreakModeTailTruncation;
 		titleLabel.backgroundColor = styleUtility.clearColor;
+		titleLabel.highlightedTextColor = styleUtility.videoTitleHighlightedFontColor;
 		[self addSubview:titleLabel];
         
         datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
 		datePostedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		datePostedLabel.textColor = styleUtility.channelPanelFontColor;
+		datePostedLabel.textColor = styleUtility.videoDetailFontColor;
 		datePostedLabel.backgroundColor = styleUtility.clearColor;
 		datePostedLabel.font = styleUtility.videoDetailFont;
 		[self addSubview:datePostedLabel];
@@ -52,7 +53,7 @@
         durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
 		durationLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		durationLabel.textAlignment = UITextAlignmentRight;
-		durationLabel.textColor = styleUtility.channelPanelFontColor;
+		durationLabel.textColor = styleUtility.videoDetailFontColor;
 		durationLabel.backgroundColor = styleUtility.clearColor;
 		durationLabel.font = styleUtility.videoDetailFont;
 		[self addSubview:durationLabel];

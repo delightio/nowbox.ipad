@@ -14,6 +14,8 @@
 	NSNumberFormatter * viewCountFormatter;
 	// video detail
 	UIFont * channelNameFont, * videoTitleFont, * videoDetailFont;
+	UIColor * videoTitleFontColor, * videoTitleHighlightedFontColor;
+	UIColor * videoDetailFontColor;
 	UIColor * clearColor, * channelPanelFontColor;
 	UIImage * videoShadowImage;
 	// channel panel
@@ -30,6 +32,9 @@
 @property (nonatomic, readonly) UIFont * videoTitleFont;
 @property (nonatomic, readonly) UIFont * videoDetailFont;
 @property (nonatomic, readonly) UIImage * videoShadowImage;
+@property (nonatomic, readonly) UIColor * videoTitleFontColor;
+@property (nonatomic, readonly) UIColor * videoTitleHighlightedFontColor;
+@property (nonatomic, readonly) UIColor * videoDetailFontColor;
 
 @property (nonatomic, readonly) UIColor * clearColor;
 @property (nonatomic, readonly) UIColor * channelPanelFontColor;

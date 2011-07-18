@@ -41,6 +41,10 @@
 - (void)awakeFromNib {
 	descriptionDefaultFrame  = descriptionLabel.frame;
 	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
+	CALayer * blackLayer = [CALayer layer];
+	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].channelPanelHighlightColor.CGColor;
+	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
+	[self.layer addSublayer:blackLayer];
 }
 
 - (void)setVideo:(NMVideo *)aVideo {

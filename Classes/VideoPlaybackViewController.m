@@ -72,7 +72,7 @@
 	isAspectFill = YES;
 	firstShowControlView = YES;
 	currentXOffset = 0.0f;
-	movieXOffset = 35.0f;
+	movieXOffset = 0.0f;
 	
 	// view background
 	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
@@ -108,7 +108,7 @@
 	
 	// === don't change the sequence in this block ===
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 49.0f, 616.0f, 341.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
 	[controlScrollView addSubview:movieView];
 	
 	// pre-load control view
@@ -884,7 +884,7 @@
 		movieXOffset = 35.0f;
 		//MARK: not sure if we still need to show/hide status bar
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 49.0f, 616.0f, 341.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 		// slide in
