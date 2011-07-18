@@ -49,7 +49,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[viewCountFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 	
 	// video detail view font
-	channelNameFont = [[UIFont systemFontOfSize:13.0f] retain];
+	channelNameFont = [[UIFont fontWithName:@"ArialMT" size:13.0f] retain];
 	videoDetailFont = [[UIFont fontWithName:@"ArialMT" size:12.0f] retain];
 	videoTitleFont = [[UIFont fontWithName:@"Arial-BoldMT" size:13.0f] retain];
 	videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
