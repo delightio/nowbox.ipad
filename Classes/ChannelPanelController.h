@@ -29,6 +29,7 @@ typedef enum {
 	NSMutableArray *containerViewPool;
 	VideoPlaybackViewController * videoViewController;
 	NSInteger selectedIndex;
+    NSInteger highlightedChannelIndex, highlightedVideoIndex;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *panelView;
@@ -41,6 +42,8 @@ typedef enum {
 - (void)panelWillDisappear;
 - (void)panelWillBecomeFullScreen;
 - (void)panelWillEnterHalfScreen:(NMPlaybackViewModeType)fromViewMode;
+
+- (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex;
 
 - (IBAction)toggleTableEditMode:(id)sender;
 - (IBAction)debugRefreshChannel:(id)sender;

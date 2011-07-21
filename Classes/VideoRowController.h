@@ -18,6 +18,7 @@
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
 	NMChannel * channel;
+	NSInteger indexInTable;
 	NMStyleUtility * styleUtility;
 	ChannelPanelController * panelController;
 }
@@ -25,9 +26,10 @@
 @property (nonatomic, assign) AGOrientedTableView * videoTableView;
 @property (nonatomic, assign) ChannelPanelController * panelController;
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, assign) NSInteger indexInTable;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
 - (id)init;
-
+- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification ;
 @end

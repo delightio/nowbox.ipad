@@ -16,11 +16,11 @@
 	CGSize titleMaxSize;
 	UIColor * highlightColor, * normalColor;
 	NSInteger indexInTable;
-	id panelDelegate;
 	AGOrientedTableView * tableView;
 	CGRect initialFrame;
 	@private
 	BOOL highlighted_;
+    VideoRowController *videoRowDelegate;
 }
 
 @property (nonatomic, readonly) UILabel * titleLabel;
@@ -30,6 +30,7 @@
 @property (nonatomic, retain) UIColor * normalColor;
 @property (nonatomic, assign) NSInteger indexInTable;
 @property (nonatomic, assign) AGOrientedTableView * tableView;
+@property (nonatomic, assign) VideoRowController *videoRowDelegate;
 
 - (void)setVideoInfo:(NMVideo *)aVideo;
 
