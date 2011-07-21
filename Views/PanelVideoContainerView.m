@@ -17,7 +17,6 @@
 @synthesize highlightColor, durationLabel;
 @synthesize normalColor, indexInTable;
 @synthesize tableView;
-@synthesize videoRowDelegate;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -33,7 +32,7 @@
         super.frame = frame;
         self.transform = CGAffineTransformMakeRotation(angle);
 
-        titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - 12 - NM_VIDEO_CELL_PADDING * 2.0f)];
+        titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - NM_VIDEO_CELL_PADDING * 2.0f)];
 		titleMaxSize = titleLabel.bounds.size;
 //		titleLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 		titleLabel.textColor = styleUtility.videoTitleFontColor;
@@ -105,7 +104,7 @@
 }
 
 - (void)setVideoInfo:(NMVideo *)aVideo {
-    CGSize labelSize = CGSizeMake(initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - 12 - NM_VIDEO_CELL_PADDING * 2.0f);
+    CGSize labelSize = CGSizeMake(initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - NM_VIDEO_CELL_PADDING * 2.0f);
     CGSize theStringSize = [aVideo.title  sizeWithFont:titleLabel.font constrainedToSize:labelSize lineBreakMode:titleLabel.lineBreakMode];
     titleLabel.frame = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, theStringSize.width, theStringSize.height);
     titleLabel.text = aVideo.title;
@@ -131,7 +130,6 @@
 		self.backgroundColor = normalColor;
 	}
 }
-
 #pragma mark UIResponder
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	// highlight
@@ -139,21 +137,15 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self setHighlighted:YES];
 	// check if touch up inside the view itself
-	if ( videoRowDelegate ) {
-		[videoRowDelegate tableView:tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
+	if ( panelDelegate ) {
+		[panelDelegate tableView:tableView didSelectCellAtIndex:indexInTable];
 	}
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	// remove highlight
-    // only if it wasn't highlighted previously
-	if ( highlighted_ ) {
-		self.backgroundColor = highlightColor;
-	} else {
-		self.backgroundColor = normalColor;
-	}
+	self.backgroundColor = normalColor;
 }
 
 @end

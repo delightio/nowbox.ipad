@@ -33,7 +33,6 @@
 	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
-    
 }
 
 - (void)dealloc {
@@ -97,6 +96,7 @@
 	CGRect theFrame = aContentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+    NSLog(@"%@", NSStringFromCGRect(theFrame));
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
     
@@ -106,6 +106,7 @@
     [videoTableView setShowsHorizontalScrollIndicator:NO];
     
     videoTableView.delegate	= vdoCtrl;
+//	videoTableView.panelDelegate = self; // this was used for in horizontaltableview to queue/dequeue and didselectrow which shouldn't be needed now
 	videoTableView.tableController = vdoCtrl;
 	vdoCtrl.videoTableView = videoTableView;
 	
@@ -129,7 +130,6 @@
 	AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
 	htView.tableController.fetchedResultsController = nil;
 	htView.tableController.channel = theChannel;
-    htView.tableController.indexInTable = [indexPath row];
 	[htView reloadData];
     [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
 //	
@@ -144,24 +144,6 @@
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
 		[schdlr issueGetVideoListForChannel:theChannel];
 	}
-}
-
-- (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex {
-    // used for highlight / unhighlight row, and what to do when row is selected(?)
-    NSLog(@"selected channel index: %d, video index: %d",newChannelIndex,newVideoIndex);
-
-    // first, unhighlight the old cell
-    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0]];
-    AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
-    NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
-    NSArray* rowsToReload = [NSArray arrayWithObjects:rowToReload, nil];
-    [htView.tableController.videoTableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationNone];
-    
-    // highlight the new one
-    // should already be highlighted from cell interaction
-    
-    highlightedChannelIndex = newChannelIndex;
-    highlightedVideoIndex = newVideoIndex;
 }
 
 #pragma mark -

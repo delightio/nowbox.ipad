@@ -17,7 +17,6 @@
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoTableView;
 @synthesize channel, panelController;
-@synthesize indexInTable;
 
 
 #define kShortVideoLengthSeconds   60
@@ -34,14 +33,12 @@
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
-    NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
+	
 	return self;
 }
 
 
 - (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[channel release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
@@ -54,14 +51,6 @@
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	return [sectionInfo numberOfObjects];
-}
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
-        //TODO: seems to be bugging out other interaction, left out for now
-    [panelController.videoViewController playVideo:theVideo];
-    
-    [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
 }
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
@@ -92,7 +81,6 @@
     else {
         [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 80)];
     }
-    [result setVideoRowDelegate:self];
 	[result setVideoInfo:theVideo];
     return (UITableViewCell *)result;
 }
@@ -197,26 +185,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 }
 
-
-#pragma mark Notification handling
-- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
-	NSLog(@"notification received");
-    NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
-    
-    if (newVideo) {
-        if ([newVideo channel] == channel) {
-            // scroll to the current channel
-            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.selectedIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-            
-            // select / deselect cells
-            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:panelController.selectedIndex];
-        }
-        else {
-            // let other channels deal with their own notifications
-        }
-    }
-    
-}
 
 
 @end
