@@ -29,7 +29,7 @@
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
-	tableView.separatorColor = [UIColor grayColor];
+	tableView.separatorColor = styleUtility.channelBorderColor;
 	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
@@ -99,7 +99,8 @@
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
-    
+//    videoTableView.separatorColor = styleUtility.channelBorderColor; // FIXME: this isn't working for some reason, going to add it in cell instead
+
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
@@ -130,6 +131,7 @@
 	htView.tableController.fetchedResultsController = nil;
 	htView.tableController.channel = theChannel;
     htView.tableController.indexInTable = [indexPath row];
+    htView.tableController.isLoadingNewContent = NO;
 	[htView reloadData];
     [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
 //	

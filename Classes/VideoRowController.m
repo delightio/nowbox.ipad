@@ -18,13 +18,14 @@
 @synthesize videoTableView;
 @synthesize channel, panelController;
 @synthesize indexInTable;
+@synthesize isLoadingNewContent;
 
 
-#define kShortVideoLengthSeconds   60
-#define kMediumVideoLengthSeconds   300
-#define kShortVideoCellWidth    150.0f
-#define kMediumVideoCellWidth    225.0f
-#define kLongVideoCellWidth    300.0f
+#define kShortVideoLengthSeconds   120
+#define kMediumVideoLengthSeconds   600
+#define kShortVideoCellWidth    240.0f
+#define kMediumVideoCellWidth    480.0f
+#define kLongVideoCellWidth    720.0f
 
 
 
@@ -36,6 +37,9 @@
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
+	[nc addObserver:self selector:@selector(handleWillGetChannelVideListNotification:) name:NMWillGetChannelVideListNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 	return self;
 }
 
@@ -69,12 +73,11 @@
     PanelVideoContainerView *result = (PanelVideoContainerView *)[aTableView dequeueReusableCellWithIdentifier:@"Reuse"];
     if (nil == result)
     {
-        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 267.0, 80.0)] autorelease];
+        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, 80.0)] autorelease];
 		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 		result.tableView = aTableView;
     }
     
-	
 	if ( panelController.videoViewController.currentChannel == channel && [anIndexPath row] == panelController.selectedIndex ) {
 		result.highlighted = YES;
 	} else {
@@ -174,6 +177,7 @@
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    tempOffset = [videoTableView contentOffset];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
@@ -195,6 +199,7 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [videoTableView scrollRectToVisible:CGRectMake(tempOffset.x, tempOffset.y, 1, 1) animated:NO];
 }
 
 
@@ -216,6 +221,47 @@
         }
     }
     
+}
+
+- (void)handleWillGetChannelVideListNotification:(NSNotification *)aNotification {
+    // BOOL set in scroll action already
+    //    isLoadingNewContent = YES;
+    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
+//        NSLog(@"handleWillGetChannelVideListNotification");
+    }
+}
+
+- (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification {
+    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
+        isLoadingNewContent = NO;
+//        NSLog(@"handleDidGetChannelVideoListNotification");
+    }
+}
+
+- (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification {
+    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
+        isLoadingNewContent = NO;
+//        NSLog(@"handleDidFailGetChannelVideoListNotification");
+    }
+}
+
+#pragma mark trigger load new
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
+    CGPoint offset = aScrollView.contentOffset;
+    CGRect bounds = aScrollView.bounds;
+    CGSize size = aScrollView.contentSize;
+    UIEdgeInsets inset = aScrollView.contentInset;
+    float y = offset.y + bounds.size.height - inset.bottom;
+    float h = size.height;
+    float reload_distance = -100;
+    if(y > h + reload_distance) {
+        if (!isLoadingNewContent) {
+            NSLog(@"Load new videos");
+            isLoadingNewContent = YES;
+            NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
+            [schdlr issueGetVideoListForChannel:channel numberOfVideos:5];
+        }
+    }
 }
 
 
