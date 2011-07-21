@@ -20,6 +20,8 @@
 	NMChannel * channel;
 	NMStyleUtility * styleUtility;
 	ChannelPanelController * panelController;
+    BOOL isLoadingNewContent;
+    CGPoint tempOffset;
 }
 
 @property (nonatomic, assign) AGOrientedTableView * videoTableView;
@@ -27,7 +29,9 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
+@property (nonatomic, assign) BOOL isLoadingNewContent;
 
 - (id)init;
 
+- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
 @end
