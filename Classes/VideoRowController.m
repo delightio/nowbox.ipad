@@ -17,11 +17,8 @@
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoTableView;
 @synthesize channel, panelController;
-<<<<<<< Updated upstream
-=======
 @synthesize indexInTable;
 @synthesize isLoadingNewContent;
->>>>>>> Stashed changes
 
 
 #define kShortVideoLengthSeconds   120
@@ -38,20 +35,19 @@
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
-<<<<<<< Updated upstream
-	
-=======
+
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
 	[nc addObserver:self selector:@selector(handleWillGetChannelVideListNotification:) name:NMWillGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
->>>>>>> Stashed changes
+
 	return self;
 }
 
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[channel release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
@@ -101,6 +97,7 @@
     else {
         [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 80)];
     }
+    [result setVideoRowDelegate:self];
 	[result setVideoInfo:theVideo];
     return (UITableViewCell *)result;
 }
@@ -208,8 +205,6 @@
 }
 
 
-<<<<<<< Updated upstream
-=======
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
 	NSLog(@"notification received");
@@ -270,7 +265,5 @@
         }
     }
 }
-
->>>>>>> Stashed changes
 
 @end
