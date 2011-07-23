@@ -14,6 +14,14 @@
 
 NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotification";
 
+@interface NMNetworkController (PrivateMethods)
+
+// for-loop that iterates through all elements
+- (BOOL)schedulePendingTasks;
+- (void)createConnection;
+
+@end
+
 @implementation NMNetworkController
 
 @synthesize connectionExecutionTimer;
@@ -141,70 +149,36 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 #ifdef DEBUG_CONNECTION_CONTROLLER
 	NSLog(@"run additional network call");
 #endif
-	NMTask *theTask;
-	NSMutableURLRequest *request;
-	NSURLConnection *conn;
-	NSNumber *key;
-	BOOL transverseWholeArray = YES;
-	NSMutableArray * rmTaskAy = nil;
-	@synchronized(pendingTaskBuffer) {
-		for (theTask in pendingTaskBuffer) {
-			if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {
-				if ( [commandIndexPool containsIndex:[theTask commandIndex]] ) {
-					// remove the task without performing it
-					if ( rmTaskAy == nil ) {
-						rmTaskAy = [NSMutableArray arrayWithCapacity:2];
-					}
-					[rmTaskAy addObject:theTask];
-					continue;
-				}
-				if ( [self tryGetNetworkResource] ) {
-					theTask.state = NMTaskExecutionStateConnectionActive;
-					request = [theTask URLRequest];
-					//					if ( theTask.command == TBMessageTaskCommandUploadAttachment ) {
-					//						[self configureUploadURLRequest:request forTask:theTask];
-					//					}
-					conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
-					key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
-					[connectionPool setObject:conn forKey:key];
-					[taskPool setObject:theTask forKey:key];
-					[conn release];
-				} else {
-					transverseWholeArray = NO;
-					break;
-				}
-			}
-		}
-		// remove these commands
-		if ( rmTaskAy ) [pendingTaskBuffer removeObjectsInArray:rmTaskAy];
-	}
-	if ( transverseWholeArray ) {
-		// remove the timer
+	BOOL didRunOutResource = [self schedulePendingTasks];
+	if ( !didRunOutResource ) {
 		[atimer invalidate];
 		self.connectionExecutionTimer = nil;
 	}
 }
 
-/*!
- Run in the worker thread of TBConnectionController
- */
-- (void)createConnection {
+- (BOOL)schedulePendingTasks {
+	// for-loop that iterates through all elements. Return YES if we exit running out of network connection resources
 	NMTask *theTask;
 	NSMutableURLRequest *request;
 	NSURLConnection *conn;
 	NSNumber *key;
 	BOOL didRunOutResource = NO;
 	NSMutableArray * rmTaskAy = nil;
+	NSUInteger taskIdx;
 	@synchronized(pendingTaskBuffer) {
 		for (theTask in pendingTaskBuffer) {
 			if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {
-				if ( [commandIndexPool containsIndex:[theTask commandIndex]] ) {
+				taskIdx = [theTask commandIndex];
+				if ( [commandIndexPool containsIndex:taskIdx] ) {
 					// remove the task without performing it
 					if ( rmTaskAy == nil ) {
 						rmTaskAy = [NSMutableArray arrayWithCapacity:2];
 					}
 					[rmTaskAy addObject:theTask];
 					continue;
+				} else {
+					// add the item
+					[commandIndexPool addIndex:taskIdx];
 				}
 				if ( [self tryGetNetworkResource] ) {
 					theTask.state = NMTaskExecutionStateConnectionActive;
@@ -224,7 +198,17 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 				}
 			}
 		}
+		// remove these commands
+		if ( rmTaskAy ) [pendingTaskBuffer removeObjectsInArray:rmTaskAy];
 	}
+	return didRunOutResource;
+}
+
+/*!
+ Run in the worker thread of TBConnectionController
+ */
+- (void)createConnection {
+	BOOL didRunOutResource = [self schedulePendingTasks];
 	if ( didRunOutResource ) {
 		[self enableConnectionCreationCheck];
 	}
