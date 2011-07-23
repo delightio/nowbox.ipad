@@ -53,5 +53,6 @@
 @interface NMVideo (CoreDataAccessors)
 
 - (NSString *)primitiveNm_direct_url;
+- (NSString *)primitiveNm_direct_sd_url;
 
 @end

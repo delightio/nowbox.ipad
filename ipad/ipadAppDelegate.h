@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
+extern NSString * const NM_USER_ACCOUNT_ID_KEY;
+extern NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY;
 
 @class VideoPlaybackViewController;
 @class LaunchViewController;

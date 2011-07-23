@@ -13,6 +13,9 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 
+NSInteger NM_USER_ACCOUNT_ID			= 0;
+BOOL NM_USE_HIGH_QUALITY_VIDEO			= YES;
+
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
 BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 

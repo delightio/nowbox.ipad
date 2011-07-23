@@ -63,7 +63,7 @@
 
 - (NMAVPlayerItem *)createPlayerItem {
 	if ( nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-		NSString * urlStr = [self primitiveNm_direct_url];
+		NSString * urlStr = NM_USE_HIGH_QUALITY_VIDEO ? [self primitiveNm_direct_url] : [self primitiveNm_direct_sd_url];
 		if ( urlStr && ![urlStr isEqualToString:@""] ) {
 			NMAVPlayerItem * item = [[NMAVPlayerItem alloc] initWithURL:[NSURL URLWithString:urlStr]];
 			item.nmVideo = self;

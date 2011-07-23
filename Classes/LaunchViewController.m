@@ -55,7 +55,14 @@
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 	
-	[self checkUpdateChannels];
+	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+	NM_USER_ACCOUNT_ID = [userDefaults integerForKey:NM_USER_ACCOUNT_ID_KEY];
+	
+	if ( NM_USER_ACCOUNT_ID ) {
+		userIDTextField.text = [NSString stringWithFormat:@"%d", NM_USER_ACCOUNT_ID];
+	}
+	NM_USE_HIGH_QUALITY_VIDEO = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
+	hqSwitch.on = NM_USE_HIGH_QUALITY_VIDEO;
 }
 
 - (void)viewDidUnload
@@ -99,6 +106,27 @@
 	}
 }
 
+#pragma mark Text field delegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	// start grabbing user's channel when the user has entered an ID
+	NSInteger uid = [textField.text integerValue];
+	if ( uid ) {
+		// save the user id
+		[[NSUserDefaults standardUserDefaults] setInteger:uid forKey:NM_USER_ACCOUNT_ID_KEY];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+		NM_USER_ACCOUNT_ID = uid;
+		// start fetching
+		[self checkUpdateChannels];
+	} else {
+		UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"Wrong user ID" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alert show];
+		[alert release];
+	}
+	[textField resignFirstResponder];
+	return YES;
+}
+
 #pragma mark Notification
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 //	NSDictionary * userInfo = [aNotification userInfo];
@@ -113,6 +141,15 @@
 #pragma mark Target action methods
 - (IBAction)showPlaybackController:(id)sender {
 	[self showVideoView];
+}
+
+- (IBAction)goToPlaybackView:(id)sender {
+	[self textFieldShouldReturn:userIDTextField];
+}
+
+- (IBAction)setVideoQuality:(id)sender {
+	[[NSUserDefaults standardUserDefaults] setBool:hqSwitch.on forKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
+	NM_USE_HIGH_QUALITY_VIDEO = hqSwitch.on;
 }
 
 @end

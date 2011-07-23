@@ -13,7 +13,8 @@
 #import "NMStyleUtility.h"
 
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
-NSInteger NM_USER_ACCOUNT_ID			= 1;
+NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
+NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
 
 @implementation ipadAppDelegate
 
@@ -25,7 +26,7 @@ NSInteger NM_USER_ACCOUNT_ID			= 1;
 
 + (void)initialize {
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, nil]];
+	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, nil]];
 }
 
 - (void)awakeFromNib {

@@ -11,11 +11,15 @@
 
 @class VideoPlaybackViewController;
 
-@interface LaunchViewController : UIViewController {
+@interface LaunchViewController : UIViewController <UITextFieldDelegate> {
     IBOutlet UILabel * debugLabel;
+	IBOutlet UISwitch * hqSwitch;
+	IBOutlet UITextField * userIDTextField;
 }
 
 - (IBAction)showPlaybackController:(id)sender;
+- (IBAction)goToPlaybackView:(id)sender;
+- (IBAction)setVideoQuality:(id)sender;
 
 - (void)showVideoView;
 - (void)checkUpdateChannels;
