@@ -379,6 +379,9 @@
 }
 
 - (void)playVideo:(NMVideo *)aVideo {
+	// stop video
+	[self stopVideo];
+	// show progress indicator
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
 }
@@ -486,16 +489,28 @@
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
 
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
+#ifdef DEBUG_PLAYBACK_QUEUE
+	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
+	NSLog(@"KVO observing: %@", theItem.nmVideo.title);
+#endif
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
 }
 
 - (void)player:(NMAVQueuePlayer *)aPlayer stopObservingPlayerItem:(AVPlayerItem *)anItem {
+#ifdef DEBUG_PLAYBACK_QUEUE
+	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
+	NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
+#endif
 	((NMAVPlayerItem *)anItem).nmVideo.nm_playback_status = NMVideoQueueStatusPlayed;
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"status"];
 }
+
+//- (void)player:(NMAVQueuePlayer *)aPlayer directURLResolutionErrorForVideo:(NMVideo *)aVideo {
+//	[playbackModelController ]
+//}
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
 	
