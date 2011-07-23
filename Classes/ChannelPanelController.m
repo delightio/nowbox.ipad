@@ -126,7 +126,12 @@
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
-	ctnView.imageView.image = styleUtility.userPlaceholderImage;
+
+	
+    //ctnView.imageView.image = styleUtility.userPlaceholderImage;
+    
+    NMCacheController * cacheCtrl = [NMCacheController sharedCacheController];
+	[cacheCtrl setImageInChannel:theChannel forImageView:ctnView.imageView];
 	
 	// video row
 	AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
@@ -143,11 +148,11 @@
 //	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
 //	rowCtrl.panelController = self;
 //	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
-	
-	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
-		[schdlr issueGetVideoListForChannel:theChannel];
-	}
+//	
+//	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
+//	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
+//		[schdlr issueGetVideoListForChannel:theChannel];
+//	}
 }
 
 - (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex {
