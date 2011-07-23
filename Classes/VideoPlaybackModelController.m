@@ -174,6 +174,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		
 		// need to refetch data
 		self.fetchedResultsController = nil;
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+		numberOfVideos = [sectionInfo numberOfObjects];
 		
 	} else if ( aVideo == currentVideo ) {
 		// special case
