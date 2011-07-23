@@ -35,18 +35,17 @@
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
-
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
 	[nc addObserver:self selector:@selector(handleWillGetChannelVideListNotification:) name:NMWillGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
-
 	return self;
 }
 
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[channel release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
@@ -61,6 +60,14 @@
 	return [sectionInfo numberOfObjects];
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
+        //TODO: seems to be bugging out other interaction, left out for now
+    [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
+    [panelController.videoViewController playVideo:theVideo];
+    
+}
+
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
 {
     PanelVideoContainerView *result = (PanelVideoContainerView *)[aTableView dequeueReusableCellWithIdentifier:@"Reuse"];
@@ -70,12 +77,6 @@
 		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 		result.tableView = aTableView;
     }
-    
-	if ( panelController.videoViewController.currentChannel == channel && [anIndexPath row] == panelController.selectedIndex ) {
-		result.highlighted = YES;
-	} else {
-		result.highlighted = NO;
-	}
     
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
 	result.indexInTable = [anIndexPath row];
@@ -88,7 +89,15 @@
     else {
         [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 80)];
     }
+    [result setVideoRowDelegate:self];
 	[result setVideoInfo:theVideo];
+
+    if ( panelController.highlightedChannelIndex == indexInTable && [anIndexPath row] == panelController.highlightedVideoIndex ) {
+		[result setHighlighted:YES];
+	} else {
+		[result setHighlighted:NO];
+	}
+    
     return (UITableViewCell *)result;
 }
 
@@ -169,17 +178,33 @@
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [videoTableView beginUpdates];
     tempOffset = [videoTableView contentOffset];
 }
 
+
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
 //	static NSUInteger theCount = 0;
-	switch (type) {
+    
+    // FIXME: should update selected index in panel controller also
+	
+    switch (type) {
+        case NSFetchedResultsChangeInsert: {
+            [videoTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        }
 		case NSFetchedResultsChangeDelete:
 		{
+            [videoTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                          withRowAnimation:UITableViewRowAnimationFade];
 			break;
 		}
 		case NSFetchedResultsChangeUpdate:
+        {
+            [videoTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        }
 		case NSFetchedResultsChangeMove:
 			break;
 			
@@ -192,7 +217,9 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     [videoTableView scrollRectToVisible:CGRectMake(tempOffset.x, tempOffset.y, 1, 1) animated:NO];
+    [videoTableView endUpdates];
 }
+
 
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
@@ -205,7 +232,7 @@
             [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.selectedIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             
             // select / deselect cells
-            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:panelController.selectedIndex];
+//            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:panelController.selectedIndex];
         }
         else {
             // let other channels deal with their own notifications
@@ -254,5 +281,6 @@
         }
     }
 }
+
 
 @end

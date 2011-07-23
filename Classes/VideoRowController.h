@@ -34,7 +34,5 @@
 @property (nonatomic, assign) BOOL isLoadingNewContent;
 
 - (id)init;
-
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
-
 @end
