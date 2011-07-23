@@ -101,7 +101,7 @@
 
 #pragma mark Notification
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-	NSDictionary * userInfo = [aNotification userInfo];
+//	NSDictionary * userInfo = [aNotification userInfo];
 //	debugLabel.text = [debugLabel.text stringByAppendingFormat:@"\ntype %@", [userInfo objectForKey:@"type"]];
 	debugLabel.text = @"Ready to go...";
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];

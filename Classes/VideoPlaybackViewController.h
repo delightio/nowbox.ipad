@@ -28,7 +28,7 @@
  */
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
-	IBOutlet UITextView * debugMessageView;
+	//IBOutlet UITextView * debugMessageView;
 	NMMovieView * movieView;
 	
 	NMMovieDetailView * loadedMovieDetailView;

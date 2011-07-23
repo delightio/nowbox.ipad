@@ -83,7 +83,6 @@
 	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
-	playbackModelController.debugMessageView = debugMessageView;
 
 	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
 	NSBundle * mb = [NSBundle mainBundle];
@@ -664,6 +663,9 @@
 }
 
 #pragma mark Scroll View Delegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+	NMVideoPlaybackViewIsScrolling = YES;
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	CGFloat dx;
@@ -673,7 +675,6 @@
 		dx = scrollView.contentOffset.x - currentXOffset;
 	}
 	movieView.alpha = (1024.0 - dx) / 1024.0;
-	NMVideoPlaybackViewIsScrolling = YES;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
