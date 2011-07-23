@@ -199,6 +199,7 @@
 					[self insertVideoToEndOfQueue:otherVideo];
 				}
 			}
+			break;
 		}
 		case 2:
 		{
@@ -257,6 +258,7 @@
 				[self removeItem:otherItem];
 //				}
 			}
+			break;
 		}
 		default:
 			break;
@@ -270,9 +272,6 @@
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"resolved: %@", vid.title);
 #endif
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-	[self performSelectorOnMainThread:@selector(printDebugMessage:) withObject:[NSString stringWithFormat:@"resolved URL: %@", vid.title] waitUntilDone:NO];
-#endif
 	[self queueVideo:vid];
 	if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
 		[playbackDelegate player:self willBeginPlayingVideo:vid];
@@ -285,17 +284,18 @@
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"direct URL resolution failed: %@", [userInfo objectForKey:@"error"]);
 #endif
+	NMVideo * vid;
 	// skip the video by marking the resolution status
 	if ( userInfo ) {
-		NMVideo * vid = [userInfo objectForKey:@"target_object"];
+		vid = [userInfo objectForKey:@"target_object"];
 		vid.nm_error = [userInfo objectForKey:@"errorNum"];
 		vid.nm_playback_status = NMVideoQueueStatusError;
-		
-		[nowmovTaskController issueReexamineVideo:vid errorCode:[vid.nm_error integerValue]];
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\ndirect URL resolution failed: %@ %@", [[aNotification userInfo] objectForKey:@"error"], vid.title];
-#endif
+		//DEBUG: re-enable in production
+		//[nowmovTaskController issueReexamineVideo:vid errorCode:[vid.nm_error integerValue]];
 	}
+	
+	// skip the error video
+//	[playbackDelegate player:self directURLResolutionErrorForVideo:vid];
 }
 
 @end

@@ -18,6 +18,7 @@
 - (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 - (NMVideo *)nextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 - (NMVideo *)nextNextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
+//- (void)player:(NMAVQueuePlayer *)aPlayer directURLResolutionErrorForVideo:(NMVideo *)aVideo;
 
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem;
 - (void)player:(NMAVQueuePlayer *)aPlayer stopObservingPlayerItem:(AVPlayerItem *)anItem;
