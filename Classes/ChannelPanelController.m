@@ -156,7 +156,7 @@
 
 - (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex {
     // used for highlight / unhighlight row, and what to do when row is selected(?)
-    NSLog(@"selected channel index: %d, video index: %d",newChannelIndex,newVideoIndex);
+//    NSLog(@"selected channel index: %d, video index: %d",newChannelIndex,newVideoIndex);
 
     // first, unhighlight the old cell
     
@@ -166,7 +166,7 @@
         
         NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
         PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
-        [cell setHighlighted:NO];
+        [cell setIsPlayingVideo:NO];
     }
 
     //    NSArray* rowsToReload = [NSArray arrayWithObjects:rowToReload, nil];

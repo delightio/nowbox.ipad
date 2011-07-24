@@ -93,9 +93,9 @@
 	[result setVideoInfo:theVideo];
 
     if ( panelController.highlightedChannelIndex == indexInTable && [anIndexPath row] == panelController.highlightedVideoIndex ) {
-		[result setHighlighted:YES];
+		[result setIsPlayingVideo:YES];
 	} else {
-		[result setHighlighted:NO];
+		[result setIsPlayingVideo:NO];
 	}
     
     return (UITableViewCell *)result;
@@ -202,7 +202,7 @@
 		}
 		case NSFetchedResultsChangeUpdate:
         {
-            [videoTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [videoTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
         }
 		case NSFetchedResultsChangeMove:
@@ -223,7 +223,7 @@
 
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
-	NSLog(@"notification received");
+	NSLog(@"new video playing notification received");
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
     
     if (newVideo) {
@@ -232,7 +232,7 @@
             [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.selectedIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             
             // select / deselect cells
-//            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:panelController.selectedIndex];
+            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:panelController.selectedIndex];
         }
         else {
             // let other channels deal with their own notifications
