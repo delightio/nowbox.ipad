@@ -65,7 +65,6 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		[fm release];
 	}
 	// save the file in file system
-	NSLog(@"Save image: %@", [self suggestedFilename]);
 	[cacheController writeImageData:buffer withFilename:[self suggestedFilename]];
 }
 

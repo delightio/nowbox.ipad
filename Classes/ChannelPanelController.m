@@ -148,10 +148,10 @@
 //	rowCtrl.panelController = self;
 //	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
 //	
-//	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-//	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
-//		[schdlr issueGetVideoListForChannel:theChannel];
-//	}
+	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
+	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
+		[schdlr issueGetVideoListForChannel:theChannel];
+	}
 }
 
 - (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex {
@@ -361,7 +361,6 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-			NSLog(@"change %@", indexPath);
             [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             

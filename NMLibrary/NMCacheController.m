@@ -108,7 +108,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			return YES;
 		} else {
 			// the file specified by the cache does not exist
-			chn.nm_thumbnail_file_name = nil;
+			//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
 		}
 	} 
 	iv.image = nil;
