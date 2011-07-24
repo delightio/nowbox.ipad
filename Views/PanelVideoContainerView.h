@@ -10,6 +10,7 @@
 @class NMVideo;
 
 @interface PanelVideoContainerView : UITableViewCell {
+    UIView *backgroundColorView;
     UILabel * titleLabel;
 	UILabel * datePostedLabel;
 	UILabel * durationLabel;
@@ -20,7 +21,7 @@
 	AGOrientedTableView * tableView;
 	CGRect initialFrame;
 	@private
-	BOOL highlighted_;
+	BOOL currentVideoIsPlaying;
     VideoRowController *videoRowDelegate;
     UIView *separatorView;
     UIImageView *highlightedBackgroundImage;
@@ -38,5 +39,6 @@
 
 - (void)setVideoInfo:(NMVideo *)aVideo;
 - (void)changeViewToHighlighted:(BOOL)isHighlighted;
+- (void)setIsPlayingVideo:(BOOL)abool;
 
 @end

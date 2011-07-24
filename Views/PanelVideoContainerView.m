@@ -35,6 +35,16 @@
         super.frame = frame;
         self.transform = CGAffineTransformMakeRotation(angle);
         
+        
+		self.backgroundColor = styleUtility.channelPanelBackgroundColor;
+		self.normalColor = styleUtility.channelPanelBackgroundColor;
+		self.highlightColor = styleUtility.channelPanelHighlightColor;
+        
+        backgroundColorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, initialFrame.size.width, initialFrame.size.height+NM_VIDEO_CELL_PADDING)];
+        [backgroundColorView setBackgroundColor:normalColor];
+        [backgroundColorView setClipsToBounds:YES];
+        [self addSubview:backgroundColorView];
+        
         highlightedBackgroundImage = [[UIImageView alloc] initWithImage:styleUtility.videoHighlightedBackgroundImage];
         [highlightedBackgroundImage setFrame:CGRectMake(initialFrame.size.width-104, -1, 104, 90)];
         [highlightedBackgroundImage setHidden:YES];
@@ -85,11 +95,6 @@
         separatorView.backgroundColor = styleUtility.channelBorderColor;
         
         [self addSubview:separatorView];
-        
-		self.backgroundColor = styleUtility.channelPanelBackgroundColor;
-		self.normalColor = styleUtility.channelPanelBackgroundColor;
-		self.highlightColor = styleUtility.channelPanelHighlightColor;
-        
     }
     return self;
 }
@@ -112,6 +117,7 @@
 
 - (void)dealloc
 {
+    [backgroundColorView release];
 	[titleLabel release];
 	[datePostedLabel release];
 	[durationLabel release];
@@ -154,36 +160,28 @@
     viewsLabel.text = [NSString stringWithFormat:@"%@ views",formattedOutput];
 }
 
-- (BOOL)highlighted {
-	return highlighted_;
+- (void)setIsPlayingVideo:(BOOL)abool {
+    currentVideoIsPlaying = abool;
+    [self changeViewToHighlighted:abool];
 }
 
-- (void)setHighlighted:(BOOL)abool {
-	// set highlighted state for subviews as well
-	highlighted_ = abool;
-    [self changeViewToHighlighted:highlighted_];
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated; {
+    // don't do anything, we'll deal with highlighted states ourselves
 }
 
 - (void)changeViewToHighlighted:(BOOL)isHighlighted {
     // this doesn't actually update the highlighted state
-    
-    NSLog(@"Highlighting cell: %d",isHighlighted);
-    
-	if ( isHighlighted ) {
-		self.backgroundColor = highlightColor;
-        titleLabel.highlighted = isHighlighted;
-        datePostedLabel.highlighted = isHighlighted;
-        durationLabel.highlighted = isHighlighted;
-        viewsLabel.highlighted = isHighlighted;
-        [highlightedBackgroundImage setHidden:NO];
-	} else {
-		self.backgroundColor = normalColor;
-        titleLabel.highlighted = isHighlighted;
-        datePostedLabel.highlighted = isHighlighted;
-        durationLabel.highlighted = isHighlighted;
-        viewsLabel.highlighted = isHighlighted;
-        [highlightedBackgroundImage setHidden:YES];
-	}
+    if (isHighlighted) {
+        [backgroundColorView setBackgroundColor:highlightColor];
+    }
+    else {
+        [backgroundColorView setBackgroundColor:normalColor];
+    }
+    titleLabel.highlighted = isHighlighted;
+    datePostedLabel.highlighted = isHighlighted;
+    durationLabel.highlighted = isHighlighted;
+    viewsLabel.highlighted = isHighlighted;
+    [highlightedBackgroundImage setHidden:!isHighlighted];
 }
 
 #pragma mark UIResponder
@@ -202,7 +200,7 @@
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	// remove highlight
     // only if it wasn't highlighted previously
-    [self changeViewToHighlighted:highlighted_];
+    [self changeViewToHighlighted:currentVideoIsPlaying];
 }
 
 @end
