@@ -49,10 +49,10 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 - (NSString *)suggestedFilename {
 	NSString * imgFName = nil;
 	if ( [imageURLString rangeOfString:@"youtube"].location == NSNotFound ) {
-		imgFName = [httpResponse suggestedFilename];
+		imgFName = [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
 	} else {
 		NSArray * ay = [[httpResponse URL] pathComponents];
-		imgFName = [NSString stringWithFormat:@"%@_%@", [ay objectAtIndex:[ay count] - 2], [httpResponse suggestedFilename]];
+		imgFName = [NSString stringWithFormat:@"%@_%@_%@", targetID, [ay objectAtIndex:[ay count] - 2], [httpResponse suggestedFilename]];
 	}
 	return imgFName;
 }
@@ -65,6 +65,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		[fm release];
 	}
 	// save the file in file system
+	NSLog(@"Save image: %@", [self suggestedFilename]);
 	[cacheController writeImageData:buffer withFilename:[self suggestedFilename]];
 }
 

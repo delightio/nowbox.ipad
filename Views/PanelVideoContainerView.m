@@ -167,7 +167,7 @@
 - (void)changeViewToHighlighted:(BOOL)isHighlighted {
     // this doesn't actually update the highlighted state
     
-    NSLog(@"Highlighting cell: %d",isHighlighted);
+    //NSLog(@"Highlighting cell: %d",isHighlighted);
     
 	if ( isHighlighted ) {
 		self.backgroundColor = highlightColor;

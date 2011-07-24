@@ -34,7 +34,7 @@
 	NSMutableIndexSet * commandIndexPool;
 	
 	// channel thumbnail_uri cache
-	NSMutableSet * activeChannelThumbnailDownloadSet;
+//	NSMutableSet * activeChannelThumbnailDownloadSet;
 }
 
 @property (nonatomic, retain) NSTimer *connectionExecutionTimer;
@@ -42,7 +42,7 @@
 @property (nonatomic, retain) NMDataController * dataController;
 @property (nonatomic, assign) NSThread *controlThread;
 
-- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
+//- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 
 - (void)addNewConnectionForTasks:(NSArray *)tasks;
 /*!
