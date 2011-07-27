@@ -23,6 +23,10 @@
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIView * controlContainerView;
+	// top bar
+	IBOutlet UIView * channelBackgroundView;
+	IBOutlet UIView * topbarContainerView;
+	IBOutlet UIButton * subscribeButton;
 	
 	IBOutlet UISlider * progressSlider;
 		

@@ -408,6 +408,7 @@
 	theDetailView.video = ctrl.nextVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
+	NSLog(@"offset of next MDV: %f", xOffset);
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -424,6 +425,7 @@
 	theDetailView.video = ctrl.previousVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
+	NSLog(@"offset of previous MDV: %f", xOffset);
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -440,6 +442,7 @@
 	theDetailView.video = ctrl.currentVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
+	NSLog(@"offset of current MDV: %f", xOffset);
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;

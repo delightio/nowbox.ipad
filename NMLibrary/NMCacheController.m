@@ -116,7 +116,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	[nowmovTaskController issueGetThumbnailForChannel:chn];
 	// note: the Task Queue Controller should check if we have already queued the task!!
 	
-	[channelImageViewMap setObject:iv forKey:[NSNumber numberWithUnsignedInteger:[chn hash]]];
+	[channelImageViewMap setObject:iv forKey:[NSNumber numberWithUnsignedInteger:(NSUInteger)chn]];
 	return NO;
 }
 

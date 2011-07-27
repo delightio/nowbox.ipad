@@ -32,7 +32,6 @@
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
-	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	
 	return self;
 }
@@ -277,25 +276,6 @@
 		[playbackDelegate player:self willBeginPlayingVideo:vid];
 		[self play];
 	}
-}
-
-- (void)handleErrorNotification:(NSNotification *)aNotification {
-	NSDictionary * userInfo = [aNotification userInfo];
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"direct URL resolution failed: %@", [userInfo objectForKey:@"error"]);
-#endif
-	NMVideo * vid;
-	// skip the video by marking the resolution status
-	if ( userInfo ) {
-		vid = [userInfo objectForKey:@"target_object"];
-		vid.nm_error = [userInfo objectForKey:@"errorNum"];
-		vid.nm_playback_status = NMVideoQueueStatusError;
-		//DEBUG: re-enable in production
-		//[nowmovTaskController issueReexamineVideo:vid errorCode:[vid.nm_error integerValue]];
-	}
-	
-	// skip the error video
-//	[playbackDelegate player:self directURLResolutionErrorForVideo:vid];
 }
 
 @end

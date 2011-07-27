@@ -14,6 +14,7 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 
 @synthesize state, command, buffer;
 @synthesize encountersErrorDuringProcessing;
+@synthesize executeSaveActionOnError;
 @synthesize httpStatusCode;
 @synthesize errorInfo;
 @synthesize targetID;

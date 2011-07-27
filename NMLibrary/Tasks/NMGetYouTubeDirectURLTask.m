@@ -27,6 +27,8 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	self.video = vdo;
 	self.externalID = vdo.external_id;
 	self.targetID = vdo.nm_id;
+	// the task saveProcessedDataInController: method will still be executed when there's resolution error
+	executeSaveActionOnError = YES;
 	
 	return self;
 }
@@ -95,14 +97,21 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	else {
-		NSLog(@"resolved URL: %@", self.directURLString);
+		NSLog(@"resolved URL: %d", self.targetID);
 	}
 #endif
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	video.nm_direct_url = directURLString;
-	video.nm_direct_sd_url = directSDURLString;
+	if ( encountersErrorDuringProcessing ) {
+		video.nm_direct_url = nil;
+		video.nm_direct_sd_url = nil;
+		video.nm_error = [self.errorInfo objectForKey:@"errorNum"];
+		video.nm_playback_status = NMVideoQueueStatusError;
+	} else {
+		video.nm_direct_url = directURLString;
+		video.nm_direct_sd_url = directSDURLString;
+	}
 }
 
 - (NSString *)willLoadNotificationName {

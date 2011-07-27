@@ -213,18 +213,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		if ( task.command != NMCommandGetChannelThumbnail ) [task clearDataBuffer];
 	}
 	
-	if ( task.encountersErrorDuringProcessing ) {
-		// there's error, check if there's "error" object
-		NSDictionary * errDict = task.errorInfo;
-		NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:self userInfo:errDict];
-		// post notification from main thread. we must use performSelectorOnMainThread
-		[notificationCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
-	} else {
+	if ( task.executeSaveActionOnError || !task.encountersErrorDuringProcessing ) {
 		if ( NMVideoPlaybackViewIsScrolling ) {
 			[self performSelector:@selector(delayedSaveCacheForTask:) withObject:task afterDelay:0.25f];
 		} else {
 			[self performSelectorOnMainThread:@selector(saveCacheForTask:) withObject:task waitUntilDone:NO];
 		}
+	} else {
+		// there's error, check if there's "error" object
+		NSDictionary * errDict = task.errorInfo;
+		NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:self userInfo:errDict];
+		// post notification from main thread. we must use performSelectorOnMainThread
+		[notificationCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 	}
 	
 	[pool release];

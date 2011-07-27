@@ -27,10 +27,17 @@
 - (void)awakeFromNib {
 	playbackMode_ = NMFullScreenPlaybackMode;
 //	[self setPlaybackMode:NMHalfScreenMode animated:NO];
+	// top bar view
+	CALayer * theLayer = topbarContainerView.layer;
+	theLayer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-title-background"].CGImage;
+	theLayer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
+	
+	channelBackgroundView.layer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-channel-background"].CGImage;
+	topbarContainerView.alpha = 0.0f;
 	// load the progress bar image
-	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"demo_progress_bright_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
-	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"demo_progress_dark_side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
-	[progressSlider setThumbImage:[UIImage imageNamed:@"demo_progress_nub"] forState:UIControlStateNormal];
+	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
+	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-dark-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
+	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-nub"] forState:UIControlStateNormal];
 		
 	// the control background
 	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
