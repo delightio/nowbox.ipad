@@ -129,11 +129,11 @@
 	channelController.videoViewController = self;
 	[self.view addSubview:channelController.panelView];
 	
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
-	[nc addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	// listen to system notification
-	[nc addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 	
 	// setup gesture recognizer
 //	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -606,7 +606,10 @@
 			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
 		}
-		[defaulNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
+#ifdef DEBUG_PLAYER_NAVIGATION
+		NSLog(@"Post NMWillBeginPlayingVideoNotification - %@, main thread? %d", curItem.nmVideo.title, [NSThread isMainThread]);
+#endif
+		[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
 	} 
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {

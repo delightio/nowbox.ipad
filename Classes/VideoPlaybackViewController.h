@@ -55,7 +55,7 @@
 	
 	@private
     NSManagedObjectContext *managedObjectContext_;
-	NSNotificationCenter * defaulNotificationCenter;
+	NSNotificationCenter * defaultNotificationCenter;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
