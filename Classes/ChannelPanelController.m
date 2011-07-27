@@ -31,7 +31,8 @@
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
-	tableView.separatorColor = styleUtility.channelBorderColor;
+	tableView.separatorColor = [UIColor clearColor];
+//	tableView.separatorColor = styleUtility.channelBorderColor;
 	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
@@ -115,6 +116,14 @@
 	videoTableView.tag = 1009;
 	[aContentView insertSubview:videoTableView belowSubview:ctnView];
 	
+    UIView *bottomSeparatorView = [[UIView alloc]initWithFrame:CGRectMake(100, aContentView.bounds.size.height-1, aContentView.bounds.size.width-100, 1)];
+    bottomSeparatorView.opaque = YES;
+    bottomSeparatorView.backgroundColor = styleUtility.channelBorderColor;
+    
+    [aContentView addSubview:bottomSeparatorView];
+    [bottomSeparatorView release];
+
+    
     
 	// release everything
 	[videoTableView release];
@@ -361,6 +370,7 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
+            // FIXME: currently results in video list scrolled back to left most
             [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             

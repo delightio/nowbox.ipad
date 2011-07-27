@@ -63,6 +63,18 @@
 		[self addSubview:textLabel];
 		
 		CGFloat pos = floorf( (aHeight - 40.0f) / 2.0f );
+
+        UIImageView *imageBackgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0f-3, pos-3, 48.0f, 48.0f)];
+        imageBackgroundView.image = [UIImage imageNamed:@"channel-thumbnail-frame"];
+		[self addSubview:imageBackgroundView];
+        [imageBackgroundView release];
+        
+        UIImageView *bottomBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, aHeight-1, 167.0f, 2.0f)];
+        bottomBorderView.opaque = YES;
+        bottomBorderView.image = [UIImage imageNamed:@"channel-bottom-border"];
+		[self addSubview:bottomBorderView];
+        [bottomBorderView release];
+        
 		imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0f, pos, 40.0f, 40.0f)];
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
 		[self addSubview:imageView];

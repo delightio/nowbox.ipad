@@ -95,7 +95,8 @@
         separatorView.backgroundColor = styleUtility.channelBorderColor;
         
         [self addSubview:separatorView];
-    }
+
+}
     return self;
 }
 

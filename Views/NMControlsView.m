@@ -28,24 +28,23 @@
 	playbackMode_ = NMFullScreenPlaybackMode;
 //	[self setPlaybackMode:NMHalfScreenMode animated:NO];
 	// top bar view
-	CALayer * theLayer = topbarContainerView.layer;
-	theLayer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-title-background"].CGImage;
-	theLayer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
+	topbarContainerView.layer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-title-background"].CGImage;
 	
 	channelBackgroundView.layer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-channel-background"].CGImage;
-	topbarContainerView.alpha = 0.0f;
+	channelBackgroundView.layer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
+	//topbarContainerView.alpha = 0.0f;
 	// load the progress bar image
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-dark-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-nub"] forState:UIControlStateNormal];
 		
 	// the control background
-	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
-	CALayer * ctrlBgLayer = controlContainerView.layer;
-	ctrlBgLayer.backgroundColor = [theStyle.blackColor colorWithAlphaComponent:0.7f].CGColor;
-	ctrlBgLayer.borderWidth = 1.0f;
-	ctrlBgLayer.borderColor = [UIColor colorWithRed:153.0f/255.0f green:153.0f/255.0f blue:153.0f/255.0f alpha:0.7f].CGColor;
-	ctrlBgLayer.cornerRadius = 8.0f;
+//	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
+//	CALayer * ctrlBgLayer = controlContainerView.layer;
+//	ctrlBgLayer.backgroundColor = [theStyle.blackColor colorWithAlphaComponent:0.7f].CGColor;
+//	ctrlBgLayer.borderWidth = 1.0f;
+//	ctrlBgLayer.borderColor = [UIColor colorWithRed:153.0f/255.0f green:153.0f/255.0f blue:153.0f/255.0f alpha:0.7f].CGColor;
+//	ctrlBgLayer.cornerRadius = 8.0f;
 }
 
 //- (id)initWithFrame:(CGRect)frame {
