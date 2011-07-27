@@ -25,6 +25,9 @@
 	UIColor * channelPanelHighlightColor;
     UIColor * channelBorderColor;
 	UIImage * userPlaceholderImage, * channelContainerBackgroundImage;
+	// playback control
+	UIImage * fullScreenImage, * fullScreenActiveImage;
+	UIImage * splitScreenImage, * splitScreenActiveImage;
 	
 	UIColor * blackColor;
 }
@@ -48,6 +51,12 @@
 @property (nonatomic, readonly) UIColor * channelBorderColor;
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
 @property (nonatomic, readonly) UIImage * channelContainerBackgroundImage;
+
+@property (nonatomic, readonly) UIImage * fullScreenImage;
+@property (nonatomic, readonly) UIImage * fullScreenActiveImage;
+@property (nonatomic, readonly) UIImage * splitScreenImage;
+@property (nonatomic, readonly) UIImage * splitScreenActiveImage;
+
 
 @property (nonatomic, readonly) UIColor * blackColor;
 

@@ -8,6 +8,7 @@
 
 #import "NMControlsView.h"
 #import "NMMovieView.h"
+#import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define NM_PLAYER_STATUS_CONTEXT		100
@@ -38,35 +39,9 @@
 	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-dark-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-nub"] forState:UIControlStateNormal];
 		
-	// the control background
-//	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
-//	CALayer * ctrlBgLayer = controlContainerView.layer;
-//	ctrlBgLayer.backgroundColor = [theStyle.blackColor colorWithAlphaComponent:0.7f].CGColor;
-//	ctrlBgLayer.borderWidth = 1.0f;
-//	ctrlBgLayer.borderColor = [UIColor colorWithRed:153.0f/255.0f green:153.0f/255.0f blue:153.0f/255.0f alpha:0.7f].CGColor;
-//	ctrlBgLayer.cornerRadius = 8.0f;
 }
-
-//- (id)initWithFrame:(CGRect)frame {
-//    
-//    self = [super initWithFrame:frame];
-//    if (self) {
-//        // Initialization code.
-//    }
-//    return self;
-//}
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code.
-}
-*/
 
 - (void)dealloc {
-	[progressBarLayer release];
-	[nubLayer release];
 	[lastVideoMessage release];
     [super dealloc];
 }
@@ -89,18 +64,8 @@
 	}
 	if ( hidden ) {
 		self.alpha = 0.0;
-//		prevVideoButton.alpha = 0.0;
-//		nextVideoButton.alpha = 0.0;
-//		progressView.alpha = 0.0;
-//		durationLabel.alpha = 0.0;
-//		currentTimeLabel.alpha = 0.0;
 	} else {
 		self.alpha = 1.0;
-//		prevVideoButton.alpha = 1.0;
-//		nextVideoButton.alpha = 1.0;
-//		progressView.alpha = 1.0;
-//		durationLabel.alpha = 1.0;
-//		currentTimeLabel.alpha = 1.0;
 	}
 	if ( animated ) {
 		[UIView commitAnimations];
@@ -133,28 +98,26 @@
 - (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated {
 	if ( aMode == playbackMode_ ) return;
 	
+	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
 	CGRect viewRect;
 	switch (aMode) {
 		case NMFullScreenPlaybackMode:
 		{
-			// show stuff
-//			otherInfoLabel.hidden = NO;
-//			channelNameLabel.hidden = NO;
-//			videoTitleLabel.hidden = NO;
 			// set to play video in full screen
 			if ( animated ) {
 				[UIView beginAnimations:nil context:(void *)NM_CONTROL_VIEW_FULL_SCREEN_ANIMATION_CONTEXT];
 				[UIView setAnimationBeginsFromCurrentState:YES];
 			}
 			// set its own size
-			viewRect = CGRectMake(self.frame.origin.x - 40.0f, 0.0f, 1024.0f, 768.0f);
+			viewRect = CGRectMake(self.frame.origin.x, 0.0f, 1024.0f, 768.0f);
 			self.frame = viewRect;
-			// resize the container view
-			viewRect = CGRectMake(49.0f, 640.0f, 926.0f, 98.0f);
-			controlContainerView.frame = viewRect;
-			otherInfoLabel.alpha = 1.0f;
-			channelNameLabel.alpha = 1.0f;
-			videoTitleLabel.alpha = 1.0f;
+			
+			// show the top bar
+			topbarContainerView.alpha = 1.0f;
+			// change button image
+			[channelViewButton setImage:theStyle.splitScreenImage forState:UIControlStateNormal];
+			[channelViewButton setImage:theStyle.splitScreenActiveImage forState:UIControlStateHighlighted];
+			
 			if ( animated ) [UIView commitAnimations];
 			break;
 		}
@@ -167,19 +130,14 @@
 				[UIView setAnimationBeginsFromCurrentState:YES];
 			}
 			// set its own size
-			viewRect = CGRectMake(self.frame.origin.x + 35.0f, 49.0f, 616.0f, 341.0f);
+			viewRect = CGRectMake(self.frame.origin.x, 20.0f, 640.0f, 360.0f);
 			self.frame = viewRect;
-			// resize the container view
-			viewRect = CGRectMake(40.0f, 248.0f, viewRect.size.width - 80.0f, 48.0f);
-			controlContainerView.frame = viewRect;
-			otherInfoLabel.alpha = 0.0f;
-			channelNameLabel.alpha = 0.0f;
-			videoTitleLabel.alpha = 0.0f;
+			
+			topbarContainerView.alpha = 0.0f;
+			[channelViewButton setImage:theStyle.fullScreenImage forState:UIControlStateNormal];
+			[channelViewButton setImage:theStyle.fullScreenActiveImage forState:UIControlStateHighlighted];
+			
 			if ( animated ) [UIView commitAnimations];
-			// hide stuff
-//			otherInfoLabel.hidden = YES;
-//			channelNameLabel.hidden = YES;
-//			videoTitleLabel.hidden = YES;
 			break;
 		}
 			
@@ -236,19 +194,9 @@
 		lastVideoMessage = nil;
 	}
 	// reset progress bar
-	CGRect theFrame = progressBarLayer.bounds;
-	theFrame.size.width = 18.0;
-	
-//	[CATransaction begin];
-//	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-//	progressBarLayer.bounds = theFrame;
-//	progressBarLayer.position = CGPointMake(0.0, 9.0);
-//	nubLayer.position = CGPointMake(9.0, 9.0);
-//	progressSlider.value = 0.0f;
-//	[CATransaction commit];
+	progressSlider.value = 0.0f;
 	
 	self.alpha = 1.0;
-	self.hidden = NO;
 	[self setControlsHidden:YES animated:NO];
 }
 

@@ -31,6 +31,10 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize channelBorderColor;
 @synthesize userPlaceholderImage;
 @synthesize channelContainerBackgroundImage;
+@synthesize fullScreenImage;
+@synthesize fullScreenActiveImage;
+@synthesize splitScreenImage;
+@synthesize splitScreenActiveImage;
 @synthesize blackColor;
 
 + (NMStyleUtility *)sharedStyleUtility {
@@ -70,6 +74,11 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-shadow-background"] retain];
 //	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-background"] retain];
 	
+	fullScreenImage = [[UIImage imageNamed:@"playback-full-screen"] retain];
+	fullScreenActiveImage = [[UIImage imageNamed:@"playback-full-screen-active"] retain];
+	splitScreenImage = [[UIImage imageNamed:@"playback-normal-screen"] retain];
+	splitScreenActiveImage = [[UIImage imageNamed:@"playback-normal-screen-active"] retain];
+	
 	blackColor = [[UIColor blackColor] retain];
 	
 	return self;
@@ -94,6 +103,10 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[channelPanelBackgroundColor release];
     [channelBorderColor release];
 	[userPlaceholderImage release];
+	[fullScreenImage release];
+	[fullScreenActiveImage release];
+	[splitScreenImage release];
+	[splitScreenActiveImage release];
 	[blackColor release];
 	[super dealloc];
 }

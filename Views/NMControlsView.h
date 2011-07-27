@@ -30,8 +30,6 @@
 	
 	IBOutlet UISlider * progressSlider;
 		
-	CALayer * progressBarLayer;
-	CALayer * nubLayer;
 	CGFloat pxWidthPerSecond;
 	CGFloat progressBarWidth;
 	
