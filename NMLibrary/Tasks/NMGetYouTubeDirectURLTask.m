@@ -97,13 +97,16 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	else {
-		NSLog(@"resolved URL: %d", self.targetID);
+		NSLog(@"resolved URL: %@", self.targetID);
 	}
 #endif
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	if ( encountersErrorDuringProcessing ) {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+		NSLog(@"direct URL resolution failed: %@", video.title);
+#endif
 		video.nm_direct_url = nil;
 		video.nm_direct_sd_url = nil;
 		video.nm_error = [self.errorInfo objectForKey:@"errorNum"];

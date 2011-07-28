@@ -606,9 +606,6 @@
 			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
 		}
-#ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"Post NMWillBeginPlayingVideoNotification - %@, main thread? %d", curItem.nmVideo.title, [NSThread isMainThread]);
-#endif
 		[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
 	} 
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state

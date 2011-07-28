@@ -255,7 +255,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 			break;
 	}
 		// send notification
-	[notificationCenter postNotificationName:[task didLoadNotificationName] object:self userInfo:[task userInfo]];
+	if ( task.encountersErrorDuringProcessing == NO ) {
+		[notificationCenter postNotificationName:[task didLoadNotificationName] object:self userInfo:[task userInfo]];
+	}
 //	}
 }
 

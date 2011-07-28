@@ -223,7 +223,6 @@
 
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
-	NSLog(@"new video playing notification received");
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
     
     if (newVideo) {
