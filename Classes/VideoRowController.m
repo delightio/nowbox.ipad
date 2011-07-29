@@ -223,22 +223,22 @@
 
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
-	NSLog(@"new video playing notification received");
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
     
     if (newVideo) {
         if ([newVideo channel] == channel) {
+            NSLog(@"new video playing notification received for channel %@",[channel title]);
             // scroll to the current channel
             [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.selectedIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             
             // select / deselect cells
+            NSLog(@"panelController.selectedIndex: %d",panelController.selectedIndex);
             [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:panelController.selectedIndex];
         }
         else {
-            // let other channels deal with their own notifications
+            // let other channels deal with their own notifications: do nothing!
         }
     }
-    
 }
 
 - (void)handleWillGetChannelVideListNotification:(NSNotification *)aNotification {
