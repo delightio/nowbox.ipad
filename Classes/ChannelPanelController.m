@@ -115,15 +115,24 @@
 	
 	videoTableView.tag = 1009;
 	[aContentView insertSubview:videoTableView belowSubview:ctnView];
-	
-    UIView *bottomSeparatorView = [[UIView alloc]initWithFrame:CGRectMake(100, aContentView.bounds.size.height-1, aContentView.bounds.size.width-100, 1)];
+    
+    UIView *loadingOverlayView = [[UIView alloc]initWithFrame:theFrame];
+    loadingOverlayView.tag = 1008;
+    [loadingOverlayView setBackgroundColor:styleUtility.channelPanelBackgroundColor];
+    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityView.center = CGPointMake(425, 44);
+    [activityView startAnimating];
+    [loadingOverlayView addSubview:activityView];
+    [activityView release];
+    [aContentView insertSubview:loadingOverlayView aboveSubview:videoTableView];
+    [loadingOverlayView release];
+    
+    UIView *bottomSeparatorView = [[UIView alloc]initWithFrame:CGRectMake(167, aContentView.bounds.size.height-1, aContentView.bounds.size.width-167, 1)];
     bottomSeparatorView.opaque = YES;
     bottomSeparatorView.backgroundColor = styleUtility.channelBorderColor;
     
     [aContentView addSubview:bottomSeparatorView];
     [bottomSeparatorView release];
-
-    
     
 	// release everything
 	[videoTableView release];
@@ -149,6 +158,10 @@
     htView.tableController.isLoadingNewContent = NO;
 	[htView reloadData];
     [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+
+    UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
+    [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] != 0)];
+    
 //	
 //	CGRect theFrame = cell.contentView.bounds;
 //	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
