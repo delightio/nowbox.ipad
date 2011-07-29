@@ -60,6 +60,7 @@
 		titleLabel.text = nil;
 		otherInfoLabel.text = nil;
 		descriptionLabel.text = nil;
+		NSLog(@"fuck!!! %p", self);
 		return;
 	} else {
 		return;
@@ -90,6 +91,7 @@
 	}
 	
 	if ( self.alpha == 0.0f ) self.alpha = 1.0f;
+	NSLog(@"set MDV %p - %@", (void*)self, aVideo.title);
 }
 
 @end

@@ -169,7 +169,7 @@
 
 
 - (void)dealloc {
-    [managedObjectContext_ release];
+	[managedObjectContext_ release];
 	
 	[loadedControlView release];
 	[movieDetailViewArray release];
@@ -180,7 +180,7 @@
 	[timeObserver release];
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
-   [super dealloc];
+	[super dealloc];
 }
 
 #pragma mark Playback data structure
@@ -380,7 +380,11 @@
 - (void)playVideo:(NMVideo *)aVideo {
 	// stop video
 	[self stopVideo];
+	// flush the video player
+	[movieView.player removeAllItems];
 	// show progress indicator
+	//[movieView setActivityIndicationHidden:NO animated:NO];
+
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
 }
@@ -442,7 +446,7 @@
 	theDetailView.video = ctrl.currentVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
-	NSLog(@"offset of current MDV: %f", xOffset);
+	NSLog(@"offset of current MDV: %f actual: %f %@", xOffset, theDetailView.frame.origin.x, ctrl.currentVideo.title);
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -580,6 +584,7 @@
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusPlaying;
+		NSLog(@"playing: %@", curItem.nmVideo.title);
 		// never change currentIndex here!!
 		// ====== update interface ======
 		[self configureControlViewForVideo:[self playerCurrentVideo]];

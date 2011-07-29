@@ -43,6 +43,7 @@
 }
 
 - (void)insertVideoToEndOfQueue:(NMVideo *)vid {
+	NSLog(@"insertVideoToEndOfQueue:");
 	NMAVPlayerItem * item = [vid createPlayerItem];
 	if ( item && [self canInsertItem:item afterItem:nil] ) {
 		[playbackDelegate player:self observePlayerItem:item];
@@ -53,8 +54,19 @@
 	[item release];
 }
 
+- (void)removeAllItems {
+	// stop observing all items
+	[self pause];
+	NSArray * allItems = self.items;
+	for (NMAVPlayerItem * anItem in allItems) {
+		[playbackDelegate player:self stopObservingPlayerItem:anItem];
+	}
+	[super removeAllItems];
+}
+
 #pragma mark Public interface
 - (void)advanceToVideo:(NMVideo *)aVideo {
+	NSLog(@"advanceToVideo:");
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	AVPlayerItem * curItem = self.currentItem;
 	if ( curItem == nil ) {
@@ -74,13 +86,14 @@
 }
 
 - (void)revertToVideo:(NMVideo *)aVideo {
+	NSLog(@"revertToVideo:");
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-		if ( aVideo.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
-			// we need to resolve the direct URL
-			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
-		} else {
-			[self performSelector:@selector(delayedRevertToVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
-		}
+	if ( aVideo.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
+		// we need to resolve the direct URL
+		[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+	} else {
+		[self performSelector:@selector(delayedRevertToVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+	}
 }
 
 - (void)resolveAndQueueVideos:(NSArray *)vidAy {
@@ -102,6 +115,7 @@
 }
 
 - (BOOL)revertPreviousItem:(AVPlayerItem *)anItem {
+	NSLog(@"revertPreviousItem:");
 	// move back to the previous item
 	AVPlayerItem * cItem = [self.currentItem retain];
 	BOOL insertStatus = NO;
@@ -112,7 +126,8 @@
 		[self play];
 		if ( [self canInsertItem:cItem afterItem:self.currentItem] ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
-			NSLog(@"re-insert original item back to the queue player");
+			NMAVPlayerItem * vidItem = (NMAVPlayerItem *)anItem;
+			NSLog(@"revertPreviousItem: re-insert original item back to the queue player: %@", vidItem.nmVideo.title);
 #endif
 			[self insertItem:cItem afterItem:self.currentItem];
 			insertStatus = YES;

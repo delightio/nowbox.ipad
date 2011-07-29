@@ -11,6 +11,7 @@
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
+		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
 		A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
@@ -170,6 +171,7 @@
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
 		A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVQueuePlayer.m; sourceTree = "<group>"; };
+		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
 		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
 		A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoContainerView.m; sourceTree = "<group>"; };
@@ -540,6 +542,7 @@
 				A931613113E0902B009694C3 /* playback-pause.png */,
 				A931613213E0902B009694C3 /* playback-play-active.png */,
 				A931613313E0902B009694C3 /* playback-play.png */,
+				A911B94F13E15E6800B7BFFF /* playback-progress-background.png */,
 				A99C0B4813E017BA0006FAA5 /* progress-bright-side.png */,
 				A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */,
 				A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */,
@@ -865,6 +868,7 @@
 				A931613D13E0902B009694C3 /* playback-play.png in Resources */,
 				A931613E13E0902B009694C3 /* toolbar-collapse-active.png in Resources */,
 				A931613F13E0902B009694C3 /* toolbar-collapse.png in Resources */,
+				A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1295,11 +1299,7 @@
 				DSTROOT = /tmp/NMLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_VIDEO_LIST_REFRESH,
-					DEBUG_PLAYBACK_QUEUE,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYBACK_QUEUE;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
