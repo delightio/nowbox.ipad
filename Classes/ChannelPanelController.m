@@ -102,7 +102,8 @@
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
-//    videoTableView.separatorColor = styleUtility.channelBorderColor; // FIXME: this isn't working for some reason, going to add it in cell instead
+    // this isn't working for some reason, going to add it in cell instead
+    // videoTableView.separatorColor = styleUtility.channelBorderColor;
 
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
@@ -139,13 +140,15 @@
 	[vdoCtrl release];
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath retainPosition:(BOOL)useSamePosition {
+    
+    NSLog(@"configure cell %@ retain %d", [indexPath description], useSamePosition);
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
 	
-//    ctnView.imageView.image = styleUtility.userPlaceholderImage;
+    //    ctnView.imageView.image = styleUtility.userPlaceholderImage;
     
 	NMCacheController * cacheCtrl = [NMCacheController sharedCacheController];
 	[cacheCtrl setImageInChannel:theChannel forImageView:ctnView.imageView];
@@ -156,24 +159,31 @@
 	htView.tableController.channel = theChannel;
     htView.tableController.indexInTable = [indexPath row];
     htView.tableController.isLoadingNewContent = NO;
+    
 	[htView reloadData];
-    [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-
+    if (!useSamePosition) {
+        [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    }
+    
     UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
     [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] != 0)];
     
-//	
-//	CGRect theFrame = cell.contentView.bounds;
-//	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
-//	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-//	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
-//	rowCtrl.panelController = self;
-//	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
-//	
+    //	
+    //	CGRect theFrame = cell.contentView.bounds;
+    //	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
+    //	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+    //	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
+    //	rowCtrl.panelController = self;
+    //	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
+    //	
 	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
 		[schdlr issueGetVideoListForChannel:theChannel];
 	}
+}
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    [self configureCell:cell atIndexPath:indexPath retainPosition:NO];
 }
 
 - (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex {
@@ -181,7 +191,6 @@
 //    NSLog(@"selected channel index: %d, video index: %d",newChannelIndex,newVideoIndex);
 
     // first, unhighlight the old cell
-    
     if ((newVideoIndex != highlightedVideoIndex) || (newChannelIndex != highlightedChannelIndex)) {
         UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0]];
         AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
@@ -200,6 +209,10 @@
     
     highlightedChannelIndex = newChannelIndex;
     highlightedVideoIndex = newVideoIndex;
+    
+    // scroll to the current video
+    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+
 }
 
 #pragma mark -
@@ -383,8 +396,7 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            // FIXME: currently results in video list scrolled back to left most
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];
             break;
             
         case NSFetchedResultsChangeMove:
