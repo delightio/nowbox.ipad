@@ -10,10 +10,11 @@
 #import "NMImageDownloadTask.h"
 #import "NMTaskQueueController.h"
 #import "NMChannel.h"
-#import "NMTouchImageView.h"
+#import "NMVideoDetail.h"
 
-#define MEMORY_CACHE_CAPACITY	20
+#define MEMORY_CACHE_CAPACITY	10
 #define CHANNEL_FILE_CACHE_SIZE	100
+#define AUTHOR_FILE_CACHE_SIZE	100
 
 static NMCacheController * _sharedCacheController = nil;
 static NSString * const JPIndexPathDictionaryKey = @"idxpath";
@@ -41,6 +42,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 	NSString * cacheBaseDir = [docDir stringByAppendingPathComponent:@"image_cache"];
 	channelThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"channel_thumbnail"] retain];
+	authorThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"author_thumbnail"] retain];
 	// file manager
 	fileManager = [[NSFileManager alloc] init];
 	
@@ -57,7 +59,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 		}
 	}
 		
-	channelImageViewMap = [[NSMutableDictionary alloc] init];
+	targetObjectImageViewMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
 	
 //	filenameImageMemoryCache = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
 //	imageTemporalList = [[NSMutableArray alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
@@ -69,8 +71,9 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 //	[imageTemporalList release];
 //	[filenameImageMemoryCache release];
-	[channelImageViewMap release];
+	[targetObjectImageViewMap release];
 	[channelThumbnailCacheDir release];
+	[authorThumbnailCacheDir release];
 	[fileManager dealloc];
 	[super dealloc];
 }
@@ -97,8 +100,29 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 //
 
 #pragma mark load image
-- (BOOL)setAuthorImage:(NSString *)uriStr forAuthorImageView:(UIImageView *)iv {
-	return YES;
+- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj forImageView:(UIImageView *)iv {
+	if ( dtlObj == nil || iv == nil ) return NO;
+	// check if the image is in local file system
+	NSString * fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:dtlObj.nm_author_thunbmail_file_name];
+	if ( [fileManager fileExistsAtPath:fPath] ) {
+		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+		if ( img ) {
+			// file exists in path, load the file
+			iv.image = img;
+			return YES;
+		} else {
+			iv.image = nil;
+			// the file specified by the cache does not exist
+			//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
+		}
+	}
+	iv.image = nil;
+	// issue image load request
+	NSUInteger idx = [nowmovTaskController issueGetThumbnailForAuthor:dtlObj];
+	// note: the Task Queue Controller should check if we have already queued the task!!
+	
+	[targetObjectImageViewMap setObject:iv forKey:[NSNumber numberWithUnsignedInteger:(NSUInteger)dtlObj]];
+	return NO;
 }
 
 - (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv {
@@ -112,27 +136,38 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			iv.image = img;
 			return YES;
 		} else {
+			iv.image = img;
 			// the file specified by the cache does not exist
 			//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
+			return NO;
 		}
-	} 
+	}
 	iv.image = nil;
-	// issue image load request
-	[nowmovTaskController issueGetThumbnailForChannel:chn];
-	// note: the Task Queue Controller should check if we have already queued the task!!
+	// check if the command already exists
+	NSNumber * cmdIdxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForChannel:chn]];
+	NMImageDownloadTask * task = [targetObjectImageViewMap objectForKey:cmdIdxNum];
+	if ( task ) {
+		[task retainDownload];
+	} else {
+		// issue delay download request
+		// issue image load request
+		NMImageDownloadTask * task = [nowmovTaskController issueGetThumbnailForChannel:chn];
+		// note: the Task Queue Controller should check if we have already queued the task!!
+		
+		[targetObjectImageViewMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	}
 	
-	[channelImageViewMap setObject:iv forKey:[NSNumber numberWithUnsignedInteger:(NSUInteger)chn]];
 	return NO;
 }
 
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 	// update the view
 	NSDictionary * userInfo = [aNotification userInfo];
-	NSNumber * hashNum = [NSNumber numberWithUnsignedInteger:[[userInfo objectForKey:@"target_object"] hash]];
-	NMTouchImageView * iv = [channelImageViewMap objectForKey:hashNum];
+	NSNumber * hashNum = [NSNumber numberWithUnsignedInteger:(NSUInteger)[userInfo objectForKey:@"target_object"]];
+	UIImageView * iv = [targetObjectImageViewMap objectForKey:hashNum];
 	if ( iv ) {
 		iv.image = [userInfo objectForKey:@"image"];
-		[channelImageViewMap removeObjectForKey:hashNum];
+		[targetObjectImageViewMap removeObjectForKey:hashNum];
 	}
 }
 

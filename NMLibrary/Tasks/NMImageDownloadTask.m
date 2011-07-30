@@ -9,6 +9,8 @@
 #import "NMImageDownloadTask.h"
 #import "NMCacheController.h"
 #import "NMChannel.h"
+#import "NMVideo.h"
+#import "NMVideoDetail.h"
 
 NSString * const NMWillDownloadImageNotification = @"NMWillDownloadImageNotification";
 NSString * const NMDidDownloadImageNotification = @"NMDidDownloadImageNotification";
@@ -18,7 +20,17 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
-@synthesize image;
+@synthesize image, videoDetail;
+
++ (NSUInteger)commandIndexForChannel:(NMChannel *)chn {
+	NSUInteger tid = [chn.nm_id unsignedIntegerValue];
+	return tid << 5 | (NSUInteger)NMCommandGetChannelThumbnail;
+}
+
++ (NSUInteger)commandIndexForAuthor:(NMVideoDetail *)dtl {
+	NSUInteger tid = [dtl.author_id unsignedIntegerValue];
+	return tid << 5 | (NSUInteger)NMCommandGetAuthorThumbnail;
+}
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -29,8 +41,35 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self.channel = chn;
 	self.targetID = chn.nm_id;
 	command = NMCommandGetChannelThumbnail;
+	retainCount = 1;
 	
 	return self;
+}
+
+- (id)initWithAuthor:(NMVideoDetail *)dtl {
+	self = [super init];
+	
+	cacheController = [NMCacheController sharedCacheController];
+	self.imageURLString = dtl.author_thumbnail_uri;
+	self.originalImagePath = dtl.nm_author_thunbmail_file_name;
+	self.videoDetail = dtl;
+	self.targetID = dtl.author_id;
+	command = NMCommandGetAuthorThumbnail;
+	retainCount = 1;
+	
+	return self;
+}
+
+- (void)retainDownload {
+	retainCount++;
+}
+
+- (void)releaseDownload {
+	retainCount--;
+	if ( retainCount == 0 ) {
+		// cancel the task
+		self.state = NMTaskExecutionStateCanceled;
+	}
 }
 
 - (void)dealloc {
@@ -38,6 +77,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	[httpResponse release];
 	[channel release];
 	[imageURLString release];
+	[videoDetail release];
 	[super dealloc];
 }
 
@@ -47,14 +87,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 - (NSString *)suggestedFilename {
-	NSString * imgFName = nil;
-	if ( [imageURLString rangeOfString:@"youtube"].location == NSNotFound ) {
-		imgFName = [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
-	} else {
-		NSArray * ay = [[httpResponse URL] pathComponents];
-		imgFName = [NSString stringWithFormat:@"%@_%@_%@", targetID, [ay objectAtIndex:[ay count] - 2], [httpResponse suggestedFilename]];
-	}
-	return imgFName;
+	return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
 }
 
 - (void)processDownloadedDataInBuffer {
@@ -66,13 +99,27 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	}
 	// save the file in file system
 	[cacheController writeImageData:buffer withFilename:[self suggestedFilename]];
+	self.image = [UIImage imageWithData:buffer];
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	// create the image object
-	self.image = [UIImage imageWithData:buffer];	// seems that it's not safe to use UIImage in worker thread
+//	self.image = [UIImage imageWithData:buffer];	// seems that it's not safe to use UIImage in worker thread
 	// update channel MOC with new file name
-	channel.nm_thumbnail_file_name = [self suggestedFilename];
+	if ( originalImagePath == nil ) {
+		switch (command) {
+			case NMCommandGetAuthorThumbnail:
+				videoDetail.nm_author_thunbmail_file_name = [self suggestedFilename];
+				break;
+				
+			case NMCommandGetChannelThumbnail:
+				channel.nm_thumbnail_file_name = [self suggestedFilename];
+				break;
+				
+			default:
+				break;
+		}
+	}
 }
 
 - (NSString *)willLoadNotificationName {
@@ -88,7 +135,17 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
+	switch (command) {
+		case NMCommandGetAuthorThumbnail:
+			return [NSDictionary dictionaryWithObjectsAndKeys:videoDetail, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
+			
+		case NMCommandGetChannelThumbnail:
+			return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
+			
+		default:
+			break;
+	}
+	return nil;
 }
 
 @end

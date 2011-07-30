@@ -11,7 +11,9 @@
 @class NMDataController;
 @class NMChannel;
 @class NMVideo;
+@class NMVideoDetail;
 @class NMRefreshChannelVideoListTask;
+@class NMImageDownloadTask;
 
 @protocol NMVideoListUpdateDelegate <NSObject>
 
@@ -43,11 +45,12 @@
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid;
 - (void)issueRefreshVideoListForChannel:(NMChannel *)chnObj delegate:(id <NMVideoListUpdateDelegate>)del;
-- (void)issueGetThumbnailForChannel:(NMChannel *)chnObj;
+- (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
 //- (void)issueGetVideoInfo:(NMVideo *)aVideo;
+- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj;
 
 // Event tracking
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;

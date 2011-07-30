@@ -12,8 +12,8 @@
 @class NMVideo;
 
 @interface NMMovieDetailView : UIView {
-    IBOutlet UIImageView * channelLogoView;
-	IBOutlet UILabel * channelLabel;
+    IBOutlet UIImageView * authorThumbnailView;
+	IBOutlet UILabel * authorLabel;
 	IBOutlet UILabel * titleLabel;
 	IBOutlet UILabel * otherInfoLabel;
 	IBOutlet UILabel * descriptionLabel;

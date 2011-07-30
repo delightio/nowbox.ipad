@@ -56,8 +56,8 @@
 		video_ = nil;
 		
 		// reset the view
-		channelLogoView.image = nil;
-		channelLabel.text = nil;
+		authorThumbnailView.image = nil;
+		authorLabel.text = nil;
 		titleLabel.text = nil;
 		otherInfoLabel.text = nil;
 		descriptionLabel.text = nil;
@@ -69,8 +69,8 @@
 	NMVideoDetail * dtlObj = aVideo.detail;
 	
 	// channel info
-	[cacheController setAuthorImage:dtlObj.author_thumbnail_uri forAuthorImageView:channelLogoView];
-	channelLabel.text = dtlObj.author_username;
+	[cacheController setImageForAuthor:dtlObj forImageView:authorThumbnailView];
+	authorLabel.text = dtlObj.author_username;
 	// video info
 	titleLabel.text = aVideo.title;
 //	NSLog(@"setting movie detail: %@", aVideo.title);

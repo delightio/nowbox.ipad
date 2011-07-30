@@ -264,8 +264,6 @@
 		A970506213438F860022BF2C /* NMControlsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMControlsView.m; sourceTree = "<group>"; };
 		A970506313438F860022BF2C /* NMMovieView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMovieView.h; sourceTree = "<group>"; };
 		A970506413438F860022BF2C /* NMMovieView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMovieView.m; sourceTree = "<group>"; };
-		A970506513438F860022BF2C /* NMTouchImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTouchImageView.h; sourceTree = "<group>"; };
-		A970506613438F860022BF2C /* NMTouchImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMTouchImageView.m; sourceTree = "<group>"; };
 		A97050A3134392FA0022BF2C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A97050CF134398DD0022BF2C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A97050D1134399050022BF2C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -638,8 +636,6 @@
 				A970506213438F860022BF2C /* NMControlsView.m */,
 				A970506313438F860022BF2C /* NMMovieView.h */,
 				A970506413438F860022BF2C /* NMMovieView.m */,
-				A970506513438F860022BF2C /* NMTouchImageView.h */,
-				A970506613438F860022BF2C /* NMTouchImageView.m */,
 				A962DD7013A82D3A004CC111 /* NMMovieDetailView.h */,
 				A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */,
 				A973AC2513AAFAD90050025B /* NMChannelPanelView.h */,

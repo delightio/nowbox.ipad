@@ -12,6 +12,7 @@
 #import "NMDataController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMVideoDetail.h"
 
 NSInteger NM_USER_ACCOUNT_ID			= 0;
 BOOL NM_USE_HIGH_QUALITY_VIDEO			= YES;
@@ -124,18 +125,24 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-//- (void)issueGetVideoInfo:(NMVideo *)aVideo {
-//	NMGetVideoInfoTask * task = [[NMGetVideoInfoTask alloc] initWithVideo:aVideo];
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
-
-- (void)issueGetThumbnailForChannel:(NMChannel *)chnObj {
-	if ( chnObj.thumbnail_uri ) {
-		NMImageDownloadTask * task = [[NMImageDownloadTask alloc] initWithChannel:chnObj];
+- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj {
+	NMImageDownloadTask * task = nil;
+	if ( dtlObj.author_thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithAuthor:dtlObj];
 		[networkController addNewConnectionForTask:task];
 		[task release];
 	}
+	return task;
+}
+
+- (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj {
+	NMImageDownloadTask * task = nil;
+	if ( chnObj.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithChannel:chnObj];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+	return task;
 }
 
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {

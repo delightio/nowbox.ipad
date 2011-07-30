@@ -35,15 +35,17 @@
         <relationship name="detail" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMVideoDetail" inverseName="video" inverseEntity="NMVideoDetail" indexed="YES"/>
     </entity>
     <entity name="NMVideoDetail" representedClassName="NMVideoDetail">
+        <attribute name="author_id" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="author_profile_uri" optional="YES" attributeType="String"/>
         <attribute name="author_thumbnail_uri" optional="YES" attributeType="String"/>
         <attribute name="author_username" optional="YES" attributeType="String"/>
+        <attribute name="nm_author_thumbnail_file_name" optional="YES" attributeType="String"/>
         <attribute name="nm_description" optional="YES" attributeType="String"/>
         <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="detail" inverseEntity="NMVideo" indexed="YES"/>
     </entity>
     <elements>
         <element name="NMVideo" positionX="297" positionY="225" width="128" height="300"/>
-        <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="120"/>
-        <element name="NMChannel" positionX="297" positionY="-72" width="128" height="240"/>
+        <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="150"/>
+        <element name="NMChannel" positionX="297" positionY="-72" width="153" height="240"/>
     </elements>
 </model>

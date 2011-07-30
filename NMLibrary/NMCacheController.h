@@ -8,16 +8,17 @@
 
 
 @class NMImageDownloadTask;
-@class NMTouchImageView;
 @class NMChannel;
+@class NMVideoDetail;
 @class NMTaskQueueController;
 
 @protocol NMImageDownloadDelegate;
 @interface NMCacheController : NSObject {
 	NSString * channelThumbnailCacheDir;
+	NSString * authorThumbnailCacheDir;
 	NSFileManager * fileManager;
 	
-	NSMutableDictionary * channelImageViewMap;
+	NSMutableDictionary * targetObjectImageViewMap;
 	NMTaskQueueController * nowmovTaskController;
 	
 	id <NMImageDownloadDelegate> delegate;
@@ -32,7 +33,7 @@
 + (NMCacheController *)sharedCacheController;
 
 // display image from file cache
-- (BOOL)setAuthorImage:(NSString *)uriStr forAuthorImageView:(UIImageView *)iv;
+- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj forImageView:(UIImageView *)iv;
 - (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv;
 
 // saving image from server
