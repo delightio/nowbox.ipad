@@ -97,6 +97,10 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 //
 
 #pragma mark load image
+- (BOOL)setAuthorImage:(NSString *)uriStr forAuthorImageView:(UIImageView *)iv {
+	return YES;
+}
+
 - (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv {
 	if ( chn == nil || iv == nil ) return NO;
 	// check if the image is in local file system

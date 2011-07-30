@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="Nowmov.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="562" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="NMChannel" representedClassName="NMChannel">
+        <attribute name="category" optional="YES" attributeType="String"/>
+        <attribute name="nm_description" optional="YES" attributeType="String"/>
+        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_last_vid" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String"/>
+        <attribute name="nm_time_elapsed_timescale" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="nm_time_elapsed_value" optional="YES" attributeType="Integer 64" defaultValueString="0"/>
+        <attribute name="resource_uri" optional="YES" attributeType="String"/>
+        <attribute name="thumbnail_uri" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String" indexed="YES"/>
+        <relationship name="videos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMVideo" inverseName="channel" inverseEntity="NMVideo" indexed="YES"/>
+    </entity>
+    <entity name="NMVideo" representedClassName="NMVideo">
+        <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="external_id" optional="YES" attributeType="String"/>
+        <attribute name="nm_direct_sd_url" optional="YES" attributeType="String"/>
+        <attribute name="nm_direct_url" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="nm_fetch_timestamp" optional="YES" attributeType="Date" indexed="YES"/>
+        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_playback_status" optional="YES" transient="YES" attributeType="Integer 32" valueTransformerName="" defaultValueString="0"/>
+        <attribute name="nm_retry_count" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="published_at" optional="YES" attributeType="Date"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="thumbnail_uri" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="view_count" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <relationship name="channel" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="videos" inverseEntity="NMChannel" indexed="YES"/>
+        <relationship name="detail" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMVideoDetail" inverseName="video" inverseEntity="NMVideoDetail" indexed="YES"/>
+    </entity>
+    <entity name="NMVideoDetail" representedClassName="NMVideoDetail">
+        <attribute name="author_profile_uri" optional="YES" attributeType="String"/>
+        <attribute name="author_thumbnail_uri" optional="YES" attributeType="String"/>
+        <attribute name="author_username" optional="YES" attributeType="String"/>
+        <attribute name="nm_description" optional="YES" attributeType="String"/>
+        <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="detail" inverseEntity="NMVideo" indexed="YES"/>
+    </entity>
+    <elements>
+        <element name="NMVideo" positionX="297" positionY="225" width="128" height="300"/>
+        <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="120"/>
+        <element name="NMChannel" positionX="297" positionY="-72" width="128" height="240"/>
+    </elements>
+</model>

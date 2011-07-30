@@ -39,6 +39,7 @@
 //}
 
 - (void)awakeFromNib {
+	cacheController = [NMCacheController sharedCacheController];
 	descriptionDefaultFrame  = descriptionLabel.frame;
 	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
 	CALayer * blackLayer = [CALayer layer];
@@ -60,18 +61,16 @@
 		titleLabel.text = nil;
 		otherInfoLabel.text = nil;
 		descriptionLabel.text = nil;
-		NSLog(@"fuck!!! %p", self);
 		return;
 	} else {
 		return;
 	}
 	// update the view with the video's attribute
-	NMChannel * theChannel = aVideo.channel;
+	NMVideoDetail * dtlObj = aVideo.detail;
 	
 	// channel info
-	NMCacheController * cacheCtrl = [NMCacheController sharedCacheController];
-	[cacheCtrl setImageInChannel:theChannel forImageView:channelLogoView];
-	channelLabel.text = theChannel.title;
+	[cacheController setAuthorImage:dtlObj.author_thumbnail_uri forAuthorImageView:channelLogoView];
+	channelLabel.text = dtlObj.author_username;
 	// video info
 	titleLabel.text = aVideo.title;
 //	NSLog(@"setting movie detail: %@", aVideo.title);
@@ -91,7 +90,6 @@
 	}
 	
 	if ( self.alpha == 0.0f ) self.alpha = 1.0f;
-	NSLog(@"set MDV %p - %@", (void*)self, aVideo.title);
 }
 
 @end

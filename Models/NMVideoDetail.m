@@ -13,6 +13,7 @@
 @implementation NMVideoDetail
 @dynamic author_username;
 @dynamic author_profile_uri;
+@dynamic author_thumbnail_uri;
 @dynamic nm_description;
 @dynamic video;
 

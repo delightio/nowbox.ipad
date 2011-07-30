@@ -57,6 +57,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:4];
 	[mdict setObject:[dict valueForKeyPath:@"author.username"] forKey:@"author_username"];
 	[mdict setObject:[dict valueForKeyPath:@"author.profile_uri"] forKey:@"author_profile_uri"];
+	[mdict setObject:[dict valueForKeyPath:@"author.thumbnail_uri"] forKey:@"author_thumbnail_uri"];
 	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
 	return mdict;
 }

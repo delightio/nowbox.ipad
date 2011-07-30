@@ -32,6 +32,7 @@
 + (NMCacheController *)sharedCacheController;
 
 // display image from file cache
+- (BOOL)setAuthorImage:(NSString *)uriStr forAuthorImageView:(UIImageView *)iv;
 - (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv;
 
 // saving image from server

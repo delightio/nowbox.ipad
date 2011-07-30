@@ -16,6 +16,7 @@
 }
 @property (nonatomic, retain) NSString * author_username;
 @property (nonatomic, retain) NSString * author_profile_uri;
+@property (nonatomic, retain) NSString * author_thumbnail_uri;
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NMVideo * video;
 

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "NMCacheController.h"
 
 @class NMVideo;
 
@@ -22,6 +22,7 @@
 	IBOutlet UIButton * likeButton;
 	IBOutlet UIImageView * shadowImageView;
 	
+	NMCacheController * cacheController;
 @private
 	NMVideo * video_;
 	CGRect descriptionDefaultFrame;
