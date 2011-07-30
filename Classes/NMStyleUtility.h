@@ -29,6 +29,9 @@
 	UIImage * fullScreenImage, * fullScreenActiveImage;
 	UIImage * splitScreenImage, * splitScreenActiveImage;
 	
+	UIImage * playImage, * playActiveImage;
+	UIImage * pauseImage, * pauseActiveImage;
+	
 	UIColor * blackColor;
 }
 
@@ -57,6 +60,10 @@
 @property (nonatomic, readonly) UIImage * splitScreenImage;
 @property (nonatomic, readonly) UIImage * splitScreenActiveImage;
 
+@property (nonatomic, readonly) UIImage * playImage;
+@property (nonatomic, readonly) UIImage * playActiveImage;
+@property (nonatomic, readonly) UIImage * pauseImage;
+@property (nonatomic, readonly) UIImage * pauseActiveImage;
 
 @property (nonatomic, readonly) UIColor * blackColor;
 

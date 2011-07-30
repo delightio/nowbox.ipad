@@ -26,7 +26,10 @@
 @synthesize nextVideoButton, controlsHidden, timeRangeBuffered;
 
 - (void)awakeFromNib {
+	styleUtility = [NMStyleUtility sharedStyleUtility];
+
 	playbackMode_ = NMFullScreenPlaybackMode;
+	buttonPlayState = YES;
 //	[self setPlaybackMode:NMHalfScreenMode animated:NO];
 	// top bar view
 	topbarContainerView.layer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-title-background"].CGImage;
@@ -98,7 +101,6 @@
 - (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated {
 	if ( aMode == playbackMode_ ) return;
 	
-	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
 	CGRect viewRect;
 	switch (aMode) {
 		case NMFullScreenPlaybackMode:
@@ -115,8 +117,8 @@
 			// show the top bar
 			topbarContainerView.alpha = 1.0f;
 			// change button image
-			[channelViewButton setImage:theStyle.splitScreenImage forState:UIControlStateNormal];
-			[channelViewButton setImage:theStyle.splitScreenActiveImage forState:UIControlStateHighlighted];
+			[channelViewButton setImage:styleUtility.splitScreenImage forState:UIControlStateNormal];
+			[channelViewButton setImage:styleUtility.splitScreenActiveImage forState:UIControlStateHighlighted];
 			
 			if ( animated ) [UIView commitAnimations];
 			break;
@@ -134,8 +136,8 @@
 			self.frame = viewRect;
 			
 			topbarContainerView.alpha = 0.0f;
-			[channelViewButton setImage:theStyle.fullScreenImage forState:UIControlStateNormal];
-			[channelViewButton setImage:theStyle.fullScreenActiveImage forState:UIControlStateHighlighted];
+			[channelViewButton setImage:styleUtility.fullScreenImage forState:UIControlStateNormal];
+			[channelViewButton setImage:styleUtility.fullScreenActiveImage forState:UIControlStateHighlighted];
 			
 			if ( animated ) [UIView commitAnimations];
 			break;
@@ -147,38 +149,17 @@
 	playbackMode_ = aMode;
 }
 
-#pragma mark KVO
-
-//- (void)observeMovieView:(NMMovieView *)mvView {
-//	firstShowControlView = YES;
-//	[mvView.player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
-//	[mvView.player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
-//	[mvView.player addPeriodicTimeObserverForInterval:CMTimeMake(2, 2) queue:NULL usingBlock:^(CMTime aTime){
-//		// print the time
-//		CMTime t = [mvView.player currentTime];
-//		self.timeElapsed = t.value / t.timescale;
-//	}];
-//}
-//
-//- (void)stopObservingMovieView:(NMMovieView *)mvView {
-//	[mvView.player removeObserver:self forKeyPath:@"status"];
-//	[mvView.player removeObserver:self forKeyPath:@"currentItem"];
-//	[mvView.player removeTimeObserver:self];
-//}
-//
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	NSInteger c = (NSInteger)context;
-	if ( c == 11111 ) {
-		AVPlayer * player = object;
-		if ( player.rate > 0.0 ) {
-			// set button to play
-			playPauseButton.selected = NO;
-		} else {
-			// set button to pause 
-			playPauseButton.selected = YES;
-		}
-	} else {
-		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+- (void)setPlayButtonStateForRate:(CGFloat)aRate {
+	if ( aRate == 0.0f && !buttonPlayState ) {
+		// video is not playing && button not in play state
+		// set button to play state
+		[playPauseButton setImage:styleUtility.playImage forState:UIControlStateNormal];
+		[playPauseButton setImage:styleUtility.playActiveImage forState:UIControlStateHighlighted];
+		buttonPlayState = YES;
+	} else if ( buttonPlayState ) {
+		buttonPlayState = NO;
+		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
+		[playPauseButton setImage:styleUtility.pauseActiveImage forState:UIControlStateHighlighted];
 	}
 }
 

@@ -35,6 +35,10 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize fullScreenActiveImage;
 @synthesize splitScreenImage;
 @synthesize splitScreenActiveImage;
+@synthesize playImage;
+@synthesize playActiveImage;
+@synthesize pauseImage;
+@synthesize pauseActiveImage;
 @synthesize blackColor;
 
 + (NMStyleUtility *)sharedStyleUtility {
@@ -79,6 +83,11 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	splitScreenImage = [[UIImage imageNamed:@"playback-normal-screen"] retain];
 	splitScreenActiveImage = [[UIImage imageNamed:@"playback-normal-screen-active"] retain];
 	
+	playImage = [[UIImage imageNamed:@"playback-play"] retain];
+	playActiveImage = [[UIImage imageNamed:@"playback-play-active"] retain];
+	pauseImage = [[UIImage imageNamed:@"playback-pause"] retain];
+	pauseActiveImage = [[UIImage imageNamed:@"playback-pause-active"] retain];
+	
 	blackColor = [[UIColor blackColor] retain];
 	
 	return self;
@@ -103,10 +112,13 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[channelPanelBackgroundColor release];
     [channelBorderColor release];
 	[userPlaceholderImage release];
-	[fullScreenImage release];
-	[fullScreenActiveImage release];
-	[splitScreenImage release];
-	[splitScreenActiveImage release];
+	
+	[fullScreenImage release], [fullScreenActiveImage release];
+	[splitScreenImage release],	[splitScreenActiveImage release];
+	
+	[playImage release], [playActiveImage release];
+	[pauseImage release], [pauseActiveImage release];
+	
 	[blackColor release];
 	[super dealloc];
 }

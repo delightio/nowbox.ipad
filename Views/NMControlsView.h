@@ -9,6 +9,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ChannelPanelController.h"
+#import "NMStyleUtility.h"
 
 @class NMMovieView;
 
@@ -17,7 +18,10 @@
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * videoTitleLabel;
 	IBOutlet UILabel * otherInfoLabel;
+	
 	IBOutlet UIButton *playPauseButton;
+	BOOL buttonPlayState;
+	
 	IBOutlet UIButton * channelViewButton;
 	IBOutlet UIButton *shareButton;
 	IBOutlet UILabel * durationLabel;
@@ -39,6 +43,8 @@
 	CGFloat fduration;
 	
 	UIButton * lastVideoMessage;
+	
+	NMStyleUtility * styleUtility;
 	
 	@private
 	SEL action;
@@ -63,6 +69,7 @@
 - (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated;
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)resetView;
+- (void)setPlayButtonStateForRate:(CGFloat)aRate;
 //- (void)observeMovieView:(NMMovieView *)mvView;
 //- (void)stopObservingMovieView:(NMMovieView *)mvView;
 

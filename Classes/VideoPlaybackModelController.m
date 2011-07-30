@@ -468,7 +468,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
 	static NSUInteger theCount = 0;
-	NSLog(@"FRC change");
 	if ( changeSessionUpdateCount ) {
 		// just get the count once is enough
 		changeSessionUpdateCount = NO;
@@ -482,10 +481,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			NMVideo * fetchedVideo;
 			if ( [indexPath isEqual:currentIndexPath] ) {
 				if ( indexPath.row < theCount ) {
-					NSLog(@"current index path matched %d", currentIndexPath.row);
 					// reset the movie detail view
 					currentVideo.nm_movie_detail_view.video = nil;
-					NSLog(@"did set MDV to nil");
 					self.currentVideo = [controller objectAtIndexPath:indexPath];
 					// info the delegate about the current video change
 					[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
@@ -495,10 +492,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 						self.nextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 						fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
 						if ( nextVideo != fetchedVideo ) {
-//							nextVideo.nm_movie_detail_view.video = nil;
-//							NSLog(@"did set next MDV to nil");
-//							nextVideo.nm_movie_detail_view = nil;
 							self.nextVideo = fetchedVideo;
+							// do not reset nextVideo's detail view. cos we don't have enough info here to determine nextVideo is invalid
 							[dataDelegate didLoadNextVideoManagedObjectForController:self];
 						}
 						
@@ -507,45 +502,32 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 							self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 2 inSection:0];
 							fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
 							if ( nextNextVideo != fetchedVideo ) {
-//								nextNextVideo.nm_movie_detail_view.video = nil;
-//								NSLog(@"did set next next MDV to nil");
-//								nextNextVideo.nm_movie_detail_view = nil;
 								self.nextNextVideo = fetchedVideo;
 								[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
 							}
 						} else {
-//							self.nextNextVideo.nm_movie_detail_view.video = nil;
-//							NSLog(@"did set next next MDV to nil");
 							self.nextNextVideo = nil;
 							self.nextNextIndexPath = nil;
 						}
 					} else {
-//						self.nextVideo.nm_movie_detail_view.video = nil;
-//						NSLog(@"did set next MDV to nil");
 						self.nextVideo = nil;
 						self.nextIndexPath = nil;
 						
-//						self.nextNextVideo.nm_movie_detail_view.video = nil;
-//						NSLog(@"did set next next MDV to nil");
 						self.nextNextVideo = nil;
 						self.nextNextIndexPath = nil;
 					}
 				} else {
-//					self.currentVideo.nm_movie_detail_view.video = nil;
 					self.currentVideo = nil;
 					self.currentIndexPath = nil;
 					
-//					self.nextVideo.nm_movie_detail_view.video = nil;
-					self.nextNextVideo = nil;
+					self.nextVideo = nil;
 					self.nextIndexPath = nil;
 					
-//					self.nextNextVideo.nm_movie_detail_view.video = nil;
-					self.nextVideo = nil;
+					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
 			} else if ( [indexPath isEqual:nextIndexPath] ) {
 				if ( nextIndexPath.row < theCount ) {
-					NSLog(@"next index path matched %d", nextIndexPath.row);
 					nextVideo.nm_movie_detail_view.video = nil;
 					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
 					[dataDelegate didLoadNextVideoManagedObjectForController:self];
@@ -553,33 +535,26 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 						self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 						fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
 						if ( fetchedVideo != nextNextVideo ) {
-//							nextNextVideo.nm_movie_detail_view.video = nil;
-//							nextNextVideo.nm_movie_detail_view = nil;
 							self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 							[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
 						}
 					} else {
-//						self.nextNextVideo.nm_movie_detail_view.video = nil;
 						self.nextNextVideo = nil;
 						self.nextNextIndexPath = nil;
 					}
 				} else {
-//					self.nextVideo.nm_movie_detail_view.video = nil;
 					self.nextVideo = nil;
 					self.nextIndexPath = nil;
 					
-//					self.nextNextVideo.nm_movie_detail_view.video = nil;
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
 			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
 				if ( nextNextIndexPath.row < theCount ) {
-					NSLog(@"next next index path matched %d", nextNextIndexPath.row);
 					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 					[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
 					// no need to set movie detail view for next next video
 				} else {
-//					self.nextNextVideo.nm_movie_detail_view.video = nil;
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}

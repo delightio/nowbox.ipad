@@ -626,7 +626,7 @@
 //		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 //		NSLog(@"%@ status: %d", theItem.nmVideo.title, theItem.status);
 	} else if ( c == NM_PLAYER_RATE_CONTEXT ) {
-//		NSLog(@"playback rate: %f", movieView.player.rate);
+		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
 		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
