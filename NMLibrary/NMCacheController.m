@@ -112,16 +112,35 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	if ( dtlObj == nil || iv == nil ) return NO;
 
 	// check if the image is in local file system
-	NSString * fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:dtlObj.nm_author_thumbnail_file_name];
-	if ( [fileManager fileExistsAtPath:fPath] ) {
-		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
-		if ( img ) {
-			// file exists in path, load the file
-			iv.image = img;
+	NSString * fPath;
+	if ( dtlObj.nm_author_thumbnail_file_name ) {
+		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:dtlObj.nm_author_thumbnail_file_name];
+		if ( [fileManager fileExistsAtPath:fPath] ) {
+			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+			if ( img ) {
+				// file exists in path, load the file
+				iv.image = img;
+				return YES;
+			} else {
+				// the file specified by the cache does not exist
+				//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
+			}
+		}
+	} else {
+		// this extra check is needed because author info is not properly normalized.
+		// same author info is stored repeatedly in NMVideoDetail object
+		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", dtlObj.author_id]];
+		if ( [fileManager fileExistsAtPath:fPath] ) {
+			iv.image = [UIImage imageWithContentsOfFile:fPath];
+			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.jpg", dtlObj.author_id];
 			return YES;
-		} else {
-			// the file specified by the cache does not exist
-			//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
+		}
+		
+		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", dtlObj.author_id]];
+		if ( [fileManager fileExistsAtPath:fPath] ) {
+			iv.image = [UIImage imageWithContentsOfFile:fPath];
+			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.png", dtlObj.author_id];
+			return YES;
 		}
 	}
 
@@ -202,14 +221,22 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 }
 
 - (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn {
-	NMImageDownloadTask * task = [nowmovTaskController issueGetThumbnailForChannel:chn];
-	[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForChannel:chn]];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowmovTaskController issueGetThumbnailForChannel:chn];
+		[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	}
 	return task;
 }
 
 - (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl {
-	NMImageDownloadTask * task = [nowmovTaskController issueGetThumbnailForAuthor:dtl];
-	[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForAuthor:dtl]];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowmovTaskController issueGetThumbnailForAuthor:dtl];
+		[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	}
 	return task;
 }
 

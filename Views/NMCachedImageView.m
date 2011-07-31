@@ -87,11 +87,11 @@
 		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
 		// cancel the previous download task
 		[downloadTask releaseDownload];
+		self.downloadTask = nil;
 	} else {
 		// clean up any previous delayed request
 		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueDownloadRequest) object:nil];
 	}
-	self.downloadTask = nil;
 	
 	// issue delay request
 	self.channel = chn;
@@ -111,11 +111,11 @@
 		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
 		// cancel the previous download task
 		[downloadTask releaseDownload];
+		self.downloadTask = nil;
 	} else {
 		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueDownloadRequest) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueAuthorImageDownloadRequest) object:nil];
 	}
-	self.downloadTask = nil;
 	
 	// issue delay request
 	self.videoDetail = dtl;

@@ -90,7 +90,15 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 - (NSString *)suggestedFilename {
-	return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
+	switch (command) {
+		case NMCommandGetAuthorThumbnail:
+			return [NSString stringWithFormat:@"%@.%@", targetID, [[httpResponse suggestedFilename] pathExtension]];
+			break;
+			
+		default:
+			return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
+			break;
+	}
 }
 
 - (void)processDownloadedDataInBuffer {
