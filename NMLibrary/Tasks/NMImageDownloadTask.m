@@ -51,7 +51,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	
 	cacheController = [NMCacheController sharedCacheController];
 	self.imageURLString = dtl.author_thumbnail_uri;
-	self.originalImagePath = dtl.nm_author_thunbmail_file_name;
+	self.originalImagePath = dtl.nm_author_thumbnail_file_name;
 	self.videoDetail = dtl;
 	self.targetID = dtl.author_id;
 	command = NMCommandGetAuthorThumbnail;
@@ -82,6 +82,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 - (NSMutableURLRequest *)URLRequest {
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"Image URL: %@ cmd: %d", imageURLString, command);
+#endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURLString] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	return request;
 }
@@ -120,7 +123,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	if ( originalImagePath == nil ) {
 		switch (command) {
 			case NMCommandGetAuthorThumbnail:
-				videoDetail.nm_author_thunbmail_file_name = [self suggestedFilename];
+				videoDetail.nm_author_thumbnail_file_name = [self suggestedFilename];
 				break;
 				
 			case NMCommandGetChannelThumbnail:

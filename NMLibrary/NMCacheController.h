@@ -23,6 +23,7 @@
 	NSMutableDictionary * targetObjectImageViewMap;
 	NSMutableDictionary * commandIndexTaskMap;
 	NMTaskQueueController * nowmovTaskController;
+	NSNotificationCenter * notificationCenter;
 	
 	NMStyleUtility * styleUtility;
 	
@@ -34,7 +35,7 @@
 + (NMCacheController *)sharedCacheController;
 
 // display image from file cache
-- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj forImageView:(NMCachedImageView *)iv;
+- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv;
 - (BOOL)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
 
 // interface for NMCachedImageView

@@ -300,9 +300,16 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
 	NMTask * task = [taskPool objectForKey:key];
 	task.httpStatusCode = [httpResponse statusCode];
-	if ( task.command == NMCommandGetChannelThumbnail ) {
-		NMImageDownloadTask * imgTask = (NMImageDownloadTask *)task;
-		imgTask.httpResponse = (NSHTTPURLResponse *)response;
+	switch (task.command) {
+		case NMCommandGetChannelThumbnail:
+		case NMCommandGetAuthorThumbnail:
+		{
+			NMImageDownloadTask * imgTask = (NMImageDownloadTask *)task;
+			imgTask.httpResponse = (NSHTTPURLResponse *)response;
+			break;
+		}			
+		default:
+			break;
 	}
 	// create buffer
 	[task prepareDataBuffer];

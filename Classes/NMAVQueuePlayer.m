@@ -43,7 +43,6 @@
 }
 
 - (void)insertVideoToEndOfQueue:(NMVideo *)vid {
-	NSLog(@"insertVideoToEndOfQueue:");
 	NMAVPlayerItem * item = [vid createPlayerItem];
 	if ( item && [self canInsertItem:item afterItem:nil] ) {
 		[playbackDelegate player:self observePlayerItem:item];
@@ -142,7 +141,9 @@
 }
 
 - (void)requestResolveVideo:(NMVideo *)vid {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"issue resolution request - %@", vid.title);
+#endif
 	if ( vid == nil ) return;
 	// request to resolve the direct URL of this video
 	if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {

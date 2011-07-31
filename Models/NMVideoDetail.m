@@ -16,7 +16,7 @@
 @dynamic author_username;
 @dynamic author_profile_uri;
 @dynamic author_thumbnail_uri;
-@dynamic nm_author_thunbmail_file_name;
+@dynamic nm_author_thumbnail_file_name;
 @dynamic nm_description;
 @dynamic video;
 

@@ -412,7 +412,7 @@
 	theDetailView.video = ctrl.nextVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
-	NSLog(@"offset of next MDV: %f", xOffset);
+//	NSLog(@"offset of next MDV: %f", xOffset);
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -429,7 +429,7 @@
 	theDetailView.video = ctrl.previousVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
-	NSLog(@"offset of previous MDV: %f", xOffset);
+//	NSLog(@"offset of previous MDV: %f", xOffset);
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -446,7 +446,7 @@
 	theDetailView.video = ctrl.currentVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
-	NSLog(@"offset of current MDV: %f actual: %f %@", xOffset, theDetailView.frame.origin.x, ctrl.currentVideo.title);
+//	NSLog(@"offset of current MDV: %f actual: %f %@", xOffset, theDetailView.frame.origin.x, ctrl.currentVideo.title);
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -584,7 +584,6 @@
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusPlaying;
-		NSLog(@"playing: %@", curItem.nmVideo.title);
 		// never change currentIndex here!!
 		// ====== update interface ======
 		[self configureControlViewForVideo:[self playerCurrentVideo]];

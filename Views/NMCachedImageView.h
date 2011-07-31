@@ -16,7 +16,7 @@
 	NMVideoDetail * videoDetail;
 }
 
-@property (nonatomic, assign) NMImageDownloadTask * downloadTask;
+@property (nonatomic, retain) NMImageDownloadTask * downloadTask;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMVideoDetail * videoDetail;
 
