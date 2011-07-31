@@ -75,7 +75,7 @@
 		[self addSubview:bottomBorderView];
         [bottomBorderView release];
         
-		imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0f, pos, 40.0f, 40.0f)];
+		imageView = [[NMCachedImageView alloc] initWithFrame:CGRectMake(20.0f, pos, 40.0f, 40.0f)];
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
 		[self addSubview:imageView];
 	}

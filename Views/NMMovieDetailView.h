@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "NMCacheController.h"
+#import "NMCachedImageView.h"
 
 @class NMVideo;
 
 @interface NMMovieDetailView : UIView {
-    IBOutlet UIImageView * authorThumbnailView;
+    IBOutlet NMCachedImageView * authorThumbnailView;
 	IBOutlet UILabel * authorLabel;
 	IBOutlet UILabel * titleLabel;
 	IBOutlet UILabel * otherInfoLabel;
@@ -22,7 +23,6 @@
 	IBOutlet UIButton * likeButton;
 	IBOutlet UIImageView * shadowImageView;
 	
-	NMCacheController * cacheController;
 @private
 	NMVideo * video_;
 	CGRect descriptionDefaultFrame;

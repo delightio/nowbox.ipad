@@ -144,11 +144,7 @@
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
-	
-//    ctnView.imageView.image = styleUtility.userPlaceholderImage;
-    
-	NMCacheController * cacheCtrl = [NMCacheController sharedCacheController];
-	[cacheCtrl setImageInChannel:theChannel forImageView:ctnView.imageView];
+	[ctnView.imageView setImageForChannel:theChannel];
 	
 	// video row
 	AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];

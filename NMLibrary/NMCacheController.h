@@ -11,33 +11,39 @@
 @class NMChannel;
 @class NMVideoDetail;
 @class NMTaskQueueController;
+@class NMStyleUtility;
+@class NMCachedImageView;
 
-@protocol NMImageDownloadDelegate;
+
 @interface NMCacheController : NSObject {
 	NSString * channelThumbnailCacheDir;
 	NSString * authorThumbnailCacheDir;
 	NSFileManager * fileManager;
 	
 	NSMutableDictionary * targetObjectImageViewMap;
+	NSMutableDictionary * commandIndexTaskMap;
 	NMTaskQueueController * nowmovTaskController;
 	
-	id <NMImageDownloadDelegate> delegate;
-		
+	NMStyleUtility * styleUtility;
+	
 	// memory image cache
 //	NSMutableDictionary * filenameImageMemoryCache; disable in-memory cache for the moment
 //	NSMutableArray * imageTemporalList;
 }
 
-@property (nonatomic, assign) id <NMImageDownloadDelegate> delegate;
-
 + (NMCacheController *)sharedCacheController;
 
 // display image from file cache
-- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj forImageView:(UIImageView *)iv;
-- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv;
+- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj forImageView:(NMCachedImageView *)iv;
+- (BOOL)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
+
+// interface for NMCachedImageView
+- (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn;
+- (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl;
+//- (void)saveCacheWithInfo:(NSDictionary *)userInfo;
 
 // saving image from server
-- (void)writeImageData:(NSData *)aData withFilename:(NSString *)fname;
+- (void)writeAuthorImageData:(NSData *)aData withFilename:(NSString *)fname;- (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname;
 
 - (void)cacheWakeUpCheck;
 
@@ -48,9 +54,3 @@
 - (void)cleanBeforeSignout;
 @end
 
-@protocol NMImageDownloadDelegate
-
-@optional
-- (void)tableView:(UITableView *)table imageDidLoadAtIndexPath:(NSIndexPath *)indexPath;
-
-@end

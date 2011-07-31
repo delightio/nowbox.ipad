@@ -9,8 +9,10 @@
 #import "NMCacheController.h"
 #import "NMImageDownloadTask.h"
 #import "NMTaskQueueController.h"
+#import "NMStyleUtility.h"
 #import "NMChannel.h"
 #import "NMVideoDetail.h"
+#import "NMCachedImageView.h"
 
 #define MEMORY_CACHE_CAPACITY	10
 #define CHANNEL_FILE_CACHE_SIZE	100
@@ -21,7 +23,6 @@ static NSString * const JPIndexPathDictionaryKey = @"idxpath";
 static NSString * const JPTableViewDictionaryKey = @"table";
 
 @implementation NMCacheController
-@synthesize delegate;
 
 + (NMCacheController *)sharedCacheController {
 	if ( !_sharedCacheController ) {
@@ -33,10 +34,11 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 - (id)init {
 	self = [super init];
 	
+	styleUtility = [NMStyleUtility sharedStyleUtility];
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:nil];
-	[nc addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:nil];
+//	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+//	[nc addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:nil];
 	
 	// check if the cache directory is here or not. If not, create it.
 	NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
@@ -60,6 +62,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	}
 		
 	targetObjectImageViewMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
+	commandIndexTaskMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
 	
 //	filenameImageMemoryCache = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
 //	imageTemporalList = [[NSMutableArray alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
@@ -72,9 +75,10 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 //	[imageTemporalList release];
 //	[filenameImageMemoryCache release];
 	[targetObjectImageViewMap release];
+	[commandIndexTaskMap release];
 	[channelThumbnailCacheDir release];
 	[authorThumbnailCacheDir release];
-	[fileManager dealloc];
+	[fileManager release];
 	[super dealloc];
 }
 
@@ -100,8 +104,30 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 //
 
 #pragma mark load image
-- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj forImageView:(UIImageView *)iv {
+- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj forImageView:(NMCachedImageView *)iv {
 	if ( dtlObj == nil || iv == nil ) return NO;
+
+	NSUInteger idxNum = [NMImageDownloadTask commandIndexForAuthor:dtlObj];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+	
+	// we have the download task already exist
+	if ( task ) {
+		// check if "self" is requesting
+		if ( [iv.downloadTask commandIndex] == idxNum ) {
+			// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+			// do nothing
+		} else {
+			// listen to notification
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidDownloadImageNotification object:task];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidFailDownloadImageNotification object:task];
+			// retain download count
+			[task retainDownload];
+			iv.downloadTask = task;
+		}
+		iv.image = styleUtility.userPlaceholderImage;
+		return YES;
+	}
+
 	// check if the image is in local file system
 	NSString * fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:dtlObj.nm_author_thunbmail_file_name];
 	if ( [fileManager fileExistsAtPath:fPath] ) {
@@ -111,22 +137,39 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			iv.image = img;
 			return YES;
 		} else {
-			iv.image = nil;
 			// the file specified by the cache does not exist
 			//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
 		}
 	}
-	iv.image = nil;
-	// issue image load request
-	NSUInteger idx = [nowmovTaskController issueGetThumbnailForAuthor:dtlObj];
-	// note: the Task Queue Controller should check if we have already queued the task!!
+	iv.image = styleUtility.userPlaceholderImage;
 	
-	[targetObjectImageViewMap setObject:iv forKey:[NSNumber numberWithUnsignedInteger:(NSUInteger)dtlObj]];
 	return NO;
 }
 
-- (BOOL)setImageInChannel:(NMChannel *)chn forImageView:(UIImageView *)iv {
+- (BOOL)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv {
 	if ( chn == nil || iv == nil ) return NO;
+	// check if there's already an existing task requesting the image
+	NSUInteger idxNum = [NMImageDownloadTask commandIndexForChannel:chn];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+	
+	// we have the download task already exist
+	if ( task ) {
+		// check if "self" is requesting
+		if ( [iv.downloadTask commandIndex] == idxNum ) {
+			// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+			// do nothing
+		} else {
+			// listen to notification
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidDownloadImageNotification object:task];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidFailDownloadImageNotification object:task];
+			// retain download count
+			[task retainDownload];
+			iv.downloadTask = task;
+		}
+		iv.image = styleUtility.userPlaceholderImage;
+		return YES;
+	}
+	
 	// check if the image is in local file system
 	NSString * fPath = [channelThumbnailCacheDir stringByAppendingPathComponent:chn.nm_thumbnail_file_name];
 	if ( [fileManager fileExistsAtPath:fPath] ) {
@@ -136,47 +179,46 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			iv.image = img;
 			return YES;
 		} else {
-			iv.image = img;
 			// the file specified by the cache does not exist
 			//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
-			return NO;
 		}
 	}
-	iv.image = nil;
-	// check if the command already exists
-	NSNumber * cmdIdxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForChannel:chn]];
-	NMImageDownloadTask * task = [targetObjectImageViewMap objectForKey:cmdIdxNum];
-	if ( task ) {
-		[task retainDownload];
-	} else {
-		// issue delay download request
-		// issue image load request
-		NMImageDownloadTask * task = [nowmovTaskController issueGetThumbnailForChannel:chn];
-		// note: the Task Queue Controller should check if we have already queued the task!!
-		
-		[targetObjectImageViewMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
-	}
+	iv.image = styleUtility.userPlaceholderImage;
 	
 	return NO;
 }
 
-- (void)handleImageDownloadNotification:(NSNotification *)aNotification {
-	// update the view
-	NSDictionary * userInfo = [aNotification userInfo];
-	NSNumber * hashNum = [NSNumber numberWithUnsignedInteger:(NSUInteger)[userInfo objectForKey:@"target_object"]];
-	UIImageView * iv = [targetObjectImageViewMap objectForKey:hashNum];
-	if ( iv ) {
-		iv.image = [userInfo objectForKey:@"image"];
-		[targetObjectImageViewMap removeObjectForKey:hashNum];
-	}
+- (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn {
+	NMImageDownloadTask * task = [nowmovTaskController issueGetThumbnailForChannel:chn];
+	[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	return nil;
 }
 
-- (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {
-	// try again?
+- (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl {
+	return [nowmovTaskController issueGetThumbnailForAuthor:dtl];
 }
+
+//- (void)handleImageDownloadNotification:(NSNotification *)aNotification {
+//	// update the view
+//	NSDictionary * userInfo = [aNotification userInfo];
+//	NSNumber * hashNum = [NSNumber numberWithUnsignedInteger:(NSUInteger)[userInfo objectForKey:@"target_object"]];
+//	UIImageView * iv = [targetObjectImageViewMap objectForKey:hashNum];
+//	if ( iv ) {
+//		iv.image = [userInfo objectForKey:@"image"];
+//		[targetObjectImageViewMap removeObjectForKey:hashNum];
+//	}
+//}
+//
+//- (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {
+//	// try again?
+//}
 
 #pragma mark save downloaded image
-- (void)writeImageData:(NSData *)aData withFilename:(NSString *)fname {
+- (void)writeAuthorImageData:(NSData *)aData withFilename:(NSString *)fname {
+	[aData writeToFile:[authorThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
+- (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname {
 	[aData writeToFile:[channelThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
 }
 

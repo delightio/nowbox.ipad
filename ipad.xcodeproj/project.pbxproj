@@ -127,6 +127,7 @@
 		A99F83F613DFE4A80052682C /* playback-top-toolbar-channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A99F83F413DFE4A70052682C /* playback-top-toolbar-channel-background.png */; };
 		A99F83F713DFE4A80052682C /* playback-top-toolbar-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A99F83F513DFE4A70052682C /* playback-top-toolbar-title-background.png */; };
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
+		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
 		A9C2788B13BABC920024DCB2 /* channel-shadow-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */; };
 		A9C2788E13BAC1700024DCB2 /* channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788D13BAC1700024DCB2 /* channel-background.png */; };
@@ -298,6 +299,8 @@
 		A99F83F413DFE4A70052682C /* playback-top-toolbar-channel-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-top-toolbar-channel-background.png"; sourceTree = "<group>"; };
 		A99F83F513DFE4A70052682C /* playback-top-toolbar-title-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-top-toolbar-title-background.png"; sourceTree = "<group>"; };
 		A9A73FA413A73A3D005D9013 /* LaunchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchView.xib; sourceTree = "<group>"; };
+		A9A8E7BD13E4B96300552E6E /* NMCachedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCachedImageView.h; sourceTree = "<group>"; };
+		A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCachedImageView.m; sourceTree = "<group>"; };
 		A9B1963F134C6B0B00CA17A0 /* NMEventTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMEventTask.h; sourceTree = "<group>"; };
 		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
 		A9B3EE6D13B91C330058E114 /* NMVideoDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideoDetail.h; sourceTree = "<group>"; };
@@ -646,6 +649,8 @@
 				A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */,
 				A9758C4B13BD4FBC000503A5 /* NMMovieBackgroundView.h */,
 				A9758C4C13BD4FBC000503A5 /* NMMovieBackgroundView.m */,
+				A9A8E7BD13E4B96300552E6E /* NMCachedImageView.h */,
+				A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -946,6 +951,7 @@
 				A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */,
 				A9758C4D13BD4FBC000503A5 /* NMMovieBackgroundView.m in Sources */,
 				227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */,
+				A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

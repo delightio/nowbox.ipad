@@ -39,7 +39,6 @@
 //}
 
 - (void)awakeFromNib {
-	cacheController = [NMCacheController sharedCacheController];
 	descriptionDefaultFrame  = descriptionLabel.frame;
 	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
 	CALayer * blackLayer = [CALayer layer];
@@ -68,8 +67,8 @@
 	// update the view with the video's attribute
 	NMVideoDetail * dtlObj = aVideo.detail;
 	
-	// channel info
-	[cacheController setImageForAuthor:dtlObj forImageView:authorThumbnailView];
+	// author info
+	[authorThumbnailView setImageForAuthorThumbnail:dtlObj];
 	authorLabel.text = dtlObj.author_username;
 	// video info
 	titleLabel.text = aVideo.title;

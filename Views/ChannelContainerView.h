@@ -7,15 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NMCachedImageView.h"
 
 
 @interface ChannelContainerView : UIView {
     UILabel * textLabel;
-	UIImageView * imageView;
+	NMCachedImageView * imageView;
 }
 
 @property (nonatomic, readonly) UILabel * textLabel;
-@property (nonatomic, readonly) UIImageView * imageView;
+@property (nonatomic, readonly) NMCachedImageView * imageView;
 
 - (id)initWithHeight:(CGFloat)aHeight;
 

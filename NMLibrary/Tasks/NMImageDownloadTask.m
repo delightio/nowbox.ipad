@@ -98,7 +98,18 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		[fm release];
 	}
 	// save the file in file system
-	[cacheController writeImageData:buffer withFilename:[self suggestedFilename]];
+	switch (command) {
+		case NMCommandGetChannelThumbnail:
+			[cacheController writeChannelImageData:buffer withFilename:[self suggestedFilename]];
+			break;
+			
+		case NMCommandGetAuthorThumbnail:
+			[cacheController writeAuthorImageData:buffer withFilename:[self suggestedFilename]];
+			break;
+			
+		default:
+			break;
+	}
 	self.image = [UIImage imageWithData:buffer];
 }
 
