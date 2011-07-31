@@ -186,8 +186,6 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
 //	static NSUInteger theCount = 0;
     
-    // FIXME: should update selected index in panel controller also
-	
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [videoTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
@@ -227,13 +225,12 @@
     
     if (newVideo) {
         if ([newVideo channel] == channel) {
-            NSLog(@"new video playing notification received for channel %@",[channel title]);
-            // scroll to the current channel
-            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.selectedIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             
             // select / deselect cells
-            NSLog(@"panelController.selectedIndex: %d",panelController.selectedIndex);
-            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:panelController.selectedIndex];
+            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
+
+            // scroll to the current video
+            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
         }
         else {
             // let other channels deal with their own notifications: do nothing!
