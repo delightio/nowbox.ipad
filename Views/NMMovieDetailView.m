@@ -39,7 +39,14 @@
 //}
 
 - (void)awakeFromNib {
+	style = [NMStyleUtility sharedStyleUtility];
+	
 	descriptionDefaultFrame  = descriptionLabel.frame;
+	titleDefaultFrame = titleLabel.frame;
+	titleMaxSize = titleDefaultFrame.size;
+	titleMaxSize.height *= 3.0f;
+	otherInfoDefaultPosition = otherInfoLabel.center;
+	
 	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
 	CALayer * blackLayer = [CALayer layer];
 	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].channelPanelHighlightColor.CGColor;
@@ -60,27 +67,42 @@
 		titleLabel.text = nil;
 		otherInfoLabel.text = nil;
 		descriptionLabel.text = nil;
+		// reset size
+		titleLabel.frame = titleDefaultFrame;
+		descriptionLabel.frame = descriptionDefaultFrame;
+		otherInfoLabel.center = otherInfoDefaultPosition;
 		return;
 	} else {
 		return;
 	}
+	// video info - try to show the whole title, max three lines
+	CGRect theRect = titleLabel.frame;
+	theRect.size = [aVideo.title sizeWithFont:titleLabel.font constrainedToSize:titleMaxSize];
+	titleLabel.frame = theRect;
+	
+	titleLabel.text = aVideo.title;
 	// update the view with the video's attribute
 	NMVideoDetail * dtlObj = aVideo.detail;
+	
+	CGFloat titleHeightDiff = theRect.size.height - titleDefaultFrame.size.height;
+	
+	// other info
+	CGPoint thePoint = otherInfoDefaultPosition;
+	thePoint.y += titleHeightDiff;
+	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  %@ views", [style.videoDateFormatter stringFromDate:aVideo.published_at], [style.viewCountFormatter stringFromNumber:aVideo.view_count]];
+	otherInfoLabel.center = thePoint;
 	
 	// author info
 	[authorThumbnailView setImageForAuthorThumbnail:dtlObj];
 	authorLabel.text = dtlObj.author_username;
-	// video info
-	titleLabel.text = aVideo.title;
 //	NSLog(@"setting movie detail: %@", aVideo.title);
 	
-	NMStyleUtility * style = [NMStyleUtility sharedStyleUtility];
-	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  %@ views", [style.videoDateFormatter stringFromDate:aVideo.published_at], [style.viewCountFormatter stringFromNumber:aVideo.view_count]];
 	// set position of the description
 	if ( aVideo.detail.nm_description ) {
-		CGRect theFrame;
-		theFrame.size = [aVideo.detail.nm_description sizeWithFont:descriptionLabel.font constrainedToSize:descriptionDefaultFrame.size];
-		theFrame.origin = descriptionDefaultFrame.origin;
+		CGRect theFrame = descriptionDefaultFrame;
+		theFrame.size.height -= titleHeightDiff;
+		theFrame.origin.y += titleHeightDiff;
+		theFrame.size = [aVideo.detail.nm_description sizeWithFont:descriptionLabel.font constrainedToSize:theFrame.size];
 		descriptionLabel.frame = theFrame;
 		descriptionLabel.text = aVideo.detail.nm_description;
 		

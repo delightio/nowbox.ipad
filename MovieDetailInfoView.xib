@@ -63,7 +63,7 @@
 					<object class="IBUILabel" id="311955743">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{668, 133}, {287, 14}}</string>
+						<string key="NSFrame">{{668, 135}, {287, 14}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="436894100"/>
@@ -122,7 +122,7 @@
 					<object class="IBUILabel" id="720460834">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{668, 105}, {318, 20}}</string>
+						<string key="NSFrame">{{668, 105}, {336, 20}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="311955743"/>
@@ -142,6 +142,7 @@
 						<int key="IBUIBaselineAdjustment">1</int>
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
+						<int key="IBUINumberOfLines">3</int>
 					</object>
 					<object class="IBUIImageView" id="296144937">
 						<reference key="NSNextResponder" ref="191373211"/>
@@ -209,7 +210,7 @@
 					<object class="IBUILabel" id="436894100">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{668, 154}, {318, 196}}</string>
+						<string key="NSFrame">{{668, 159}, {336, 201}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -688,7 +689,7 @@
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UILabel</string>
-							<string>UIImageView</string>
+							<string>NMCachedImageView</string>
 							<string>UILabel</string>
 							<string>UIButton</string>
 							<string>UIView</string>
@@ -720,7 +721,7 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">authorThumbnailView</string>
-								<string key="candidateClassName">UIImageView</string>
+								<string key="candidateClassName">NMCachedImageView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">descriptionLabel</string>

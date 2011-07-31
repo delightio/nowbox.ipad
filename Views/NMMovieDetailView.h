@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NMCacheController.h"
 #import "NMCachedImageView.h"
+#import "NMStyleUtility.h"
 
 @class NMVideo;
 
@@ -24,8 +25,12 @@
 	IBOutlet UIImageView * shadowImageView;
 	
 @private
+	NMStyleUtility * style;
 	NMVideo * video_;
 	CGRect descriptionDefaultFrame;
+	CGRect titleDefaultFrame;
+	CGPoint otherInfoDefaultPosition;
+	CGSize titleMaxSize;
 }
 
 @property (nonatomic, assign) NMVideo * video;
