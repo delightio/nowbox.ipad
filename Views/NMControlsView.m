@@ -32,9 +32,9 @@
 	buttonPlayState = YES;
 //	[self setPlaybackMode:NMHalfScreenMode animated:NO];
 	// top bar view
-	topbarContainerView.layer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-title-background"].CGImage;
+	topbarContainerView.layer.contents = (id)[UIImage imageNamed:@"top-bar-title-background"].CGImage;
 	
-	channelBackgroundView.layer.contents = (id)[UIImage imageNamed:@"playback-top-toolbar-channel-background"].CGImage;
+	channelBackgroundView.layer.contents = (id)[UIImage imageNamed:@"top-bar-channel-background"].CGImage;
 	channelBackgroundView.layer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
 	//topbarContainerView.alpha = 0.0f;
 	// load the progress bar image

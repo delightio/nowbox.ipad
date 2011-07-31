@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ChannelPanelController.h"
 #import "NMStyleUtility.h"
+#import "NMCachedImageView.h"
 
 @class NMMovieView;
 
@@ -28,9 +29,10 @@
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIView * controlContainerView;
 	// top bar
+	IBOutlet NMCachedImageView * channelImageView;
+	IBOutlet NMCachedImageView * authorImageView;
 	IBOutlet UIView * channelBackgroundView;
 	IBOutlet UIView * topbarContainerView;
-	IBOutlet UIButton * subscribeButton;
 	
 	IBOutlet UISlider * progressSlider;
 		
