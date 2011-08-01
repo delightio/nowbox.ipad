@@ -41,7 +41,7 @@ NSPredicate * refreshOutdatedVideoPredicateTempate_ = nil;
 	self.channelName = aChn.title;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
-	numberOfVideoRequested = 5;
+	numberOfVideoRequested = 20;
 	return self;
 }
 
