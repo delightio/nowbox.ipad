@@ -19,23 +19,50 @@
 #define NM_CONTROL_VIEW_FULL_SCREEN_ANIMATION_CONTEXT			1001
 #define NM_CONTROL_VIEW_HALF_SCREEN_ANIMATION_CONTEXT			1002
 
+#define NM_AUTHOR_SEGMENT_LEFT_INSET							10.0f
+
 @implementation NMControlsView
 
-@synthesize channel, title, duration, timeElapsed;
-@synthesize channelViewButton, shareButton, playPauseButton;
-@synthesize nextVideoButton, controlsHidden, timeRangeBuffered;
+@synthesize /*channel, title,*/ duration, timeElapsed;
+@synthesize channelViewButton, playPauseButton;
+@synthesize controlsHidden, timeRangeBuffered;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
+	channelDefaultWidth = channelBackgroundView.bounds.size.width;
+	authorDefaultWidth = authorBackgroundView.bounds.size.width;
+	channelTitleDefaultWidth = channelNameLabel.bounds.size.width;
+	authorTitleDefaultWidth = authorNameLabel.bounds.size.width;
+	maximumTitleSize = CGSizeMake(256.0f, 40.0f);
 
 	playbackMode_ = NMFullScreenPlaybackMode;
 	buttonPlayState = YES;
 //	[self setPlaybackMode:NMHalfScreenMode animated:NO];
 	// top bar view
+	topbarContainerView.layer.shouldRasterize = YES;
 	topbarContainerView.layer.contents = (id)[UIImage imageNamed:@"top-bar-title-background"].CGImage;
 	
+	// channel segment
+	channelBackgroundView.layer.shouldRasterize = YES;
 	channelBackgroundView.layer.contents = (id)[UIImage imageNamed:@"top-bar-channel-background"].CGImage;
-	channelBackgroundView.layer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
+	CGRect theRect = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
+	channelBackgroundView.layer.contentsCenter = theRect;
+	
+	CALayer * imgLayer = [CALayer layer];
+	imgLayer.shouldRasterize = YES;
+	imgLayer.contents = (id)[UIImage imageNamed:@"top-bar-image-frame"].CGImage;
+	imgLayer.frame = CGRectMake(17.0f, 7.0f, 29.0f, 29.0f);
+	[channelBackgroundView.layer insertSublayer:imgLayer below:channelImageView.layer];
+	
+	// author segment
+	CALayer * imgLayer2 = [CALayer layer];
+	imgLayer2.shouldRasterize = YES;
+	imgLayer2.frame = CGRectMake(10.0f, 7.0f, 29.0f, 29.0f);
+	imgLayer2.contents = imgLayer.contents;
+	[authorBackgroundView.layer insertSublayer:imgLayer2 below:authorImageView.layer];
+	
+	authorBackgroundView.layer.contents = (id)[UIImage imageNamed:@"top-bar-author-background"].CGImage;
+	authorBackgroundView.layer.contentsCenter = theRect;
 	//topbarContainerView.alpha = 0.0f;
 	// load the progress bar image
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
@@ -80,18 +107,12 @@
 }
 
 - (void)showLastVideoMessage {
-	UIImage * img = [[UIImage imageNamed:@"channel_title"] stretchableImageWithLeftCapWidth:10 topCapHeight:0];
 	if ( lastVideoMessage == nil ) {
 		lastVideoMessage = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
 		lastVideoMessage.userInteractionEnabled = NO;
-		lastVideoMessage.titleLabel.font = [UIFont fontWithName:@"Futura-MediumItalic" size:16.0f];
+		lastVideoMessage.titleLabel.font = styleUtility.videoTitleFont;
 		lastVideoMessage.titleLabel.shadowOffset = CGSizeMake(0.0, 1.0);
-		[lastVideoMessage setBackgroundImage:img forState:UIControlStateNormal];
-		CGRect theFrame = nextVideoButton.frame;
-		theFrame.origin.y = nextVideoButton.center.y - floorf(img.size.height / 2.0);
-		theFrame.origin.x -= 190.0f;
-		theFrame.size.width = 180.0;
-		theFrame.size.height = img.size.height;
+		CGRect theFrame = CGRectMake(1024.0f - 190.0f, 768.0f / 2.0f, 180.0f, 24.0f);
 		lastVideoMessage.frame = theFrame;
 		[lastVideoMessage setTitle:@"Playing Last Video" forState:UIControlStateNormal];
 		[self addSubview:lastVideoMessage];
@@ -165,10 +186,13 @@
 
 #pragma mark properties
 - (void)resetView {
+	authorNameLabel.text = @"";
 	channelNameLabel.text = @"";
 	videoTitleLabel.text = @"";
 	durationLabel.text = @"--:--";
 	currentTimeLabel.text = @"--:--";
+	authorImageView.image = nil;
+	channelImageView.image = nil;
 	if ( lastVideoMessage ) {
 		[lastVideoMessage removeFromSuperview];
 		[lastVideoMessage release];
@@ -181,21 +205,55 @@
 	[self setControlsHidden:YES animated:NO];
 }
 
-- (void)setChannel:(NSString *)cname {
-	channelNameLabel.text = cname;
+- (void)updateViewForVideo:(NMVideo *)aVideo {
+	NMChannel * chn = aVideo.channel;
+	// channel imjage
+	[channelImageView setImageForChannel:chn];
+	channelNameLabel.text = chn.title;
+	// channel width
+	CGSize theSize = [channelNameLabel.text sizeWithFont:channelNameLabel.font constrainedToSize:maximumTitleSize];
+	CGFloat titleDiff = theSize.width - channelTitleDefaultWidth;
+	// set channel segment width
+	CGRect theRect = channelBackgroundView.frame;
+	theRect.size.width = channelDefaultWidth + titleDiff;
+	channelBackgroundView.frame = theRect;
+	
+	// set author segment position
+	theRect = authorBackgroundView.frame;
+	theRect.origin.x = channelBackgroundView.frame.size.width;
+	// author label
+	authorNameLabel.text = aVideo.detail.author_username;	
+	// author size
+	theSize = [authorNameLabel.text sizeWithFont:authorNameLabel.font constrainedToSize:maximumTitleSize];
+	titleDiff = theSize.width - authorTitleDefaultWidth;
+	theRect.size.width = authorDefaultWidth + titleDiff;
+	authorBackgroundView.frame = theRect;
+	// author image
+	[authorImageView setImageForAuthorThumbnail:aVideo.detail];
+	
+	titleDiff = theRect.size.width + theRect.origin.x;
+	theRect = videoTitleLabel.frame;
+	theRect.origin.x = titleDiff + 10.0f;
+	theRect.size.width = 1024.0f - titleDiff - 10.0f - 146.0f;
+	videoTitleLabel.frame = theRect;
+	videoTitleLabel.text = aVideo.title;
 }
 
-- (NSString *)channel {
-	return channelNameLabel.text;
-}
-
-- (void)setTitle:(NSString *)aTitle {
-	videoTitleLabel.text = [aTitle uppercaseString];
-}
-
-- (NSString *)title {
-	return videoTitleLabel.text;
-}
+//- (void)setChannel:(NSString *)cname {
+//	channelNameLabel.text = cname;
+//}
+//
+//- (NSString *)channel {
+//	return channelNameLabel.text;
+//}
+//
+//- (void)setTitle:(NSString *)aTitle {
+//	videoTitleLabel.text = [aTitle uppercaseString];
+//}
+//
+//- (NSString *)title {
+//	return videoTitleLabel.text;
+//}
 
 - (void)setDuration:(NSInteger)aDur {
 	duration = aDur;

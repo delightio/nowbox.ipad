@@ -65,7 +65,6 @@
 
 #pragma mark Public interface
 - (void)advanceToVideo:(NMVideo *)aVideo {
-	NSLog(@"advanceToVideo:");
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	AVPlayerItem * curItem = self.currentItem;
 	if ( curItem == nil ) {
@@ -85,7 +84,6 @@
 }
 
 - (void)revertToVideo:(NMVideo *)aVideo {
-	NSLog(@"revertToVideo:");
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	if ( aVideo.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
 		// we need to resolve the direct URL

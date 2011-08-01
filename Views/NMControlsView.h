@@ -16,7 +16,6 @@
 
 
 @interface NMControlsView : UIView {
-	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * videoTitleLabel;
 	IBOutlet UILabel * otherInfoLabel;
 	
@@ -24,15 +23,21 @@
 	BOOL buttonPlayState;
 	
 	IBOutlet UIButton * channelViewButton;
-	IBOutlet UIButton *shareButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIView * controlContainerView;
 	// top bar
+	IBOutlet UILabel * channelNameLabel;
+	IBOutlet UILabel * authorNameLabel;
 	IBOutlet NMCachedImageView * channelImageView;
 	IBOutlet NMCachedImageView * authorImageView;
 	IBOutlet UIView * channelBackgroundView;
+	IBOutlet UIView * authorBackgroundView;
 	IBOutlet UIView * topbarContainerView;
+	// segment width
+	CGFloat channelDefaultWidth, authorDefaultWidth;
+	CGFloat channelTitleDefaultWidth, authorTitleDefaultWidth;
+	CGSize maximumTitleSize;
 	
 	IBOutlet UISlider * progressSlider;
 		
@@ -54,23 +59,22 @@
 	NMPlaybackViewModeType playbackMode_;
 }
 
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSString * channel;
+//@property (nonatomic, retain) NSString * title;
+//@property (nonatomic, retain) NSString * channel;
 @property (nonatomic, assign) NSInteger duration;
 @property (nonatomic, assign) NSInteger timeElapsed;
 @property (nonatomic, assign) CMTimeRange timeRangeBuffered;
 @property (nonatomic, readonly) BOOL controlsHidden;
 
 @property (nonatomic, assign) UIButton * channelViewButton;
-@property (nonatomic, assign) UIButton * shareButton;
 @property (nonatomic, assign) UIButton * playPauseButton;
-@property (nonatomic, assign) UIButton * nextVideoButton;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
 - (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated;
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)resetView;
+- (void)updateViewForVideo:(NMVideo *)aVideo;
 - (void)setPlayButtonStateForRate:(CGFloat)aRate;
 //- (void)observeMovieView:(NMMovieView *)mvView;
 //- (void)stopObservingMovieView:(NMMovieView *)mvView;

@@ -320,8 +320,9 @@
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
 	[loadedControlView resetView];
-	loadedControlView.title = aVideo.title;
-	loadedControlView.channel = aVideo.channel.title;
+	if ( aVideo ) {
+		[loadedControlView updateViewForVideo:aVideo];
+	}
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
