@@ -230,7 +230,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
 		// no need to set detail video object
 	}
-	if ( currentIndexPath.row - 1 > -1 ) {
+	if ( currentIndexPath.row > 0 ) {
 		self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
 		self.previousVideo = [self.fetchedResultsController objectAtIndexPath:self.previousIndexPath];
 		

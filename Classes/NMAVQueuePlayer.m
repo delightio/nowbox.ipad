@@ -106,13 +106,12 @@
 #pragma mark Video Switching
 - (void)delayedRevertToVideo:(NMVideo *)aVideo {
 	NMAVPlayerItem * item = [aVideo createPlayerItem];
-	if ( [self revertPreviousItem:item] ) {
+	if ( item && [self revertPreviousItem:item] ) {
 		aVideo.nm_playback_status = NMVideoQueueStatusQueued;
 	}
 }
 
 - (BOOL)revertPreviousItem:(AVPlayerItem *)anItem {
-	NSLog(@"revertPreviousItem:");
 	// move back to the previous item
 	AVPlayerItem * cItem = [self.currentItem retain];
 	BOOL insertStatus = NO;

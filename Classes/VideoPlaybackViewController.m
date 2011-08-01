@@ -413,7 +413,9 @@
 	theDetailView.video = ctrl.nextVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
-//	NSLog(@"offset of next MDV: %f", xOffset);
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"offset of next MDV: %f", xOffset);
+#endif
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -430,7 +432,9 @@
 	theDetailView.video = ctrl.previousVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
-//	NSLog(@"offset of previous MDV: %f", xOffset);
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"offset of previous MDV: %f", xOffset);
+#endif
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -447,7 +451,9 @@
 	theDetailView.video = ctrl.currentVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
-//	NSLog(@"offset of current MDV: %f actual: %f %@", xOffset, theDetailView.frame.origin.x, ctrl.currentVideo.title);
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"offset of current MDV: %f actual: %f %@", xOffset, theDetailView.frame.origin.x, ctrl.currentVideo.title);
+#endif
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
@@ -559,7 +565,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	NSInteger c = (NSInteger)context;
-	CMTime t;
+//	CMTime t;
 	if ( c == NM_PLAYER_STATUS_CONTEXT ) {
 		switch (movieView.player.status) {
 			case AVPlayerStatusReadyToPlay:
