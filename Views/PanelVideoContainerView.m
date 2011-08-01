@@ -95,7 +95,13 @@
         separatorView.backgroundColor = styleUtility.channelBorderColor;
         
         [self addSubview:separatorView];
-
+        
+        UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
+                                                    initWithTarget:self action:@selector(handleSingleDoubleTap:)];
+        singleFingerDTap.numberOfTapsRequired = 2;
+        [self addGestureRecognizer:singleFingerDTap];
+        [singleFingerDTap release];
+        
 }
     return self;
 }
@@ -186,22 +192,28 @@
 }
 
 #pragma mark UIResponder
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	// highlight
-    [self changeViewToHighlighted:YES];
-}
+//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+//	// highlight
+//    [self changeViewToHighlighted:YES];
+//}
+//
+//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+//	// check if touch up inside the view itself
+//	if ( videoRowDelegate ) {
+//		[videoRowDelegate tableView:tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
+//	}
+//}
+//
+//- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+//	// remove highlight
+//    // only if it wasn't highlighted previously
+//    [self changeViewToHighlighted:currentVideoIsPlaying];
+//}
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	// check if touch up inside the view itself
+-(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {
 	if ( videoRowDelegate ) {
-		[videoRowDelegate tableView:tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
+		[videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
 	}
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	// remove highlight
-    // only if it wasn't highlighted previously
-    [self changeViewToHighlighted:currentVideoIsPlaying];
 }
 
 @end

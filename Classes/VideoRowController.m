@@ -61,8 +61,12 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+}
+
+-(void)playVideoForIndexPath:(NSIndexPath *)indexPath {
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
-        //TODO: seems to be bugging out other interaction, left out for now
+    //TODO: seems to be bugging out other interaction, left out for now
     [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
     [panelController.videoViewController playVideo:theVideo];
     

@@ -40,5 +40,5 @@
 - (void)setVideoInfo:(NMVideo *)aVideo;
 - (void)changeViewToHighlighted:(BOOL)isHighlighted;
 - (void)setIsPlayingVideo:(BOOL)abool;
-
+-(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender;
 @end

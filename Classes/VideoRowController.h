@@ -35,4 +35,5 @@
 
 - (id)init;
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
+-(void)playVideoForIndexPath:(NSIndexPath *)indexPath;
 @end
