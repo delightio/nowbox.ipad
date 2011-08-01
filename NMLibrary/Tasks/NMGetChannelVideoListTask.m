@@ -29,7 +29,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {
-		sharedVideoDirectJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"duration", @"source", @"external_id", @"thumbnail_uri", @"view_count", nil];
+		sharedVideoDirectJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"duration", @"source", @"external_id", @"view_count", nil];
 	}
 	
 	return sharedVideoDirectJSONKeys;
@@ -50,6 +50,12 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	}
 	[mdict setObject:[dict objectForKey:@"id"] forKey:@"nm_id"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
+	NSString * thumbURL = [dict objectForKey:@"thumbnail_uri"];
+	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
+		[mdict setObject:[NSNull null] forKey:@"thumbnail_uri"];
+	} else {
+		[mdict setObject:thumbURL forKey:@"thumbnail_uri"];
+	}
 	return mdict;
 }
 
@@ -58,8 +64,14 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	[mdict setObject:[dict valueForKeyPath:@"author.id"] forKey:@"author_id"];
 	[mdict setObject:[dict valueForKeyPath:@"author.username"] forKey:@"author_username"];
 	[mdict setObject:[dict valueForKeyPath:@"author.profile_uri"] forKey:@"author_profile_uri"];
-	[mdict setObject:[dict valueForKeyPath:@"author.thumbnail_uri"] forKey:@"author_thumbnail_uri"];
 	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
+	// author thumbnail
+	NSString * thumbURL = [dict valueForKeyPath:@"author.thumbnail_uri"];
+	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
+		[mdict setObject:[NSNull null] forKey:@"author_thumbnail_uri"];
+	} else {
+		[mdict setObject:thumbURL forKey:@"author_thumbnail_uri"];
+	}
 	return mdict;
 }
 

@@ -175,12 +175,18 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 						rmTaskAy = [NSMutableArray arrayWithCapacity:2];
 					}
 					[rmTaskAy addObject:theTask];
+#ifdef DEBUG_CONNECTION_CONTROLLER
+					NSLog(@"Network Controller: command repeated. Discard Task: %d", taskIdx);
+#endif
 					continue;
-				} else {
-					// add the item
-					[commandIndexPool addIndex:taskIdx];
-				}
+				} 
 				if ( [self tryGetNetworkResource] ) {
+#ifdef DEBUG_CONNECTION_CONTROLLER
+					NSLog(@"Network Controller: added command: %d", taskIdx);
+#endif
+					// add command index to the pool only when we have enough resource
+					[commandIndexPool addIndex:taskIdx];
+					
 					theTask.state = NMTaskExecutionStateConnectionActive;
 					request = [theTask URLRequest];
 					conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
@@ -329,6 +335,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 		[connection cancel];
 		// release the connection, and the data object
 		[taskPool removeObjectForKey:key];
+		[commandIndexPool removeIndex:[task commandIndex]];
 		// remove task
 		@synchronized(pendingTaskBuffer) {
 			[pendingTaskBuffer removeObject:task];
@@ -341,6 +348,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // release the connection, and the data object
     // receivedData is declared as a method instance elsewhere
+	[self returnNetworkResource];
 	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)connection];
 	[connectionPool removeObjectForKey:key];
 	NMTask *task = [taskPool objectForKey:key];
@@ -358,7 +366,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	
 	// inform the user
 #ifdef DEBUG_CONNECTION_CONTROLLER 
-    NSLog(@"Connection failed! Error - %@ %@",
+    NSLog(@"Connection failed! Error - %@ %@ %@",
           [error localizedDescription],
           [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 #endif

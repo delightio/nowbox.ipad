@@ -225,7 +225,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowmovTaskController issueGetThumbnailForChannel:chn];
-		[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
 	}
 	return task;
 }
@@ -235,7 +235,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowmovTaskController issueGetThumbnailForAuthor:dtl];
-		[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
 	}
 	return task;
 }

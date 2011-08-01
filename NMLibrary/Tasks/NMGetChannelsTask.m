@@ -25,7 +25,7 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 - (id)init {
 	self = [super init];
 	command = NMCommandGetAllChannels;
-	channelJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"thumbnail_uri", @"type", @"resource_uri", @"category", nil];
+	channelJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"type", @"resource_uri", @"category", nil];
 	return self;
 }
 
@@ -81,12 +81,19 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	NSDictionary * cDict, * chnCtnDict;
 	NSMutableDictionary * pDict;
 	NSString * theKey;
+	NSString * thumbURL;
 	for (cDict in theChs) {
 		for (NSString * rKey in cDict) {
 			chnCtnDict = [cDict objectForKey:rKey];
 			pDict = [NSMutableDictionary dictionary];
 			for (theKey in channelJSONKeys) {
 				[pDict setObject:[chnCtnDict objectForKey:theKey] forKey:theKey];
+			}
+			thumbURL = [chnCtnDict objectForKey:@"thumbnail_uri"];
+			if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
+				[pDict setObject:[NSNull null] forKey:@"thumbnail_uri"];
+			} else {
+				[pDict setObject:thumbURL forKey:@"thumbnail_uri"];
 			}
 			[pDict setObject:[chnCtnDict objectForKey:@"id"] forKey:@"nm_id"];
 			
