@@ -13,6 +13,7 @@
 #import "ChannelContainerView.h"
 #import "AGOrientedTableView.h"
 #import "PanelVideoContainerView.h"
+#import "SettingsViewController.h"
 
 #define VIDEO_ROW_LEFT_PADDING			167.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -70,6 +71,22 @@
 
 - (IBAction)debugRefreshChannel:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+}
+
+- (IBAction)showSettingsView:(id)sender {
+	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
+	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:settingCtrl];
+	
+	UIPopoverController * popover = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
+	[settingCtrl release];
+	[navCtrl release];
+	popover.popoverContentSize = CGSizeMake(320.0f, 320.0f);
+	[popover presentPopoverFromRect:settingButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+	popover.delegate = self;
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+	[popoverController release];
 }
 
 - (void)queueColumnView:(UIView *)vw {

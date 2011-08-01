@@ -17,8 +17,10 @@ typedef enum {
 	NMFullScreenChannelMode,
 } NMPlaybackViewModeType;
 
-@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIPopoverControllerDelegate> {
     IBOutlet UITableView * tableView;
+	// toolbar buttons
+	IBOutlet UIButton * settingButton;
 	
 	UIView *panelView;
 @private
@@ -49,5 +51,6 @@ typedef enum {
 
 - (IBAction)toggleTableEditMode:(id)sender;
 - (IBAction)debugRefreshChannel:(id)sender;
+- (IBAction)showSettingsView:(id)sender;
 
 @end

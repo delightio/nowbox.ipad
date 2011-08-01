@@ -100,6 +100,8 @@
 		A98C241813D38C040061A594 /* button-watch-later.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241413D38C030061A594 /* button-watch-later.png */; };
 		A98C241B13D38C3C0061A594 /* channel-toolbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */; };
 		A98C241D13D399D70061A594 /* ribbon.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241C13D399D70061A594 /* ribbon.png */; };
+		A991188A13E759E20067E987 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A991188913E759E20067E987 /* SettingsViewController.m */; };
+		A991188C13E759F30067E987 /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A991188B13E759F30067E987 /* SettingsView.xib */; };
 		A994523913A734B600B117E2 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A994523813A734B600B117E2 /* LaunchViewController.m */; };
 		A9976EFD13BB355200B06DFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A9976F0613BB35AD00B06DFF /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
@@ -287,6 +289,9 @@
 		A98C241413D38C030061A594 /* button-watch-later.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-watch-later.png"; sourceTree = "<group>"; };
 		A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-toolbar-background.png"; sourceTree = "<group>"; };
 		A98C241C13D399D70061A594 /* ribbon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ribbon.png; sourceTree = "<group>"; };
+		A991188813E759E20067E987 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		A991188913E759E20067E987 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		A991188B13E759F30067E987 /* SettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
 		A994523713A734B600B117E2 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
 		A994523813A734B600B117E2 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		A9976EFC13BB355200B06DFF /* libNMLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNMLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -512,6 +517,8 @@
 				A994523813A734B600B117E2 /* LaunchViewController.m */,
 				A9D9EE1C13AABEB0009ABBEA /* NMStyleUtility.h */,
 				A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */,
+				A991188813E759E20067E987 /* SettingsViewController.h */,
+				A991188913E759E20067E987 /* SettingsViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -664,6 +671,7 @@
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
+				A991188B13E759F30067E987 /* SettingsView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -870,6 +878,7 @@
 				A92CE47313E56B4C00007B04 /* top-bar-channel-background.png in Resources */,
 				A92CE47613E56BCB00007B04 /* top-bar-title-background.png in Resources */,
 				A9FDD38E13E61B5400758BD7 /* top-bar-image-frame.png in Resources */,
+				A991188C13E759F30067E987 /* SettingsView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -952,6 +961,7 @@
 				A9758C4D13BD4FBC000503A5 /* NMMovieBackgroundView.m in Sources */,
 				227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */,
 				A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */,
+				A991188A13E759E20067E987 /* SettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1061,14 +1071,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_DEBUG_MESSAGE;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
