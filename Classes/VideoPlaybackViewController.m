@@ -283,18 +283,18 @@
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = t.value / t.timescale;
 		}
-		if ( videoDurationInvalid ) {
-			t = movieView.player.currentItem.asset.duration;
-			if ( t.flags & kCMTimeFlags_Valid ) {
-#ifdef DEBUG_PLAYBACK_QUEUE
-				NSLog(@"invalid time, get duration again: %lld", t.value / t.timescale);
-#endif
-				NSInteger d = t.value / t.timescale;
-				loadedControlView.duration = d;
-				// duration of video should never be 0. Do NOT set the flag to YES if duration == 0.
-				if ( d ) videoDurationInvalid = NO;
-			}
-		}
+//		if ( videoDurationInvalid ) {
+//			t = movieView.player.currentItem.asset.duration;
+//			if ( t.flags & kCMTimeFlags_Valid ) {
+//#ifdef DEBUG_PLAYBACK_QUEUE
+//				NSLog(@"invalid time, get duration again: %lld", t.value / t.timescale);
+//#endif
+//				NSInteger d = t.value / t.timescale;
+//				loadedControlView.duration = d;
+//				// duration of video should never be 0. Do NOT set the flag to YES if duration == 0.
+//				if ( d ) videoDurationInvalid = NO;
+//			}
+//		}
 		loadedControlView.timeElapsed = sec;
 		if ( firstShowControlView && (sec + 1) % 3 == 0) {
 			firstShowControlView = NO;
@@ -566,14 +566,14 @@
 			{
 				// the instance is ready to play. show time and progress view
 				[loadedControlView setControlsHidden:NO animated:YES];
-				t = movieView.player.currentItem.asset.duration;
-				// check if the time is value
-				if ( t.flags & kCMTimeFlags_Valid ) {
-					loadedControlView.duration = t.value / t.timescale;
-					videoDurationInvalid = NO;
-				} else {
-					videoDurationInvalid = YES;
-				}
+//				t = movieView.player.currentItem.asset.duration;
+//				// check if the time is value
+//				if ( t.flags & kCMTimeFlags_Valid ) {
+//					loadedControlView.duration = t.value / t.timescale;
+//					videoDurationInvalid = NO;
+//				} else {
+//					videoDurationInvalid = YES;
+//				}
 				[movieView setActivityIndicationHidden:YES animated:YES];
 				break;
 			}
@@ -599,14 +599,14 @@
 		[UIView commitAnimations];
 		firstShowControlView = YES;	// enable this so that the control will disappear later on after first count of 2 sec.
 		
-		t = movieView.player.currentItem.asset.duration;
-		// check if the time is valid
-		if ( t.flags & kCMTimeFlags_Valid ) {
-			loadedControlView.duration = t.value / t.timescale;
-			videoDurationInvalid = NO;
-		} else {
-			videoDurationInvalid = YES;
-		}
+//		t = movieView.player.currentItem.asset.duration;
+//		// check if the time is valid
+//		if ( t.flags & kCMTimeFlags_Valid ) {
+//			loadedControlView.duration = t.value / t.timescale;
+//			videoDurationInvalid = NO;
+//		} else {
+//			videoDurationInvalid = YES;
+//		}
 		if ( didPlayToEnd ) {
 			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
@@ -639,17 +639,17 @@
 }
 
 #pragma mark Playback view UI update
-- (void)setCurrentTime:(NSInteger)sec {
-	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
-	if ( videoDurationInvalid ) {
-		CMTime t = movieView.player.currentItem.asset.duration;
-		if ( t.flags & kCMTimeFlags_Valid ) {
-			NSInteger sec = t.value / t.timescale;
-			totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
-			videoDurationInvalid = NO;
-		}
-	}
-}
+//- (void)setCurrentTime:(NSInteger)sec {
+//	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+//	if ( videoDurationInvalid ) {
+//		CMTime t = movieView.player.currentItem.asset.duration;
+//		if ( t.flags & kCMTimeFlags_Valid ) {
+//			NSInteger sec = t.value / t.timescale;
+//			totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
+//			videoDurationInvalid = NO;
+//		}
+//	}
+//}
 
 //- (void)updateControlsForVideoAtIndex:(NSUInteger)idx {
 //	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];

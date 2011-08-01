@@ -81,7 +81,7 @@
 //- (void)getVideoInfoAtIndex:(NSUInteger)idx;
 
 // playback view update
-- (void)setCurrentTime:(NSInteger)sec;
+//- (void)setCurrentTime:(NSInteger)sec;
 //- (void)updateControlsForVideoAtIndex:(NSUInteger)idx;
 - (void)setPlaybackCheckpoint;
 

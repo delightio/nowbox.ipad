@@ -237,6 +237,8 @@
 	theRect.size.width = 1024.0f - titleDiff - 10.0f - 146.0f;
 	videoTitleLabel.frame = theRect;
 	videoTitleLabel.text = aVideo.title;
+	
+	self.duration = [aVideo.duration integerValue];
 }
 
 //- (void)setChannel:(NSString *)cname {
