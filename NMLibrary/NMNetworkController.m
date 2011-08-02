@@ -366,7 +366,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	
 	// inform the user
 #ifdef DEBUG_CONNECTION_CONTROLLER 
-    NSLog(@"Connection failed! Error - %@ %@ %@",
+    NSLog(@"Connection failed! Error - %@ %@",
           [error localizedDescription],
           [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 #endif

@@ -1347,6 +1347,7 @@
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = "Ad Hoc";
 		};

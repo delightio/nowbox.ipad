@@ -98,7 +98,7 @@
         
         UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleDoubleTap:)];
-        singleFingerDTap.numberOfTapsRequired = 2;
+        singleFingerDTap.numberOfTapsRequired = 1;
         [self addGestureRecognizer:singleFingerDTap];
         [singleFingerDTap release];
         
