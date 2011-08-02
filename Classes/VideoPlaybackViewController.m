@@ -23,7 +23,7 @@
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
-#define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		2.0f
+#define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		3.0f
 #define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER	10001
 
 
@@ -589,7 +589,7 @@
 			case AVPlayerStatusReadyToPlay:
 			{
 				// the instance is ready to play. show time and progress view
-				[loadedControlView setControlsHidden:NO animated:YES];
+//				[loadedControlView setControlsHidden:NO animated:YES];
 //				t = movieView.player.currentItem.asset.duration;
 //				// check if the time is value
 //				if ( t.flags & kCMTimeFlags_Valid ) {
