@@ -23,7 +23,8 @@
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
-#define NM_PLAYER_SCROLLVIEW_ANIMATION_CONTEXT	200
+#define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		2.0f
+#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER	10001
 
 
 @interface VideoPlaybackViewController (PrivateMethods)
@@ -70,7 +71,6 @@
 	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 //	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
-	firstShowControlView = YES;
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
 	
@@ -211,7 +211,6 @@
 		currentChannel = [chnObj retain];
 	}
 	currentXOffset = 0.0f;
-	firstShowControlView = YES;
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
 	NSArray * vidAy = [playbackModelController videosForBuffering];
@@ -296,13 +295,13 @@
 //			}
 //		}
 		loadedControlView.timeElapsed = sec;
-		if ( firstShowControlView && (sec + 1) % 3 == 0) {
-			firstShowControlView = NO;
-			if ( !loadedControlView.hidden && loadedControlView.alpha > 0.0 ) {
-				// hide the control
-				[self controlsViewTouchUp:loadedControlView];
-			}
-		}
+//		if ( firstShowControlView && (sec + 1) % 3 == 0) {
+//			firstShowControlView = NO;
+//			if ( !loadedControlView.hidden && loadedControlView.alpha > 0.0 ) {
+//				// hide the control
+//				[self controlsViewTouchUp:loadedControlView];
+//			}
+//		}
 	}];
 	// retain the time observer
 	[timeObserver retain];
@@ -343,6 +342,26 @@
 	return detailView;
 }
 
+- (void)hideControlView {
+	if ( loadedControlView.alpha > 0.0f ) {
+		[UIView beginAnimations:nil context:nil];
+		loadedControlView.alpha = 0.0f;
+		[UIView commitAnimations];
+	}
+}
+
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+	NSInteger ctxInt = (NSInteger)context;
+	switch (ctxInt) {
+		case NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER:
+			[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
+			break;
+			
+		default:
+			break;
+	}
+}
+
 #pragma mark Video queuing
 - (void)showNextVideo:(BOOL)aEndOfVideo {
 	// called when we need to switch to next video triggered by finished playing the current video or 
@@ -365,7 +384,6 @@
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
 		currentXOffset += 1024.0f;
-		firstShowControlView = YES;
 		// scroll to next video
 		// translate the movie view
 		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
@@ -584,7 +602,6 @@
 				break;
 			}
 			default:
-				firstShowControlView = NO;
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
@@ -597,13 +614,16 @@
 		// update the time
 
 		[UIView beginAnimations:nil context:nil];
+		// show the control view
 		[loadedControlView setControlsHidden:NO animated:NO];
 		
 		// make the movie view visible - in the case of finish playing to the end of video, the movie view is set invisible
 		if ( movieView.alpha < 1.0 ) movieView.alpha = 1.0;
 		
 		[UIView commitAnimations];
-		firstShowControlView = YES;	// enable this so that the control will disappear later on after first count of 2 sec.
+		
+		// perform the delay method after 2 sec to hide the control view
+		[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
 		
 //		t = movieView.player.currentItem.asset.duration;
 //		// check if the time is valid
@@ -953,22 +973,16 @@
 	// slide in/out channel panel
 }
 
-- (IBAction)inspectViewStructure:(id)sender {
-	// check if the detail view is showing
-	NMMovieDetailView * theDetailView;
-	for (theDetailView in movieDetailViewArray) {
-		NSLog(@"hidden %d alpha %f super %@	frame %f %f %f %f", theDetailView.hidden, theDetailView.alpha, theDetailView.superview, theDetailView.frame.origin.x, theDetailView.frame.origin.y, theDetailView.frame.size.width, theDetailView.frame.size.height);
-	}
-}
-
 - (IBAction)refreshVideoList:(id)sender {
 	[nowmovTaskController issueRefreshVideoListForChannel:currentChannel delegate:self];
 }
 
 - (void)movieViewTouchUp:(id)sender {
 	// show the control view
-	[UIView beginAnimations:nil context:nil];
+	[UIView beginAnimations:nil context:(void*)NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER];
 	loadedControlView.alpha = 1.0;
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView commitAnimations];
 }
 

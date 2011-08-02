@@ -785,6 +785,7 @@
 		A9250133134385BF001759F5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Pipely Inc.";
 			};
 			buildConfigurationList = A9250136134385BF001759F5 /* Build configuration list for PBXProject "ipad" */;

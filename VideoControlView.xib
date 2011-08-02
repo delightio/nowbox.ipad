@@ -120,10 +120,6 @@
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">playback-play-active.png</string>
 								</object>
-								<object class="NSCustomResource" key="IBUISelectedImage">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">play.png</string>
-								</object>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">playback-play.png</string>
@@ -776,13 +772,13 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="0.0"/>
+					<real value="2"/>
 					<string>NMControlsView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="1"/>
+					<real value="2"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>NMCachedImageView</string>
@@ -825,10 +821,12 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>debugRefreshChannel:</string>
+							<string>showSettingsView:</string>
 							<string>toggleTableEditMode:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -838,12 +836,17 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>debugRefreshChannel:</string>
+							<string>showSettingsView:</string>
 							<string>toggleTableEditMode:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBActionInfo">
 								<string key="name">debugRefreshChannel:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">showSettingsView:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -857,11 +860,13 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>panelView</string>
+							<string>settingButton</string>
 							<string>tableView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UIView</string>
+							<string>UIButton</string>
 							<string>UITableView</string>
 						</object>
 					</object>
@@ -870,6 +875,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>panelView</string>
+							<string>settingButton</string>
 							<string>tableView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -877,6 +883,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">panelView</string>
 								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">settingButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">tableView</string>
@@ -1256,7 +1266,6 @@
 				<string>button-like.png</string>
 				<string>button-watch-later-active.png</string>
 				<string>button-watch-later.png</string>
-				<string>play.png</string>
 				<string>playback-full-screen-active.png</string>
 				<string>playback-full-screen.png</string>
 				<string>playback-play-active.png</string>
@@ -1269,7 +1278,6 @@
 				<string>{43, 40}</string>
 				<string>{43, 40}</string>
 				<string>{43, 40}</string>
-				<string>{16, 16}</string>
 				<string>{60, 40}</string>
 				<string>{60, 40}</string>
 				<string>{60, 40}</string>
