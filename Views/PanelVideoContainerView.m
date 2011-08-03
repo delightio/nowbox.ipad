@@ -192,23 +192,23 @@
 }
 
 #pragma mark UIResponder
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//	// highlight
-//    [self changeViewToHighlighted:YES];
-//}
-//
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	// highlight
+    [self changeViewToHighlighted:YES];
+}
+
 //- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 //	// check if touch up inside the view itself
 //	if ( videoRowDelegate ) {
 //		[videoRowDelegate tableView:tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
 //	}
 //}
-//
-//- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-//	// remove highlight
-//    // only if it wasn't highlighted previously
-//    [self changeViewToHighlighted:currentVideoIsPlaying];
-//}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+	// remove highlight
+    // only if it wasn't highlighted previously
+    [self changeViewToHighlighted:currentVideoIsPlaying];
+}
 
 -(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {
 	if ( videoRowDelegate ) {
