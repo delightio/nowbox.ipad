@@ -197,12 +197,10 @@
     [self changeViewToHighlighted:YES];
 }
 
-//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//	// check if touch up inside the view itself
-//	if ( videoRowDelegate ) {
-//		[videoRowDelegate tableView:tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
-//	}
-//}
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	// check if touch up inside the view itself
+    [self changeViewToHighlighted:currentVideoIsPlaying];
+}
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	// remove highlight

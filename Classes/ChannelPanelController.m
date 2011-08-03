@@ -126,6 +126,7 @@
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
     [videoTableView setShowsHorizontalScrollIndicator:NO];
+    [videoTableView setAlwaysBounceVertical:YES];
     videoTableView.allowsSelection = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
