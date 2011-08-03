@@ -181,18 +181,17 @@
     UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
     [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] != 0)];
     
-    //	
-    //	CGRect theFrame = cell.contentView.bounds;
-    //	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
-    //	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-    //	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
-    //	rowCtrl.panelController = self;
-    //	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
-    //	
-	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
+NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
 		[schdlr issueGetVideoListForChannel:theChannel];
 	}
+    
+    NSLog(@"highlighted video index, %d",highlightedVideoIndex);
+    
+    if (highlightedChannelIndex == [indexPath row]) {
+        [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil]];
+    }
+
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -213,18 +212,12 @@
         [cell setIsPlayingVideo:NO];
     }
 
-    //    NSArray* rowsToReload = [NSArray arrayWithObjects:rowToReload, nil];
-    
-//    [htView.tableController.videoTableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationNone];
-    
-    // highlight the new one
-    // should already be highlighted from cell interaction
-    
+    // scroll to the current video
     highlightedChannelIndex = newChannelIndex;
     highlightedVideoIndex = newVideoIndex;
     
     // scroll to the current video
-    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:newChannelIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 
 }
 

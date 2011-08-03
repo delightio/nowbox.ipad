@@ -39,8 +39,8 @@ typedef enum {
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, assign) VideoPlaybackViewController * videoViewController;
 @property (nonatomic, readonly) NSInteger selectedIndex;
-@property (nonatomic, readonly) NSInteger highlightedVideoIndex;
-@property (nonatomic, readonly) NSInteger highlightedChannelIndex;
+@property (nonatomic, assign) NSInteger highlightedVideoIndex;
+@property (nonatomic, assign) NSInteger highlightedChannelIndex;
 
 - (void)panelWillAppear;
 - (void)panelWillDisappear;

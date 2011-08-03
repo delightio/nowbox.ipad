@@ -222,17 +222,13 @@
     [videoTableView endUpdates];
 }
 
-
-#pragma mark Notification handling
-- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
-    NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
-    
+-(void)updateChannelTableView:(NMVideo *)newVideo {
     if (newVideo) {
         if ([newVideo channel] == channel) {
             
             // select / deselect cells
             [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
-
+            
             // scroll to the current video
             [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
         }
@@ -240,6 +236,13 @@
             // let other channels deal with their own notifications: do nothing!
         }
     }
+}
+
+
+#pragma mark Notification handling
+- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
+    NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
+    [self updateChannelTableView:newVideo];
 }
 
 - (void)handleWillGetChannelVideListNotification:(NSNotification *)aNotification {

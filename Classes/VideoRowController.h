@@ -34,6 +34,7 @@
 @property (nonatomic, assign) BOOL isLoadingNewContent;
 
 - (id)init;
+-(void)updateChannelTableView:(NMVideo *)newVideo;
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath;
 @end
