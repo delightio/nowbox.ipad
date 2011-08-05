@@ -201,17 +201,20 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	// highlight
     [self changeViewToHighlighted:YES];
+    [super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	// check if touch up inside the view itself
     [self changeViewToHighlighted:currentVideoIsPlaying];
+    [super touchesEnded:touches withEvent:event];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	// remove highlight
     // only if it wasn't highlighted previously
     [self changeViewToHighlighted:currentVideoIsPlaying];
+    [super touchesCancelled:touches withEvent:event];
 }
 
 -(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {

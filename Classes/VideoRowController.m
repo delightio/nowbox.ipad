@@ -222,7 +222,7 @@
     [videoTableView endUpdates];
 }
 
--(void)updateChannelTableView:(NMVideo *)newVideo {
+-(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate {
     if (newVideo) {
         if ([newVideo channel] == channel) {
             
@@ -230,7 +230,7 @@
             [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
             
             // scroll to the current video
-            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:shouldAnimate];
         }
         else {
             // let other channels deal with their own notifications: do nothing!
@@ -242,7 +242,7 @@
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
-    [self updateChannelTableView:newVideo];
+    [self updateChannelTableView:newVideo animated:YES];
 }
 
 - (void)handleWillGetChannelVideListNotification:(NSNotification *)aNotification {

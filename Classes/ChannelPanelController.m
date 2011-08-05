@@ -126,7 +126,10 @@
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
     [videoTableView setShowsHorizontalScrollIndicator:NO];
+    
+    // not working with nested scrollviews?
     [videoTableView setAlwaysBounceVertical:YES];
+    
     videoTableView.allowsSelection = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
@@ -187,7 +190,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	}
     
     if (highlightedChannelIndex == [indexPath row]) {
-        [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil]];
+        [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil] animated:NO];
     }
 
 }
@@ -214,8 +217,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     highlightedChannelIndex = newChannelIndex;
     highlightedVideoIndex = newVideoIndex;
     
-    // scroll to the current video
-    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:newChannelIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    // scroll to the current channel
+//    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:newChannelIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 
 }
 
