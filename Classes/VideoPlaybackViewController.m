@@ -13,6 +13,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
+
 #define NM_PLAYER_STATUS_CONTEXT				100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT			101
 #define NM_PLAYBACK_BUFFER_EMPTY_CONTEXT		102
@@ -134,6 +135,9 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	// listen to system notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
+	// multiple display support
+	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayConnectedNotification:) name:UIScreenDidConnectNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayDisconnectedNotification:) name:UIScreenDidDisconnectNotification object:nil];
 	
 	// setup gesture recognizer
 //	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -581,6 +585,14 @@
 	[nowmovTaskController issueSendViewingEventForVideo:item.nmVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 }
 
+- (void)handleDisplayConnectedNotification:(NSNotification *)aNotification {
+	NSLog(@"display connected");
+}
+
+- (void)handleDisplayDisconnectedNotification:(NSNotification *)aNotification {
+	NSLog(@"display disconnected");
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	NSInteger c = (NSInteger)context;
 //	CMTime t;
@@ -975,6 +987,13 @@
 
 - (IBAction)refreshVideoList:(id)sender {
 	[nowmovTaskController issueRefreshVideoListForChannel:currentChannel delegate:self];
+}
+
+- (IBAction)showAirPlayPopover:(id)sender {
+	MPVolumeView *volumeView = [[MPVolumeView alloc] init];
+	[volumeView setShowsVolumeSlider:NO];
+	[volumeView sizeToFit];
+	
 }
 
 - (void)movieViewTouchUp:(id)sender {

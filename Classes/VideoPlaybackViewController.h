@@ -14,6 +14,7 @@
 #import "VideoPlaybackModelController.h"
 #import "NMAVQueuePlayer.h"
 #import "NMAVPlayerItem.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @class NMVideo;
 @class NMChannel;
@@ -72,8 +73,8 @@
 - (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)showSharePopover:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;
-
 - (IBAction)refreshVideoList:(id)sender;
+- (IBAction)showAirPlayPopover:(id)sender;
 
 - (void)stopVideo;
 //- (void)requestAddVideoAtIndex:(NSUInteger)idx;

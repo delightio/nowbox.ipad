@@ -10,6 +10,7 @@
 #import "NMMovieView.h"
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT	101
@@ -64,6 +65,28 @@
 	authorBackgroundView.layer.contents = (id)[UIImage imageNamed:@"top-bar-author-background"].CGImage;
 	authorBackgroundView.layer.contentsCenter = theRect;
 	//topbarContainerView.alpha = 0.0f;
+	
+	// airplay button
+	theRect = progressContainerView.frame;
+	theRect.size.width -= 61.0f;
+	progressContainerView.frame = theRect;
+	
+	theRect.origin.x += theRect.size.width;
+	theRect.size.width = 60.0f;
+	UIView * theView = [[UIView alloc] initWithFrame:theRect];
+	theView.backgroundColor = [UIColor colorWithRed:56.0f/255.0f green:56.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
+	theView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+	[controlContainerView addSubview:theView];
+	
+	MPVolumeView *volumeView = [[MPVolumeView alloc] init];
+	[volumeView setShowsVolumeSlider:NO];
+	[volumeView sizeToFit];
+	volumeView.center = CGPointMake(26.5f, 18.0f);
+	[theView addSubview:volumeView];
+	
+	[volumeView release];
+	[theView release];
+	
 	// load the progress bar image
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-dark-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
