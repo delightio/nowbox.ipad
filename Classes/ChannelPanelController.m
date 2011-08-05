@@ -160,7 +160,6 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath retainPosition:(BOOL)useSamePosition {
     
-    NSLog(@"configure cell %@ retain %d", [indexPath description], useSamePosition);
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -186,8 +185,6 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
 		[schdlr issueGetVideoListForChannel:theChannel];
 	}
-    
-    NSLog(@"highlighted video index, %d",highlightedVideoIndex);
     
     if (highlightedChannelIndex == [indexPath row]) {
         [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil]];

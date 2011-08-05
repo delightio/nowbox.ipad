@@ -13,7 +13,7 @@
 @class ChannelPanelController;
 @class AGOrientedTableView;
 
-@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
 	AGOrientedTableView * videoTableView;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;

@@ -143,7 +143,7 @@
 	
 	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
 	// set predicate
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", channel]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", channel]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];
