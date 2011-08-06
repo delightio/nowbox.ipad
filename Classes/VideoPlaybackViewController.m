@@ -128,7 +128,7 @@
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
 	[self.view addSubview:channelController.panelView];
-	
+    
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];

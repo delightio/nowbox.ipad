@@ -38,6 +38,25 @@
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
+    UISwipeGestureRecognizer *swipeGestureUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)] autorelease];
+    swipeGestureUp.numberOfTouchesRequired = 2;
+    swipeGestureUp.delegate = self;
+    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
+    [panelView addGestureRecognizer:swipeGestureUp];
+    
+    UISwipeGestureRecognizer *swipeGestureDown = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)] autorelease];
+    swipeGestureDown.numberOfTouchesRequired = 2;
+    swipeGestureDown.delegate = self;
+    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
+    [panelView addGestureRecognizer:swipeGestureDown];
+    
+    UIPanGestureRecognizer *panningGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(customPanning:)] autorelease];
+    panningGesture.delegate = self;
+    [tableView addGestureRecognizer:panningGesture];
+    
+    // used for temporarily disabling tableview scroll when using 2 fingers to show full screen channel view
+    temporaryDisabledGestures = [[NSMutableArray alloc]initWithObjects:nil];
+    
 }
 
 - (void)dealloc {
@@ -45,6 +64,7 @@
 	[panelView release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
+    [temporaryDisabledGestures release];
 	[super dealloc];
 }
 
@@ -417,5 +437,75 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	[tableView endUpdates];
 }
+
+
+# pragma mark swipe gestures
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    // override default tableview panning gesture
+    
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        return YES;
+    }
+    
+    // must be the 2 finger swipe up/down gestures
+    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
+            gestureRecognizer.enabled = YES;
+        }
+        [temporaryDisabledGestures removeAllObjects];
+        
+        if (gestureRecognizer.numberOfTouches > 1) {
+            otherGestureRecognizer.enabled = NO;
+            [temporaryDisabledGestures addObject:otherGestureRecognizer];
+        }
+        return YES;
+    }
+    
+    return YES;
+}
+
+
+-(void)swipedUp:(UIGestureRecognizer *)sender {
+    NSLog(@"Swiped up");
+    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
+        gestureRecognizer.enabled = YES;
+    }
+    [temporaryDisabledGestures removeAllObjects];
+}
+
+-(void)swipedDown:(UIGestureRecognizer *)sender {
+    NSLog(@"Swiped down");
+    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
+        gestureRecognizer.enabled = YES;
+    }
+    [temporaryDisabledGestures removeAllObjects];
+}
+
+-(void)customPanning:(UIPanGestureRecognizer *)sender {
+    // force inner tableview to bounce
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            CGPoint velocity = [sender velocityInView:tableView];
+            if(fabsf(velocity.x) > fabsf(velocity.y)) // moving left-right
+            {
+                tableView.scrollEnabled = NO;
+            }
+            else // moving up-down
+            {
+            }
+        }
+            break;
+        case UIGestureRecognizerStateChanged:
+            break;
+        case UIGestureRecognizerStateEnded:
+            tableView.scrollEnabled = YES;
+            break;
+        default:
+            break;
+    }
+}
+
 
 @end

@@ -287,19 +287,19 @@
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-    NSLog(@"scrollViewDidEndScrollingAnimation");
+//    NSLog(@"scrollViewDidEndScrollingAnimation");
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    NSLog(@"scrollViewWillBeginDragging");
+//    NSLog(@"scrollViewWillBeginDragging");
 }
 
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-    NSLog(@"scrollViewWillBeginDecelerating");
+//    NSLog(@"scrollViewWillBeginDecelerating");
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    NSLog(@"scrollViewDidEndDragging willDecelerate");
+//    NSLog(@"scrollViewDidEndDragging willDecelerate");
 }
 
 @end

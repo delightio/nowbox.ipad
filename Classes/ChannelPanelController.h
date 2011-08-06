@@ -17,7 +17,7 @@ typedef enum {
 	NMFullScreenChannelMode,
 } NMPlaybackViewModeType;
 
-@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIPopoverControllerDelegate> {
+@interface ChannelPanelController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIPopoverControllerDelegate, UIGestureRecognizerDelegate> {
     IBOutlet UITableView * tableView;
 	// toolbar buttons
 	IBOutlet UIButton * settingButton;
@@ -32,6 +32,8 @@ typedef enum {
 	VideoPlaybackViewController * videoViewController;
 	NSInteger selectedIndex;
     NSInteger highlightedChannelIndex, highlightedVideoIndex;
+    
+    NSMutableArray *temporaryDisabledGestures;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *panelView;
@@ -52,5 +54,9 @@ typedef enum {
 - (IBAction)toggleTableEditMode:(id)sender;
 - (IBAction)debugRefreshChannel:(id)sender;
 - (IBAction)showSettingsView:(id)sender;
+
+-(void)swipedUp:(UIGestureRecognizer *)sender;
+-(void)swipedDown:(UIGestureRecognizer *)sender;
+-(void)customPanning:(UIPanGestureRecognizer *)sender;
 
 @end
