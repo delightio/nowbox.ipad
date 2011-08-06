@@ -124,7 +124,7 @@
 	// load channel view
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
 	theFrame = channelController.panelView.frame;
-	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
+	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height-8;
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
 	[self.view addSubview:channelController.panelView];

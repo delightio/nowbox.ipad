@@ -69,11 +69,21 @@
 		[self addSubview:imageBackgroundView];
         [imageBackgroundView release];
         
-        UIImageView *bottomBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, aHeight-1, 167.0f, 2.0f)];
+        UIImageView *bottomBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, aHeight-1, 167.0f, 1.0f)];
         bottomBorderView.opaque = YES;
         bottomBorderView.image = [UIImage imageNamed:@"channel-bottom-border"];
+        bottomBorderView.clipsToBounds = YES;
+        bottomBorderView.contentMode = UIViewContentModeTopLeft;
 		[self addSubview:bottomBorderView];
         [bottomBorderView release];
+        
+        UIImageView *topBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 167.0f, 1.0f)];
+        topBorderView.opaque = YES;
+        topBorderView.image = [UIImage imageNamed:@"channel-bottom-border"];
+        topBorderView.clipsToBounds = YES;
+        topBorderView.contentMode = UIViewContentModeBottomLeft;
+		[self addSubview:topBorderView];
+        [topBorderView release];
         
 		imageView = [[NMCachedImageView alloc] initWithFrame:CGRectMake(20.0f, pos, 40.0f, 40.0f)];
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
