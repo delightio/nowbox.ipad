@@ -22,7 +22,7 @@
 #define NM_CONTAINER_VIEW_POOL_SIZE		8
 
 @implementation ChannelPanelController
-@synthesize panelView;
+@synthesize panelView, tableView;
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoViewController;
@@ -494,6 +494,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             }
             else // moving up-down
             {
+                tableView.scrollEnabled = YES;
             }
         }
             break;

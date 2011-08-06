@@ -74,7 +74,8 @@
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
 {
-    PanelVideoContainerView *result = (PanelVideoContainerView *)[aTableView dequeueReusableCellWithIdentifier:@"Reuse"];
+    // sharing cells between rows, so dequeueing from panelController.tableView instead 
+    PanelVideoContainerView *result = (PanelVideoContainerView *)[panelController.tableView dequeueReusableCellWithIdentifier:@"Reuse"];
     if (nil == result)
     {
         result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, 80.0)] autorelease];
