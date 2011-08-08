@@ -973,6 +973,54 @@
 	// slide in/out channel panel
 }
 
+- (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
+    CGRect theFrame;
+	theFrame = channelController.panelView.frame;
+
+	BOOL panelIsFullScreen = NO;
+	if ( theFrame.origin.y < 380.0 ) {
+		// assume the panel is full screen
+		panelIsFullScreen = YES;
+	}
+    
+    if (panelIsFullScreen == shouldToggleToFullScreen) {
+        // no need to do anything
+        return;
+    }
+
+    if (shouldToggleToFullScreen) {
+        [self stopVideo]; 
+    }
+    else {
+        if (shouldResume) {
+            [self playCurrentVideo];
+        }
+    }
+    
+    [movieView setHidden:shouldToggleToFullScreen];
+    
+    [UIView beginAnimations:nil context:nil];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+
+    if (shouldToggleToFullScreen) {
+        theFrame = channelController.panelView.frame;
+        // the dimensions are hard coded :(
+        theFrame.size.height = 748-8;
+        theFrame.origin.y = 20;
+        channelController.panelView.frame = theFrame;
+        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
+    else {
+        theFrame = channelController.panelView.frame;
+        // the dimensions are hard coded :(
+        theFrame.size.height = 380;
+        theFrame.origin.y = 380;
+        channelController.panelView.frame = theFrame;
+        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
+    [UIView commitAnimations];
+}
+
 - (IBAction)refreshVideoList:(id)sender {
 	[nowmovTaskController issueRefreshVideoListForChannel:currentChannel delegate:self];
 }

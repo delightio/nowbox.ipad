@@ -233,13 +233,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         [cell setIsPlayingVideo:NO];
     }
 
-    // scroll to the current video
     highlightedChannelIndex = newChannelIndex;
     highlightedVideoIndex = newVideoIndex;
-    
-    // scroll to the current channel
-//    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:newChannelIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-
 }
 
 #pragma mark -
@@ -467,19 +462,21 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 
 -(void)swipedUp:(UIGestureRecognizer *)sender {
-    NSLog(@"Swiped up");
+//    NSLog(@"Swiped up");
     for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
         gestureRecognizer.enabled = YES;
     }
     [temporaryDisabledGestures removeAllObjects];
+    [videoViewController channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:highlightedChannelIndex];
 }
 
 -(void)swipedDown:(UIGestureRecognizer *)sender {
-    NSLog(@"Swiped down");
+//    NSLog(@"Swiped down");
     for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
         gestureRecognizer.enabled = YES;
     }
     [temporaryDisabledGestures removeAllObjects];
+    [videoViewController channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:highlightedChannelIndex];
 }
 
 -(void)customPanning:(UIPanGestureRecognizer *)sender {
