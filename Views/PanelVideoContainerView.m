@@ -150,10 +150,16 @@
 }
 
 - (void)setVideoInfo:(NMVideo *)aVideo {
+    
+    isVideoPlayable = ([[aVideo nm_error] intValue] == 0);
+    
     CGSize labelSize = CGSizeMake(initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - 12 - NM_VIDEO_CELL_PADDING * 2.0f);
     CGSize theStringSize = [aVideo.title  sizeWithFont:titleLabel.font constrainedToSize:labelSize lineBreakMode:titleLabel.lineBreakMode];
     titleLabel.frame = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, theStringSize.width, theStringSize.height);
     titleLabel.text = aVideo.title;
+    if (!isVideoPlayable) {
+        titleLabel.text = @"<placeholder> Video cannot be played on mobile devices";
+    }
     
 	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at];
 	NSInteger dur = [aVideo.duration integerValue];
@@ -192,28 +198,31 @@
 }
 
 #pragma mark UIResponder
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//	// highlight
-//    [self changeViewToHighlighted:YES];
-//}
-//
-//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//	// check if touch up inside the view itself
-//	if ( videoRowDelegate ) {
-//		[videoRowDelegate tableView:tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
-//	}
-//}
-//
-//- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-//	// remove highlight
-//    // only if it wasn't highlighted previously
-//    [self changeViewToHighlighted:currentVideoIsPlaying];
-//}
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	// highlight
+    [self changeViewToHighlighted:YES];
+    [super touchesBegan:touches withEvent:event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	// check if touch up inside the view itself
+    [self changeViewToHighlighted:currentVideoIsPlaying];
+    [super touchesEnded:touches withEvent:event];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+	// remove highlight
+    // only if it wasn't highlighted previously
+    [self changeViewToHighlighted:currentVideoIsPlaying];
+    [super touchesCancelled:touches withEvent:event];
+}
 
 -(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {
-	if ( videoRowDelegate ) {
-		[videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
-	}
+    if (isVideoPlayable) {
+        if ( videoRowDelegate ) {
+            [videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
+        }
+    }
 }
 
 @end

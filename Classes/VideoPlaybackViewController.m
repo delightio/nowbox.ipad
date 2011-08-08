@@ -125,11 +125,11 @@
 	// load channel view
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
 	theFrame = channelController.panelView.frame;
-	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height;
+	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height-8;
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
 	[self.view addSubview:channelController.panelView];
-	
+    
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
@@ -983,6 +983,77 @@
 	// scale down movie control
 	// scale playback view
 	// slide in/out channel panel
+}
+
+- (IBAction)toggleChannelPanelFullScreen:(id)sender {
+    CGRect theFrame;
+	theFrame = channelController.panelView.frame;
+    
+	BOOL panelIsFullScreen = NO;
+	if ( theFrame.origin.y < 380.0 ) {
+		// assume the panel is full screen
+		panelIsFullScreen = YES;
+	}
+    
+    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:channelController.highlightedChannelIndex];
+}
+
+- (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
+    CGRect theFrame;
+	theFrame = channelController.panelView.frame;
+
+	BOOL panelIsFullScreen = NO;
+	if ( theFrame.origin.y < 380.0 ) {
+		// assume the panel is full screen
+		panelIsFullScreen = YES;
+	}
+    
+    if (!panelIsFullScreen && !shouldToggleToFullScreen && shouldResume) {
+        [self toggleChannelPanel:nil];
+    }
+    
+    if (panelIsFullScreen == shouldToggleToFullScreen) {
+        // no need to do anything else
+        return;
+    }
+
+    if (shouldToggleToFullScreen) {
+        [self stopVideo]; 
+    }
+    else {
+        if (shouldResume) {
+            [self playCurrentVideo];
+        }
+    }
+    
+    [movieView setHidden:shouldToggleToFullScreen];
+
+    // resize animation is slow, so doing this out of animation
+    if (shouldToggleToFullScreen) {
+        theFrame.size.height = 748-8;
+        channelController.panelView.frame = theFrame;
+    }    
+    
+    theFrame = channelController.panelView.frame;
+    [UIView beginAnimations:nil context:nil];
+	[UIView setAnimationBeginsFromCurrentState:YES];
+
+    if (shouldToggleToFullScreen) {
+        theFrame = channelController.panelView.frame;
+        // the dimensions are hard coded :(
+        theFrame.origin.y = 20;
+        channelController.panelView.frame = theFrame;
+        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
+    else {
+        theFrame = channelController.panelView.frame;
+        // the dimensions are hard coded :(
+        theFrame.size.height = 380;
+        theFrame.origin.y = 380;
+        channelController.panelView.frame = theFrame;
+        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
+    [UIView commitAnimations];
 }
 
 - (IBAction)refreshVideoList:(id)sender {

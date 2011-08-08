@@ -25,6 +25,7 @@
     VideoRowController *videoRowDelegate;
     UIView *separatorView;
     UIImageView *highlightedBackgroundImage;
+    BOOL isVideoPlayable;
 }
 
 @property (nonatomic, readonly) UILabel * titleLabel;

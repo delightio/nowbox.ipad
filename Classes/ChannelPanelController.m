@@ -22,7 +22,7 @@
 #define NM_CONTAINER_VIEW_POOL_SIZE		8
 
 @implementation ChannelPanelController
-@synthesize panelView;
+@synthesize panelView, tableView;
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoViewController;
@@ -38,6 +38,25 @@
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
+    UISwipeGestureRecognizer *swipeGestureUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)] autorelease];
+    swipeGestureUp.numberOfTouchesRequired = 2;
+    swipeGestureUp.delegate = self;
+    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
+    [panelView addGestureRecognizer:swipeGestureUp];
+    
+    UISwipeGestureRecognizer *swipeGestureDown = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)] autorelease];
+    swipeGestureDown.numberOfTouchesRequired = 2;
+    swipeGestureDown.delegate = self;
+    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
+    [panelView addGestureRecognizer:swipeGestureDown];
+    
+    UIPanGestureRecognizer *panningGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(customPanning:)] autorelease];
+    panningGesture.delegate = self;
+    [tableView addGestureRecognizer:panningGesture];
+    
+    // used for temporarily disabling tableview scroll when using 2 fingers to show full screen channel view
+    temporaryDisabledGestures = [[NSMutableArray alloc]initWithObjects:nil];
+    
 }
 
 - (void)dealloc {
@@ -45,6 +64,7 @@
 	[panelView release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
+    [temporaryDisabledGestures release];
 	[super dealloc];
 }
 
@@ -126,6 +146,10 @@
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
     [videoTableView setShowsHorizontalScrollIndicator:NO];
+    
+    // not working with nested scrollviews?
+    [videoTableView setAlwaysBounceVertical:YES];
+    
     videoTableView.allowsSelection = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
@@ -159,7 +183,6 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath retainPosition:(BOOL)useSamePosition {
     
-    NSLog(@"configure cell %@ retain %d", [indexPath description], useSamePosition);
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -181,18 +204,15 @@
     UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
     [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] != 0)];
     
-    //	
-    //	CGRect theFrame = cell.contentView.bounds;
-    //	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
-    //	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-    //	VideoRowController * rowCtrl = [[VideoRowController alloc] initWithFrame:theFrame channel:theChannel panelDelegate:self];
-    //	rowCtrl.panelController = self;
-    //	[cell.contentView insertSubview:rowCtrl.videoTableView belowSubview:ctnView];
-    //	
-	NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
+NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
 		[schdlr issueGetVideoListForChannel:theChannel];
 	}
+    
+    if (highlightedChannelIndex == [indexPath row]) {
+        [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil] animated:NO];
+    }
+
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -213,19 +233,8 @@
         [cell setIsPlayingVideo:NO];
     }
 
-    //    NSArray* rowsToReload = [NSArray arrayWithObjects:rowToReload, nil];
-    
-//    [htView.tableController.videoTableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationNone];
-    
-    // highlight the new one
-    // should already be highlighted from cell interaction
-    
     highlightedChannelIndex = newChannelIndex;
     highlightedVideoIndex = newVideoIndex;
-    
-    // scroll to the current video
-    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-
 }
 
 #pragma mark -
@@ -423,5 +432,78 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	[tableView endUpdates];
 }
+
+
+# pragma mark swipe gestures
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    // override default tableview panning gesture
+    
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        return YES;
+    }
+    
+    // must be the 2 finger swipe up/down gestures
+    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
+            gestureRecognizer.enabled = YES;
+        }
+        [temporaryDisabledGestures removeAllObjects];
+        
+        if (gestureRecognizer.numberOfTouches > 1) {
+            otherGestureRecognizer.enabled = NO;
+            [temporaryDisabledGestures addObject:otherGestureRecognizer];
+        }
+        return YES;
+    }
+    
+    return YES;
+}
+
+
+-(void)swipedUp:(UIGestureRecognizer *)sender {
+//    NSLog(@"Swiped up");
+    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
+        gestureRecognizer.enabled = YES;
+    }
+    [temporaryDisabledGestures removeAllObjects];
+    [videoViewController channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:highlightedChannelIndex];
+}
+
+-(void)swipedDown:(UIGestureRecognizer *)sender {
+//    NSLog(@"Swiped down");
+    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
+        gestureRecognizer.enabled = YES;
+    }
+    [temporaryDisabledGestures removeAllObjects];
+    [videoViewController channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:highlightedChannelIndex];
+}
+
+-(void)customPanning:(UIPanGestureRecognizer *)sender {
+    // force inner tableview to bounce
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            CGPoint velocity = [sender velocityInView:tableView];
+            if(fabsf(velocity.x) > fabsf(velocity.y)) // moving left-right
+            {
+                tableView.scrollEnabled = NO;
+            }
+            else // moving up-down
+            {
+                tableView.scrollEnabled = YES;
+            }
+        }
+            break;
+        case UIGestureRecognizerStateChanged:
+            break;
+        case UIGestureRecognizerStateEnded:
+            tableView.scrollEnabled = YES;
+            break;
+        default:
+            break;
+    }
+}
+
 
 @end
