@@ -101,7 +101,6 @@
 						<string key="NSFrame">{{0, 44}, {1024, 344}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<reference key="IBUIBackgroundColor" ref="408660464"/>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -384,6 +383,15 @@
 					</object>
 					<int key="connectionID">55</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">toggleChannelPanelFullScreen:</string>
+						<reference key="source" ref="589027199"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">56</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -559,7 +567,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">55</int>
+			<int key="maxID">56</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -898,10 +906,12 @@
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
+							<string>toggleChannelPanelFullScreen:</string>
 							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -919,6 +929,7 @@
 							<string>showSharePopover:</string>
 							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
+							<string>toggleChannelPanelFullScreen:</string>
 							<string>vote:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -941,6 +952,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">toggleChannelPanel:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">toggleChannelPanelFullScreen:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

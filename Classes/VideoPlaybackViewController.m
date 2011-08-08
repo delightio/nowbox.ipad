@@ -973,6 +973,19 @@
 	// slide in/out channel panel
 }
 
+- (IBAction)toggleChannelPanelFullScreen:(id)sender {
+    CGRect theFrame;
+	theFrame = channelController.panelView.frame;
+    
+	BOOL panelIsFullScreen = NO;
+	if ( theFrame.origin.y < 380.0 ) {
+		// assume the panel is full screen
+		panelIsFullScreen = YES;
+	}
+    
+    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:channelController.highlightedChannelIndex];
+}
+
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
     CGRect theFrame;
 	theFrame = channelController.panelView.frame;
@@ -983,8 +996,12 @@
 		panelIsFullScreen = YES;
 	}
     
+    if (!panelIsFullScreen && !shouldToggleToFullScreen) {
+        [self toggleChannelPanel:nil];
+    }
+    
     if (panelIsFullScreen == shouldToggleToFullScreen) {
-        // no need to do anything
+        // no need to do anything else
         return;
     }
 
@@ -998,14 +1015,20 @@
     }
     
     [movieView setHidden:shouldToggleToFullScreen];
+
+    // resize animation is slow, so doing this out of animation
+    if (shouldToggleToFullScreen) {
+        theFrame.size.height = 748-8;
+        channelController.panelView.frame = theFrame;
+    }    
     
+    theFrame = channelController.panelView.frame;
     [UIView beginAnimations:nil context:nil];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 
     if (shouldToggleToFullScreen) {
         theFrame = channelController.panelView.frame;
         // the dimensions are hard coded :(
-        theFrame.size.height = 748-8;
         theFrame.origin.y = 20;
         channelController.panelView.frame = theFrame;
         [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
