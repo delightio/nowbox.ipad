@@ -996,7 +996,7 @@
 		panelIsFullScreen = YES;
 	}
     
-    if (!panelIsFullScreen && !shouldToggleToFullScreen) {
+    if (!panelIsFullScreen && !shouldToggleToFullScreen && shouldResume) {
         [self toggleChannelPanel:nil];
     }
     
