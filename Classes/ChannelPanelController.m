@@ -38,25 +38,9 @@
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
-    UISwipeGestureRecognizer *swipeGestureUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)] autorelease];
-    swipeGestureUp.numberOfTouchesRequired = 2;
-    swipeGestureUp.delegate = self;
-    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
-    [panelView addGestureRecognizer:swipeGestureUp];
-    
-    UISwipeGestureRecognizer *swipeGestureDown = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)] autorelease];
-    swipeGestureDown.numberOfTouchesRequired = 2;
-    swipeGestureDown.delegate = self;
-    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
-    [panelView addGestureRecognizer:swipeGestureDown];
-    
     UIPanGestureRecognizer *panningGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(customPanning:)] autorelease];
     panningGesture.delegate = self;
     [tableView addGestureRecognizer:panningGesture];
-    
-    // used for temporarily disabling tableview scroll when using 2 fingers to show full screen channel view
-    temporaryDisabledGestures = [[NSMutableArray alloc]initWithObjects:nil];
-    
 }
 
 - (void)dealloc {
@@ -64,7 +48,6 @@
 	[panelView release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
-    [temporaryDisabledGestures release];
 	[super dealloc];
 }
 
@@ -443,40 +426,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         return YES;
     }
     
-    // must be the 2 finger swipe up/down gestures
-    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
-        }
-        [temporaryDisabledGestures removeAllObjects];
-        
-        if (gestureRecognizer.numberOfTouches > 1) {
-            otherGestureRecognizer.enabled = NO;
-            [temporaryDisabledGestures addObject:otherGestureRecognizer];
-        }
-        return YES;
-    }
-    
     return YES;
-}
-
-
--(void)swipedUp:(UIGestureRecognizer *)sender {
-//    NSLog(@"Swiped up");
-    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-        gestureRecognizer.enabled = YES;
-    }
-    [temporaryDisabledGestures removeAllObjects];
-    [videoViewController channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:highlightedChannelIndex];
-}
-
--(void)swipedDown:(UIGestureRecognizer *)sender {
-//    NSLog(@"Swiped down");
-    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-        gestureRecognizer.enabled = YES;
-    }
-    [temporaryDisabledGestures removeAllObjects];
-    [videoViewController channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:highlightedChannelIndex];
 }
 
 -(void)customPanning:(UIPanGestureRecognizer *)sender {
