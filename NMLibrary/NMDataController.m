@@ -69,7 +69,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo {
 	NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
 	[fetchRequest setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", chnObj]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chnObj]];
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
 	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_fetch_timestamp" ascending:YES];

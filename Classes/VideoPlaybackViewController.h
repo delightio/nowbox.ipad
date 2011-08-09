@@ -73,6 +73,9 @@
 - (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)showSharePopover:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;
+- (IBAction)toggleChannelPanelFullScreen:(id)sender;
+- (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
+
 - (IBAction)refreshVideoList:(id)sender;
 - (IBAction)showAirPlayPopover:(id)sender;
 

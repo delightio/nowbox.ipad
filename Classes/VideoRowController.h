@@ -13,7 +13,7 @@
 @class ChannelPanelController;
 @class AGOrientedTableView;
 
-@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
 	AGOrientedTableView * videoTableView;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
@@ -34,6 +34,7 @@
 @property (nonatomic, assign) BOOL isLoadingNewContent;
 
 - (id)init;
+-(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath;
 @end

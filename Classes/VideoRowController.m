@@ -65,8 +65,9 @@
 }
 
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath {
+    [panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
+
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
-    //TODO: seems to be bugging out other interaction, left out for now
     [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
     [panelController.videoViewController playVideo:theVideo];
     
@@ -74,7 +75,8 @@
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
 {
-    PanelVideoContainerView *result = (PanelVideoContainerView *)[aTableView dequeueReusableCellWithIdentifier:@"Reuse"];
+    // sharing cells between rows, so dequeueing from panelController.tableView instead 
+    PanelVideoContainerView *result = (PanelVideoContainerView *)[panelController.tableView dequeueReusableCellWithIdentifier:@"Reuse"];
     if (nil == result)
     {
         result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, 80.0)] autorelease];
@@ -143,7 +145,7 @@
 	
 	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
 	// set predicate
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", channel]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", channel]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];
@@ -222,24 +224,27 @@
     [videoTableView endUpdates];
 }
 
-
-#pragma mark Notification handling
-- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
-    NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
-    
+-(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate {
     if (newVideo) {
         if ([newVideo channel] == channel) {
             
             // select / deselect cells
             [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
-
+            
             // scroll to the current video
-            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:shouldAnimate];
         }
         else {
             // let other channels deal with their own notifications: do nothing!
         }
     }
+}
+
+
+#pragma mark Notification handling
+- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
+    NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
+    [self updateChannelTableView:newVideo animated:YES];
 }
 
 - (void)handleWillGetChannelVideListNotification:(NSNotification *)aNotification {
@@ -283,5 +288,20 @@
     }
 }
 
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+//    NSLog(@"scrollViewDidEndScrollingAnimation");
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+//    NSLog(@"scrollViewWillBeginDragging");
+}
+
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+//    NSLog(@"scrollViewWillBeginDecelerating");
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+//    NSLog(@"scrollViewDidEndDragging willDecelerate");
+}
 
 @end
