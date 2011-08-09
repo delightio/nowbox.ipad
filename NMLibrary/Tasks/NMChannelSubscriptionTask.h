@@ -8,6 +8,17 @@
 
 #import "NMTask.h"
 
-@interface NMChannelSubscriptionTask : NMTask
+@class NMChannel;
+
+@interface NMChannelSubscriptionTask : NMTask {
+	NMChannel * channel;
+	NSNumber * channelID;
+}
+
+@property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NSNumber * channelID;
+
+- (id)initSubscribeChannel:(NMChannel *)aChn;
+- (id)initUnsubscribeChannel:(NMChannel *)aChn;
 
 @end

@@ -22,6 +22,8 @@ typedef enum {
 	NMCommandGetDefaultChannels,
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
+	NMCommandSubscribeChannel,
+	NMCommmandUnsubscrbeChannel,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetVideoInfo,
 	NMCommandGetChannelVideoList,
