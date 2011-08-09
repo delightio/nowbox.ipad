@@ -7,7 +7,7 @@
 //
 
 #import "AGOrientedTableView.h"
-@class NMVideo;
+@class NMVideo, PanelVideoCellView;
 
 @interface PanelVideoContainerView : UITableViewCell {
     UIView *backgroundColorView;
@@ -23,11 +23,15 @@
 	@private
 	BOOL currentVideoIsPlaying;
     VideoRowController *videoRowDelegate;
-    UIView *separatorView;
     UIImageView *highlightedBackgroundImage;
     BOOL isVideoPlayable;
+    
+    PanelVideoCellView *cellView, *highlightedCellView;
+
 }
 
+@property (nonatomic, readonly) UIImageView *highlightedBackgroundImage;
+@property (nonatomic, readonly) UIView *backgroundColorView;
 @property (nonatomic, readonly) UILabel * titleLabel;
 @property (nonatomic, readonly) UILabel * datePostedLabel;
 @property (nonatomic, readonly) UILabel * durationLabel;
@@ -42,4 +46,5 @@
 - (void)changeViewToHighlighted:(BOOL)isHighlighted;
 - (void)setIsPlayingVideo:(BOOL)abool;
 -(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender;
+
 @end

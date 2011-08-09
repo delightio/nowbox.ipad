@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2212124B13F1C271001A0F58 /* PanelVideoCellView.m */; };
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
@@ -168,6 +169,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2212124A13F1C271001A0F58 /* PanelVideoCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCellView.h; sourceTree = "<group>"; };
+		2212124B13F1C271001A0F58 /* PanelVideoCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCellView.m; sourceTree = "<group>"; };
 		221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-thumbnail-frame.png"; sourceTree = "<group>"; };
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
@@ -658,6 +661,8 @@
 				A9758C4C13BD4FBC000503A5 /* NMMovieBackgroundView.m */,
 				A9A8E7BD13E4B96300552E6E /* NMCachedImageView.h */,
 				A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */,
+				2212124A13F1C271001A0F58 /* PanelVideoCellView.h */,
+				2212124B13F1C271001A0F58 /* PanelVideoCellView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -963,6 +968,7 @@
 				227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */,
 				A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */,
 				A991188A13E759E20067E987 /* SettingsViewController.m in Sources */,
+				2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

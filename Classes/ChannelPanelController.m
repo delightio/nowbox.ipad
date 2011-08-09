@@ -122,8 +122,7 @@
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
-    // this isn't working for some reason, going to add it in cell instead
-    // videoTableView.separatorColor = styleUtility.channelBorderColor;
+    videoTableView.separatorColor = styleUtility.channelBorderColor;
 
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
