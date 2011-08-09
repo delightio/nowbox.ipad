@@ -10,6 +10,7 @@
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
 #import "NMCacheController.h"
+#import "NMCategory.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"

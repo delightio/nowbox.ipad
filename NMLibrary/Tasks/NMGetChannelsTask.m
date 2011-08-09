@@ -10,17 +10,28 @@
 #import "NMGetChannelVideoListTask.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMCategory.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
 
 NSString * const NMWillGetChannelsNotification = @"NMWillGetChannelsNotification";
 NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
-NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotification";
+NSString * const NMDidFailGetChannelsNotification = @"NMDidFailGetChannelsNotification";
+
+NSString * const NMWillGetChannelsForCategoryNotification = @"NMWillGetChannelsForCategoryNotification";
+NSString * const NMDidGetChannelsForCategoryNotification = @"NMDidGetChannelsForCategoryNotification";
+NSString * const NMDidFailGetChannelsForCategoryNotification = @"NMDidFailGetChannelsForCategoryNotification";
+
+NSString * const NMWillSearchChannelsNotification = @"NMWillSearchChannelsNotification";
+NSString * const NMDidSearchChannelsNotification = @"NMDidSearchChannelsNotification";
+NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannelsNotification";
 
 @implementation NMGetChannelsTask
 
 @synthesize trendingChannel;
+@synthesize searchWord;
+@synthesize category, categoryID;
 
 - (id)init {
 	self = [super init];
@@ -47,9 +58,26 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	return self;
 }
 
+- (id)initGetChannelForCategory:(NMCategory *)aCat {
+	self = [self init];
+	command = NMCommandGetChannelsForCategory;
+	self.categoryID = aCat.nm_id;
+	self.category = aCat;
+	return self;
+}
+
+- (id)initSearchChannelWithKeyword:(NSString *)str {
+	self = [self init];
+	command = NMCommandSearchChannels;
+	self.searchWord = str;
+	return self;
+}
+
 - (void)dealloc {
 	[channelJSONKeys release];
 	[trendingChannel release];
+	[category release];
+	[categoryID release];
 	[super dealloc];
 }
 
@@ -59,6 +87,12 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 	switch (command) {
 		case NMCommandGetDefaultChannels:
 			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
+			break;
+		case NMCommandGetChannelsForCategory:
+			urlStr = [NSString stringWithFormat:@"http://%@/categories/%@/channels&user_id=%d", NM_BASE_URL, categoryID, NM_USER_ACCOUNT_ID];
+			break;
+		case NMCommandSearchChannels:
+			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@", NM_BASE_URL, NM_USER_ACCOUNT_ID, searchWord];
 			break;
 		default:
 			break;
@@ -145,22 +179,57 @@ NSString * const NMDidFailGetChannelNotification = @"NMDidFailGetChannelNotifica
 }
 
 - (NSString *)willLoadNotificationName {
-	return NMWillGetChannelsNotification;
+	switch (command) {
+		case NMCommandSearchChannels:
+			return NMWillSearchChannelsNotification;
+		case NMCommandGetChannelsForCategory:
+			return NMWillGetChannelsForCategoryNotification;
+		default:
+			return NMWillGetChannelsNotification;
+	}
 }
 
 - (NSString *)didLoadNotificationName {
-	return NMDidGetChannelsNotification;
+	switch (command) {
+		case NMCommandSearchChannels:
+			return NMDidSearchChannelsNotification;
+		case NMCommandGetChannelsForCategory:
+			return NMDidGetChannelsForCategoryNotification;
+		default:
+			return NMDidGetChannelsNotification;
+	}
 }
 
 - (NSString *)didFailNotificationName {
-	return NMDidFailGetChannelNotification;
+	switch (command) {
+		case NMCommandSearchChannels:
+			return NMDidFailSearchChannelsNotification;
+		case NMCommandGetChannelsForCategory:
+			return NMDidFailGetChannelsForCategoryNotification;
+		default:
+			return NMDidFailGetChannelsNotification;
+	}
 }
 
 - (NSDictionary *)userInfo {
-	if ( trendingChannel ) {
-		return [NSDictionary dictionaryWithObjectsAndKeys:trendingChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
-	} else {
-		return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"type"];
+	switch (command) {
+		case NMCommandSearchChannels:
+		{
+			break;
+		}
+		case NMCommandGetChannelsForCategory:
+		{
+			break;
+		}
+		default:
+		{
+			if ( trendingChannel ) {
+				return [NSDictionary dictionaryWithObjectsAndKeys:trendingChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
+			} else {
+				return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"type"];
+			}
+			break;
+		}
 	}
 	return nil;
 }

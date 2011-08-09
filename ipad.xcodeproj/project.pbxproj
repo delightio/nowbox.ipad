@@ -10,6 +10,9 @@
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
+		A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
+		A900604113EFEA6D00B05645 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A900604013EFEA6D00B05645 /* NMCategory.m */; };
+		A900604413F1089700B05645 /* NMChannelSubscriptionTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900604313F1089700B05645 /* NMChannelSubscriptionTask.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
@@ -173,6 +176,12 @@
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
+		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
+		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
+		A900603F13EFEA6D00B05645 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
+		A900604013EFEA6D00B05645 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
+		A900604213F1089700B05645 /* NMChannelSubscriptionTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelSubscriptionTask.h; sourceTree = "<group>"; };
+		A900604313F1089700B05645 /* NMChannelSubscriptionTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelSubscriptionTask.m; sourceTree = "<group>"; };
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
 		A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVQueuePlayer.m; sourceTree = "<group>"; };
 		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
@@ -592,6 +601,8 @@
 				A970503E13438F860022BF2C /* Nowmov.xcdatamodel */,
 				A9B3EE6D13B91C330058E114 /* NMVideoDetail.h */,
 				A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */,
+				A900603F13EFEA6D00B05645 /* NMCategory.h */,
+				A900604013EFEA6D00B05645 /* NMCategory.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -637,6 +648,10 @@
 				A9B19640134C6B0B00CA17A0 /* NMEventTask.m */,
 				A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */,
 				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
+				A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */,
+				A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */,
+				A900604213F1089700B05645 /* NMChannelSubscriptionTask.h */,
+				A900604313F1089700B05645 /* NMChannelSubscriptionTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -967,6 +982,9 @@
 				227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */,
 				A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */,
 				A991188A13E759E20067E987 /* SettingsViewController.m in Sources */,
+				A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */,
+				A900604113EFEA6D00B05645 /* NMCategory.m in Sources */,
+				A900604413F1089700B05645 /* NMChannelSubscriptionTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
