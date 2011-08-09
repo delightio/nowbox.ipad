@@ -928,7 +928,7 @@
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 		// slide in
-		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height;
+		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height-8;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillEnterHalfScreen:NMFullScreenPlaybackMode];
 		
