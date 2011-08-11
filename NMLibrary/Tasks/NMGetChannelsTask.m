@@ -36,7 +36,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 - (id)init {
 	self = [super init];
 	command = NMCommandGetAllChannels;
-	channelJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"type", @"resource_uri", @"category", nil];
+	channelJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"type", @"resource_uri", nil];
 	return self;
 }
 
