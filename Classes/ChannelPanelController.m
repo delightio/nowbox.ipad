@@ -32,7 +32,8 @@
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
-	tableView.separatorColor = [UIColor clearColor];
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//	tableView.separatorColor = [UIColor clearColor];
 //	tableView.separatorColor = styleUtility.channelBorderColor;
 	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
@@ -129,7 +130,6 @@
     [videoTableView setShowsVerticalScrollIndicator:NO];
     [videoTableView setShowsHorizontalScrollIndicator:NO];
     
-    // not working with nested scrollviews?
     [videoTableView setAlwaysBounceVertical:YES];
     
     videoTableView.allowsSelection = NO;
@@ -157,6 +157,11 @@
     
     [aContentView addSubview:bottomSeparatorView];
     [bottomSeparatorView release];
+    
+    UIImageView *videoListLeftShadow = [[UIImageView alloc] initWithFrame:CGRectMake(168, 0, 9, aContentView.bounds.size.height)];
+    videoListLeftShadow.image = [UIImage imageNamed:@"channel-shadow-background-right"];
+    [aContentView addSubview:videoListLeftShadow];
+    [videoListLeftShadow release];
     
 	// release everything
 	[videoTableView release];

@@ -24,7 +24,7 @@
 	if ( self ) {
 		NMStyleUtility * styleUtility = [NMStyleUtility sharedStyleUtility];
 		self.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
-		
+		[self setClearsContextBeforeDrawing: NO];
 		// background
 //		CAGradientLayer * theLayer = (CAGradientLayer *)self.layer;
 //		static NSMutableArray * colors = nil;
@@ -43,15 +43,15 @@
 //		theLayer.endPoint = CGPointMake(1.0f, 0.722614342654268f);
 		
 		// shadow
-		CALayer * theLayer = self.layer;
+//		CALayer * theLayer = self.layer;
 //		theLayer.shouldRasterize = YES;
 //		theLayer.shadowOffset = CGSizeZero;
 //		theLayer.shadowOpacity = 0.8f;
 //		theLayer.shadowRadius = 4.0f;
 		
 //		CALayer * theLayer = self.layer;
-		theLayer.contents = (id)styleUtility.channelContainerBackgroundImage.CGImage;
-		theLayer.contentsRect = CGRectMake(0.0, 0.1, 1.0, 0.8);
+//		theLayer.contents = (id)styleUtility.channelContainerBackgroundImage.CGImage;
+//		theLayer.contentsRect = CGRectMake(0.0, 0.1, 1.0, 0.8);
 		
 		// subviews
 		textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80.0f, 0.0f, NM_CHANNEL_COLUMN_WIDTH - 80.0f - 10.0f, aHeight)];
@@ -60,47 +60,63 @@
 		textLabel.textColor = styleUtility.channelPanelFontColor;
 		textLabel.backgroundColor = styleUtility.clearColor;
 		textLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-		[self addSubview:textLabel];
+//		[self addSubview:textLabel];
 		
 		CGFloat pos = floorf( (aHeight - 40.0f) / 2.0f );
 
-        UIImageView *imageBackgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0f-3, pos-3, 48.0f, 48.0f)];
-        imageBackgroundView.image = [UIImage imageNamed:@"channel-thumbnail-frame"];
-		[self addSubview:imageBackgroundView];
-        [imageBackgroundView release];
-        
-        UIImageView *bottomBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, aHeight-1, 167.0f, 1.0f)];
-        bottomBorderView.opaque = YES;
-        bottomBorderView.image = [UIImage imageNamed:@"channel-bottom-border"];
-        bottomBorderView.clipsToBounds = YES;
-        bottomBorderView.contentMode = UIViewContentModeTopLeft;
-		[self addSubview:bottomBorderView];
-        [bottomBorderView release];
-        
-        UIImageView *topBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 167.0f, 1.0f)];
-        topBorderView.opaque = YES;
-        topBorderView.image = [UIImage imageNamed:@"channel-bottom-border"];
-        topBorderView.clipsToBounds = YES;
-        topBorderView.contentMode = UIViewContentModeBottomLeft;
-		[self addSubview:topBorderView];
-        [topBorderView release];
+//        UIImageView *imageBackgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0f-3, pos-3, 48.0f, 48.0f)];
+//        imageBackgroundView.image = [UIImage imageNamed:@"channel-thumbnail-frame"];
+//		[self addSubview:imageBackgroundView];
+//        [imageBackgroundView release];
+//        
+//        UIImageView *bottomBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, aHeight-1, 167.0f, 1.0f)];
+//        bottomBorderView.opaque = YES;
+//        bottomBorderView.image = [UIImage imageNamed:@"channel-bottom-border"];
+//        bottomBorderView.clipsToBounds = YES;
+//        bottomBorderView.contentMode = UIViewContentModeTopLeft;
+//		[self addSubview:bottomBorderView];
+//        [bottomBorderView release];
+//        
+//        UIImageView *topBorderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 167.0f, 1.0f)];
+//        topBorderView.opaque = YES;
+//        topBorderView.image = [UIImage imageNamed:@"channel-bottom-border"];
+//        topBorderView.clipsToBounds = YES;
+//        topBorderView.contentMode = UIViewContentModeBottomLeft;
+//		[self addSubview:topBorderView];
+//        [topBorderView release];
         
 		imageView = [[NMCachedImageView alloc] initWithFrame:CGRectMake(20.0f, pos, 40.0f, 40.0f)];
+        imageView.opaque = YES;
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
 		[self addSubview:imageView];
 	}
 	return self;
 }
 
-/*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
 {
     // Drawing code
-}
-*/
+    CGContextRef context = UIGraphicsGetCurrentContext();
 
+    [[NMStyleUtility sharedStyleUtility].channelContainerBackgroundImage drawInRect:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height+2)];
+
+    CGContextSetFillColorWithColor(context, textLabel.textColor.CGColor);
+    CGSize theStringSize = [textLabel.text  sizeWithFont:textLabel.font constrainedToSize:textLabel.frame.size lineBreakMode:textLabel.lineBreakMode];
+    [textLabel.text drawInRect:CGRectMake(80, (self.frame.size.height-theStringSize.height)/2, NM_CHANNEL_COLUMN_WIDTH - 80.0f - 10.0f, theStringSize.height) withFont:textLabel.font lineBreakMode:textLabel.lineBreakMode alignment:textLabel.textAlignment];
+
+    CGFloat pos = floorf( (self.frame.size.height - 40.0f) / 2.0f );
+    
+    [[UIImage imageNamed:@"channel-thumbnail-frame"] drawInRect:CGRectMake(20.0f-3, pos-3, 48.0f, 48.0f)];
+    
+    [[UIImage imageNamed:@"channel-bottom-border"] drawInRect:CGRectMake(0, self.frame.size.height-1, 167.0f, 2.0f)];
+    
+    [[UIImage imageNamed:@"channel-bottom-border"] drawInRect:CGRectMake(0, -1, 167.0f, 2.0f)];
+    
+}
+
+ 
 - (void)dealloc
 {
 	[textLabel release];

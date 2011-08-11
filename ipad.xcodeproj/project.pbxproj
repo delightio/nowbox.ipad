@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2212124B13F1C271001A0F58 /* PanelVideoCellView.m */; };
+		2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */; };
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
@@ -171,6 +172,7 @@
 /* Begin PBXFileReference section */
 		2212124A13F1C271001A0F58 /* PanelVideoCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCellView.h; sourceTree = "<group>"; };
 		2212124B13F1C271001A0F58 /* PanelVideoCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCellView.m; sourceTree = "<group>"; };
+		2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-shadow-background-right.png"; sourceTree = "<group>"; };
 		221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-thumbnail-frame.png"; sourceTree = "<group>"; };
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
@@ -533,6 +535,7 @@
 				A970503213438F860022BF2C /* Icon.png */,
 				A92BDA2413B431C500B846DF /* youtube_logo_36.png */,
 				A9C2788D13BAC1700024DCB2 /* channel-background.png */,
+				2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */,
 				A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */,
 				221ADF4513DDE01600BC9488 /* channel-bottom-border.png */,
 				A9F4966013D2E83400A56F50 /* playback_background_pattern.png */,
@@ -885,6 +888,7 @@
 				A92CE47613E56BCB00007B04 /* top-bar-title-background.png in Resources */,
 				A9FDD38E13E61B5400758BD7 /* top-bar-image-frame.png in Resources */,
 				A991188C13E759F30067E987 /* SettingsView.xib in Resources */,
+				2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

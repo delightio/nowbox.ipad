@@ -1001,7 +1001,7 @@
     }
 
     if (shouldToggleToFullScreen) {
-        [self stopVideo]; 
+        [self stopVideo];
     }
     else {
         if (shouldResume) {
@@ -1098,6 +1098,7 @@
 
 -(void)swipedUp:(UIGestureRecognizer *)sender {
     //    NSLog(@"Swiped up");
+    
     for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
         gestureRecognizer.enabled = YES;
     }

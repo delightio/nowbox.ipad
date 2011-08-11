@@ -38,7 +38,6 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGRect rectangle = self.frame;
     
-    CGContextAddRect(context, rectangle);
     if (cellIsHighlighted) {
         CGContextSetFillColorWithColor(context, cellData.highlightColor.CGColor);
     } else {
@@ -54,6 +53,9 @@
     [self drawLabel:cellData.datePostedLabel inContext:context];
     [self drawLabel:cellData.durationLabel inContext:context];
     [self drawLabel:cellData.viewsLabel inContext:context];
+    
+//    CGContextSetFillColorWithColor(context, [NMStyleUtility sharedStyleUtility].channelBorderColor.CGColor);
+//    CGContextFillRect(context, CGRectMake(0, 87, rectangle.size.width, 1));
     
 }
 
