@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="851" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="channels" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel"/>
+        <relationship name="channels" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="categories" inverseEntity="NMChannel"/>
     </entity>
     <entity name="NMChannel" representedClassName="NMChannel">
-        <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="nm_description" optional="YES" attributeType="String"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_last_vid" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -18,6 +17,7 @@
         <attribute name="thumbnail_uri" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String" indexed="YES"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMCategory" inverseName="channels" inverseEntity="NMCategory"/>
         <relationship name="videos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMVideo" inverseName="channel" inverseEntity="NMVideo" indexed="YES"/>
     </entity>
     <entity name="NMVideo" representedClassName="NMVideo">
@@ -49,9 +49,9 @@
         <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="detail" inverseEntity="NMVideo" indexed="YES"/>
     </entity>
     <elements>
+        <element name="NMCategory" positionX="18" positionY="54" width="128" height="90"/>
         <element name="NMChannel" positionX="297" positionY="-72" width="153" height="240"/>
         <element name="NMVideo" positionX="297" positionY="225" width="128" height="300"/>
         <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="150"/>
-        <element name="NMCategory" positionX="160" positionY="192" width="128" height="90"/>
     </elements>
 </model>

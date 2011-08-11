@@ -33,6 +33,13 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 
 - (void)processDownloadedDataInBuffer {
 	// parse the "categories" JSON
+	if ( [buffer length] == 0 ) return;
+	NSArray * catAy = [buffer objectFromJSONData];
+	
+	if ( [catAy count] == 0 ) return;
+	
+	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[catAy count]];
+	
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
