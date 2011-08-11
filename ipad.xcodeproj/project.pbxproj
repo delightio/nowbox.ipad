@@ -12,6 +12,9 @@
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
+		A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
+		A900604113EFEA6D00B05645 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A900604013EFEA6D00B05645 /* NMCategory.m */; };
+		A900604413F1089700B05645 /* NMChannelSubscriptionTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900604313F1089700B05645 /* NMChannelSubscriptionTask.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
@@ -134,6 +137,7 @@
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
 		A9C2788B13BABC920024DCB2 /* channel-shadow-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */; };
 		A9C2788E13BAC1700024DCB2 /* channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9C2788D13BAC1700024DCB2 /* channel-background.png */; };
+		A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */; };
 		A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */; };
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
@@ -177,6 +181,12 @@
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
+		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
+		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
+		A900603F13EFEA6D00B05645 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
+		A900604013EFEA6D00B05645 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
+		A900604213F1089700B05645 /* NMChannelSubscriptionTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelSubscriptionTask.h; sourceTree = "<group>"; };
+		A900604313F1089700B05645 /* NMChannelSubscriptionTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelSubscriptionTask.m; sourceTree = "<group>"; };
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
 		A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVQueuePlayer.m; sourceTree = "<group>"; };
 		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
@@ -316,6 +326,7 @@
 		A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideoDetail.m; sourceTree = "<group>"; };
 		A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-shadow-background.png"; sourceTree = "<group>"; };
 		A9C2788D13BAC1700024DCB2 /* channel-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-background.png"; sourceTree = "<group>"; };
+		A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		A9D9EE1C13AABEB0009ABBEA /* NMStyleUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMStyleUtility.h; sourceTree = "<group>"; };
 		A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMStyleUtility.m; sourceTree = "<group>"; };
 		A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -355,6 +366,7 @@
 				A9250141134385BF001759F5 /* UIKit.framework in Frameworks */,
 				A9250143134385BF001759F5 /* Foundation.framework in Frameworks */,
 				A9250145134385BF001759F5 /* CoreGraphics.framework in Frameworks */,
+				A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,6 +436,7 @@
 		A925013F134385BF001759F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */,
 				A9DB20CA1348B8980018AA4A /* MessageUI.framework */,
 				A9DB20CB1348B8990018AA4A /* Security.framework */,
 				A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */,
@@ -594,6 +607,8 @@
 				A970503E13438F860022BF2C /* Nowmov.xcdatamodel */,
 				A9B3EE6D13B91C330058E114 /* NMVideoDetail.h */,
 				A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */,
+				A900603F13EFEA6D00B05645 /* NMCategory.h */,
+				A900604013EFEA6D00B05645 /* NMCategory.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -639,6 +654,10 @@
 				A9B19640134C6B0B00CA17A0 /* NMEventTask.m */,
 				A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */,
 				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
+				A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */,
+				A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */,
+				A900604213F1089700B05645 /* NMChannelSubscriptionTask.h */,
+				A900604313F1089700B05645 /* NMChannelSubscriptionTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -973,6 +992,9 @@
 				A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */,
 				A991188A13E759E20067E987 /* SettingsViewController.m in Sources */,
 				2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */,
+				A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */,
+				A900604113EFEA6D00B05645 /* NMCategory.m in Sources */,
+				A900604413F1089700B05645 /* NMChannelSubscriptionTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1102,12 +1124,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1180,6 +1204,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1191,6 +1216,7 @@
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1329,7 +1355,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_VIDEO_LIST_REFRESH,
 					DEBUG_PLAYER_NAVIGATION,

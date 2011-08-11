@@ -26,6 +26,7 @@
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIView * controlContainerView;
+	IBOutlet UIView * progressContainerView;
 	// top bar
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * authorNameLabel;

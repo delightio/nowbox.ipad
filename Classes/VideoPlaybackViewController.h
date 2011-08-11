@@ -14,6 +14,7 @@
 #import "VideoPlaybackModelController.h"
 #import "NMAVQueuePlayer.h"
 #import "NMAVPlayerItem.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @class NMVideo;
 @class NMChannel;
@@ -78,6 +79,7 @@
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
 
 - (IBAction)refreshVideoList:(id)sender;
+- (IBAction)showAirPlayPopover:(id)sender;
 
 - (void)stopVideo;
 //- (void)requestAddVideoAtIndex:(NSUInteger)idx;

@@ -9,7 +9,7 @@
 #import "NMGetYouTubeDirectURLTask.h"
 #import "NMVideo.h"
 
-static NSString * const NMYoutubeUserAgent = @"Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5";
+static NSString * const NMYoutubeUserAgent = @"Apple iPad v5.0 YouTube v1.0.0.9A5288d";
 
 NSString * const NMWillGetYouTubeDirectURLNotification = @"NMWillGetYouTubeDirectURLNotification";
 NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectURLNotification";
@@ -42,16 +42,74 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?v=%@&xl=xl_blazer&ajax=1&tsp=1&tspv=v2&xl=xl_blazer", externalID];
+	NSString * urlStr = [NSString stringWithFormat:@"http://gdata.youtube.com/feeds/api/videos/%@?alt=json&format=2,3,8,9", externalID];
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"%@", urlStr);
 #endif
-	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
-	[request setValue:NMYoutubeUserAgent forHTTPHeaderField:@"User-Agent"];
+	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
 	
-	return request;
+	[theRequest setValue:NMYoutubeUserAgent forHTTPHeaderField:@"User-Agent"];
+	[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
+	[theRequest setValue:@"en-us,en;q=0.5" forHTTPHeaderField:@"Accept-Language"];
+	[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
+	[theRequest setValue:@"ytapi-apple-ipad" forHTTPHeaderField:@"X-GData-Client"];
+	[theRequest setValue:@"AIwbFASGaas2duSR08SqNNVkr8eQczFrT1oqHFMIZqnY67XXoDLeb12oUUV20bKALZJMqHCY-rGSOxbrkDdfgxX-cQ3dpWD7uTZfUk_TWxEIBmoXSd2Z_C7o-jzntFuWUnHfickQfiOIXErVr_4MqQ9Eoqlu0t2aY9f74A-nWYhQ54bOpyc9StM" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
+	[theRequest setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
+
+	return theRequest;
 }
 
+- (void)processDownloadedDataInBuffer {
+	if ( [buffer length] == 0 ) {
+		// the buffer is empty which should not happen
+		encountersErrorDuringProcessing = YES;
+		return;
+	}
+	NSDictionary * dict = [buffer objectFromJSONData];
+	
+	NSArray * mediaContents = [dict valueForKeyPath:@"entry.media$group.media$content"];
+	if ( mediaContents == nil || [mediaContents count] == 0 ) {
+		// no data
+		encountersErrorDuringProcessing = YES;
+		return;
+	}
+	// get the MP4 link
+	NSString * mp4URLString = nil;
+	NSInteger ytFormat = 0;
+	for (NSDictionary * vdoDict in mediaContents) {
+		if ( [[vdoDict objectForKey:@"type"] isEqual:@"video/mp4"] ) {
+			ytFormat = [[vdoDict objectForKey:@"yt$format"] integerValue];
+			switch (ytFormat) {
+				case 3:
+					self.directSDURLString = [vdoDict objectForKey:@"url"];
+					break;
+				case 8:
+					self.directURLString = [vdoDict objectForKey:@"url"];
+					break;
+				default:
+					mp4URLString = [vdoDict objectForKey:@"url"];
+					break;
+			}
+		}
+	}
+	
+	if ( ytFormat == 0 ) {
+		// can't find the MP4 URL
+		encountersErrorDuringProcessing = YES;
+	}
+	
+	if ( directSDURLString == nil ) {
+		self.directSDURLString = mp4URLString;
+	}
+	if ( directURLString == nil ) {
+		self.directURLString = directSDURLString;
+	}
+
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"resolved URL for %@: %@", self.targetID, directURLString);
+#endif
+}
+/*
 - (void)processDownloadedDataInBuffer {
 	if ( [buffer length] == 0 ) {
 		// the buffer is empty which should not happen
@@ -101,7 +159,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}
 #endif
 }
-
+*/
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	if ( encountersErrorDuringProcessing ) {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL

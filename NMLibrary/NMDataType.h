@@ -20,6 +20,11 @@ typedef enum {
 	NMCommandGetFriendChannels,
 	NMCommandGetTopicChannels,
 	NMCommandGetDefaultChannels,
+	NMCommandGetChannelsForCategory,
+	NMCommandSearchChannels,
+	NMCommandSubscribeChannel,
+	NMCommmandUnsubscrbeChannel,
+	NMCommandGetFeaturedCategories,
 	NMCommandGetVideoInfo,
 	NMCommandGetChannelVideoList,
 	NMCommandGetNextVideo,
@@ -57,15 +62,26 @@ typedef enum {
 
 
 // Notifications
+// channel
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;
-extern NSString * const NMDidFailGetChannelNotification;
+extern NSString * const NMDidFailGetChannelsNotification;
+extern NSString * const NMWillGetChannelsForCategoryNotification;
+extern NSString * const NMDidGetChannelsForCategoryNotification;
+extern NSString * const NMDidFailGetChannelsForCategoryNotification;
+extern NSString * const NMWillSearchChannelsNotification;
+extern NSString * const NMDidSearchChannelsNotification;
+extern NSString * const NMDidFailSearchChannelsNotification;
+
 extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
 extern NSString * const NMDidFailGetChannelVideoListNotification;
 extern NSString * const NMWillRefreshChannelVideListNotification;
 extern NSString * const NMDidRefreshChannelVideoListNotification;
 extern NSString * const NMDidFailRefreshChannelVideoListNotification;
+extern NSString * const NMWillGetFeaturedCategoriesNotification;
+extern NSString * const NMDidGetFeaturedCategoriesNotification;
+extern NSString * const NMDidFailGetFeaturedCategoriesNotification;
 
 extern NSString * const NMWillGetYouTubeDirectURLNotification;
 extern NSString * const NMDidGetYouTubeDirectURLNotification;
