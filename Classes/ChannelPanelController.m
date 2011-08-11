@@ -113,6 +113,7 @@
 - (void)setupCellContentView:(UIView *)aContentView {
 	ChannelContainerView * ctnView = [[ChannelContainerView alloc] initWithHeight:aContentView.bounds.size.height];
 	ctnView.tag = 1001;
+    [ctnView setNeedsDisplay];
 	[aContentView addSubview:ctnView];
 	// create horizontal table controller
 	VideoRowController * vdoCtrl = [[VideoRowController alloc] init];
@@ -175,7 +176,8 @@
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
 	[ctnView.imageView setImageForChannel:theChannel];
-	
+    [ctnView setNeedsDisplay];
+
 	// video row
 	AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
 	htView.tableController.fetchedResultsController = nil;

@@ -68,6 +68,7 @@
     [panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
 
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
+    NSLog(@"STATIS: %d", [[theVideo nm_error] intValue]);
     [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
     [panelController.videoViewController playVideo:theVideo];
     
