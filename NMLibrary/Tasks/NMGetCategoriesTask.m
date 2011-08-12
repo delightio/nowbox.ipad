@@ -39,11 +39,16 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	if ( [catAy count] == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[catAy count]];
-	
+	NSMutableDictionary * nomCatDict;
+	for (NSDictionary * cDict in catAy) {
+		nomCatDict = [NSMutableDictionary dictionaryWithCapacity:3];
+		[nomCatDict setObject:[cDict objectForKey:@"id"] forKey:@"nm_id"];
+		[nomCatDict setObject:[cDict objectForKey:@"title"] forKey:@"title"];
+	}
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	
+	// what is the replacement strategy?
 }
 
 - (NSString *)willLoadNotificationName {
