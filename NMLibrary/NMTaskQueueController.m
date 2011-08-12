@@ -143,6 +143,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueWatchLater:(BOOL)enqueue video:(NMVideo *)aVideo {
+	NMEventType t = enqueue ? NMEventEnqueue : NMEventDequeue;
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj {
 	NMImageDownloadTask * task = nil;
 	if ( dtlObj.author_thumbnail_uri ) {

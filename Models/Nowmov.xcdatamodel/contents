@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A2063" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="channels" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="categories" inverseEntity="NMChannel"/>
     </entity>
@@ -50,7 +51,7 @@
         <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="detail" inverseEntity="NMVideo" indexed="YES"/>
     </entity>
     <elements>
-        <element name="NMCategory" positionX="18" positionY="54" width="128" height="90"/>
+        <element name="NMCategory" positionX="18" positionY="54" width="128" height="105"/>
         <element name="NMChannel" positionX="297" positionY="-72" width="153" height="255"/>
         <element name="NMVideo" positionX="297" positionY="225" width="128" height="300"/>
         <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="150"/>

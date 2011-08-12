@@ -56,8 +56,9 @@
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
-//- (void)issueGetVideoInfo:(NMVideo *)aVideo;
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj;
+// Watch later
+- (void)issueWatchLater:(BOOL)enqueue video:(NMVideo *)aVideo;
 
 // Event tracking
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;

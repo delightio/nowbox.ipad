@@ -13,6 +13,7 @@
 @implementation NMCategory
 
 @dynamic nm_id;
+@dynamic nm_sort_order;
 @dynamic title;
 @dynamic channels;
 

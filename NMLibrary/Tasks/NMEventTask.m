@@ -58,6 +58,14 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 	[super dealloc];
 }
 
+- (NSUInteger)commandIndex {
+	if ( targetID ) {
+		NSUInteger tid = [self.targetID unsignedIntegerValue];
+		return tid << 9 | eventType << 5 | (NSUInteger)command;
+	}
+	return (NSUInteger)command;
+}
+
 - (NSMutableURLRequest *)URLRequest {
 	NSString * evtStr;
 	switch (eventType) {
@@ -130,6 +138,12 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			break;
 		case NMEventUnsubscribeChannel:
 			channel.nm_subscribed = [NSNumber numberWithBool:NO];
+			break;
+		case NMEventEnqueue:
+			//TODO: add video to "watch later" channel
+			break;
+		case NMEventDequeue:
+			//TODO: remove video to "watch later" channel
 			break;
 			
 		default:

@@ -50,10 +50,13 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	serverCategoryIDIndexSet = [[NSMutableIndexSet alloc] init];
 	NSMutableDictionary * nomCatDict;
 	NSNumber * catNum = nil;
+	NSInteger i = 0;
 	for (NSDictionary * cDict in catAy) {
+		cDict = [cDict objectForKey:@"category"];
 		nomCatDict = [NSMutableDictionary dictionaryWithCapacity:3];
 		catNum = [cDict objectForKey:@"id"];
 		[nomCatDict setObject:catNum forKey:@"nm_id"];
+		[nomCatDict setObject:[NSNumber numberWithInteger:i++] forKey:@"nm_sort_order"];
 		[nomCatDict setObject:[cDict objectForKey:@"title"] forKey:@"title"];
 		[serverCategoryIDIndexSet addIndex:[catNum unsignedIntegerValue]];
 		[categoryDictionary setObject:nomCatDict forKey:catNum];
@@ -66,17 +69,14 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	NSArray * allCategories = ctrl.categories;
 	NSMutableArray * objectsToDelete = [NSMutableArray arrayWithCapacity:4];
 	NSDictionary * catDict;
-	NSString * titleStr;
 	NSUInteger cid;
 	for (NMCategory * cat in allCategories) {
 		cid = [cat.nm_id unsignedIntegerValue];
 		if ( [serverCategoryIDIndexSet containsIndex:cid] ) {
-			// update the title
+			// the category already exists
 			catDict = [categoryDictionary objectForKey:cat.nm_id];
-			titleStr = [catDict objectForKey:@"title"];
-			if ( ![cat.title isEqualToString:titleStr] ) {
-				cat.title = titleStr;
-			}
+			// only update the sorting order
+			cat.nm_sort_order = [catDict objectForKey:@"nm_sort_order"];
 			[serverCategoryIDIndexSet removeIndex:cid];
 		} else {
 			// remove the item

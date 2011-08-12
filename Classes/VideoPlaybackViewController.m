@@ -121,6 +121,7 @@
 	[self setupPlayer];
 	
 	// ======
+	[nowmovTaskController issueGetFeaturedCategories];
 	
 	// load channel view
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
@@ -1055,6 +1056,12 @@
         [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
     }
     [UIView commitAnimations];
+}
+
+- (IBAction)getChannelInCategory:(id)sender {
+	NSArray * catAy = nowmovTaskController.dataController.categories;
+	NMCategory * cat = [catAy objectAtIndex:0];
+	[nowmovTaskController issueGetChannelsForCategory:cat];
 }
 
 - (IBAction)refreshVideoList:(id)sender {

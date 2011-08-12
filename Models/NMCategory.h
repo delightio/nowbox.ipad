@@ -14,6 +14,7 @@
 @interface NMCategory : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * nm_id;
+@property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSSet *channels;
 @end
