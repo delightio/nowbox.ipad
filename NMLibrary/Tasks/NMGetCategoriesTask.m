@@ -7,6 +7,8 @@
 //
 
 #import "NMGetCategoriesTask.h"
+#import "NMDataController.h"
+#import "NMCategory.h"
 
 NSString * const NMWillGetFeaturedCategoriesNotification = @"NMWillGetFeaturedCategoriesNotification";
 NSString * const NMDidGetFeaturedCategoriesNotification = @"NMDidGetFeaturedCategoriesNotification";
@@ -25,6 +27,12 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
     return self;
 }
 
+- (void)dealloc {
+	[serverCategoryIDIndexSet release];
+	[categoryDictionary release];
+	[super dealloc];
+}
+
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/categories?type=featured&user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
@@ -38,17 +46,51 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	
 	if ( [catAy count] == 0 ) return;
 	
-	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[catAy count]];
+	categoryDictionary = [[NSMutableDictionary alloc] initWithCapacity:[catAy count]];
+	serverCategoryIDIndexSet = [[NSMutableIndexSet alloc] init];
 	NSMutableDictionary * nomCatDict;
+	NSNumber * catNum = nil;
 	for (NSDictionary * cDict in catAy) {
 		nomCatDict = [NSMutableDictionary dictionaryWithCapacity:3];
-		[nomCatDict setObject:[cDict objectForKey:@"id"] forKey:@"nm_id"];
+		catNum = [cDict objectForKey:@"id"];
+		[nomCatDict setObject:catNum forKey:@"nm_id"];
 		[nomCatDict setObject:[cDict objectForKey:@"title"] forKey:@"title"];
+		[serverCategoryIDIndexSet addIndex:[catNum unsignedIntegerValue]];
+		[categoryDictionary setObject:nomCatDict forKey:catNum];
 	}
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	// what is the replacement strategy?
+	// get all categories in core data
+	// check if the local cache complies with the new set from server
+	NSArray * allCategories = ctrl.categories;
+	NSMutableArray * objectsToDelete = [NSMutableArray arrayWithCapacity:4];
+	NSDictionary * catDict;
+	NSString * titleStr;
+	NSUInteger cid;
+	for (NMCategory * cat in allCategories) {
+		cid = [cat.nm_id unsignedIntegerValue];
+		if ( [serverCategoryIDIndexSet containsIndex:cid] ) {
+			// update the title
+			catDict = [categoryDictionary objectForKey:cat.nm_id];
+			titleStr = [catDict objectForKey:@"title"];
+			if ( ![cat.title isEqualToString:titleStr] ) {
+				cat.title = titleStr;
+			}
+			[serverCategoryIDIndexSet removeIndex:cid];
+		} else {
+			// remove the item
+			[objectsToDelete addObject:cat];
+		}
+	}
+	// handle the remaining index
+	if ( [serverCategoryIDIndexSet count] ) {
+		[serverCategoryIDIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+			NSDictionary * dict = [categoryDictionary objectForKey:[NSNumber numberWithInteger:idx]];
+			NMCategory * cat = [ctrl insertNewCategory];
+			[cat setValuesForKeysWithDictionary:dict];
+		}];
+	}
 }
 
 - (NSString *)willLoadNotificationName {

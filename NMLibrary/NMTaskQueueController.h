@@ -9,6 +9,7 @@
 
 @class NMNetworkController;
 @class NMDataController;
+@class NMCategory;
 @class NMChannel;
 @class NMVideo;
 @class NMVideoDetail;
@@ -39,6 +40,10 @@
 
 - (void)cancelAllPlaybackTasksForChannel:(NMChannel *)chnObj;
 
+// Category
+- (void)issueGetFeaturedCategories;
+- (void)issueGetChannelsForCategory:(NMCategory *)aCat;
+- (void)issueChannelSearchForKeyword:(NSString *)aKeyword;
 // Channel
 - (void)issueGetChannels;
 - (void)issueGetLiveChannel;

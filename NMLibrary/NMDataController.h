@@ -8,6 +8,7 @@
 
 #import "NMTask.h"
 
+@class NMCategory;
 @class NMChannel;
 @class NMVideo;
 @class NMVideoDetail;
@@ -27,6 +28,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, readonly) NMChannel * trendingChannel;
+@property (nonatomic, readonly) NSArray * categories;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
@@ -36,6 +38,8 @@
 - (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo;
 - (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo;
 - (void)deleteAllVideos;
+// category
+- (NMCategory *)insertNewCategory;
 // channels
 - (NMChannel *)insertNewChannel;
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;

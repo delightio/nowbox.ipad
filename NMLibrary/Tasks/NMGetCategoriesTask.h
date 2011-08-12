@@ -8,6 +8,9 @@
 
 #import "NMTask.h"
 
-@interface NMGetCategoriesTask : NMTask
+@interface NMGetCategoriesTask : NMTask {
+	NSMutableIndexSet * serverCategoryIDIndexSet;
+	NSMutableDictionary * categoryDictionary;
+}
 
 @end

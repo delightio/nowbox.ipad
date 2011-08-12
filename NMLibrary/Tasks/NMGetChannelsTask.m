@@ -31,7 +31,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 
 @synthesize trendingChannel;
 @synthesize searchWord;
-@synthesize category, categoryID;
+@synthesize category;
 
 - (id)init {
 	self = [super init];
@@ -61,7 +61,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 - (id)initGetChannelForCategory:(NMCategory *)aCat {
 	self = [self init];
 	command = NMCommandGetChannelsForCategory;
-	self.categoryID = aCat.nm_id;
+	self.targetID = aCat.nm_id;
 	self.category = aCat;
 	return self;
 }
@@ -77,7 +77,6 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	[channelJSONKeys release];
 	[trendingChannel release];
 	[category release];
-	[categoryID release];
 	[super dealloc];
 }
 
@@ -89,7 +88,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetChannelsForCategory:
-			urlStr = [NSString stringWithFormat:@"http://%@/categories/%@/channels&user_id=%d", NM_BASE_URL, categoryID, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"http://%@/categories/%@/channels&user_id=%d&type=featured", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandSearchChannels:
 			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@", NM_BASE_URL, NM_USER_ACCOUNT_ID, searchWord];
@@ -219,7 +218,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		}
 		case NMCommandGetChannelsForCategory:
 		{
-			break;
+			return [NSDictionary dictionaryWithObjectsAndKeys:category, @"category", nil];
 		}
 		default:
 		{
@@ -228,7 +227,6 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			} else {
 				return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"type"];
 			}
-			break;
 		}
 	}
 	return nil;

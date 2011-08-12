@@ -8,10 +8,12 @@
 
 #import "NMDataController.h"
 #import "NMTask.h"
+#import "NMCategory.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
 
 
+NSString * const NMCategoryEntityName = @"NMCategory";
 NSString * const NMChannelEntityName = @"NMChannel";
 NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
@@ -20,7 +22,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
-@synthesize trendingChannel;
+@synthesize categories, trendingChannel;
 
 - (id)init {
 	self = [super init];
@@ -107,6 +109,22 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[managedObjectContext deleteObject:obj];
 	}
 	[request release];
+}
+
+#pragma mark Categories
+- (NSArray *)categories {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	return [result count] ? result : nil;
+}
+
+- (NMCategory *)insertNewCategory {
+	NMCategory * categoryObj = [NSEntityDescription insertNewObjectForEntityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext];
+	return categoryObj;
 }
 
 #pragma mark Channels

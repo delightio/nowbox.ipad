@@ -72,6 +72,24 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 #pragma mark Queue tasks to network controller
+- (void)issueGetFeaturedCategories {
+	NMGetCategoriesTask * task = [[NMGetCategoriesTask alloc] init];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueGetChannelsForCategory:(NMCategory *)aCat {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelForCategory:aCat];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueChannelSearchForKeyword:(NSString *)aKeyword {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initSearchChannelWithKeyword:aKeyword];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueGetChannels {
 //	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFriendChannels];
 //	[networkController addNewConnectionForTask:task];
