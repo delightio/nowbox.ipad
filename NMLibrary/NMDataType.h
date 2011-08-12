@@ -46,13 +46,15 @@ typedef enum {
 } NMVideoQueueStatusType;
 
 typedef enum {
+	NMEventSubscribeChannel,
+	NMEventUnsubscribeChannel,
+	NMEventEnqueue,
+	NMEventDequeue,
 	NMEventUpVote,
 	NMEventDownVote,
-	NMEventRewind,
 	NMEventShare,
 	NMEventView,
-	NMEventViewing,
-	NMEventReexamine,
+	NMEventExamine,
 } NMEventType;
 
 typedef enum {

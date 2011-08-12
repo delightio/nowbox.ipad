@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_last_vid;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
+@property (nonatomic, retain) NSNumber * nm_subscribed;
 @property (nonatomic, retain) NSString * nm_thumbnail_file_name;
 @property (nonatomic, retain) NSNumber * nm_time_elapsed_timescale;
 @property (nonatomic, retain) NSNumber * nm_time_elapsed_value;

@@ -199,7 +199,7 @@
 	// send event back to nowmov server
 	currentChannel.nm_last_vid = theVideo.nm_id;
 	// send event back to nowmov server
-	[nowmovTaskController issueSendViewingEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 }
 
 
@@ -583,7 +583,7 @@
 	[self playCurrentVideo];
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
 	// send event back to server
-	[nowmovTaskController issueSendViewingEventForVideo:item.nmVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[nowmovTaskController issueSendViewEventForVideo:item.nmVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 }
 
 - (void)handleDisplayConnectedNotification:(NSNotification *)aNotification {

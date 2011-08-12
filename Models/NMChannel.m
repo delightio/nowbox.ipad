@@ -17,6 +17,7 @@
 @dynamic nm_id;
 @dynamic nm_last_vid;
 @dynamic nm_sort_order;
+@dynamic nm_subscribed;
 @dynamic nm_thumbnail_file_name;
 @dynamic nm_time_elapsed_timescale;
 @dynamic nm_time_elapsed_value;

@@ -7,13 +7,22 @@
 //
 
 #import "NMEventTask.h"
+#import "NMChannel.h"
 #import "NMVideo.h"
 
 NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
 
+NSString * const NMWillSubscribeChannelNotification = @"NMWillSubscribeChannelNotification";
+NSString * const NMDidSubscribeChannelNotification = @"NMDidSubscribeChannelNotification";
+NSString * const NMDidFailSubscribeChannelNotification = @"NMDidFailSubscribeChannelNotification";
+NSString * const NMWillUnsubscribeChannelNotification = @"NMWillUnsubscribeChannelNotification";
+NSString * const NMDidUnsubscribeChannelNotification = @"NMDidUnsubscribeChannelNotification";
+NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscribeChannelNotification";
+
 @implementation NMEventTask
 
-@synthesize video, duration;
+@synthesize channel;
+@synthesize video;
 @synthesize elapsedSeconds, playedToEnd;
 @synthesize errorCode;
 
@@ -22,13 +31,29 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 	
 	self.video = v;
 	// grab values in the video object to be used in the thread
-	videoID = [v.nm_id integerValue];
+	self.targetID = v.nm_id;
 	eventType = evtType;
 	
 	return self;
 }
 
+- (id)initWithChannel:(NMChannel *)aChn subscribe:(BOOL)abool {
+	self = [super init];
+	// if YES, subscribe. Otherwise, unsubscribe
+	if ( abool ) {
+		// subscribe
+		eventType = NMEventSubscribeChannel;
+	} else {
+		eventType = NMEventUnsubscribeChannel;
+	}
+	self.channel = aChn;
+	self.targetID = aChn.nm_id;
+	
+	return self;
+}
+
 - (void)dealloc {
+	[channel release];
 	[video release];
 	[super dealloc];
 }
@@ -36,14 +61,23 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 - (NSMutableURLRequest *)URLRequest {
 	NSString * evtStr;
 	switch (eventType) {
+		case NMEventSubscribeChannel:
+			evtStr = @"subscribe";
+			break;
+		case NMEventUnsubscribeChannel:
+			evtStr = @"unsubscribe";
+			break;
+		case NMEventEnqueue:
+			evtStr = @"enqueue";
+			break;
+		case NMEventDequeue:
+			evtStr = @"dequeue";
+			break;
 		case NMEventUpVote:
 			evtStr = @"upvote";
 			break;
 		case NMEventDownVote:
 			evtStr = @"downvote";
-			break;
-		case NMEventRewind:
-			evtStr = @"rewind";
 			break;
 		case NMEventShare:
 			evtStr = @"share";
@@ -51,22 +85,29 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 		case NMEventView:
 			evtStr = @"view";
 			break;
-		case NMEventViewing:
-			evtStr = @"viewing";
-		case NMEventReexamine:
-			evtStr = @"reexamine_video";
+		case NMEventExamine:
+			evtStr = @"examine";
 			break;
 	}
 	NSString * urlStr = nil;
-	if ( eventType == NMEventReexamine ) {
-		urlStr = [NSString stringWithFormat:@"http://%@/events/track?video_id=%d&event_type=%@&error_code=%d&user_id=%d", NM_BASE_URL, videoID, evtStr, errorCode, NM_USER_ACCOUNT_ID];
-	} else {
-		urlStr = [NSString stringWithFormat:@"http://%@/events/track?video_id=%d&elapsed_seconds=%f&duration=%f&event_type=%@&trigger_name=%@&user_id=%d", NM_BASE_URL, videoID, elapsedSeconds, duration, evtStr, eventType == NMEventView && playedToEnd ? @"auto" : @"touch", NM_USER_ACCOUNT_ID];
+	switch (eventType) {
+		case NMEventExamine:
+			urlStr = [NSString stringWithFormat:@"http://%@/events?video_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
+			break;
+		case NMEventSubscribeChannel:
+		case NMEventUnsubscribeChannel:
+			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@", NM_BASE_URL, targetID, evtStr];
+			break;
+			
+		default:
+			urlStr = [NSString stringWithFormat:@"http://%@/events?video_id=%@&video_elapsed=%f&action=%@&user_id=%d", NM_BASE_URL, targetID, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
+			break;
 	}
 #ifdef DEBUG_EVENT_TRACKING
 	NSLog(@"send event: %@", urlStr);
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+	[request setHTTPMethod:@"POST"];
 	
 	return request;
 }
@@ -82,7 +123,56 @@ NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotificati
 	}
 }
 
+- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+	switch (eventType) {
+		case NMEventSubscribeChannel:
+			channel.nm_subscribed = [NSNumber numberWithBool:YES];
+			break;
+		case NMEventUnsubscribeChannel:
+			channel.nm_subscribed = [NSNumber numberWithBool:NO];
+			break;
+			
+		default:
+			break;
+	}
+}
+
+- (NSString *)willLoadNotificationName {
+	switch (eventType) {
+		case NMEventSubscribeChannel:
+			return NMWillSubscribeChannelNotification;
+		case NMEventUnsubscribeChannel:
+			return NMWillUnsubscribeChannelNotification;
+			
+		default:
+			break;
+	}
+	return nil;
+}
+
+- (NSString *)didLoadNotificationName {
+	switch (eventType) {
+		case NMEventSubscribeChannel:
+			return NMDidSubscribeChannelNotification;
+		case NMEventUnsubscribeChannel:
+			return NMDidUnsubscribeChannelNotification;
+			
+		default:
+			break;
+	}
+	return nil;
+}
+
 - (NSString *)didFailNotificationName {
+	switch (eventType) {
+		case NMEventSubscribeChannel:
+			return NMDidFailSubscribeChannelNotification;
+		case NMEventUnsubscribeChannel:
+			return NMDidFailUnsubscribeChannelNotification;
+			
+		default:
+			break;
+	}
 	return NMDidFailSendEventNotification;
 }
 
