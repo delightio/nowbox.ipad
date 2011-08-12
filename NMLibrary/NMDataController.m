@@ -22,7 +22,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
-@synthesize categories, trendingChannel;
+@synthesize categories;
+@synthesize subscribedChannels, trendingChannel;
 
 - (id)init {
 	self = [super init];
@@ -30,15 +31,17 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	
-	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
-	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
+//	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
+//	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
+	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]] retain];
 	
 	return self;
 }
 
 - (void)dealloc {
 	[trendingChannel release];
-	[channelNamePredicateTemplate release];
+//	[channelNamePredicateTemplate release];
+	[subscribedChannelsPredicate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[sortedVideoList release];
@@ -118,6 +121,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
 	
 	return [result count] ? result : nil;
 }
@@ -133,12 +137,22 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return channelObj;
 }
 
+- (NSArray *)subscribedChannels {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setReturnsObjectsAsFaults:NO];
+	[request setPredicate:subscribedChannelsPredicate];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	return [result count] ? result : nil;
+}
+
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy {
 	// channels are created when the app launch or after sign in. Probably don't need to optimize the operation that much
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[channelNamesPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channelAy forKey:@"NM_CHANNEL_NAMES"]]];
+//	[request setPredicate:[channelNamesPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channelAy forKey:@"NM_CHANNEL_NAMES"]]];
 	
 	NSError * error = nil;
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:&error];

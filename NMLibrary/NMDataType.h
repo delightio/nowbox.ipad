@@ -23,7 +23,7 @@ typedef enum {
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
 	NMCommandSubscribeChannel,
-	NMCommmandUnsubscrbeChannel,
+	NMCommandUnsubscrbeChannel,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetChannelVideoList,
 	NMCommandGetYouTubeDirectURL,

@@ -77,6 +77,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	[channelJSONKeys release];
 	[trendingChannel release];
 	[category release];
+	[parsedObjectDictionary release];
 	[super dealloc];
 }
 
@@ -111,10 +112,13 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	[str release];
 	
 	parsedObjects = [[NSMutableArray alloc] init];
+	parsedObjectDictionary = [[NSMutableDictionary alloc] initWithCapacity:[theChs count]];
 	NSDictionary * cDict, * chnCtnDict;
 	NSMutableDictionary * pDict;
 	NSString * theKey;
 	NSString * thumbURL;
+	channelIndexSet = [[NSMutableIndexSet alloc] init];
+	NSNumber * idNum;
 	for (cDict in theChs) {
 		for (NSString * rKey in cDict) {
 			chnCtnDict = [cDict objectForKey:rKey];
@@ -128,14 +132,34 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			} else {
 				[pDict setObject:thumbURL forKey:@"thumbnail_uri"];
 			}
-			[pDict setObject:[chnCtnDict objectForKey:@"id"] forKey:@"nm_id"];
+			idNum = [chnCtnDict objectForKey:@"id"];
+			[pDict setObject:idNum forKey:@"nm_id"];
 			
+			[channelIndexSet addIndex:[idNum unsignedIntegerValue]];
+			[parsedObjectDictionary setObject:pDict forKey:idNum];
 			[parsedObjects addObject:pDict];
 		}
 	}
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
+	id<NSFastEnumeration> theChannelPool;
+	switch (command) {
+		case NMCommandGetChannelsForCategory:
+			// if getting channel for a category, check if the category contains the channel
+			theChannelPool = category.channels;
+			break;
+		case NMCommandGetDefaultChannels:
+			theChannelPool = ctrl.subscribedChannels;
+			break;
+		default:
+			break;
+	}
+	if ( category && command == NMCommandGetChannelsForCategory ) {
+		
+	}
+	// if getting subscribed channel, compare with all existing subscribed channels
+	
 	// save the data into core data
 	NSMutableArray * ay = [NSMutableArray array];
 	NSMutableDictionary * dict;

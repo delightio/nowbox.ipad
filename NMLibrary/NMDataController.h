@@ -18,8 +18,9 @@
 	NSOperationQueue * operationQueue;
 	
 	NSManagedObjectContext * managedObjectContext;
-	NSPredicate * channelNamePredicateTemplate;
-	NSPredicate * channelNamesPredicateTemplate;
+//	NSPredicate * channelNamePredicateTemplate;
+//	NSPredicate * channelNamesPredicateTemplate;
+	NSPredicate * subscribedChannelsPredicate;
 	
 	NSArray * sortedVideoList;
 	NMChannel * trendingChannel;
@@ -28,6 +29,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, readonly) NMChannel * trendingChannel;
+@property (nonatomic, readonly) NSArray * subscribedChannels;
 @property (nonatomic, readonly) NSArray * categories;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;

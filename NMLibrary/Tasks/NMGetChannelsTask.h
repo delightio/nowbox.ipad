@@ -16,6 +16,8 @@
 	NMChannel * trendingChannel;
 	NMCategory * category;
 	NSString * searchWord;
+	NSMutableIndexSet * channelIndexSet;
+	NSMutableDictionary * parsedObjectDictionary;
 }
 
 @property (nonatomic, retain) NMChannel * trendingChannel;
