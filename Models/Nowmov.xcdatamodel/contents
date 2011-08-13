@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A2063" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -50,7 +50,6 @@
         <attribute name="nm_description" optional="YES" attributeType="String"/>
         <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="detail" inverseEntity="NMVideo" indexed="YES"/>
     </entity>
-    <fetchRequest name="SubscribedChannels" predicateString="nm_subscribed == YES"/>
     <elements>
         <element name="NMCategory" positionX="18" positionY="54" width="128" height="105"/>
         <element name="NMChannel" positionX="297" positionY="-72" width="153" height="255"/>

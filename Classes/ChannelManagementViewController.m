@@ -9,6 +9,10 @@
 #import "ChannelManagementViewController.h"
 #import "NMLibrary.h"
 
+NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
+NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
+
+
 @implementation ChannelManagementViewController
 @synthesize leftTableView;
 @synthesize rightTableView;
@@ -75,6 +79,16 @@
 {
     // Return YES for supported orientations
 	return YES;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
 }
 
 #pragma mark Target-action methods
