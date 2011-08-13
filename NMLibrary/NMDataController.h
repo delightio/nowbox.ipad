@@ -21,6 +21,7 @@
 //	NSPredicate * channelNamePredicateTemplate;
 //	NSPredicate * channelNamesPredicateTemplate;
 	NSPredicate * subscribedChannelsPredicate;
+	NSPredicate * objectForIDPredicateTemplate;
 	
 	NSArray * sortedVideoList;
 	NMChannel * trendingChannel;
@@ -44,7 +45,8 @@
 - (NMCategory *)insertNewCategory;
 // channels
 - (NMChannel *)insertNewChannel;
-- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
+//- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
+- (NMChannel *)channelForID:(NSNumber *)chnID;
 - (BOOL)emptyChannel;
 // video
 - (NMVideo *)insertNewVideo;

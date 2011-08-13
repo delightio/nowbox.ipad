@@ -49,17 +49,20 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	categoryDictionary = [[NSMutableDictionary alloc] initWithCapacity:[catAy count]];
 	serverCategoryIDIndexSet = [[NSMutableIndexSet alloc] init];
 	NSMutableDictionary * nomCatDict;
+	NSDictionary * contentDict;
 	NSNumber * catNum = nil;
 	NSInteger i = 0;
 	for (NSDictionary * cDict in catAy) {
-		cDict = [cDict objectForKey:@"category"];
-		nomCatDict = [NSMutableDictionary dictionaryWithCapacity:3];
-		catNum = [cDict objectForKey:@"id"];
-		[nomCatDict setObject:catNum forKey:@"nm_id"];
-		[nomCatDict setObject:[NSNumber numberWithInteger:i++] forKey:@"nm_sort_order"];
-		[nomCatDict setObject:[cDict objectForKey:@"title"] forKey:@"title"];
-		[serverCategoryIDIndexSet addIndex:[catNum unsignedIntegerValue]];
-		[categoryDictionary setObject:nomCatDict forKey:catNum];
+		for (NSString * rKey in cDict) {			// attribute key cleanser
+			contentDict = [cDict objectForKey:rKey];
+			nomCatDict = [NSMutableDictionary dictionaryWithCapacity:3];
+			catNum = [contentDict objectForKey:@"id"];
+			[nomCatDict setObject:catNum forKey:@"nm_id"];
+			[nomCatDict setObject:[NSNumber numberWithInteger:i++] forKey:@"nm_sort_order"];
+			[nomCatDict setObject:[contentDict objectForKey:@"title"] forKey:@"title"];
+			[serverCategoryIDIndexSet addIndex:[catNum unsignedIntegerValue]];
+			[categoryDictionary setObject:nomCatDict forKey:catNum];
+		}
 	}
 }
 
@@ -67,10 +70,11 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	// get all categories in core data
 	// check if the local cache complies with the new set from server
 	NSArray * allCategories = ctrl.categories;
-	NSMutableArray * objectsToDelete = [NSMutableArray arrayWithCapacity:4];
+	NSMutableArray * objectsToDelete = nil;
 	NSDictionary * catDict;
 	NSUInteger cid;
-	for (NMCategory * cat in allCategories) {
+	NMCategory * cat;
+	for (cat in allCategories) {
 		cid = [cat.nm_id unsignedIntegerValue];
 		if ( [serverCategoryIDIndexSet containsIndex:cid] ) {
 			// the category already exists
@@ -80,17 +84,18 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 			[serverCategoryIDIndexSet removeIndex:cid];
 		} else {
 			// remove the item
+			if ( objectsToDelete == nil ) objectsToDelete = [NSMutableArray arrayWithCapacity:4];
 			[objectsToDelete addObject:cat];
 		}
 	}
+	// delete objects
+	if ( objectsToDelete ) [ctrl deleteManagedObjects:objectsToDelete];
 	// handle the remaining index
-	if ( [serverCategoryIDIndexSet count] ) {
-		[serverCategoryIDIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
-			NSDictionary * dict = [categoryDictionary objectForKey:[NSNumber numberWithInteger:idx]];
-			NMCategory * cat = [ctrl insertNewCategory];
-			[cat setValuesForKeysWithDictionary:dict];
-		}];
-	}
+	[serverCategoryIDIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		NSDictionary * dict = [categoryDictionary objectForKey:[NSNumber numberWithInteger:idx]];
+		NMCategory * cat = [ctrl insertNewCategory];
+		[cat setValuesForKeysWithDictionary:dict];
+	}];
 }
 
 - (NSString *)willLoadNotificationName {

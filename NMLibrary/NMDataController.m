@@ -34,6 +34,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
 //	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]] retain];
+	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	
 	return self;
 }
@@ -42,6 +43,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[trendingChannel release];
 //	[channelNamePredicateTemplate release];
 	[subscribedChannelsPredicate release];
+	[objectForIDPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[sortedVideoList release];
@@ -145,6 +147,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	return [result count] ? result : nil;
+}
+
+- (NMChannel *)channelForID:(NSNumber *)chnID {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chnID forKey:@"OBJECT_ID"]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	
+	return [result count] ? [result objectAtIndex:0] : nil;
 }
 
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy {

@@ -120,7 +120,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	channelIndexSet = [[NSMutableIndexSet alloc] init];
 	NSNumber * idNum;
 	for (cDict in theChs) {
-		for (NSString * rKey in cDict) {
+		for (NSString * rKey in cDict) {				// attribute key cleanser
 			chnCtnDict = [cDict objectForKey:rKey];
 			pDict = [NSMutableDictionary dictionary];
 			for (theKey in channelJSONKeys) {
@@ -134,6 +134,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			}
 			idNum = [chnCtnDict objectForKey:@"id"];
 			[pDict setObject:idNum forKey:@"nm_id"];
+			[pDict setObject:[chnCtnDict objectForKey:@"category_ids"] forKey:@"category_ids"];
 			
 			[channelIndexSet addIndex:[idNum unsignedIntegerValue]];
 			[parsedObjectDictionary setObject:pDict forKey:idNum];
@@ -143,23 +144,76 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	id<NSFastEnumeration> theChannelPool;
+	id<NSFastEnumeration> theChannelPool = nil;
 	switch (command) {
 		case NMCommandGetChannelsForCategory:
 			// if getting channel for a category, check if the category contains the channel
 			theChannelPool = category.channels;
 			break;
 		case NMCommandGetDefaultChannels:
+			// if getting subscribed channel, compare with all existing subscribed channels
 			theChannelPool = ctrl.subscribedChannels;
 			break;
 		default:
 			break;
 	}
-	if ( category && command == NMCommandGetChannelsForCategory ) {
-		
-	}
-	// if getting subscribed channel, compare with all existing subscribed channels
 	
+	NSUInteger cid;
+	NSInteger i = 0;
+	NSMutableArray * objectsToDelete = nil;
+	NMChannel * chnObj;
+	for (chnObj in theChannelPool) {
+		cid = [chnObj.nm_id unsignedIntegerValue];
+		if ( [channelIndexSet containsIndex:cid] ) {
+			// the channel exists, update its sort order
+			chnObj.nm_sort_order = [NSNumber numberWithInteger:i++];
+			[channelIndexSet removeIndex:cid];
+		} else {
+			if ( objectsToDelete == nil ) objectsToDelete = [NSMutableArray arrayWithCapacity:4];
+			[objectsToDelete addObject:chnObj];
+		}
+	}
+	// delete objects
+	if ( objectsToDelete ) [ctrl deleteManagedObjects:objectsToDelete];
+	if ( [channelIndexSet count] ) {
+		NSArray * allCategories = ctrl.categories;
+		NSMutableDictionary * catDict = nil;
+		if ( [allCategories count] ) {
+			[NSMutableDictionary dictionaryWithCapacity:[allCategories count]];
+			for (NMCategory * cat in allCategories) {
+				[catDict setObject:cat forKey:cat.nm_id];
+			}
+		}
+		// add the remaining channals
+		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+			// check if the channel exists among all stored
+			NSNumber * idNum = [NSNumber numberWithUnsignedInteger:idx];
+			NMChannel * chn = [ctrl channelForID:idNum];
+			if ( chn ) {
+				// the channel exists in the pool. Just need to add the relationship
+			} else {
+				// create the new object
+				NSDictionary * dict = [parsedObjectDictionary objectForKey:idNum];
+				chn = [ctrl insertNewChannel];
+				[chn setValuesForKeysWithDictionary:dict];
+			}
+			// object relationship
+			if ( category ) {
+				[chn addCategoriesObject:category];
+				[category addChannelsObject:chn];
+			} else {
+				// look up the category
+				NMCategory * cat = [catDict objectForKey:[NSNumber numberWithUnsignedInteger:idx]];
+				// check local category cache
+				if ( cat ) {
+					[chn addCategoriesObject:cat];
+					[cat addChannelsObject:chn];
+				}
+			}
+		}];
+	}
+	
+	/*
 	// save the data into core data
 	NSMutableArray * ay = [NSMutableArray array];
 	NSMutableDictionary * dict;
@@ -199,6 +253,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	if ( [untouchedKeys count] ) {
 		[ctrl deleteManagedObjects:untouchedKeys];
 	}
+	 */
 }
 
 - (NSString *)willLoadNotificationName {
