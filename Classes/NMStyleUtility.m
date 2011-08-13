@@ -76,7 +76,6 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	channelBorderColor = [[UIColor colorWithRed:182.0f / 255.0f green:182.0f / 255.0f blue:182.0f / 255.0f alpha:1.0] retain];
 	userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
 	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-shadow-background"] retain];
-//	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-background"] retain];
 	
 	fullScreenImage = [[UIImage imageNamed:@"playback-full-screen"] retain];
 	fullScreenActiveImage = [[UIImage imageNamed:@"playback-full-screen-active"] retain];

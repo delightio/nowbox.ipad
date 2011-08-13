@@ -17,18 +17,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize leftTableView;
 @synthesize rightTableView;
 @synthesize categoryFetchedResultsController;
+@synthesize selectedIndexPath;
 @synthesize selectedChannelArray;
 @synthesize managedObjectContext;
 
-
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
 
 - (void)dealloc {
     [leftTableView release];
@@ -36,6 +28,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[selectedChannelArray release];
 	[categoryFetchedResultsController release];
 	[managedObjectContext release];
+	[selectedIndexPath release];
     [super dealloc];
 }
 
@@ -60,10 +53,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+		
 	self.title = @"Channels";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)];
+	
+	// listen to notification
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -91,6 +89,21 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
 }
 
+#pragma mark Notification handlers
+
+- (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
+	if ( selectedIndexPath ) {
+		NMCategory * cat = [[aNotification userInfo] objectForKey:@"category"];
+		NMCategory * selCat = [categoryFetchedResultsController objectAtIndexPath:selectedIndexPath];
+		if ( selCat == cat ) {
+			// same category. relaod data
+			NSSet * chnSet = cat.channels;
+			self.selectedChannelArray = [chnSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+			[rightTableView reloadData];
+		}
+	}
+}
+
 #pragma mark Target-action methods
 
 - (void)showSearchView:(id)sender {
@@ -103,6 +116,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 #pragma mark -
 #pragma mark Table view data source
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -125,7 +139,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     
 	UITableViewCell *cell = (UITableViewCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell.
@@ -135,6 +149,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	} else {
 		NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
 		cell.textLabel.text = chn.title;
+		cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", [chn.nm_subscribed boolValue] ? @"Subscribed" : @"Subscribe"];
 	}
     
     return cell;
@@ -146,10 +161,16 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ( tableView == leftTableView ) {
 		// refresh the right table data
+		self.selectedIndexPath = indexPath;
 		NMCategory * cat = [categoryFetchedResultsController objectAtIndexPath:indexPath];
 		NSSet * chnSet = cat.channels;
 		self.selectedChannelArray = [chnSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
 		[rightTableView reloadData];
+		
+		if ( [chnSet count] == 0 ) {
+			// try fetching the channels from server
+			[[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForCategory:cat];
+		}
 	}
 }
 
@@ -168,10 +189,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
-	
-	//	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"videos.@count > 0"]];
-	
+		
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     

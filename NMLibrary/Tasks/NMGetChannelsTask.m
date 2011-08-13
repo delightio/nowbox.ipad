@@ -111,7 +111,6 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	NSArray * theChs = [str objectFromJSONString];
 	[str release];
 	
-	parsedObjects = [[NSMutableArray alloc] init];
 	parsedObjectDictionary = [[NSMutableDictionary alloc] initWithCapacity:[theChs count]];
 	NSDictionary * cDict, * chnCtnDict;
 	NSMutableDictionary * pDict;
@@ -119,6 +118,11 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	NSString * thumbURL;
 	channelIndexSet = [[NSMutableIndexSet alloc] init];
 	NSNumber * idNum;
+	NSInteger i = 0;
+	NSNumber * subscribedNum = nil;
+	if ( command == NMCommandGetDefaultChannels ) {
+		subscribedNum = [NSNumber numberWithBool:YES];
+	}
 	for (cDict in theChs) {
 		for (NSString * rKey in cDict) {				// attribute key cleanser
 			chnCtnDict = [cDict objectForKey:rKey];
@@ -134,11 +138,14 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			}
 			idNum = [chnCtnDict objectForKey:@"id"];
 			[pDict setObject:idNum forKey:@"nm_id"];
+			[pDict setObject:[NSNumber numberWithInteger:i++] forKey:@"nm_sort_order"];
+			if ( command == NMCommandGetDefaultChannels ) {
+				[pDict setObject:subscribedNum forKey:@"nm_subscribed"];
+			}
 			[pDict setObject:[chnCtnDict objectForKey:@"category_ids"] forKey:@"category_ids"];
 			
 			[channelIndexSet addIndex:[idNum unsignedIntegerValue]];
 			[parsedObjectDictionary setObject:pDict forKey:idNum];
-			[parsedObjects addObject:pDict];
 		}
 	}
 }
@@ -159,14 +166,15 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	}
 	
 	NSUInteger cid;
-	NSInteger i = 0;
 	NSMutableArray * objectsToDelete = nil;
 	NMChannel * chnObj;
+	NSDictionary * chnDict;
 	for (chnObj in theChannelPool) {
 		cid = [chnObj.nm_id unsignedIntegerValue];
 		if ( [channelIndexSet containsIndex:cid] ) {
+			chnDict = [parsedObjectDictionary objectForKey:chnObj.nm_id];
 			// the channel exists, update its sort order
-			chnObj.nm_sort_order = [NSNumber numberWithInteger:i++];
+			chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
 			[channelIndexSet removeIndex:cid];
 		} else {
 			if ( objectsToDelete == nil ) objectsToDelete = [NSMutableArray arrayWithCapacity:4];
@@ -187,10 +195,11 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			[chnDict removeObjectForKey:@"category_ids"];
 			if ( chn == nil ) {
 				// create the new object
-				NSDictionary * dict = [parsedObjectDictionary objectForKey:idNum];
 				chn = [ctrl insertNewChannel];
-				[chn setValuesForKeysWithDictionary:dict];
-			} // else - just update the relationship
+				[chn setValuesForKeysWithDictionary:chnDict];
+			} else {
+				chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
+			}
 			
 			// object relationship
 			if ( category ) {
