@@ -18,5 +18,6 @@
 
 extern NSInteger NM_USER_ACCOUNT_ID;
 extern BOOL NM_USE_HIGH_QUALITY_VIDEO;
+extern BOOL NM_RUNNING_IOS_5;
 
 #endif

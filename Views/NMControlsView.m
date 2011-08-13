@@ -67,25 +67,27 @@
 	//topbarContainerView.alpha = 0.0f;
 	
 	// airplay button
-	theRect = progressContainerView.frame;
-	theRect.size.width -= 61.0f;
-	progressContainerView.frame = theRect;
-	
-	theRect.origin.x += theRect.size.width;
-	theRect.size.width = 60.0f;
-	UIView * theView = [[UIView alloc] initWithFrame:theRect];
-	theView.backgroundColor = [UIColor colorWithRed:56.0f/255.0f green:56.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
-	theView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-	[controlContainerView addSubview:theView];
-	
-	MPVolumeView *volumeView = [[MPVolumeView alloc] init];
-	[volumeView setShowsVolumeSlider:NO];
-	[volumeView sizeToFit];
-	volumeView.center = CGPointMake(26.5f, 18.0f);
-	[theView addSubview:volumeView];
-	
-	[volumeView release];
-	[theView release];
+	if ( NM_RUNNING_IOS_5 ) {
+		theRect = progressContainerView.frame;
+		theRect.size.width -= 61.0f;
+		progressContainerView.frame = theRect;
+		
+		theRect.origin.x += theRect.size.width;
+		theRect.size.width = 60.0f;
+		UIView * theView = [[UIView alloc] initWithFrame:theRect];
+		theView.backgroundColor = [UIColor colorWithRed:56.0f/255.0f green:56.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
+		theView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+		[controlContainerView addSubview:theView];
+		
+		MPVolumeView *volumeView = [[MPVolumeView alloc] init];
+		[volumeView setShowsVolumeSlider:NO];
+		[volumeView sizeToFit];
+		volumeView.center = CGPointMake(26.5f, 18.0f);
+		[theView addSubview:volumeView];
+		
+		[volumeView release];
+		[theView release];
+	}
 	
 	// load the progress bar image
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
