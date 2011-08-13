@@ -176,14 +176,6 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	// delete objects
 	if ( objectsToDelete ) [ctrl deleteManagedObjects:objectsToDelete];
 	if ( [channelIndexSet count] ) {
-		NSArray * allCategories = ctrl.categories;
-		NSMutableDictionary * catDict = nil;
-		if ( [allCategories count] ) {
-			[NSMutableDictionary dictionaryWithCapacity:[allCategories count]];
-			for (NMCategory * cat in allCategories) {
-				[catDict setObject:cat forKey:cat.nm_id];
-			}
-		}
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 			// check if the channel exists among all stored

@@ -137,6 +137,8 @@
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
+		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
+		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
 		A9E4B01B13F3EADE00DAE368 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01A13F3EADE00DAE368 /* NMChannel.m */; };
 		A9F4966113D2E83400A56F50 /* playback_background_pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966013D2E83400A56F50 /* playback_background_pattern.png */; };
@@ -320,6 +322,9 @@
 		A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		A9DB20CA1348B8980018AA4A /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		A9DB20CB1348B8990018AA4A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelManagementViewController.h; sourceTree = "<group>"; };
+		A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelManagementViewController.m; sourceTree = "<group>"; };
+		A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelManagementView.xib; sourceTree = "<group>"; };
 		A9E4B01513F3EA6F00DAE368 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
 		A9E4B01613F3EA6F00DAE368 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
 		A9E4B01913F3EADE00DAE368 /* NMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel.h; sourceTree = "<group>"; };
@@ -529,6 +534,8 @@
 				A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */,
 				A991188813E759E20067E987 /* SettingsViewController.h */,
 				A991188913E759E20067E987 /* SettingsViewController.m */,
+				A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */,
+				A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -686,6 +693,7 @@
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
 				A991188B13E759F30067E987 /* SettingsView.xib */,
+				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -894,6 +902,7 @@
 				A92CE47613E56BCB00007B04 /* top-bar-title-background.png in Resources */,
 				A9FDD38E13E61B5400758BD7 /* top-bar-image-frame.png in Resources */,
 				A991188C13E759F30067E987 /* SettingsView.xib in Resources */,
+				A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -979,6 +988,7 @@
 				A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */,
 				A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */,
 				A9E4B01B13F3EADE00DAE368 /* NMChannel.m in Sources */,
+				A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

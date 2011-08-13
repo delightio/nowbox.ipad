@@ -14,6 +14,7 @@
 #import "AGOrientedTableView.h"
 #import "PanelVideoContainerView.h"
 #import "SettingsViewController.h"
+#import "ChannelManagementViewController.h"
 
 #define VIDEO_ROW_LEFT_PADDING			167.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -103,6 +104,18 @@
 	popover.popoverContentSize = CGSizeMake(320.0f, 320.0f);
 	[popover presentPopoverFromRect:settingButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
 	popover.delegate = self;
+}
+
+- (IBAction)showChannelManagementView:(id)sender {
+	ChannelManagementViewController * chnMngCtrl = [[ChannelManagementViewController alloc] init];
+	chnMngCtrl.managedObjectContext = videoViewController.managedObjectContext;
+	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:chnMngCtrl];
+	navCtrl.navigationBar.barStyle = UIBarStyleBlack;
+	navCtrl.modalPresentationStyle = UIModalPresentationFormSheet;
+	[videoViewController presentModalViewController:navCtrl animated:YES];
+	
+	[navCtrl release];
+	[chnMngCtrl release];
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {

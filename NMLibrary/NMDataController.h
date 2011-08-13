@@ -23,11 +23,14 @@
 	NSPredicate * subscribedChannelsPredicate;
 	NSPredicate * objectForIDPredicateTemplate;
 	
+	NSMutableDictionary * categoryCacheDictionary;
+	
 	NSArray * sortedVideoList;
 	NMChannel * trendingChannel;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
+@property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, readonly) NMChannel * trendingChannel;
 @property (nonatomic, readonly) NSArray * subscribedChannels;

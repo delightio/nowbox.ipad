@@ -22,7 +22,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
-@synthesize categories;
+@synthesize categories, categoryCacheDictionary;
 @synthesize subscribedChannels, trendingChannel;
 
 - (id)init {
@@ -35,12 +35,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
+	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
 	return self;
 }
 
 - (void)dealloc {
 	[trendingChannel release];
+	[categoryCacheDictionary release];
 //	[channelNamePredicateTemplate release];
 	[subscribedChannelsPredicate release];
 	[objectForIDPredicateTemplate release];
@@ -56,6 +58,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	for (mobj in objs) {
 		[managedObjectContext deleteObject:mobj];
 	}
+	// clean up cache
+	[categoryCacheDictionary removeAllObjects];
 }
 
 - (void)deleteVideoInChannel:(NMChannel *)chnObj {
@@ -125,7 +129,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	
-	return [result count] ? result : nil;
+	[categoryCacheDictionary removeAllObjects];
+	if ( [result count] ) {
+		for (NMCategory * cat in result) {
+			[categoryCacheDictionary setObject:cat forKey:cat.nm_id];
+		}
+		return result;
+	}
+	return nil;
 }
 
 - (NMCategory *)insertNewCategory {
@@ -134,6 +145,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (NMCategory *)categoryForID:(NSNumber *)catID {
+	id catObj = [categoryCacheDictionary objectForKey:catID];
+	if ( catObj ) {
+		if ( catObj == [NSNull null] ) return nil;
+		return catObj;
+	}
+	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
 	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:catID forKey:@"OBJECT_ID"]]];
@@ -141,8 +158,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
-	
-	return [result count] ? [result objectAtIndex:0] : nil;
+	if ( [result count] ) {
+		NMCategory * catObj = [result objectAtIndex:0];
+		[categoryCacheDictionary setObject:catObj forKey:catObj.nm_id];
+	} else {
+		// this category does not exist in core data
+		[categoryCacheDictionary setObject:[NSNull null] forKey:catID];
+	}
+	return catObj;
 }
 
 #pragma mark Channels
