@@ -133,6 +133,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return categoryObj;
 }
 
+- (NMCategory *)categoryForID:(NSNumber *)catID {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:catID forKey:@"OBJECT_ID"]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	
+	return [result count] ? [result objectAtIndex:0] : nil;
+}
+
 #pragma mark Channels
 - (NMChannel *)insertNewChannel {
 	NMChannel * channelObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];

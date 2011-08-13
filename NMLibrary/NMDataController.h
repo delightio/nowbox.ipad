@@ -43,6 +43,7 @@
 - (void)deleteAllVideos;
 // category
 - (NMCategory *)insertNewCategory;
+- (NMCategory *)categoryForID:(NSNumber *)catID;
 // channels
 - (NMChannel *)insertNewChannel;
 //- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;

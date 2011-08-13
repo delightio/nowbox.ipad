@@ -189,25 +189,32 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			// check if the channel exists among all stored
 			NSNumber * idNum = [NSNumber numberWithUnsignedInteger:idx];
 			NMChannel * chn = [ctrl channelForID:idNum];
-			if ( chn ) {
-				// the channel exists in the pool. Just need to add the relationship
-			} else {
+			NSMutableDictionary * chnDict = [parsedObjectDictionary objectForKey:idNum];
+			// grab the category IDs
+			NSArray * catIDAy = [[chnDict objectForKey:@"category_ids"] retain];
+			[chnDict removeObjectForKey:@"category_ids"];
+			if ( chn == nil ) {
 				// create the new object
 				NSDictionary * dict = [parsedObjectDictionary objectForKey:idNum];
 				chn = [ctrl insertNewChannel];
 				[chn setValuesForKeysWithDictionary:dict];
-			}
+			} // else - just update the relationship
+			
 			// object relationship
 			if ( category ) {
 				[chn addCategoriesObject:category];
 				[category addChannelsObject:chn];
 			} else {
-				// look up the category
-				NMCategory * cat = [catDict objectForKey:[NSNumber numberWithUnsignedInteger:idx]];
-				// check local category cache
-				if ( cat ) {
-					[chn addCategoriesObject:cat];
-					[cat addChannelsObject:chn];
+				// channels stored in dictionary
+				NMCategory * cat = nil;
+				for (NSNumber * catIDNum in catIDAy) {
+					// look up the category
+					cat = [ctrl categoryForID:catIDNum];
+					if ( cat ) {
+						// if we cannot find the category, that category is not in the "featured category" set.
+						[chn addCategoriesObject:cat];
+						[cat addChannelsObject:chn];
+					}
 				}
 			}
 		}];
