@@ -8,6 +8,7 @@
 
 #import "ChannelManagementViewController.h"
 #import "NMLibrary.h"
+#import "TwitterLoginViewController.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -81,12 +82,18 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+	if ( !viewPushedByNavigationController ) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+		// all subsequent transition happened in navigation controller should not fire channel management notification
+		viewPushedByNavigationController = YES;
+	}
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
+	if ( !viewPushedByNavigationController ) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
+	}
 }
 
 #pragma mark Notification handlers
@@ -107,10 +114,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark Target-action methods
 
 - (void)showSearchView:(id)sender {
-	
+	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
+	[self.navigationController pushViewController:twitCtrl animated:YES];
+	[twitCtrl release];
 }
 
 - (void)dismissView:(id)sender {
+	viewPushedByNavigationController = NO;
 	[self dismissModalViewControllerAnimated:YES];
 }
 

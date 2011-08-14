@@ -17,6 +17,8 @@
 	
 	NSIndexPath * selectedIndexPath;
 	NSArray * selectedChannelArray;
+	
+	BOOL viewPushedByNavigationController;
 }
 
 @property (retain, nonatomic) IBOutlet UITableView *leftTableView;

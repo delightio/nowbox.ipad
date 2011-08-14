@@ -94,6 +94,8 @@
 		A9758C4D13BD4FBC000503A5 /* NMMovieBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9758C4C13BD4FBC000503A5 /* NMMovieBackgroundView.m */; };
 		A9776A4C13AAF0AF004FA2F3 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */; };
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
+		A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */; };
+		A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */; };
 		A98C241513D38C040061A594 /* button-like-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241113D38C030061A594 /* button-like-active.png */; };
 		A98C241613D38C040061A594 /* button-like.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241213D38C030061A594 /* button-like.png */; };
 		A98C241713D38C040061A594 /* button-watch-later-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241313D38C030061A594 /* button-watch-later-active.png */; };
@@ -285,6 +287,9 @@
 		A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-icon.png"; sourceTree = "<group>"; };
 		A97E237E13A6E8F400EBA5EE /* ChannelPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelPanelController.h; sourceTree = "<group>"; };
 		A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelPanelController.m; sourceTree = "<group>"; };
+		A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginViewController.h; sourceTree = "<group>"; };
+		A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterLoginViewController.m; sourceTree = "<group>"; };
+		A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwitterLoginView.xib; sourceTree = "<group>"; };
 		A98154A6137E1607001FADB4 /* NMRefreshChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMRefreshChannelVideoListTask.h; sourceTree = "<group>"; };
 		A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMRefreshChannelVideoListTask.m; sourceTree = "<group>"; };
 		A98C241113D38C030061A594 /* button-like-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like-active.png"; sourceTree = "<group>"; };
@@ -534,6 +539,8 @@
 				A991188913E759E20067E987 /* SettingsViewController.m */,
 				A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */,
 				A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */,
+				A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */,
+				A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -691,6 +698,7 @@
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
 				A991188B13E759F30067E987 /* SettingsView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
+				A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -899,6 +907,7 @@
 				A9FDD38E13E61B5400758BD7 /* top-bar-image-frame.png in Resources */,
 				A991188C13E759F30067E987 /* SettingsView.xib in Resources */,
 				A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */,
+				A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -985,6 +994,7 @@
 				A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */,
 				A9E4B01B13F3EADE00DAE368 /* NMChannel.m in Sources */,
 				A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */,
+				A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

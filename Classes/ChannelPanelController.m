@@ -106,7 +106,7 @@
 	popover.delegate = self;
 }
 
-- (IBAction)showChannelManagementView:(id)sender {
+- (IBAction)showChannelManagementView:(id)sender {	
 	ChannelManagementViewController * chnMngCtrl = [[ChannelManagementViewController alloc] init];
 	chnMngCtrl.managedObjectContext = videoViewController.managedObjectContext;
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:chnMngCtrl];
