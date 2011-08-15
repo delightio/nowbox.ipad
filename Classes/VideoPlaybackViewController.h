@@ -27,7 +27,7 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, NMVideoListUpdateDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	//IBOutlet UITextView * debugMessageView;
 	NMMovieView * movieView;
@@ -75,9 +75,6 @@
 - (IBAction)toggleChannelPanel:(id)sender;
 - (IBAction)toggleChannelPanelFullScreen:(id)sender;
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
-
-- (IBAction)refreshVideoList:(id)sender;
-- (IBAction)showAirPlayPopover:(id)sender;
 
 - (void)stopVideo;
 //- (void)requestAddVideoAtIndex:(NSUInteger)idx;

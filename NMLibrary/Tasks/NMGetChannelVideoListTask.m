@@ -25,7 +25,6 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 @synthesize channel, channelName;
 @synthesize newChannel, urlString;
 @synthesize numberOfVideoRequested;
-@synthesize delegate;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {

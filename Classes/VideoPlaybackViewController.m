@@ -505,32 +505,6 @@
 }
 
 
-#pragma mark NMVideoListUpdateDelegate methods
-- (BOOL)task:(NMRefreshChannelVideoListTask *)vidListTask shouldBeginPlaybackSafeUpdateForChannel:(NMChannel *)chnl {
-	return chnl == currentChannel;
-}
-
-- (NMVideo *)currentVideoForTask:(NMRefreshChannelVideoListTask *)vidListTask {
-	return [self playerCurrentVideo];
-}
-
-- (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask {
-	controlScrollView.scrollEnabled = NO;
-	// cancel Direct Resolution Task and Get Vdieo list task that may have been triggered when the user is waiting for videos
-	BOOL firstPass = YES;
-	for (AVPlayerItem * pItem in movieView.player.items ) {
-		if ( firstPass ) {
-			firstPass = NO;
-		} else {
-			[movieView.player removeItem:pItem];
-		}
-	}
-}
-
-- (void)taskEndPlaybackSafeUpate:(NMRefreshChannelVideoListTask *)vidListTask {
-	controlScrollView.scrollEnabled = YES;
-}
-
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
 
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
@@ -1082,17 +1056,6 @@
         [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
     }
     [UIView commitAnimations];
-}
-
-- (IBAction)refreshVideoList:(id)sender {
-	[nowmovTaskController issueRefreshVideoListForChannel:currentChannel delegate:self];
-}
-
-- (IBAction)showAirPlayPopover:(id)sender {
-	MPVolumeView *volumeView = [[MPVolumeView alloc] init];
-	[volumeView setShowsVolumeSlider:NO];
-	[volumeView sizeToFit];
-	
 }
 
 - (void)movieViewTouchUp:(id)sender {

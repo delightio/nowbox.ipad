@@ -63,7 +63,6 @@
 		A94D681713A2EEF4003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
 		A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
 		A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
 		A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
 		A94D682713A2EF00003FC68F /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
@@ -113,7 +112,6 @@
 		A9976F0A13BB35AD00B06DFF /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
 		A9976F0B13BB35AD00B06DFF /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
 		A9976F0C13BB35AD00B06DFF /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A9976F0D13BB35AD00B06DFF /* NMRefreshChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */; };
 		A9976F0E13BB35AD00B06DFF /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
 		A9976F0F13BB35AD00B06DFF /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
 		A9976F1013BB35AD00B06DFF /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
@@ -290,8 +288,6 @@
 		A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginViewController.h; sourceTree = "<group>"; };
 		A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterLoginViewController.m; sourceTree = "<group>"; };
 		A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwitterLoginView.xib; sourceTree = "<group>"; };
-		A98154A6137E1607001FADB4 /* NMRefreshChannelVideoListTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMRefreshChannelVideoListTask.h; sourceTree = "<group>"; };
-		A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMRefreshChannelVideoListTask.m; sourceTree = "<group>"; };
 		A98C241113D38C030061A594 /* button-like-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like-active.png"; sourceTree = "<group>"; };
 		A98C241213D38C030061A594 /* button-like.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like.png"; sourceTree = "<group>"; };
 		A98C241313D38C030061A594 /* button-watch-later-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-watch-later-active.png"; sourceTree = "<group>"; };
@@ -645,8 +641,6 @@
 				A970504C13438F860022BF2C /* NMGetChannelsTask.m */,
 				A970504D13438F860022BF2C /* NMGetChannelVideoListTask.h */,
 				A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */,
-				A98154A6137E1607001FADB4 /* NMRefreshChannelVideoListTask.h */,
-				A98154A7137E1607001FADB4 /* NMRefreshChannelVideoListTask.m */,
 				A970505513438F860022BF2C /* NMGetVimeoDirectURLTask.h */,
 				A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */,
 				A970505713438F860022BF2C /* NMGetYouTubeDirectURLTask.h */,
@@ -1017,7 +1011,6 @@
 				A94D683113A2EF2E003FC68F /* NMTaskQueueController.m in Sources */,
 				A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */,
 				A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */,
-				A94D681D13A2EEFF003FC68F /* NMRefreshChannelVideoListTask.m in Sources */,
 				A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */,
 				A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */,
 				A94D682713A2EF00003FC68F /* NMTask.m in Sources */,
@@ -1040,7 +1033,6 @@
 				A9976F0A13BB35AD00B06DFF /* NMTaskQueueController.m in Sources */,
 				A9976F0B13BB35AD00B06DFF /* NMGetChannelsTask.m in Sources */,
 				A9976F0C13BB35AD00B06DFF /* NMGetChannelVideoListTask.m in Sources */,
-				A9976F0D13BB35AD00B06DFF /* NMRefreshChannelVideoListTask.m in Sources */,
 				A9976F0E13BB35AD00B06DFF /* NMGetVimeoDirectURLTask.m in Sources */,
 				A9976F0F13BB35AD00B06DFF /* NMGetYouTubeDirectURLTask.m in Sources */,
 				A9976F1013BB35AD00B06DFF /* NMTask.m in Sources */,

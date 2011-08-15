@@ -13,17 +13,7 @@
 @class NMChannel;
 @class NMVideo;
 @class NMVideoDetail;
-@class NMRefreshChannelVideoListTask;
 @class NMImageDownloadTask;
-
-@protocol NMVideoListUpdateDelegate <NSObject>
-
-- (BOOL)task:(NMRefreshChannelVideoListTask *)vidListTask shouldBeginPlaybackSafeUpdateForChannel:(NMChannel *)chnl;
-- (NMVideo *)currentVideoForTask:(NMRefreshChannelVideoListTask *)vidListTask;
-- (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask;
-- (void)taskEndPlaybackSafeUpate:(NMRefreshChannelVideoListTask *)vidListTask;
-
-@end
 
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
@@ -49,7 +39,6 @@
 - (void)issueGetLiveChannel;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid;
-- (void)issueRefreshVideoListForChannel:(NMChannel *)chnObj delegate:(id <NMVideoListUpdateDelegate>)del;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 // Channel subscription
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
