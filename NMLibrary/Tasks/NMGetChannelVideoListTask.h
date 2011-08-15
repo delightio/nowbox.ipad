@@ -18,17 +18,19 @@
 	NSMutableArray * parsedDetailObjects;
 	BOOL newChannel;
 	NSUInteger numberOfVideoAdded;
-	NSUInteger numberOfVideoRequested;
+	NSUInteger numberOfVideoRequested, currentPage;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSString * channelName;
 @property (nonatomic, retain) NSString * urlString;
 @property (nonatomic) NSUInteger numberOfVideoRequested;
+@property (nonatomic) NSUInteger currentPage;
 @property (nonatomic) BOOL newChannel;
 
 // in this wind-down version. we only have one single channel - Live
 - (id)initWithChannel:(NMChannel *)aChn;
+- (id)initGetMoreVideoForChannel:(NMChannel *)aChn atPage:(NSUInteger)pgNum;
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict;
 + (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict;

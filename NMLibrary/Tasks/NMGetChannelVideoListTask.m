@@ -17,6 +17,12 @@ NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideLi
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
 NSString * const NMDidFailGetChannelVideoListNotification = @"NMDidFailGetChannelVideoListNotification";
 
+// notification name for getting more videos in a channel
+NSString * const NMWillGetMoreChannelVideNotification = @"NMWillGetMoreChannelVideNotification";
+NSString * const NMDidGetMoreChannelVideoNotification = @"NMDidGetMoreChannelVideoNotification";
+NSString * const NMDidFailGetMoreChannelVideoNotification = @"NMDidFailGetMoreChannelVideoNotification";
+
+
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
 static NSArray * sharedVideoDirectJSONKeys = nil;
@@ -24,7 +30,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 @implementation NMGetChannelVideoListTask
 @synthesize channel, channelName;
 @synthesize newChannel, urlString;
-@synthesize numberOfVideoRequested;
+@synthesize numberOfVideoRequested, currentPage;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {
@@ -85,6 +91,18 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	return self;
 }
 
+- (id)initGetMoreVideoForChannel:(NMChannel *)aChn atPage:(NSUInteger)pgNum {
+	self = [super init];
+	command = NMCommandGetMoreVideoForChannel;
+	self.channel = aChn;
+	self.channelName = aChn.title;
+	self.targetID = aChn.nm_id;
+	self.urlString = aChn.resource_uri;
+	numberOfVideoRequested = 20;
+	currentPage = pgNum;
+	return self;
+}
+
 - (void)dealloc {
 	[channelName release];
 	[channel release];
@@ -94,7 +112,19 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
+	NSString * urlStr = nil;
+	switch (command) {
+		case NMCommandGetMoreVideoForChannel:
+			urlStr = [NSString stringWithFormat:@"%@/videos?page=%dlimit=%d&user_id=%d", urlString, currentPage, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
+			break;
+			
+		case NMCommandGetChannelVideoList:
+			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
+			break;
+			
+		default:
+			break;
+	}
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Get Channel Video List: %@", urlStr);
@@ -127,7 +157,63 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	
 }
 
+- (void)insertAllVideosInController:(NMDataController *)ctrl {
+	NSDictionary * dict;
+	NMVideo * vidObj;
+	NMVideoDetail * dtlObj;
+	NSUInteger vidCount = 0;
+	for (dict in parsedObjects) {
+		vidObj = [ctrl insertNewVideo];
+		[vidObj setValuesForKeysWithDictionary:dict];
+		// channel
+		vidObj.channel = channel;
+		[channel addVideosObject:vidObj];
+		// video detail
+		dtlObj = [ctrl insertNewVideoDetail];
+		dict = [parsedDetailObjects objectAtIndex:vidCount];
+		[dtlObj setValuesForKeysWithDictionary:dict];
+		dtlObj.video = vidObj;
+		vidObj.detail = dtlObj;
+		
+		vidCount++;
+	}
+	numberOfVideoAdded = [parsedObjects count];
+}
+
+- (void)insertOnlyNewVideosInController:(NMDataController *)ctrl {
+	// transverse server list
+	NMVideo * vidObj;
+	NSDictionary * vidDict;
+	for (vidDict in parsedObjects) {
+		// check if the object already exists
+		vidObj = [ctrl videoForID:[vidDict objectForKey:@"nm_id"]];
+		if ( vidObj ) {
+			// video object exists. check if we need to set relationship
+			
+		}
+		// check the relationship
+	}
+}
+
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
+	switch (command) {
+		case NMCommandGetChannelVideoList:
+		{
+			// delete all existing channel
+			NSSet * chnVideos = channel.videos;
+			if ( chnVideos ) [ctrl deleteManagedObjects:chnVideos];
+			// put in all videos
+			[self insertAllVideosInController:ctrl];
+			break;
+		}	
+		case NMCommandGetMoreVideoForChannel:
+			[self insertOnlyNewVideosInController:ctrl];
+			break;
+			
+		default:
+			break;
+	}
+	return;
 	// add all video from server for now
 	NSDictionary * dict;
 	NMVideo * vidObj;

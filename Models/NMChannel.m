@@ -2,7 +2,7 @@
 //  NMChannel.m
 //  ipad
 //
-//  Created by Bill So on 11/8/11.
+//  Created by Bill So on 8/15/11.
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 
@@ -25,7 +25,8 @@
 @dynamic thumbnail_uri;
 @dynamic title;
 @dynamic type;
-@dynamic videos;
+@dynamic nm_last_page;
 @dynamic categories;
+@dynamic videos;
 
 @end

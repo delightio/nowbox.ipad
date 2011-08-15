@@ -276,6 +276,21 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	return sortedVideoList;
 //}
 
+- (NMVideo *)videoForID:(NSNumber *)vid {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	NMVideo * vidObj = nil;
+	if ( [result count] ) {
+		vidObj = [result objectAtIndex:0];
+		//[categoryCacheDictionary setObject:catObj forKey:catObj.nm_id];
+	}
+	return vidObj;
+}
+
 #pragma mark Data parsing
 - (void)createDataParsingOperationForTask:(NMTask *)atask {
 	NSInvocationOperation * op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseAndProcessData:) object:atask];
