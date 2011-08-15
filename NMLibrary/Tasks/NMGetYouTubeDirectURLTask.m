@@ -109,57 +109,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	NSLog(@"resolved URL for %@: %@", self.targetID, directURLString);
 #endif
 }
-/*
-- (void)processDownloadedDataInBuffer {
-	if ( [buffer length] == 0 ) {
-		// the buffer is empty which should not happen
-		encountersErrorDuringProcessing = YES;
-		return;
-	}
-	NSString * resultString = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-	// remove odd begin pattern in the JSON source from Youtube
-	NSString * cleanResultStr =[resultString stringByReplacingOccurrencesOfString:@")]}'" withString:@"" options:0 range:NSMakeRange(0, 5)];
-	[resultString release];
-	
-	// get the JSON object
-	NSDictionary * dict = [cleanResultStr objectFromJSONString];
-	// check if there's error
-	if ( ![dict isKindOfClass:[NSDictionary class]] ) {
-		encountersErrorDuringProcessing = YES;
-		return;
-	}
-	if ( [[dict objectForKey:@"result"] isEqualToString:@"error"] ) {
-		encountersErrorDuringProcessing = YES;
-		NSArray * ay = [dict objectForKey:@"errors"];
-		if ( [ay count] ) {
-			NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:[ay objectAtIndex:0], @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
-			parsedObjects = [[NSMutableArray alloc] initWithObjects:dict, nil];
-		}
-		return;
-	}
-	NSDictionary * contentDict = [dict objectForKey:@"content"];
-	if ( contentDict == nil || [contentDict count] == 0) {
-		encountersErrorDuringProcessing = YES;
-		parsedObjects = [[NSMutableArray alloc] initWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil], nil];
-		return;
-	}
-	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
-	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
-	if ( directURLString == nil && directSDURLString == nil ) {
-		// error - we can't find the direct URL to video
-		encountersErrorDuringProcessing = YES;
-		NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate HQ video stream", @"error", [NSNumber numberWithInteger:NMVideoDirectURLResolutionError], @"errorNum", video, @"target_object", nil];
-		parsedObjects = [[NSMutableArray alloc] initWithObjects:dict, nil];
-	} else if ( directURLString == nil && directSDURLString ) {
-		self.directURLString = directSDURLString;
-	}
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	else {
-		NSLog(@"resolved URL: %@", self.targetID);
-	}
-#endif
-}
-*/
+
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	if ( encountersErrorDuringProcessing ) {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL

@@ -10,24 +10,27 @@
 #import "NMDataType.h"
 
 
+@class NMChannel;
 @class NMVideo;
 
 @interface NMEventTask : NMTask {
-    NSInteger videoID;
 	NMEventType eventType;
-	CGFloat duration;	// duration of video
+//	CGFloat duration;	// duration of video
 	CGFloat elapsedSeconds;	// time elapse
 	NMVideo * video;
+	NMChannel * channel;
 	NSInteger errorCode;
 	BOOL playedToEnd;
 }
 
+@property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic) CGFloat elapsedSeconds;
-@property (nonatomic) CGFloat duration;
+//@property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL playedToEnd;
 @property (nonatomic) NSInteger errorCode;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v;
+- (id)initWithChannel:(NMChannel *)aChn subscribe:(BOOL)abool;
 
 @end

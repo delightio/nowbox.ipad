@@ -21,6 +21,7 @@
 #define NM_VIDEO_READY_FOR_DISPLAY_CONTEXT		105
 #define NM_PLAYER_ITEM_STATUS_CONTEXT			106
 #define NM_PLAYER_RATE_CONTEXT					107
+#define NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT		108
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
@@ -121,6 +122,7 @@
 	[self setupPlayer];
 	
 	// ======
+	[nowmovTaskController issueGetFeaturedCategories];
 	
 	// load channel view
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
@@ -136,8 +138,12 @@
 	// listen to system notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 	// multiple display support
-	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayConnectedNotification:) name:UIScreenDidConnectNotification object:nil];
-	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayDisconnectedNotification:) name:UIScreenDidDisconnectNotification object:nil];
+//	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayConnectedNotification:) name:UIScreenDidConnectNotification object:nil];
+//	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayDisconnectedNotification:) name:UIScreenDidDisconnectNotification object:nil];
+	
+	// channel management view notification
+	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementWillAppearNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -223,7 +229,7 @@
 	// send event back to nowmov server
 	currentChannel.nm_last_vid = theVideo.nm_id;
 	// send event back to nowmov server
-	[nowmovTaskController issueSendViewingEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 }
 
 
@@ -295,12 +301,15 @@
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
 	player.playbackDelegate = self;
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
-	player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
-	player.usesAirPlayVideoWhileAirPlayScreenIsActive = YES;
+	if ( NM_RUNNING_IOS_5 ) {
+		player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
+		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
+	}
 	movieView.player = player;
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
+	[player addObserver:self forKeyPath:@"airPlayVideoActive" options:0 context:(void *)NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT];
 	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
 	// all control view should observe to player changes
 	[player addObserver:self forKeyPath:@"rate" options:0 context:(void *)NM_PLAYER_RATE_CONTEXT];
@@ -607,15 +616,27 @@
 	[self playCurrentVideo];
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
 	// send event back to server
-	[nowmovTaskController issueSendViewingEventForVideo:item.nmVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[nowmovTaskController issueSendViewEventForVideo:item.nmVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 }
 
-- (void)handleDisplayConnectedNotification:(NSNotification *)aNotification {
-	NSLog(@"display connected");
-}
-
-- (void)handleDisplayDisconnectedNotification:(NSNotification *)aNotification {
-	NSLog(@"display disconnected");
+- (void)handleChannelManagementNotification:(NSNotification *)aNotification {
+	if ( NM_RUNNING_IOS_5 ) {
+		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
+			// stop video from playing
+			if ( !movieView.player.airPlayVideoActive ) [self stopVideo];
+		} else {
+			// resume video playing
+			if ( !movieView.player.airPlayVideoActive ) [self playCurrentVideo];
+		}
+	} else {
+		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
+			// stop video from playing
+			[self stopVideo];
+		} else {
+			// resume video playing
+			[self playCurrentVideo];
+		}
+	}
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -675,7 +696,13 @@
 			didPlayToEnd = NO;
 		}
 		[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
-	} 
+	} else if ( c == NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT ) {
+		if ( movieView.player.airPlayVideoActive ) {
+			// update the player interface to indicate that Airplay has been enabled
+		} else {
+			// remove the interface indication
+		}
+	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {
 #ifdef DEBUG_PLAYER_NAVIGATION

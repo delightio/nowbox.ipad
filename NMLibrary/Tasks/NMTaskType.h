@@ -13,3 +13,4 @@
 #import "NMGetYouTubeDirectURLTask.h"
 #import "NMEventTask.h"
 #import "NMImageDownloadTask.h"
+#import "NMGetCategoriesTask.h"

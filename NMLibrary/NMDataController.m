@@ -8,10 +8,12 @@
 
 #import "NMDataController.h"
 #import "NMTask.h"
+#import "NMCategory.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
 
 
+NSString * const NMCategoryEntityName = @"NMCategory";
 NSString * const NMChannelEntityName = @"NMChannel";
 NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
@@ -20,7 +22,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 @implementation NMDataController
 @synthesize managedObjectContext, sortedVideoList;
-@synthesize trendingChannel;
+@synthesize categories, categoryCacheDictionary;
+@synthesize subscribedChannels, trendingChannel;
 
 - (id)init {
 	self = [super init];
@@ -28,15 +31,21 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	
-	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
-	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
+//	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
+//	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
+	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]] retain];
+	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
+	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
 	return self;
 }
 
 - (void)dealloc {
 	[trendingChannel release];
-	[channelNamePredicateTemplate release];
+	[categoryCacheDictionary release];
+//	[channelNamePredicateTemplate release];
+	[subscribedChannelsPredicate release];
+	[objectForIDPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[sortedVideoList release];
@@ -49,6 +58,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	for (mobj in objs) {
 		[managedObjectContext deleteObject:mobj];
 	}
+	// clean up cache
+	[categoryCacheDictionary removeAllObjects];
 }
 
 - (void)deleteVideoInChannel:(NMChannel *)chnObj {
@@ -109,10 +120,80 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 }
 
+#pragma mark Categories
+- (NSArray *)categories {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	
+	[categoryCacheDictionary removeAllObjects];
+	if ( [result count] ) {
+		for (NMCategory * cat in result) {
+			[categoryCacheDictionary setObject:cat forKey:cat.nm_id];
+		}
+		return result;
+	}
+	return nil;
+}
+
+- (NMCategory *)insertNewCategory {
+	NMCategory * categoryObj = [NSEntityDescription insertNewObjectForEntityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext];
+	return categoryObj;
+}
+
+- (NMCategory *)categoryForID:(NSNumber *)catID {
+	id catObj = [categoryCacheDictionary objectForKey:catID];
+	if ( catObj ) {
+		if ( catObj == [NSNull null] ) return nil;
+		return catObj;
+	}
+	
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:catID forKey:@"OBJECT_ID"]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	if ( [result count] ) {
+		NMCategory * catObj = [result objectAtIndex:0];
+		[categoryCacheDictionary setObject:catObj forKey:catObj.nm_id];
+	} else {
+		// this category does not exist in core data
+		[categoryCacheDictionary setObject:[NSNull null] forKey:catID];
+	}
+	return catObj;
+}
+
 #pragma mark Channels
 - (NMChannel *)insertNewChannel {
 	NMChannel * channelObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
 	return channelObj;
+}
+
+- (NSArray *)subscribedChannels {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setReturnsObjectsAsFaults:NO];
+	[request setPredicate:subscribedChannelsPredicate];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	return [result count] ? result : nil;
+}
+
+- (NMChannel *)channelForID:(NSNumber *)chnID {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chnID forKey:@"OBJECT_ID"]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	
+	return [result count] ? [result objectAtIndex:0] : nil;
 }
 
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy {
@@ -120,7 +201,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[channelNamesPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channelAy forKey:@"NM_CHANNEL_NAMES"]]];
+//	[request setPredicate:[channelNamesPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channelAy forKey:@"NM_CHANNEL_NAMES"]]];
 	
 	NSError * error = nil;
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:&error];
@@ -256,7 +337,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 		// send notification
 	if ( task.encountersErrorDuringProcessing == NO ) {
-		[notificationCenter postNotificationName:[task didLoadNotificationName] object:task userInfo:[task userInfo]];
+		NSString * notifyStr = [task didLoadNotificationName];
+		if ( notifyStr ) [notificationCenter postNotificationName:notifyStr object:task userInfo:[task userInfo]];
 	}
 //	}
 }

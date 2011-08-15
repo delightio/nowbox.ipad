@@ -72,6 +72,24 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 #pragma mark Queue tasks to network controller
+- (void)issueGetFeaturedCategories {
+	NMGetCategoriesTask * task = [[NMGetCategoriesTask alloc] init];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueGetChannelsForCategory:(NMCategory *)aCat {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelForCategory:aCat];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueChannelSearchForKeyword:(NSString *)aKeyword {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initSearchChannelWithKeyword:aKeyword];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueGetChannels {
 //	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFriendChannels];
 //	[networkController addNewConnectionForTask:task];
@@ -125,6 +143,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueWatchLater:(BOOL)enqueue video:(NMVideo *)aVideo {
+	NMEventType t = enqueue ? NMEventEnqueue : NMEventDequeue;
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj {
 	NMImageDownloadTask * task = nil;
 	if ( dtlObj.author_thumbnail_uri ) {
@@ -145,9 +170,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return task;
 }
 
+- (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj {
+	NMEventTask * task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:aSubscribe];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventUpVote forVideo:aVideo];
-	task.duration = vdur;
+//	task.duration = vdur;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -155,23 +186,23 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventDownVote forVideo:aVideo];
-	task.duration = vdur;
+//	task.duration = vdur;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
 
-- (void)issueSendRewindEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventRewind forVideo:aVideo];
-	task.duration = vdur;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueSendRewindEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventRewind forVideo:aVideo];
+//	task.duration = vdur;
+//	task.elapsedSeconds = sec;
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
-	task.duration = vdur;
+//	task.duration = vdur;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -179,7 +210,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec playedToEnd:(BOOL)aEnd {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
-	task.duration = vdur;
+//	task.duration = vdur;
 	task.playedToEnd = aEnd;
 	// how long the user has watched a video
 	task.elapsedSeconds = sec;
@@ -187,17 +218,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSendViewingEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventViewing forVideo:aVideo];
-	task.duration = vdur;
-	// how long the user has watched a video
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueSendViewingEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventViewing forVideo:aVideo];
+////	task.duration = vdur;
+//	// how long the user has watched a video
+//	task.elapsedSeconds = sec;
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
-- (void)issueReexamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventReexamine forVideo:aVideo];
+- (void)issueExamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventExamine forVideo:aVideo];
 	task.errorCode = err;
 	[networkController addNewConnectionForTask:task];
 	[task release];

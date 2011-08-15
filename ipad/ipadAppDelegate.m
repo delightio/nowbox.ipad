@@ -15,6 +15,7 @@
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
 NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
+BOOL NM_RUNNING_IOS_5;
 
 @implementation ipadAppDelegate
 
@@ -36,6 +37,13 @@ NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	// detect version
+	if ( kCFCoreFoundationVersionNumber > 550.58f ) {
+		NM_RUNNING_IOS_5 = YES;
+	} else {
+		NM_RUNNING_IOS_5 = NO;
+	}
+
 	[NMStyleUtility sharedStyleUtility];
 	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	// create task controller

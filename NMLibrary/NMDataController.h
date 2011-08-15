@@ -8,6 +8,7 @@
 
 #import "NMTask.h"
 
+@class NMCategory;
 @class NMChannel;
 @class NMVideo;
 @class NMVideoDetail;
@@ -17,16 +18,23 @@
 	NSOperationQueue * operationQueue;
 	
 	NSManagedObjectContext * managedObjectContext;
-	NSPredicate * channelNamePredicateTemplate;
-	NSPredicate * channelNamesPredicateTemplate;
+//	NSPredicate * channelNamePredicateTemplate;
+//	NSPredicate * channelNamesPredicateTemplate;
+	NSPredicate * subscribedChannelsPredicate;
+	NSPredicate * objectForIDPredicateTemplate;
+	
+	NSMutableDictionary * categoryCacheDictionary;
 	
 	NSArray * sortedVideoList;
 	NMChannel * trendingChannel;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
+@property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, readonly) NMChannel * trendingChannel;
+@property (nonatomic, readonly) NSArray * subscribedChannels;
+@property (nonatomic, readonly) NSArray * categories;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
@@ -36,9 +44,13 @@
 - (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo;
 - (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo;
 - (void)deleteAllVideos;
+// category
+- (NMCategory *)insertNewCategory;
+- (NMCategory *)categoryForID:(NSNumber *)catID;
 // channels
 - (NMChannel *)insertNewChannel;
-- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
+//- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
+- (NMChannel *)channelForID:(NSNumber *)chnID;
 - (BOOL)emptyChannel;
 // video
 - (NMVideo *)insertNewVideo;

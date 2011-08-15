@@ -23,12 +23,9 @@ typedef enum {
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
 	NMCommandSubscribeChannel,
-	NMCommmandUnsubscrbeChannel,
+	NMCommandUnsubscrbeChannel,
 	NMCommandGetFeaturedCategories,
-	NMCommandGetVideoInfo,
 	NMCommandGetChannelVideoList,
-	NMCommandGetNextVideo,
-	NMCommandGetVideoReason,
 	NMCommandGetYouTubeDirectURL,
 	NMCommandGetVimeoDirectURL,
 	NMCommandGetChannelThumbnail,
@@ -46,13 +43,15 @@ typedef enum {
 } NMVideoQueueStatusType;
 
 typedef enum {
+	NMEventSubscribeChannel,
+	NMEventUnsubscribeChannel,
+	NMEventEnqueue,
+	NMEventDequeue,
 	NMEventUpVote,
 	NMEventDownVote,
-	NMEventRewind,
 	NMEventShare,
 	NMEventView,
-	NMEventViewing,
-	NMEventReexamine,
+	NMEventExamine,
 } NMEventType;
 
 typedef enum {
@@ -96,6 +95,7 @@ extern NSString * const NMDidFailSendEventNotification;
 extern NSString * const NMURLConnectionErrorNotification;
 
 // Entity names
+extern NSString * const NMCategoryEntityName;
 extern NSString * const NMChannelEntityName;
 extern NSString * const NMVideoEntityName;
 extern NSString * const NMVideoDetailEntityName;

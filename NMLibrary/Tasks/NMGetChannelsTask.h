@@ -15,17 +15,19 @@
 	NSArray * channelJSONKeys;
 	NMChannel * trendingChannel;
 	NMCategory * category;
-	NSNumber * categoryID;
 	NSString * searchWord;
+	NSMutableIndexSet * channelIndexSet;
+	NSMutableDictionary * parsedObjectDictionary;
 }
 
 @property (nonatomic, retain) NMChannel * trendingChannel;
 @property (nonatomic, retain) NSString * searchWord;
 @property (nonatomic, retain) NMCategory * category;
-@property (nonatomic, retain) NSNumber * categoryID;
 
 - (id)initGetFriendChannels;
 - (id)initGetTopicChannels;
 - (id)initGetDefaultChannels;
+- (id)initGetChannelForCategory:(NMCategory *)aCat;
+- (id)initSearchChannelWithKeyword:(NSString *)str;
 
 @end
