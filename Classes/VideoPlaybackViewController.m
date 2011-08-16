@@ -188,6 +188,8 @@
 	// get rid of time observer of video player
  	[movieView.player removeTimeObserver:timeObserver];
 	[timeObserver release];
+	[controlAppearanceTimer invalidate];
+	[controlAppearanceTimer release];
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
 	[super dealloc];
@@ -284,6 +286,9 @@
 	}
 #endif
 	movieView.player = player;
+	
+	// timer
+	controlAppearanceTimer = [[NSTimer timerWithTimeInterval:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL target:self selector:@selector(hideControlView) userInfo:nil repeats:NO] retain];
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
@@ -355,7 +360,8 @@
 	NSInteger ctxInt = (NSInteger)context;
 	switch (ctxInt) {
 		case NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER:
-			[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
+			[[NSRunLoop mainRunLoop] addTimer:controlAppearanceTimer forMode:NSDefaultRunLoopMode];
+//			[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
 			break;
 			
 		default:
@@ -622,7 +628,8 @@
 		[UIView commitAnimations];
 		
 		// perform the delay method after 2 sec to hide the control view
-		[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
+		[[NSRunLoop mainRunLoop] addTimer:controlAppearanceTimer forMode:NSDefaultRunLoopMode];
+//		[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
 		
 //		t = movieView.player.currentItem.asset.duration;
 //		// check if the time is valid
@@ -1075,6 +1082,7 @@
 	[UIView beginAnimations:nil context:nil];
 	v.alpha = 0.0;
 	[UIView commitAnimations];
+	[controlAppearanceTimer invalidate];
 }
 
 @end

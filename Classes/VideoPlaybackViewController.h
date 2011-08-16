@@ -58,6 +58,7 @@
 	@private
     NSManagedObjectContext *managedObjectContext_;
 	NSNotificationCenter * defaultNotificationCenter;
+	NSTimer * controlAppearanceTimer;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
