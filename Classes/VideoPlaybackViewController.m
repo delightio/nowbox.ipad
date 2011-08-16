@@ -750,14 +750,6 @@
 //	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 }
 
-- (void)delayRevertPreviousVideo {
-	currentXOffset -= 1024.0f;
-	if ( playbackModelController.previousVideo ) {
-		[playbackModelController moveToPreviousVideo];
-		[movieView.player revertToVideo:playbackModelController.currentVideo];
-	}
-}
-
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 	scrollView.scrollEnabled = YES;
@@ -774,7 +766,6 @@
 			NSLog(@"can't move to next video. no video!!");
 #endif
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
-//		[self performSelector:@selector(delayRevertPreviousVideo) withObject:nil afterDelay:0.1f];
 		[movieView setActivityIndicationHidden:NO animated:NO];
 		didSkippedVideo = YES;
 		currentXOffset -= 1024.0f;
@@ -810,24 +801,6 @@
 //		[infoPanelImageView removeFromSuperview];
 //		[infoPanelImageView release];
 //		infoPanelImageView = nil;
-//	}
-//}
-//
-//- (IBAction)showVolumeControlView:(id)sender {
-//	if ( volumePanelImageView == nil ) {
-//		UIButton * btn = (UIButton *)sender;
-//		UIImage * img = [UIImage imageNamed:@"volume_panel"];
-//		CGRect theFrame;
-//		theFrame.size = img.size;
-//		theFrame.origin.y = 768.0 - img.size.height - 96.0 + 35.0;
-//		theFrame.origin.x = floorf(btn.frame.origin.x - ( img.size.width - btn.frame.size.width ) / 2.0);
-//		volumePanelImageView = [[UIImageView alloc] initWithImage:img];
-//		volumePanelImageView.frame = theFrame;
-//		[controlsContainerView addSubview:volumePanelImageView];
-//	} else {
-//		[volumePanelImageView removeFromSuperview];
-//		[volumePanelImageView release];
-//		volumePanelImageView = nil;
 //	}
 //}
 //
