@@ -1048,9 +1048,7 @@
             [self playCurrentVideo];
         }
     }
-    
-    [movieView setHidden:shouldToggleToFullScreen];
-
+  
     // resize animation is slow, so doing this out of animation
     if (shouldToggleToFullScreen) {
         theFrame.size.height = 748-8;
@@ -1065,14 +1063,25 @@
         theFrame = channelController.panelView.frame;
         // the dimensions are hard coded :(
         theFrame.origin.y = 20;
+
+//		movieView.frame = CGRectMake(0, -340, 640.0f, 360.0f);
+
+        controlScrollView.frame = CGRectMake(0, -360, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
+
         channelController.panelView.frame = theFrame;
         [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        
     }
     else {
         theFrame = channelController.panelView.frame;
         // the dimensions are hard coded :(
         theFrame.size.height = 380;
         theFrame.origin.y = 380;
+		
+//        movieView.frame = CGRectMake(0, 20.0f, 640.0f, 360.0f);
+
+        controlScrollView.frame = CGRectMake(0, 0, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
+
         channelController.panelView.frame = theFrame;
         [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
     }
@@ -1111,43 +1120,48 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
+        if (gestureRecognizer.state != UIGestureRecognizerStatePossible && gestureRecognizer.state != UIGestureRecognizerStateEnded && gestureRecognizer.state != UIGestureRecognizerStateCancelled && gestureRecognizer.state != UIGestureRecognizerStateFailed) {
+            if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+                otherGestureRecognizer.enabled = NO;
+                [temporaryDisabledGestures addObject:otherGestureRecognizer];
+            }
+            return YES;
+        } else {
+            pinchTemporarilyDisabled = NO;
+        }
+        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+            gr.enabled = YES;
         }
         [temporaryDisabledGestures removeAllObjects];
-        
-        if (gestureRecognizer.numberOfTouches > 1) {
-            otherGestureRecognizer.enabled = NO;
-            [temporaryDisabledGestures addObject:otherGestureRecognizer];
-        }
         return YES;
     }
-    // must be the 2 finger swipe up/down gestures
-    else if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
-        }
-        [temporaryDisabledGestures removeAllObjects];
-        
-        if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
-            // never disable this?
+    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        if (gestureRecognizer.state != UIGestureRecognizerStatePossible && gestureRecognizer.state != UIGestureRecognizerStateEnded && gestureRecognizer.state != UIGestureRecognizerStateCancelled && gestureRecognizer.state != UIGestureRecognizerStateFailed) {
+            if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
+                otherGestureRecognizer.enabled = NO;
+                [temporaryDisabledGestures addObject:otherGestureRecognizer];
+            } else {
+                pinchTemporarilyDisabled = NO;
+            }
             return YES;
         }
-        if (gestureRecognizer.numberOfTouches > 1) {
-            otherGestureRecognizer.enabled = NO;
-            [temporaryDisabledGestures addObject:otherGestureRecognizer];
+        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+            gr.enabled = YES;
         }
+        [temporaryDisabledGestures removeAllObjects];
         return YES;
     }
-    
+    for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+        gr.enabled = YES;
+    }
+    [temporaryDisabledGestures removeAllObjects];
     return YES;
 }
 
 -(void)swipedUp:(UIGestureRecognizer *)sender {
-    //    NSLog(@"Swiped up");
-    
-    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-        gestureRecognizer.enabled = YES;
+    pinchTemporarilyDisabled = YES;
+    for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+        gr.enabled = YES;
     }
     [temporaryDisabledGestures removeAllObjects];
     
@@ -1163,33 +1177,35 @@
     } else {
         [self channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:channelController.highlightedChannelIndex];
     }
-    
 }
 
 -(void)swipedDown:(UIGestureRecognizer *)sender {
-    //    NSLog(@"Swiped down");
-    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-        gestureRecognizer.enabled = YES;
+    pinchTemporarilyDisabled = YES;
+    for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+        gr.enabled = YES;
     }
     [temporaryDisabledGestures removeAllObjects];
     [self channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:channelController.highlightedChannelIndex];
 }
 
 - (void)handleChannelViewPinched:(id)sender {
+    if (pinchTemporarilyDisabled) {
+        return;
+    }
     UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
     // sometimes pinch is disabled on cancel, make sure to reenable it
     rcr.enabled = YES;
-    
+
     if (rcr.state == UIGestureRecognizerStateCancelled) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
+        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+            gr.enabled = YES;
         }
         [temporaryDisabledGestures removeAllObjects];
     }
     
     if (rcr.state == UIGestureRecognizerStateEnded) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
+        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+            gr.enabled = YES;
         }
         [temporaryDisabledGestures removeAllObjects];
         
@@ -1212,15 +1228,15 @@
     rcr.enabled = YES;
 
     if (rcr.state == UIGestureRecognizerStateCancelled) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
+        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+            gr.enabled = YES;
         }
         [temporaryDisabledGestures removeAllObjects];
     }
     
     if (rcr.state == UIGestureRecognizerStateEnded) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
+        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+            gr.enabled = YES;
         }
         [temporaryDisabledGestures removeAllObjects];
         

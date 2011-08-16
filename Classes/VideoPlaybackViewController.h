@@ -59,6 +59,7 @@
 	NSNotificationCenter * defaultNotificationCenter;
 
     NSMutableArray *temporaryDisabledGestures;
+    BOOL pinchTemporarilyDisabled;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
