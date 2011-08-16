@@ -301,10 +301,12 @@
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
 	player.playbackDelegate = self;
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 	if ( NM_RUNNING_IOS_5 ) {
 		player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
 	}
+#endif
 	movieView.player = player;
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
@@ -426,6 +428,7 @@
 		// translate the movie view
 		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 		if ( [playbackModelController moveToNextVideo] ) {
+			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
 		controlScrollView.scrollEnabled = YES;
@@ -529,32 +532,6 @@
 }
 
 
-#pragma mark NMVideoListUpdateDelegate methods
-- (BOOL)task:(NMRefreshChannelVideoListTask *)vidListTask shouldBeginPlaybackSafeUpdateForChannel:(NMChannel *)chnl {
-	return chnl == currentChannel;
-}
-
-- (NMVideo *)currentVideoForTask:(NMRefreshChannelVideoListTask *)vidListTask {
-	return [self playerCurrentVideo];
-}
-
-- (void)taskBeginPlaybackSafeUpdate:(NMRefreshChannelVideoListTask *)vidListTask {
-	controlScrollView.scrollEnabled = NO;
-	// cancel Direct Resolution Task and Get Vdieo list task that may have been triggered when the user is waiting for videos
-	BOOL firstPass = YES;
-	for (AVPlayerItem * pItem in movieView.player.items ) {
-		if ( firstPass ) {
-			firstPass = NO;
-		} else {
-			[movieView.player removeItem:pItem];
-		}
-	}
-}
-
-- (void)taskEndPlaybackSafeUpate:(NMRefreshChannelVideoListTask *)vidListTask {
-	controlScrollView.scrollEnabled = YES;
-}
-
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
 
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
@@ -623,10 +600,14 @@
 	if ( NM_RUNNING_IOS_5 ) {
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
 			// stop video from playing
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 			if ( !movieView.player.airPlayVideoActive ) [self stopVideo];
+#endif
 		} else {
 			// resume video playing
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 			if ( !movieView.player.airPlayVideoActive ) [self playCurrentVideo];
+#endif
 		}
 	} else {
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
@@ -697,11 +678,13 @@
 		}
 		[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
 	} else if ( c == NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT ) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 		if ( movieView.player.airPlayVideoActive ) {
 			// update the player interface to indicate that Airplay has been enabled
 		} else {
 			// remove the interface indication
 		}
+#endif
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {
@@ -789,6 +772,7 @@
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
+			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
@@ -799,6 +783,7 @@
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
 			[playbackModelController moveToPreviousVideo];
+			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 		}
 	} else {
@@ -1086,17 +1071,6 @@
         [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
     }
     [UIView commitAnimations];
-}
-
-- (IBAction)refreshVideoList:(id)sender {
-	[nowmovTaskController issueRefreshVideoListForChannel:currentChannel delegate:self];
-}
-
-- (IBAction)showAirPlayPopover:(id)sender {
-	MPVolumeView *volumeView = [[MPVolumeView alloc] init];
-	[volumeView setShowsVolumeSlider:NO];
-	[volumeView sizeToFit];
-	
 }
 
 - (void)movieViewTouchUp:(id)sender {

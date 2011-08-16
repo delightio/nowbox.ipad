@@ -56,6 +56,7 @@
 - (NMVideo *)insertNewVideo;
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
+- (NMVideo *)videoForID:(NSNumber *)vid;
 //- (NSArray *)sortedLiveChannelVideoList;
 
 @end
