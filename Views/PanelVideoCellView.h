@@ -12,8 +12,9 @@
 @interface PanelVideoCellView : UIView {
     PanelVideoContainerView *cellData;
     BOOL cellIsHighlighted;
+    BOOL videoHasPlayed;
 }
 
-- (void)configureCellWithPanelVideoContainerView:(PanelVideoContainerView *)cell highlighted:(BOOL)isHighlighted;
+- (void)configureCellWithPanelVideoContainerView:(PanelVideoContainerView *)cell highlighted:(BOOL)isHighlighted videoPlayed:(BOOL)videoPlayedPreviously;
 - (void)drawLabel:(UILabel *)labelToDraw inContext:(CGContextRef)context;
 @end

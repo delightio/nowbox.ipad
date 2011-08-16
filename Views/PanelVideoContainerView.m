@@ -16,9 +16,10 @@
 @implementation PanelVideoContainerView
 @synthesize titleLabel, datePostedLabel, backgroundColorView, highlightedBackgroundImage;
 @synthesize highlightColor, durationLabel, viewsLabel;
-@synthesize normalColor, indexInTable;
+@synthesize normalColor, indexInTable, playedColor;
 @synthesize tableView;
 @synthesize videoRowDelegate;
+@synthesize videoStatusImageView;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -39,10 +40,11 @@
         
 		self.backgroundColor = styleUtility.channelPanelBackgroundColor;
 		self.normalColor = styleUtility.channelPanelBackgroundColor;
+		self.playedColor = styleUtility.channelPanelPlayedColor;
 		self.highlightColor = styleUtility.channelPanelHighlightColor;
         
         backgroundColorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, initialFrame.size.width, initialFrame.size.height+NM_VIDEO_CELL_PADDING)];
-        [backgroundColorView setBackgroundColor:normalColor];
+//        [backgroundColorView setBackgroundColor:normalColor];
         [backgroundColorView setClipsToBounds:YES];
 //        [self addSubview:backgroundColorView];
         
@@ -103,6 +105,8 @@
         highlightedCellView = [[PanelVideoCellView alloc]initWithFrame:frame];
         [self.contentView addSubview:highlightedCellView];
         
+        videoStatusImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+        
     }
     return self;
 }
@@ -134,6 +138,7 @@
     [highlightedBackgroundImage release];
     [cellView release];
     [highlightedCellView release];
+    [videoStatusImageView release];
     [super dealloc];
 }
 
@@ -146,7 +151,10 @@
     titleLabel.frame = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, theStringSize.width, theStringSize.height);
     titleLabel.text = aVideo.title;
     if (!isVideoPlayable) {
-        titleLabel.text = @"<placeholder> Video cannot be played on mobile devices";
+        videoStatusImageView.image = [NMStyleUtility sharedStyleUtility].videoStatusBadImage;
+    }
+    else {
+        videoStatusImageView.image = nil;
     }
     
 	datePostedLabel.text = [[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:aVideo.published_at];
@@ -162,18 +170,22 @@
     [viewsLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
     [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 36.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
     
+    if (aVideo.nm_playback_status == NMVideoQueueStatusPlayed) {
+        titleLabel.textColor = [NMStyleUtility sharedStyleUtility].videoTitlePlayedFontColor;
+        datePostedLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
+        durationLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
+        viewsLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
+    }
+    else {
+        titleLabel.textColor = [NMStyleUtility sharedStyleUtility].videoTitleFontColor;
+        datePostedLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
+        durationLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
+        viewsLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
+    }
     
-//    BOOL isHighlighted = YES;
-//    [backgroundColorView setBackgroundColor:highlightColor];
-//    titleLabel.highlighted = isHighlighted;
-//    datePostedLabel.highlighted = isHighlighted;
-//    durationLabel.highlighted = isHighlighted;
-//    viewsLabel.highlighted = isHighlighted;
-//    [highlightedBackgroundImage setHidden:!isHighlighted];
-//    
-    [highlightedCellView configureCellWithPanelVideoContainerView:self highlighted:YES];
+    [highlightedCellView configureCellWithPanelVideoContainerView:self highlighted:YES videoPlayed:(aVideo.nm_playback_status == NMVideoQueueStatusPlayed)];
     
-    [cellView configureCellWithPanelVideoContainerView:self highlighted:NO];
+    [cellView configureCellWithPanelVideoContainerView:self highlighted:NO videoPlayed:(aVideo.nm_playback_status == NMVideoQueueStatusPlayed)];
     
 }
 

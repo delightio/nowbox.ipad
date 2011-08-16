@@ -23,9 +23,10 @@
     return self;
 }
 
-- (void)configureCellWithPanelVideoContainerView:(PanelVideoContainerView *)cell highlighted:(BOOL)isHighlighted {
+- (void)configureCellWithPanelVideoContainerView:(PanelVideoContainerView *)cell highlighted:(BOOL)isHighlighted videoPlayed:(BOOL)videoPlayedPreviously {
     cellData = cell;
     cellIsHighlighted = isHighlighted;
+    videoHasPlayed = videoPlayedPreviously;
     self.frame = cell.frame;
     [self setNeedsDisplay];
 }
@@ -40,6 +41,8 @@
     
     if (cellIsHighlighted) {
         CGContextSetFillColorWithColor(context, cellData.highlightColor.CGColor);
+    } else if (videoHasPlayed) {
+        CGContextSetFillColorWithColor(context, cellData.playedColor.CGColor);
     } else {
         CGContextSetFillColorWithColor(context, cellData.normalColor.CGColor);
     }
@@ -53,6 +56,8 @@
     [self drawLabel:cellData.datePostedLabel inContext:context];
     [self drawLabel:cellData.durationLabel inContext:context];
     [self drawLabel:cellData.viewsLabel inContext:context];
+    
+    [cellData.videoStatusImageView.image drawInRect:CGRectMake(rectangle.size.width-24, 0, 24, 24)];
     
 //    CGContextSetFillColorWithColor(context, [NMStyleUtility sharedStyleUtility].channelBorderColor.CGColor);
 //    CGContextFillRect(context, CGRectMake(0, 87, rectangle.size.width, 1));

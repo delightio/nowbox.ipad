@@ -11,6 +11,7 @@
 		2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */; };
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
+		221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */ = {isa = PBXBuildFile; fileRef = 221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
 		A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
@@ -181,6 +182,7 @@
 		2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-shadow-background-right.png"; sourceTree = "<group>"; };
 		221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-thumbnail-frame.png"; sourceTree = "<group>"; };
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
+		221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-bad.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
 		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 				A98C241413D38C030061A594 /* button-watch-later.png */,
 				A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */,
 				A9FEF57A13D3D8C50094514C /* channel-video-background.png */,
+				221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */,
 				A931612C13E0902B009694C3 /* playback-full-screen-active.png */,
 				A931612D13E0902B009694C3 /* playback-full-screen.png */,
 				A931612E13E0902B009694C3 /* playback-normal-screen-active.png */,
@@ -917,6 +920,7 @@
 				2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */,
 				A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */,
 				A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */,
+				221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
