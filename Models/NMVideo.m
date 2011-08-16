@@ -19,6 +19,7 @@
 @dynamic nm_fetch_timestamp;
 @dynamic title;
 @dynamic view_count;
+@dynamic nm_did_play;
 @dynamic nm_direct_url;
 @dynamic nm_direct_sd_url;
 @dynamic nm_sort_order;

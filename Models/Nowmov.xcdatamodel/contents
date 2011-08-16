@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A2063" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -26,6 +26,7 @@
     <entity name="NMVideo" representedClassName="NMVideo">
         <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="external_id" optional="YES" attributeType="String"/>
+        <attribute name="nm_did_play" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
         <attribute name="nm_direct_sd_url" optional="YES" attributeType="String"/>
         <attribute name="nm_direct_url" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
@@ -54,7 +55,7 @@
     <elements>
         <element name="NMCategory" positionX="18" positionY="54" width="128" height="105"/>
         <element name="NMChannel" positionX="297" positionY="-72" width="153" height="270"/>
-        <element name="NMVideo" positionX="297" positionY="258" width="128" height="300"/>
+        <element name="NMVideo" positionX="297" positionY="258" width="128" height="315"/>
         <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="150"/>
     </elements>
 </model>
