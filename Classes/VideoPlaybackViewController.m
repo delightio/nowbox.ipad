@@ -404,6 +404,7 @@
 		// translate the movie view
 		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 		if ( [playbackModelController moveToNextVideo] ) {
+			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
 		controlScrollView.scrollEnabled = YES;
@@ -622,7 +623,6 @@
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusPlaying;
-		curItem.nmVideo.nm_did_play = [NSNumber numberWithBool:YES];
 		// never change currentIndex here!!
 		// ====== update interface ======
 		[self configureControlViewForVideo:[self playerCurrentVideo]];
@@ -748,6 +748,7 @@
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
+			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
@@ -758,6 +759,7 @@
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
 			[playbackModelController moveToPreviousVideo];
+			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 		}
 	} else {
