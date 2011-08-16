@@ -298,26 +298,11 @@
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = t.value / t.timescale;
 		}
-//		if ( videoDurationInvalid ) {
-//			t = movieView.player.currentItem.asset.duration;
-//			if ( t.flags & kCMTimeFlags_Valid ) {
-//#ifdef DEBUG_PLAYBACK_QUEUE
-//				NSLog(@"invalid time, get duration again: %lld", t.value / t.timescale);
-//#endif
-//				NSInteger d = t.value / t.timescale;
-//				loadedControlView.duration = d;
-//				// duration of video should never be 0. Do NOT set the flag to YES if duration == 0.
-//				if ( d ) videoDurationInvalid = NO;
-//			}
-//		}
 		loadedControlView.timeElapsed = sec;
-//		if ( firstShowControlView && (sec + 1) % 3 == 0) {
-//			firstShowControlView = NO;
-//			if ( !loadedControlView.hidden && loadedControlView.alpha > 0.0 ) {
-//				// hide the control
-//				[self controlsViewTouchUp:loadedControlView];
-//			}
-//		}
+		if ( didSkippedVideo ) {
+			didSkippedVideo = NO;
+			[movieView setActivityIndicationHidden:YES animated:YES];
+		}
 	}];
 	// retain the time observer
 	[timeObserver retain];
@@ -674,13 +659,15 @@
 //		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 //		NSLog(@"%@ status: %d", theItem.nmVideo.title, theItem.status);
 	} else if ( c == NM_PLAYER_RATE_CONTEXT ) {
-		if ( didSkippedVideo && movieView.player.rate == 0.0f ) {
-			// show loading
-			[movieView setActivityIndicationHidden:NO animated:YES];
-		}
-		if ( movieView.player.rate > 0.0f && movieView.activityIndicator.alpha > 0.0 ) {
-			[movieView setActivityIndicationHidden:YES animated:YES];
-		}
+		// NOTE:
+		// AVQueuePlayer may not post any KVO notification to us on "rate" change.
+//		if ( didSkippedVideo && movieView.player.rate == 0.0f ) {
+//			// show loading
+//			[movieView setActivityIndicationHidden:NO animated:YES];
+//		}
+//		if ( movieView.player.rate > 0.0f && movieView.activityIndicator.alpha > 0.0 ) {
+//			[movieView setActivityIndicationHidden:YES animated:YES];
+//		}
 		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
 		/*
 		if ( didSkippedVideo ) {
@@ -762,10 +749,20 @@
 //	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 }
 
+- (void)delayRevertPreviousVideo {
+	currentXOffset -= 1024.0f;
+	if ( playbackModelController.previousVideo ) {
+		[playbackModelController moveToPreviousVideo];
+		[movieView.player revertToVideo:playbackModelController.currentVideo];
+	}
+}
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 	scrollView.scrollEnabled = YES;
 	if ( scrollView.contentOffset.x > currentXOffset ) {
+		[movieView setActivityIndicationHidden:NO animated:NO];
+		didSkippedVideo = YES;
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
@@ -774,14 +771,15 @@
 		else
 			NSLog(@"can't move to next video. no video!!");
 #endif
-		didSkippedVideo = YES;
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
+//		[self performSelector:@selector(delayRevertPreviousVideo) withObject:nil afterDelay:0.1f];
+		[movieView setActivityIndicationHidden:NO animated:NO];
+		didSkippedVideo = YES;
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
 			[playbackModelController moveToPreviousVideo];
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 		}
-		didSkippedVideo = YES;
 	} else {
 		// play the video again
 		[self playCurrentVideo];
