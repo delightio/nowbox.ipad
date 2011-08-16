@@ -49,7 +49,8 @@
 	NMTaskQueueController * nowmovTaskController;
 	VideoPlaybackModelController * playbackModelController;
 	
-	BOOL videoDurationInvalid;
+	BOOL didSkippedVideo;
+//	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	id timeObserver;

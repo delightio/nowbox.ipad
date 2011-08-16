@@ -43,9 +43,6 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://gdata.youtube.com/feeds/api/videos/%@?alt=json&format=2,3,8,9", externalID];
-#ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"%@", urlStr);
-#endif
 	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
 	
 	[theRequest setValue:NMYoutubeUserAgent forHTTPHeaderField:@"User-Agent"];
@@ -96,6 +93,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	if ( ytFormat == 0 ) {
 		// can't find the MP4 URL
 		encountersErrorDuringProcessing = YES;
+		return;
 	}
 	
 	if ( directSDURLString == nil ) {
@@ -106,7 +104,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"resolved URL for %@: %@", self.targetID, directURLString);
+	NSLog(@"resolved URL for %@: %@", self.targetID, [directURLString length] ? @"Y" : @"N");
 #endif
 }
 

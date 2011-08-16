@@ -318,7 +318,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	} else {
 		// there's error, check if there's "error" object
 		NSDictionary * errDict = task.errorInfo;
-		NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:self userInfo:errDict];
+		NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:task userInfo:errDict];
 		// post notification from main thread. we must use performSelectorOnMainThread
 		[notificationCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 	}
