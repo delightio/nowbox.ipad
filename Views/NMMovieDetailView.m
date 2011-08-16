@@ -49,7 +49,8 @@
 	
 	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
 	CALayer * blackLayer = [CALayer layer];
-	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].channelPanelHighlightColor.CGColor;
+	blackLayer.shouldRasterize = YES;
+	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
 	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
 	[self.layer addSublayer:blackLayer];
 }
