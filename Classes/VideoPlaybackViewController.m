@@ -674,6 +674,17 @@
 //		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 //		NSLog(@"%@ status: %d", theItem.nmVideo.title, theItem.status);
 	} else if ( c == NM_PLAYER_RATE_CONTEXT ) {
+		if ( didSkippedVideo ) {
+			if ( movieView.player.rate == 0.0f ) {
+				// show loading
+				[movieView setActivityIndicationHidden:NO animated:YES];
+			} else {
+				didSkippedVideo = NO;
+				[movieView setActivityIndicationHidden:YES animated:YES];
+			}
+			NSLog(@"skipping video - play rate: %f %d", movieView.player.rate, didSkippedVideo);
+		}
+		NSLog(@"rate change: %f", movieView.player.rate);
 		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
@@ -753,12 +764,14 @@
 		else
 			NSLog(@"can't move to next video. no video!!");
 #endif
+		didSkippedVideo = YES;
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
 			[playbackModelController moveToPreviousVideo];
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 		}
+		didSkippedVideo = YES;
 	} else {
 		// play the video again
 		[self playCurrentVideo];
