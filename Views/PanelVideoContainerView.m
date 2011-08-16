@@ -170,7 +170,7 @@
     [viewsLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
     [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 36.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
     
-    if (aVideo.nm_playback_status == NMVideoQueueStatusPlayed) {
+    if ([aVideo.nm_did_play boolValue]) {
         titleLabel.textColor = [NMStyleUtility sharedStyleUtility].videoTitlePlayedFontColor;
         datePostedLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
         durationLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
@@ -183,9 +183,9 @@
         viewsLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
     }
     
-    [highlightedCellView configureCellWithPanelVideoContainerView:self highlighted:YES videoPlayed:(aVideo.nm_playback_status == NMVideoQueueStatusPlayed)];
+    [highlightedCellView configureCellWithPanelVideoContainerView:self highlighted:YES videoPlayed:[aVideo.nm_did_play boolValue]];
     
-    [cellView configureCellWithPanelVideoContainerView:self highlighted:NO videoPlayed:(aVideo.nm_playback_status == NMVideoQueueStatusPlayed)];
+    [cellView configureCellWithPanelVideoContainerView:self highlighted:NO videoPlayed:[aVideo.nm_did_play boolValue]];
     
 }
 
@@ -227,6 +227,7 @@
 -(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {
     if (isVideoPlayable) {
         if ( videoRowDelegate ) {
+            [self changeViewToHighlighted:YES];
             [videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0]];
         }
     }
