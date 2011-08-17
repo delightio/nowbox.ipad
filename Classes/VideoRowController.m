@@ -79,7 +79,9 @@
     PanelVideoContainerView *result = (PanelVideoContainerView *)[panelController.tableView dequeueReusableCellWithIdentifier:@"Reuse"];
     if (nil == result)
     {
-        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, 80.0)] autorelease];
+//        result = [[[PanelVideoContainerView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
+//        [result setFrame:CGRectMake(0.0, 0.0, 720.0, 90.0)];
+        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, 90.0)] autorelease];
 		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 		result.tableView = aTableView;
     }
@@ -87,13 +89,13 @@
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
 	result.indexInTable = [anIndexPath row];
     if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, 80)];
+        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, 90)];
     }
     else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 80)];
+        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 90)];
     }
     else {
-        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 80)];
+        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 90)];
     }
     [result setVideoRowDelegate:self];
 	[result setVideoInfo:theVideo];

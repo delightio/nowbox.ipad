@@ -14,15 +14,18 @@
 	NSNumberFormatter * viewCountFormatter;
 	// video detail
 	UIFont * channelNameFont, * videoTitleFont, * videoDetailFont;
-	UIColor * videoTitleFontColor, * videoTitleHighlightedFontColor;
+	UIColor * videoTitleFontColor, * videoTitleHighlightedFontColor, * videoTitlePlayedFontColor;
 	UIColor * videoDetailFontColor;
     UIColor * videoDetailHighlightedFontColor;
+    UIColor * videoDetailPlayedFontColor;
 	UIColor * clearColor, * channelPanelFontColor;
 	UIImage * videoShadowImage;
 	UIImage * videoHighlightedBackgroundImage;
+    UIImage * videoStatusBadImage;
 	// channel panel
 	UIColor * channelPanelBackgroundColor;
 	UIColor * channelPanelHighlightColor;
+	UIColor * channelPanelPlayedColor;
     UIColor * channelBorderColor;
 	UIImage * userPlaceholderImage, * channelContainerBackgroundImage;
 	// playback control
@@ -44,13 +47,17 @@
 @property (nonatomic, readonly) UIImage * videoHighlightedBackgroundImage;
 @property (nonatomic, readonly) UIColor * videoTitleFontColor;
 @property (nonatomic, readonly) UIColor * videoTitleHighlightedFontColor;
+@property (nonatomic, readonly) UIColor * videoTitlePlayedFontColor;
 @property (nonatomic, readonly) UIColor * videoDetailFontColor;
 @property (nonatomic, readonly) UIColor * videoDetailHighlightedFontColor;
+@property (nonatomic, readonly) UIColor * videoDetailPlayedFontColor;
+@property (nonatomic, readonly) UIImage * videoStatusBadImage;
 
 @property (nonatomic, readonly) UIColor * clearColor;
 @property (nonatomic, readonly) UIColor * channelPanelFontColor;
 @property (nonatomic, readonly) UIColor * channelPanelBackgroundColor;
 @property (nonatomic, readonly) UIColor * channelPanelHighlightColor;
+@property (nonatomic, readonly) UIColor * channelPanelPlayedColor;
 @property (nonatomic, readonly) UIColor * channelBorderColor;
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
 @property (nonatomic, readonly) UIImage * channelContainerBackgroundImage;

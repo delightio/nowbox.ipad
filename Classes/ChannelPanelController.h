@@ -33,7 +33,6 @@ typedef enum {
 	NSInteger selectedIndex;
     NSInteger highlightedChannelIndex, highlightedVideoIndex;
     
-    NSMutableArray *temporaryDisabledGestures;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
@@ -57,8 +56,6 @@ typedef enum {
 - (IBAction)showSettingsView:(id)sender;
 - (IBAction)showChannelManagementView:(id)sender;
 
--(void)swipedUp:(UIGestureRecognizer *)sender;
--(void)swipedDown:(UIGestureRecognizer *)sender;
 -(void)customPanning:(UIPanGestureRecognizer *)sender;
 
 @end

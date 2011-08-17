@@ -33,31 +33,16 @@
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
-	tableView.separatorColor = [UIColor clearColor];
+    tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//	tableView.separatorColor = [UIColor clearColor];
 //	tableView.separatorColor = styleUtility.channelBorderColor;
 	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
-    UISwipeGestureRecognizer *swipeGestureUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)] autorelease];
-    swipeGestureUp.numberOfTouchesRequired = 2;
-    swipeGestureUp.delegate = self;
-    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
-    [panelView addGestureRecognizer:swipeGestureUp];
-    
-    UISwipeGestureRecognizer *swipeGestureDown = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)] autorelease];
-    swipeGestureDown.numberOfTouchesRequired = 2;
-    swipeGestureDown.delegate = self;
-    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
-    [panelView addGestureRecognizer:swipeGestureDown];
-    
     UIPanGestureRecognizer *panningGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(customPanning:)] autorelease];
     panningGesture.delegate = self;
     [tableView addGestureRecognizer:panningGesture];
-    
-    // used for temporarily disabling tableview scroll when using 2 fingers to show full screen channel view
-    temporaryDisabledGestures = [[NSMutableArray alloc]initWithObjects:nil];
-    
 }
 
 - (void)dealloc {
@@ -65,7 +50,6 @@
 	[panelView release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
-    [temporaryDisabledGestures release];
 	[super dealloc];
 }
 
@@ -142,6 +126,7 @@
 - (void)setupCellContentView:(UIView *)aContentView {
 	ChannelContainerView * ctnView = [[ChannelContainerView alloc] initWithHeight:aContentView.bounds.size.height];
 	ctnView.tag = 1001;
+    [ctnView setNeedsDisplay];
 	[aContentView addSubview:ctnView];
 	// create horizontal table controller
 	VideoRowController * vdoCtrl = [[VideoRowController alloc] init];
@@ -152,15 +137,13 @@
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
-    // this isn't working for some reason, going to add it in cell instead
-    // videoTableView.separatorColor = styleUtility.channelBorderColor;
+    videoTableView.separatorColor = styleUtility.channelBorderColor;
 
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
     [videoTableView setShowsHorizontalScrollIndicator:NO];
     
-    // not working with nested scrollviews?
     [videoTableView setAlwaysBounceVertical:YES];
     
     videoTableView.allowsSelection = NO;
@@ -189,6 +172,11 @@
     [aContentView addSubview:bottomSeparatorView];
     [bottomSeparatorView release];
     
+    UIImageView *videoListLeftShadow = [[UIImageView alloc] initWithFrame:CGRectMake(168, 0, 9, aContentView.bounds.size.height)];
+    videoListLeftShadow.image = [UIImage imageNamed:@"channel-shadow-background-right"];
+    [aContentView addSubview:videoListLeftShadow];
+    [videoListLeftShadow release];
+    
 	// release everything
 	[videoTableView release];
 	[vdoCtrl release];
@@ -201,7 +189,8 @@
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
 	[ctnView.imageView setImageForChannel:theChannel];
-	
+    [ctnView setNeedsDisplay];
+
 	// video row
 	AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
 	htView.tableController.fetchedResultsController = nil;
@@ -456,40 +445,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         return YES;
     }
     
-    // must be the 2 finger swipe up/down gestures
-    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
-        for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-            gestureRecognizer.enabled = YES;
-        }
-        [temporaryDisabledGestures removeAllObjects];
-        
-        if (gestureRecognizer.numberOfTouches > 1) {
-            otherGestureRecognizer.enabled = NO;
-            [temporaryDisabledGestures addObject:otherGestureRecognizer];
-        }
-        return YES;
-    }
-    
     return YES;
-}
-
-
--(void)swipedUp:(UIGestureRecognizer *)sender {
-//    NSLog(@"Swiped up");
-    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-        gestureRecognizer.enabled = YES;
-    }
-    [temporaryDisabledGestures removeAllObjects];
-    [videoViewController channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:highlightedChannelIndex];
-}
-
--(void)swipedDown:(UIGestureRecognizer *)sender {
-//    NSLog(@"Swiped down");
-    for (UIGestureRecognizer *gestureRecognizer in temporaryDisabledGestures) {
-        gestureRecognizer.enabled = YES;
-    }
-    [temporaryDisabledGestures removeAllObjects];
-    [videoViewController channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:highlightedChannelIndex];
 }
 
 -(void)customPanning:(UIPanGestureRecognizer *)sender {
