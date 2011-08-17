@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NMAirPlayContainerView : UIView
+@class NMControlsView;
+
+@interface NMAirPlayContainerView : UIView {
+	NMControlsView * controlsView;
+}
+
+@property (nonatomic, assign) NMControlsView * controlsView;
 
 @end

@@ -11,7 +11,6 @@
 #import "NMAirPlayContainerView.h"
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
-#import <MediaPlayer/MediaPlayer.h>
 
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT	101
@@ -25,7 +24,8 @@
 
 @implementation NMControlsView
 
-@synthesize /*channel, title,*/ duration, timeElapsed;
+@synthesize controlDelegate;
+@synthesize duration, timeElapsed;
 @synthesize channelViewButton, playPauseButton;
 @synthesize controlsHidden, timeRangeBuffered;
 
@@ -76,16 +76,16 @@
 		theRect.origin.x += theRect.size.width;
 		theRect.size.width = 60.0f;
 		NMAirPlayContainerView * theView = [[NMAirPlayContainerView alloc] initWithFrame:theRect];
+		theView.controlsView = self;
 		theView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[controlContainerView addSubview:theView];
 		
-		MPVolumeView *volumeView = [[MPVolumeView alloc] init];
+		volumeView = [[MPVolumeView alloc] init];
 		[volumeView setShowsVolumeSlider:NO];
 		[volumeView sizeToFit];
 		volumeView.center = CGPointMake(26.5f, 18.0f);
 		[theView addSubview:volumeView];
 		
-		[volumeView release];
 		[theView release];
 	}
 	
@@ -98,6 +98,7 @@
 
 - (void)dealloc {
 	[lastVideoMessage release];
+	[volumeView release];
     [super dealloc];
 }
 
@@ -210,6 +211,13 @@
 		buttonPlayState = NO;
 		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.pauseActiveImage forState:UIControlStateHighlighted];
+	}
+}
+
+- (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView {
+	if ( volumeView ) {
+		NSLog(@"volume view subviews: %d", [volumeView.subviews count]);
+		[controlDelegate willShowAirPlayMenu];
 	}
 }
 

@@ -115,6 +115,7 @@
 	// hook up with target-action
 	[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
 	loadedControlView.frame = movieView.frame;
+	loadedControlView.controlDelegate = self;
 	[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 	
 	// put the view to scroll view
@@ -272,6 +273,13 @@
 	} else {
 		[movieView.player pause];
 	}
+}
+
+#pragma mark NMControlsView delegate methods
+
+- (void)willShowAirPlayMenu {
+	// display the timer
+	showMovieControlTimestamp = -1;
 }
 
 #pragma mark Movie View Management

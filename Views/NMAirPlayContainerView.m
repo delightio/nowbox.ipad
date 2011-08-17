@@ -7,8 +7,11 @@
 //
 
 #import "NMAirPlayContainerView.h"
+#import "NMControlsView.h"
 
 @implementation NMAirPlayContainerView
+
+@synthesize controlsView;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -19,9 +22,11 @@
     return self;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSLog(@"touch begin");
-	[super touchesBegan:touches withEvent:event];
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	// cancel autohide
+	[controlsView didTapAirPlayContainerView:self];
+	// pass on the touch
+	[super touchesEnded:touches withEvent:event];
 }
 
 
