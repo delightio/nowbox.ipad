@@ -22,6 +22,8 @@
 	NSArray * selectedChannelArray;
 	
 	BOOL viewPushedByNavigationController;
+    
+    UITableViewCell *channelCell;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
@@ -31,6 +33,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSIndexPath * selectedIndexPath;
 @property (nonatomic, retain) NSArray * selectedChannelArray;
+@property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 
 -(float)categoryCellWidthFromString:(NSString *)text;
 

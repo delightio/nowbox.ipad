@@ -23,6 +23,11 @@
 		22ADF9D713FB0BBB003CF27E /* category-list-selected-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9D513FB0BBB003CF27E /* category-list-selected-left.png */; };
 		22ADF9D813FB0BBB003CF27E /* category-list-selected-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9D613FB0BBB003CF27E /* category-list-selected-right.png */; };
 		22ADF9DA13FB0D6A003CF27E /* category-list-normal-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9D913FB0D6A003CF27E /* category-list-normal-bg.png */; };
+		22ADF9DC13FB2032003CF27E /* FindChannelTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9DB13FB2032003CF27E /* FindChannelTableCell.xib */; };
+		22ADF9E113FBC3E8003CF27E /* find-channel-list-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9DD13FBC3E2003CF27E /* find-channel-list-normal.png */; };
+		22ADF9E213FBC3E8003CF27E /* find-channel-list-subscribed.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9DE13FBC3E3003CF27E /* find-channel-list-subscribed.png */; };
+		22ADF9E313FBC3E8003CF27E /* find-channel-not-subscribed-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9DF13FBC3E5003CF27E /* find-channel-not-subscribed-icon.png */; };
+		22ADF9E413FBC3E8003CF27E /* find-channel-subscribed-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9E013FBC3E7003CF27E /* find-channel-subscribed-icon.png */; };
 		A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
@@ -206,6 +211,11 @@
 		22ADF9D513FB0BBB003CF27E /* category-list-selected-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-selected-left.png"; sourceTree = "<group>"; };
 		22ADF9D613FB0BBB003CF27E /* category-list-selected-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-selected-right.png"; sourceTree = "<group>"; };
 		22ADF9D913FB0D6A003CF27E /* category-list-normal-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-normal-bg.png"; sourceTree = "<group>"; };
+		22ADF9DB13FB2032003CF27E /* FindChannelTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FindChannelTableCell.xib; sourceTree = "<group>"; };
+		22ADF9DD13FBC3E2003CF27E /* find-channel-list-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-normal.png"; sourceTree = "<group>"; };
+		22ADF9DE13FBC3E3003CF27E /* find-channel-list-subscribed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-subscribed.png"; sourceTree = "<group>"; };
+		22ADF9DF13FBC3E5003CF27E /* find-channel-not-subscribed-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-not-subscribed-icon.png"; sourceTree = "<group>"; };
+		22ADF9E013FBC3E7003CF27E /* find-channel-subscribed-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-subscribed-icon.png"; sourceTree = "<group>"; };
 		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
 		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
@@ -630,6 +640,10 @@
 				22ADF9B813FAF40C003CF27E /* category-list-my-channels.png */,
 				22ADF9B913FAF40C003CF27E /* category-list-selected-arrow.png */,
 				22ADF9BA13FAF40C003CF27E /* category-list-selected-mid.png */,
+				22ADF9DD13FBC3E2003CF27E /* find-channel-list-normal.png */,
+				22ADF9DE13FBC3E3003CF27E /* find-channel-list-subscribed.png */,
+				22ADF9DF13FBC3E5003CF27E /* find-channel-not-subscribed-icon.png */,
+				22ADF9E013FBC3E7003CF27E /* find-channel-subscribed-icon.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -740,6 +754,7 @@
 				A991188B13E759F30067E987 /* SettingsView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
 				A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */,
+				22ADF9DB13FB2032003CF27E /* FindChannelTableCell.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -958,6 +973,11 @@
 				22ADF9D713FB0BBB003CF27E /* category-list-selected-left.png in Resources */,
 				22ADF9D813FB0BBB003CF27E /* category-list-selected-right.png in Resources */,
 				22ADF9DA13FB0D6A003CF27E /* category-list-normal-bg.png in Resources */,
+				22ADF9DC13FB2032003CF27E /* FindChannelTableCell.xib in Resources */,
+				22ADF9E113FBC3E8003CF27E /* find-channel-list-normal.png in Resources */,
+				22ADF9E213FBC3E8003CF27E /* find-channel-list-subscribed.png in Resources */,
+				22ADF9E313FBC3E8003CF27E /* find-channel-not-subscribed-icon.png in Resources */,
+				22ADF9E413FBC3E8003CF27E /* find-channel-subscribed-icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,7 @@
 #import "CategoriesOrientedTableView.h"
 #import "CategoryCellView.h"
 #import "CategoryTableCell.h"
+#import "NMCachedImageView.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -26,6 +27,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize selectedChannelArray;
 @synthesize managedObjectContext;
 @synthesize containerView;
+@synthesize channelCell;
 
 
 - (void)dealloc {
@@ -68,6 +70,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     containerView.layer.cornerRadius = 4;
 
     [categoriesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [channelsTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
 	// listen to notification
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
@@ -196,17 +199,44 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         
 	} else {
-        static NSString *CellIdentifier = @"MyRow";
+        static NSString *CellIdentifier = @"FindChannelCell";
         
-        UITableViewCell *cell = (UITableViewCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
+            [[NSBundle mainBundle] loadNibNamed:@"FindChannelTableCell" owner:self options:nil];
+            cell = channelCell;
+            self.channelCell = nil;
         }
         
-		NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
-		cell.textLabel.text = chn.title;
-		cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", [chn.nm_subscribed boolValue] ? @"Subscribed" : @"Subscribe"];
+        NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
 
+        if ([chn.nm_subscribed boolValue]) {
+        } else {
+        }
+
+        UILabel *label;
+        label = (UILabel *)[cell viewWithTag:12];
+        label.text = chn.title;
+        
+        label = (UILabel *)[cell viewWithTag:13];
+        label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
+        
+        UIImageView *imageView, *backgroundView;
+        NMCachedImageView *thumbnailView;
+        
+        thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
+        [thumbnailView setImageForChannel:chn];
+        
+        imageView = (UIImageView *)[cell viewWithTag:11];
+        backgroundView = (UIImageView *)[cell viewWithTag:14];
+        if ([chn.nm_subscribed boolValue]) {
+            [imageView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"]];
+            [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
+        } else {
+            [imageView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"]];
+            [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
+        }
+        
         return cell;
 	}
     
@@ -224,7 +254,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		NMCategory * cat = [categoryFetchedResultsController objectAtIndexPath:indexPath];
         return [self categoryCellWidthFromString:cat.title];
     } else {
-        return 60;
+        return 65;
     }
 }
 
