@@ -13,18 +13,11 @@
 @interface ChannelContainerView : UIView {
     UILabel * textLabel;
 	NMCachedImageView * imageView;
-    UIButton * removeSubscriptionButton;
-    NMChannel *currentChannel;
 }
 
 @property (nonatomic, readonly) UILabel * textLabel;
 @property (nonatomic, readonly) NMCachedImageView * imageView;
-@property (nonatomic, retain) UIButton * removeSubscriptionButton;
-@property (nonatomic, retain) NMChannel *currentChannel;
 
 - (id)initWithHeight:(CGFloat)aHeight;
-- (void)swipedLeft:(id)sender;
-- (void)swipedRight:(id)sender;
-- (void)removeSubscription;
 
 @end

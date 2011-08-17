@@ -91,60 +91,10 @@
         imageView.opaque = YES;
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
 		[self addSubview:imageView];
-        
-        removeSubscriptionButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-        [removeSubscriptionButton setFrame:CGRectMake(130, 30, 25, 25)];
-        [removeSubscriptionButton setTitle:@"X" forState:UIControlStateNormal];
-        [removeSubscriptionButton.titleLabel setFont:[UIFont systemFontOfSize:12]];
-        [removeSubscriptionButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        removeSubscriptionButton.alpha = 0;
-        [removeSubscriptionButton addTarget:self action:@selector(removeSubscription) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:removeSubscriptionButton];
-        
-        
-        UISwipeGestureRecognizer *swipeGestureLeft = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedLeft:)] autorelease];
-        swipeGestureLeft.numberOfTouchesRequired = 1;
-        swipeGestureLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-        [self addGestureRecognizer:swipeGestureLeft];
-        
-        UISwipeGestureRecognizer *swipeGestureRight = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedRight:)] autorelease];
-        swipeGestureRight.numberOfTouchesRequired = 1;
-        swipeGestureRight.direction = UISwipeGestureRecognizerDirectionRight;
-        [self addGestureRecognizer:swipeGestureRight];
-        
+
 	}
 	return self;
 }
-
-- (void)swipedLeft:(id)sender {
-    [UIView animateWithDuration:0.2
-                          delay:0 
-                        options:UIViewAnimationOptionBeginFromCurrentState 
-                     animations:^{
-                         removeSubscriptionButton.alpha = 1;
-                     } 
-                     completion:NULL];
-}
-
-- (void)swipedRight:(id)sender {
-    [UIView animateWithDuration:0.2
-                          delay:0 
-                        options:UIViewAnimationOptionBeginFromCurrentState 
-                     animations:^{
-                         removeSubscriptionButton.alpha = 0;
-                     } 
-                     completion:NULL];
-}
-
-- (void)removeSubscription {
-    if (currentChannel) {
-        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:currentChannel];
-        
-        // TODO: temp only
-        currentChannel.nm_subscribed = NO;
-    }
-}
-
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect
@@ -171,7 +121,6 @@
  
 - (void)dealloc
 {
-    [removeSubscriptionButton release];
 	[textLabel release];
 	[imageView release];
     [super dealloc];

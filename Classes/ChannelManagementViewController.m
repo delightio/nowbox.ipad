@@ -14,6 +14,7 @@
 #import "CategoryCellView.h"
 #import "CategoryTableCell.h"
 #import "NMCachedImageView.h"
+#import "SearchChannelViewController.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -72,6 +73,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [categoriesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [channelsTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
+    [categoriesTableView setFrame:CGRectMake(0, 0, 59, channelsTableView.frame.size.width)];
+    categoriesTableView.orientedTableViewDataSource = self;
+    categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
+    [categoriesTableView setAlwaysBounceVertical:YES];
+    [categoriesTableView setShowsVerticalScrollIndicator:NO];
+
+    
 	// listen to notification
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
@@ -100,11 +108,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		viewPushedByNavigationController = YES;
 	}
     
-    [categoriesTableView setFrame:CGRectMake(0, 0, 59, channelsTableView.frame.size.width)];
-    categoriesTableView.orientedTableViewDataSource = self;
-    categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
-    [categoriesTableView setAlwaysBounceVertical:YES];
-    [categoriesTableView setShowsVerticalScrollIndicator:NO];
     
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:1 inSection:0];
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
@@ -141,9 +144,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark Target-action methods
 
 - (void)showSearchView:(id)sender {
-	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
-	[self.navigationController pushViewController:twitCtrl animated:YES];
-	[twitCtrl release];
+	SearchChannelViewController * vc = [[SearchChannelViewController alloc] init];
+	[self.navigationController pushViewController:vc animated:YES];
+	[vc release];
+//	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
+//	[self.navigationController pushViewController:twitCtrl animated:YES];
+//	[twitCtrl release];
 }
 
 - (void)dismissView:(id)sender {

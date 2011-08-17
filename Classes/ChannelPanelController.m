@@ -186,9 +186,7 @@
     
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
-    ctnView.removeSubscriptionButton.alpha = 0;
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
-    ctnView.currentChannel = theChannel;
 	ctnView.textLabel.text = theChannel.title;
 	[ctnView.imageView setImageForChannel:theChannel];
     [ctnView setNeedsDisplay];
