@@ -18,7 +18,7 @@
 
 @protocol NMControlsViewDelegate <NSObject>
 
-- (void)willShowAirPlayMenu;
+- (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView;
 
 @end
 

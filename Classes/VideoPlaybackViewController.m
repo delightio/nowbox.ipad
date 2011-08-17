@@ -277,7 +277,7 @@
 
 #pragma mark NMControlsView delegate methods
 
-- (void)willShowAirPlayMenu {
+- (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView {
 	// display the timer
 	showMovieControlTimestamp = -1;
 }

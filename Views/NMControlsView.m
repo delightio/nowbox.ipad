@@ -216,8 +216,7 @@
 
 - (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView {
 	if ( volumeView ) {
-		NSLog(@"volume view subviews: %d", [volumeView.subviews count]);
-		[controlDelegate willShowAirPlayMenu];
+		[controlDelegate didTapAirPlayContainerView:ctnView];
 	}
 }
 
