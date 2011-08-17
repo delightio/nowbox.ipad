@@ -308,7 +308,6 @@
 		if ( showMovieControlTimestamp > 0 ) {
 			// check if it's time to auto hide control
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
-				NSLog(@"time progress: %d %d", showMovieControlTimestamp, sec);
 				// we should hide
 				showMovieControlTimestamp = -1;
 				[self hideControlView];

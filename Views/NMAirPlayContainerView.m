@@ -1,0 +1,37 @@
+//
+//  NMAirPlayContainerView.m
+//  ipad
+//
+//  Created by Bill So on 17/8/11.
+//  Copyright (c) 2011 Pipely Inc. All rights reserved.
+//
+
+#import "NMAirPlayContainerView.h"
+
+@implementation NMAirPlayContainerView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.backgroundColor = [UIColor colorWithRed:56.0f/255.0f green:56.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
+    }
+    return self;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	NSLog(@"touch begin");
+	[super touchesBegan:touches withEvent:event];
+}
+
+
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect
+{
+    // Drawing code
+}
+*/
+
+@end

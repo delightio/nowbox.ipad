@@ -8,6 +8,7 @@
 
 #import "NMControlsView.h"
 #import "NMMovieView.h"
+#import "NMAirPlayContainerView.h"
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -74,8 +75,7 @@
 		
 		theRect.origin.x += theRect.size.width;
 		theRect.size.width = 60.0f;
-		UIView * theView = [[UIView alloc] initWithFrame:theRect];
-		theView.backgroundColor = [UIColor colorWithRed:56.0f/255.0f green:56.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
+		NMAirPlayContainerView * theView = [[NMAirPlayContainerView alloc] initWithFrame:theRect];
 		theView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[controlContainerView addSubview:theView];
 		
