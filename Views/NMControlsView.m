@@ -104,7 +104,11 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch * atouch = [touches anyObject];
 	if ( atouch.tapCount == 1 ) {
-		[target performSelector:action withObject:self];
+		CGPoint touchPoint = [atouch locationInView:self];
+		if ( !CGRectContainsPoint(controlContainerView.frame, touchPoint) ) {
+			// the touch up does NOT happen in the control.
+			[target performSelector:action withObject:self];
+		}
 	}
 }
 
