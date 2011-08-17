@@ -186,7 +186,9 @@
     
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
+    ctnView.removeSubscriptionButton.alpha = 0;
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
+    ctnView.currentChannel = theChannel;
 	ctnView.textLabel.text = theChannel.title;
 	[ctnView.imageView setImageForChannel:theChannel];
     [ctnView setNeedsDisplay];
@@ -344,7 +346,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-//	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"videos.@count > 0"]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];

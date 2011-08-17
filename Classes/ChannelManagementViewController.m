@@ -282,7 +282,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			// try fetching the channels from server
 			[[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForCategory:cat];
 		}
-	}
+	} else {
+        NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
+        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+        
+        // TODO: just for the toggle status
+        chn.nm_subscribed = [NSNumber numberWithBool:![chn.nm_subscribed boolValue]];
+        
+        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }
 }
 
 #pragma mark Fetched results controller
