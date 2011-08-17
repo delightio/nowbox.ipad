@@ -55,10 +55,11 @@
 	BOOL didPlayToEnd;
 	id timeObserver;
 	
+	NSInteger showMovieControlTimestamp;
+	
 	@private
     NSManagedObjectContext *managedObjectContext_;
 	NSNotificationCenter * defaultNotificationCenter;
-	NSTimer * controlAppearanceTimer;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;

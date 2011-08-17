@@ -25,7 +25,7 @@
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
-#define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		3.0f
+#define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
 #define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER	10001
 
 
@@ -40,6 +40,7 @@
 - (void)playCurrentVideo;
 - (void)stopVideo;
 - (void)setupPlayer;
+- (void)hideControlView;
 
 - (NMVideo *)playerCurrentVideo;
 
@@ -75,6 +76,7 @@
 	isAspectFill = YES;
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
+	showMovieControlTimestamp = -1;
 	
 	// view background
 	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
@@ -188,8 +190,6 @@
 	// get rid of time observer of video player
  	[movieView.player removeTimeObserver:timeObserver];
 	[timeObserver release];
-	[controlAppearanceTimer invalidate];
-	[controlAppearanceTimer release];
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
 	[super dealloc];
@@ -286,9 +286,6 @@
 	}
 #endif
 	movieView.player = player;
-	
-	// timer
-	controlAppearanceTimer = [[NSTimer timerWithTimeInterval:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL target:self selector:@selector(hideControlView) userInfo:nil repeats:NO] retain];
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
@@ -307,6 +304,15 @@
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
 			[movieView setActivityIndicationHidden:YES animated:YES];
+		}
+		if ( showMovieControlTimestamp > 0 ) {
+			// check if it's time to auto hide control
+			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
+				NSLog(@"time progress: %d %d", showMovieControlTimestamp, sec);
+				// we should hide
+				showMovieControlTimestamp = -1;
+				[self hideControlView];
+			}
 		}
 	}];
 	// retain the time observer
@@ -360,8 +366,7 @@
 	NSInteger ctxInt = (NSInteger)context;
 	switch (ctxInt) {
 		case NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER:
-			[[NSRunLoop mainRunLoop] addTimer:controlAppearanceTimer forMode:NSDefaultRunLoopMode];
-//			[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
+			showMovieControlTimestamp = loadedControlView.timeElapsed;
 			break;
 			
 		default:
@@ -628,8 +633,7 @@
 		[UIView commitAnimations];
 		
 		// perform the delay method after 2 sec to hide the control view
-		[[NSRunLoop mainRunLoop] addTimer:controlAppearanceTimer forMode:NSDefaultRunLoopMode];
-//		[self performSelector:@selector(hideControlView) withObject:nil afterDelay:NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL];
+		showMovieControlTimestamp = 1;
 		
 //		t = movieView.player.currentItem.asset.duration;
 //		// check if the time is valid
@@ -1082,7 +1086,6 @@
 	[UIView beginAnimations:nil context:nil];
 	v.alpha = 0.0;
 	[UIView commitAnimations];
-	[controlAppearanceTimer invalidate];
 }
 
 @end
