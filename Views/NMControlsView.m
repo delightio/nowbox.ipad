@@ -8,9 +8,9 @@
 
 #import "NMControlsView.h"
 #import "NMMovieView.h"
+#import "NMAirPlayContainerView.h"
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
-#import <MediaPlayer/MediaPlayer.h>
 
 #define NM_PLAYER_STATUS_CONTEXT		100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT	101
@@ -24,7 +24,8 @@
 
 @implementation NMControlsView
 
-@synthesize /*channel, title,*/ duration, timeElapsed;
+@synthesize controlDelegate;
+@synthesize duration, timeElapsed;
 @synthesize channelViewButton, playPauseButton;
 @synthesize controlsHidden, timeRangeBuffered;
 
@@ -74,18 +75,17 @@
 		
 		theRect.origin.x += theRect.size.width;
 		theRect.size.width = 60.0f;
-		UIView * theView = [[UIView alloc] initWithFrame:theRect];
-		theView.backgroundColor = [UIColor colorWithRed:56.0f/255.0f green:56.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
+		NMAirPlayContainerView * theView = [[NMAirPlayContainerView alloc] initWithFrame:theRect];
+		theView.controlsView = self;
 		theView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 		[controlContainerView addSubview:theView];
 		
-		MPVolumeView *volumeView = [[MPVolumeView alloc] init];
+		volumeView = [[MPVolumeView alloc] init];
 		[volumeView setShowsVolumeSlider:NO];
 		[volumeView sizeToFit];
 		volumeView.center = CGPointMake(26.5f, 18.0f);
 		[theView addSubview:volumeView];
 		
-		[volumeView release];
 		[theView release];
 	}
 	
@@ -98,13 +98,18 @@
 
 - (void)dealloc {
 	[lastVideoMessage release];
+	[volumeView release];
     [super dealloc];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	UITouch * atouch = [touches anyObject];
 	if ( atouch.tapCount == 1 ) {
-		[target performSelector:action withObject:self];
+		CGPoint touchPoint = [atouch locationInView:self];
+		if ( !CGRectContainsPoint(controlContainerView.frame, touchPoint) ) {
+			// the touch up does NOT happen in the control.
+			[target performSelector:action withObject:self];
+		}
 	}
 }
 
@@ -206,6 +211,12 @@
 		buttonPlayState = NO;
 		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.pauseActiveImage forState:UIControlStateHighlighted];
+	}
+}
+
+- (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView {
+	if ( volumeView ) {
+		[controlDelegate didTapAirPlayContainerView:ctnView];
 	}
 }
 

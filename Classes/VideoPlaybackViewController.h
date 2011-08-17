@@ -27,7 +27,7 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, NMControlsViewDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	//IBOutlet UITextView * debugMessageView;
 	NMMovieView * movieView;
@@ -54,6 +54,8 @@
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	id timeObserver;
+	
+	NSInteger showMovieControlTimestamp;
 	
 	@private
     NSManagedObjectContext *managedObjectContext_;
