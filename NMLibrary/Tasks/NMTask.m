@@ -53,20 +53,13 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 	}
 }
 
-- (NSDictionary *)errorInfo {
-	if ( encountersErrorDuringProcessing && [parsedObjects count] ) {
-		NSDictionary * errDict = [parsedObjects objectAtIndex:0];
-		return errDict;
-	}
-	return nil;
-}
-
 - (void)dealloc {
 	[targetID release];
 	[_dateFormatter release];
 	[_dateTimeFormatter release];
 	[buffer release];
 	[parsedObjects release];
+	[errorInfo release];
 	[super dealloc];
 }
 

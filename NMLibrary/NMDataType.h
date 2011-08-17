@@ -57,7 +57,9 @@ typedef enum {
 
 typedef enum {
 	NMErrorNone,
-	NMVideoDirectURLResolutionError,
+	NMErrorNoData,
+	NMErrorNoSupportedVideoFormat,
+	NMErrorYouTubeAPIError,
 } NMErrorType;
 
 

@@ -25,6 +25,7 @@
 	BOOL encountersErrorDuringProcessing;
 	NSInteger httpStatusCode;
 	NSNumber * targetID;
+	NSDictionary * errorInfo;
 	// executeSaveActionOnError - default to NO. If YES, the data controller will still execute saveProcessedDataInController: method even when it encounters error during processing of data. Error notificaiton is not sent when this flag is set YES.
 	BOOL executeSaveActionOnError;
 @private
@@ -34,7 +35,7 @@
 
 @property (nonatomic, readonly) BOOL encountersErrorDuringProcessing;
 @property (nonatomic, readonly) BOOL executeSaveActionOnError;
-@property (nonatomic, readonly) NSDictionary * errorInfo;
+@property (nonatomic, retain) NSDictionary * errorInfo;
 @property (nonatomic) NSInteger httpStatusCode;
 @property (assign) NMTaskExecutionState state;
 @property (nonatomic, readonly) NMCommand command;
