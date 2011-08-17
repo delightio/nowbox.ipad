@@ -8,11 +8,19 @@
 
 #import <CoreMedia/CoreMedia.h>
 #import <QuartzCore/QuartzCore.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import "ChannelPanelController.h"
 #import "NMStyleUtility.h"
 #import "NMCachedImageView.h"
 
 @class NMMovieView;
+@class NMAirPlayContainerView;
+
+@protocol NMControlsViewDelegate <NSObject>
+
+- (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView;
+
+@end
 
 
 @interface NMControlsView : UIView {
@@ -27,6 +35,7 @@
 	IBOutlet UILabel * currentTimeLabel;
 	IBOutlet UIView * controlContainerView;
 	IBOutlet UIView * progressContainerView;
+	MPVolumeView * volumeView;
 	// top bar
 	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * authorNameLabel;
@@ -54,14 +63,15 @@
 	
 	NMStyleUtility * styleUtility;
 	
+	id<NMControlsViewDelegate> controlDelegate;
+	
 	@private
 	SEL action;
 	id target;
 	NMPlaybackViewModeType playbackMode_;
 }
 
-//@property (nonatomic, retain) NSString * title;
-//@property (nonatomic, retain) NSString * channel;
+@property (nonatomic, assign) id<NMControlsViewDelegate> controlDelegate;
 @property (nonatomic, assign) NSInteger duration;
 @property (nonatomic, assign) NSInteger timeElapsed;
 @property (nonatomic, assign) CMTimeRange timeRangeBuffered;
@@ -77,9 +87,8 @@
 - (void)resetView;
 - (void)updateViewForVideo:(NMVideo *)aVideo;
 - (void)setPlayButtonStateForRate:(CGFloat)aRate;
-//- (void)observeMovieView:(NMMovieView *)mvView;
-//- (void)stopObservingMovieView:(NMMovieView *)mvView;
 
 - (void)showLastVideoMessage;
+- (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView;
 
 @end
