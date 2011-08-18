@@ -130,19 +130,33 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		// retrieve that category
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", [NSNumber numberWithInteger:-1]]];
+		NSNumber * searchCatID = [NSNumber numberWithInteger:-1];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", searchCatID]];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 		if ( result == nil || [result count] == 0 ) {
-			
+			// we need to create the category
+			NMCategory * categoryObj = [NSEntityDescription insertNewObjectForEntityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext];
+			categoryObj.title = @"Search Results - internal use only";
+			categoryObj.nm_id = searchCatID;
+			self.internalSearchCategory = categoryObj;
+		} else {
+			self.internalSearchCategory = [result objectAtIndex:0];
 		}
-		
 	}
+	return internalSearchCategory;
 }
 
 - (NSPredicate *)searchResultsPredicate {
 	if ( searchResultsPredicate == nil ) {
 		// create the predicate
+		searchResultsPredicate = [[NSPredicate predicateWithFormat:@"ANY categories = %@", self.internalSearchCategory] retain];
 	}
+	return searchResultsPredicate;
+}
+
+- (void)clearSearchResultCache {
+	// remove relationship
+	[internalSearchCategory removeChannels:internalSearchCategory.channels];
 }
 
 #pragma mark Categories

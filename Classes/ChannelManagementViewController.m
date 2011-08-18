@@ -138,9 +138,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark Target-action methods
 
 - (void)showSearchView:(id)sender {
-	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
-	[self.navigationController pushViewController:twitCtrl animated:YES];
-	[twitCtrl release];
+//	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
+//	[self.navigationController pushViewController:twitCtrl animated:YES];
+//	[twitCtrl release];
+	[[NMTaskQueueController sharedTaskQueueController] issueChannelSearchForKeyword:@"comedy"];
 }
 
 - (void)dismissView:(id)sender {

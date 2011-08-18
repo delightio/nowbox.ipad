@@ -218,6 +218,11 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 					}
 				}
 			}
+			if ( command == NMCommandSearchChannels ) {
+				// add the search category
+				[ctrl.internalSearchCategory addChannelsObject:chn];
+				[chn addCategoriesObject:ctrl.internalSearchCategory];
+			}
 		}];
 	}
 	

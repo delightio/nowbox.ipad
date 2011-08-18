@@ -36,7 +36,7 @@
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
-@property (nonatomic, readonly) NMCategory * internalSearchCategory;
+@property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, readonly) NMChannel * trendingChannel;
@@ -51,6 +51,8 @@
 - (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo;
 - (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo;
 - (void)deleteAllVideos;
+// search
+- (void)clearSearchResultCache;
 // category
 //- (NMCategory *)insertNewCategory;
 - (NMCategory *)insertNewCategoryForID:(NSNumber *)catID;
