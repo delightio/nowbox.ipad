@@ -216,10 +216,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
 
-        if ([chn.nm_subscribed boolValue]) {
-        } else {
-        }
-
         UILabel *label;
         label = (UILabel *)[cell viewWithTag:12];
         label.text = chn.title;

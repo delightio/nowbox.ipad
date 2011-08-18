@@ -14,7 +14,6 @@
 @implementation ChannelContainerView
 @synthesize textLabel;
 @synthesize imageView;
-@synthesize removeSubscriptionButton;
 @synthesize currentChannel;
 
 //+ (Class)layerClass {
