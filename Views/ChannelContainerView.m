@@ -14,7 +14,6 @@
 @implementation ChannelContainerView
 @synthesize textLabel;
 @synthesize imageView;
-@synthesize currentChannel;
 
 //+ (Class)layerClass {
 //	return [CAGradientLayer class];
