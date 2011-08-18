@@ -24,6 +24,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize managedObjectContext, sortedVideoList;
 @synthesize categories, categoryCacheDictionary;
 @synthesize subscribedChannels, trendingChannel;
+@synthesize internalSearchCategory;
 
 - (id)init {
 	self = [super init];
@@ -36,6 +37,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
+	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
 	return self;
 }
@@ -43,12 +45,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (void)dealloc {
 	[trendingChannel release];
 	[categoryCacheDictionary release];
+	[channelCacheDictionary release];
 //	[channelNamePredicateTemplate release];
 	[subscribedChannelsPredicate release];
 	[objectForIDPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[sortedVideoList release];
+	[internalSearchCategory release];
 	[super dealloc];
 }
 
@@ -120,6 +124,27 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 }
 
+#pragma mark Search Results Support
+- (NMCategory *)internalSearchCategory {
+	if ( internalSearchCategory == nil ) {
+		// retrieve that category
+		NSFetchRequest * request = [[NSFetchRequest alloc] init];
+		[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", [NSNumber numberWithInteger:-1]]];
+		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+		if ( result == nil || [result count] == 0 ) {
+			
+		}
+		
+	}
+}
+
+- (NSPredicate *)searchResultsPredicate {
+	if ( searchResultsPredicate == nil ) {
+		// create the predicate
+	}
+}
+
 #pragma mark Categories
 - (NSArray *)categories {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
@@ -139,10 +164,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return nil;
 }
 
-- (NMCategory *)insertNewCategory {
+- (NMCategory *)insertNewCategoryForID:(NSNumber *)catID {
+	// clean up the cache. categoryCacheDictionary caches objects that do not exist.
+	[categoryCacheDictionary removeObjectForKey:catID];
 	NMCategory * categoryObj = [NSEntityDescription insertNewObjectForEntityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext];
+	categoryObj.nm_id = catID;
 	return categoryObj;
 }
+
+//- (NMCategory *)insertNewCategory {
+//	NMCategory * categoryObj = [NSEntityDescription insertNewObjectForEntityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext];
+//	return categoryObj;
+//}
 
 - (NMCategory *)categoryForID:(NSNumber *)catID {
 	id catObj = [categoryCacheDictionary objectForKey:catID];
@@ -159,20 +192,29 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	if ( [result count] ) {
-		NMCategory * catObj = [result objectAtIndex:0];
-		[categoryCacheDictionary setObject:catObj forKey:catObj.nm_id];
+		catObj = [result objectAtIndex:0];
+		[categoryCacheDictionary setObject:catObj forKey:((NMCategory *)catObj).nm_id];
 	} else {
 		// this category does not exist in core data
 		[categoryCacheDictionary setObject:[NSNull null] forKey:catID];
 	}
+	// catObj is "automatically" set to nil in objectForKey: call.
 	return catObj;
 }
 
 #pragma mark Channels
-- (NMChannel *)insertNewChannel {
+- (NMChannel *)insertNewChannelForID:(NSNumber *)chnID {
+	// clean up the cache. channelCacheDictionary caches objects that do not exist.
+	[channelCacheDictionary removeObjectForKey:chnID];
 	NMChannel * channelObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+	channelObj.nm_id = chnID;
 	return channelObj;
 }
+
+//- (NMChannel *)insertNewChannel {
+//	NMChannel * channelObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+//	return channelObj;
+//}
 
 - (NSArray *)subscribedChannels {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
@@ -185,6 +227,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (NMChannel *)channelForID:(NSNumber *)chnID {
+	id chnObj = [channelCacheDictionary objectForKey:chnID];
+	if ( chnObj ) {
+		if ( chnObj == [NSNull null] ) return nil;
+		return chnObj;
+	}
+	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
 	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chnID forKey:@"OBJECT_ID"]]];
@@ -193,7 +241,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	
-	return [result count] ? [result objectAtIndex:0] : nil;
+	if ( [result count] ) {
+		chnObj = [result objectAtIndex:0];
+		[channelCacheDictionary setObject:chnObj forKey:((NMChannel *)chnObj).nm_id];
+	} else {
+		[channelCacheDictionary setObject:[NSNull null] forKey:chnID];
+	}
+	// chnObj is "automatically" set to nil in objectForKey: call.
+	return chnObj;
 }
 
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy {

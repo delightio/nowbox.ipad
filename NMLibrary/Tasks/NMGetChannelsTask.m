@@ -195,7 +195,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			[chnDict removeObjectForKey:@"category_ids"];
 			if ( chn == nil ) {
 				// create the new object
-				chn = [ctrl insertNewChannel];
+				chn = [ctrl insertNewChannelForID:[chnDict objectForKey:@"nm_id"]];
 				[chn setValuesForKeysWithDictionary:chnDict];
 			} else {
 				chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];

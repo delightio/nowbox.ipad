@@ -23,14 +23,21 @@
 	NSPredicate * subscribedChannelsPredicate;
 	NSPredicate * objectForIDPredicateTemplate;
 	
-	NSMutableDictionary * categoryCacheDictionary;
+	// Core data query cache. Cache recent core data search result.
+	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
 	
 	NSArray * sortedVideoList;
 	NMChannel * trendingChannel;
+	
+	// for channel search
+	NMCategory * internalSearchCategory;
+	NSPredicate * searchResultsPredicate;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
+@property (nonatomic, readonly) NMCategory * internalSearchCategory;
+@property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
 @property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, readonly) NMChannel * trendingChannel;
 @property (nonatomic, readonly) NSArray * subscribedChannels;
@@ -45,10 +52,12 @@
 - (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo;
 - (void)deleteAllVideos;
 // category
-- (NMCategory *)insertNewCategory;
+//- (NMCategory *)insertNewCategory;
+- (NMCategory *)insertNewCategoryForID:(NSNumber *)catID;
 - (NMCategory *)categoryForID:(NSNumber *)catID;
 // channels
-- (NMChannel *)insertNewChannel;
+//- (NMChannel *)insertNewChannel;
+- (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
 //- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (BOOL)emptyChannel;

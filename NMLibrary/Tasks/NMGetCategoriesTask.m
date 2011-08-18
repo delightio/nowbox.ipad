@@ -93,7 +93,7 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	// handle the remaining index
 	[serverCategoryIDIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 		NSDictionary * dict = [categoryDictionary objectForKey:[NSNumber numberWithInteger:idx]];
-		NMCategory * cat = [ctrl insertNewCategory];
+		NMCategory * cat = [ctrl insertNewCategoryForID:[dict objectForKey:@"nm_id"]];
 		[cat setValuesForKeysWithDictionary:dict];
 	}];
 }
