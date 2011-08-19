@@ -139,6 +139,8 @@
 		A99C0B4D13E017BB0006FAA5 /* progress-dark-side.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */; };
 		A99C0B4E13E017BB0006FAA5 /* progress-gray-side.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */; };
 		A99C0B4F13E017BB0006FAA5 /* progress-nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4B13E017BB0006FAA5 /* progress-nub.png */; };
+		A9A4810D13FD181500850536 /* FeatureDebugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A4810C13FD181500850536 /* FeatureDebugViewController.m */; };
+		A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A4810F13FD189F00850536 /* FeatureDebugView.xib */; };
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
@@ -335,6 +337,9 @@
 		A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-dark-side.png"; sourceTree = "<group>"; };
 		A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-gray-side.png"; sourceTree = "<group>"; };
 		A99C0B4B13E017BB0006FAA5 /* progress-nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-nub.png"; sourceTree = "<group>"; };
+		A9A4810B13FD181500850536 /* FeatureDebugViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugViewController.h; sourceTree = "<group>"; };
+		A9A4810C13FD181500850536 /* FeatureDebugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugViewController.m; sourceTree = "<group>"; };
+		A9A4810F13FD189F00850536 /* FeatureDebugView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeatureDebugView.xib; sourceTree = "<group>"; };
 		A9A73FA413A73A3D005D9013 /* LaunchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchView.xib; sourceTree = "<group>"; };
 		A9A8E7BD13E4B96300552E6E /* NMCachedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCachedImageView.h; sourceTree = "<group>"; };
 		A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCachedImageView.m; sourceTree = "<group>"; };
@@ -567,6 +572,8 @@
 				A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */,
 				A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */,
 				A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */,
+				A9A4810B13FD181500850536 /* FeatureDebugViewController.h */,
+				A9A4810C13FD181500850536 /* FeatureDebugViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -740,6 +747,7 @@
 				A991188B13E759F30067E987 /* SettingsView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
 				A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */,
+				A9A4810F13FD189F00850536 /* FeatureDebugView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -958,6 +966,7 @@
 				22ADF9D713FB0BBB003CF27E /* category-list-selected-left.png in Resources */,
 				22ADF9D813FB0BBB003CF27E /* category-list-selected-right.png in Resources */,
 				22ADF9DA13FB0D6A003CF27E /* category-list-normal-bg.png in Resources */,
+				A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1049,6 +1058,7 @@
 				22ADF99D13FAF39A003CF27E /* CategoryCellView.m in Sources */,
 				22ADF99E13FAF39A003CF27E /* CategoryTableCell.m in Sources */,
 				22ADF9CC13FB0024003CF27E /* CategoriesOrientedTableView.m in Sources */,
+				A9A4810D13FD181500850536 /* FeatureDebugViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1407,6 +1417,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_EVENT_TRACKING,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_VIDEO_LIST_REFRESH,
 					DEBUG_PLAYER_NAVIGATION,

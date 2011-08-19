@@ -71,9 +71,6 @@
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
 
-//- (IBAction)showTweetView:(id)sender;
-//- (IBAction)showVolumeControlView:(id)sender;
-//- (IBAction)showShareActionView:(id)sender;
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)vote:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;

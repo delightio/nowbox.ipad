@@ -21,14 +21,15 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 
 @implementation NMEventTask
 
-@synthesize channel;
-@synthesize video;
+@synthesize channel, video;
+@synthesize resultDictionary;
 @synthesize elapsedSeconds, playedToEnd;
 @synthesize errorCode;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v {
 	self = [super init];
 	
+	command = NMCommandSendEvent;
 	self.video = v;
 	// grab values in the video object to be used in the thread
 	self.targetID = v.nm_id;
@@ -104,7 +105,7 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			break;
 		case NMEventSubscribeChannel:
 		case NMEventUnsubscribeChannel:
-			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@", NM_BASE_URL, targetID, evtStr];
+			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
 			break;
 			
 		default:
@@ -122,13 +123,10 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 
 - (void)processDownloadedDataInBuffer {
 	if ( [buffer length] == 0 ) return;
-	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-	NSDictionary * dict = [str objectFromJSONString];
-	[str release];
-	
-	if ( ![[dict objectForKey:@"status"] isEqualToString:@"OK"] ) {
-		encountersErrorDuringProcessing = YES;
-	}
+	self.resultDictionary = [buffer objectFromJSONData];
+#ifdef DEBUG_EVENT_TRACKING
+	NSLog(@"did post event: %@", resultDictionary);
+#endif
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
@@ -188,6 +186,19 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			break;
 	}
 	return NMDidFailSendEventNotification;
+}
+
+- (NSDictionary *)userInfo {
+	switch (eventType) {
+		case NMEventSubscribeChannel:
+		case NMEventUnsubscribeChannel:
+			return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
+			break;
+			
+		default:
+			break;
+	}
+	return nil;
 }
 
 @end
