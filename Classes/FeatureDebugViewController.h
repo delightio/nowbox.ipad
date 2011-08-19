@@ -17,5 +17,6 @@
 - (IBAction)submitSearch:(id)sender;
 - (IBAction)submitSubscribeChannel:(id)sender;
 - (IBAction)submitUnsubscribeChannel:(id)sender;
+- (IBAction)getCurrentSubscription:(id)sender;
 
 @end

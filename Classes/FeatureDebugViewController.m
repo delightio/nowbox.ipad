@@ -125,4 +125,13 @@
 	}
 }
 
+- (IBAction)getCurrentSubscription:(id)sender {
+	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
+	NSArray * results = queueCtrl.dataController.subscribedChannels;
+	NSLog(@"Subscription List:");
+	for (NMChannel * chnObj in results) {
+		NSLog(@"%@", chnObj.title);
+	}
+}
+
 @end
