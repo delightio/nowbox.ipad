@@ -91,7 +91,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	return self;
 }
 
-- (id)initGetMoreVideoForChannel:(NMChannel *)aChn atPage:(NSUInteger)pgNum {
+- (id)initGetMoreVideoForChannel:(NMChannel *)aChn {
 	self = [super init];
 	command = NMCommandGetMoreVideoForChannel;
 	self.channel = aChn;
@@ -99,7 +99,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
 	numberOfVideoRequested = 20;
-	currentPage = pgNum;
+	currentPage = [aChn.nm_current_page integerValue];
 	return self;
 }
 
@@ -115,7 +115,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSString * urlStr = nil;
 	switch (command) {
 		case NMCommandGetMoreVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?page=%dlimit=%d&user_id=%d", urlString, currentPage, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
 			break;
 			
 		case NMCommandGetChannelVideoList:
@@ -208,6 +208,8 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		}	
 		case NMCommandGetMoreVideoForChannel:
 			[self insertOnlyNewVideosInController:ctrl];
+			// update the page number
+			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
 			break;
 			
 		default:

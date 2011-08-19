@@ -13,6 +13,7 @@
 
 @implementation NMChannel
 
+@dynamic nm_current_page;
 @dynamic nm_description;
 @dynamic nm_id;
 @dynamic nm_last_vid;

@@ -285,7 +285,7 @@
             NSLog(@"Load new videos");
             isLoadingNewContent = YES;
             NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-            [schdlr issueGetVideoListForChannel:channel numberOfVideos:5];
+			[schdlr issueGetMoreVideoForChannel:channel];
         }
     }
 }

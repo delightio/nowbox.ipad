@@ -407,7 +407,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		// we can't get any new video from the server. try getting by doubling the count
 		NSUInteger vidReq = [[userInfo objectForKey:@"num_video_requested"] unsignedIntegerValue];
 		if ( vidReq < 41 ) {
-			[nowmovTaskController issueGetVideoListForChannel:channel numberOfVideos:vidReq * 2];
+			[nowmovTaskController issueGetVideoListForChannel:channel];
 		} else {
 			// we have finish up this channel
 		}
@@ -633,7 +633,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		//TODO: do we need to update the caching variables - currentIndexPath, currentVideo, etc
 		if ( numberOfVideos < 5 ) {
 			// fetch more video
-			[nowmovTaskController issueGetVideoListForChannel:channel numberOfVideos:5];
+			[nowmovTaskController issueGetMoreVideoForChannel:channel];
 		}
 	}
 	changeSessionUpdateCount = NO;
@@ -641,8 +641,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 #pragma mark Debug message
 - (void)printDebugMessage:(NSString *)str {
-	debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", str];
-	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
+//	debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", str];
+//	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
 }
 
 @end
