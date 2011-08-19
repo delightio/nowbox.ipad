@@ -47,13 +47,13 @@
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj;
-// Watch later
-- (void)issueWatchLater:(BOOL)enqueue video:(NMVideo *)aVideo;
 
 // Event tracking
+// Share video
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec playedToEnd:(BOOL)aEnd;
 - (void)issueExamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err;
+// Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 
 @end

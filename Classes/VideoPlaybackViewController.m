@@ -7,7 +7,6 @@
 //
 
 #import "VideoPlaybackViewController.h"
-#import "SocialSignInViewController.h"
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -828,53 +827,6 @@
 
 #pragma mark Target-action methods
 
-//- (IBAction)showTweetView:(id)sender {
-//	if ( infoPanelImageView == nil ) {
-//		UIButton * btn = (UIButton *)sender;
-//		UIImage * img = [UIImage imageNamed:@"info_panel"];
-//		CGRect theFrame;
-//		theFrame.size = img.size;
-//		theFrame.origin.y = 768.0 - img.size.height - 96.0 + 35.0;
-//		theFrame.origin.x = floorf(btn.frame.origin.x - ( img.size.width - btn.frame.size.width ) / 2.0);
-//		infoPanelImageView = [[UIImageView alloc] initWithImage:img];
-//		infoPanelImageView.frame = theFrame;
-//		[controlsContainerView addSubview:infoPanelImageView];
-//	} else {
-//		[infoPanelImageView removeFromSuperview];
-//		[infoPanelImageView release];
-//		infoPanelImageView = nil;
-//	}
-//}
-//
-//- (IBAction)showShareActionView:(id)sender {
-//	if ( shareVideoPanelImageView == nil ) {
-//		UIImage * img = [UIImage imageNamed:@"twitter_share_popup"];
-//		CGRect theFrame;
-//		theFrame.size = img.size;
-//		theFrame.origin.x = floorf( (1024.0 - img.size.width) / 2.0 );
-//		theFrame.origin.y = floorf( ( 768.0 - img.size.height ) / 2.0 );
-//		shareVideoPanelImageView = [[UIImageView alloc] initWithImage:img];
-//		shareVideoPanelImageView.frame = theFrame;
-//		[controlsContainerView addSubview:shareVideoPanelImageView];
-//	} else {
-//		[shareVideoPanelImageView removeFromSuperview];
-//		[shareVideoPanelImageView release];
-//		shareVideoPanelImageView = nil;
-//	}
-//}
-//
-
-- (IBAction)vote:(id)sender {
-	UIView * v = (UIView *)sender;
-	if ( v.tag == 1017 ) {
-		// vote up
-		[nowmovTaskController issueSendUpVoteEventForVideo:[self playerCurrentVideo] duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-	} else {
-		// vote down
-		[nowmovTaskController issueSendDownVoteEventForVideo:[self playerCurrentVideo] duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-	}
-}
-
 - (IBAction)skipCurrentVideo:(id)sender {
 	UIView * btn = (UIView *)sender;
 	if ( btn.tag == 1000 ) {
@@ -894,25 +846,6 @@
 		//		}
 		//		[movieView.player advanceToNextItem];
 	}
-}
-
-- (IBAction)showSharePopover:(id)sender {
-	
-	UIButton * btn = (UIButton *)sender;
-	
-	SocialSignInViewController * socialCtrl = [[SocialSignInViewController alloc] initWithNibName:@"SocialSignInView" bundle:nil];
-	socialCtrl.videoViewController = self;
-	
-	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:socialCtrl];
-	
-	UIPopoverController * popCtrl = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
-	popCtrl.popoverContentSize = CGSizeMake(320.0f, 178.0f);
-	popCtrl.delegate = self;
-	
-	[popCtrl presentPopoverFromRect:btn.frame inView:btn.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-	
-	[socialCtrl release];
-	[navCtrl release];
 }
 
 - (IBAction)toggleChannelPanel:(id)sender {
@@ -1100,6 +1033,14 @@
 	[UIView beginAnimations:nil context:nil];
 	v.alpha = 0.0;
 	[UIView commitAnimations];
+}
+
+- (IBAction)shareVideo:(id)sender {
+	[nowmovTaskController issueSendShareEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+}
+
+- (IBAction)addVideoToQueue:(id)sender {
+	[nowmovTaskController issueEnqueue:YES video:playbackModelController.currentVideo];
 }
 
 # pragma mark gestures
