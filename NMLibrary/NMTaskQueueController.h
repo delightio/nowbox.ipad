@@ -50,11 +50,9 @@
 - (void)issueWatchLater:(BOOL)enqueue video:(NMVideo *)aVideo;
 
 // Event tracking
-- (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
-- (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec playedToEnd:(BOOL)aEnd;
-//- (void)issueSendViewingEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
 - (void)issueExamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err;
+- (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 
 @end

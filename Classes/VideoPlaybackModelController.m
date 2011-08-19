@@ -368,13 +368,21 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 #pragma mark Notification handlers
 
 - (void)handleErrorNotification:(NSNotification *)aNotification {
-	if ( [[aNotification name] isEqualToString:NMURLConnectionErrorNotification] ) {
+	NSString * theName = [aNotification name];
+	if ( [theName isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
+		// error resolving the direct URL. Let the server knows about it
+#ifdef DEBUG_PLAYBACK_QUEUE
+		NSLog(@"received resolution error notificaiton");
+#endif
+		NSDictionary * info = [aNotification userInfo];
+		[nowmovTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorCode:[[info objectForKey:@"error_code"] integerValue]];
+	} else if ( [theName isEqualToString:NMURLConnectionErrorNotification] ) {
 		// general network error. 
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [[aNotification userInfo] objectForKey:@"message"]];
 		NSLog(@"general connection error: %@", [[aNotification userInfo] objectForKey:@"message"]);
 #endif
-	} else if ( [[aNotification name] isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
+	} else if ( [theName isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 		NSError * theErr = [[aNotification userInfo] objectForKey:AVPlayerItemFailedToPlayToEndTimeErrorKey];
 		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [theErr localizedDescription]];

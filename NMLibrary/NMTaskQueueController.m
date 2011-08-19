@@ -169,30 +169,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventUpVote forVideo:aVideo];
-//	task.duration = vdur;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-- (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventDownVote forVideo:aVideo];
-//	task.duration = vdur;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-//- (void)issueSendRewindEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventRewind forVideo:aVideo];
-//	task.duration = vdur;
-//	task.elapsedSeconds = sec;
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
-
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
 //	task.duration = vdur;
@@ -211,20 +187,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-//- (void)issueSendViewingEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventViewing forVideo:aVideo];
-////	task.duration = vdur;
-//	// how long the user has watched a video
-//	task.elapsedSeconds = sec;
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
-
 - (void)issueExamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventExamine forVideo:aVideo];
 	task.errorCode = err;
 	[networkController addNewConnectionForTask:task];
 	[task release];
+}
+
+- (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo {
+	
 }
 
 @end

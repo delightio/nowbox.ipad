@@ -40,6 +40,8 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 
 - (id)initWithChannel:(NMChannel *)aChn subscribe:(BOOL)abool {
 	self = [super init];
+	
+	command = NMCommandSendEvent;
 	// if YES, subscribe. Otherwise, unsubscribe
 	if ( abool ) {
 		// subscribe
@@ -81,12 +83,6 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			break;
 		case NMEventDequeue:
 			evtStr = @"dequeue";
-			break;
-		case NMEventUpVote:
-			evtStr = @"upvote";
-			break;
-		case NMEventDownVote:
-			evtStr = @"downvote";
 			break;
 		case NMEventShare:
 			evtStr = @"share";
