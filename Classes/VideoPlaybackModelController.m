@@ -194,6 +194,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		previousVideo.nm_movie_detail_view = nil;
 	}
 	if ( currentVideo ) {
+		// mark the current video as "played"
+		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
 		currentVideo.nm_movie_detail_view.video = nil;
 		currentVideo.nm_movie_detail_view = nil;
 	}

@@ -411,7 +411,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 //	if ( theTask.command > NMCommandImageDownloadCommandBoundary ) {
 //		[dataController storeImageForTask:(NMImageDownloadTask *)theTask];
 //	} else {
-	if ( theTask.httpStatusCode >= 400 ) {
+	if ( theTask.httpStatusCode >= 400 && !theTask.executeSaveActionOnError ) {
 		// fire error notification right here
 		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil]];
 		[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];

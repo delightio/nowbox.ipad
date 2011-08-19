@@ -60,6 +60,23 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	if ( [buffer length] == 0 ) {
 		// the buffer is empty which should not happen
 		encountersErrorDuringProcessing = YES;
+		self.errorInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NMErrorNoData] forKey:@"error_code"];
+		return;
+	}
+	if ( httpStatusCode >= 400 && httpStatusCode < 500 ) {
+		// error in the youtube call
+		// parse the XML document <code></code>, <internalReason></internalReason>
+		NSString * xmlStr = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+		// look for <code> </code>
+		NSRange beginRange = [xmlStr rangeOfString:@"<code>"];
+		NSRange endRange = [xmlStr rangeOfString:@"</code>"];
+		NSString * reason = [xmlStr substringWithRange:NSMakeRange(beginRange.location + beginRange.length, endRange.location - beginRange.location - beginRange.length)];
+		if ( reason ) {
+			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:reason, @"reason", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", nil];
+		} else {
+			self.errorInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NMErrorYouTubeAPIError] forKey:@"error_code"];
+		}
+		encountersErrorDuringProcessing = YES;
 		return;
 	}
 	NSDictionary * dict = [buffer objectFromJSONData];
@@ -68,6 +85,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	if ( mediaContents == nil || [mediaContents count] == 0 ) {
 		// no data
 		encountersErrorDuringProcessing = YES;
+		self.errorInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat] forKey:@"error_code"];
 		return;
 	}
 	// get the MP4 link
@@ -93,6 +111,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	if ( ytFormat == 0 ) {
 		// can't find the MP4 URL
 		encountersErrorDuringProcessing = YES;
+		self.errorInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat] forKey:@"error_code"];
 		return;
 	}
 	
@@ -115,7 +134,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 #endif
 		video.nm_direct_url = nil;
 		video.nm_direct_sd_url = nil;
-		video.nm_error = [self.errorInfo objectForKey:@"errorNum"];
+		video.nm_error = [self.errorInfo objectForKey:@"error_code"];
 		video.nm_playback_status = NMVideoQueueStatusError;
 	} else {
 		video.nm_direct_url = directURLString;

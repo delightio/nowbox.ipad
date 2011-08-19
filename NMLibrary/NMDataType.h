@@ -22,8 +22,7 @@ typedef enum {
 	NMCommandGetDefaultChannels,
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
-	NMCommandSubscribeChannel,
-	NMCommandUnsubscrbeChannel,
+	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetChannelVideoList,
 	NMCommandGetMoreVideoForChannel,
@@ -57,7 +56,9 @@ typedef enum {
 
 typedef enum {
 	NMErrorNone,
-	NMVideoDirectURLResolutionError,
+	NMErrorNoData,
+	NMErrorNoSupportedVideoFormat,
+	NMErrorYouTubeAPIError,
 } NMErrorType;
 
 
@@ -72,7 +73,16 @@ extern NSString * const NMDidFailGetChannelsForCategoryNotification;
 extern NSString * const NMWillSearchChannelsNotification;
 extern NSString * const NMDidSearchChannelsNotification;
 extern NSString * const NMDidFailSearchChannelsNotification;
+// subscription
+extern NSString * const NMWillSubscribeChannelNotification;
+extern NSString * const NMDidSubscribeChannelNotification;
+extern NSString * const NMDidFailSubscribeChannelNotification;
+extern NSString * const NMWillUnsubscribeChannelNotification;
+extern NSString * const NMDidUnsubscribeChannelNotification;
+extern NSString * const NMDidFailUnsubscribeChannelNotification;
 
+
+// video
 extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
 extern NSString * const NMDidFailGetChannelVideoListNotification;

@@ -146,6 +146,8 @@
 		A99C0B4D13E017BB0006FAA5 /* progress-dark-side.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */; };
 		A99C0B4E13E017BB0006FAA5 /* progress-gray-side.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */; };
 		A99C0B4F13E017BB0006FAA5 /* progress-nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4B13E017BB0006FAA5 /* progress-nub.png */; };
+		A9A4810D13FD181500850536 /* FeatureDebugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A4810C13FD181500850536 /* FeatureDebugViewController.m */; };
+		A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A4810F13FD189F00850536 /* FeatureDebugView.xib */; };
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
@@ -350,6 +352,9 @@
 		A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-dark-side.png"; sourceTree = "<group>"; };
 		A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-gray-side.png"; sourceTree = "<group>"; };
 		A99C0B4B13E017BB0006FAA5 /* progress-nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-nub.png"; sourceTree = "<group>"; };
+		A9A4810B13FD181500850536 /* FeatureDebugViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugViewController.h; sourceTree = "<group>"; };
+		A9A4810C13FD181500850536 /* FeatureDebugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugViewController.m; sourceTree = "<group>"; };
+		A9A4810F13FD189F00850536 /* FeatureDebugView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeatureDebugView.xib; sourceTree = "<group>"; };
 		A9A73FA413A73A3D005D9013 /* LaunchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchView.xib; sourceTree = "<group>"; };
 		A9A8E7BD13E4B96300552E6E /* NMCachedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCachedImageView.h; sourceTree = "<group>"; };
 		A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCachedImageView.m; sourceTree = "<group>"; };
@@ -584,6 +589,8 @@
 				A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */,
 				22ADFA0513FC2AAD003CF27E /* SearchChannelViewController.h */,
 				22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */,
+				A9A4810B13FD181500850536 /* FeatureDebugViewController.h */,
+				A9A4810C13FD181500850536 /* FeatureDebugViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -763,6 +770,7 @@
 				A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */,
 				22ADF9DB13FB2032003CF27E /* FindChannelTableCell.xib */,
 				22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */,
+				A9A4810F13FD189F00850536 /* FeatureDebugView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -987,6 +995,7 @@
 				22ADF9E313FBC3E8003CF27E /* find-channel-not-subscribed-icon.png in Resources */,
 				22ADF9E413FBC3E8003CF27E /* find-channel-subscribed-icon.png in Resources */,
 				22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */,
+				A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1079,6 +1088,7 @@
 				22ADF99E13FAF39A003CF27E /* CategoryTableCell.m in Sources */,
 				22ADF9CC13FB0024003CF27E /* CategoriesOrientedTableView.m in Sources */,
 				22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */,
+				A9A4810D13FD181500850536 /* FeatureDebugViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1437,6 +1447,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_EVENT_TRACKING,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_VIDEO_LIST_REFRESH,
 					DEBUG_PLAYER_NAVIGATION,

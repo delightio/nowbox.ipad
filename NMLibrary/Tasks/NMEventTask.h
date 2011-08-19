@@ -20,11 +20,13 @@
 	NMVideo * video;
 	NMChannel * channel;
 	NSInteger errorCode;
+	NSDictionary * resultDictionary;
 	BOOL playedToEnd;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMVideo * video;
+@property (nonatomic, retain) NSDictionary * resultDictionary;
 @property (nonatomic) CGFloat elapsedSeconds;
 //@property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL playedToEnd;

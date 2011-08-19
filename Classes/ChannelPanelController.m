@@ -15,6 +15,7 @@
 #import "PanelVideoContainerView.h"
 #import "SettingsViewController.h"
 #import "ChannelManagementViewController.h"
+#import "FeatureDebugViewController.h"
 
 #define VIDEO_ROW_LEFT_PADDING			167.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -70,6 +71,20 @@
 }
 
 #pragma mark Target action methods
+- (IBAction)showFeatureDebugView:(id)sender {
+#ifdef DEBUG_PLAYER_NAVIGATION
+	FeatureDebugViewController * featureCtrl = [[FeatureDebugViewController alloc] initWithNibName:@"FeatureDebugView" bundle:nil];
+	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:featureCtrl];
+	
+	UIPopoverController * popover = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
+	[featureCtrl release];
+	[navCtrl release];
+	popover.popoverContentSize = CGSizeMake(320.0f, 320.0f);
+	[popover presentPopoverFromRect:filterButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+	popover.delegate = self;
+#endif
+}
+
 - (IBAction)toggleTableEditMode:(id)sender {
 	[tableView setEditing:!tableView.editing animated:YES];
 }
@@ -85,7 +100,7 @@
 	UIPopoverController * popover = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
 	[settingCtrl release];
 	[navCtrl release];
-	popover.popoverContentSize = CGSizeMake(320.0f, 320.0f);
+	popover.popoverContentSize = CGSizeMake(320.0f, 480.0f);
 	[popover presentPopoverFromRect:settingButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
 	popover.delegate = self;
 }

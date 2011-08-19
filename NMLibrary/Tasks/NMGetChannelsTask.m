@@ -161,6 +161,27 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			// if getting subscribed channel, compare with all existing subscribed channels
 			theChannelPool = ctrl.subscribedChannels;
 			break;
+		case NMCommandSearchChannels:
+		{
+			// different handling from other case. Search result is managed by view controller. Always append info
+			NSDictionary * chnDict;
+			NMChannel * chnObj;
+			for (NSNumber * theKey in parsedObjectDictionary) {
+				chnDict = [parsedObjectDictionary objectForKey:theKey];
+				// check if the channel exist
+				chnObj = [ctrl channelForID:theKey];
+				if ( chnObj == nil ) {
+					// create the channel
+					[ctrl insertNewChannelForID:theKey];
+					[chnObj setValuesForKeysWithDictionary:chnDict];
+					// there's no need to set relationship with the existing channel objects.
+				}
+			}
+			// add the search category
+			[ctrl.internalSearchCategory addChannelsObject:chnObj];
+			[chnObj addCategoriesObject:ctrl.internalSearchCategory];
+			return;		// return this function
+		}
 		default:
 			break;
 	}
@@ -169,6 +190,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	NSMutableArray * objectsToDelete = nil;
 	NMChannel * chnObj;
 	NSDictionary * chnDict;
+	// update / delete existing channel
 	for (chnObj in theChannelPool) {
 		cid = [chnObj.nm_id unsignedIntegerValue];
 		if ( [channelIndexSet containsIndex:cid] ) {
@@ -195,7 +217,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			[chnDict removeObjectForKey:@"category_ids"];
 			if ( chn == nil ) {
 				// create the new object
-				chn = [ctrl insertNewChannel];
+				chn = [ctrl insertNewChannelForID:[chnDict objectForKey:@"nm_id"]];
 				[chn setValuesForKeysWithDictionary:chnDict];
 			} else {
 				chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];

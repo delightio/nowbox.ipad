@@ -21,6 +21,7 @@ typedef enum {
     IBOutlet UITableView * tableView;
 	// toolbar buttons
 	IBOutlet UIButton * settingButton;
+	IBOutlet UIButton * filterButton;
 	
 	UIView *panelView;
 @private
@@ -50,6 +51,8 @@ typedef enum {
 - (void)panelWillEnterHalfScreen:(NMPlaybackViewModeType)fromViewMode;
 
 - (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex;
+
+- (IBAction)showFeatureDebugView:(id)sender;
 
 - (IBAction)toggleTableEditMode:(id)sender;
 - (IBAction)debugRefreshChannel:(id)sender;
