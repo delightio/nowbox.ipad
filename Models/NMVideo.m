@@ -26,6 +26,7 @@
 @dynamic nm_error;
 @dynamic nm_playback_status;
 @dynamic nm_retry_count;
+@dynamic nm_session_id;
 @dynamic source;
 @dynamic nm_id;
 @dynamic channel;

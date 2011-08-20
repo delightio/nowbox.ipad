@@ -15,6 +15,7 @@
 #import "NMVideoDetail.h"
 
 NSInteger NM_USER_ACCOUNT_ID			= 0;
+NSNumber * NM_SESSION_ID				= nil;
 BOOL NM_USE_HIGH_QUALITY_VIDEO			= YES;
 
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
@@ -69,6 +70,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// cancel all playback related tasks created for the chnObj.
 	[networkController cancelPlaybackRelatedTasksForChannel:chnObj];
 	// make sure NO notification will be sent after execution of this method. tasks do not have to be wiped out here. But they must not trigger and sending of notification if those tasks belong to the chnObj
+}
+
+#pragma mark Session management
+- (void)beginNewSession:(NSInteger)sid {
+	sessionID = sid;
+	NM_SESSION_ID = [NSNumber numberWithInteger:sid];
+	// delete expired videos
+	[dataController deleteVideosWithSessionID:sessionID - 2];
+	// update all page number
+	[dataController resetAllChannelsPageNumber];
 }
 
 #pragma mark Queue tasks to network controller

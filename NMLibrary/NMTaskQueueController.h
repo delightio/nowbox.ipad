@@ -17,6 +17,7 @@
 
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
+	NSInteger sessionID;
 	
 	NMNetworkController * networkController;
 	NMDataController * dataController;
@@ -30,6 +31,8 @@
 
 - (void)cancelAllPlaybackTasksForChannel:(NMChannel *)chnObj;
 
+// Session management
+- (void)beginNewSession:(NSInteger)sid;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;

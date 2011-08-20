@@ -124,6 +124,30 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 }
 
+#pragma mark Session management
+- (void)deleteVideosWithSessionID:(NSInteger)sid {
+	//TODO: do not delete video that are in Favorite or My Queue channels
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+	// nm_session_id <= %@ AND NOT ANY categories = %@
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id <= %@", [NSNumber numberWithInteger:sid]]];
+	[request setReturnsObjectsAsFaults:YES];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	for (NMVideo * vid in result) {
+		[managedObjectContext deleteObject:vid];
+	}
+}
+
+- (void)resetAllChannelsPageNumber {
+	NSArray * subChn = self.subscribedChannels;
+	NSNumber * pgNum = [NSNumber numberWithInteger:1];
+	for (NMChannel * chnObj in subChn) {
+		// reset the page number to 1. Page number always start at 1.
+		chnObj.nm_current_page = pgNum;
+	}
+}
+
+
 #pragma mark Search Results Support
 - (NMCategory *)internalSearchCategory {
 	if ( internalSearchCategory == nil ) {

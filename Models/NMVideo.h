@@ -32,6 +32,7 @@
 @property (nonatomic, retain) NSString * nm_direct_sd_url;
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_retry_count;
+@property (nonatomic, retain) NSNumber * nm_session_id;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSString * source;
