@@ -1037,14 +1037,14 @@
         return;
     }
 
-    if (shouldToggleToFullScreen) {
-        [self stopVideo];
-    }
-    else {
-        if (shouldResume) {
-            [self playCurrentVideo];
-        }
-    }
+//    if (shouldToggleToFullScreen) {
+//        [self stopVideo];
+//    }
+//    else {
+//        if (shouldResume) {
+//            [self playCurrentVideo];
+//        }
+//    }
   
     // resize animation is slow, so doing this out of animation
     if (shouldToggleToFullScreen) {
