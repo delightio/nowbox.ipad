@@ -26,7 +26,6 @@
 @dynamic thumbnail_uri;
 @dynamic title;
 @dynamic type;
-@dynamic nm_last_page;
 @dynamic categories;
 @dynamic videos;
 

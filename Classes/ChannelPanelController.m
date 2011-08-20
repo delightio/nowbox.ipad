@@ -74,9 +74,11 @@
 - (IBAction)showFeatureDebugView:(id)sender {
 #ifdef DEBUG_PLAYER_NAVIGATION
 	FeatureDebugViewController * featureCtrl = [[FeatureDebugViewController alloc] initWithNibName:@"FeatureDebugView" bundle:nil];
+	featureCtrl.selectedChannel = videoViewController.currentChannel;
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:featureCtrl];
 	
 	UIPopoverController * popover = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
+	
 	[featureCtrl release];
 	[navCtrl release];
 	popover.popoverContentSize = CGSizeMake(320.0f, 320.0f);

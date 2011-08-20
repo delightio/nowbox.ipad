@@ -9,7 +9,7 @@
 #import "FeatureDebugViewController.h"
 
 @implementation FeatureDebugViewController
-@synthesize targetChannel;
+@synthesize targetChannel, selectedChannel;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -132,6 +132,10 @@
 	for (NMChannel * chnObj in results) {
 		NSLog(@"%@", chnObj.title);
 	}
+}
+
+- (IBAction)fetchMoreVideoForCurrentChannel:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:selectedChannel];
 }
 
 @end

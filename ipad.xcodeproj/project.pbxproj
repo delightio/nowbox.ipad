@@ -30,17 +30,10 @@
 		A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
-		A9250145134385BF001759F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
 		A925014B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250149134385BF001759F5 /* InfoPlist.strings */; };
 		A925014E134385BF001759F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A925014D134385BF001759F5 /* main.m */; };
 		A9250151134385BF001759F5 /* ipadAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9250150134385BF001759F5 /* ipadAppDelegate.m */; };
 		A9250154134385BF001759F5 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9250152134385BF001759F5 /* MainWindow.xib */; };
-		A9250161134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
-		A9250162134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
-		A9250163134385BF001759F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
-		A925016B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250169134385BF001759F5 /* InfoPlist.strings */; };
-		A925016E134385BF001759F5 /* ipadTests.h in Resources */ = {isa = PBXBuildFile; fileRef = A925016D134385BF001759F5 /* ipadTests.h */; };
-		A9250170134385BF001759F5 /* ipadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A925016F134385BF001759F5 /* ipadTests.m */; };
 		A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
@@ -63,30 +56,9 @@
 		A9398C2013D41B31005E3CB0 /* social-youtube.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1C13D41B31005E3CB0 /* social-youtube.png */; };
 		A9398C2713D4290D005E3CB0 /* toolbar-expand-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
-		A941BD9613A47E7300BB3BE0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
-		A941BD9713A47E7900BB3BE0 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
-		A94D680013A2ED33003FC68F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
-		A94D680113A2ED33003FC68F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
-		A94D680213A2ED33003FC68F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
-		A94D680813A2ED33003FC68F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A94D680613A2ED33003FC68F /* InfoPlist.strings */; };
-		A94D680B13A2ED33003FC68F /* TestVideoPlaybackModelController.h in Resources */ = {isa = PBXBuildFile; fileRef = A94D680A13A2ED33003FC68F /* TestVideoPlaybackModelController.h */; };
-		A94D680D13A2ED33003FC68F /* TestVideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */; };
-		A94D681313A2EEF4003FC68F /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
-		A94D681713A2EEF4003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
-		A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
-		A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
-		A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
-		A94D682713A2EF00003FC68F /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
-		A94D682A13A2EF00003FC68F /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
-		A94D682C13A2EF00003FC68F /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
-		A94D682D13A2EF2E003FC68F /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
-		A94D682E13A2EF2E003FC68F /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504313438F860022BF2C /* NMDataController.m */; };
-		A94D682F13A2EF2E003FC68F /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
-		A94D683013A2EF2E003FC68F /* NMNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504713438F860022BF2C /* NMNetworkController.m */; };
-		A94D683113A2EF2E003FC68F /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
-		A94D683F13A2F63E003FC68F /* TestData.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = A94D683E13A2F63E003FC68F /* TestData.sqlite */; };
+		A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
+		A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
 		A951454313AB1E0500327288 /* nowmov-eye-transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = A951454213AB1E0500327288 /* nowmov-eye-transparent.png */; };
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A962DD5E13A82552004CC111 /* MovieDetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */; };
@@ -100,7 +72,6 @@
 		A970509C13438F860022BF2C /* VideoPlaybackView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970505D13438F860022BF2C /* VideoPlaybackView.xib */; };
 		A97050A4134392FA0022BF2C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050A3134392FA0022BF2C /* CoreData.framework */; };
 		A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
-		A97050D2134399050022BF2C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
 		A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
 		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
 		A9776A4C13AAF0AF004FA2F3 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */; };
@@ -170,13 +141,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A9250164134385BF001759F5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A9250133134385BF001759F5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A925013B134385BF001759F5;
-			remoteInfo = ipad;
-		};
 		A9976F2013BB380600B06DFF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A9250133134385BF001759F5 /* Project object */;
@@ -227,12 +191,6 @@
 		A925014F134385BF001759F5 /* ipadAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipadAppDelegate.h; sourceTree = "<group>"; };
 		A9250150134385BF001759F5 /* ipadAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadAppDelegate.m; sourceTree = "<group>"; };
 		A9250153134385BF001759F5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		A9250160134385BF001759F5 /* ipadTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ipadTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A9250168134385BF001759F5 /* ipadTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ipadTests-Info.plist"; sourceTree = "<group>"; };
-		A925016A134385BF001759F5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		A925016C134385BF001759F5 /* ipadTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ipadTests-Prefix.pch"; sourceTree = "<group>"; };
-		A925016D134385BF001759F5 /* ipadTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipadTests.h; sourceTree = "<group>"; };
-		A925016F134385BF001759F5 /* ipadTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadTests.m; sourceTree = "<group>"; };
 		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
 		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
@@ -259,13 +217,6 @@
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
 		A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackModelController.h; sourceTree = "<group>"; };
 		A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackModelController.m; sourceTree = "<group>"; };
-		A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestVideoPlaybackModelController.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A94D680513A2ED33003FC68F /* TestVideoPlaybackModelController-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestVideoPlaybackModelController-Info.plist"; sourceTree = "<group>"; };
-		A94D680713A2ED33003FC68F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		A94D680913A2ED33003FC68F /* TestVideoPlaybackModelController-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestVideoPlaybackModelController-Prefix.pch"; sourceTree = "<group>"; };
-		A94D680A13A2ED33003FC68F /* TestVideoPlaybackModelController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestVideoPlaybackModelController.h; sourceTree = "<group>"; };
-		A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestVideoPlaybackModelController.m; sourceTree = "<group>"; };
-		A94D683E13A2F63E003FC68F /* TestData.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestData.sqlite; sourceTree = "<group>"; };
 		A951454213AB1E0500327288 /* nowmov-eye-transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nowmov-eye-transparent.png"; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MovieDetailInfoView.xib; sourceTree = "<group>"; };
@@ -386,40 +337,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */,
+				A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */,
 				A9976F2313BB38BE00B06DFF /* libNMLibrary.a in Frameworks */,
 				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */,
 				A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */,
 				A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */,
-				A97050D2134399050022BF2C /* QuartzCore.framework in Frameworks */,
 				A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */,
 				A97050A4134392FA0022BF2C /* CoreData.framework in Frameworks */,
 				A9250141134385BF001759F5 /* UIKit.framework in Frameworks */,
 				A9250143134385BF001759F5 /* Foundation.framework in Frameworks */,
-				A9250145134385BF001759F5 /* CoreGraphics.framework in Frameworks */,
 				A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A925015C134385BF001759F5 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A9250161134385BF001759F5 /* UIKit.framework in Frameworks */,
-				A9250162134385BF001759F5 /* Foundation.framework in Frameworks */,
-				A9250163134385BF001759F5 /* CoreGraphics.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A94D67FB13A2ED33003FC68F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A94D680013A2ED33003FC68F /* UIKit.framework in Frameworks */,
-				A94D680113A2ED33003FC68F /* Foundation.framework in Frameworks */,
-				A94D680213A2ED33003FC68F /* CoreGraphics.framework in Frameworks */,
-				A941BD9613A47E7300BB3BE0 /* AVFoundation.framework in Frameworks */,
-				A941BD9713A47E7900BB3BE0 /* CoreMedia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,8 +375,6 @@
 				A970503F13438F860022BF2C /* NMLibrary */,
 				A970505E13438F860022BF2C /* Views */,
 				A9250146134385BF001759F5 /* ipad */,
-				A9250166134385BF001759F5 /* ipadTests */,
-				A94D680313A2ED33003FC68F /* TestVideoPlaybackModelController */,
 				A925013F134385BF001759F5 /* Frameworks */,
 				A925013D134385BF001759F5 /* Products */,
 			);
@@ -457,8 +384,6 @@
 			isa = PBXGroup;
 			children = (
 				A925013C134385BF001759F5 /* ipad.app */,
-				A9250160134385BF001759F5 /* ipadTests.octest */,
-				A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */,
 				A9976EFC13BB355200B06DFF /* libNMLibrary.a */,
 			);
 			name = Products;
@@ -500,47 +425,6 @@
 				A9250149134385BF001759F5 /* InfoPlist.strings */,
 				A925014C134385BF001759F5 /* ipad-Prefix.pch */,
 				A925014D134385BF001759F5 /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A9250166134385BF001759F5 /* ipadTests */ = {
-			isa = PBXGroup;
-			children = (
-				A925016D134385BF001759F5 /* ipadTests.h */,
-				A925016F134385BF001759F5 /* ipadTests.m */,
-				A9250167134385BF001759F5 /* Supporting Files */,
-			);
-			path = ipadTests;
-			sourceTree = "<group>";
-		};
-		A9250167134385BF001759F5 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				A9250168134385BF001759F5 /* ipadTests-Info.plist */,
-				A9250169134385BF001759F5 /* InfoPlist.strings */,
-				A925016C134385BF001759F5 /* ipadTests-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A94D680313A2ED33003FC68F /* TestVideoPlaybackModelController */ = {
-			isa = PBXGroup;
-			children = (
-				A94D680A13A2ED33003FC68F /* TestVideoPlaybackModelController.h */,
-				A94D680C13A2ED33003FC68F /* TestVideoPlaybackModelController.m */,
-				A94D680413A2ED33003FC68F /* Supporting Files */,
-			);
-			path = TestVideoPlaybackModelController;
-			sourceTree = "<group>";
-		};
-		A94D680413A2ED33003FC68F /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				A94D683E13A2F63E003FC68F /* TestData.sqlite */,
-				A94D680513A2ED33003FC68F /* TestVideoPlaybackModelController-Info.plist */,
-				A94D680613A2ED33003FC68F /* InfoPlist.strings */,
-				A94D680913A2ED33003FC68F /* TestVideoPlaybackModelController-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -801,43 +685,6 @@
 			productReference = A925013C134385BF001759F5 /* ipad.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A925015F134385BF001759F5 /* ipadTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A9250176134385BF001759F5 /* Build configuration list for PBXNativeTarget "ipadTests" */;
-			buildPhases = (
-				A925015B134385BF001759F5 /* Sources */,
-				A925015C134385BF001759F5 /* Frameworks */,
-				A925015D134385BF001759F5 /* Resources */,
-				A925015E134385BF001759F5 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A9250165134385BF001759F5 /* PBXTargetDependency */,
-			);
-			name = ipadTests;
-			productName = ipadTests;
-			productReference = A9250160134385BF001759F5 /* ipadTests.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
-		A94D67FE13A2ED33003FC68F /* TestVideoPlaybackModelController */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A94D680E13A2ED33003FC68F /* Build configuration list for PBXNativeTarget "TestVideoPlaybackModelController" */;
-			buildPhases = (
-				A94D67FA13A2ED33003FC68F /* Sources */,
-				A94D67FB13A2ED33003FC68F /* Frameworks */,
-				A94D67FC13A2ED33003FC68F /* Resources */,
-				A94D67FD13A2ED33003FC68F /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = TestVideoPlaybackModelController;
-			productName = TestVideoPlaybackModelController;
-			productReference = A94D67FF13A2ED33003FC68F /* TestVideoPlaybackModelController.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 		A9976EFB13BB355200B06DFF /* NMLibrary */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A9976F0413BB355200B06DFF /* Build configuration list for PBXNativeTarget "NMLibrary" */;
@@ -885,8 +732,6 @@
 			projectRoot = "";
 			targets = (
 				A925013B134385BF001759F5 /* ipad */,
-				A925015F134385BF001759F5 /* ipadTests */,
-				A94D67FE13A2ED33003FC68F /* TestVideoPlaybackModelController */,
 				A9976EFB13BB355200B06DFF /* NMLibrary */,
 			);
 		};
@@ -970,55 +815,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A925015D134385BF001759F5 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A925016B134385BF001759F5 /* InfoPlist.strings in Resources */,
-				A925016E134385BF001759F5 /* ipadTests.h in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A94D67FC13A2ED33003FC68F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A94D680813A2ED33003FC68F /* InfoPlist.strings in Resources */,
-				A94D680B13A2ED33003FC68F /* TestVideoPlaybackModelController.h in Resources */,
-				A94D683F13A2F63E003FC68F /* TestData.sqlite in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		A925015E134385BF001759F5 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-		A94D67FD13A2ED33003FC68F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A9250138134385BF001759F5 /* Sources */ = {
@@ -1062,36 +859,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A925015B134385BF001759F5 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A9250170134385BF001759F5 /* ipadTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A94D67FA13A2ED33003FC68F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A94D682D13A2EF2E003FC68F /* JSONKit.m in Sources */,
-				A94D682E13A2EF2E003FC68F /* NMDataController.m in Sources */,
-				A94D682F13A2EF2E003FC68F /* NMCacheController.m in Sources */,
-				A94D683013A2EF2E003FC68F /* NMNetworkController.m in Sources */,
-				A94D683113A2EF2E003FC68F /* NMTaskQueueController.m in Sources */,
-				A94D681913A2EEFF003FC68F /* NMGetChannelsTask.m in Sources */,
-				A94D681B13A2EEFF003FC68F /* NMGetChannelVideoListTask.m in Sources */,
-				A94D682313A2EF00003FC68F /* NMGetVimeoDirectURLTask.m in Sources */,
-				A94D682513A2EF00003FC68F /* NMGetYouTubeDirectURLTask.m in Sources */,
-				A94D682713A2EF00003FC68F /* NMTask.m in Sources */,
-				A94D682A13A2EF00003FC68F /* NMEventTask.m in Sources */,
-				A94D682C13A2EF00003FC68F /* NMImageDownloadTask.m in Sources */,
-				A94D681313A2EEF4003FC68F /* NMAVQueuePlayer.m in Sources */,
-				A94D681713A2EEF4003FC68F /* VideoPlaybackModelController.m in Sources */,
-				A94D680D13A2ED33003FC68F /* TestVideoPlaybackModelController.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A9976EF813BB355200B06DFF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1114,11 +881,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A9250165134385BF001759F5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A925013B134385BF001759F5 /* ipad */;
-			targetProxy = A9250164134385BF001759F5 /* PBXContainerItemProxy */;
-		};
 		A9976F2113BB380600B06DFF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A9976EFB13BB355200B06DFF /* NMLibrary */;
@@ -1141,22 +903,6 @@
 				A9250153134385BF001759F5 /* en */,
 			);
 			name = MainWindow.xib;
-			sourceTree = "<group>";
-		};
-		A9250169134385BF001759F5 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A925016A134385BF001759F5 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		A94D680613A2ED33003FC68F /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A94D680713A2ED33003FC68F /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1196,29 +942,6 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
-			};
-			name = "Ad Hoc";
-		};
-		A901A9A6134B7D47006F2EED /* Ad Hoc */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ipad.app/ipad";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ipadTests/ipadTests-Prefix.pch";
-				INFOPLIST_FILE = "ipadTests/ipadTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = "Ad Hoc";
 		};
@@ -1271,7 +994,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYBACK_QUEUE;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_PLAYER_NAVIGATION,
+					DEBUG_PLAYBACK_QUEUE,
+				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1294,116 +1020,6 @@
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
-		};
-		A9250177134385BF001759F5 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ipad.app/ipad";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ipadTests/ipadTests-Prefix.pch";
-				INFOPLIST_FILE = "ipadTests/ipadTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		A9250178134385BF001759F5 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/ipad.app/ipad";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ipadTests/ipadTests-Prefix.pch";
-				INFOPLIST_FILE = "ipadTests/ipadTests-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
-		A94D680F13A2ED33003FC68F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				INFOPLIST_FILE = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		A94D681013A2ED33003FC68F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Prefix.pch";
-				INFOPLIST_FILE = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
-		A94D681113A2ED33003FC68F /* Ad Hoc */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Prefix.pch";
-				INFOPLIST_FILE = "TestVideoPlaybackModelController/TestVideoPlaybackModelController-Info.plist";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SenTestingKit,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = "Ad Hoc";
 		};
 		A9976F0113BB355200B06DFF /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1471,26 +1087,6 @@
 				A9250174134385BF001759F5 /* Debug */,
 				A9250175134385BF001759F5 /* Release */,
 				A901A9A5134B7D47006F2EED /* Ad Hoc */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A9250176134385BF001759F5 /* Build configuration list for PBXNativeTarget "ipadTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A9250177134385BF001759F5 /* Debug */,
-				A9250178134385BF001759F5 /* Release */,
-				A901A9A6134B7D47006F2EED /* Ad Hoc */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A94D680E13A2ED33003FC68F /* Build configuration list for PBXNativeTarget "TestVideoPlaybackModelController" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A94D680F13A2ED33003FC68F /* Debug */,
-				A94D681013A2ED33003FC68F /* Release */,
-				A94D681113A2ED33003FC68F /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
