@@ -31,7 +31,6 @@
         <attribute name="nm_direct_sd_url" optional="YES" attributeType="String"/>
         <attribute name="nm_direct_url" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="nm_fetch_timestamp" optional="YES" attributeType="Date" indexed="YES"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_playback_status" optional="YES" transient="YES" attributeType="Integer 32" valueTransformerName="" defaultValueString="0"/>
         <attribute name="nm_retry_count" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0"/>
@@ -57,7 +56,7 @@
     <elements>
         <element name="NMCategory" positionX="18" positionY="54" width="128" height="105"/>
         <element name="NMChannel" positionX="297" positionY="-72" width="153" height="285"/>
-        <element name="NMVideo" positionX="297" positionY="258" width="128" height="330"/>
+        <element name="NMVideo" positionX="297" positionY="258" width="128" height="315"/>
         <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="150"/>
     </elements>
 </model>

@@ -64,6 +64,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	// clean up cache
 	[categoryCacheDictionary removeAllObjects];
+	[channelCacheDictionary removeAllObjects];
 }
 
 - (void)deleteVideoInChannel:(NMChannel *)chnObj {
@@ -87,7 +88,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chnObj]];
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_fetch_timestamp" ascending:YES];
+	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

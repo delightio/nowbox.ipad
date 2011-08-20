@@ -8,6 +8,7 @@
 #import <CoreData/CoreData.h>
 
 extern NSInteger NM_USER_ACCOUNT_ID;
+extern NSNumber * NM_SESSION_ID;
 extern BOOL NM_USE_HIGH_QUALITY_VIDEO;
 
 #endif

@@ -16,7 +16,6 @@
 
 @dynamic external_id;
 @dynamic published_at;
-@dynamic nm_fetch_timestamp;
 @dynamic title;
 @dynamic view_count;
 @dynamic nm_did_play;

@@ -197,12 +197,12 @@ BOOL NM_RUNNING_IOS_5;
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Nowmov.sqlite"];
     
 	//MARK: debug code
-	NSLog(@"debug!!!!!!  removing local cache");
-	NSFileManager * fm = [NSFileManager defaultManager];
-	if ( [fm fileExistsAtPath:[storeURL path]] ) {
-		// remove the file
-		[fm removeItemAtURL:storeURL error:nil];
-	}
+//	NSLog(@"debug!!!!!!  removing local cache");
+//	NSFileManager * fm = [NSFileManager defaultManager];
+//	if ( [fm fileExistsAtPath:[storeURL path]] ) {
+//		// remove the file
+//		[fm removeItemAtURL:storeURL error:nil];
+//	}
 
     NSError *error = nil;
     persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

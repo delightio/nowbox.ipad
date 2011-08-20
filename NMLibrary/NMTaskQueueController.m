@@ -63,6 +63,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[managedObjectContext release];
 	[dataController release];
 	[networkController release];
+	[NM_SESSION_ID release];
 	[super dealloc];
 }
 
@@ -75,7 +76,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 #pragma mark Session management
 - (void)beginNewSession:(NSInteger)sid {
 	sessionID = sid;
-	NM_SESSION_ID = [NSNumber numberWithInteger:sid];
+	NM_SESSION_ID = [[NSNumber alloc] initWithInteger:sid];
 	// delete expired videos
 	[dataController deleteVideosWithSessionID:sessionID - 2];
 	// update all page number

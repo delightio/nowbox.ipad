@@ -24,7 +24,6 @@
 @property (nonatomic, retain) NSString * external_id;
 @property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSDate * published_at;
-@property (nonatomic, retain) NSDate * nm_fetch_timestamp;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * view_count;
 @property (nonatomic, retain) NSNumber * nm_did_play;

@@ -54,6 +54,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		[mdict setObject:[dict objectForKey:theKey] forKey:theKey];
 	}
 	[mdict setObject:[dict objectForKey:@"id"] forKey:@"nm_id"];
+	[mdict setObject:NM_SESSION_ID forKey:@"nm_session_id"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
 	NSString * thumbURL = [dict objectForKey:@"thumbnail_uri"];
 	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
@@ -141,14 +142,12 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
-	NSDate * timestamp = [NSDate date];
 	NSInteger idx = 0;
 	NSDictionary * dict;
 	for (NSDictionary * parentDict in chVideos) {
 		for (NSString * theKey in parentDict) {
 			dict = [parentDict objectForKey:theKey];
 			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
-			[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
 			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
 			[parsedObjects addObject:mdict];
 			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
@@ -243,6 +242,9 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				[dtlObj setValuesForKeysWithDictionary:dict];
 				dtlObj.video = vidObj;
 				vidObj.detail = dtlObj;
+			} else {
+				// update the view count
+				vidObj.view_count = [dict objectForKey:@"view_count"];
 			}
 			vidCount++;
 		}
