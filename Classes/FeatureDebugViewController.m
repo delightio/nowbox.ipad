@@ -7,9 +7,11 @@
 //
 
 #import "FeatureDebugViewController.h"
+#import "VideoPlaybackViewController.h"
 
 @implementation FeatureDebugViewController
 @synthesize targetChannel, selectedChannel;
+@synthesize playbackViewController;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -21,7 +23,9 @@
 //}
 
 - (void)dealloc {
+	[selectedChannel release];
 	[targetChannel release];
+	[playbackViewController release];
 	[super dealloc];
 }
 
@@ -136,6 +140,11 @@
 
 - (IBAction)fetchMoreVideoForCurrentChannel:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:selectedChannel];
+}
+
+- (IBAction)debugPlaybackQueue:(id)sender {
+	NSArray * videoItems = playbackViewController->movieView.player.items;
+	NSLog(@"num video in queue: %d", );
 }
 
 @end

@@ -92,4 +92,8 @@
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
 
+#ifdef DEBUG_PLAYER_NAVIGATION
+
+#endif
+
 @end
