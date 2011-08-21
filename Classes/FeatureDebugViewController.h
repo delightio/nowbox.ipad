@@ -13,6 +13,7 @@
 @interface FeatureDebugViewController : UIViewController {
 	NMChannel * targetChannel;
 	NMChannel * selectedChannel;
+	VideoPlaybackViewController * playbackViewController;
 }
 
 @property (nonatomic, retain) NMChannel * targetChannel;
