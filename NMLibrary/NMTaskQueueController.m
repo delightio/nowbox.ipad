@@ -15,6 +15,7 @@
 #import "NMVideoDetail.h"
 
 NSInteger NM_USER_ACCOUNT_ID			= 0;
+NSNumber * NM_SESSION_ID				= nil;
 BOOL NM_USE_HIGH_QUALITY_VIDEO			= YES;
 
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
@@ -62,6 +63,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[managedObjectContext release];
 	[dataController release];
 	[networkController release];
+	[NM_SESSION_ID release];
 	[super dealloc];
 }
 
@@ -69,6 +71,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// cancel all playback related tasks created for the chnObj.
 	[networkController cancelPlaybackRelatedTasksForChannel:chnObj];
 	// make sure NO notification will be sent after execution of this method. tasks do not have to be wiped out here. But they must not trigger and sending of notification if those tasks belong to the chnObj
+}
+
+#pragma mark Session management
+- (void)beginNewSession:(NSInteger)sid {
+	sessionID = sid;
+	NM_SESSION_ID = [[NSNumber alloc] initWithInteger:sid];
+	// delete expired videos
+	[dataController deleteVideosWithSessionID:sessionID - 2];
+	// update all page number
+	[dataController resetAllChannelsPageNumber];
 }
 
 #pragma mark Queue tasks to network controller
@@ -114,15 +126,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
-#if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
-	NSLog(@"get video list - %@ %d", chnObj.title, numVid);
-#endif
-	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
-	task.numberOfVideoRequested = numVid;
+- (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj {
+	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetMoreVideoForChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
+
+//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
+//#if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
+//	NSLog(@"get video list - %@ %d", chnObj.title, numVid);
+//#endif
+//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
+//	task.numberOfVideoRequested = numVid;
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (void)issueGetLiveChannel {
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] init];
@@ -132,13 +150,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo {
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:aVideo];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-- (void)issueWatchLater:(BOOL)enqueue video:(NMVideo *)aVideo {
-	NMEventType t = enqueue ? NMEventEnqueue : NMEventDequeue;
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -169,30 +180,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSendUpVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventUpVote forVideo:aVideo];
-//	task.duration = vdur;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-- (void)issueSendDownVoteEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventDownVote forVideo:aVideo];
-//	task.duration = vdur;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-//- (void)issueSendRewindEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventRewind forVideo:aVideo];
-//	task.duration = vdur;
-//	task.elapsedSeconds = sec;
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
-
 - (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
 //	task.duration = vdur;
@@ -211,18 +198,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-//- (void)issueSendViewingEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
-//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventViewing forVideo:aVideo];
-////	task.duration = vdur;
-//	// how long the user has watched a video
-//	task.elapsedSeconds = sec;
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
-
 - (void)issueExamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventExamine forVideo:aVideo];
 	task.errorCode = err;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo {
+	NMEventType t = shouldQueue ? NMEventEnqueue : NMEventDequeue;
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

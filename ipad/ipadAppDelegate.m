@@ -15,6 +15,7 @@
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
 NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
+NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 BOOL NM_RUNNING_IOS_5;
 
 @implementation ipadAppDelegate
@@ -27,7 +28,7 @@ BOOL NM_RUNNING_IOS_5;
 
 + (void)initialize {
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, nil]];
+	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, nil]];
 }
 
 - (void)awakeFromNib {
@@ -49,6 +50,10 @@ BOOL NM_RUNNING_IOS_5;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
+	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+	[ctrl beginNewSession:sid];
+	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	    
 	self.window.rootViewController = self.launchViewController;
 	[self.window makeKeyAndVisible];
@@ -72,12 +77,25 @@ BOOL NM_RUNNING_IOS_5;
 	 */
 	[viewController setPlaybackCheckpoint];
 	[self saveContext];
+	// release the UI
+	
+	// release core data
+	
 }
 
-//- (void)applicationWillEnterForeground:(UIApplication *)application
-//{
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
 //	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
-//}
+	// start a new session
+	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+	// init core data
+	
+	// show the UI
+	
+}
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
@@ -179,12 +197,12 @@ BOOL NM_RUNNING_IOS_5;
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Nowmov.sqlite"];
     
 	//MARK: debug code
-	NSLog(@"debug!!!!!!  removing local cache");
-	NSFileManager * fm = [NSFileManager defaultManager];
-	if ( [fm fileExistsAtPath:[storeURL path]] ) {
-		// remove the file
-		[fm removeItemAtURL:storeURL error:nil];
-	}
+//	NSLog(@"debug!!!!!!  removing local cache");
+//	NSFileManager * fm = [NSFileManager defaultManager];
+//	if ( [fm fileExistsAtPath:[storeURL path]] ) {
+//		// remove the file
+//		[fm removeItemAtURL:storeURL error:nil];
+//	}
 
     NSError *error = nil;
     persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

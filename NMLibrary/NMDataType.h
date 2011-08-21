@@ -33,13 +33,13 @@ typedef enum {
 } NMCommand;
 
 typedef enum {
-	NMVideoQueueStatusNone,
+	NMVideoQueueStatusError			= -10,
+	NMVideoQueueStatusNone			= 0,
 	NMVideoQueueStatusResolvingDirectURL,
 	NMVideoQueueStatusDirectURLReady,
 	NMVideoQueueStatusQueued,
 	NMVideoQueueStatusPlaying,
 	NMVideoQueueStatusPlayed,
-	NMVideoQueueStatusError			= 999,
 } NMVideoQueueStatusType;
 
 typedef enum {
@@ -47,8 +47,6 @@ typedef enum {
 	NMEventUnsubscribeChannel,
 	NMEventEnqueue,
 	NMEventDequeue,
-	NMEventUpVote,
-	NMEventDownVote,
 	NMEventShare,
 	NMEventView,
 	NMEventExamine,

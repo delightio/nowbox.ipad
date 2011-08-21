@@ -64,6 +64,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	// clean up cache
 	[categoryCacheDictionary removeAllObjects];
+	[channelCacheDictionary removeAllObjects];
 }
 
 - (void)deleteVideoInChannel:(NMChannel *)chnObj {
@@ -87,7 +88,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chnObj]];
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_fetch_timestamp" ascending:YES];
+	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -123,6 +124,30 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	[request release];
 }
+
+#pragma mark Session management
+- (void)deleteVideosWithSessionID:(NSInteger)sid {
+	//TODO: do not delete video that are in Favorite or My Queue channels
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+	// nm_session_id <= %@ AND NOT ANY categories = %@
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id <= %@", [NSNumber numberWithInteger:sid]]];
+	[request setReturnsObjectsAsFaults:YES];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	for (NMVideo * vid in result) {
+		[managedObjectContext deleteObject:vid];
+	}
+}
+
+- (void)resetAllChannelsPageNumber {
+	NSArray * subChn = self.subscribedChannels;
+	NSNumber * pgNum = [NSNumber numberWithInteger:1];
+	for (NMChannel * chnObj in subChn) {
+		// reset the page number to 1. Page number always start at 1.
+		chnObj.nm_current_page = pgNum;
+	}
+}
+
 
 #pragma mark Search Results Support
 - (NMCategory *)internalSearchCategory {
@@ -419,9 +444,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		default:
 			break;
 	}
-		// send notification
-	if ( task.encountersErrorDuringProcessing == NO ) {
-		NSString * notifyStr = [task didLoadNotificationName];
+	// send notification
+	NSString * notifyStr;
+	if ( !task.encountersErrorDuringProcessing ) {
+		notifyStr = [task didLoadNotificationName];
+		if ( notifyStr ) [notificationCenter postNotificationName:notifyStr object:task userInfo:[task userInfo]];
+	} else if ( task.executeSaveActionOnError ) {
+		notifyStr = [task didFailNotificationName];
 		if ( notifyStr ) [notificationCenter postNotificationName:notifyStr object:task userInfo:[task userInfo]];
 	}
 //	}

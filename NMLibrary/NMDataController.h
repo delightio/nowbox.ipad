@@ -45,6 +45,9 @@
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
+// session management
+- (void)deleteVideosWithSessionID:(NSInteger)sid;
+- (void)resetAllChannelsPageNumber;
 // general data manipulation
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 - (void)deleteVideoInChannel:(NMChannel *)chnObj;

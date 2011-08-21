@@ -24,7 +24,6 @@
 @property (nonatomic, retain) NSString * external_id;
 @property (nonatomic, retain) NSNumber * duration;
 @property (nonatomic, retain) NSDate * published_at;
-@property (nonatomic, retain) NSDate * nm_fetch_timestamp;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * view_count;
 @property (nonatomic, retain) NSNumber * nm_did_play;
@@ -32,6 +31,7 @@
 @property (nonatomic, retain) NSString * nm_direct_sd_url;
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_retry_count;
+@property (nonatomic, retain) NSNumber * nm_session_id;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSString * source;

@@ -368,13 +368,21 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 #pragma mark Notification handlers
 
 - (void)handleErrorNotification:(NSNotification *)aNotification {
-	if ( [[aNotification name] isEqualToString:NMURLConnectionErrorNotification] ) {
+	NSString * theName = [aNotification name];
+	if ( [theName isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
+		// error resolving the direct URL. Let the server knows about it
+#ifdef DEBUG_PLAYBACK_QUEUE
+		NSLog(@"received resolution error notificaiton");
+#endif
+		NSDictionary * info = [aNotification userInfo];
+		[nowmovTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorCode:[[info objectForKey:@"error_code"] integerValue]];
+	} else if ( [theName isEqualToString:NMURLConnectionErrorNotification] ) {
 		// general network error. 
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [[aNotification userInfo] objectForKey:@"message"]];
 		NSLog(@"general connection error: %@", [[aNotification userInfo] objectForKey:@"message"]);
 #endif
-	} else if ( [[aNotification name] isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
+	} else if ( [theName isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 		NSError * theErr = [[aNotification userInfo] objectForKey:AVPlayerItemFailedToPlayToEndTimeErrorKey];
 		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [theErr localizedDescription]];
@@ -399,7 +407,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		// we can't get any new video from the server. try getting by doubling the count
 		NSUInteger vidReq = [[userInfo objectForKey:@"num_video_requested"] unsignedIntegerValue];
 		if ( vidReq < 41 ) {
-			[nowmovTaskController issueGetVideoListForChannel:channel numberOfVideos:vidReq * 2];
+			[nowmovTaskController issueGetVideoListForChannel:channel];
 		} else {
 			// we have finish up this channel
 		}
@@ -432,7 +440,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_fetch_timestamp" ascending:YES];
+	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -625,7 +633,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		//TODO: do we need to update the caching variables - currentIndexPath, currentVideo, etc
 		if ( numberOfVideos < 5 ) {
 			// fetch more video
-			[nowmovTaskController issueGetVideoListForChannel:channel numberOfVideos:5];
+			[nowmovTaskController issueGetMoreVideoForChannel:channel];
 		}
 	}
 	changeSessionUpdateCount = NO;
@@ -633,8 +641,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 #pragma mark Debug message
 - (void)printDebugMessage:(NSString *)str {
-	debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", str];
-	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
+//	debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", str];
+//	[debugMessageView scrollRangeToVisible:NSMakeRange([debugMessageView.text length], 0)];
 }
 
 @end

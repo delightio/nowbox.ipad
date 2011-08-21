@@ -13,6 +13,8 @@
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
+#define NM_NUMBER_OF_VIDEOS_PER_PAGE	20
+
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
 NSString * const NMDidFailGetChannelVideoListNotification = @"NMDidFailGetChannelVideoListNotification";
@@ -54,6 +56,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		[mdict setObject:[dict objectForKey:theKey] forKey:theKey];
 	}
 	[mdict setObject:[dict objectForKey:@"id"] forKey:@"nm_id"];
+	[mdict setObject:NM_SESSION_ID forKey:@"nm_session_id"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
 	NSString * thumbURL = [dict objectForKey:@"thumbnail_uri"];
 	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
@@ -87,19 +90,19 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.channelName = aChn.title;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
-	numberOfVideoRequested = 20;
+	numberOfVideoRequested = NM_NUMBER_OF_VIDEOS_PER_PAGE;
 	return self;
 }
 
-- (id)initGetMoreVideoForChannel:(NMChannel *)aChn atPage:(NSUInteger)pgNum {
+- (id)initGetMoreVideoForChannel:(NMChannel *)aChn {
 	self = [super init];
 	command = NMCommandGetMoreVideoForChannel;
 	self.channel = aChn;
 	self.channelName = aChn.title;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
-	numberOfVideoRequested = 20;
-	currentPage = pgNum;
+	numberOfVideoRequested = NM_NUMBER_OF_VIDEOS_PER_PAGE;
+	currentPage = [aChn.nm_current_page integerValue];
 	return self;
 }
 
@@ -115,7 +118,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSString * urlStr = nil;
 	switch (command) {
 		case NMCommandGetMoreVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?page=%dlimit=%d&user_id=%d", urlString, currentPage, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
 			break;
 			
 		case NMCommandGetChannelVideoList:
@@ -141,14 +144,12 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
 	NSMutableDictionary * mdict;
-	NSDate * timestamp = [NSDate date];
 	NSInteger idx = 0;
 	NSDictionary * dict;
 	for (NSDictionary * parentDict in chVideos) {
 		for (NSString * theKey in parentDict) {
 			dict = [parentDict objectForKey:theKey];
 			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
-			[mdict setObject:timestamp forKey:@"nm_fetch_timestamp"];
 			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
 			[parsedObjects addObject:mdict];
 			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
@@ -181,40 +182,6 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (void)insertOnlyNewVideosInController:(NMDataController *)ctrl {
-	// transverse server list
-	NMVideo * vidObj;
-	NSDictionary * vidDict;
-	for (vidDict in parsedObjects) {
-		// check if the object already exists
-		vidObj = [ctrl videoForID:[vidDict objectForKey:@"nm_id"]];
-		if ( vidObj ) {
-			// video object exists. check if we need to set relationship
-			
-		}
-		// check the relationship
-	}
-}
-
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	switch (command) {
-		case NMCommandGetChannelVideoList:
-		{
-			// delete all existing channel
-			NSSet * chnVideos = channel.videos;
-			if ( chnVideos ) [ctrl deleteManagedObjects:chnVideos];
-			// put in all videos
-			[self insertAllVideosInController:ctrl];
-			break;
-		}	
-		case NMCommandGetMoreVideoForChannel:
-			[self insertOnlyNewVideosInController:ctrl];
-			break;
-			
-		default:
-			break;
-	}
-	return;
-	// add all video from server for now
 	NSDictionary * dict;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
@@ -241,26 +208,36 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				[dtlObj setValuesForKeysWithDictionary:dict];
 				dtlObj.video = vidObj;
 				vidObj.detail = dtlObj;
+			} else {
+				// update the view count
+				vidObj.view_count = [dict objectForKey:@"view_count"];
 			}
 			vidCount++;
 		}
 	} else {
-		for (dict in parsedObjects) {
-			vidObj = [ctrl insertNewVideo];
-			[vidObj setValuesForKeysWithDictionary:dict];
-			// channel
-			vidObj.channel = channel;
-			[channel addVideosObject:vidObj];
-			// video detail
-			dtlObj = [ctrl insertNewVideoDetail];
-			dict = [parsedDetailObjects objectAtIndex:vidCount];
-			[dtlObj setValuesForKeysWithDictionary:dict];
-			dtlObj.video = vidObj;
-			vidObj.detail = dtlObj;
+		[self insertAllVideosInController:ctrl];
+	}
+}
+
+- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+	switch (command) {
+		case NMCommandGetChannelVideoList:
+		{
+			// delete all existing channel
+			NSSet * chnVideos = channel.videos;
+			if ( chnVideos ) [ctrl deleteManagedObjects:chnVideos];
+			// put in all videos
+			[self insertAllVideosInController:ctrl];
+			break;
+		}	
+		case NMCommandGetMoreVideoForChannel:
+			[self insertOnlyNewVideosInController:ctrl];
+			// update the page number
+			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
+			break;
 			
-			vidCount++;
-		}
-		numberOfVideoAdded = [parsedObjects count];
+		default:
+			break;
 	}
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);

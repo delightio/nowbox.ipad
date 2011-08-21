@@ -7,9 +7,11 @@
 //
 
 #import "FeatureDebugViewController.h"
+#import "VideoPlaybackViewController.h"
 
 @implementation FeatureDebugViewController
-@synthesize targetChannel;
+@synthesize targetChannel, selectedChannel;
+@synthesize playbackViewController;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -21,7 +23,9 @@
 //}
 
 - (void)dealloc {
+	[selectedChannel release];
 	[targetChannel release];
+	[playbackViewController release];
 	[super dealloc];
 }
 
@@ -131,6 +135,19 @@
 	NSLog(@"Subscription List:");
 	for (NMChannel * chnObj in results) {
 		NSLog(@"%@", chnObj.title);
+	}
+}
+
+- (IBAction)fetchMoreVideoForCurrentChannel:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:selectedChannel];
+}
+
+- (IBAction)debugPlaybackQueue:(id)sender {
+	NMAVQueuePlayer * qPlayer = [playbackViewController getQueuePlayer];
+	NSArray * itemsAy = qPlayer.items;
+	NSLog(@"num video in queue: %d", [itemsAy count]);
+	for (NMAVPlayerItem * item in itemsAy) {
+		NSLog(@"\t%@", item.nmVideo.title);
 	}
 }
 

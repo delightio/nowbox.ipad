@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="858" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="864" systemVersion="11B26" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -7,9 +7,9 @@
         <relationship name="channels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMChannel" inverseName="categories" inverseEntity="NMChannel"/>
     </entity>
     <entity name="NMChannel" representedClassName="NMChannel">
+        <attribute name="nm_current_page" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_description" optional="YES" attributeType="String"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
-        <attribute name="nm_last_page" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_last_vid" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_subscribed" optional="YES" attributeType="Boolean" defaultValueString="NO" indexed="YES"/>
@@ -30,10 +30,10 @@
         <attribute name="nm_direct_sd_url" optional="YES" attributeType="String"/>
         <attribute name="nm_direct_url" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="nm_fetch_timestamp" optional="YES" attributeType="Date" indexed="YES"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_playback_status" optional="YES" transient="YES" attributeType="Integer 32" valueTransformerName="" defaultValueString="0"/>
         <attribute name="nm_retry_count" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="nm_session_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="published_at" optional="YES" attributeType="Date"/>
         <attribute name="source" optional="YES" attributeType="String"/>

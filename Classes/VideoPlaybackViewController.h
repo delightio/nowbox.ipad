@@ -72,12 +72,13 @@
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
 
 - (IBAction)playStopVideo:(id)sender;
-- (IBAction)vote:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;
-- (IBAction)showSharePopover:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;
 - (IBAction)toggleChannelPanelFullScreen:(id)sender;
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
+// movie detail view actions
+- (IBAction)shareVideo:(id)sender;
+- (IBAction)addVideoToQueue:(id)sender;
 
 - (void)stopVideo;
 //- (void)requestAddVideoAtIndex:(NSUInteger)idx;
@@ -90,5 +91,9 @@
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
+
+#ifdef DEBUG_PLAYER_NAVIGATION
+- (NMAVQueuePlayer *)getQueuePlayer;
+#endif
 
 @end

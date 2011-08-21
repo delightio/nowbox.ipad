@@ -13,6 +13,7 @@
 
 @implementation NMChannel
 
+@dynamic nm_current_page;
 @dynamic nm_description;
 @dynamic nm_id;
 @dynamic nm_last_vid;
@@ -25,7 +26,6 @@
 @dynamic thumbnail_uri;
 @dynamic title;
 @dynamic type;
-@dynamic nm_last_page;
 @dynamic categories;
 @dynamic videos;
 

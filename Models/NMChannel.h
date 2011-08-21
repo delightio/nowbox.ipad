@@ -13,6 +13,7 @@
 
 @interface NMChannel : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * nm_current_page;
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_last_vid;
@@ -25,7 +26,6 @@
 @property (nonatomic, retain) NSString * thumbnail_uri;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSString * type;
-@property (nonatomic, retain) NSNumber * nm_last_page;
 @property (nonatomic, retain) NSSet *categories;
 @property (nonatomic, retain) NSSet *videos;
 @end
