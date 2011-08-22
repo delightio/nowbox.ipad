@@ -18,6 +18,11 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor colorWithRed:56.0f/255.0f green:56.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
+		CALayer * theLayer = [CALayer layer];
+		theLayer.frame = self.bounds;
+		theLayer.contents = (id)[UIImage imageNamed:@"airplay"].CGImage;
+		theLayer.opacity = 0.2f;
+		[self.layer addSublayer:theLayer];
     }
     return self;
 }
