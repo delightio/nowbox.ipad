@@ -109,8 +109,10 @@
 		if ( !CGRectContainsPoint(controlContainerView.frame, touchPoint) ) {
 			// the touch up does NOT happen in the control.
 			[target performSelector:action withObject:self];
+			return;
 		}
 	}
+	[super touchesEnded:touches withEvent:event];
 }
 
 - (void)addTarget:(id)atarget action:(SEL)anAction {

@@ -1045,6 +1045,24 @@
 	[nowmovTaskController issueEnqueue:YES video:playbackModelController.currentVideo];
 }
 
+// seek bar
+- (IBAction)seekPlaybackProgress:(id)sender {
+	UISlider * slider = (UISlider *)sender;
+	NMVideo * curVideo = playbackModelController.currentVideo;
+	CMTime theTime = CMTimeMake((int64_t)([curVideo.duration floatValue] * slider.value), 1);
+	[movieView.player seekToTime:theTime];
+}
+
+- (IBAction)touchDownProgressBar:(id)sender {
+	[self stopVideo];
+	showMovieControlTimestamp = -1;
+}
+
+- (IBAction)touchUpProgressBar:(id)sender {
+	[self playCurrentVideo];
+	showMovieControlTimestamp = loadedControlView.timeElapsed;
+}
+
 # pragma mark gestures
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {

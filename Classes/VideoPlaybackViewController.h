@@ -79,6 +79,10 @@
 // movie detail view actions
 - (IBAction)shareVideo:(id)sender;
 - (IBAction)addVideoToQueue:(id)sender;
+// seeking
+- (IBAction)seekPlaybackProgress:(id)sender;
+- (IBAction)touchDownProgressBar:(id)sender;
+- (IBAction)touchUpProgressBar:(id)sender;
 
 - (void)stopVideo;
 //- (void)requestAddVideoAtIndex:(NSUInteger)idx;
