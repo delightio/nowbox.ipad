@@ -73,7 +73,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [categoriesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [channelsTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
-    [categoriesTableView setFrame:CGRectMake(0, 0, 59, channelsTableView.frame.size.width)];
+    [categoriesTableView setFrame:CGRectMake(0, 0, 70, 530)];
     categoriesTableView.orientedTableViewDataSource = self;
     categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
     [categoriesTableView setAlwaysBounceVertical:YES];
@@ -168,10 +168,46 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if ( tableView == categoriesTableView ) {
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:section];
-		return [sectionInfo numberOfObjects]+3;
+		return (([sectionInfo numberOfObjects]+1)*2)-1;
 	} else {
 		return [selectedChannelArray count];
 	}
+}
+
+-(float)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (tableView == channelsTableView) {
+        return 0;
+    }
+    return 10;
+}
+
+-(float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (tableView == channelsTableView) {
+        return 0;
+    }
+    return 10;
+}
+
+
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (tableView == channelsTableView) {
+        return nil;
+    }
+    
+    UIImageView *theView = [[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 70, 10)] autorelease];
+    theView.image = [UIImage imageNamed:@"category-list-normal-bg-turned"];
+    return theView;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (tableView == channelsTableView) {
+        return nil;
+    }
+    
+    UIImageView *theView = [[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 70, 10)] autorelease];
+    theView.image = [UIImage imageNamed:@"category-list-normal-bg-turned"];
+    return theView;
 }
 
 
@@ -188,21 +224,20 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             categtoryCell = [[[CategoryTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         }
         
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:indexPath.section];
-        if ((indexPath.row == 0) || (indexPath.row == [sectionInfo numberOfObjects]+2)) {
-            [categtoryCell setCategoryTitle:@""];
-            [categtoryCell setUserInteractionEnabled:NO];
-        } else if (indexPath.row == 1) {
+        if (indexPath.row == 0) { // my channels
             [categtoryCell setCategoryTitle:nil];
             [categtoryCell setUserInteractionEnabled:YES];
-        } else {
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row-2 inSection:indexPath.section];
+        } else if (indexPath.row % 2 == 0) { // other categories
+            indexPath = [NSIndexPath indexPathForRow:(indexPath.row/2)-1 inSection:indexPath.section];
             NMCategory * cat = [categoryFetchedResultsController objectAtIndexPath:indexPath];
             [categtoryCell setCategoryTitle:cat.title];
             [categtoryCell setUserInteractionEnabled:YES];
         }
+        else { // separator
+            [categtoryCell setCategoryTitle:@"<SEPARATOR>"];
+            [categtoryCell setUserInteractionEnabled:NO];
+        }
         return categtoryCell;
-        
         
 	} else {
         static NSString *CellIdentifier = @"FindChannelCell";
@@ -246,15 +281,16 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ( tableView == categoriesTableView ) {
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:indexPath.section];
-        if ((indexPath.row == 0) || (indexPath.row == [sectionInfo numberOfObjects]+2)) {
-            return 10;
-        } else if (indexPath.row == 1) {
-            return 59;
+        if (indexPath.row == 0) { // my channels
+            return 80;
+        } else if (indexPath.row % 2 == 0) { // other categories
+            indexPath = [NSIndexPath indexPathForRow:(indexPath.row/2)-1 inSection:indexPath.section];
+            NMCategory * cat = [categoryFetchedResultsController objectAtIndexPath:indexPath];
+            return [self categoryCellWidthFromString:cat.title];
         }
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row-2 inSection:indexPath.section];
-		NMCategory * cat = [categoryFetchedResultsController objectAtIndexPath:indexPath];
-        return [self categoryCellWidthFromString:cat.title];
+        else { // separator
+            return 2;
+        }
     } else {
         return 65;
     }
@@ -265,33 +301,36 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ( tableView == categoriesTableView ) {
-        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:indexPath.section];
-        if ((indexPath.row == 0) || (indexPath.row == [sectionInfo numberOfObjects]+2)) {
+        
+        if (indexPath.row == 0) { // my channels
             return;
-        } else if (indexPath.row == 1) {
+        } else if (indexPath.row % 2 == 0) { // other categories
+            // refresh the right table data
+            indexPath = [NSIndexPath indexPathForRow:(indexPath.row/2)-1 inSection:indexPath.section];
+            self.selectedIndexPath = indexPath;
+            NMCategory * cat = [categoryFetchedResultsController objectAtIndexPath:indexPath];
+            NSSet * chnSet = cat.channels;
+            self.selectedChannelArray = [chnSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+            [channelsTableView reloadData];
+            
+            if ( [chnSet count] == 0 ) {
+                // try fetching the channels from server
+                [[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForCategory:cat];
+            }
+        }
+        else { // separator
             return;
         }
 
-		// refresh the right table data
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row-2 inSection:indexPath.section];
-		self.selectedIndexPath = indexPath;
-		NMCategory * cat = [categoryFetchedResultsController objectAtIndexPath:indexPath];
-		NSSet * chnSet = cat.channels;
-		self.selectedChannelArray = [chnSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
-		[channelsTableView reloadData];
-		
-		if ( [chnSet count] == 0 ) {
-			// try fetching the channels from server
-			[[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForCategory:cat];
-		}
+        
 	} else {
         NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
         [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
         
         // TODO: just for the toggle status
-        chn.nm_subscribed = [NSNumber numberWithBool:![chn.nm_subscribed boolValue]];
-        
-        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//        chn.nm_subscribed = [NSNumber numberWithBool:![chn.nm_subscribed boolValue]];
+//        
+//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 

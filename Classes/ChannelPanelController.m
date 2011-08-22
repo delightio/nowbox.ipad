@@ -429,11 +429,18 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     switch(type) {
             
-        case NSFetchedResultsChangeInsert:
+        case NSFetchedResultsChangeInsert: {
+            if ([newIndexPath row] <= highlightedChannelIndex) {
+                highlightedChannelIndex++;
+            }
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
+        }
         case NSFetchedResultsChangeDelete:
+            if ([newIndexPath row] <= highlightedChannelIndex) {
+                highlightedChannelIndex--;
+            }
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             

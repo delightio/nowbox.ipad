@@ -18,9 +18,9 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        categoryView = [[CategoryCellView alloc]initWithFrame:CGRectMake(0, 0, 150, 59)];
+        categoryView = [[CategoryCellView alloc]initWithFrame:CGRectMake(0, 0, 150, 70)];
         [self.contentView addSubview:categoryView];
-        [self setClipsToBounds:YES];
+//        [self setClipsToBounds:YES];
     }
     return self;
 }

@@ -48,9 +48,10 @@
 							<object class="IBUITableView" id="840363466">
 								<reference key="NSNextResponder" ref="465591970"/>
 								<int key="NSvFlags">274</int>
-								<string key="NSFrame">{{0, 59}, {758, 935}}</string>
+								<string key="NSFrame">{{0, 70}, {758, 924}}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:165</string>
 								<object class="NSColor" key="IBUIBackgroundColor" id="321368810">
 									<int key="NSColorSpace">3</int>
@@ -69,7 +70,7 @@
 							<object class="IBUITableView" id="650864921">
 								<reference key="NSNextResponder" ref="465591970"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrameSize">{758, 59}</string>
+								<string key="NSFrameSize">{758, 70}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="959790454"/>
@@ -89,7 +90,7 @@
 							<object class="IBUIImageView" id="959790454">
 								<reference key="NSNextResponder" ref="465591970"/>
 								<int key="NSvFlags">289</int>
-								<string key="NSFrame">{{718, 0}, {40, 59}}</string>
+								<string key="NSFrame">{{718, 0}, {40, 70}}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="840363466"/>
@@ -382,7 +383,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NS.key.0">category-list-fade.png</string>
-			<string key="NS.object.0">{40, 59}</string>
+			<string key="NS.object.0">{84, 69}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">911</string>
 	</data>

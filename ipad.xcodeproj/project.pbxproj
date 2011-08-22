@@ -12,6 +12,8 @@
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
 		221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */ = {isa = PBXBuildFile; fileRef = 221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */; };
+		22333F4D1401A6D4002FA3FE /* category-list-separator.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4C1401A6D4002FA3FE /* category-list-separator.png */; };
+		22333F501401AF52002FA3FE /* category-list-normal-bg-turned.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
 		22ADF99D13FAF39A003CF27E /* CategoryCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADF99A13FAF39A003CF27E /* CategoryCellView.m */; };
 		22ADF99E13FAF39A003CF27E /* CategoryTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADF99C13FAF39A003CF27E /* CategoryTableCell.m */; };
@@ -164,6 +166,8 @@
 		221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-thumbnail-frame.png"; sourceTree = "<group>"; };
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
 		221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-bad.png"; sourceTree = "<group>"; };
+		22333F4C1401A6D4002FA3FE /* category-list-separator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-separator.png"; sourceTree = "<group>"; };
+		22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-normal-bg-turned.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
 		22ADF99913FAF39A003CF27E /* CategoryCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCellView.h; sourceTree = "<group>"; };
@@ -532,12 +536,14 @@
 				A9FDD38D13E61B5400758BD7 /* top-bar-image-frame.png */,
 				A98C241C13D399D70061A594 /* ribbon.png */,
 				22ADF9D913FB0D6A003CF27E /* category-list-normal-bg.png */,
+				22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */,
 				22ADF9D513FB0BBB003CF27E /* category-list-selected-left.png */,
 				22ADF9D613FB0BBB003CF27E /* category-list-selected-right.png */,
 				22ADF9B713FAF40C003CF27E /* category-list-fade.png */,
 				22ADF9B813FAF40C003CF27E /* category-list-my-channels.png */,
 				22ADF9B913FAF40C003CF27E /* category-list-selected-arrow.png */,
 				22ADF9BA13FAF40C003CF27E /* category-list-selected-mid.png */,
+				22333F4C1401A6D4002FA3FE /* category-list-separator.png */,
 				22ADF9DD13FBC3E2003CF27E /* find-channel-list-normal.png */,
 				22ADF9DE13FBC3E3003CF27E /* find-channel-list-subscribed.png */,
 				22ADF9DF13FBC3E5003CF27E /* find-channel-not-subscribed-icon.png */,
@@ -841,6 +847,8 @@
 				22ADF9E413FBC3E8003CF27E /* find-channel-subscribed-icon.png in Resources */,
 				22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */,
 				A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */,
+				22333F4D1401A6D4002FA3FE /* category-list-separator.png in Resources */,
+				22333F501401AF52002FA3FE /* category-list-normal-bg-turned.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
