@@ -33,7 +33,6 @@ typedef enum {
 	VideoPlaybackViewController * videoViewController;
 	NSInteger selectedIndex;
     NSInteger highlightedChannelIndex, highlightedVideoIndex;
-    
 }
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;

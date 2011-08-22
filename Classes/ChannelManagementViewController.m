@@ -66,7 +66,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	self.title = @"Find Channels";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)];
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissView:)];
 	
     containerView.layer.cornerRadius = 4;
 
@@ -80,9 +80,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [categoriesTableView setShowsVerticalScrollIndicator:NO];
 
     
-	// listen to notification
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
+
 }
 
 - (void)viewDidUnload
@@ -116,7 +114,19 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    // listen to notification
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
+    
+    [nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+}
 
+-(void)viewWillDisappear:(BOOL)animated {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -141,10 +151,27 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	}
 }
 
+
+- (void)handleWillLoadNotification:(NSNotification *)aNotification {
+//	NSLog(@"notification: %@", [aNotification name]);
+}
+
+- (void)handleSubscriptionNotification:(NSNotification *)aNotification {
+	NSDictionary * userInfo = [aNotification userInfo];
+    for (int i=0; i<[selectedChannelArray count]; i++) {
+        NMChannel * chn = [selectedChannelArray objectAtIndex:i];
+        if (chn == [userInfo objectForKey:@"channel"]) {
+            [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:i inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        }
+    }
+}
+
+
 #pragma mark Target-action methods
 
 - (void)showSearchView:(id)sender {
 	SearchChannelViewController * vc = [[SearchChannelViewController alloc] init];
+    vc.managedObjectContext = self.managedObjectContext;
 	[self.navigationController pushViewController:vc animated:YES];
 	[vc release];
 //	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
@@ -274,6 +301,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
         }
         
+        UIActivityIndicatorView *actView;
+        actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+        [actView setAlpha:0];
+        [imageView setAlpha:1];
+        
         return cell;
 	}
     
@@ -324,7 +356,25 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
         
 	} else {
+        
+        UITableViewCell *cell = [channelsTableView cellForRowAtIndexPath:indexPath];
+        
+        UIActivityIndicatorView *actView;
+        actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+        [actView startAnimating];
+        
+        UIImageView *imageView = (UIImageView *)[cell viewWithTag:11];
+        
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             [actView setAlpha:1];
+                             [imageView setAlpha:0];
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+        
         NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
+        
         [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
         
         // TODO: just for the toggle status
@@ -358,6 +408,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // search results is a category but with -1 as ID, ignore that
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_id > 0"]];
+
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".

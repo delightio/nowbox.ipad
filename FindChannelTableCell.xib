@@ -15,6 +15,7 @@
 			<string>IBUITableViewCell</string>
 			<string>IBUIImageView</string>
 			<string>IBUILabel</string>
+			<string>IBUIActivityIndicatorView</string>
 			<string>IBProxyObject</string>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
@@ -163,7 +164,7 @@
 								<string key="NSFrame">{{477, 19}, {26, 27}}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="809480226"/>
 								<string key="NSReuseIdentifierKey">_NS:365</string>
 								<int key="IBUITag">11</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -172,6 +173,22 @@
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">find-channel-not-subscribed-icon.png</string>
 								</object>
+							</object>
+							<object class="IBUIActivityIndicatorView" id="809480226">
+								<reference key="NSNextResponder" ref="39451577"/>
+								<int key="NSvFlags">292</int>
+								<string key="NSFrame">{{479, 22}, {20, 20}}</string>
+								<reference key="NSSuperview" ref="39451577"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
+								<string key="NSReuseIdentifierKey">_NS:1012</string>
+								<bool key="IBUIOpaque">NO</bool>
+								<float key="IBUIAlpha">0.0</float>
+								<int key="IBUITag">15</int>
+								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<bool key="IBUIHidesWhenStopped">NO</bool>
+								<bool key="IBUIAnimating">YES</bool>
+								<int key="IBUIStyle">2</int>
 							</object>
 						</object>
 						<string key="NSFrameSize">{520, 65}</string>
@@ -261,6 +278,7 @@
 							<reference ref="703991629"/>
 							<reference ref="62356469"/>
 							<reference ref="916317946"/>
+							<reference ref="809480226"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -294,6 +312,11 @@
 						<reference key="object" ref="916317946"/>
 						<reference key="parent" ref="604669886"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">12</int>
+						<reference key="object" ref="809480226"/>
+						<reference key="parent" ref="604669886"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -305,6 +328,7 @@
 					<string>-2.CustomClassName</string>
 					<string>-2.IBPluginDependency</string>
 					<string>11.IBPluginDependency</string>
+					<string>12.IBPluginDependency</string>
 					<string>3.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>6.IBPluginDependency</string>
@@ -318,6 +342,7 @@
 					<string>ChannelManagementViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>UIResponder</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -341,7 +366,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">11</int>
+			<int key="maxID">12</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
