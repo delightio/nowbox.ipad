@@ -180,15 +180,16 @@
 }
 
 - (void)handleDidSearchNotification:(NSNotification *)aNotification {
-	NSLog(@"notification: %@", [aNotification name]);
-	// test out search predicate
-	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:dataCtrl.managedObjectContext]];
-	[request setPredicate:dataCtrl.searchResultsPredicate];
-	NSArray * result = [dataCtrl.managedObjectContext executeFetchRequest:request error:nil];
-	NSLog(@"search result %@", result);
-	[request release];
+//    searchFetchedResultsController = nil;
+//	NSLog(@"notification: %@", [aNotification name]);
+//	// test out search predicate
+//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+//	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+//	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:dataCtrl.managedObjectContext]];
+//	[request setPredicate:dataCtrl.searchResultsPredicate];
+//	NSArray * result = [dataCtrl.managedObjectContext executeFetchRequest:request error:nil];
+//	NSLog(@"search result %@", result);
+//	[request release];
 }
 
 #pragma mark Fetched results controller

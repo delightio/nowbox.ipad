@@ -277,7 +277,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         }
         
         NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
-
         UILabel *label;
         label = (UILabel *)[cell viewWithTag:12];
         label.text = chn.title;
