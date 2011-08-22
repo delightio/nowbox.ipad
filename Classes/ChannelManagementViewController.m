@@ -333,7 +333,22 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ( tableView == categoriesTableView ) {
+        // deselect first
+        if (selectedIndex - 1 > 0) {
+            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedIndex-1 inSection:0]] setHighlighted:NO];
+        }
+        if (selectedIndex + 1 < [tableView numberOfRowsInSection:0]) {
+            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedIndex+1 inSection:0]] setHighlighted:NO];
+        }
+        if (indexPath.row - 1 > 0) {
+            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row-1 inSection:0]] setHighlighted:YES];
+        }
+        if (indexPath.row + 1 < [tableView numberOfRowsInSection:0]) {
+            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]] setHighlighted:YES];
+        }
         
+        selectedIndex = indexPath.row;
+
         if (indexPath.row == 0) { // my channels
             return;
         } else if (indexPath.row % 2 == 0) { // other categories

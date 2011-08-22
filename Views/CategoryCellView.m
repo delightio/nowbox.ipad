@@ -65,7 +65,11 @@
         [@"MY" drawInRect:CGRectMake(2, 25, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
         [[UIImage imageNamed:@"category-list-my-channels"] drawInRect:CGRectMake(37, 26, 30, 17)];
     } else if ([categoryTitle isEqualToString:@"<SEPARATOR>"]) {
-        [[UIImage imageNamed:@"category-list-separator"] drawInRect:CGRectMake(0, 0, 2, 70)];
+        if (self.highlighted) {
+            [[UIImage imageNamed:@"category-list-normal-bg"] drawInRect:CGRectMake(0, 0, 2, 70)];
+        } else {
+            [[UIImage imageNamed:@"category-list-separator"] drawInRect:CGRectMake(0, 0, 2, 70)];
+        }
     }
     else {
         CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);

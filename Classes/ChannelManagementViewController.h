@@ -24,6 +24,8 @@
 	BOOL viewPushedByNavigationController;
     
     UITableViewCell *channelCell;
+    
+    int selectedIndex;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
