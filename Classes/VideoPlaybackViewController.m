@@ -139,9 +139,12 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	// listen to system notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
-	// multiple display support
+	// 2nd display support
 //	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayConnectedNotification:) name:UIScreenDidConnectNotification object:nil];
 //	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayDisconnectedNotification:) name:UIScreenDidDisconnectNotification object:nil];
+	
+	// AirPlay notification
+	[defaultNotificationCenter addObserver:self selector:@selector(handleAirPlayNotification:) name:MPMoviePlayerIsAirPlayVideoActiveDidChangeNotification object:nil];
 	
 	// channel management view notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementWillAppearNotification object:nil];
@@ -577,6 +580,10 @@
 }
 
 #pragma mark Notification handling
+- (void)handleAirPlayNotification:(NSNotification *)aNotification {
+	NSLog(@"AirPlay Notification %@", aNotification);
+}
+
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NSLog(@"did play notification");
