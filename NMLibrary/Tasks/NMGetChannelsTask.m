@@ -164,7 +164,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		case NMCommandSearchChannels:
 		{
 			// different handling from other case. Search result is managed by view controller. Always append info
-			NSDictionary * chnDict;
+			NSMutableDictionary * chnDict;
 			NMChannel * chnObj;
 			for (NSNumber * theKey in parsedObjectDictionary) {
 				chnDict = [parsedObjectDictionary objectForKey:theKey];
@@ -172,14 +172,15 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 				chnObj = [ctrl channelForID:theKey];
 				if ( chnObj == nil ) {
 					// create the channel
-					[ctrl insertNewChannelForID:theKey];
+					chnObj = [ctrl insertNewChannelForID:theKey];
+					[chnDict removeObjectForKey:@"category_ids"];
 					[chnObj setValuesForKeysWithDictionary:chnDict];
 					// there's no need to set relationship with the existing channel objects.
 				}
+				// add the search category
+				[ctrl.internalSearchCategory addChannelsObject:chnObj];
+				[chnObj addCategoriesObject:ctrl.internalSearchCategory];
 			}
-			// add the search category
-			[ctrl.internalSearchCategory addChannelsObject:chnObj];
-			[chnObj addCategoriesObject:ctrl.internalSearchCategory];
 			return;		// return this function
 		}
 		default:
