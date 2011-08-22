@@ -93,7 +93,7 @@
 - (void)playVideo:(NMVideo *)aVideo;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
-
+- (NMAVQueuePlayer *)getQueuePlayer;
 #endif
 
 @end

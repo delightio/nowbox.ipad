@@ -1222,4 +1222,11 @@
 	//	}
 }
 
+#ifdef DEBUG_PLAYER_NAVIGATION
+- (NMAVQueuePlayer *)getQueuePlayer {
+	return movieView.player;
+}
+
+#endif
+
 @end

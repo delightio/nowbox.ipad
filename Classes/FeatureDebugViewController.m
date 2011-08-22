@@ -143,8 +143,12 @@
 }
 
 - (IBAction)debugPlaybackQueue:(id)sender {
-	NSArray * videoItems = playbackViewController->movieView.player.items;
-	NSLog(@"num video in queue: %d", );
+	NMAVQueuePlayer * qPlayer = [playbackViewController getQueuePlayer];
+	NSArray * itemsAy = qPlayer.items;
+	NSLog(@"num video in queue: %d", [itemsAy count]);
+	for (NMAVPlayerItem * item in itemsAy) {
+		NSLog(@"\t%@", item.nmVideo.title);
+	}
 }
 
 @end

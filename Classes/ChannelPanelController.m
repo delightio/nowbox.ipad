@@ -75,6 +75,7 @@
 #ifdef DEBUG_PLAYER_NAVIGATION
 	FeatureDebugViewController * featureCtrl = [[FeatureDebugViewController alloc] initWithNibName:@"FeatureDebugView" bundle:nil];
 	featureCtrl.selectedChannel = videoViewController.currentChannel;
+	featureCtrl.playbackViewController = videoViewController;
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:featureCtrl];
 	
 	UIPopoverController * popover = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
