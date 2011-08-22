@@ -1056,11 +1056,25 @@
 - (IBAction)touchDownProgressBar:(id)sender {
 	[self stopVideo];
 	showMovieControlTimestamp = -1;
+	UIButton * btn = loadedControlView.seekBubbleButton;
+	CGPoint thePoint = btn.center;
+	// get current control nub position
+	
+	btn.center = thePoint;
+	// set time
+	
+	// show seek bubble
+	[UIView beginAnimations:nil context:nil];
+	loadedControlView.seekBubbleButton.alpha = 1.0f;
+	[UIView commitAnimations];
 }
 
 - (IBAction)touchUpProgressBar:(id)sender {
 	[self playCurrentVideo];
 	showMovieControlTimestamp = loadedControlView.timeElapsed;
+	[UIView beginAnimations:nil context:nil];
+	loadedControlView.seekBubbleButton.alpha = 0.0f;
+	[UIView commitAnimations];
 }
 
 # pragma mark gestures

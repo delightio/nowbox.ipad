@@ -28,6 +28,7 @@
 @synthesize duration, timeElapsed;
 @synthesize channelViewButton, playPauseButton;
 @synthesize controlsHidden, timeRangeBuffered;
+@synthesize seekBubbleButton;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];

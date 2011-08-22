@@ -30,6 +30,9 @@
 	IBOutlet UIButton *playPauseButton;
 	BOOL buttonPlayState;
 	
+	// seek label
+	IBOutlet UIButton * seekBubbleButton;
+	// playback control
 	IBOutlet UIButton * channelViewButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
@@ -79,6 +82,7 @@
 
 @property (nonatomic, assign) UIButton * channelViewButton;
 @property (nonatomic, assign) UIButton * playPauseButton;
+@property (nonatomic, retain) UIButton * seekBubbleButton;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
