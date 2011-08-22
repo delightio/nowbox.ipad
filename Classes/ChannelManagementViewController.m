@@ -24,6 +24,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize categoriesTableView;
 @synthesize channelsTableView;
 @synthesize categoryFetchedResultsController;
+@synthesize myChannelsFetchedResultsController;
 @synthesize selectedIndexPath;
 @synthesize selectedChannelArray;
 @synthesize managedObjectContext;
@@ -32,6 +33,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 
 - (void)dealloc {
+    [myChannelsFetchedResultsController release];
     [categoriesTableView release];
     [channelsTableView release];
 	[selectedChannelArray release];
@@ -169,7 +171,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)showSearchView:(id)sender {
 	SearchChannelViewController * vc = [[SearchChannelViewController alloc] init];
-    vc.managedObjectContext = self.managedObjectContext;
 	[self.navigationController pushViewController:vc animated:YES];
 	[vc release];
 //	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
@@ -195,7 +196,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:section];
 		return (([sectionInfo numberOfObjects]+1)*2)-1;
 	} else {
-		return [selectedChannelArray count];
+        if (selectedIndex==0) {
+            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.myChannelsFetchedResultsController sections] objectAtIndex:section];
+            return [sectionInfo numberOfObjects];
+        } else {
+            return [selectedChannelArray count];
+        }
 	}
 }
 
@@ -259,7 +265,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [categtoryCell setUserInteractionEnabled:YES];
         }
         else { // separator
-            [categtoryCell setCategoryTitle:@"<SEPARATOR>"];
+            if (([indexPath row] == selectedIndex+1) || ([indexPath row] == selectedIndex-1)) {
+                [categtoryCell setCategoryTitle:@""];
+            } else {
+                [categtoryCell setCategoryTitle:@"<SEPARATOR>"];
+            }
             [categtoryCell setUserInteractionEnabled:NO];
         }
         return categtoryCell;
@@ -273,8 +283,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             cell = channelCell;
             self.channelCell = nil;
         }
-        
-        NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
+        NMChannel * chn;
+        if (selectedIndex == 0) {
+            chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+        } else {
+            chn = [selectedChannelArray objectAtIndex:indexPath.row];
+        }
+
         UILabel *label;
         label = (UILabel *)[cell viewWithTag:12];
         label.text = chn.title;
@@ -302,7 +317,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
         [actView setAlpha:0];
         [imageView setAlpha:1];
-        
+      
         return cell;
 	}
     
@@ -331,22 +346,26 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if ( tableView == categoriesTableView ) {
         // deselect first
+        
         if (selectedIndex - 1 > 0) {
-            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedIndex-1 inSection:0]] setHighlighted:NO];
+            [(CategoryTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedIndex-1 inSection:0]] setCategoryTitle:@"<SEPARATOR>"];
         }
         if (selectedIndex + 1 < [tableView numberOfRowsInSection:0]) {
-            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedIndex+1 inSection:0]] setHighlighted:NO];
+            [(CategoryTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:selectedIndex+1 inSection:0]] setCategoryTitle:@"<SEPARATOR>"];
         }
         if (indexPath.row - 1 > 0) {
-            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row-1 inSection:0]] setHighlighted:YES];
+            [(CategoryTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row-1 inSection:0]] setCategoryTitle:@""];
         }
         if (indexPath.row + 1 < [tableView numberOfRowsInSection:0]) {
-            [[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]] setHighlighted:YES];
+            [(CategoryTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]] setCategoryTitle:@""];
         }
         
         selectedIndex = indexPath.row;
 
         if (indexPath.row == 0) { // my channels
+            self.selectedIndexPath = 0;
+            self.selectedChannelArray = nil;
+            [channelsTableView reloadData];
             return;
         } else if (indexPath.row % 2 == 0) { // other categories
             // refresh the right table data
@@ -361,6 +380,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 // try fetching the channels from server
                 [[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForCategory:cat];
             }
+            return;
         }
         else { // separator
             return;
@@ -385,7 +405,14 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                          completion:^(BOOL finished) {
                          }];
         
-        NMChannel * chn = [selectedChannelArray objectAtIndex:indexPath.row];
+        NMChannel * chn;
+        if (selectedIndex == 0) {
+            chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+        } else {
+            chn = [selectedChannelArray objectAtIndex:indexPath.row];
+        }
+        
+
         
         [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
         
@@ -450,24 +477,102 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     return categoryFetchedResultsController;
 }
 
+
+- (NSFetchedResultsController *)myChannelsFetchedResultsController {
+    
+    if (myChannelsFetchedResultsController != nil) {
+        return myChannelsFetchedResultsController;
+    }
+    
+    /*
+     Set up the fetched results controller.
+	 */
+    // Create the fetch request for the entity.
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+	[fetchRequest setReturnsObjectsAsFaults:NO];
+	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]]];
+	
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    self.myChannelsFetchedResultsController = aFetchedResultsController;
+    
+    [aFetchedResultsController release];
+    [fetchRequest release];
+    [sortDescriptor release];
+    [sortDescriptors release];
+    
+    NSError *error = nil;
+    if (![myChannelsFetchedResultsController performFetch:&error]) {
+        /*
+         Replace this implementation with code to handle the error appropriately.
+         
+         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+         */
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return myChannelsFetchedResultsController;
+}    
+
+
+
 #pragma mark Fetched results controller delegate methods
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [categoriesTableView beginUpdates];
+    if (controller == categoryFetchedResultsController) {
+        [categoriesTableView beginUpdates];
+    }
+    else {
+        if (selectedIndex == 0) {
+            [channelsTableView beginUpdates];
+        }
+    }
 }
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [categoriesTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [categoriesTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
+    if (controller == categoryFetchedResultsController) {
+        switch(type) {
+            case NSFetchedResultsChangeInsert:
+                [categoriesTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+                
+            case NSFetchedResultsChangeDelete:
+                [categoriesTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+        }
+    }
+    else {
+        if (selectedIndex == 0) {
+            switch(type) {
+                case NSFetchedResultsChangeInsert:
+                    [channelsTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+                    break;
+                    
+                case NSFetchedResultsChangeDelete:
+                    [channelsTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+                    break;
+            }
+        }
     }
 }
 
@@ -475,32 +580,63 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
-    indexPath = [NSIndexPath indexPathForRow:indexPath.row+2 inSection:indexPath.section];
 
-    switch(type) {
-            
-        case NSFetchedResultsChangeInsert:
-            [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            //[self configureCell:[categoriesTableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
-            break;
+    if (controller == categoryFetchedResultsController) {
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row+2 inSection:indexPath.section];
+        switch(type) {
+                
+            case NSFetchedResultsChangeInsert:
+                [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+                
+            case NSFetchedResultsChangeDelete:
+                [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+                
+            case NSFetchedResultsChangeUpdate:
+                [categoriesTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                break;
+                
+            case NSFetchedResultsChangeMove:
+                [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+                break;
+        }
+    }
+    else {
+        if (selectedIndex == 0) {
+            switch(type) {
+                case NSFetchedResultsChangeInsert:
+                    [channelsTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    break;
+                    
+                case NSFetchedResultsChangeDelete:
+                    [channelsTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    break;
+                    
+                case NSFetchedResultsChangeUpdate:
+                    [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    break;
+                    
+                case NSFetchedResultsChangeMove:
+                    [channelsTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                    [channelsTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+                    break;
+            }
+        }
     }
 }
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-	[categoriesTableView endUpdates];
+    if (controller == categoryFetchedResultsController) {
+        [categoriesTableView endUpdates];
+    }
+    else {
+        if (selectedIndex == 0) {
+            [channelsTableView endUpdates];
+        }
+    }
 }
 
 #pragma mark helpers

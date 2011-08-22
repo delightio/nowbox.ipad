@@ -13,7 +13,8 @@
 
 @implementation SearchChannelViewController
 
-@synthesize searchBar, tableView, searchFetchedResultsController, managedObjectContext, channelCell;
+@synthesize searchBar, tableView, channelCell;
+@synthesize fetchedResultsController=fetchedResultsController_;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -67,8 +68,7 @@
 }
 
 - (void)dealloc {
-	[searchFetchedResultsController release];
-	[managedObjectContext release];
+	[fetchedResultsController_ release];
     [super dealloc];
 }
 
@@ -76,12 +76,12 @@
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [[self.searchFetchedResultsController sections] count];
+    return [[self.fetchedResultsController sections] count];
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.searchFetchedResultsController sections] objectAtIndex:section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
@@ -107,7 +107,7 @@
         self.channelCell = nil;
     }
     
-    NMChannel * chn = [searchFetchedResultsController objectAtIndexPath:indexPath];
+    NMChannel * chn = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     UILabel *label;
     label = (UILabel *)[cell viewWithTag:12];
@@ -165,10 +165,10 @@
                      completion:^(BOOL finished) {
                      }];
     
-    NMChannel * chn = [searchFetchedResultsController objectAtIndexPath:indexPath];
+    NMChannel * chn = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
-    
+
 }
 
 
@@ -180,7 +180,7 @@
 }
 
 - (void)handleDidSearchNotification:(NSNotification *)aNotification {
-    self.searchFetchedResultsController = nil;
+//    self.searchFetchedResultsController = nil;
 	NSLog(@"notification: %@", [aNotification name]);
 //	// test out search predicate
 //	NSFetchRequest * request = [[NSFetchRequest alloc] init];
@@ -193,34 +193,50 @@
 }
 
 #pragma mark Fetched results controller
-- (NSFetchedResultsController *)searchFetchedResultsController {
-    if (searchFetchedResultsController != nil) {
-        return searchFetchedResultsController;
+- (NSFetchedResultsController *)fetchedResultsController {
+    
+    if (fetchedResultsController_ != nil) {
+        return fetchedResultsController_;
     }
+	
+	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+	NSManagedObjectContext * managedObjectContext = dataCtrl.managedObjectContext;
     
     /*
      Set up the fetched results controller.
 	 */
     // Create the fetch request for the entity.
-    NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:dataCtrl.managedObjectContext]];
-	[request setPredicate:dataCtrl.searchResultsPredicate];
-
-    [request setFetchBatchSize:20];
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES] autorelease];
-    NSArray *sortDescriptors = [[[NSArray alloc] initWithObjects:sortDescriptor, nil] autorelease];
-    [request setSortDescriptors:sortDescriptors];
-    
-    
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    aFetchedResultsController.delegate = self;
-    self.searchFetchedResultsController = aFetchedResultsController;
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+    [fetchRequest setEntity:entity];
+	[fetchRequest setReturnsObjectsAsFaults:NO];
+	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [request release];
+	[fetchRequest setPredicate:dataCtrl.searchResultsPredicate];
+	
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    
+    [aFetchedResultsController release];
+    [fetchRequest release];
+    [sortDescriptor release];
+    [sortDescriptors release];
     
     NSError *error = nil;
-    if (![searchFetchedResultsController performFetch:&error]) {
+    if (![fetchedResultsController_ performFetch:&error]) {
         /*
          Replace this implementation with code to handle the error appropriately.
          
@@ -230,8 +246,7 @@
         abort();
     }
     
-    return searchFetchedResultsController;
-}
+    return fetchedResultsController_;}
 
 
 #pragma mark Fetched results controller delegate methods
@@ -259,7 +274,6 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
-    indexPath = [NSIndexPath indexPathForRow:indexPath.row+2 inSection:indexPath.section];
     
     switch(type) {
             
@@ -286,7 +300,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	[tableView endUpdates];
 }
-
 
 #pragma mark UISearchBarDelegate methods
 

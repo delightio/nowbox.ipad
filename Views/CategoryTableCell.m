@@ -26,15 +26,14 @@
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
-    [super setHighlighted:highlighted];
     [categoryView setHighlighted:highlighted];
+    [super setHighlighted:highlighted];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+    [self setHighlighted:selected];
 }
 
 -(void)setCategoryTitle:(NSString *)newTitle {

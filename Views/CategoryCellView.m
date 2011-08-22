@@ -27,11 +27,8 @@
 }
 
 - (void)setHighlighted:(BOOL)lit {
-	// If highlighted state changes, need to redisplay.
-	if (highlighted != lit) {
-		highlighted = lit;	
-		[self setNeedsDisplay];
-	}
+	highlighted = lit;
+    [self setNeedsDisplay];
 }
 
 - (void)dealloc {
@@ -43,7 +40,6 @@
 - (void)drawRect:(CGRect)rect
 {
     // Drawing code
-    
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGRect rectangle = self.frame;
     

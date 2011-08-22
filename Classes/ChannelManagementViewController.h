@@ -16,6 +16,7 @@
 	UIView *containerView;
 	
 	NSFetchedResultsController * categoryFetchedResultsController;
+	NSFetchedResultsController * myChannelsFetchedResultsController;
 	NSManagedObjectContext * managedObjectContext;
 	
 	NSIndexPath * selectedIndexPath;
@@ -32,6 +33,7 @@
 @property (retain, nonatomic) IBOutlet UITableView *channelsTableView;
 @property (retain, nonatomic) IBOutlet UIView *containerView;
 @property (nonatomic, retain) NSFetchedResultsController * categoryFetchedResultsController;
+@property (nonatomic, retain) NSFetchedResultsController * myChannelsFetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSIndexPath * selectedIndexPath;
 @property (nonatomic, retain) NSArray * selectedChannelArray;
