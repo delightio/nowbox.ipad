@@ -445,7 +445,8 @@
 	// flush the video player
 	[movieView.player removeAllItems];
 	// show progress indicator
-	//[movieView setActivityIndicationHidden:NO animated:NO];
+	[movieView setActivityIndicationHidden:NO animated:NO];
+	didSkippedVideo = YES;
 
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
@@ -1215,6 +1216,8 @@
 	//		movieView.bounds = theFrame;
 	//	}
 }
+
+#pragma mark Debug
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer {
