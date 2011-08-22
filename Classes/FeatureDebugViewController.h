@@ -10,7 +10,8 @@
 
 @class VideoPlaybackViewController;
 
-@interface FeatureDebugViewController : UIViewController {
+@interface FeatureDebugViewController : UIViewController <NSFetchedResultsControllerDelegate> {
+	IBOutlet UITableView * tableView;
 	NMChannel * targetChannel;
 	NMChannel * selectedChannel;
 	VideoPlaybackViewController * playbackViewController;
@@ -19,6 +20,7 @@
 @property (nonatomic, retain) NMChannel * targetChannel;
 @property (nonatomic, retain) NMChannel * selectedChannel;
 @property (nonatomic, retain) VideoPlaybackViewController * playbackViewController;
+@property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
 - (IBAction)submitSearch:(id)sender;
 - (IBAction)submitSubscribeChannel:(id)sender;
