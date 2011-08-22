@@ -255,6 +255,14 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
     highlightedChannelIndex = newChannelIndex;
     highlightedVideoIndex = newVideoIndex;
+
+    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0]];
+    AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
+    
+    NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
+    PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
+    [cell setIsPlayingVideo:YES];
+
 }
 
 #pragma mark -
@@ -336,10 +344,22 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 #pragma mark -
 #pragma mark Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	// clear the previous selection
 	selectedIndex = [indexPath row];
 	NSLog(@"selected column at index %d", [indexPath row]);
+    
+    AGOrientedTableView * htView = (AGOrientedTableView *)[(UITableViewCell *)[aTableView cellForRowAtIndexPath:indexPath] viewWithTag:1009];
+    
+    for (int i=0; i<[[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]; i++) {
+        NMVideo * theVideo = [htView.tableController.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+        NSLog(@"%@ %d", [theVideo title], [theVideo nm_playback_status]);
+//        if (([theVideo nm_playback_status] >= 0) && ([theVideo nm_playback_status] < NMVideoQueueStatusPlaying)) {
+        if ([theVideo nm_playback_status] >= 0) {
+            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            break;
+        }
+    }
 }
 
 #pragma mark -
