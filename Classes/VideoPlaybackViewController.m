@@ -143,9 +143,6 @@
 //	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayConnectedNotification:) name:UIScreenDidConnectNotification object:nil];
 //	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayDisconnectedNotification:) name:UIScreenDidDisconnectNotification object:nil];
 	
-	// AirPlay notification
-	[defaultNotificationCenter addObserver:self selector:@selector(handleAirPlayNotification:) name:MPMoviePlayerIsAirPlayVideoActiveDidChangeNotification object:nil];
-	
 	// channel management view notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementWillAppearNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
@@ -316,7 +313,7 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 	if ( NM_RUNNING_IOS_5 ) {
 		player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
-		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
+//		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
 	}
 #endif
 	movieView.player = player;
@@ -580,9 +577,6 @@
 }
 
 #pragma mark Notification handling
-- (void)handleAirPlayNotification:(NSNotification *)aNotification {
-	NSLog(@"AirPlay Notification %@", aNotification);
-}
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 #ifdef DEBUG_PLAYBACK_QUEUE
