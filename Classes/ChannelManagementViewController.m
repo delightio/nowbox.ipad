@@ -62,7 +62,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-		
+
 	self.title = @"Find Channels";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
@@ -78,8 +78,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
     [categoriesTableView setAlwaysBounceVertical:YES];
     [categoriesTableView setShowsVerticalScrollIndicator:NO];
-
-    
 
 }
 
@@ -105,11 +103,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		// all subsequent transition happened in navigation controller should not fire channel management notification
 		viewPushedByNavigationController = YES;
 	}
-    
-    
-    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:1 inSection:0];
-    [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
-    [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -122,6 +115,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+    
+    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
+    [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
+    [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
