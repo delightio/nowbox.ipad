@@ -28,7 +28,7 @@
 @synthesize duration, timeElapsed;
 @synthesize channelViewButton, playPauseButton;
 @synthesize controlsHidden, timeRangeBuffered;
-@synthesize seekBubbleButton;
+@synthesize seekBubbleButton, isSeeking;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -94,7 +94,10 @@
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-dark-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-nub"] forState:UIControlStateNormal];
-		
+	sliderRect = progressSlider.frame;
+	
+	// hide the bubble
+	seekBubbleButton.alpha = 0.0f;
 }
 
 - (void)dealloc {
@@ -223,6 +226,12 @@
 	}
 }
 
+- (void)updateSeekBubbleLocation {
+	CGPoint thePoint = seekBubbleButton.center;
+	thePoint.x = sliderRect.size.width * progressSlider.value + sliderRect.origin.x;
+	seekBubbleButton.center = thePoint;
+}
+
 #pragma mark properties
 - (void)resetView {
 	authorNameLabel.text = @"";
@@ -320,7 +329,10 @@
 //		[CATransaction commit];
 //	}
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", aTime / 60, aTime % 60];
-	if ( fduration > 0.0f ) progressSlider.value = ((CGFloat)aTime)/fduration;
+	if ( isSeeking ) {
+		[seekBubbleButton setTitle:currentTimeLabel.text forState:UIControlStateNormal];
+	}
+	if ( !isSeeking && fduration > 0.0f ) progressSlider.value = ((CGFloat)aTime)/fduration;
 }
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {

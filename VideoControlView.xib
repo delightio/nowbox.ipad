@@ -235,7 +235,6 @@
 						<string key="NSFrame">{{487, 706}, {49, 28}}</string>
 						<reference key="NSSuperview" ref="802969940"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:226</string>
 						<object class="NSColor" key="IBUIBackgroundColor" id="646561178">
 							<int key="NSColorSpace">3</int>
@@ -690,6 +689,15 @@
 					</object>
 					<int key="connectionID">137</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">touchUpProgressBar:</string>
+						<reference key="source" ref="469187586"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">8</int>
+					</object>
+					<int key="connectionID">142</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -946,7 +954,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">140</int>
+			<int key="maxID">142</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
