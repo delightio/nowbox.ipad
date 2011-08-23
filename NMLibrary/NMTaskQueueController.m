@@ -102,7 +102,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueGetChannels {
+- (void)issueGetSubscribedChannels {
 //	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFriendChannels];
 //	[networkController addNewConnectionForTask:task];
 //	[task release];
@@ -120,6 +120,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 #if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
 #endif
+	if ( [chnObj.nm_id integerValue] < 0 ) return;
 	// if it's a new channel, we should have special handling on fail
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
@@ -180,7 +181,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec {
+- (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
 //	task.duration = vdur;
 	task.elapsedSeconds = sec;
@@ -188,7 +189,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec playedToEnd:(BOOL)aEnd {
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
 //	task.duration = vdur;
 	task.playedToEnd = aEnd;

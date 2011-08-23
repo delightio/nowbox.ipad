@@ -16,7 +16,7 @@
 @interface NMEventTask : NMTask {
 	NMEventType eventType;
 //	CGFloat duration;	// duration of video
-	CGFloat elapsedSeconds;	// time elapse
+	NSInteger elapsedSeconds;	// time elapse
 	NMVideo * video;
 	NMChannel * channel;
 	NSInteger errorCode;
@@ -27,7 +27,7 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NSDictionary * resultDictionary;
-@property (nonatomic) CGFloat elapsedSeconds;
+@property (nonatomic) NSInteger elapsedSeconds;
 //@property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL playedToEnd;
 @property (nonatomic) NSInteger errorCode;

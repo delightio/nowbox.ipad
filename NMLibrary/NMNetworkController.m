@@ -278,7 +278,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 					case NMCommandGetAllChannels:
 					case NMCommandGetFriendChannels:
 					case NMCommandGetTopicChannels:
-					case NMCommandGetDefaultChannels:
+					case NMCommandGetSubscribedChannels:
 					case NMCommandGetChannelVideoList:
 						// cancel the task
 						if ( [task.targetID isEqualToNumber:chnObj.nm_id]) {

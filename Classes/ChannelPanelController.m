@@ -93,7 +93,7 @@
 }
 
 - (IBAction)debugRefreshChannel:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 }
 
 - (IBAction)showSettingsView:(id)sender {

@@ -95,27 +95,33 @@
 }
 
 - (void)checkUpdateChannels {
-	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
+	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
 	NMDataController * dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+
+	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
 	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL || // 12 hours
 		[dataController emptyChannel] ) { 
 		// get channel
-		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 		debugLabel.text = @"Fetching channels...";
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
+		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	}
 }
 
 #pragma mark Notification
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-//	NSDictionary * userInfo = [aNotification userInfo];
-//	debugLabel.text = [debugLabel.text stringByAppendingFormat:@"\ntype %@", [userInfo objectForKey:@"type"]];
 	debugLabel.text = @"Ready to go...";
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 	[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
-	// fetch other channels
-	
+	// begin new session
+	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 }
 
 #pragma mark Target action methods

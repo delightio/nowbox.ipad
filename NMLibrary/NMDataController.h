@@ -18,33 +18,43 @@
 	NSOperationQueue * operationQueue;
 	
 	NSManagedObjectContext * managedObjectContext;
-//	NSPredicate * channelNamePredicateTemplate;
-//	NSPredicate * channelNamesPredicateTemplate;
 	NSPredicate * subscribedChannelsPredicate;
 	NSPredicate * objectForIDPredicateTemplate;
+	
+	// entity object
+	NSEntityDescription * channelEntityDescription, * videoEntityDescription;
 	
 	// Core data query cache. Cache recent core data search result.
 	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
 	
-	NSArray * sortedVideoList;
 	NMChannel * trendingChannel;
 	
 	// for channel search
+	// the category object that contains all search result
 	NMCategory * internalSearchCategory;
+	// The predicate used by FRC in table view to filter a list of current search result
 	NSPredicate * searchResultsPredicate;
+	
+	// internal channels
+	NMChannel * myQueueChannel, * favoriteVideoChannel;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
+@property (nonatomic, retain) NSEntityDescription * channelEntityDescription;
+@property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
-@property (nonatomic, retain) NSArray * sortedVideoList;
 @property (nonatomic, readonly) NMChannel * trendingChannel;
 @property (nonatomic, readonly) NSArray * subscribedChannels;
 @property (nonatomic, readonly) NSArray * categories;
+@property (nonatomic, retain) NMChannel * myQueueChannel;
+@property (nonatomic, retain) NMChannel * favoriteVideoChannel;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
+// first launch
+- (void)setUpDatabaseForFirstLaunch;
 // session management
 - (void)deleteVideosWithSessionID:(NSInteger)sid;
 - (void)resetAllChannelsPageNumber;

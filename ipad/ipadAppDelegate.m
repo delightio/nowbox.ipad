@@ -16,6 +16,7 @@ NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
 NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
 NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
+NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
 BOOL NM_RUNNING_IOS_5;
 
 @implementation ipadAppDelegate
@@ -28,7 +29,7 @@ BOOL NM_RUNNING_IOS_5;
 
 + (void)initialize {
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, nil]];
+	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, nil]];
 }
 
 - (void)awakeFromNib {
@@ -44,6 +45,8 @@ BOOL NM_RUNNING_IOS_5;
 	} else {
 		NM_RUNNING_IOS_5 = NO;
 	}
+	// check first launch
+	
 
 	[NMStyleUtility sharedStyleUtility];
 	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -51,9 +54,11 @@ BOOL NM_RUNNING_IOS_5;
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
 	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-	[ctrl beginNewSession:sid];
-	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+	if ( [df boolForKey:NM_FIRST_LAUNCH_KEY] ) {
+		// first time launching the app
+		// create internal channels
+		[ctrl.dataController setUpDatabaseForFirstLaunch];
+	}
 	    
 	self.window.rootViewController = self.launchViewController;
 	[self.window makeKeyAndVisible];

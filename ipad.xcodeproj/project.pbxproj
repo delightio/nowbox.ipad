@@ -39,6 +39,9 @@
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
 		A92CE47313E56B4C00007B04 /* top-bar-channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47113E56B4C00007B04 /* top-bar-channel-background.png */; };
 		A92CE47613E56BCB00007B04 /* top-bar-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47513E56BCB00007B04 /* top-bar-title-background.png */; };
+		A92E3E7F14040E4000B30313 /* internal-channel-favorites.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */; };
+		A92E3E8014040E4000B30313 /* internal-channel-history.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7D14040E4000B30313 /* internal-channel-history.png */; };
+		A92E3E8114040E4000B30313 /* internal-channel-queue.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7E14040E4000B30313 /* internal-channel-queue.png */; };
 		A931613613E0902B009694C3 /* playback-full-screen-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612C13E0902B009694C3 /* playback-full-screen-active.png */; };
 		A931613713E0902B009694C3 /* playback-full-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612D13E0902B009694C3 /* playback-full-screen.png */; };
 		A931613813E0902B009694C3 /* playback-normal-screen-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612E13E0902B009694C3 /* playback-normal-screen-active.png */; };
@@ -199,6 +202,9 @@
 		A92CE47013E56B4C00007B04 /* top-bar-author-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-author-background.png"; sourceTree = "<group>"; };
 		A92CE47113E56B4C00007B04 /* top-bar-channel-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-channel-background.png"; sourceTree = "<group>"; };
 		A92CE47513E56BCB00007B04 /* top-bar-title-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-title-background.png"; sourceTree = "<group>"; };
+		A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-favorites.png"; sourceTree = "<group>"; };
+		A92E3E7D14040E4000B30313 /* internal-channel-history.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-history.png"; sourceTree = "<group>"; };
+		A92E3E7E14040E4000B30313 /* internal-channel-queue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-queue.png"; sourceTree = "<group>"; };
 		A931612C13E0902B009694C3 /* playback-full-screen-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-full-screen-active.png"; sourceTree = "<group>"; };
 		A931612D13E0902B009694C3 /* playback-full-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-full-screen.png"; sourceTree = "<group>"; };
 		A931612E13E0902B009694C3 /* playback-normal-screen-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-normal-screen-active.png"; sourceTree = "<group>"; };
@@ -485,6 +491,9 @@
 				A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */,
 				A9FEF57A13D3D8C50094514C /* channel-video-background.png */,
 				221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */,
+				A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */,
+				A92E3E7D14040E4000B30313 /* internal-channel-history.png */,
+				A92E3E7E14040E4000B30313 /* internal-channel-queue.png */,
 				A931612C13E0902B009694C3 /* playback-full-screen-active.png */,
 				A931612D13E0902B009694C3 /* playback-full-screen.png */,
 				A931612E13E0902B009694C3 /* playback-normal-screen-active.png */,
@@ -820,6 +829,9 @@
 				A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */,
 				A93E6BD31402966300B06191 /* airplay.png in Resources */,
 				A9719F451402F54C00393975 /* seek-time-bubble-background.png in Resources */,
+				A92E3E7F14040E4000B30313 /* internal-channel-favorites.png in Resources */,
+				A92E3E8014040E4000B30313 /* internal-channel-history.png in Resources */,
+				A92E3E8114040E4000B30313 /* internal-channel-queue.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
