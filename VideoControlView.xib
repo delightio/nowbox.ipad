@@ -53,7 +53,7 @@
 								<string key="NSFrame">{{964, 0}, {60, 40}}</string>
 								<reference key="NSSuperview" ref="289875608"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="266683513"/>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MC4yMTk2MDc4NDMxIDAuMjE5NjA3ODQzMSAwLjIxOTYwNzg0MzEAA</bytes>
@@ -229,6 +229,41 @@
 						</object>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 					</object>
+					<object class="IBUIButton" id="266683513">
+						<reference key="NSNextResponder" ref="802969940"/>
+						<int key="NSvFlags">269</int>
+						<string key="NSFrame">{{487, 706}, {49, 28}}</string>
+						<reference key="NSSuperview" ref="802969940"/>
+						<reference key="NSWindow"/>
+						<string key="NSReuseIdentifierKey">_NS:226</string>
+						<object class="NSColor" key="IBUIBackgroundColor" id="646561178">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MCAwAA</bytes>
+						</object>
+						<bool key="IBUIOpaque">NO</bool>
+						<bool key="IBUIUserInteractionEnabled">NO</bool>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<int key="IBUIContentHorizontalAlignment">0</int>
+						<int key="IBUIContentVerticalAlignment">0</int>
+						<double key="IBUIContentEdgeInsets.top">0.0</double>
+						<double key="IBUIContentEdgeInsets.bottom">4</double>
+						<double key="IBUIContentEdgeInsets.left">0.0</double>
+						<double key="IBUIContentEdgeInsets.right">0.0</double>
+						<string key="IBUITitleShadowOffset">{0, 1}</string>
+						<string key="IBUINormalTitle">00:00</string>
+						<reference key="IBUIHighlightedTitleColor" ref="513829447"/>
+						<reference key="IBUINormalTitleColor" ref="513829447"/>
+						<object class="NSColor" key="IBUINormalTitleShadowColor" id="975042565">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MCAwIDAAA</bytes>
+						</object>
+						<object class="NSCustomResource" key="IBUINormalBackgroundImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">seek-time-bubble-background.png</string>
+						</object>
+						<reference key="IBUIFontDescription" ref="452875236"/>
+						<reference key="IBUIFont" ref="896559792"/>
+					</object>
 					<object class="IBUIView" id="988095503">
 						<reference key="NSNextResponder" ref="802969940"/>
 						<int key="NSvFlags">290</int>
@@ -326,10 +361,7 @@
 										<string key="IBUIText">author_name</string>
 										<reference key="IBUITextColor" ref="513829447"/>
 										<reference key="IBUIHighlightedColor" ref="513829447"/>
-										<object class="NSColor" key="IBUIShadowColor" id="975042565">
-											<int key="NSColorSpace">1</int>
-											<bytes key="NSRGB">MCAwIDAAA</bytes>
-										</object>
+										<reference key="IBUIShadowColor" ref="975042565"/>
 										<string key="IBUIShadowOffset">{0, 1}</string>
 										<int key="IBUIBaselineAdjustment">1</int>
 										<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
@@ -362,10 +394,7 @@
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="439569595"/>
 								<string key="NSReuseIdentifierKey">_NS:195</string>
-								<object class="NSColor" key="IBUIBackgroundColor" id="646561178">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MCAwAA</bytes>
-								</object>
+								<reference key="IBUIBackgroundColor" ref="646561178"/>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 							</object>
 							<object class="IBUIView" id="999251967">
@@ -608,6 +637,14 @@
 					<int key="connectionID">134</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">seekBubbleButton</string>
+						<reference key="source" ref="802969940"/>
+						<reference key="destination" ref="266683513"/>
+					</object>
+					<int key="connectionID">140</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">playStopVideo:</string>
 						<reference key="source" ref="982439972"/>
@@ -652,6 +689,15 @@
 					</object>
 					<int key="connectionID">137</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">touchUpProgressBar:</string>
+						<reference key="source" ref="469187586"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">8</int>
+					</object>
+					<int key="connectionID">142</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -682,6 +728,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="289875608"/>
 							<reference ref="988095503"/>
+							<reference ref="266683513"/>
 						</object>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Controls View</string>
@@ -816,6 +863,12 @@
 						<reference key="object" ref="116222615"/>
 						<reference key="parent" ref="587854499"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">138</int>
+						<reference key="object" ref="266683513"/>
+						<reference key="parent" ref="802969940"/>
+						<string key="objectName">Seek bubble</string>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -828,6 +881,7 @@
 					<string>-2.IBPluginDependency</string>
 					<string>10.IBPluginDependency</string>
 					<string>133.IBPluginDependency</string>
+					<string>138.IBPluginDependency</string>
 					<string>15.IBPluginDependency</string>
 					<string>18.IBPluginDependency</string>
 					<string>18.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
@@ -858,6 +912,7 @@
 					<string>VideoPlaybackViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>UIResponder</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -899,7 +954,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">137</int>
+			<int key="maxID">142</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1040,6 +1095,7 @@
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
 							<string>progressSlider</string>
+							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
 						</object>
@@ -1059,6 +1115,7 @@
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UISlider</string>
+							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
 						</object>
@@ -1081,6 +1138,7 @@
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
 							<string>progressSlider</string>
+							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
 						</object>
@@ -1141,6 +1199,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">progressSlider</string>
 								<string key="candidateClassName">UISlider</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">seekBubbleButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">topbarContainerView</string>
@@ -1404,6 +1466,7 @@
 				<string>playback-play-active.png</string>
 				<string>playback-play.png</string>
 				<string>ribbon.png</string>
+				<string>seek-time-bubble-background.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1416,6 +1479,7 @@
 				<string>{60, 40}</string>
 				<string>{60, 40}</string>
 				<string>{138, 41}</string>
+				<string>{49, 28}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">919</string>

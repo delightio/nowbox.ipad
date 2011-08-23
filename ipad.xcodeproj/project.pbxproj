@@ -83,6 +83,7 @@
 		A97050A4134392FA0022BF2C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050A3134392FA0022BF2C /* CoreData.framework */; };
 		A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
 		A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
+		A9719F451402F54C00393975 /* seek-time-bubble-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9719F441402F54C00393975 /* seek-time-bubble-background.png */; };
 		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
 		A9776A4C13AAF0AF004FA2F3 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */; };
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
@@ -282,6 +283,7 @@
 		A97050CF134398DD0022BF2C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A97050D1134399050022BF2C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A97050D313439B540022BF2C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		A9719F441402F54C00393975 /* seek-time-bubble-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "seek-time-bubble-background.png"; sourceTree = "<group>"; };
 		A973AC2513AAFAD90050025B /* NMChannelPanelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelPanelView.h; sourceTree = "<group>"; };
 		A973AC2613AAFAD90050025B /* NMChannelPanelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelPanelView.m; sourceTree = "<group>"; };
 		A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-icon.png"; sourceTree = "<group>"; };
@@ -518,6 +520,7 @@
 				A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */,
 				A99C0B4B13E017BB0006FAA5 /* progress-nub.png */,
 				221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */,
+				A9719F441402F54C00393975 /* seek-time-bubble-background.png */,
 				A9398C1913D41B31005E3CB0 /* social-facebook.png */,
 				A9398C1A13D41B31005E3CB0 /* social-twitter.png */,
 				A9398C1B13D41B31005E3CB0 /* social-vimeo.png */,
@@ -853,6 +856,7 @@
 				22333F4D1401A6D4002FA3FE /* category-list-separator.png in Resources */,
 				22333F501401AF52002FA3FE /* category-list-normal-bg-turned.png in Resources */,
 				A93E6BD31402966300B06191 /* airplay.png in Resources */,
+				A9719F451402F54C00393975 /* seek-time-bubble-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

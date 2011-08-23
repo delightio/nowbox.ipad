@@ -30,6 +30,10 @@
 	IBOutlet UIButton *playPauseButton;
 	BOOL buttonPlayState;
 	
+	// seek label
+	IBOutlet UIButton * seekBubbleButton;
+	BOOL isSeeking;
+	// playback control
 	IBOutlet UIButton * channelViewButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
@@ -50,6 +54,7 @@
 	CGSize maximumTitleSize;
 	
 	IBOutlet UISlider * progressSlider;
+	CGRect sliderRect;
 		
 	CGFloat pxWidthPerSecond;
 	CGFloat progressBarWidth;
@@ -79,6 +84,8 @@
 
 @property (nonatomic, assign) UIButton * channelViewButton;
 @property (nonatomic, assign) UIButton * playPauseButton;
+@property (nonatomic, retain) UIButton * seekBubbleButton;
+@property (nonatomic, assign) BOOL isSeeking;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 
@@ -90,5 +97,8 @@
 
 - (void)showLastVideoMessage;
 - (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView;
+
+// bubble
+- (void)updateSeekBubbleLocation;
 
 @end
