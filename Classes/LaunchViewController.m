@@ -12,7 +12,7 @@
 #import "VideoPlaybackViewController.h"
 
 
-#define GP_CHANNEL_UPDATE_INTERVAL	-12.0f * 3600.0f
+#define GP_CHANNEL_UPDATE_INTERVAL	-12.0 * 3600.0
 
 @implementation LaunchViewController
 
@@ -90,15 +90,12 @@
 	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
 	appDelegate.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[self presentModalViewController:appDelegate.viewController animated:YES];
-	// always default to LIVE channel
-	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	NMVideo * vidObj = dataCtrl.lastSessionVideo;
-	if ( vidObj ) {
-		[appDelegate.viewController launchPlayVideo:vidObj];
-//		[appDelegate.viewController playVideo:vidObj];
-	} else {
-		appDelegate.viewController.currentChannel = dataCtrl.lastSessionChannel;
-	}
+	// continue channel of the last session
+	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
+	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.lastSessionChannel;
+	
+	// set first launch to NO
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
 }
 
 - (void)checkUpdateChannels {

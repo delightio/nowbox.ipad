@@ -101,49 +101,40 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	// check if there's video to play
 	if ( numberOfVideos ) {
 		// check if we need to go back to the last video
-		if ( aChn.nm_last_vid ) {
-			NSFetchRequest * request = [[NSFetchRequest alloc] init];
-			[request setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext]];
-			[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id == %@ AND nm_error == 0", aChn.nm_last_vid]];
-			[request setReturnsObjectsAsFaults:NO];
-			NSArray * result = [self.managedObjectContext executeFetchRequest:request error:nil];
-			[request release];
-			if ( result && [result count] ) {
-				// we can find the last watched video.
-				self.currentIndexPath = [self.fetchedResultsController indexPathForObject:[result objectAtIndex:0]];
-				self.currentVideo = [result objectAtIndex:0];
-				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
-				
+		NMVideo * lastSessVid = [nowmovTaskController.dataController lastSessionVideoForChannel:aChn];
+		if ( lastSessVid ) {
+			// we can find the last watched video.
+			self.currentIndexPath = [self.fetchedResultsController indexPathForObject:lastSessVid];
+			self.currentVideo = lastSessVid;
+			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
+			
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-				NSLog(@"last viewed title: %@", self.currentVideo.title);
+			NSLog(@"last viewed title: %@", self.currentVideo.title);
 #endif
-				// init the playhead. sth similar to initializePlayHead
-				if ( currentIndexPath.row + 1 < numberOfVideos ) {
-					self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
-					self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
-
-					// set the detail movie view for the next video
-					[dataDelegate didLoadNextVideoManagedObjectForController:self];
-					
-				}
-				if ( currentIndexPath.row + 2 < numberOfVideos ) {
-					self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
-					self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
-					[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
-					// no need to set detail video object
-				}
-				if ( currentIndexPath.row - 1 > -1 ) {
-					self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
-					self.previousVideo = [self.fetchedResultsController objectAtIndexPath:self.previousIndexPath];
-
-					// set the detail movie view for the previous video
-					[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
-				}
-			} else {
-				// we can't find the video from the vid stored. Start playing from the first video in the channel
-				[self initializePlayHead];
+			// init the playhead. sth similar to initializePlayHead
+			if ( currentIndexPath.row + 1 < numberOfVideos ) {
+				self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
+				self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+				
+				// set the detail movie view for the next video
+				[dataDelegate didLoadNextVideoManagedObjectForController:self];
+				
+			}
+			if ( currentIndexPath.row + 2 < numberOfVideos ) {
+				self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+				self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+				[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
+				// no need to set detail video object
+			}
+			if ( currentIndexPath.row - 1 > -1 ) {
+				self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
+				self.previousVideo = [self.fetchedResultsController objectAtIndexPath:self.previousIndexPath];
+				
+				// set the detail movie view for the previous video
+				[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
 			}
 		} else {
+			// we can't find the video from the vid stored. Start playing from the first video in the channel
 			[self initializePlayHead];
 		}
 	} else {

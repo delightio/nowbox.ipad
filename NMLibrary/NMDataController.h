@@ -78,6 +78,6 @@
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
 - (NMVideo *)videoForID:(NSNumber *)vid;
-- (NMVideo *)lastSessionVideo;
+- (NMVideo *)lastSessionVideoForChannel:(NMChannel *)chn;
 
 @end

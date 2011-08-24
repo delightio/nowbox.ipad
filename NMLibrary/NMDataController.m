@@ -341,16 +341,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return nil;
 }
 
-//- (BOOL)emptyChannel {
-//	// return bool whether there's any channel in the app at all
-//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-//	[request setEntity:channelEntityDescription];
-//	[request setResultType:NSManagedObjectIDResultType];
-//	NSError * error = nil;
-//	NSArray * results = [managedObjectContext executeFetchRequest:request error:&error];
-//	return [results count] < 2;		// the app should, at least, contain one single channel (trending)
-//}
-
 - (NMChannel *)lastSessionChannel {
 	// fetch last video played
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
@@ -366,7 +356,10 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		// get the first channel
 		request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == YES"]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == YES AND nm_id > 0"]];
+		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+		[request setSortDescriptors:[NSArray arrayWithObject:sortDsptr]];
+		[sortDsptr release];
 		[request setFetchLimit:1];
 		results = [managedObjectContext executeFetchRequest:request error:nil];
 		if ( [results count] ) {
@@ -377,26 +370,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	return chnObj;
 }
-
-//- (NMChannel *)trendingChannel {
-//	if ( trendingChannel == nil ) {
-//		NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
-//		[fetchRequest setEntity:channelEntityDescription];
-//		[fetchRequest setFetchLimit:1];
-//		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_id > 0"]];
-//		
-//		NSSortDescriptor * sortDsrpt = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-//		
-//		[fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDsrpt]];
-//		[sortDsrpt release];
-//		
-//		[fetchRequest setReturnsObjectsAsFaults:NO];
-//		NSArray * result = [managedObjectContext executeFetchRequest:fetchRequest error:nil];
-//		trendingChannel = [[result objectAtIndex:0] retain];
-//		[fetchRequest release];
-//	}
-//	return trendingChannel;
-//}
 
 - (NMChannel *)myQueueChannel {
 	if ( myQueueChannel == nil ) {
@@ -480,11 +453,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return vidObj;
 }
 
-- (NMVideo *)lastSessionVideo {
+- (NMVideo *)lastSessionVideoForChannel:(NMChannel *)chn {
+	// return immediately if the channel is not currently subscribed
+	if ( ![chn.nm_subscribed boolValue] || [chn.nm_last_vid integerValue] == 0 ) return nil;
 	// fetch last video played
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel.nm_id == %@ AND channel.nm_last_vid == nm_id AND channel.nm_subscribed == YES", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND channel.nm_last_vid == nm_id AND nm_error == 0", chn]];
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideo * vidObj = nil;
 	if ( [results count] ) {
