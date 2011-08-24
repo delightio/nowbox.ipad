@@ -105,7 +105,7 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			break;
 			
 		default:
-			urlStr = [NSString stringWithFormat:@"http://%@/events?video_id=%@&video_elapsed=%f&action=%@&user_id=%d", NM_BASE_URL, targetID, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"http://%@/events?video_id=%@&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, targetID, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
 			break;
 	}
 #ifdef DEBUG_EVENT_TRACKING
