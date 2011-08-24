@@ -91,7 +91,14 @@
 	appDelegate.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[self presentModalViewController:appDelegate.viewController animated:YES];
 	// always default to LIVE channel
-	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
+	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+	NMVideo * vidObj = dataCtrl.lastSessionVideo;
+	if ( vidObj ) {
+		[appDelegate.viewController launchPlayVideo:vidObj];
+//		[appDelegate.viewController playVideo:vidObj];
+	} else {
+		appDelegate.viewController.currentChannel = dataCtrl.lastSessionChannel;
+	}
 }
 
 - (void)checkUpdateChannels {

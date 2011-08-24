@@ -17,7 +17,9 @@ NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
 NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
 NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
+NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
 BOOL NM_RUNNING_IOS_5;
+NSInteger NM_LAST_CHANNEL_ID;
 
 @implementation ipadAppDelegate
 
@@ -29,7 +31,7 @@ BOOL NM_RUNNING_IOS_5;
 
 + (void)initialize {
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, nil]];
+	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, nil]];
 }
 
 - (void)awakeFromNib {
@@ -45,21 +47,22 @@ BOOL NM_RUNNING_IOS_5;
 	} else {
 		NM_RUNNING_IOS_5 = NO;
 	}
-	// check first launch
-	
 
 	[NMStyleUtility sharedStyleUtility];
 	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+	self.viewController.appDelegate = self;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
-	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	if ( [df boolForKey:NM_FIRST_LAUNCH_KEY] ) {
+	userDefaults = [NSUserDefaults standardUserDefaults];
+	// check first launch
+	if ( [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY] ) {
 		// first time launching the app
 		// create internal channels
 		[ctrl.dataController setUpDatabaseForFirstLaunch];
 	}
-	    
+	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
+	
 	self.window.rootViewController = self.launchViewController;
 	[self.window makeKeyAndVisible];
 	
@@ -80,9 +83,9 @@ BOOL NM_RUNNING_IOS_5;
 	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
 	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	 */
-	[viewController setPlaybackCheckpoint];
+	[viewController markPlaybackCheckpoint];
 	[self saveContext];
-	// release the UI
+	// release the UI - in particular, remove just the movie player to save memory footprint
 	
 	// release core data
 	
@@ -92,10 +95,11 @@ BOOL NM_RUNNING_IOS_5;
 {
 //	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
 	// start a new session
-	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+	userDefaults = [NSUserDefaults standardUserDefaults];
+	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY] + 1;
 	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
-	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+	[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
+	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 	// init core data
 	
 	// show the UI
@@ -116,7 +120,7 @@ BOOL NM_RUNNING_IOS_5;
 	 Save data if appropriate.
 	 See also applicationDidEnterBackground:.
 	 */
-	[viewController setPlaybackCheckpoint];
+	[viewController markPlaybackCheckpoint];
 	[self saveContext];
 }
 
@@ -135,6 +139,10 @@ BOOL NM_RUNNING_IOS_5;
             abort();
         } 
     }
+}
+
+- (void)saveChannelID:(NSNumber *)chnNum {
+	[userDefaults setInteger:[chnNum integerValue] forKey:NM_LAST_CHANNEL_ID_KEY];
 }
 
 #pragma mark -

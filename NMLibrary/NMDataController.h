@@ -27,7 +27,7 @@
 	// Core data query cache. Cache recent core data search result.
 	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
 	
-	NMChannel * trendingChannel;
+//	NMChannel * trendingChannel;
 	
 	// for channel search
 	// the category object that contains all search result
@@ -45,7 +45,7 @@
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
-@property (nonatomic, readonly) NMChannel * trendingChannel;
+//@property (nonatomic, readonly) NMChannel * trendingChannel;
 @property (nonatomic, readonly) NSArray * subscribedChannels;
 @property (nonatomic, readonly) NSArray * categories;
 @property (nonatomic, retain) NMChannel * myQueueChannel;
@@ -72,12 +72,12 @@
 // channels
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
 - (NMChannel *)channelForID:(NSNumber *)chnID;
-- (BOOL)emptyChannel;
+- (NMChannel *)lastSessionChannel;
 // video
 - (NMVideo *)insertNewVideo;
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
 - (NMVideo *)videoForID:(NSNumber *)vid;
-//- (NSArray *)sortedLiveChannelVideoList;
+- (NMVideo *)lastSessionVideo;
 
 @end

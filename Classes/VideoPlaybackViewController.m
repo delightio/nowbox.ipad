@@ -9,6 +9,7 @@
 #import "VideoPlaybackViewController.h"
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
+#import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -55,6 +56,7 @@
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize loadedMovieDetailView;
+@synthesize appDelegate;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -221,7 +223,7 @@
 
 #pragma mark Playback data structure
 
-- (void)setPlaybackCheckpoint {
+- (void)markPlaybackCheckpoint {
 	NMVideo * theVideo = [self playerCurrentVideo];
 	CMTime aTime = movieView.player.currentTime;
 	if ( aTime.flags & kCMTimeFlags_Valid ) {
@@ -246,6 +248,9 @@
 	} else {
 		currentChannel = [chnObj retain];
 	}
+	// save the channel ID to user defaults
+	[appDelegate saveChannelID:chnObj.nm_id];
+	
 	currentXOffset = 0.0f;
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
@@ -448,6 +453,18 @@
 	[movieView setActivityIndicationHidden:NO animated:NO];
 	didSkippedVideo = YES;
 
+	// save the channel ID to user defaults
+	[appDelegate saveChannelID:aVideo.channel.nm_id];
+	// play the specified video
+	[playbackModelController setVideo:aVideo];
+}
+
+- (void)launchPlayVideo:(NMVideo *)aVideo {
+	// a dedicated method for setting video to play when the app is being launched. This method avoids calling AVQueuePlayer removeAllItems.
+	// show progress indicator
+	[movieView setActivityIndicationHidden:NO animated:NO];
+	// save the channel ID to user defaults
+	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
 }

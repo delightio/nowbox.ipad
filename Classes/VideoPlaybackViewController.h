@@ -20,6 +20,7 @@
 @class NMChannel;
 @class NMTaskQueueController;
 @class ChannelPanelController;
+@class ipadAppDelegate;
 
 
 /*!
@@ -63,6 +64,7 @@
 
     NSMutableArray *temporaryDisabledGestures;
     BOOL pinchTemporarilyDisabled;
+	ipadAppDelegate * appDelegate;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
@@ -70,6 +72,7 @@
 @property (nonatomic, retain) IBOutlet NMMovieDetailView * loadedMovieDetailView;
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
+@property (nonatomic, assign) ipadAppDelegate * appDelegate;
 
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)skipCurrentVideo:(id)sender;
@@ -84,17 +87,12 @@
 - (IBAction)touchDownProgressBar:(id)sender;
 - (IBAction)touchUpProgressBar:(id)sender;
 
-- (void)stopVideo;
-//- (void)requestAddVideoAtIndex:(NSUInteger)idx;
-//- (void)getVideoInfoAtIndex:(NSUInteger)idx;
-
 // playback view update
-//- (void)setCurrentTime:(NSInteger)sec;
-//- (void)updateControlsForVideoAtIndex:(NSUInteger)idx;
-- (void)setPlaybackCheckpoint;
+- (void)markPlaybackCheckpoint;
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
+- (void)launchPlayVideo:(NMVideo *)aVideo;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer;
