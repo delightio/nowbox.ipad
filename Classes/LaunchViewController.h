@@ -13,13 +13,9 @@
 
 @interface LaunchViewController : UIViewController <UITextFieldDelegate> {
     IBOutlet UILabel * debugLabel;
+	BOOL appFirstLaunch;
 }
 
-- (IBAction)showPlaybackController:(id)sender;
-//- (IBAction)goToPlaybackView:(id)sender;
-//- (IBAction)setVideoQuality:(id)sender;
-
-- (void)showVideoView;
 - (void)checkUpdateChannels;
 
 @end

@@ -67,13 +67,10 @@
 // search
 - (void)clearSearchResultCache;
 // category
-//- (NMCategory *)insertNewCategory;
 - (NMCategory *)insertNewCategoryForID:(NSNumber *)catID;
 - (NMCategory *)categoryForID:(NSNumber *)catID;
 // channels
-//- (NMChannel *)insertNewChannel;
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
-//- (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy;
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (BOOL)emptyChannel;
 // video

@@ -57,8 +57,8 @@
 	
 	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 	NM_USER_ACCOUNT_ID = [userDefaults integerForKey:NM_USER_ACCOUNT_ID_KEY];
-	
 	NM_USE_HIGH_QUALITY_VIDEO = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
+	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 }
 
 - (void)viewDidUnload
@@ -79,12 +79,12 @@
     return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
-- (void)showVideoView {
-	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[self presentModalViewController:appDelegate.viewController animated:NO];
-	// always default to LIVE channel
-	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
-}
+//- (void)showVideoView {
+//	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
+//	[self presentModalViewController:appDelegate.viewController animated:NO];
+//	// always default to LIVE channel
+//	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
+//}
 
 - (void)showVideoViewAnimated {
 	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -96,11 +96,10 @@
 
 - (void)checkUpdateChannels {
 	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	NMDataController * dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
 
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
 	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL || // 12 hours
-		[dataController emptyChannel] ) { 
+		appFirstLaunch ) { 
 		// get channel
 		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 		debugLabel.text = @"Fetching channels...";
@@ -122,11 +121,6 @@
 	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
 	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
-}
-
-#pragma mark Target action methods
-- (IBAction)showPlaybackController:(id)sender {
-	[self showVideoView];
 }
 
 @end
