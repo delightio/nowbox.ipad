@@ -1051,16 +1051,28 @@
 	NMVideo * curVideo = playbackModelController.currentVideo;
 	CMTime theTime = CMTimeMake((int64_t)([curVideo.duration floatValue] * slider.value), 1);
 	[movieView.player seekToTime:theTime];
+	[loadedControlView updateSeekBubbleLocation];
 }
 
 - (IBAction)touchDownProgressBar:(id)sender {
 	[self stopVideo];
 	showMovieControlTimestamp = -1;
+	loadedControlView.isSeeking = YES;
+	// get current control nub position
+	[loadedControlView updateSeekBubbleLocation];
+	// show seek bubble
+	[UIView beginAnimations:nil context:nil];
+	loadedControlView.seekBubbleButton.alpha = 1.0f;
+	[UIView commitAnimations];
 }
 
 - (IBAction)touchUpProgressBar:(id)sender {
 	[self playCurrentVideo];
+	loadedControlView.isSeeking = NO;
 	showMovieControlTimestamp = loadedControlView.timeElapsed;
+	[UIView beginAnimations:nil context:nil];
+	loadedControlView.seekBubbleButton.alpha = 0.0f;
+	[UIView commitAnimations];
 }
 
 # pragma mark gestures

@@ -22,6 +22,7 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 @implementation NMEventTask
 
 @synthesize channel, video;
+@synthesize channelID;
 @synthesize resultDictionary;
 @synthesize elapsedSeconds, playedToEnd;
 @synthesize errorCode;
@@ -33,6 +34,7 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 	self.video = v;
 	// grab values in the video object to be used in the thread
 	self.targetID = v.nm_id;
+	self.channelID = [video valueForKeyPath:@"channel.nm_id"];
 	eventType = evtType;
 	
 	return self;
@@ -56,6 +58,7 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 }
 
 - (void)dealloc {
+	[channelID release];
 	[channel release];
 	[video release];
 	[super dealloc];
@@ -97,7 +100,7 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 	NSString * urlStr = nil;
 	switch (eventType) {
 		case NMEventExamine:
-			urlStr = [NSString stringWithFormat:@"http://%@/events?video_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, evtStr, NM_USER_ACCOUNT_ID];
 			break;
 		case NMEventSubscribeChannel:
 		case NMEventUnsubscribeChannel:
@@ -105,7 +108,7 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			break;
 			
 		default:
-			urlStr = [NSString stringWithFormat:@"http://%@/events?video_id=%@&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, targetID, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
 			break;
 	}
 #ifdef DEBUG_EVENT_TRACKING

@@ -28,6 +28,7 @@
 @synthesize duration, timeElapsed;
 @synthesize channelViewButton, playPauseButton;
 @synthesize controlsHidden, timeRangeBuffered;
+@synthesize seekBubbleButton, isSeeking;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -93,7 +94,10 @@
 	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-dark-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
 	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-nub"] forState:UIControlStateNormal];
-		
+	sliderRect = CGRectMake(126.0, 0.0, NM_RUNNING_IOS_5 ? 712.0f : 772.0f, 0.0f);
+	
+	// hide the bubble
+	seekBubbleButton.alpha = 0.0f;
 }
 
 - (void)dealloc {
@@ -166,6 +170,7 @@
 			// set its own size
 			viewRect = CGRectMake(self.frame.origin.x, 0.0f, 1024.0f, 768.0f);
 			self.frame = viewRect;
+			sliderRect = CGRectMake(126.0, 0.0, NM_RUNNING_IOS_5 ? 712.0f : 772.0f, 0.0f);
 			
 			// show the top bar
 			topbarContainerView.alpha = 1.0f;
@@ -187,6 +192,7 @@
 			// set its own size
 			viewRect = CGRectMake(self.frame.origin.x, 20.0f, 640.0f, 360.0f);
 			self.frame = viewRect;
+			sliderRect = CGRectMake(126.0, 0.0, NM_RUNNING_IOS_5 ? 328.0f : 388.0f, 0.0f);
 			
 			topbarContainerView.alpha = 0.0f;
 			[channelViewButton setImage:styleUtility.fullScreenImage forState:UIControlStateNormal];
@@ -220,6 +226,12 @@
 	if ( volumeView ) {
 		[controlDelegate didTapAirPlayContainerView:ctnView];
 	}
+}
+
+- (void)updateSeekBubbleLocation {
+	CGPoint thePoint = seekBubbleButton.center;
+	thePoint.x = sliderRect.size.width * progressSlider.value + sliderRect.origin.x;
+	seekBubbleButton.center = thePoint;
 }
 
 #pragma mark properties
@@ -319,7 +331,10 @@
 //		[CATransaction commit];
 //	}
 	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", aTime / 60, aTime % 60];
-	if ( fduration > 0.0f ) progressSlider.value = ((CGFloat)aTime)/fduration;
+	if ( isSeeking ) {
+		[seekBubbleButton setTitle:currentTimeLabel.text forState:UIControlStateNormal];
+	}
+	if ( !isSeeking && fduration > 0.0f ) progressSlider.value = ((CGFloat)aTime)/fduration;
 }
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {

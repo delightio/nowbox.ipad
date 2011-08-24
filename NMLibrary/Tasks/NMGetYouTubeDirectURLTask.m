@@ -50,9 +50,10 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	[theRequest setValue:@"en-us,en;q=0.5" forHTTPHeaderField:@"Accept-Language"];
 	[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
 	[theRequest setValue:@"ytapi-apple-ipad" forHTTPHeaderField:@"X-GData-Client"];
-//	[theRequest setValue:@"AIwbFAQjxbfsHPW4wFXq838qenSQ6UwiR0Exv43nzSqVE47NxlgYNOTChJ1oSF7PIn0ACHcGtwR_AvuaQza6Dg69iMif8V8fd8iv2hve0SkTFSLHv8pDta3OnCXfC6R-9P-BVykR1bzG1s9DQ4qiNSxNaBhKftE9PtATiAJ_5HFa9gyRp0dF_SA" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
 	// iPad 2 - iOS 5 beta 6
-	[theRequest setValue:@"AIwbFASGaas2duSR08SqNNVkr8eQczFrT1oqHFMIZqnY67XXoDLeb12oUUV20bKALZJMqHCY-rGSOxbrkDdfgxX-cQ3dpWD7uTZfUk_TWxEIBmoXSd2Z_C7o-jzntFuWUnHfickQfiOIXErVr_4MqQ9Eoqlu0t2aY9f74A-nWYhQ54bOpyc9StM" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
+	[theRequest setValue:@"AIwbFAQjxbfsHPW4wFXq838qenSQ6UwiR0Exv43nzSqVE47NxlgYNOTChJ1oSF7PIn0ACHcGtwR_AvuaQza6Dg69iMif8V8fd8iv2hve0SkTFSLHv8pDta3OnCXfC6R-9P-BVykR1bzG1s9DQ4qiNSxNaBhKftE9PtATiAJ_5HFa9gyRp0dF_SA" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
+	// original in code base
+//	[theRequest setValue:@"AIwbFASGaas2duSR08SqNNVkr8eQczFrT1oqHFMIZqnY67XXoDLeb12oUUV20bKALZJMqHCY-rGSOxbrkDdfgxX-cQ3dpWD7uTZfUk_TWxEIBmoXSd2Z_C7o-jzntFuWUnHfickQfiOIXErVr_4MqQ9Eoqlu0t2aY9f74A-nWYhQ54bOpyc9StM" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
 	// iPad 1 - iOS 4
 	// X-Youtube-Deviceauthtoken: AIwbFATQRBoJV9hoDwYIn39aWXnTrQ-AXtAUxv3Y5A1rUL5sQhC1ejd3TFkbAt54vH-doizadgX8EzEk9a8rsFM5cVBWal4CPpTMVs25fe4DbSOfyhZ3IyjCLE8lA0PUj26WRjz8A8cQHLuVIJrKrM6hn7O1e69u6ZwRiBAMuznVT6acCwP-Lcw\r\n
 	// iPhone 4 - iOS 4
