@@ -149,7 +149,9 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementWillAppearNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	// event
-	[defaultNotificationCenter addObserver:self selector:@selector(<#selector#>) name:nmeven object:<#(id)#>
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
 	
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -640,6 +642,21 @@
 			// resume video playing
 			[self playCurrentVideo];
 		}
+	}
+}
+
+- (void)handleVideoEventNotification:(NSNotification *)aNotification {
+	// check it's the current, previous or next video
+	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
+	NSString * name = [aNotification name];
+	if ( [name isEqualToString:NMDidShareVideoNotification] ) {
+		// shared the video successfully
+		
+	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] ) {
+		// queued a video successfully, animate the icon to appropriate state
+		
+	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] ) {
+		// dequeued a video successfully
 	}
 }
 
