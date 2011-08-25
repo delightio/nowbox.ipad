@@ -14,6 +14,7 @@
 
 @implementation NMMovieDetailView
 @synthesize video=video_;
+@synthesize watchLaterButton, likeButton;
 
 //- (id)initWithFrame:(CGRect)frame
 //{

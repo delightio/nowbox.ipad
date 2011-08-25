@@ -11,6 +11,7 @@
 #import "NMCategory.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMVideoDetail.h"
 
 #define NM_MY_QUEUE_CHANNEL_ID			-20
 #define NM_FAVORITE_VIDEOS_CHANNEL_ID	-10
@@ -424,6 +425,38 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 #pragma mark Video 
+- (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
+	NMVideo * dupVideo = [self insertNewVideo];
+	NMVideoDetail * dupDtl = [self insertNewVideoDetail];
+	
+	dupVideo.nm_id = srcVideo.nm_id;
+	dupVideo.nm_session_id = [NSNumber numberWithInteger:INT_MAX];
+	dupVideo.nm_playback_status = srcVideo.nm_playback_status;
+	dupVideo.nm_direct_url = srcVideo.nm_direct_url;
+	dupVideo.nm_direct_sd_url = srcVideo.nm_direct_sd_url;
+	
+	dupVideo.duration = srcVideo.duration;
+	dupVideo.external_id = srcVideo.external_id;
+	dupVideo.published_at = srcVideo.published_at;
+	dupVideo.source = srcVideo.source;
+	dupVideo.thumbnail_uri = srcVideo.thumbnail_uri;
+	dupVideo.title = srcVideo.title;
+	dupVideo.view_count = srcVideo.view_count;
+	
+	NMVideoDetail * srcDtlObject = srcVideo.detail;
+	dupDtl.author_id = srcDtlObject.author_id;
+	dupDtl.author_profile_uri = srcDtlObject.author_profile_uri;
+	dupDtl.author_thumbnail_uri = srcDtlObject.author_thumbnail_uri;
+	dupDtl.author_username = srcDtlObject.author_username;
+	dupDtl.nm_description = srcDtlObject.nm_description;
+	dupDtl.nm_author_thumbnail_file_name = srcDtlObject.nm_author_thumbnail_file_name;
+	
+	dupVideo.detail = dupDtl;
+	dupDtl.video = dupVideo;
+	
+	return dupVideo;
+}
+
 - (NMVideo *)insertNewVideo {
 	NMVideo * vid = (NMVideo *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext];
 	return vid;

@@ -74,6 +74,7 @@
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (NMChannel *)lastSessionChannel;
 // video
+- (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;

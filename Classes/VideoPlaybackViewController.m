@@ -152,7 +152,10 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
-	
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
+
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -648,15 +651,25 @@
 - (void)handleVideoEventNotification:(NSNotification *)aNotification {
 	// check it's the current, previous or next video
 	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
+	// do nth if the video object is nil
+	if ( vidObj == nil ) return;
+	
 	NSString * name = [aNotification name];
 	if ( [name isEqualToString:NMDidShareVideoNotification] ) {
 		// shared the video successfully
-		
+		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
+			vidObj.nm_movie_detail_view.likeButton.selected = YES;
+		}
 	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] ) {
 		// queued a video successfully, animate the icon to appropriate state
-		
+		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
+			vidObj.nm_movie_detail_view.watchLaterButton.selected = YES;
+		}
 	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] ) {
 		// dequeued a video successfully
+		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
+			vidObj.nm_movie_detail_view.watchLaterButton.selected = NO;
+		}
 	}
 }
 

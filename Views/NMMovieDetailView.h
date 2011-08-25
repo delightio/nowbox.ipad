@@ -34,5 +34,7 @@
 }
 
 @property (nonatomic, assign) NMVideo * video;
+@property (nonatomic, assign) UIButton * watchLaterButton;
+@property (nonatomic, assign) UIButton * likeButton;
 
 @end
