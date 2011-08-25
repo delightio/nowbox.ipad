@@ -46,7 +46,7 @@
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
 //@property (nonatomic, readonly) NMChannel * trendingChannel;
-@property (nonatomic, readonly) NSArray * subscribedChannels;
+@property (nonatomic, readonly) NSArray * subscribedChannels;	// for debug purpose
 @property (nonatomic, readonly) NSArray * categories;
 @property (nonatomic, retain) NMChannel * myQueueChannel;
 @property (nonatomic, retain) NMChannel * favoriteVideoChannel;

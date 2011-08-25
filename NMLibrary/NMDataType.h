@@ -78,7 +78,16 @@ extern NSString * const NMDidFailSubscribeChannelNotification;
 extern NSString * const NMWillUnsubscribeChannelNotification;
 extern NSString * const NMDidUnsubscribeChannelNotification;
 extern NSString * const NMDidFailUnsubscribeChannelNotification;
-
+// sharing events
+extern NSString * const NMWillShareVideoNotification;
+extern NSString * const NMDidShareVideoNotification;
+extern NSString * const NMDidFailShareVideoNotification;
+extern NSString * const NMWillEnqueueVideoNotification;
+extern NSString * const NMDidEnqueueVideoNotification;
+extern NSString * const NMDidFailEnqueueVideoNotification;
+extern NSString * const NMWillDequeueVideoNotification;
+extern NSString * const NMDidDequeueVideoNotification;
+extern NSString * const NMDidFailDequeueVideoNotification;
 
 // video
 extern NSString * const NMWillGetChannelVideListNotification;

@@ -12,12 +12,24 @@
 
 NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
 
+// channel
 NSString * const NMWillSubscribeChannelNotification = @"NMWillSubscribeChannelNotification";
 NSString * const NMDidSubscribeChannelNotification = @"NMDidSubscribeChannelNotification";
 NSString * const NMDidFailSubscribeChannelNotification = @"NMDidFailSubscribeChannelNotification";
 NSString * const NMWillUnsubscribeChannelNotification = @"NMWillUnsubscribeChannelNotification";
 NSString * const NMDidUnsubscribeChannelNotification = @"NMDidUnsubscribeChannelNotification";
 NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscribeChannelNotification";
+// event
+NSString * const NMWillShareVideoNotification = @"NMWillShareVideoNotification";
+NSString * const NMDidShareVideoNotification = @"NMDidShareVideoNotification";
+NSString * const NMDidFailShareVideoNotification = @"NMDidFailShareVideoNotification";
+NSString * const NMWillEnqueueVideoNotification = @"NMWillEnqueueVideoNotification";
+NSString * const NMDidEnqueueVideoNotification = @"NMDidEnqueueVideoNotification";
+NSString * const NMDidFailEnqueueVideoNotification = @"NMDidFailEnqueueVideoNotification";
+NSString * const NMWillDequeueVideoNotification = @"NMWillDequeueVideoNotification";
+NSString * const NMDidDequeueVideoNotification = @"NMDidDequeueVideoNotification";
+NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNotification";
+
 
 @implementation NMEventTask
 
@@ -154,6 +166,12 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			return NMWillSubscribeChannelNotification;
 		case NMEventUnsubscribeChannel:
 			return NMWillUnsubscribeChannelNotification;
+		case NMEventDequeue:
+			return NMWillDequeueVideoNotification;
+		case NMEventEnqueue:
+			return NMWillEnqueueVideoNotification;
+		case NMEventShare:
+			return NMWillShareVideoNotification;
 			
 		default:
 			break;
@@ -167,6 +185,12 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			return NMDidSubscribeChannelNotification;
 		case NMEventUnsubscribeChannel:
 			return NMDidUnsubscribeChannelNotification;
+		case NMEventDequeue:
+			return NMDidDequeueVideoNotification;
+		case NMEventEnqueue:
+			return NMDidEnqueueVideoNotification;
+		case NMEventShare:
+			return NMDidShareVideoNotification;
 			
 		default:
 			break;
@@ -180,6 +204,12 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 			return NMDidFailSubscribeChannelNotification;
 		case NMEventUnsubscribeChannel:
 			return NMDidFailUnsubscribeChannelNotification;
+		case NMEventDequeue:
+			return NMDidFailDequeueVideoNotification;
+		case NMEventEnqueue:
+			return NMDidFailEnqueueVideoNotification;
+		case NMEventShare:
+			return NMDidFailShareVideoNotification;
 			
 		default:
 			break;

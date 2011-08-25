@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1280</int>
 		<string key="IBDocument.SystemVersion">11B26</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1910</string>
+		<string key="IBDocument.InterfaceBuilderVersion">1923</string>
 		<string key="IBDocument.AppKitVersion">1138</string>
 		<string key="IBDocument.HIToolboxVersion">566.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">911</string>
+			<string key="NS.object.0">919</string>
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -134,6 +134,7 @@
 						<string key="NSFrame">{{668, 105}, {336, 20}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="311955743"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -170,8 +171,8 @@
 					</object>
 					<object class="IBUIButton" id="515014753">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{902, 40}, {43, 40}}</string>
+						<int key="NSvFlags">289</int>
+						<string key="NSFrame">{{907, 40}, {46, 40}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="340423294"/>
@@ -210,8 +211,8 @@
 					</object>
 					<object class="IBUIButton" id="340423294">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{959, 40}, {43, 40}}</string>
+						<int key="NSvFlags">289</int>
+						<string key="NSFrame">{{959, 40}, {46, 40}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="720460834"/>
@@ -242,6 +243,7 @@
 						<string key="NSFrame">{{668, 159}, {336, 201}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -358,12 +360,12 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">shareVideo:</string>
+						<string key="label">addVideoToFavorite:</string>
 						<reference key="source" ref="515014753"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
-					<int key="connectionID">37</int>
+					<int key="connectionID">40</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -520,7 +522,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">38</int>
+			<int key="maxID">40</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -661,6 +663,7 @@
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
 							<string>progressSlider</string>
+							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
 						</object>
@@ -680,6 +683,7 @@
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UISlider</string>
+							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
 						</object>
@@ -702,6 +706,7 @@
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
 							<string>progressSlider</string>
+							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
 						</object>
@@ -762,6 +767,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">progressSlider</string>
 								<string key="candidateClassName">UISlider</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">seekBubbleButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">topbarContainerView</string>
@@ -874,17 +883,19 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addVideoToFavorite:</string>
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
-							<string>shareVideo:</string>
-							<string>showSharePopover:</string>
+							<string>seekPlaybackProgress:</string>
 							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
-							<string>vote:</string>
+							<string>touchDownProgressBar:</string>
+							<string>touchUpProgressBar:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -899,17 +910,22 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addVideoToFavorite:</string>
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
-							<string>shareVideo:</string>
-							<string>showSharePopover:</string>
+							<string>seekPlaybackProgress:</string>
 							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
-							<string>vote:</string>
+							<string>touchDownProgressBar:</string>
+							<string>touchUpProgressBar:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">addVideoToFavorite:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">addVideoToQueue:</string>
 								<string key="candidateClassName">id</string>
@@ -919,11 +935,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">shareVideo:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">showSharePopover:</string>
+								<string key="name">seekPlaybackProgress:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -939,7 +951,11 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">vote:</string>
+								<string key="name">touchDownProgressBar:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">touchUpProgressBar:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>
@@ -1021,13 +1037,13 @@
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>{43, 40}</string>
-				<string>{43, 40}</string>
-				<string>{43, 40}</string>
-				<string>{43, 40}</string>
+				<string>{46, 40}</string>
+				<string>{46, 40}</string>
+				<string>{46, 40}</string>
+				<string>{46, 40}</string>
 				<string>{138, 41}</string>
 			</object>
 		</object>
-		<string key="IBCocoaTouchPluginVersion">911</string>
+		<string key="IBCocoaTouchPluginVersion">919</string>
 	</data>
 </archive>

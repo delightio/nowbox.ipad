@@ -148,6 +148,8 @@
 	// channel management view notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementWillAppearNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
+	// event
+	[defaultNotificationCenter addObserver:self selector:@selector(<#selector#>) name:nmeven object:<#(id)#>
 	
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -1054,12 +1056,16 @@
 	[UIView commitAnimations];
 }
 
-- (IBAction)shareVideo:(id)sender {
+- (IBAction)addVideoToFavorite:(id)sender {
 	[nowmovTaskController issueSendShareEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	UIButton * btn = (UIButton *)sender;
+	btn.enabled = NO;
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	[nowmovTaskController issueEnqueue:YES video:playbackModelController.currentVideo];
+	UIButton * btn = (UIButton *)sender;
+	btn.enabled = NO;
 }
 
 // seek bar

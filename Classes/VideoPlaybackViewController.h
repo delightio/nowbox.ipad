@@ -80,7 +80,7 @@
 - (IBAction)toggleChannelPanelFullScreen:(id)sender;
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
 // movie detail view actions
-- (IBAction)shareVideo:(id)sender;
+- (IBAction)addVideoToFavorite:(id)sender;
 - (IBAction)addVideoToQueue:(id)sender;
 // seeking
 - (IBAction)seekPlaybackProgress:(id)sender;
