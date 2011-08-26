@@ -14,6 +14,9 @@ extern NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
 extern NSString * const NM_FIRST_LAUNCH_KEY;
 extern NSString * const NM_LAST_CHANNEL_ID_KEY;
+extern NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY;	
+extern NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY;
+extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
 
 @class VideoPlaybackViewController;
 @class LaunchViewController;

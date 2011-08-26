@@ -18,6 +18,9 @@ NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
 NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
 NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
+NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
+NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
+NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY	= @"NM_ENABLE_EMAIL_NOTIFICATION_KEY";
 BOOL NM_RUNNING_IOS_5;
 NSInteger NM_LAST_CHANNEL_ID;
 
@@ -31,7 +34,18 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 + (void)initialize {
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-	[defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSDate distantPast], NM_CHANNEL_LAST_UPDATE, [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, nil]];
+	[defaults registerDefaults:
+	 [NSDictionary dictionaryWithObjectsAndKeys:
+	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE, 
+	  [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, 
+	  [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, 
+	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
+	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 
+	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
+	  [NSNumber numberWithBool:NO], NM_SHOW_FAVORITE_CHANNEL_KEY,
+	  [NSNumber numberWithBool:NO], NM_ENABLE_PUSH_NOTIFICATION_KEY,
+	  [NSNumber numberWithBool:NO], NM_ENABLE_EMAIL_NOTIFICATION_KEY,
+	  nil]];
 }
 
 - (void)awakeFromNib {
