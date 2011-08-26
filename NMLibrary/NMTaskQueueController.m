@@ -181,8 +181,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
+- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
+	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
 //	task.duration = vdur;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];

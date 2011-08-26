@@ -1089,7 +1089,7 @@
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
-	[nowmovTaskController issueSendShareEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[nowmovTaskController issueShare:YES video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	UIButton * btn = (UIButton *)sender;
 	btn.enabled = NO;
 }

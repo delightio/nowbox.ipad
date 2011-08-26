@@ -26,6 +26,8 @@
 @property (nonatomic, retain) NSDate * published_at;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * view_count;
+@property (nonatomic, retain) NSNumber * nm_favorite;
+@property (nonatomic, retain) NSNumber * nm_watch_later;
 @property (nonatomic, retain) NSNumber * nm_did_play;
 @property (nonatomic, retain) NSString * nm_direct_url;
 @property (nonatomic, retain) NSString * nm_direct_sd_url;

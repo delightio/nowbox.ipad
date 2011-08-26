@@ -106,6 +106,10 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			evtStr = @"share";
 			executeSaveActionOnError = YES;
 			break;
+		case NMEventUnfavorite:
+			evtStr = @"unfavorite";
+			executeSaveActionOnError = YES;
+			break;
 		case NMEventView:
 			evtStr = @"view";
 			break;
@@ -158,17 +162,40 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.myQueueChannel;
 			[ctrl.myQueueChannel addVideosObject:newVideo];
+			// mark the flag
+			video.nm_watch_later = [NSNumber numberWithBool:YES];
 			break;
 		case NMEventDequeue:
+		{
+			NSNumber * vid = [video.nm_id retain];
 			//remove video to "watch later" channel
-			video.channel = nil;
+			[ctrl deleteVideo:video];
+			self.video = nil;
+			// update the original video object
+			newVideo = [ctrl videoForID:vid];
+			newVideo.nm_watch_later = [NSNumber numberWithBool:NO];
+			[vid release];
 			break;
+		}
 		case NMEventShare:
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.favoriteVideoChannel;
 			[ctrl.favoriteVideoChannel addVideosObject:newVideo];
+			// mark the flag
+			video.nm_favorite = [NSNumber numberWithBool:YES];
 			break;
-			
+		case NMEventUnfavorite:
+		{
+			NSNumber * vid = [video.nm_id retain];
+			// remove video
+			[ctrl deleteVideo:video];
+			self.video = nil;
+			// update the original video object
+			newVideo = [ctrl videoForID:vid];
+			newVideo.nm_favorite = [NSNumber numberWithBool:NO];
+			[vid release];
+			break;
+		}	
 		default:
 			break;
 	}
@@ -238,7 +265,6 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
 			break;
 			
-		case NMEventDequeue:
 		case NMEventEnqueue:
 		case NMEventShare:
 			return [NSDictionary dictionaryWithObject:video forKey:@"video"];

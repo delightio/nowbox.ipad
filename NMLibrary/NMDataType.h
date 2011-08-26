@@ -48,6 +48,7 @@ typedef enum {
 	NMEventEnqueue,
 	NMEventDequeue,
 	NMEventShare,
+	NMEventUnfavorite,
 	NMEventView,
 	NMEventExamine,
 } NMEventType;

@@ -60,10 +60,11 @@
 - (void)resetAllChannelsPageNumber;
 // general data manipulation
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
-- (void)deleteVideoInChannel:(NMChannel *)chnObj;
-- (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo;
-- (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo;
-- (void)deleteAllVideos;
+- (void)deleteVideo:(NMVideo *)vidObj;
+//- (void)deleteVideoInChannel:(NMChannel *)chnObj;
+//- (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo;
+//- (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo;
+//- (void)deleteAllVideos;
 // search
 - (void)clearSearchResultCache;
 // category
