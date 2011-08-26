@@ -48,6 +48,9 @@
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
 		A92CE47313E56B4C00007B04 /* top-bar-channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47113E56B4C00007B04 /* top-bar-channel-background.png */; };
 		A92CE47613E56BCB00007B04 /* top-bar-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47513E56BCB00007B04 /* top-bar-title-background.png */; };
+		A92E3E7F14040E4000B30313 /* internal-channel-favorites.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */; };
+		A92E3E8014040E4000B30313 /* internal-channel-history.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7D14040E4000B30313 /* internal-channel-history.png */; };
+		A92E3E8114040E4000B30313 /* internal-channel-queue.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7E14040E4000B30313 /* internal-channel-queue.png */; };
 		A931613613E0902B009694C3 /* playback-full-screen-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612C13E0902B009694C3 /* playback-full-screen-active.png */; };
 		A931613713E0902B009694C3 /* playback-full-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612D13E0902B009694C3 /* playback-full-screen.png */; };
 		A931613813E0902B009694C3 /* playback-normal-screen-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612E13E0902B009694C3 /* playback-normal-screen-active.png */; };
@@ -64,6 +67,7 @@
 		A9398C1F13D41B31005E3CB0 /* social-vimeo.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1B13D41B31005E3CB0 /* social-vimeo.png */; };
 		A9398C2013D41B31005E3CB0 /* social-youtube.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1C13D41B31005E3CB0 /* social-youtube.png */; };
 		A9398C2713D4290D005E3CB0 /* toolbar-expand-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */; };
+		A93D353D14076B9600C8A73F /* airplay-tv-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */; };
 		A93E6BD31402966300B06191 /* airplay.png in Resources */ = {isa = PBXBuildFile; fileRef = A93E6BD21402966200B06191 /* airplay.png */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
@@ -218,6 +222,9 @@
 		A92CE47013E56B4C00007B04 /* top-bar-author-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-author-background.png"; sourceTree = "<group>"; };
 		A92CE47113E56B4C00007B04 /* top-bar-channel-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-channel-background.png"; sourceTree = "<group>"; };
 		A92CE47513E56BCB00007B04 /* top-bar-title-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-title-background.png"; sourceTree = "<group>"; };
+		A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-favorites.png"; sourceTree = "<group>"; };
+		A92E3E7D14040E4000B30313 /* internal-channel-history.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-history.png"; sourceTree = "<group>"; };
+		A92E3E7E14040E4000B30313 /* internal-channel-queue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-queue.png"; sourceTree = "<group>"; };
 		A931612C13E0902B009694C3 /* playback-full-screen-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-full-screen-active.png"; sourceTree = "<group>"; };
 		A931612D13E0902B009694C3 /* playback-full-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-full-screen.png"; sourceTree = "<group>"; };
 		A931612E13E0902B009694C3 /* playback-normal-screen-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-normal-screen-active.png"; sourceTree = "<group>"; };
@@ -234,6 +241,7 @@
 		A9398C1B13D41B31005E3CB0 /* social-vimeo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-vimeo.png"; sourceTree = "<group>"; };
 		A9398C1C13D41B31005E3CB0 /* social-youtube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-youtube.png"; sourceTree = "<group>"; };
 		A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-expand-active.png"; sourceTree = "<group>"; };
+		A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "airplay-tv-indicator.png"; sourceTree = "<group>"; };
 		A93E6BD21402966200B06191 /* airplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airplay.png; sourceTree = "<group>"; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
@@ -493,6 +501,7 @@
 				A9EB20F413AAE1E000BC2E29 /* demo_graphics */,
 				A970503213438F860022BF2C /* Icon.png */,
 				A92BDA2413B431C500B846DF /* youtube_logo_36.png */,
+				A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */,
 				A93E6BD21402966200B06191 /* airplay.png */,
 				2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */,
 				A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */,
@@ -506,6 +515,9 @@
 				A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */,
 				A9FEF57A13D3D8C50094514C /* channel-video-background.png */,
 				221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */,
+				A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */,
+				A92E3E7D14040E4000B30313 /* internal-channel-history.png */,
+				A92E3E7E14040E4000B30313 /* internal-channel-queue.png */,
 				A931612C13E0902B009694C3 /* playback-full-screen-active.png */,
 				A931612D13E0902B009694C3 /* playback-full-screen.png */,
 				A931612E13E0902B009694C3 /* playback-normal-screen-active.png */,
@@ -857,6 +869,10 @@
 				22333F501401AF52002FA3FE /* category-list-normal-bg-turned.png in Resources */,
 				A93E6BD31402966300B06191 /* airplay.png in Resources */,
 				A9719F451402F54C00393975 /* seek-time-bubble-background.png in Resources */,
+				A92E3E7F14040E4000B30313 /* internal-channel-favorites.png in Resources */,
+				A92E3E8014040E4000B30313 /* internal-channel-history.png in Resources */,
+				A92E3E8114040E4000B30313 /* internal-channel-queue.png in Resources */,
+				A93D353D14076B9600C8A73F /* airplay-tv-indicator.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1076,7 +1092,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_EVENT_TRACKING,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_VIDEO_LIST_REFRESH,
 					DEBUG_PLAYER_NAVIGATION,

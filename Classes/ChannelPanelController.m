@@ -93,19 +93,24 @@
 }
 
 - (IBAction)debugRefreshChannel:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 }
 
 - (IBAction)showSettingsView:(id)sender {
-	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
+//	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
+	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:settingCtrl];
+	navCtrl.navigationBar.barStyle = UIBarStyleBlack;
+	navCtrl.modalPresentationStyle = UIModalPresentationFormSheet;
 	
-	UIPopoverController * popover = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
+	[videoViewController presentModalViewController:navCtrl animated:YES];
+	
+//	UIPopoverController * popover = [[UIPopoverController alloc] initWithContentViewController:navCtrl];
 	[settingCtrl release];
 	[navCtrl release];
-	popover.popoverContentSize = CGSizeMake(320.0f, 480.0f);
-	[popover presentPopoverFromRect:settingButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
-	popover.delegate = self;
+//	popover.popoverContentSize = CGSizeMake(320.0f, 480.0f);
+//	[popover presentPopoverFromRect:settingButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+//	popover.delegate = self;
 }
 
 - (IBAction)showChannelManagementView:(id)sender {	
@@ -120,9 +125,9 @@
 	[chnMngCtrl release];
 }
 
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-	[popoverController release];
-}
+//- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+//	[popoverController release];
+//}
 
 - (void)queueColumnView:(UIView *)vw {
     if ([containerViewPool count] >= NM_CONTAINER_VIEW_POOL_SIZE) {

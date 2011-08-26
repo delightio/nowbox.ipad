@@ -176,7 +176,11 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 - (BOOL)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv {
 	if ( chn == nil || iv == nil ) return NO;
 	// check if the image is in local file system
-	if ( chn.nm_thumbnail_file_name ) {
+	if ( [chn.nm_id integerValue] < 0 ) {
+		// load from file system
+		iv.image = [UIImage imageWithContentsOfFile:chn.thumbnail_uri];
+		return YES;
+	} else if ( chn.nm_thumbnail_file_name ) {
 		NSString * fPath = [channelThumbnailCacheDir stringByAppendingPathComponent:chn.nm_thumbnail_file_name];
 		if ( [fileManager fileExistsAtPath:fPath] ) {
 			UIImage * img = [UIImage imageWithContentsOfFile:fPath];

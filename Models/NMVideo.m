@@ -18,6 +18,8 @@
 @dynamic published_at;
 @dynamic title;
 @dynamic view_count;
+@dynamic nm_favorite;
+@dynamic nm_watch_later;
 @dynamic nm_did_play;
 @dynamic nm_direct_url;
 @dynamic nm_direct_sd_url;

@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UIViewController <UITextFieldDelegate> {
+@interface SettingsViewController : UITableViewController <UITextFieldDelegate> {
 	IBOutlet UITextField * userIDField;
 	IBOutlet UISwitch * hqSwitch;
 	IBOutlet UILabel * reloadNote;
+	
+	NSUserDefaults * userDefaults;
+	
+	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
 }
 
 - (IBAction)changeHQSetting:(id)sender;

@@ -9,6 +9,7 @@
 #import "VideoPlaybackViewController.h"
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
+#import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -55,6 +56,7 @@
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize loadedMovieDetailView;
+@synthesize appDelegate;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -146,7 +148,14 @@
 	// channel management view notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementWillAppearNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
-	
+	// event
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
+
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -221,7 +230,7 @@
 
 #pragma mark Playback data structure
 
-- (void)setPlaybackCheckpoint {
+- (void)markPlaybackCheckpoint {
 	NMVideo * theVideo = [self playerCurrentVideo];
 	CMTime aTime = movieView.player.currentTime;
 	if ( aTime.flags & kCMTimeFlags_Valid ) {
@@ -246,6 +255,9 @@
 	} else {
 		currentChannel = [chnObj retain];
 	}
+	// save the channel ID to user defaults
+	[appDelegate saveChannelID:chnObj.nm_id];
+	
 	currentXOffset = 0.0f;
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
@@ -448,6 +460,18 @@
 	[movieView setActivityIndicationHidden:NO animated:NO];
 	didSkippedVideo = YES;
 
+	// save the channel ID to user defaults
+	[appDelegate saveChannelID:aVideo.channel.nm_id];
+	// play the specified video
+	[playbackModelController setVideo:aVideo];
+}
+
+- (void)launchPlayVideo:(NMVideo *)aVideo {
+	// a dedicated method for setting video to play when the app is being launched. This method avoids calling AVQueuePlayer removeAllItems.
+	// show progress indicator
+	[movieView setActivityIndicationHidden:NO animated:NO];
+	// save the channel ID to user defaults
+	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
 }
@@ -624,6 +648,31 @@
 	}
 }
 
+- (void)handleVideoEventNotification:(NSNotification *)aNotification {
+	// check it's the current, previous or next video
+	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
+	// do nth if the video object is nil
+	if ( vidObj == nil ) return;
+	
+	NSString * name = [aNotification name];
+	if ( [name isEqualToString:NMDidShareVideoNotification] ) {
+		// shared the video successfully
+		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
+			vidObj.nm_movie_detail_view.likeButton.selected = YES;
+		}
+	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] ) {
+		// queued a video successfully, animate the icon to appropriate state
+		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
+			vidObj.nm_movie_detail_view.watchLaterButton.selected = YES;
+		}
+	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] ) {
+		// dequeued a video successfully
+		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
+			vidObj.nm_movie_detail_view.watchLaterButton.selected = NO;
+		}
+	}
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	NSInteger c = (NSInteger)context;
 //	CMTime t;
@@ -685,8 +734,10 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 		if ( movieView.player.airPlayVideoActive ) {
 			// update the player interface to indicate that Airplay has been enabled
+			[loadedControlView hideAirPlayIndicatorView:NO];
 		} else {
 			// remove the interface indication
+			[loadedControlView hideAirPlayIndicatorView:YES];
 		}
 #endif
 	}
@@ -1037,12 +1088,16 @@
 	[UIView commitAnimations];
 }
 
-- (IBAction)shareVideo:(id)sender {
-	[nowmovTaskController issueSendShareEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+- (IBAction)addVideoToFavorite:(id)sender {
+	[nowmovTaskController issueShare:YES video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	UIButton * btn = (UIButton *)sender;
+	btn.enabled = NO;
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	[nowmovTaskController issueEnqueue:YES video:playbackModelController.currentVideo];
+	UIButton * btn = (UIButton *)sender;
+	btn.enabled = NO;
 }
 
 // seek bar

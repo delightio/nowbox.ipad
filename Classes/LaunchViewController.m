@@ -12,7 +12,7 @@
 #import "VideoPlaybackViewController.h"
 
 
-#define GP_CHANNEL_UPDATE_INTERVAL	-12.0f * 3600.0f
+#define GP_CHANNEL_UPDATE_INTERVAL	-12.0 * 3600.0
 
 @implementation LaunchViewController
 
@@ -57,8 +57,8 @@
 	
 	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 	NM_USER_ACCOUNT_ID = [userDefaults integerForKey:NM_USER_ACCOUNT_ID_KEY];
-	
 	NM_USE_HIGH_QUALITY_VIDEO = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
+	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 }
 
 - (void)viewDidUnload
@@ -79,48 +79,52 @@
     return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
-- (void)showVideoView {
-	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[self presentModalViewController:appDelegate.viewController animated:NO];
-	// always default to LIVE channel
-	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
-}
+//- (void)showVideoView {
+//	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
+//	[self presentModalViewController:appDelegate.viewController animated:NO];
+//	// always default to LIVE channel
+//	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
+//}
 
 - (void)showVideoViewAnimated {
 	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
 	appDelegate.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[self presentModalViewController:appDelegate.viewController animated:YES];
-	// always default to LIVE channel
-	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.trendingChannel;
+	// continue channel of the last session
+	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
+	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.lastSessionChannel;
+	
+	// set first launch to NO
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
 }
 
 - (void)checkUpdateChannels {
+	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
-	NMDataController * dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
 	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL || // 12 hours
-		[dataController emptyChannel] ) { 
+		appFirstLaunch ) { 
 		// get channel
-		[[NMTaskQueueController sharedTaskQueueController] issueGetChannels];
+		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 		debugLabel.text = @"Fetching channels...";
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
+		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	}
 }
 
 #pragma mark Notification
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-//	NSDictionary * userInfo = [aNotification userInfo];
-//	debugLabel.text = [debugLabel.text stringByAppendingFormat:@"\ntype %@", [userInfo objectForKey:@"type"]];
 	debugLabel.text = @"Ready to go...";
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 	[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
-	// fetch other channels
-	
-}
-
-#pragma mark Target action methods
-- (IBAction)showPlaybackController:(id)sender {
-	[self showVideoView];
+	// begin new session
+	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 }
 
 @end

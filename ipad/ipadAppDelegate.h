@@ -11,6 +11,12 @@
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
 extern NSString * const NM_USER_ACCOUNT_ID_KEY;
 extern NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY;
+extern NSString * const NM_SESSION_ID_KEY;
+extern NSString * const NM_FIRST_LAUNCH_KEY;
+extern NSString * const NM_LAST_CHANNEL_ID_KEY;
+extern NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY;	
+extern NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY;
+extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
 
 @class VideoPlaybackViewController;
 @class LaunchViewController;
@@ -20,6 +26,7 @@ extern NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY;
 	LaunchViewController *launchViewController;
 
 @private
+	NSUserDefaults * userDefaults;
     NSManagedObjectContext *managedObjectContext_;
     NSManagedObjectModel *managedObjectModel_;
     NSPersistentStoreCoordinator *persistentStoreCoordinator_;
@@ -34,5 +41,6 @@ extern NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY;
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 - (void)saveContext;
+- (void)saveChannelID:(NSNumber *)chnNum;
 
 @end

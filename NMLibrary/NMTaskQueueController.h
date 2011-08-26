@@ -38,7 +38,7 @@
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword;
 // Channel
-- (void)issueGetChannels;
+- (void)issueGetSubscribedChannels;
 - (void)issueGetLiveChannel;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
@@ -53,8 +53,8 @@
 
 // Event tracking
 // Share video
-- (void)issueSendShareEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec;
-- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(CGFloat)vdur elapsedSeconds:(CGFloat)sec playedToEnd:(BOOL)aEnd;
+- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
 - (void)issueExamineVideo:(NMVideo *)aVideo errorCode:(NSInteger)err;
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;

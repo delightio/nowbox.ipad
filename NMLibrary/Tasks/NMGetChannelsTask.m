@@ -54,7 +54,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 
 - (id)initGetDefaultChannels {
 	self = [self init];
-	command = NMCommandGetDefaultChannels;
+	command = NMCommandGetSubscribedChannels;
 	return self;
 }
 
@@ -85,7 +85,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	NSString * urlStr;
 	NSTimeInterval t = NM_URL_REQUEST_TIMEOUT;
 	switch (command) {
-		case NMCommandGetDefaultChannels:
+		case NMCommandGetSubscribedChannels:
 			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetChannelsForCategory:
@@ -120,7 +120,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	NSNumber * idNum;
 	NSInteger i = 0;
 	NSNumber * subscribedNum = nil;
-	if ( command == NMCommandGetDefaultChannels ) {
+	if ( command == NMCommandGetSubscribedChannels ) {
 		subscribedNum = [NSNumber numberWithBool:YES];
 	}
 	for (cDict in theChs) {
@@ -139,7 +139,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			idNum = [chnCtnDict objectForKey:@"id"];
 			[pDict setObject:idNum forKey:@"nm_id"];
 			[pDict setObject:[NSNumber numberWithInteger:i++] forKey:@"nm_sort_order"];
-			if ( command == NMCommandGetDefaultChannels ) {
+			if ( command == NMCommandGetSubscribedChannels ) {
 				[pDict setObject:subscribedNum forKey:@"nm_subscribed"];
 			}
 			[pDict setObject:[chnCtnDict objectForKey:@"category_ids"] forKey:@"category_ids"];
@@ -157,7 +157,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			// if getting channel for a category, check if the category contains the channel
 			theChannelPool = category.channels;
 			break;
-		case NMCommandGetDefaultChannels:
+		case NMCommandGetSubscribedChannels:
 			// if getting subscribed channel, compare with all existing subscribed channels
 			theChannelPool = ctrl.subscribedChannels;
 			break;
