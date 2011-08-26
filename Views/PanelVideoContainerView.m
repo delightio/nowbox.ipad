@@ -142,6 +142,16 @@
     [super dealloc];
 }
 
+- (void)setIsLoadingCell { 
+    
+    videoStatusImageView.image = nil;
+    
+    datePostedLabel.text = @"Loading more videos...";
+    datePostedLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
+    [cellView configureCellWithPanelVideoContainerView:self highlighted:NO videoPlayed:NO];
+
+}
+
 - (void)setVideoInfo:(NMVideo *)aVideo {
     
     isVideoPlayable = ([[aVideo nm_error] intValue] == 0) && ([aVideo nm_playback_status] >= 0);

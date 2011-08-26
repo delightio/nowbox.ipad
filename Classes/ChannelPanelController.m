@@ -222,7 +222,7 @@
     }
     
     UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
-    [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] != 0)];
+    [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] > 1)];
     
 NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( theChannel == nil || [theChannel.videos count] == 0 ) {

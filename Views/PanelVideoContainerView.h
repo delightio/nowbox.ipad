@@ -46,6 +46,7 @@
 @property (nonatomic, assign) VideoRowController *videoRowDelegate;
 
 - (void)setVideoInfo:(NMVideo *)aVideo;
+- (void)setIsLoadingCell;
 - (void)changeViewToHighlighted:(BOOL)isHighlighted;
 - (void)setIsPlayingVideo:(BOOL)abool;
 -(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender;

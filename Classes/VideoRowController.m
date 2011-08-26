@@ -40,7 +40,7 @@
 	[nc addObserver:self selector:@selector(handleWillGetChannelVideListNotification:) name:NMWillGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
-	return self;
+    return self;
 }
 
 
@@ -57,7 +57,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	return [sectionInfo numberOfObjects];
+	return [sectionInfo numberOfObjects]+1;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -75,6 +75,7 @@
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
 {
+    
     // sharing cells between rows, so dequeueing from panelController.tableView instead 
     PanelVideoContainerView *result = (PanelVideoContainerView *)[panelController.tableView dequeueReusableCellWithIdentifier:@"Reuse"];
     if (nil == result)
@@ -86,8 +87,18 @@
 		result.tableView = aTableView;
     }
     
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
+        [result setUserInteractionEnabled:NO];
+        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 90)];
+        [result setIsLoadingCell];
+		[result setIsPlayingVideo:NO];
+        return (UITableViewCell *)result;
+    }
+    
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
 	result.indexInTable = [anIndexPath row];
+    [result setUserInteractionEnabled:YES];
     if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
         [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, 90)];
     }
@@ -110,6 +121,13 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	if ([sectionInfo numberOfObjects] == [indexPath row]) {
+        return 150;
+    }
+    
+
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
 
     if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
@@ -279,9 +297,10 @@
     UIEdgeInsets inset = aScrollView.contentInset;
     float y = offset.y + bounds.size.height - inset.bottom;
     float h = size.height;
-    float reload_distance = -100;
+    float reload_distance = -100 - kMediumVideoCellWidth;
     if(y > h + reload_distance) {
         if (!isLoadingNewContent) {
+            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
             NSLog(@"Load new videos");
             isLoadingNewContent = YES;
             NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
