@@ -85,6 +85,7 @@
 @property (nonatomic, assign) UIButton * channelViewButton;
 @property (nonatomic, assign) UIButton * playPauseButton;
 @property (nonatomic, retain) UIButton * seekBubbleButton;
+@property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
 @property (nonatomic, assign) BOOL isSeeking;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
@@ -97,6 +98,7 @@
 
 - (void)showLastVideoMessage;
 - (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView;
+- (void)hideAirPlayIndicatorView:(BOOL)hidden;
 
 // bubble
 - (void)updateSeekBubbleLocation;

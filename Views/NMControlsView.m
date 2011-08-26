@@ -23,6 +23,7 @@
 #define NM_AUTHOR_SEGMENT_LEFT_INSET							10.0f
 
 @implementation NMControlsView
+@synthesize airPlayIndicatorView;
 
 @synthesize controlDelegate;
 @synthesize duration, timeElapsed;
@@ -103,6 +104,7 @@
 - (void)dealloc {
 	[lastVideoMessage release];
 	[volumeView release];
+    [airPlayIndicatorView release];
     [super dealloc];
 }
 
@@ -232,6 +234,19 @@
 	CGPoint thePoint = seekBubbleButton.center;
 	thePoint.x = sliderRect.size.width * progressSlider.value + sliderRect.origin.x;
 	seekBubbleButton.center = thePoint;
+}
+
+- (void)hideAirPlayIndicatorView:(BOOL)hidden {
+	CGRect theRect;
+	if ( airPlayIndicatorView.superview && hidden) {
+		// hide
+		[airPlayIndicatorView removeFromSuperview];
+	} else if ( airPlayIndicatorView.superview == nil && !hidden ) {
+		// show
+		theRect = self.bounds;
+		airPlayIndicatorView.center = CGPointMake(theRect.size.width / 2.0f, theRect.size.height / 2.0f);
+		[self addSubview:airPlayIndicatorView];
+	}
 }
 
 #pragma mark properties
