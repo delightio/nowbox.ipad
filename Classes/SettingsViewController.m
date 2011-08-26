@@ -74,6 +74,7 @@
 	emailNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 	emailNotificationSwitch.tag = NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG;
 	[emailNotificationSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+	
 }
 
 - (void)viewDidUnload
@@ -259,6 +260,20 @@
 	}
 	
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	switch (section) {
+		case 2:
+			return @"Social";
+			
+		case 4:
+			return @"Notifications";
+			
+		default:
+			break;
+	}
+	return nil;
 }
 
 /*
