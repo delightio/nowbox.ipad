@@ -837,6 +837,7 @@
 	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT];
 	ribbonView.alpha = 0.15;
 	[UIView commitAnimations];
+	ribbonView.userInteractionEnabled = NO;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -892,6 +893,7 @@
 	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_IN_CONTEXT];
 	ribbonView.alpha = 1.0f;
 	[UIView commitAnimations];
+	ribbonView.userInteractionEnabled = YES;
 }
 
 
