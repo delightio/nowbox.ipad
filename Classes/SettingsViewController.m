@@ -8,6 +8,7 @@
 
 #import "SettingsViewController.h"
 #import "ipadAppDelegate.h"
+#import "TwitterLoginViewController.h"
 
 #define NM_SETTING_HD_SWITCH_TAG					1001
 #define NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG		1002
@@ -92,12 +93,17 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+	if ( !viewPushedByNavigationController ) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+		viewPushedByNavigationController = YES;
+	}
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
+	if ( !viewPushedByNavigationController ) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
+	}
 }
 
 #pragma mark Target action methods
@@ -300,6 +306,11 @@
 	 [self.navigationController pushViewController:detailViewController animated:YES];
 	 [detailViewController release];
 	 */
+	if ( indexPath.section == 2 && indexPath.row == 0 ) {
+		TwitterLoginViewController * twitterCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
+		[self.navigationController pushViewController:twitterCtrl animated:YES];
+		[twitterCtrl release];
+	}
 }
 
 

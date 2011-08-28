@@ -42,6 +42,8 @@
 {
     [super viewDidLoad];
 	[loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://api.nowmov.com/auth/twitter"] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
+	
+	self.title = @"Login in Twitter";
 }
 
 - (void)viewDidUnload
