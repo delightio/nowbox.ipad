@@ -22,12 +22,14 @@
 #define NM_PLAYER_ITEM_STATUS_CONTEXT			106
 #define NM_PLAYER_RATE_CONTEXT					107
 #define NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT		108
+
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
 #define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
 #define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER	10001
-
+#define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT	10002
+#define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT		10003
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
@@ -82,6 +84,10 @@
 	// view background
 	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
 	self.view.backgroundColor = bgColor;
+	
+	// ribbon view
+	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
+	ribbonView.layer.shouldRasterize = YES;
 	
 	// playback data model controller
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
@@ -409,6 +415,9 @@
 	switch (ctxInt) {
 		case NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER:
 			showMovieControlTimestamp = loadedControlView.timeElapsed;
+			break;
+		case NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT:
+		case NM_ANIMATION_RIBBON_FADE_IN_CONTEXT:
 			break;
 			
 		default:
@@ -825,6 +834,9 @@
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	NMVideoPlaybackViewIsScrolling = YES;
+	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT];
+	ribbonView.alpha = 0.15;
+	[UIView commitAnimations];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -876,6 +888,10 @@
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
+	// ribbon fade in transition
+	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_IN_CONTEXT];
+	ribbonView.alpha = 1.0f;
+	[UIView commitAnimations];
 }
 
 
