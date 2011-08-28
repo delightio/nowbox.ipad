@@ -735,10 +735,10 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 		if ( movieView.player.airPlayVideoActive ) {
 			// update the player interface to indicate that Airplay has been enabled
-			[loadedControlView hideAirPlayIndicatorView:NO];
+			[movieView hideAirPlayIndicatorView:NO];
 		} else {
 			// remove the interface indication
-			[loadedControlView hideAirPlayIndicatorView:YES];
+			[movieView hideAirPlayIndicatorView:YES];
 		}
 #endif
 	}

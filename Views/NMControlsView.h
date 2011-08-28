@@ -98,7 +98,6 @@
 
 - (void)showLastVideoMessage;
 - (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView;
-- (void)hideAirPlayIndicatorView:(BOOL)hidden;
 
 // bubble
 - (void)updateSeekBubbleLocation;

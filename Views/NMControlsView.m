@@ -236,19 +236,6 @@
 	seekBubbleButton.center = thePoint;
 }
 
-- (void)hideAirPlayIndicatorView:(BOOL)hidden {
-	CGRect theRect;
-	if ( airPlayIndicatorView.superview && hidden) {
-		// hide
-		[airPlayIndicatorView removeFromSuperview];
-	} else if ( airPlayIndicatorView.superview == nil && !hidden ) {
-		// show
-		theRect = self.bounds;
-		airPlayIndicatorView.center = CGPointMake(theRect.size.width / 2.0f, theRect.size.height / 2.0f);
-		[self addSubview:airPlayIndicatorView];
-	}
-}
-
 #pragma mark properties
 - (void)resetView {
 	authorNameLabel.text = @"";
