@@ -455,7 +455,7 @@
 	// stop video
 	[self stopVideo];
 	// flush the video player
-	[movieView.player removeAllItems];
+	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
 	// show progress indicator
 	[movieView setActivityIndicationHidden:NO animated:NO];
 	didSkippedVideo = YES;
@@ -554,7 +554,8 @@
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 768.0f);
 	currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
 	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
-	controlScrollView.contentOffset = thePoint;
+//	controlScrollView.contentOffset = thePoint;
+	[controlScrollView setContentOffset:thePoint animated:YES];
 	[self configureControlViewForVideo:playbackModelController.currentVideo];
 }
 
