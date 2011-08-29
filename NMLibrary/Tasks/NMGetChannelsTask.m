@@ -98,6 +98,9 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			break;
 	}
 
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"Get Channels: %@", urlStr);
+#endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:t];
 	return request;
 }
@@ -142,7 +145,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			if ( command == NMCommandGetSubscribedChannels ) {
 				[pDict setObject:subscribedNum forKey:@"nm_subscribed"];
 			}
-			[pDict setObject:[chnCtnDict objectForKey:@"category_ids"] forKey:@"category_ids"];
+			//[pDict setObject:[chnCtnDict objectForKey:@"category_ids"] forKey:@"category_ids"];
 			
 			[channelIndexSet addIndex:[idNum unsignedIntegerValue]];
 			[parsedObjectDictionary setObject:pDict forKey:idNum];
@@ -173,7 +176,6 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 				if ( chnObj == nil ) {
 					// create the channel
 					chnObj = [ctrl insertNewChannelForID:theKey];
-					[chnDict removeObjectForKey:@"category_ids"];
 					[chnObj setValuesForKeysWithDictionary:chnDict];
 					// there's no need to set relationship with the existing channel objects.
 				}
@@ -205,86 +207,39 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		}
 	}
 	// delete objects
-	if ( objectsToDelete ) [ctrl deleteManagedObjects:objectsToDelete];
+	if ( objectsToDelete ) [ctrl batchDeleteChannels:objectsToDelete];
 	if ( [channelIndexSet count] ) {
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 			// check if the channel exists among all stored
 			NSNumber * idNum = [NSNumber numberWithUnsignedInteger:idx];
+			// search the channel object. The channel may exist in another category. So, need to search if it already exists in the current database.
 			NMChannel * chn = [ctrl channelForID:idNum];
 			NSMutableDictionary * chnDict = [parsedObjectDictionary objectForKey:idNum];
-			// grab the category IDs
-			NSArray * catIDAy = [[chnDict objectForKey:@"category_ids"] retain];
-			[chnDict removeObjectForKey:@"category_ids"];
 			if ( chn == nil ) {
 				// create the new object
 				chn = [ctrl insertNewChannelForID:[chnDict objectForKey:@"nm_id"]];
 				[chn setValuesForKeysWithDictionary:chnDict];
 			} else {
+				// the channel already exists, just update the sort order.
 				chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
+				//TODO: to be more correct, sort order should be stored in the relationship object cos the order of a channel can be different in different category
 			}
-			
-			// object relationship
-			if ( category ) {
-				[chn addCategoriesObject:category];
-				[category addChannelsObject:chn];
-			} else {
-				// channels stored in dictionary
-				NMCategory * cat = nil;
-				for (NSNumber * catIDNum in catIDAy) {
-					// look up the category
-					cat = [ctrl categoryForID:catIDNum];
-					if ( cat ) {
-						// if we cannot find the category, that category is not in the "featured category" set.
-						[chn addCategoriesObject:cat];
-						[cat addChannelsObject:chn];
-					}
-				}
+			// add the channel to the relationship.
+			switch (command) {
+				case NMCommandGetChannelsForCategory:
+					[chn addCategoriesObject:category];
+					[category addChannelsObject:chn];
+					break;
+				case NMCommandGetSubscribedChannels:
+					[ctrl.internalSubscribedChannelsCategory addChannelsObject:chn];
+					[chn addCategoriesObject:ctrl.internalSubscribedChannelsCategory];
+					break;
+				default:
+					break;
 			}
 		}];
 	}
-	
-	/*
-	// save the data into core data
-	NSMutableArray * ay = [NSMutableArray array];
-	NSMutableDictionary * dict;
-	// prepare channel names for batch fetch request
-	for (dict in parsedObjects) {
-		[ay addObject:[dict objectForKey:@"title"]];
-	}
-	NSDictionary * fetchedChannels = [ctrl fetchChannelsForNames:ay];
-	// save channel with new data
-	NMChannel * chnObj;
-	NSMutableSet * foundSet = [NSMutableSet set];
-//	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
-	NSInteger idx = 0;
-	for (dict in parsedObjects) {
-		chnObj = (NMChannel *)[fetchedChannels objectForKey:[dict objectForKey:@"title"]];
-		if ( chnObj ) {
-			[foundSet addObject:chnObj.title];
-			// check if the channel is playing
-			// remove all existing videos
-			//[ctrl deleteVideoInChannel:chnObj];
-		} else {
-			// create a new channel object
-			chnObj = [ctrl insertNewChannel];
-		}
-		chnObj.nm_sort_order = [NSNumber numberWithInteger:idx];
-		// set channel value
-		[chnObj setValuesForKeysWithDictionary:dict];
-		// this will insert the first 
-		if ( [chnObj.title isEqualToString:@"live"] ) {
-			self.trendingChannel = chnObj;
-		}
-		idx++;
-	}
-	// remove channel no longer here
-	NSArray * allKeys = [fetchedChannels allKeys];
-	NSArray * untouchedKeys = [allKeys filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"!SELF IN %@", foundSet]];
-	if ( [untouchedKeys count] ) {
-		[ctrl deleteManagedObjects:untouchedKeys];
-	}
-	 */
 }
 
 - (NSString *)willLoadNotificationName {

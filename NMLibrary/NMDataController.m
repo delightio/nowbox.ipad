@@ -13,8 +13,6 @@
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 
-#define NM_MY_QUEUE_CHANNEL_ID			-20
-#define NM_FAVORITE_VIDEOS_CHANNEL_ID	-10
 
 NSString * const NMCategoryEntityName = @"NMCategory";
 NSString * const NMChannelEntityName = @"NMChannel";
@@ -29,6 +27,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize categories, categoryCacheDictionary;
 @synthesize subscribedChannels;//, trendingChannel;
 @synthesize internalSearchCategory;
+@synthesize internalSubscribedChannelsCategory;
 @synthesize myQueueChannel, favoriteVideoChannel;
 
 - (id)init {
@@ -39,7 +38,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	
 //	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
 //	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
-	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == %@ AND nm_id > 0", [NSNumber numberWithBool:YES]] retain];
+	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == YES"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
@@ -58,6 +57,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
+	[internalSubscribedChannelsCategory release];
 	[channelEntityDescription release], [videoEntityDescription release];
 	[super dealloc];
 }
@@ -155,8 +155,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 #pragma mark First launch
 - (void)setUpDatabaseForFirstLaunch {
 	// create channels: my queue, favorites
-	[self favoriteVideoChannel];
-	[self myQueueChannel];
+//	[self favoriteVideoChannel];
+//	[self myQueueChannel];
 	[self internalSearchCategory];
 }
 
@@ -226,6 +226,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
 	[request setReturnsObjectsAsFaults:NO];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id > 0"]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
@@ -279,7 +280,46 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)batchDeleteCategories:(NSArray *)catAy {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	// fetch all categories and categories related objects to avoid faulting during delete
+	// refer to WWDC 2010 - Session 137 - Optimizing Core Data Performance on iPhone OS
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", catAy]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channels"]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	NSManagedObject * mobj;
+	for (mobj in result) {
+		[managedObjectContext deleteObject:mobj];
+	}
+	// clean up cache
+	[categoryCacheDictionary removeAllObjects];
+	[channelCacheDictionary removeAllObjects];
 	
+	[pool release];
+}
+
+- (NMCategory *)internalSubscribedChannelsCategory {
+	if ( internalSubscribedChannelsCategory == nil ) {
+		// retrieve that category
+		NSFetchRequest * request = [[NSFetchRequest alloc] init];
+		[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+		NSNumber * searchCatID = [NSNumber numberWithInteger:-2];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", searchCatID]];
+		[request setReturnsObjectsAsFaults:NO];
+		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+		if ( result == nil || [result count] == 0 ) {
+			// we need to create the category
+			NMCategory * categoryObj = [NSEntityDescription insertNewObjectForEntityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext];
+			categoryObj.title = @"Subscribed Channels - internal use only";
+			categoryObj.nm_id = searchCatID;
+			self.internalSubscribedChannelsCategory = categoryObj;
+		} else {
+			self.internalSubscribedChannelsCategory = [result objectAtIndex:0];
+		}
+		[request release];
+	}
+	return internalSubscribedChannelsCategory;
 }
 
 #pragma mark Channels
@@ -385,21 +425,21 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	if ( myQueueChannel == nil ) {
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		NSNumber * myChannelID = [NSNumber numberWithInteger:NM_MY_QUEUE_CHANNEL_ID];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", myChannelID]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"title like %@", @"Watch Later"]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-		if ( result == nil || [result count] == 0 ) {
-			// we need to create the category
-			NMChannel * chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
-			chnObj.title = @"MY QUEUE";
-			chnObj.nm_id = myChannelID;
-			chnObj.nm_sort_order = myChannelID;
-			chnObj.nm_subscribed = [NSNumber numberWithBool:YES];
-			chnObj.thumbnail_uri = [[NSBundle mainBundle] pathForResource:@"internal-channel-queue" ofType:@"png"];
-			chnObj.nm_thumbnail_file_name = @"internal-channel-queue.png";
-			self.myQueueChannel = chnObj;
-		} else {
+//		if ( result == nil || [result count] == 0 ) {
+//			// we need to create the category
+//			NMChannel * chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+//			chnObj.title = @"MY QUEUE";
+//			chnObj.nm_id = myChannelID;
+//			chnObj.nm_sort_order = myChannelID;
+//			chnObj.nm_subscribed = [NSNumber numberWithBool:YES];
+//			chnObj.thumbnail_uri = [[NSBundle mainBundle] pathForResource:@"internal-channel-queue" ofType:@"png"];
+//			chnObj.nm_thumbnail_file_name = @"internal-channel-queue.png";
+//			self.myQueueChannel = chnObj;
+//		} else {
+		if ( [result count] ) {
 			self.myQueueChannel = [result objectAtIndex:0];
 		}
 		[request release];
@@ -411,26 +451,44 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	if ( favoriteVideoChannel == nil ) {
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		NSNumber * myChannelID = [NSNumber numberWithInteger:NM_FAVORITE_VIDEOS_CHANNEL_ID];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", myChannelID]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"title like %@", @"Favorites"]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-		if ( result == nil || [result count] == 0 ) {
-			// we need to create the category
-			NMChannel * chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
-			chnObj.title = @"MY FAVORITES";
-			chnObj.nm_id = myChannelID;
-			chnObj.nm_sort_order = myChannelID;
-			chnObj.nm_subscribed = [NSNumber numberWithBool:YES];
-			chnObj.thumbnail_uri = [[NSBundle mainBundle] pathForResource:@"internal-channel-favorites" ofType:@"png"];
-			chnObj.nm_thumbnail_file_name = @"internal-channel-favorites.png";
-			self.favoriteVideoChannel = chnObj;
-		} else {
+//		if ( result == nil || [result count] == 0 ) {
+//			// we need to create the category
+//			NMChannel * chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+//			chnObj.title = @"MY FAVORITES";
+//			chnObj.nm_id = myChannelID;
+//			chnObj.nm_sort_order = myChannelID;
+//			chnObj.nm_subscribed = [NSNumber numberWithBool:YES];
+//			chnObj.thumbnail_uri = [[NSBundle mainBundle] pathForResource:@"internal-channel-favorites" ofType:@"png"];
+//			chnObj.nm_thumbnail_file_name = @"internal-channel-favorites.png";
+//			self.favoriteVideoChannel = chnObj;
+//		} else {
+		if ( [result count] ) {
 			self.favoriteVideoChannel = [result objectAtIndex:0];
 		}
 		[request release];
 	}
 	return favoriteVideoChannel;
+}
+
+- (void)batchDeleteChannels:(NSArray *)chnAy {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", chnAy]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	NSManagedObject * mobj;
+	for (mobj in result) {
+		[managedObjectContext deleteObject:mobj];
+	}
+	// clean up cache
+	[channelCacheDictionary removeAllObjects];
+	
+	[pool release];
 }
 
 #pragma mark Video 

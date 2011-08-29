@@ -90,7 +90,7 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 		}
 	}
 	// delete objects
-	if ( objectsToDelete ) [ctrl deleteManagedObjects:objectsToDelete];
+	if ( objectsToDelete ) [ctrl batchDeleteCategories:objectsToDelete];
 	// handle the remaining index
 	[serverCategoryIDIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 		NSDictionary * dict = [categoryDictionary objectForKey:[NSNumber numberWithInteger:idx]];

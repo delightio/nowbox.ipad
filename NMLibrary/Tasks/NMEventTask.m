@@ -10,6 +10,7 @@
 #import "NMDataController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMCategory.h"
 
 NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
 
@@ -153,9 +154,11 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 			channel.nm_subscribed = [NSNumber numberWithBool:YES];
+			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			break;
 		case NMEventUnsubscribeChannel:
 			channel.nm_subscribed = [NSNumber numberWithBool:NO];
+			[ctrl.internalSubscribedChannelsCategory removeChannelsObject:channel];
 			break;
 		case NMEventEnqueue:
 			//add video to "watch later" channel

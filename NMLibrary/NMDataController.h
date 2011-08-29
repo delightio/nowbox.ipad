@@ -35,6 +35,9 @@
 	// The predicate used by FRC in table view to filter a list of current search result
 	NSPredicate * searchResultsPredicate;
 	
+	// all subscribed channels should belong to this category
+	NMCategory * internalSubscribedChannelsCategory;
+	
 	// internal channels
 	NMChannel * myQueueChannel, * favoriteVideoChannel;
 }
@@ -45,6 +48,7 @@
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
+@property (nonatomic, retain) NMCategory * internalSubscribedChannelsCategory;
 //@property (nonatomic, readonly) NMChannel * trendingChannel;
 @property (nonatomic, readonly) NSArray * subscribedChannels;	// for debug purpose
 @property (nonatomic, readonly) NSArray * categories;
@@ -61,16 +65,17 @@
 // general data manipulation
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 - (void)deleteVideo:(NMVideo *)vidObj;
-- (void)batchDeleteCategories:(NSArray *)catAy;
 // search
 - (void)clearSearchResultCache;
 // category
 - (NMCategory *)insertNewCategoryForID:(NSNumber *)catID;
 - (NMCategory *)categoryForID:(NSNumber *)catID;
+- (void)batchDeleteCategories:(NSArray *)catAy;
 // channels
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (NMChannel *)lastSessionChannel;
+- (void)batchDeleteChannels:(NSArray *)chnAy;
 // video
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;

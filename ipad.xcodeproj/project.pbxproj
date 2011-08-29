@@ -206,7 +206,7 @@
 		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
 		A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoContainerView.m; sourceTree = "<group>"; };
-		A925013C134385BF001759F5 /* Nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A9250144134385BF001759F5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -416,7 +416,7 @@
 		A925013D134385BF001759F5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A925013C134385BF001759F5 /* Nowbox.app */,
+				A925013C134385BF001759F5 /* nowbox.app */,
 				A9976EFC13BB355200B06DFF /* libNMLibrary.a */,
 			);
 			name = Products;
@@ -732,7 +732,7 @@
 			);
 			name = nowbox;
 			productName = ipad;
-			productReference = A925013C134385BF001759F5 /* Nowbox.app */;
+			productReference = A925013C134385BF001759F5 /* nowbox.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A9976EFB13BB355200B06DFF /* NMLibrary */ = {
