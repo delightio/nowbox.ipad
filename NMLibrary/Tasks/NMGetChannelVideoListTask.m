@@ -168,13 +168,13 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		[vidObj setValuesForKeysWithDictionary:dict];
 		// channel
 		vidObj.channel = channel;
-		[channel addVideosObject:vidObj];
+		//[channel addVideosObject:vidObj];
 		// video detail
 		dtlObj = [ctrl insertNewVideoDetail];
 		dict = [parsedDetailObjects objectAtIndex:vidCount];
 		[dtlObj setValuesForKeysWithDictionary:dict];
 		dtlObj.video = vidObj;
-		vidObj.detail = dtlObj;
+		//vidObj.detail = dtlObj;
 		
 		vidCount++;
 	}
@@ -201,13 +201,13 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				[vidObj setValuesForKeysWithDictionary:dict];
 				// channel
 				vidObj.channel = channel;
-				[channel addVideosObject:vidObj];
+				//[channel addVideosObject:vidObj];
 				// video detail
 				dtlObj = [ctrl insertNewVideoDetail];
 				dict = [parsedDetailObjects objectAtIndex:vidCount];
 				[dtlObj setValuesForKeysWithDictionary:dict];
 				dtlObj.video = vidObj;
-				vidObj.detail = dtlObj;
+				//vidObj.detail = dtlObj;
 			} else {
 				// update the view count
 				vidObj.view_count = [dict objectForKey:@"view_count"];

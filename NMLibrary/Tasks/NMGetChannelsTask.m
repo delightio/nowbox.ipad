@@ -192,7 +192,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 				}
 				// add the search category
 				[ctrl.internalSearchCategory addChannelsObject:chnObj];
-				[chnObj addCategoriesObject:ctrl.internalSearchCategory];
+				//[chnObj addCategoriesObject:ctrl.internalSearchCategory];
 			}
 			return;		// return this function
 		}
@@ -240,11 +240,11 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			switch (command) {
 				case NMCommandGetChannelsForCategory:
 					[chn addCategoriesObject:category];
-					[category addChannelsObject:chn];
+					//[category addChannelsObject:chn];
 					break;
 				case NMCommandGetSubscribedChannels:
 					[ctrl.internalSubscribedChannelsCategory addChannelsObject:chn];
-					[chn addCategoriesObject:ctrl.internalSubscribedChannelsCategory];
+					//[chn addCategoriesObject:ctrl.internalSubscribedChannelsCategory];
 					break;
 				default:
 					break;
