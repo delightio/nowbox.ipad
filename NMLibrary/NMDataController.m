@@ -278,6 +278,10 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return catObj;
 }
 
+- (void)batchDeleteCategories:(NSArray *)catAy {
+	
+}
+
 #pragma mark Channels
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID {
 	// clean up the cache. channelCacheDictionary caches objects that do not exist.

@@ -14,8 +14,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A925013B134385BF001759F5"
-               BuildableName = "ipad.app"
-               BlueprintName = "ipad"
+               BuildableName = "nowbox.app"
+               BlueprintName = "nowbox"
                ReferencedContainer = "container:ipad.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -52,8 +52,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A925013B134385BF001759F5"
-            BuildableName = "ipad.app"
-            BlueprintName = "ipad"
+            BuildableName = "nowbox.app"
+            BlueprintName = "nowbox"
             ReferencedContainer = "container:ipad.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -72,8 +72,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A925013B134385BF001759F5"
-            BuildableName = "ipad.app"
-            BlueprintName = "ipad"
+            BuildableName = "nowbox.app"
+            BlueprintName = "nowbox"
             ReferencedContainer = "container:ipad.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -102,8 +102,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A925013B134385BF001759F5"
-            BuildableName = "ipad.app"
-            BlueprintName = "ipad"
+            BuildableName = "nowbox.app"
+            BlueprintName = "nowbox"
             ReferencedContainer = "container:ipad.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

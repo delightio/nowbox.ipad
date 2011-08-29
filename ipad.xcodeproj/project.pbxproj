@@ -206,7 +206,7 @@
 		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
 		A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoContainerView.m; sourceTree = "<group>"; };
-		A925013C134385BF001759F5 /* ipad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ipad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A925013C134385BF001759F5 /* Nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A9250144134385BF001759F5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -416,7 +416,7 @@
 		A925013D134385BF001759F5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A925013C134385BF001759F5 /* ipad.app */,
+				A925013C134385BF001759F5 /* Nowbox.app */,
 				A9976EFC13BB355200B06DFF /* libNMLibrary.a */,
 			);
 			name = Products;
@@ -717,9 +717,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		A925013B134385BF001759F5 /* ipad */ = {
+		A925013B134385BF001759F5 /* nowbox */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A9250173134385BF001759F5 /* Build configuration list for PBXNativeTarget "ipad" */;
+			buildConfigurationList = A9250173134385BF001759F5 /* Build configuration list for PBXNativeTarget "nowbox" */;
 			buildPhases = (
 				A9250138134385BF001759F5 /* Sources */,
 				A9250139134385BF001759F5 /* Frameworks */,
@@ -730,9 +730,9 @@
 			dependencies = (
 				A9976F2113BB380600B06DFF /* PBXTargetDependency */,
 			);
-			name = ipad;
+			name = nowbox;
 			productName = ipad;
-			productReference = A925013C134385BF001759F5 /* ipad.app */;
+			productReference = A925013C134385BF001759F5 /* Nowbox.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A9976EFB13BB355200B06DFF /* NMLibrary */ = {
@@ -781,7 +781,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A925013B134385BF001759F5 /* ipad */,
+				A925013B134385BF001759F5 /* nowbox */,
 				A9976EFB13BB355200B06DFF /* NMLibrary */,
 			);
 		};
@@ -1146,7 +1146,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A9250173134385BF001759F5 /* Build configuration list for PBXNativeTarget "ipad" */ = {
+		A9250173134385BF001759F5 /* Build configuration list for PBXNativeTarget "nowbox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A9250174134385BF001759F5 /* Debug */,

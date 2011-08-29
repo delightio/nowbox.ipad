@@ -61,10 +61,7 @@
 // general data manipulation
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 - (void)deleteVideo:(NMVideo *)vidObj;
-//- (void)deleteVideoInChannel:(NMChannel *)chnObj;
-//- (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo;
-//- (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo;
-//- (void)deleteAllVideos;
+- (void)batchDeleteCategories:(NSArray *)catAy;
 // search
 - (void)clearSearchResultCache;
 // category

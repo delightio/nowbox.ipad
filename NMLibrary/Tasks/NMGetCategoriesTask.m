@@ -81,6 +81,7 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 			catDict = [categoryDictionary objectForKey:cat.nm_id];
 			// only update the sorting order
 			cat.nm_sort_order = [catDict objectForKey:@"nm_sort_order"];
+			cat.title = [catDict objectForKey:@"title"];
 			[serverCategoryIDIndexSet removeIndex:cid];
 		} else {
 			// remove the item
