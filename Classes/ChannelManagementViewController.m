@@ -495,7 +495,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == %@ AND type != %@", [NSNumber numberWithBool:YES], [NSNumber numberWithInteger:NMChannelUserType]]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];

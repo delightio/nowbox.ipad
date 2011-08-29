@@ -78,80 +78,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
-#pragma mark Data manipulation
-- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs {
-	NSManagedObject * mobj;
-	for (mobj in objs) {
-		[managedObjectContext deleteObject:mobj];
-	}
-	// clean up cache
-	[categoryCacheDictionary removeAllObjects];
-	[channelCacheDictionary removeAllObjects];
-}
-
-- (void)deleteVideo:(NMVideo *)vidObj {
-	if ( vidObj == nil ) return;
-	[managedObjectContext deleteObject:vidObj];
-}
-
-//- (void)deleteVideoInChannel:(NMChannel *)chnObj {
-//	NMVideo * vdo;
-//	for (vdo in chnObj.videos) {
-//		[managedObjectContext deleteObject:vdo];
-//	}
-//}
-//
-//- (void)deleteVideoInChannel:(NMChannel *)chnObj exceptVideo:(NMVideo *)aVideo {
-//	NMVideo * vdo;
-//	for (vdo in chnObj.videos) {
-//		if ( vdo == aVideo ) continue;
-//		[managedObjectContext deleteObject:vdo];
-//	}
-//}
-//
-//- (void)deleteVideoInChannel:(NMChannel *)chnObj afterVideo:(NMVideo *)aVideo {
-//	NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
-//	[fetchRequest setEntity:videoEntityDescription];
-//	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chnObj]];
-//    // Edit the sort key as appropriate.
-//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-//	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
-//    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
-//    
-//    [fetchRequest setSortDescriptors:sortDescriptors];
-//	[sortDescriptor release];
-//	[timestampDesc release];
-//	
-//	NSError * error = nil;
-//	NSArray * results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-//	
-//	// delete those beyond the current video
-//	NMVideo * theVideo;
-//	BOOL deleteBeyond = NO;
-//	for (theVideo in results) {
-//		if ( deleteBeyond ) {
-//			// delete the video object
-//			[managedObjectContext deleteObject:theVideo];
-//			continue;
-//		}
-//		if ( !deleteBeyond && theVideo == aVideo ) {
-//			deleteBeyond = YES;
-//		}
-//	}
-//
-//}
-
-//- (void)deleteAllVideos {
-//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-//	[request setEntity:videoEntityDescription];
-//	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
-//	
-//	for (NSManagedObject * obj in results) {
-//		[managedObjectContext deleteObject:obj];
-//	}
-//	[request release];
-//}
-
 #pragma mark First launch
 - (void)setUpDatabaseForFirstLaunch {
 	// create channels: my queue, favorites
@@ -288,10 +214,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", catAy]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channels"]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	NSManagedObject * mobj;
-	for (mobj in result) {
-		[managedObjectContext deleteObject:mobj];
+	if ( [result count] ) {
+		NSManagedObject * mobj;
+		for (mobj in result) {
+			[managedObjectContext deleteObject:mobj];
+		}
 	}
+	[request release];
 	// clean up cache
 	[categoryCacheDictionary removeAllObjects];
 	[channelCacheDictionary removeAllObjects];
@@ -481,10 +410,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", chnAy]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	NSManagedObject * mobj;
-	for (mobj in result) {
-		[managedObjectContext deleteObject:mobj];
+	if ( [result count] ) {
+		NSManagedObject * mobj;
+		for (mobj in result) {
+			[managedObjectContext deleteObject:mobj];
+		}
 	}
+	[request release];
 	// clean up cache
 	[channelCacheDictionary removeAllObjects];
 	
@@ -568,6 +500,30 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	[request release];
 	return vidObj;
+}
+
+- (void)deleteVideo:(NMVideo *)vidObj {
+	if ( vidObj == nil ) return;
+	[managedObjectContext deleteObject:vidObj];
+}
+
+- (void)batchDeleteVideos:(NSSet *)vdoSet {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	// prefetch related object
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", vdoSet]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"channel", @"detail", nil]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	if ( [result count] ) {
+		for (NSManagedObject * mobj in result) {
+			[managedObjectContext deleteObject:mobj];
+		}
+	}
+	[request release];
+	[pool release];
 }
 
 #pragma mark Data parsing

@@ -19,7 +19,7 @@
         <attribute name="resource_uri" optional="YES" attributeType="String"/>
         <attribute name="thumbnail_uri" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <attribute name="type" optional="YES" attributeType="String" indexed="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMCategory" inverseName="channels" inverseEntity="NMCategory"/>
         <relationship name="videos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMVideo" inverseName="channel" inverseEntity="NMVideo" indexed="YES"/>
     </entity>

@@ -36,7 +36,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 - (id)init {
 	self = [super init];
 	command = NMCommandGetAllChannels;
-	channelJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"type", @"resource_uri", nil];
+	channelJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"resource_uri", nil];
 	return self;
 }
 
@@ -119,6 +119,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	NSMutableDictionary * pDict;
 	NSString * theKey;
 	NSString * thumbURL;
+	NSString * chnType;
 	channelIndexSet = [[NSMutableIndexSet alloc] init];
 	NSNumber * idNum;
 	NSInteger i = 0;
@@ -132,6 +133,16 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			pDict = [NSMutableDictionary dictionary];
 			for (theKey in channelJSONKeys) {
 				[pDict setObject:[chnCtnDict objectForKey:theKey] forKey:theKey];
+			}
+			chnType = [chnCtnDict objectForKey:@"type"];
+			if ( [chnType isEqualToString:@"User"] ) {
+				[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];
+			} else if ( [chnType isEqualToString:@"Account::Youtube"] ) {
+				[pDict setObject:[NSNumber numberWithInteger:NMChannelYoutubeType] forKey:@"type"];
+			} else if ( [chnType isEqualToString:@"Account::Vimeo"] ) {
+				[pDict setObject:[NSNumber numberWithInteger:NMChannelVimeoType] forKey:@"type"];
+			} else {
+				[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 			}
 			thumbURL = [chnCtnDict objectForKey:@"thumbnail_uri"];
 			if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {

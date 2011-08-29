@@ -225,7 +225,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		{
 			// delete all existing channel
 			NSSet * chnVideos = channel.videos;
-			if ( chnVideos ) [ctrl deleteManagedObjects:chnVideos];
+			if ( chnVideos ) [ctrl batchDeleteVideos:chnVideos];
 			// put in all videos
 			[self insertAllVideosInController:ctrl];
 			break;

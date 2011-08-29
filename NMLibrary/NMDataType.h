@@ -60,6 +60,13 @@ typedef enum {
 	NMErrorYouTubeAPIError,
 } NMErrorType;
 
+typedef enum {
+	NMChannelUnknownType,
+	NMChannelUserType,
+	NMChannelYoutubeType,
+	NMChannelVimeoType,
+} NMChannelType;
+
 
 // Notifications
 // channel
