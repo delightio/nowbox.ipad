@@ -9,6 +9,7 @@
 #import "NMTask.h"
 
 @class NMChannel;
+@class NMVideo;
 @class NMVideoDetail;
 @class NMCacheController;
 
@@ -17,6 +18,7 @@
 	NSString * originalImagePath;
 	NMChannel * channel;
 	NMVideoDetail * videoDetail;
+	NMVideo * video;
 	UIImage * image;
 	NSHTTPURLResponse * httpResponse;
 	NMCacheController * cacheController;
@@ -24,6 +26,7 @@
 }
 
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NMVideoDetail * videoDetail;
 @property (nonatomic, retain) NSString * imageURLString;
 @property (nonatomic, retain) UIImage * image;

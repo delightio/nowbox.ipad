@@ -30,6 +30,7 @@ typedef enum {
 	NMCommandGetVimeoDirectURL,
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
+	NMCommandGetVideoThumbnail,
 } NMCommand;
 
 typedef enum {

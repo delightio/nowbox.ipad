@@ -32,6 +32,11 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return tid << 5 | (NSUInteger)NMCommandGetAuthorThumbnail;
 }
 
++ (NSUInteger)commandIndexForVideo:(NMVideo *)vdo {
+	NSUInteger tid = [vdo.nm_id unsignedIntegerValue];
+	return tid << 5 | (NSUInteger)NMCommandGetVideoThumbnail;
+}
+
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
 	
@@ -60,6 +65,21 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return self;
 }
 
+- (id)initWithVideoThumbnail:(NMVideo *)vdo {
+	self = [super init];
+	
+	cacheController = [NMCacheController sharedCacheController];
+	self.imageURLString = vdo.thumbnail_uri;
+	// we do not store the image in cache for now.
+	// self.originalImagePath = nil;
+	self.video = vdo;
+	self.targetID = vdo.nm_id;
+	command = NMCommandGetVideoThumbnail;
+	retainCount = 1;
+
+	return self;
+}
+
 - (void)retainDownload {
 	retainCount++;
 }
@@ -75,8 +95,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 - (void)dealloc {
 	[image release];
 	[httpResponse release];
-	[channel release];
 	[imageURLString release];
+	[channel release];
+	[video release];
 	[videoDetail release];
 	[super dealloc];
 }
