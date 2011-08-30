@@ -66,7 +66,7 @@
 #pragma mark Public interface
 - (void)advanceToVideo:(NMVideo *)aVideo {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	AVPlayerItem * curItem = self.currentItem;
+	NMAVPlayerItem * curItem = (NMAVPlayerItem *)self.currentItem;
 	if ( curItem == nil ) {
 		// queue this item
 		if ( aVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
@@ -76,6 +76,8 @@
 		}
 	} else {
 		[playbackDelegate player:self stopObservingPlayerItem:curItem];
+		curItem.nmVideo.nm_player_item = nil;
+		curItem.nmVideo = nil;
 		[self advanceToNextItem];
 		[self play];
 	}
@@ -127,6 +129,11 @@
 #endif
 			[self insertItem:cItem afterItem:self.currentItem];
 			insertStatus = YES;
+			// remove the last item
+			NSArray * allItems = self.items;
+			if ( [allItems count] == 4 ) {
+				[self removeItem:[allItems objectAtIndex:3]];
+			}
 		} else {
 #ifdef DEBUG_PLAYER_NAVIGATION
 			NSLog(@"CANNOT insert back");
