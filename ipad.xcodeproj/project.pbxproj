@@ -15,6 +15,8 @@
 		22333F4D1401A6D4002FA3FE /* category-list-separator.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4C1401A6D4002FA3FE /* category-list-separator.png */; };
 		22333F501401AF52002FA3FE /* category-list-normal-bg-turned.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
+		22A19757140D792900DE074E /* channel-video-status-hot.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19756140D792900DE074E /* channel-video-status-hot.png */; };
+		22A1975A140D7AAA00DE074E /* channel-video-status-fav.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19759140D7AAA00DE074E /* channel-video-status-fav.png */; };
 		22ADF99D13FAF39A003CF27E /* CategoryCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADF99A13FAF39A003CF27E /* CategoryCellView.m */; };
 		22ADF99E13FAF39A003CF27E /* CategoryTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADF99C13FAF39A003CF27E /* CategoryTableCell.m */; };
 		22ADF9BC13FAF40C003CF27E /* category-list-fade.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9B713FAF40C003CF27E /* category-list-fade.png */; };
@@ -177,6 +179,8 @@
 		22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-normal-bg-turned.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
+		22A19756140D792900DE074E /* channel-video-status-hot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-hot.png"; sourceTree = "<group>"; };
+		22A19759140D7AAA00DE074E /* channel-video-status-fav.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-fav.png"; sourceTree = "<group>"; };
 		22ADF99913FAF39A003CF27E /* CategoryCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCellView.h; sourceTree = "<group>"; };
 		22ADF99A13FAF39A003CF27E /* CategoryCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCellView.m; sourceTree = "<group>"; };
 		22ADF99B13FAF39A003CF27E /* CategoryTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryTableCell.h; sourceTree = "<group>"; };
@@ -517,6 +521,8 @@
 				A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */,
 				A9FEF57A13D3D8C50094514C /* channel-video-background.png */,
 				221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */,
+				22A19756140D792900DE074E /* channel-video-status-hot.png */,
+				22A19759140D7AAA00DE074E /* channel-video-status-fav.png */,
 				A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */,
 				A92E3E7D14040E4000B30313 /* internal-channel-history.png */,
 				A92E3E7E14040E4000B30313 /* internal-channel-queue.png */,
@@ -877,6 +883,8 @@
 				A92E3E8114040E4000B30313 /* internal-channel-queue.png in Resources */,
 				A93D353D14076B9600C8A73F /* airplay-tv-indicator.png in Resources */,
 				A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */,
+				22A19757140D792900DE074E /* channel-video-status-hot.png in Resources */,
+				22A1975A140D7AAA00DE074E /* channel-video-status-fav.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

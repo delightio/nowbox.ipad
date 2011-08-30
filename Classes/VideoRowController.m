@@ -124,6 +124,9 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	if ([sectionInfo numberOfObjects] == [indexPath row]) {
+        if (!isLoadingNewContent) {
+            return 0;
+        }
         return 150;
     }
     
@@ -264,6 +267,7 @@
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
+    NSLog(@"video playing now: %@",[newVideo title]);
     [self updateChannelTableView:newVideo animated:YES];
 }
 
@@ -279,6 +283,8 @@
     if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
         isLoadingNewContent = NO;
 //        NSLog(@"handleDidGetChannelVideoListNotification");
+        [videoTableView beginUpdates];
+        [videoTableView endUpdates];
     }
 }
 
@@ -286,6 +292,8 @@
     if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
         isLoadingNewContent = NO;
 //        NSLog(@"handleDidFailGetChannelVideoListNotification");
+        [videoTableView beginUpdates];
+        [videoTableView endUpdates];
     }
 }
 
@@ -303,26 +311,29 @@
 //            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
             NSLog(@"Load new videos");
             isLoadingNewContent = YES;
+            [videoTableView beginUpdates];
+            [videoTableView endUpdates];
+
             NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 			[schdlr issueGetMoreVideoForChannel:channel];
         }
     }
 }
-
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-//    NSLog(@"scrollViewDidEndScrollingAnimation");
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    NSLog(@"scrollViewWillBeginDragging");
-}
-
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-//    NSLog(@"scrollViewWillBeginDecelerating");
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-//    NSLog(@"scrollViewDidEndDragging willDecelerate");
-}
+//
+//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+////    NSLog(@"scrollViewDidEndScrollingAnimation");
+//}
+//
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+////    NSLog(@"scrollViewWillBeginDragging");
+//}
+//
+//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+////    NSLog(@"scrollViewWillBeginDecelerating");
+//}
+//
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+////    NSLog(@"scrollViewDidEndDragging willDecelerate");
+//}
 
 @end

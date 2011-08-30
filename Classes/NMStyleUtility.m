@@ -44,6 +44,8 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize pauseActiveImage;
 @synthesize blackColor;
 @synthesize videoStatusBadImage;
+@synthesize videoStatusFavImage;
+@synthesize videoStatusHotImage;
 
 + (NMStyleUtility *)sharedStyleUtility {
 	if ( sharedStyleUtility_ == nil ) {
@@ -97,6 +99,8 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	blackColor = [[UIColor blackColor] retain];
     
     videoStatusBadImage = [[UIImage imageNamed:@"channel-video-status-bad"] retain];
+    videoStatusHotImage = [[UIImage imageNamed:@"channel-video-status-hot"] retain];
+    videoStatusFavImage = [[UIImage imageNamed:@"channel-video-status-fav"] retain];
 	
 	return self;
 }
@@ -120,6 +124,10 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[channelPanelBackgroundColor release];
     [channelBorderColor release];
 	[userPlaceholderImage release];
+    [videoStatusBadImage release];
+    [videoStatusHotImage release];
+    [videoStatusFavImage release];
+    
 	
 	[fullScreenImage release], [fullScreenActiveImage release];
 	[splitScreenImage release],	[splitScreenActiveImage release];
