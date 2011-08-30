@@ -740,6 +740,7 @@
 			didPlayToEnd = NO;
 		}
 		[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
+		NSLog(@"##### Will Play Notificaiton - %@", playbackModelController.currentVideo.title);
 	} else if ( c == NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT ) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 		if ( movieView.player.airPlayVideoActive ) {

@@ -151,6 +151,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			dict = [parentDict objectForKey:theKey];
 			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
 			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
+			[mdict setObject:NM_SESSION_ID forKey:@"nm_session_id"];
 			[parsedObjects addObject:mdict];
 			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
 		}
