@@ -22,6 +22,9 @@ static NMCacheController * _sharedCacheController = nil;
 static NSString * const JPIndexPathDictionaryKey = @"idxpath";
 static NSString * const JPTableViewDictionaryKey = @"table";
 
+extern NSString * const NMChannelManagementWillAppearNotification;
+extern NSString * const NMChannelManagementDidDisappearNotification;
+
 @implementation NMCacheController
 
 + (NMCacheController *)sharedCacheController {
@@ -39,6 +42,10 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:nil];
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:nil];
+	
+	// listen to channel management view notification
+	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
+	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 	
 	// check if the cache directory is here or not. If not, create it.
 	NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
@@ -305,6 +312,11 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 }
 
 - (void)cleanBeforeSignout {
+	
+}
+
+- (void)handleCleanUpCacheNotification:(NSNotification *)aNotification {
+	// clean up channel thumbnail and video thumbnail files cache. Make sure they do not exceed the cap respectively.
 	
 }
 

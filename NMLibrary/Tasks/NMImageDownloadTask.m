@@ -20,7 +20,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
-@synthesize image, videoDetail;
+@synthesize image, video, videoDetail;
 
 + (NSUInteger)commandIndexForChannel:(NMChannel *)chn {
 	NSUInteger tid = [chn.nm_id unsignedIntegerValue];
@@ -114,12 +114,15 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	switch (command) {
 		case NMCommandGetAuthorThumbnail:
 			return [NSString stringWithFormat:@"%@.%@", targetID, [[httpResponse suggestedFilename] pathExtension]];
+		case NMCommandGetVideoThumbnail:
 			break;
+		case NMCommandGetChannelThumbnail:
+			return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
 			
 		default:
-			return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
 			break;
 	}
+	return nil;
 }
 
 - (void)processDownloadedDataInBuffer {
