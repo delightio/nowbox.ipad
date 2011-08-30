@@ -300,7 +300,7 @@
     float reload_distance = -100 - kMediumVideoCellWidth;
     if(y > h + reload_distance) {
         if (!isLoadingNewContent) {
-            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+//            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
             NSLog(@"Load new videos");
             isLoadingNewContent = YES;
             NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];

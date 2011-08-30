@@ -7,7 +7,6 @@
 //
 
 #import "ChannelManagementViewController.h"
-#import "NMLibrary.h"
 #import "TwitterLoginViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "CategoriesOrientedTableView.h"
@@ -389,7 +388,28 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
 	} else {
         
+        
+        NMChannel * chn;
+        if (selectedIndex == 0) {
+            chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+        } else {
+            chn = [selectedChannelArray objectAtIndex:indexPath.row];
+        }
+        
         UITableViewCell *cell = [channelsTableView cellForRowAtIndexPath:indexPath];
+        
+        if (selectedIndex == 0) {
+            UIAlertView *anAlert = [[UIAlertView alloc] initWithTitle:@"Unsubscribe"
+                                                              message:[NSString stringWithFormat:@"Unsubscribe from %@?",[chn title]]
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                                    otherButtonTitles:@"OK", nil];
+            channelToUnsubscribeFrom = chn;
+            cellToUnsubscribeFrom = cell;
+            [anAlert show];
+            [anAlert release];
+            return;
+        }
         
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
@@ -405,21 +425,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                          completion:^(BOOL finished) {
                          }];
         
-        NMChannel * chn;
-        if (selectedIndex == 0) {
-            chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
-        } else {
-            chn = [selectedChannelArray objectAtIndex:indexPath.row];
-        }
-        
-
-        
         [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
         
-        // TODO: just for the toggle status
-//        chn.nm_subscribed = [NSNumber numberWithBool:![chn.nm_subscribed boolValue]];
-//        
-//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
@@ -649,6 +656,27 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         return textLabelSize.width+40;
     }
     return 0;
+}
+
+#pragma mark UIAlertView delegates
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex != [alertView cancelButtonIndex]) {
+        UIActivityIndicatorView *actView;
+        actView = (UIActivityIndicatorView *)[cellToUnsubscribeFrom viewWithTag:15];
+        [actView startAnimating];
+        
+        UIImageView *imageView = (UIImageView *)[cellToUnsubscribeFrom viewWithTag:11];
+        
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             [actView setAlpha:1];
+                             [imageView setAlpha:0];
+                         }
+                         completion:^(BOOL finished) {
+                         }];
+        
+        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
+    }
 }
 
 @end

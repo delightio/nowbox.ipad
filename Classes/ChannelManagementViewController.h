@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @class CategoriesOrientedTableView;
+@class NMChannel;
 
-@interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+@interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
 	CategoriesOrientedTableView *categoriesTableView;
 	UITableView *channelsTableView;
 	UIView *containerView;
@@ -27,6 +28,10 @@
     UITableViewCell *channelCell;
     
     int selectedIndex;
+    
+    NMChannel *channelToUnsubscribeFrom;
+    UITableViewCell *cellToUnsubscribeFrom;
+    
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
