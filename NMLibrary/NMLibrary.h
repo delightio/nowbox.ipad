@@ -12,6 +12,7 @@
 #import "NMCacheController.h"
 #import "NMCategory.h"
 #import "NMChannel.h"
+#import "NMChannelDetail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 #import "NMImageDownloadTask.h"

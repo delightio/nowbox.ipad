@@ -2,19 +2,20 @@
 //  NMChannel.m
 //  ipad
 //
-//  Created by Bill So on 8/15/11.
+//  Created by Bill So on 8/31/11.
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 
 #import "NMChannel.h"
 #import "NMCategory.h"
+#import "NMChannelDetail.h"
+#import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 
 
 @implementation NMChannel
 
 @dynamic nm_current_page;
-@dynamic nm_description;
 @dynamic nm_id;
 @dynamic nm_last_vid;
 @dynamic nm_sort_order;
@@ -27,6 +28,8 @@
 @dynamic title;
 @dynamic type;
 @dynamic categories;
+@dynamic detail;
+@dynamic previewThumbnails;
 @dynamic videos;
 
 @end

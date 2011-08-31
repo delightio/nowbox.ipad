@@ -17,11 +17,10 @@ typedef enum {
 
 typedef enum {
 	NMCommandGetAllChannels			= 1,
-	NMCommandGetFriendChannels,
-	NMCommandGetTopicChannels,
 	NMCommandGetSubscribedChannels,
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
+	NMCommandGetChannelDetail,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetChannelVideoList,
