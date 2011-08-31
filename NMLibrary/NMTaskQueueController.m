@@ -175,6 +175,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return task;
 }
 
+- (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo {
+	NMImageDownloadTask * task = nil;
+	if ( vdo.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithVideoThumbnail:vdo];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+	return task;
+}
+
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj {
 	NMEventTask * task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:aSubscribe];
 	[networkController addNewConnectionForTask:task];
