@@ -10,6 +10,8 @@
 
 @class NMCategory;
 @class NMChannel;
+@class NMChannelDetail;
+@class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
 
@@ -72,6 +74,8 @@
 - (void)batchDeleteCategories:(NSArray *)catAy;
 // channels
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
+- (NMChannelDetail *)insertNewChannelDetail;
+- (NMPreviewThumbnail *)insertNewPreviewThumbnail;
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (NMChannel *)lastSessionChannel;
 - (void)batchDeleteChannels:(NSArray *)chnAy;

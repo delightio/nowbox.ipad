@@ -29,7 +29,7 @@ NSString * const NMDidFailGetChannelDetailNotification = @"NMDidFailGetChannelDe
 
 - (void)dealloc {
 	[channel release];
-	[videoThumbnailURIs release];
+	[previewArray release];
 	[channelDescription release];
 	[super dealloc];
 }
@@ -56,19 +56,30 @@ NSString * const NMDidFailGetChannelDetailNotification = @"NMDidFailGetChannelDe
 	NSArray * theVideos = [chnDict objectForKey:@"videos"];
 	NSString * theKey;
 	NSDictionary * vdoDict;
-	videoThumbnailURIs = [[NSMutableArray alloc] initWithCapacity:5];
+	NSInteger i = 0;
+	previewArray = [[NSMutableArray alloc] initWithCapacity:5];
 	for (NSDictionary * rootVdoDict in theVideos) {
 		for (theKey in rootVdoDict) {	// root attribute cleanser
 			vdoDict = [rootVdoDict objectForKey:theKey];
 			// get the thumbnail
-			[videoThumbnailURIs addObject:[vdoDict objectForKey:@"thumbnail_uri"]];
+			[previewArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:[vdoDict objectForKey:@"thumbnail_uri"], @"thumbnail_uri", [vdoDict objectForKey:@"source"], @"source", [NSNumber numberWithInteger:i++], @"nm_sort_order", nil]];
 		}
 	}
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	// create the channel
+	// create the Channel Detail MO
+	if ( channel.detail == nil ) {
+		channel.detail = [ctrl insertNewChannelDetail];
+	}
+	channel.detail.nm_description = channelDescription;
 	// create the Preview MO
+	NMPreviewThumbnail * thumbObj;
+	for (NSDictionary * theDict in previewArray) {
+		thumbObj = [ctrl insertNewPreviewThumbnail];
+		[thumbObj setValuesForKeysWithDictionary:theDict];
+		thumbObj.channel = channel;
+	}
 }
 
 - (NSString *)willLoadNotificationName {

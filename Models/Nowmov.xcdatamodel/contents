@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="864" systemVersion="11B2118" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="562" systemVersion="11B26" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -29,7 +29,9 @@
         <relationship name="channel" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="detail" inverseEntity="NMChannel"/>
     </entity>
     <entity name="NMPreviewThumbnail" representedClassName="NMPreviewThumbnail">
+        <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
         <attribute name="thumbnail_uri" optional="YES" attributeType="String"/>
         <relationship name="channel" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="previewThumbnails" inverseEntity="NMChannel"/>
     </entity>
@@ -67,9 +69,9 @@
     <elements>
         <element name="NMCategory" positionX="18" positionY="54" width="128" height="105"/>
         <element name="NMChannel" positionX="297" positionY="-72" width="153" height="285"/>
+        <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
+        <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="120"/>
         <element name="NMVideo" positionX="297" positionY="258" width="128" height="345"/>
         <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="150"/>
-        <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
-        <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="90"/>
     </elements>
 </model>
