@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @class CategoriesOrientedTableView;
+@class ChannelDetailViewController;
 
 @interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate> {
+	ChannelDetailViewController * channelDetailViewController;
 	CategoriesOrientedTableView *categoriesTableView;
 	UITableView *channelsTableView;
 	UIView *containerView;

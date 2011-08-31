@@ -111,6 +111,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
+#pragma mark Data Manipulation
+- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs {
+	for (NSManagedObject * mobj in objs) {
+		[managedObjectContext deleteObject:mobj];
+	}
+}
 
 #pragma mark Search Results Support
 - (NMCategory *)internalSearchCategory {

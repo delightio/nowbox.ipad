@@ -196,6 +196,14 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 			case NMCommandGetChannelThumbnail:
 				channel.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
+				
+			case NMCommandGetVideoThumbnail:
+				video.nm_thumbnail_file_name = [self suggestedFilename];
+				break;
+				
+			case NMCommandGetPreviewThumbnail:
+				previewThumbnail.nm_thumbnail_file_name = [self suggestedFilename];
+				break;
 								
 			default:
 				// no need to save for NMVideo or NMPreviewThumbnail. These 2 object types use external_id to identify images

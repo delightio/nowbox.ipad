@@ -242,7 +242,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 - (BOOL)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv {
 	if ( vdo == nil || iv == nil ) return NO;
 	// check if the file exists
-	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", vdo.external_id]];
+	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
 	if ( [fileManager fileExistsAtPath:fPath] ) {
 		// open up the file
 		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
@@ -279,7 +279,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 - (BOOL)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv {
 	if ( pv == nil || iv == nil ) return NO;
 	// check if the file exists
-	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", pv.external_id]];
+	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:pv.nm_thumbnail_file_name];
 	if ( [fileManager fileExistsAtPath:fPath] ) {
 		// open up the file
 		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
@@ -345,10 +345,18 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 - (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv {
 	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForPreviewThumbnail:pv]];
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"preview thumbnail download - command index: %@", idxNum);
+#endif
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowmovTaskController issueGetPreviewThumbnail:pv];
-		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+		if ( task ) {
+			[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+#ifdef DEBUG_IMAGE_CACHE
+			NSLog(@"preview thumbnail download - new command index: %d", [task commandIndex]);
+#endif
+		}
 	}
 	return task;
 }

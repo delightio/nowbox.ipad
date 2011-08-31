@@ -307,6 +307,8 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	switch (task.command) {
 		case NMCommandGetChannelThumbnail:
 		case NMCommandGetAuthorThumbnail:
+		case NMCommandGetVideoThumbnail:
+		case NMCommandGetPreviewThumbnail:
 		{
 			NMImageDownloadTask * imgTask = (NMImageDownloadTask *)task;
 			imgTask.httpResponse = (NSHTTPURLResponse *)response;

@@ -65,7 +65,7 @@
 - (void)deleteVideosWithSessionID:(NSInteger)sid;
 - (void)resetAllChannelsPageNumber;
 // general data manipulation
-//- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
+- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 // search
 - (void)clearSearchResultCache;
 // category

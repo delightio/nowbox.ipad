@@ -72,11 +72,13 @@
 	NMStyleUtility * style = [NMStyleUtility sharedStyleUtility];
 	for (NSUInteger i = 0; i < 5; i++) {
 		civ = [[NMCachedImageView alloc] initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING, 25.0f, 370.0f, 200.0f)];
-		civ.contentMode = UIViewContentModeScaleAspectFit;
+		civ.contentMode = UIViewContentModeScaleAspectFill;
 		civ.backgroundColor = style.blackColor;
+		civ.clipsToBounds = YES;
 		theLayer = civ.layer;
 		theLayer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-		theLayer.shadowOpacity = 0.75f;
+		theLayer.shadowOpacity = 1.0f;
+		theLayer.shadowRadius = 5.0f;
 		theLayer.shouldRasterize = YES;
 		civ.hidden = YES;
 		[videoThumbnailArray addObject:civ];
@@ -99,7 +101,7 @@
 	}
 	metricLabel.text = @"Subscribers xx,xxx,xxx  |  Channel Views xx,xxx,xxx";
 	// set preview images
-	[self setPreviewImages];
+//	[self setPreviewImages];
 	// set channel thumbnail
 	[channelThumbnailView setImageForChannel:channel];
 	// load channel detail
@@ -113,6 +115,11 @@
 	descriptionLabel.text = @"";
 	channelThumbnailView.image = nil;
 	metricLabel.text = @"";
+	for (NMCachedImageView * iv in videoThumbnailArray) {
+		iv.hidden = YES;
+		iv.image = nil;
+	}
+	self.channel = nil;
 }
 
 - (void)viewDidUnload
@@ -163,6 +170,7 @@
 		civ = [videoThumbnailArray objectAtIndex:i++];
 		[civ setImageForPreviewThumbnail:thePreview];
 		civ.hidden = NO;
+		if ( i == 5 ) break;
 	}
 	for (NSUInteger j = i; j < 5; j++) {
 		civ = [videoThumbnailArray objectAtIndex:j];

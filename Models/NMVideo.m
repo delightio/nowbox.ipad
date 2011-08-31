@@ -28,6 +28,7 @@
 @dynamic nm_playback_status;
 @dynamic nm_retry_count;
 @dynamic nm_session_id;
+@dynamic nm_thumbnail_file_name;
 @dynamic source;
 @dynamic nm_id;
 @dynamic channel;
