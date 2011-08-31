@@ -276,8 +276,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 			if ( task.state == NMTaskExecutionStateConnectionActive ) {
 				switch (task.command) {
 					case NMCommandGetAllChannels:
-					case NMCommandGetFriendChannels:
-					case NMCommandGetTopicChannels:
 					case NMCommandGetSubscribedChannels:
 					case NMCommandGetChannelVideoList:
 						// cancel the task

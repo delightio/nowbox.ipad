@@ -9,6 +9,7 @@
 
 @class NMImageDownloadTask;
 @class NMChannel;
+@class NMVideo;
 @class NMVideoDetail;
 @class NMTaskQueueController;
 @class NMStyleUtility;
@@ -18,6 +19,7 @@
 @interface NMCacheController : NSObject {
 	NSString * channelThumbnailCacheDir;
 	NSString * authorThumbnailCacheDir;
+	NSString * videoThumbnailCacheDir;
 	NSFileManager * fileManager;
 	
 	NSMutableDictionary * targetObjectImageViewMap;
@@ -37,14 +39,18 @@
 // display image from file cache
 - (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv;
 - (BOOL)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
+- (BOOL)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
 
 // interface for NMCachedImageView
 - (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn;
 - (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl;
+- (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo;
 //- (void)saveCacheWithInfo:(NSDictionary *)userInfo;
 
 // saving image from server
-- (void)writeAuthorImageData:(NSData *)aData withFilename:(NSString *)fname;- (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname;
+- (void)writeAuthorImageData:(NSData *)aData withFilename:(NSString *)fname;
+- (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname;
+- (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname;
 
 - (void)cacheWakeUpCheck;
 

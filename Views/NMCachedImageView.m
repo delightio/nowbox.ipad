@@ -11,7 +11,15 @@
 @implementation NMCachedImageView
 @synthesize downloadTask;
 @synthesize channel;
+@synthesize video;
 @synthesize videoDetail;
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+	self = [super initWithCoder:aDecoder];
+	cacheController = [NMCacheController sharedCacheController];
+	notificationCenter = [NSNotificationCenter defaultCenter];
+	return self;
+}
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
@@ -21,10 +29,10 @@
 	return self;
 }
 
-- (void)awakeFromNib {
-	cacheController = [NMCacheController sharedCacheController];
-	notificationCenter = [NSNotificationCenter defaultCenter];
-}
+//- (void)awakeFromNib {
+//	cacheController = [NMCacheController sharedCacheController];
+//	notificationCenter = [NSNotificationCenter defaultCenter];
+//}
 
 - (void)dealloc {
 	[notificationCenter removeObserver:self];
@@ -69,6 +77,12 @@
 
 - (void)delayedIssueAuthorImageDownloadRequest {
 	self.downloadTask = [cacheController downloadImageForAuthor:videoDetail];
+	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
+	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
+}
+
+- (void)delayedIssueVideoImageDownloadRequest {
+	self.downloadTask = [cacheController downloadImageForVideo:video];
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
 }
@@ -120,6 +134,37 @@
 	// issue delay request
 	self.videoDetail = dtl;
 	[self performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:0.5];
+}
+
+- (void)setImageForVideoThumbnail:(NMVideo *)vdo {
+	// check if there's local cache
+	if ( [cacheController setImageForVideo:vdo imageView:self] ) {
+		return;
+	}
+	
+	// no local cache. need to get from server
+	if ( downloadTask ) {
+		// stop listening to notification
+		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+		// cancel the previous download task
+		[downloadTask releaseDownload];
+		self.downloadTask = nil;
+	} else {
+		// clean up any previous delayed request
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueAuthorImageDownloadRequest) object:nil];
+	}
+	
+	// issue delay request
+	self.video = vdo;
+	[self performSelector:@selector(delayedIssueVideoImageDownloadRequest) withObject:nil afterDelay:0.25];
+}
+
+- (void)cancelDownload {
+	// stop listening first
+	[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+	[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+	[downloadTask releaseDownload];
 }
 
 @end

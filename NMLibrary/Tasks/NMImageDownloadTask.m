@@ -21,6 +21,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
 @synthesize image, video, videoDetail;
+@synthesize externalID;
 
 + (NSUInteger)commandIndexForChannel:(NMChannel *)chn {
 	NSUInteger tid = [chn.nm_id unsignedIntegerValue];
@@ -74,6 +75,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	// self.originalImagePath = nil;
 	self.video = vdo;
 	self.targetID = vdo.nm_id;
+	self.externalID = vdo.external_id;
 	command = NMCommandGetVideoThumbnail;
 	retainCount = 1;
 
@@ -99,6 +101,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	[channel release];
 	[video release];
 	[videoDetail release];
+	[externalID release];
 	[super dealloc];
 }
 
@@ -115,7 +118,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		case NMCommandGetAuthorThumbnail:
 			return [NSString stringWithFormat:@"%@.%@", targetID, [[httpResponse suggestedFilename] pathExtension]];
 		case NMCommandGetVideoThumbnail:
-			break;
+			return [NSString stringWithFormat:@"%@.%@", externalID, [[httpResponse suggestedFilename] pathExtension]];
 		case NMCommandGetChannelThumbnail:
 			return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
 			
@@ -140,6 +143,10 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 			
 		case NMCommandGetAuthorThumbnail:
 			[cacheController writeAuthorImageData:buffer withFilename:[self suggestedFilename]];
+			break;
+			
+		case NMCommandGetVideoThumbnail:
+			[cacheController writeVideoImageData:buffer withFileName:[self suggestedFilename]];
 			break;
 			
 		default:
@@ -187,6 +194,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 			
 		case NMCommandGetChannelThumbnail:
 			return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
+			
+		case NMCommandGetVideoThumbnail:
+			return [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", image, @"image", nil];
 			
 		default:
 			break;

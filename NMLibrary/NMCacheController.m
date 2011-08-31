@@ -52,6 +52,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSString * cacheBaseDir = [docDir stringByAppendingPathComponent:@"image_cache"];
 	channelThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"channel_thumbnail"] retain];
 	authorThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"author_thumbnail"] retain];
+	videoThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"video_thumbnail"] retain];
 	// file manager
 	fileManager = [[NSFileManager alloc] init];
 	
@@ -73,6 +74,11 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			NSException * e = [NSException exceptionWithName:@"CacheError" reason:@"cannot create cache directory" userInfo:nil];
 			[e raise];
 		}
+		[fileManager createDirectoryAtPath:videoThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:&error];
+		if ( error ) {
+			NSException * e = [NSException exceptionWithName:@"CacheError" reason:@"cannot create cache directory" userInfo:nil];
+			[e raise];
+		}
 	}
 		
 	targetObjectImageViewMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
@@ -89,6 +95,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[commandIndexTaskMap release];
 	[channelThumbnailCacheDir release];
 	[authorThumbnailCacheDir release];
+	[videoThumbnailCacheDir release];
 	[fileManager release];
 	[super dealloc];
 }
@@ -166,7 +173,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
 			// release original download count
-			[iv.downloadTask releaseDownload];
+			[iv cancelDownload];
 			// retain download count
 			[task retainDownload];
 			iv.downloadTask = task;
@@ -217,7 +224,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
 			// release original download count
-			[iv.downloadTask releaseDownload];
+			[iv cancelDownload];
 			// retain download count
 			[task retainDownload];
 			iv.downloadTask = task;
@@ -227,6 +234,43 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	}
 	
 	iv.image = styleUtility.userPlaceholderImage;
+	
+	return NO;
+}
+
+- (BOOL)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv {
+	if ( vdo == nil || iv == nil ) return NO;
+	// check if the file exists
+	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", vdo.external_id]];
+	if ( [fileManager fileExistsAtPath:fPath] ) {
+		// open up the file
+		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+		if ( img ) {
+			iv.image = img;
+			return YES;
+		}
+	}
+	NSUInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+	if ( task ) {
+		// check if "self" is requesting
+		if ( [iv.downloadTask commandIndex] == idxNum ) {
+			// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+			// do nothing
+		} else {
+			// listen to notification
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+			// release original download count
+			[iv cancelDownload];
+			
+			// retain download count
+			[task retainDownload];
+			iv.downloadTask = task;
+		}
+		iv.image = nil;
+		return YES;
+	}
 	
 	return NO;
 }
@@ -246,6 +290,16 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowmovTaskController issueGetThumbnailForAuthor:dtl];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	}
+	return task;
+}
+
+- (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo {
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForVideo:vdo]];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowmovTaskController issueGetThumbnailForVideo:vdo];
 		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
 	}
 	return task;
@@ -274,6 +328,13 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSLog(@"write channel image: %@", [channelThumbnailCacheDir stringByAppendingPathComponent:fname]);
 #endif
 	[aData writeToFile:[channelThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
+- (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname {
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"write video image: %@", [videoThumbnailCacheDir stringByAppendingPathComponent:fname]);
+#endif
+	[aData writeToFile:[videoThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
 }
 
 #pragma mark housekeeping methods

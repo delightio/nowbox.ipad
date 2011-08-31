@@ -40,18 +40,6 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	return self;
 }
 
-- (id)initGetFriendChannels {
-	self = [self init];
-	command = NMCommandGetFriendChannels;
-	return self;
-}
-
-- (id)initGetTopicChannels {
-	self = [self init];
-	command = NMCommandGetTopicChannels;
-	return self;
-}
-
 - (id)initGetDefaultChannels {
 	self = [self init];
 	command = NMCommandGetSubscribedChannels;

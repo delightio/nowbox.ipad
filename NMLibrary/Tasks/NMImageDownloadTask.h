@@ -19,6 +19,7 @@
 	NMChannel * channel;
 	NMVideoDetail * videoDetail;
 	NMVideo * video;
+	NSString * externalID;
 	UIImage * image;
 	NSHTTPURLResponse * httpResponse;
 	NMCacheController * cacheController;
@@ -29,15 +30,18 @@
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NMVideoDetail * videoDetail;
 @property (nonatomic, retain) NSString * imageURLString;
+@property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) UIImage * image;
 @property (nonatomic, retain) NSString * originalImagePath;
 @property (nonatomic, retain) NSHTTPURLResponse * httpResponse;
 
 + (NSUInteger)commandIndexForChannel:(NMChannel *)chn;
 + (NSUInteger)commandIndexForAuthor:(NMVideoDetail *)dtl;
++ (NSUInteger)commandIndexForVideo:(NMVideo *)vdo;
 
 - (id)initWithChannel:(NMChannel *)chn;
 - (id)initWithAuthor:(NMVideoDetail *)dtl;
+- (id)initWithVideoThumbnail:(NMVideo *)vdo;
 
 - (void)retainDownload;
 - (void)releaseDownload;
