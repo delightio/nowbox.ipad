@@ -13,7 +13,9 @@
 @implementation NMPreviewThumbnail
 
 @dynamic thumbnail_uri;
+@dynamic nm_sort_order;
 @dynamic nm_thumbnail_file_name;
+@dynamic source;
 @dynamic channel;
 
 @end

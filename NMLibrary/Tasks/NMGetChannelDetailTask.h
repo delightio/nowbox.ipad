@@ -13,7 +13,7 @@
 @interface NMGetChannelDetailTask : NMTask {
 	NMChannel * channel;
 	NSString * channelDescription;
-	NSMutableArray * videoThumbnailURIs;
+	NSMutableArray * previewArray;
 }
 
 @property (nonatomic, retain) NMChannel * channel;

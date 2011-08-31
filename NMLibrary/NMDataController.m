@@ -16,6 +16,8 @@
 
 NSString * const NMCategoryEntityName = @"NMCategory";
 NSString * const NMChannelEntityName = @"NMChannel";
+NSString * const NMChannelDetailEntityName = @"NMChannelDetail";
+NSString * const NMPreviewThumbnailEntityName = @"NMPreviewThumbnail";
 NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 
@@ -421,6 +423,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[channelCacheDictionary removeAllObjects];
 	
 	[pool release];
+}
+
+- (NMChannelDetail *)insertNewChannelDetail {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMChannelDetailEntityName inManagedObjectContext:managedObjectContext];
+}
+
+- (NMPreviewThumbnail *)insertNewPreviewThumbnail {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMPreviewThumbnailEntityName inManagedObjectContext:managedObjectContext];
 }
 
 #pragma mark Video 
