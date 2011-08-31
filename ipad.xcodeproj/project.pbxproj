@@ -17,6 +17,7 @@
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
 		22A19757140D792900DE074E /* channel-video-status-hot.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19756140D792900DE074E /* channel-video-status-hot.png */; };
 		22A1975A140D7AAA00DE074E /* channel-video-status-fav.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19759140D7AAA00DE074E /* channel-video-status-fav.png */; };
+		22A19764140D7E1C00DE074E /* channel-view-new-session.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19763140D7E1C00DE074E /* channel-view-new-session.png */; };
 		22ADF99D13FAF39A003CF27E /* CategoryCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADF99A13FAF39A003CF27E /* CategoryCellView.m */; };
 		22ADF99E13FAF39A003CF27E /* CategoryTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADF99C13FAF39A003CF27E /* CategoryTableCell.m */; };
 		22ADF9BC13FAF40C003CF27E /* category-list-fade.png in Resources */ = {isa = PBXBuildFile; fileRef = 22ADF9B713FAF40C003CF27E /* category-list-fade.png */; };
@@ -181,6 +182,7 @@
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
 		22A19756140D792900DE074E /* channel-video-status-hot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-hot.png"; sourceTree = "<group>"; };
 		22A19759140D7AAA00DE074E /* channel-video-status-fav.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-fav.png"; sourceTree = "<group>"; };
+		22A19763140D7E1C00DE074E /* channel-view-new-session.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-view-new-session.png"; sourceTree = "<group>"; };
 		22ADF99913FAF39A003CF27E /* CategoryCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryCellView.h; sourceTree = "<group>"; };
 		22ADF99A13FAF39A003CF27E /* CategoryCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryCellView.m; sourceTree = "<group>"; };
 		22ADF99B13FAF39A003CF27E /* CategoryTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryTableCell.h; sourceTree = "<group>"; };
@@ -512,6 +514,7 @@
 				2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */,
 				A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */,
 				221ADF4513DDE01600BC9488 /* channel-bottom-border.png */,
+				22A19763140D7E1C00DE074E /* channel-view-new-session.png */,
 				A9F4966013D2E83400A56F50 /* playback_background_pattern.png */,
 				A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */,
 				A98C241113D38C030061A594 /* button-like-active.png */,
@@ -885,6 +888,7 @@
 				A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */,
 				22A19757140D792900DE074E /* channel-video-status-hot.png in Resources */,
 				22A1975A140D7AAA00DE074E /* channel-video-status-fav.png in Resources */,
+				22A19764140D7E1C00DE074E /* channel-view-new-session.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
