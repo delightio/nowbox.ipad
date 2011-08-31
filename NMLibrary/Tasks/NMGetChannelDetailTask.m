@@ -62,7 +62,7 @@ NSString * const NMDidFailGetChannelDetailNotification = @"NMDidFailGetChannelDe
 		for (theKey in rootVdoDict) {	// root attribute cleanser
 			vdoDict = [rootVdoDict objectForKey:theKey];
 			// get the thumbnail
-			[previewArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:[vdoDict objectForKey:@"thumbnail_uri"], @"thumbnail_uri", [vdoDict objectForKey:@"source"], @"source", [NSNumber numberWithInteger:i++], @"nm_sort_order", nil]];
+			[previewArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:[vdoDict objectForKey:@"thumbnail_uri"], @"thumbnail_uri", [vdoDict objectForKey:@"external_id"], @"external_id", [NSNumber numberWithInteger:i++], @"nm_sort_order", nil]];
 		}
 	}
 }

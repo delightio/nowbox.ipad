@@ -14,9 +14,10 @@
 @interface NMPreviewThumbnail : NSManagedObject
 
 @property (nonatomic, retain) NSString * thumbnail_uri;
+@property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSString * nm_thumbnail_file_name;
-@property (nonatomic, retain) NSString * source;
+@property (nonatomic, retain) NSString * external_id;
 @property (nonatomic, retain) NMChannel *channel;
 
 @end

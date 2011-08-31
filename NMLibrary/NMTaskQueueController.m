@@ -11,6 +11,7 @@
 #import "NMNetworkController.h"
 #import "NMDataController.h"
 #import "NMChannel.h"
+#import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 
@@ -149,6 +150,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj {
+	NMGetChannelDetailTask * task = [[NMGetChannelDetailTask alloc] initWithChannel:chnObj];
+	[networkController addNewConnectionForTask:task];
+	return [task autorelease];
+}
+
+
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo {
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
@@ -160,7 +168,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( dtlObj.author_thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithAuthor:dtlObj];
 		[networkController addNewConnectionForTask:task];
-		[task release];
+		[task autorelease];
 	}
 	return task;
 }
@@ -170,17 +178,28 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( chnObj.thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithChannel:chnObj];
 		[networkController addNewConnectionForTask:task];
-		[task release];
+		[task autorelease];
 	}
 	return task;
 }
+
+- (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	NMImageDownloadTask * task = nil;
+	if ( pv.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithPreviewThumbnail:pv];
+		[networkController addNewConnectionForTask:task];
+		[task autorelease];
+	}
+	return task;
+}
+
 
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo {
 	NMImageDownloadTask * task = nil;
 	if ( vdo.thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithVideoThumbnail:vdo];
 		[networkController addNewConnectionForTask:task];
-		[task release];
+		[task autorelease];
 	}
 	return task;
 }

@@ -18,4 +18,6 @@
 
 @property (nonatomic, retain) NMChannel * channel;
 
+- (id)initWithChannel:(NMChannel *)chn;
+
 @end

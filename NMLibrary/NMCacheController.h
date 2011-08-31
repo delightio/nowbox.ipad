@@ -9,6 +9,7 @@
 
 @class NMImageDownloadTask;
 @class NMChannel;
+@class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
 @class NMTaskQueueController;
@@ -40,17 +41,20 @@
 - (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv;
 - (BOOL)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
 - (BOOL)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
+- (BOOL)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
 
 // interface for NMCachedImageView
 - (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn;
 - (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl;
 - (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo;
+- (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 //- (void)saveCacheWithInfo:(NSDictionary *)userInfo;
 
 // saving image from server
 - (void)writeAuthorImageData:(NSData *)aData withFilename:(NSString *)fname;
 - (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname;
 - (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname;
+- (void)writePreviewThumbnailImageData:(NSData *)aData withFileName:(NSString *)fname;
 
 - (void)cacheWakeUpCheck;
 
