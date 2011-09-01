@@ -35,6 +35,7 @@
 @property (nonatomic, retain) NSNumber * nm_retry_count;
 @property (nonatomic, retain) NSNumber * nm_session_id;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
+@property (nonatomic, retain) NSString * nm_thumbnail_file_name;
 @property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSString * source;
 @property (nonatomic, retain) NSNumber * nm_id;

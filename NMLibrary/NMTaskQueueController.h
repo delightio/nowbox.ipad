@@ -11,9 +11,11 @@
 @class NMDataController;
 @class NMCategory;
 @class NMChannel;
+@class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
 @class NMImageDownloadTask;
+@class NMGetChannelDetailTask;
 
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
@@ -43,6 +45,8 @@
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
+- (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
+- (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
 // Channel subscription
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
 

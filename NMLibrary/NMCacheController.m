@@ -11,6 +11,7 @@
 #import "NMTaskQueueController.h"
 #import "NMStyleUtility.h"
 #import "NMChannel.h"
+#import "NMPreviewThumbnail.h"
 #import "NMVideoDetail.h"
 #import "NMCachedImageView.h"
 
@@ -241,7 +242,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 - (BOOL)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv {
 	if ( vdo == nil || iv == nil ) return NO;
 	// check if the file exists
-	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", vdo.external_id]];
+	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
 	if ( [fileManager fileExistsAtPath:fPath] ) {
 		// open up the file
 		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
@@ -251,6 +252,43 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		}
 	}
 	NSUInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+	if ( task ) {
+		// check if "self" is requesting
+		if ( [iv.downloadTask commandIndex] == idxNum ) {
+			// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+			// do nothing
+		} else {
+			// listen to notification
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+			// release original download count
+			[iv cancelDownload];
+			
+			// retain download count
+			[task retainDownload];
+			iv.downloadTask = task;
+		}
+		iv.image = nil;
+		return YES;
+	}
+	
+	return NO;
+}
+
+- (BOOL)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv {
+	if ( pv == nil || iv == nil ) return NO;
+	// check if the file exists
+	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:pv.nm_thumbnail_file_name];
+	if ( [fileManager fileExistsAtPath:fPath] ) {
+		// open up the file
+		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+		if ( img ) {
+			iv.image = img;
+			return YES;
+		}
+	}
+	NSUInteger idxNum = [NMImageDownloadTask commandIndexForPreviewThumbnail:pv];
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
 	if ( task ) {
 		// check if "self" is requesting
@@ -305,6 +343,24 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	return task;
 }
 
+- (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForPreviewThumbnail:pv]];
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"preview thumbnail download - command index: %@", idxNum);
+#endif
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowmovTaskController issueGetPreviewThumbnail:pv];
+		if ( task ) {
+			[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+#ifdef DEBUG_IMAGE_CACHE
+			NSLog(@"preview thumbnail download - new command index: %d", [task commandIndex]);
+#endif
+		}
+	}
+	return task;
+}
+
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 	NMImageDownloadTask * theTask = [aNotification object];
 	[commandIndexTaskMap removeObjectForKey:[NSNumber numberWithUnsignedInteger:[theTask commandIndex]]];
@@ -333,6 +389,13 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 - (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname {
 #ifdef DEBUG_IMAGE_CACHE
 	NSLog(@"write video image: %@", [videoThumbnailCacheDir stringByAppendingPathComponent:fname]);
+#endif
+	[aData writeToFile:[videoThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
+- (void)writePreviewThumbnailImageData:(NSData *)aData withFileName:(NSString *)fname {
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"write preview thumbnail image: %@", [videoThumbnailCacheDir stringByAppendingPathComponent:fname]);
 #endif
 	[aData writeToFile:[videoThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
 }

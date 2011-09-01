@@ -9,6 +9,7 @@
 #import "NMImageDownloadTask.h"
 #import "NMCacheController.h"
 #import "NMChannel.h"
+#import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 
@@ -21,7 +22,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
 @synthesize image, video, videoDetail;
-@synthesize externalID;
+@synthesize externalID, previewThumbnail;
 
 + (NSUInteger)commandIndexForChannel:(NMChannel *)chn {
 	NSUInteger tid = [chn.nm_id unsignedIntegerValue];
@@ -36,6 +37,11 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 + (NSUInteger)commandIndexForVideo:(NMVideo *)vdo {
 	NSUInteger tid = [vdo.nm_id unsignedIntegerValue];
 	return tid << 5 | (NSUInteger)NMCommandGetVideoThumbnail;
+}
+
++ (NSUInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	NSUInteger tid = [pv.nm_id unsignedIntegerValue];
+	return tid << 5 | (NSUInteger)NMCommandGetPreviewThumbnail;
 }
 
 - (id)initWithChannel:(NMChannel *)chn {
@@ -82,6 +88,23 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return self;
 }
 
+- (id)initWithPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	self = [super init];
+	
+	cacheController = [NMCacheController sharedCacheController];
+	self.imageURLString = pv.thumbnail_uri;
+	// we do not store the image in cache for now.
+	// self.originalImagePath = nil;
+	self.previewThumbnail = pv;
+	self.targetID = pv.nm_id;
+	self.externalID = pv.external_id;
+	command = NMCommandGetPreviewThumbnail;
+	retainCount = 1;
+
+	return self;
+}
+
+
 - (void)retainDownload {
 	retainCount++;
 }
@@ -118,6 +141,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		case NMCommandGetAuthorThumbnail:
 			return [NSString stringWithFormat:@"%@.%@", targetID, [[httpResponse suggestedFilename] pathExtension]];
 		case NMCommandGetVideoThumbnail:
+		case NMCommandGetPreviewThumbnail:
 			return [NSString stringWithFormat:@"%@.%@", externalID, [[httpResponse suggestedFilename] pathExtension]];
 		case NMCommandGetChannelThumbnail:
 			return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
@@ -149,6 +173,10 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 			[cacheController writeVideoImageData:buffer withFileName:[self suggestedFilename]];
 			break;
 			
+		case NMCommandGetPreviewThumbnail:
+			[cacheController writePreviewThumbnailImageData:buffer withFileName:[self suggestedFilename]];
+			break;
+			
 		default:
 			break;
 	}
@@ -169,7 +197,16 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 				channel.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
 				
+			case NMCommandGetVideoThumbnail:
+				video.nm_thumbnail_file_name = [self suggestedFilename];
+				break;
+				
+			case NMCommandGetPreviewThumbnail:
+				previewThumbnail.nm_thumbnail_file_name = [self suggestedFilename];
+				break;
+								
 			default:
+				// no need to save for NMVideo or NMPreviewThumbnail. These 2 object types use external_id to identify images
 				break;
 		}
 	}
@@ -197,6 +234,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 			
 		case NMCommandGetVideoThumbnail:
 			return [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", image, @"image", nil];
+			
+		case NMCommandGetPreviewThumbnail:
+			return [NSDictionary dictionaryWithObjectsAndKeys:previewThumbnail, @"target_object", image, @"image", nil];
 			
 		default:
 			break;

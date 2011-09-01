@@ -65,7 +65,7 @@
 - (void)deleteVideosWithSessionID:(NSInteger)sid;
 - (void)resetAllChannelsPageNumber;
 // general data manipulation
-//- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
+- (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 // search
 - (void)clearSearchResultCache;
 // category
@@ -79,6 +79,7 @@
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (NMChannel *)lastSessionChannel;
 - (void)batchDeleteChannels:(NSArray *)chnAy;
+- (NSInteger)maxChannelSortOrder;
 // video
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;

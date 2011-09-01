@@ -10,8 +10,10 @@
 
 @class CategoriesOrientedTableView;
 @class NMChannel;
+@class ChannelDetailViewController;
 
 @interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
+	ChannelDetailViewController * channelDetailViewController;
 	CategoriesOrientedTableView *categoriesTableView;
 	UITableView *channelsTableView;
 	UIView *containerView;

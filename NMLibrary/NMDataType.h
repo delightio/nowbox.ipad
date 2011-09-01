@@ -30,6 +30,7 @@ typedef enum {
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
 	NMCommandGetVideoThumbnail,
+	NMCommandGetPreviewThumbnail,
 } NMCommand;
 
 typedef enum {
@@ -79,6 +80,10 @@ extern NSString * const NMDidFailGetChannelsForCategoryNotification;
 extern NSString * const NMWillSearchChannelsNotification;
 extern NSString * const NMDidSearchChannelsNotification;
 extern NSString * const NMDidFailSearchChannelsNotification;
+extern NSString * const NMWillGetChannelDetailNotification;
+extern NSString * const NMDidGetChannelDetailNotification;
+extern NSString * const NMDidFailGetChannelDetailNotification;
+
 // subscription
 extern NSString * const NMWillSubscribeChannelNotification;
 extern NSString * const NMDidSubscribeChannelNotification;

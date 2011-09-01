@@ -13,6 +13,7 @@
 @synthesize channel;
 @synthesize video;
 @synthesize videoDetail;
+@synthesize previewThumbnail;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
 	self = [super initWithCoder:aDecoder];
@@ -39,6 +40,7 @@
 	[downloadTask release];
 	[channel release];
 	[videoDetail release];
+	[previewThumbnail release];
 	[super dealloc];
 }
 /*
@@ -152,7 +154,7 @@
 		self.downloadTask = nil;
 	} else {
 		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueAuthorImageDownloadRequest) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueVideoImageDownloadRequest) object:nil];
 	}
 	
 	// issue delay request
@@ -160,11 +162,36 @@
 	[self performSelector:@selector(delayedIssueVideoImageDownloadRequest) withObject:nil afterDelay:0.25];
 }
 
+- (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	// check if there's local cache
+	if ( [cacheController setImageForPreviewThumbnail:pv imageView:self] ) {
+		return;
+	}
+	
+	// no local cache. need to get from server
+	if ( downloadTask == nil ) {
+//		// stop listening to notification
+//		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+//		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+//		// cancel the previous download task
+//		[downloadTask releaseDownload];
+//		self.downloadTask = nil;
+	
+		// issue delay request
+		self.previewThumbnail = pv;
+		self.downloadTask = [cacheController downloadImageForPreviewThumbnail:pv];
+		[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
+		[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
+	}
+}
+
 - (void)cancelDownload {
 	// stop listening first
-	[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
-	[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
-	[downloadTask releaseDownload];
+	if ( downloadTask ) {
+		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+		[downloadTask releaseDownload];
+	}
 }
 
 @end

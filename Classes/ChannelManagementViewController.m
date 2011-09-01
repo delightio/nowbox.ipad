@@ -14,6 +14,7 @@
 #import "CategoryTableCell.h"
 #import "NMCachedImageView.h"
 #import "SearchChannelViewController.h"
+#import "ChannelDetailViewController.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -32,6 +33,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 
 - (void)dealloc {
+	[channelDetailViewController release];
     [myChannelsFetchedResultsController release];
     [categoriesTableView release];
     [channelsTableView release];
@@ -80,6 +82,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [categoriesTableView setAlwaysBounceVertical:YES];
     [categoriesTableView setShowsVerticalScrollIndicator:NO];
 
+	// load the channel detail view
+	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
 }
 
 - (void)viewDidUnload
@@ -424,8 +428,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                          }
                          completion:^(BOOL finished) {
                          }];
-        
-        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+//        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+		
+		channelDetailViewController.channel = chn;
+		[self.navigationController pushViewController:channelDetailViewController animated:YES];
+		
         
     }
 }
