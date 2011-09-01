@@ -542,6 +542,34 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[pool release];
 }
 
+- (NSInteger)maxChannelSortOrder {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setResultType:NSDictionaryResultType];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == YES"]];
+	
+	NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"nm_sort_order"];
+	NSExpression * maxSortOrderExpression = [NSExpression expressionForFunction:@"max:" arguments:[NSArray arrayWithObject:keyPathExpression]];
+	
+	NSExpressionDescription * expressionDescription = [[NSExpressionDescription alloc] init];
+	[expressionDescription setName:@"sort_order"];
+	[expressionDescription setExpression:maxSortOrderExpression];
+	[expressionDescription setExpressionResultType:NSInteger32AttributeType];
+	[request setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+	
+	// execute fetch request
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	[expressionDescription release];
+	[request release];
+	
+	NSInteger theOrder = 0;
+	if ( [result count] ) {
+		theOrder = [[[result objectAtIndex:0] valueForKey:@"sort_order"] integerValue];
+	}
+	return theOrder;
+}
+
 #pragma mark Data parsing
 - (void)createDataParsingOperationForTask:(NMTask *)atask {
 	NSInvocationOperation * op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseAndProcessData:) object:atask];
