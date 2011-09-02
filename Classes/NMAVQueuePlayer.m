@@ -158,7 +158,7 @@
 
 - (void)requestResolveVideo:(NMVideo *)vid {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"issue resolution request - %@, status - %d", vid.title, vid.nm_playback_status);
+	NSLog(@"issue resolution request - %@, status - %d %@", vid.title, vid.nm_playback_status, [vid objectID]);
 	if ( vid.title == nil ) {
 		NSLog(@"null video title?");
 	}

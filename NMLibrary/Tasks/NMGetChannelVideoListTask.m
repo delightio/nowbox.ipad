@@ -13,7 +13,7 @@
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
-#define NM_NUMBER_OF_VIDEOS_PER_PAGE	20
+#define NM_NUMBER_OF_VIDEOS_PER_PAGE	10
 
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
@@ -32,7 +32,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 @implementation NMGetChannelVideoListTask
 @synthesize channel, channelName;
 @synthesize newChannel, urlString;
-@synthesize numberOfVideoRequested, currentPage;
+@synthesize currentPage;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {
@@ -90,7 +90,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.channelName = aChn.title;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
-	numberOfVideoRequested = NM_NUMBER_OF_VIDEOS_PER_PAGE;
+	totalNumberOfRows = 0;
 	return self;
 }
 
@@ -101,8 +101,8 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.channelName = aChn.title;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
-	numberOfVideoRequested = NM_NUMBER_OF_VIDEOS_PER_PAGE;
 	currentPage = [aChn.nm_current_page integerValue];
+	totalNumberOfRows = 0;
 	return self;
 }
 
@@ -118,11 +118,11 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSString * urlStr = nil;
 	switch (command) {
 		case NMCommandGetMoreVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 			
 		case NMCommandGetChannelVideoList:
-			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, numberOfVideoRequested, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 			
 		default:
@@ -180,6 +180,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		vidCount++;
 	}
 	numberOfVideoAdded = [parsedObjects count];
+	totalNumberOfRows = numberOfVideoAdded + [channel.videos count];
 }
 
 - (void)insertOnlyNewVideosInController:(NMDataController *)ctrl {
@@ -193,6 +194,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		NSMutableIndexSet * idIndexSet = [NSMutableIndexSet indexSet];
 		for (vidObj in channel.videos) {
 			[idIndexSet addIndex:[vidObj.nm_id unsignedIntegerValue]];
+			NSLog(@"vdo ID: %@", vidObj.nm_id);
 		}
 		numberOfVideoAdded = 0;
 		for (dict in parsedObjects) {
@@ -215,6 +217,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			}
 			vidCount++;
 		}
+		totalNumberOfRows = numberOfVideoAdded + idx;
 	} else {
 		[self insertAllVideosInController:ctrl];
 	}
@@ -229,12 +232,17 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			if ( chnVideos ) [ctrl batchDeleteVideos:chnVideos];
 			// put in all videos
 			[self insertAllVideosInController:ctrl];
+			channel.nm_current_page = [NSNumber numberWithInteger:totalNumberOfRows / NM_NUMBER_OF_VIDEOS_PER_PAGE + (( totalNumberOfRows % NM_NUMBER_OF_VIDEOS_PER_PAGE > 0 ) ? 1 : 0)];
 			break;
-		}	
+		}
 		case NMCommandGetMoreVideoForChannel:
-			[self insertOnlyNewVideosInController:ctrl];
-			// update the page number
-			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
+			if ( [parsedObjects count] ) {
+				[self insertOnlyNewVideosInController:ctrl];
+				// update the page number
+				if ( numberOfVideoAdded ) {
+					channel.nm_current_page = [NSNumber numberWithInteger:totalNumberOfRows / NM_NUMBER_OF_VIDEOS_PER_PAGE + (( totalNumberOfRows % NM_NUMBER_OF_VIDEOS_PER_PAGE > 0 ) ? 1 : 0)];
+				}
+			}
 			break;
 			
 		default:
@@ -259,7 +267,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfVideoRequested], @"num_video_requested", channel, @"channel", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:NM_NUMBER_OF_VIDEOS_PER_PAGE], @"num_video_requested", channel, @"channel", nil];
 }
 
 @end
