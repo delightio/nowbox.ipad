@@ -140,9 +140,10 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			}
 			idNum = [chnCtnDict objectForKey:@"id"];
 			[pDict setObject:idNum forKey:@"nm_id"];
-			[pDict setObject:[NSNumber numberWithInteger:i++] forKey:@"nm_sort_order"];
 			if ( command == NMCommandGetSubscribedChannels ) {
-				[pDict setObject:subscribedNum forKey:@"nm_subscribed"];
+				[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_subscribed"];
+			} else {
+				[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
 			}
 			//[pDict setObject:[chnCtnDict objectForKey:@"category_ids"] forKey:@"category_ids"];
 			

@@ -154,14 +154,13 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{
-			channel.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
-			channel.nm_subscribed = [NSNumber numberWithBool:YES];
+			channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
 			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			break;
 		}
 		case NMEventUnsubscribeChannel:
 		{
-			channel.nm_subscribed = [NSNumber numberWithBool:NO];
+			channel.nm_subscribed = [NSNumber numberWithInteger:0];
 			[ctrl.internalSubscribedChannelsCategory removeChannelsObject:channel];
 			break;
 		}

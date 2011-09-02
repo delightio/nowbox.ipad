@@ -276,9 +276,17 @@
 }
 
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification {
-    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
-        isLoadingNewContent = NO;
+	NSDictionary * info = [aNotification userInfo];
+    if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
 //        NSLog(@"handleDidGetChannelVideoListNotification");
+		if ( [[info objectForKey:@"num_video_added"] integerValue] == 0 && [[info objectForKey:@"num_video_received"] integerValue] == [[info objectForKey:@"num_video_requested"] integerValue] ) {
+			// the "if" condition should be interrupted as follow:
+			// The server has returned full page of videos. But, no video is inserted. That means there may be more videos listed in Nowmov server.
+			// poll the server again
+			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+		} else {
+			isLoadingNewContent = NO;
+		}
     }
 }
 
