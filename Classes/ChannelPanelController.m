@@ -230,7 +230,7 @@
     [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] > 1)];
     
 NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
+	if ( [theChannel.videos count] == 0 ) {
 		[schdlr issueGetVideoListForChannel:theChannel];
 	}
     

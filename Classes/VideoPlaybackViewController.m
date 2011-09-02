@@ -586,7 +586,10 @@
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
 	NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
 #endif
-	((NMAVPlayerItem *)anItem).nmVideo.nm_playback_status = NMVideoQueueStatusPlayed;
+	NMVideo * vdo = ((NMAVPlayerItem *)anItem).nmVideo;
+	if ( [vdo.nm_error integerValue] == NMErrorNone ) {
+		vdo.nm_playback_status = NMVideoQueueStatusPlayed;
+	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"status"];
 }

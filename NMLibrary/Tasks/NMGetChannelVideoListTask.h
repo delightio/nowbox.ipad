@@ -17,14 +17,13 @@
 	NSString * urlString;
 	NSMutableArray * parsedDetailObjects;
 	BOOL newChannel;
-	NSUInteger numberOfVideoAdded;
-	NSUInteger numberOfVideoRequested, currentPage;
+	NSUInteger numberOfVideoAdded, totalNumberOfRows;
+	NSUInteger currentPage;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSString * channelName;
 @property (nonatomic, retain) NSString * urlString;
-@property (nonatomic) NSUInteger numberOfVideoRequested;
 @property (nonatomic) NSUInteger currentPage;
 @property (nonatomic) BOOL newChannel;
 
