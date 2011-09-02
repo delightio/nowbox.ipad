@@ -18,6 +18,7 @@
 	NSMutableArray * parsedDetailObjects;
 	BOOL newChannel;
 	NSUInteger numberOfVideoAdded, totalNumberOfRows;
+	NSUInteger numberOfRowsFromServer;
 	NSUInteger currentPage;
 }
 

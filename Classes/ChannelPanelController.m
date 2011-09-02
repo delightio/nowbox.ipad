@@ -387,13 +387,13 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

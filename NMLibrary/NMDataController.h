@@ -89,5 +89,6 @@
 - (NMVideo *)lastSessionVideoForChannel:(NMChannel *)chn;
 - (void)deleteVideo:(NMVideo *)vidObj;
 - (void)batchDeleteVideos:(NSSet *)vdoSet;
+- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn;
 
 @end

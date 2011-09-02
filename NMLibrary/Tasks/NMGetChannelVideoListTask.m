@@ -141,16 +141,17 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	// parse JSON
 	if ( [buffer length] == 0 ) return;
 	NSArray * chVideos = [buffer objectFromJSONData];
-	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
-	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:[chVideos count]];
+	numberOfRowsFromServer = [chVideos count];
+	parsedObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
+	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
 	NSMutableDictionary * mdict;
-	NSInteger idx = 0;
+//	NSInteger idx = 0;
 	NSDictionary * dict;
 	for (NSDictionary * parentDict in chVideos) {
 		for (NSString * theKey in parentDict) {
 			dict = [parentDict objectForKey:theKey];
 			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
-			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
+//			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
 			[mdict setObject:NM_SESSION_ID forKey:@"nm_session_id"];
 			[parsedObjects addObject:mdict];
 			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
@@ -160,12 +161,14 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (void)insertAllVideosInController:(NMDataController *)ctrl {
-	NSDictionary * dict;
+	NSMutableDictionary * dict;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
 	NSUInteger vidCount = 0;
+	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel] + 1;
 	for (dict in parsedObjects) {
 		vidObj = [ctrl insertNewVideo];
+		[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
 		[vidObj setValuesForKeysWithDictionary:dict];
 		// channel
 		vidObj.channel = channel;
@@ -184,7 +187,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (void)insertOnlyNewVideosInController:(NMDataController *)ctrl {
-	NSDictionary * dict;
+	NSMutableDictionary * dict;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
 	NSUInteger idx = [channel.videos count];
@@ -192,15 +195,17 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	// insert video but do not insert duplicate item
 	if ( idx ) {
 		NSMutableIndexSet * idIndexSet = [NSMutableIndexSet indexSet];
-		for (vidObj in channel.videos) {
+		NSSet * theVideos = channel.videos;
+		for (vidObj in theVideos) {
 			[idIndexSet addIndex:[vidObj.nm_id unsignedIntegerValue]];
-			NSLog(@"vdo ID: %@", vidObj.nm_id);
 		}
 		numberOfVideoAdded = 0;
+		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel] + 1;
 		for (dict in parsedObjects) {
 			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"nm_id"] unsignedIntegerValue]] ) {
 				numberOfVideoAdded++;
 				vidObj = [ctrl insertNewVideo];
+				[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
 				[vidObj setValuesForKeysWithDictionary:dict];
 				// channel
 				vidObj.channel = channel;
@@ -232,15 +237,17 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			if ( chnVideos ) [ctrl batchDeleteVideos:chnVideos];
 			// put in all videos
 			[self insertAllVideosInController:ctrl];
-			channel.nm_current_page = [NSNumber numberWithInteger:totalNumberOfRows / NM_NUMBER_OF_VIDEOS_PER_PAGE + (( totalNumberOfRows % NM_NUMBER_OF_VIDEOS_PER_PAGE > 0 ) ? 1 : 0)];
+			if ( numberOfRowsFromServer ) {
+				channel.nm_current_page = [NSNumber numberWithInteger:1];
+			}
 			break;
 		}
 		case NMCommandGetMoreVideoForChannel:
 			if ( [parsedObjects count] ) {
 				[self insertOnlyNewVideosInController:ctrl];
 				// update the page number
-				if ( numberOfVideoAdded ) {
-					channel.nm_current_page = [NSNumber numberWithInteger:totalNumberOfRows / NM_NUMBER_OF_VIDEOS_PER_PAGE + (( totalNumberOfRows % NM_NUMBER_OF_VIDEOS_PER_PAGE > 0 ) ? 1 : 0)];
+				if ( numberOfRowsFromServer ) {
+					channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
 				}
 			}
 			break;
@@ -267,7 +274,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:NM_NUMBER_OF_VIDEOS_PER_PAGE], @"num_video_requested", channel, @"channel", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfRowsFromServer], @"num_video_received", [NSNumber numberWithUnsignedInteger:NM_NUMBER_OF_VIDEOS_PER_PAGE], @"num_video_requested", channel, @"channel", nil];
 }
 
 @end

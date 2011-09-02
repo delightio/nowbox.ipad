@@ -40,7 +40,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	
 //	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
 //	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
-	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed == YES"] retain];
+	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
@@ -90,12 +90,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 #pragma mark Session management
 - (void)deleteVideosWithSessionID:(NSInteger)sid {
-	//TODO: do not delete video that are in Favorite or My Queue channels
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
 	// nm_session_id <= %@ AND NOT ANY categories = %@
 	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id <= %@", [NSNumber numberWithInteger:sid]]];
-	[request setReturnsObjectsAsFaults:YES];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"channel", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	for (NMVideo * vid in result) {
 		[managedObjectContext deleteObject:vid];
@@ -125,7 +124,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
 		NSNumber * searchCatID = [NSNumber numberWithInteger:-1];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", searchCatID]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id == %@", searchCatID]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 		if ( result == nil || [result count] == 0 ) {
@@ -145,7 +144,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (NSPredicate *)searchResultsPredicate {
 	if ( searchResultsPredicate == nil ) {
 		// create the predicate
-		searchResultsPredicate = [[NSPredicate predicateWithFormat:@"ANY categories = %@", self.internalSearchCategory] retain];
+		searchResultsPredicate = [[NSPredicate predicateWithFormat:@"ANY categories == %@", self.internalSearchCategory] retain];
 	}
 	return searchResultsPredicate;
 }
@@ -220,7 +219,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", catAy]];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channels"]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"channels", @"channels.previewThumbnails", @"channels.detail", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
 		NSManagedObject * mobj;
@@ -332,7 +331,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// fetch last video played
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == YES AND nm_id == %@", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_id == %@", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	NMChannel * chnObj = nil;
@@ -343,8 +342,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		// get the first channel
 		request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == YES AND nm_id > 0"]];
-		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_id > 0"]];
+		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
 		[request setSortDescriptors:[NSArray arrayWithObject:sortDsptr]];
 		[sortDsptr release];
 		[request setFetchLimit:1];
@@ -437,6 +436,34 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (NMPreviewThumbnail *)insertNewPreviewThumbnail {
 	return [NSEntityDescription insertNewObjectForEntityForName:NMPreviewThumbnailEntityName inManagedObjectContext:managedObjectContext];
+}
+
+- (NSInteger)maxChannelSortOrder {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setResultType:NSDictionaryResultType];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0"]];
+	
+	NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"nm_subscribed"];
+	NSExpression * maxSortOrderExpression = [NSExpression expressionForFunction:@"max:" arguments:[NSArray arrayWithObject:keyPathExpression]];
+	
+	NSExpressionDescription * expressionDescription = [[NSExpressionDescription alloc] init];
+	[expressionDescription setName:@"sort_order"];
+	[expressionDescription setExpression:maxSortOrderExpression];
+	[expressionDescription setExpressionResultType:NSInteger32AttributeType];
+	[request setPropertiesToFetch:[NSArray arrayWithObject:expressionDescription]];
+	
+	// execute fetch request
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	[expressionDescription release];
+	[request release];
+	
+	NSInteger theOrder = 0;
+	if ( [result count] ) {
+		theOrder = [[[result objectAtIndex:0] valueForKey:@"sort_order"] integerValue];
+	}
+	return theOrder;
 }
 
 #pragma mark Video 
@@ -542,11 +569,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[pool release];
 }
 
-- (NSInteger)maxChannelSortOrder {
+- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setResultType:NSDictionaryResultType];
-	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == YES"]];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_session_id == %@", chn, NM_SESSION_ID]];
 	
 	NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"nm_sort_order"];
 	NSExpression * maxSortOrderExpression = [NSExpression expressionForFunction:@"max:" arguments:[NSArray arrayWithObject:keyPathExpression]];
