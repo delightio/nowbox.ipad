@@ -343,7 +343,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
 		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_id > 0"]];
-		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
 		[request setSortDescriptors:[NSArray arrayWithObject:sortDsptr]];
 		[sortDsptr release];
 		[request setFetchLimit:1];
