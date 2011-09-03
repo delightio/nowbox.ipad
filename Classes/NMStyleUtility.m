@@ -46,6 +46,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize videoStatusBadImage;
 @synthesize videoStatusFavImage;
 @synthesize videoStatusHotImage;
+@synthesize videoNewSessionIndicatorImage;
 
 + (NMStyleUtility *)sharedStyleUtility {
 	if ( sharedStyleUtility_ == nil ) {
@@ -82,7 +83,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	channelPanelHighlightColor = [[UIColor colorWithRed:62.0f/255.0f green:62.0f / 255.0f blue:62.0f / 255.0f alpha:1.0] retain];
 	channelPanelBackgroundColor = [[UIColor colorWithRed:245.0f / 255.0f green:245.0f / 255.0f blue:245.0f / 255.0f alpha:1.0] retain];
     channelPanelPlayedColor = [[UIColor colorWithRed:233 / 255.0f green:233 / 255.0f blue:233 / 255.0f alpha:1.0] retain];
-	channelBorderColor = [[UIColor colorWithRed:182.0f / 255.0f green:182.0f / 255.0f blue:182.0f / 255.0f alpha:1.0] retain];
+	channelBorderColor = [[UIColor colorWithRed:206 / 255.0f green:206 / 255.0f blue:182.0f / 206 alpha:1.0] retain];
 	userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
 	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-shadow-background"] retain];
 	
@@ -101,6 +102,8 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     videoStatusBadImage = [[UIImage imageNamed:@"channel-video-status-bad"] retain];
     videoStatusHotImage = [[UIImage imageNamed:@"channel-video-status-hot"] retain];
     videoStatusFavImage = [[UIImage imageNamed:@"channel-video-status-fav"] retain];
+    
+    videoNewSessionIndicatorImage = [[UIImage imageNamed:@"channel-view-new-session"] retain];
 	
 	return self;
 }
@@ -127,6 +130,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     [videoStatusBadImage release];
     [videoStatusHotImage release];
     [videoStatusFavImage release];
+    [videoNewSessionIndicatorImage release];
     
 	
 	[fullScreenImage release], [fullScreenActiveImage release];

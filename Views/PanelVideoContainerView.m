@@ -20,6 +20,7 @@
 @synthesize tableView;
 @synthesize videoRowDelegate;
 @synthesize videoStatusImageView;
+@synthesize videoNewSession;
 
 - (id)initWithFrame:(CGRect)frame
 {

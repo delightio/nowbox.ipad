@@ -20,7 +20,9 @@
 	NSInteger indexInTable;
 	AGOrientedTableView * tableView;
 	CGRect initialFrame;
-	@private
+	BOOL videoNewSession;
+
+    @private
 	BOOL currentVideoIsPlaying;
     VideoRowController *videoRowDelegate;
     UIImageView *highlightedBackgroundImage;
@@ -44,6 +46,7 @@
 @property (nonatomic, assign) NSInteger indexInTable;
 @property (nonatomic, assign) AGOrientedTableView * tableView;
 @property (nonatomic, assign) VideoRowController *videoRowDelegate;
+@property (nonatomic, assign) BOOL videoNewSession;
 
 - (void)setVideoInfo:(NMVideo *)aVideo;
 - (void)setIsLoadingCell;

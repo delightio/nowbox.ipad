@@ -59,6 +59,10 @@
     
     [cellData.videoStatusImageView.image drawInRect:CGRectMake(rectangle.size.width-24, 0, 24, 24)];
     
+    if (cellData.videoNewSession) {
+        [[[NMStyleUtility sharedStyleUtility] videoNewSessionIndicatorImage] drawInRect:CGRectMake(0, 0, 6, 90)];
+    }
+    
 //    CGContextSetFillColorWithColor(context, [NMStyleUtility sharedStyleUtility].channelBorderColor.CGColor);
 //    CGContextFillRect(context, CGRectMake(0, 87, rectangle.size.width, 1));
     

@@ -109,6 +109,12 @@
         [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 90)];
     }
     [result setVideoRowDelegate:self];
+    if ([anIndexPath row] > 0) {
+        NMVideo * prevVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row]-1 inSection:0]];
+        [result setVideoNewSession:([[theVideo nm_session_id] intValue] != [[prevVideo nm_session_id] intValue])];
+    } else {
+        [result setVideoNewSession:NO];
+    }
 	[result setVideoInfo:theVideo];
 
     if ( panelController.highlightedChannelIndex == indexInTable && [anIndexPath row] == panelController.highlightedVideoIndex ) {
