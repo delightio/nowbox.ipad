@@ -47,5 +47,6 @@
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 
 -(float)categoryCellWidthFromString:(NSString *)text;
+-(IBAction)toggleChannelSubscriptionStatus:(id)sender;
 
 @end

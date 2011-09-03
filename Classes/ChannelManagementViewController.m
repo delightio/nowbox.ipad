@@ -84,6 +84,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
+
+    
+    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
+    [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
+    [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
 }
 
 - (void)viewDidUnload
@@ -120,10 +125,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
-    
-    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
-    [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
-    [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
 
 }
 
@@ -300,26 +301,27 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         label = (UILabel *)[cell viewWithTag:13];
         label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
         
-        UIImageView *imageView, *backgroundView;
+        UIImageView *backgroundView;
+        UIButton *buttonView;
         NMCachedImageView *thumbnailView;
         
         thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
         [thumbnailView setImageForChannel:chn];
         
-        imageView = (UIImageView *)[cell viewWithTag:11];
+        buttonView = (UIButton *)[cell viewWithTag:11];
         backgroundView = (UIImageView *)[cell viewWithTag:14];
         if ([chn.nm_subscribed boolValue]) {
-            [imageView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"]];
+            [buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
             [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
         } else {
-            [imageView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"]];
+            [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
             [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
         }
         
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
         [actView setAlpha:0];
-        [imageView setAlpha:1];
+        [buttonView setAlpha:1];
       
         return cell;
 	}
@@ -392,48 +394,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
 	} else {
         
-        
         NMChannel * chn;
+
         if (selectedIndex == 0) {
             chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
         } else {
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
         }
-        
-        UITableViewCell *cell = [channelsTableView cellForRowAtIndexPath:indexPath];
-        
-        if (selectedIndex == 0) {
-            UIAlertView *anAlert = [[UIAlertView alloc] initWithTitle:@"Unsubscribe"
-                                                              message:[NSString stringWithFormat:@"Unsubscribe from %@?",[chn title]]
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                                    otherButtonTitles:@"OK", nil];
-            channelToUnsubscribeFrom = chn;
-            cellToUnsubscribeFrom = cell;
-            [anAlert show];
-            [anAlert release];
-            return;
-        }
-        
-        UIActivityIndicatorView *actView;
-        actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
-        [actView startAnimating];
-        
-        UIImageView *imageView = (UIImageView *)[cell viewWithTag:11];
-        
-        [UIView animateWithDuration:0.3
-                         animations:^{
-                             [actView setAlpha:1];
-                             [imageView setAlpha:0];
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-//        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
-		
 		channelDetailViewController.channel = chn;
 		[self.navigationController pushViewController:channelDetailViewController animated:YES];
-		
-        
     }
 }
 
@@ -684,6 +653,34 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
     }
+}
+ 
+-(IBAction)toggleChannelSubscriptionStatus:(id)sender {
+    UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
+    
+    UIActivityIndicatorView *actView;
+    actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+    [actView startAnimating];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         [actView setAlpha:1];
+                         [sender setAlpha:0];
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    NSLog(@"cell %@",[cell description]);
+    NSLog(@"cell indexpath %d",[channelsTableView indexPathForCell:cell].row);
+    NSLog(@"cell indexpath %d",[channelsTableView indexPathForRowAtPoint:CGPointMake([cell frame].origin.x, [cell frame].origin.y)].row);
+    NMChannel * chn;
+    if (selectedIndex == 0) {
+        chn = [myChannelsFetchedResultsController objectAtIndexPath:[channelsTableView indexPathForCell:cell]];
+    } else {
+        chn = [selectedChannelArray objectAtIndex:[channelsTableView indexPathForCell:cell].row];
+    }
+    
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+    
 }
 
 @end
