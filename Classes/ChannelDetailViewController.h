@@ -17,8 +17,12 @@
 	IBOutlet UILabel * metricLabel;
 	IBOutlet UIButton * subscribeAndWatchButton;
 	IBOutlet UIButton * subscribeButton;
-	IBOutlet NMCachedImageView * channelThumbnailView;
+	IBOutlet UIButton * unsubscribeButton;
+    IBOutlet UIView * subscribeView;
+    IBOutlet UIView * unsubscribeView;
+    IBOutlet NMCachedImageView * channelThumbnailView;
 	CGRect descriptionDefaultFrame;
+    BOOL shouldDismiss;
 	
 	NMChannel * channel;
 	NSMutableArray * videoThumbnailArray;
@@ -28,5 +32,9 @@
 
 - (void)setDescriptionLabelText;
 - (void)setPreviewImages;
+-(IBAction)subscribeChannel:(id)sender;
+-(IBAction)subscribeAndWatchChannel:(id)sender;
+-(IBAction)unsubscribeChannel:(id)sender;
+
 
 @end

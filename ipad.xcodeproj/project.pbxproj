@@ -14,6 +14,7 @@
 		221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */ = {isa = PBXBuildFile; fileRef = 221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */; };
 		22333F4D1401A6D4002FA3FE /* category-list-separator.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4C1401A6D4002FA3FE /* category-list-separator.png */; };
 		22333F501401AF52002FA3FE /* category-list-normal-bg-turned.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */; };
+		2252786B1412CDDE00E48227 /* PreviewViewContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
 		22A19757140D792900DE074E /* channel-video-status-hot.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19756140D792900DE074E /* channel-video-status-hot.png */; };
 		22A1975A140D7AAA00DE074E /* channel-video-status-fav.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19759140D7AAA00DE074E /* channel-video-status-fav.png */; };
@@ -185,6 +186,8 @@
 		221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-bad.png"; sourceTree = "<group>"; };
 		22333F4C1401A6D4002FA3FE /* category-list-separator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-separator.png"; sourceTree = "<group>"; };
 		22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-normal-bg-turned.png"; sourceTree = "<group>"; };
+		225278691412CDDE00E48227 /* PreviewViewContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreviewViewContainerView.h; path = Views/PreviewViewContainerView.h; sourceTree = SOURCE_ROOT; };
+		2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreviewViewContainerView.m; path = Views/PreviewViewContainerView.m; sourceTree = SOURCE_ROOT; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
 		22A19756140D792900DE074E /* channel-video-status-hot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-hot.png"; sourceTree = "<group>"; };
@@ -673,6 +676,8 @@
 		A970505E13438F860022BF2C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				225278691412CDDE00E48227 /* PreviewViewContainerView.h */,
+				2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */,
 				227F2DF213CEB99400E2805E /* AGOrientedTableView.h */,
 				227F2DF313CEB99400E2805E /* AGOrientedTableView.m */,
 				22ADF9CA13FB0023003CF27E /* CategoriesOrientedTableView.h */,
@@ -970,6 +975,7 @@
 				A9042600140E2EEC0028B972 /* NMChannel.m in Sources */,
 				A99FB6C9140EAC0400689040 /* ChannelDetailViewController.m in Sources */,
 				A99FB6D3140EE30700689040 /* NMPreviewThumbnail.m in Sources */,
+				2252786B1412CDDE00E48227 /* PreviewViewContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

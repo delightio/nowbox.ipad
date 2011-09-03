@@ -57,6 +57,7 @@
 	// button
 	[subscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	[subscribeAndWatchButton setBackgroundImage:[[UIImage imageNamed:@"button-yellow-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
+	[unsubscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	// listen to notification
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetDetailNotification:) name:NMDidGetChannelDetailNotification object:nil];
@@ -71,7 +72,7 @@
 	CGFloat idxf = 0.0f;
 	NMStyleUtility * style = [NMStyleUtility sharedStyleUtility];
 	for (NSUInteger i = 0; i < 5; i++) {
-		civ = [[NMCachedImageView alloc] initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING, 25.0f, 370.0f, 200.0f)];
+		civ = [[NMCachedImageView alloc] initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING/2, 25.0f, 370.0f, 200.0f)];
 		civ.contentMode = UIViewContentModeScaleAspectFill;
 		civ.backgroundColor = style.blackColor;
 		civ.clipsToBounds = YES;
@@ -92,14 +93,36 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+    
 	// setting channel attribute
+    self.title = channel.title;
 	titleLabel.text = channel.title;
 	if ( channel.detail.nm_description ) {
 		[self setDescriptionLabelText];
 	} else {
 		descriptionLabel.text = @"";
 	}
-	metricLabel.text = @"Subscribers xx,xxx,xxx  |  Channel Views xx,xxx,xxx";
+	metricLabel.text = @"Subscribers xx,xxx,xxx";
+
+    unsubscribeButton.enabled = YES;
+    subscribeButton.enabled = YES;
+    subscribeAndWatchButton.enabled = YES;
+    if ([channel.nm_subscribed intValue] > 0) {
+        subscribeView.alpha = 0;
+        unsubscribeView.alpha = 1;
+    } else {
+        subscribeView.alpha = 1;
+        unsubscribeView.alpha = 0;
+    }
+    shouldDismiss = NO;
+    
+    NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+
+    
 	// set preview images
 //	[self setPreviewImages];
 	// set channel thumbnail
@@ -110,6 +133,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+
 	// unset the view widgets
 	titleLabel.text = @"";
 	descriptionLabel.text = @"";
@@ -184,5 +208,72 @@
 		thumbnailScrollView.contentSize = CGSizeMake((NM_THUMBNAIL_PADDING + civ.bounds.size.width) * (CGFloat)i, thumbnailScrollView.bounds.size.height);
 	}
 }
+
+-(IBAction)subscribeChannel:(id)sender {
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         subscribeButton.enabled = NO;
+                         subscribeAndWatchButton.enabled = NO;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+}
+
+-(IBAction)subscribeAndWatchChannel:(id)sender {
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         subscribeButton.enabled = NO;
+                         subscribeAndWatchButton.enabled = NO;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+    shouldDismiss = YES;
+}
+
+-(IBAction)unsubscribeChannel:(id)sender {
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         unsubscribeButton.enabled = NO;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channel];
+}
+
+#pragma mark Notification handlers
+
+
+- (void)handleWillLoadNotification:(NSNotification *)aNotification {
+    //	NSLog(@"notification: %@", [aNotification name]);
+}
+
+- (void)handleSubscriptionNotification:(NSNotification *)aNotification {
+	NSDictionary * userInfo = [aNotification userInfo];
+    if (channel == [userInfo objectForKey:@"channel"]) {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             if ([channel.nm_subscribed intValue] > 0) {
+                                 unsubscribeButton.enabled = YES;
+                                 subscribeView.alpha = 0;
+                                 unsubscribeView.alpha = 1;
+                             } else {
+                                 shouldDismiss = NO;
+                                 subscribeButton.enabled = YES;
+                                 subscribeAndWatchButton.enabled = YES;
+                                 subscribeView.alpha = 1;
+                                 unsubscribeView.alpha = 0;
+                             }
+                         }
+                         completion:^(BOOL finished) {
+                             if (shouldDismiss) {
+                                 // TODO: play the first video of the channel here
+                                 [self dismissModalViewControllerAnimated:YES];
+                             }
+                         }];
+    }
+}
+
 
 @end
