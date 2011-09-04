@@ -154,7 +154,7 @@
 }
 
 - (void)setVideoInfo:(NMVideo *)aVideo {
-    isVideoPlayable = ([[aVideo nm_error] intValue] == 0) && ([aVideo nm_playback_status] >= 0);
+    isVideoPlayable = ([[aVideo nm_error] intValue] == 0) && (aVideo.nm_playback_status >= 0);
     BOOL isVideoFavorited = ([[aVideo nm_favorite] intValue] == 1);
     
     CGSize labelSize = CGSizeMake(initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - 12 - NM_VIDEO_CELL_PADDING * 2.0f);
