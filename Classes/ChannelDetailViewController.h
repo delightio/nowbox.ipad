@@ -21,6 +21,7 @@
     IBOutlet UIView * subscribeView;
     IBOutlet UIView * unsubscribeView;
     IBOutlet NMCachedImageView * channelThumbnailView;
+    IBOutlet UIView * containerView;
 	CGRect descriptionDefaultFrame;
     BOOL shouldDismiss;
 	

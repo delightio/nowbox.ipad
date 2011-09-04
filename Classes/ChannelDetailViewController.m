@@ -51,13 +51,15 @@
 {
     [super viewDidLoad];
 	
+    containerView.layer.cornerRadius = 4;
+
 	// set background color
 	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-	self.view.backgroundColor = bgColor;
+	containerView.backgroundColor = bgColor;
 	// button
 	[subscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	[subscribeAndWatchButton setBackgroundImage:[[UIImage imageNamed:@"button-yellow-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-	[unsubscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
+	[unsubscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-red-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	// listen to notification
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetDetailNotification:) name:NMDidGetChannelDetailNotification object:nil];
@@ -72,6 +74,13 @@
 	CGFloat idxf = 0.0f;
 	NMStyleUtility * style = [NMStyleUtility sharedStyleUtility];
 	for (NSUInteger i = 0; i < 5; i++) {
+        
+        UIImageView *videoShadowImageView = [[UIImageView alloc]initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING/2 - 3, 25.0f - 2, 378.0f, 208.0f)];
+        [videoShadowImageView setImage:[[UIImage imageNamed:@"channel-detail-video-shadow"] stretchableImageWithLeftCapWidth:3 topCapHeight:2]];
+
+        [thumbnailScrollView addSubview:videoShadowImageView];
+        [videoShadowImageView release];
+                                             
 		civ = [[NMCachedImageView alloc] initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING/2, 25.0f, 370.0f, 200.0f)];
 		civ.contentMode = UIViewContentModeScaleAspectFill;
 		civ.backgroundColor = style.blackColor;
@@ -83,7 +92,6 @@
 		theLayer.shouldRasterize = YES;
 		civ.hidden = YES;
 		[videoThumbnailArray addObject:civ];
-		
 		[thumbnailScrollView addSubview:civ];
 		
 		[civ release];

@@ -14,6 +14,9 @@
 		221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */ = {isa = PBXBuildFile; fileRef = 221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */; };
 		22333F4D1401A6D4002FA3FE /* category-list-separator.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4C1401A6D4002FA3FE /* category-list-separator.png */; };
 		22333F501401AF52002FA3FE /* category-list-normal-bg-turned.png in Resources */ = {isa = PBXBuildFile; fileRef = 22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */; };
+		223A7C531413FA5000AF75B3 /* channel-detail-shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 223A7C511413FA5000AF75B3 /* channel-detail-shadow.png */; };
+		223A7C541413FA5000AF75B3 /* channel-detail-video-shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 223A7C521413FA5000AF75B3 /* channel-detail-video-shadow.png */; };
+		223A7C571414004A00AF75B3 /* button-red-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 223A7C561414004A00AF75B3 /* button-red-background.png */; };
 		2252786B1412CDDE00E48227 /* PreviewViewContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
 		22A19757140D792900DE074E /* channel-video-status-hot.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19756140D792900DE074E /* channel-video-status-hot.png */; };
@@ -186,6 +189,9 @@
 		221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-bad.png"; sourceTree = "<group>"; };
 		22333F4C1401A6D4002FA3FE /* category-list-separator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-separator.png"; sourceTree = "<group>"; };
 		22333F4F1401AF52002FA3FE /* category-list-normal-bg-turned.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-normal-bg-turned.png"; sourceTree = "<group>"; };
+		223A7C511413FA5000AF75B3 /* channel-detail-shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-detail-shadow.png"; sourceTree = "<group>"; };
+		223A7C521413FA5000AF75B3 /* channel-detail-video-shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-detail-video-shadow.png"; sourceTree = "<group>"; };
+		223A7C561414004A00AF75B3 /* button-red-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-red-background.png"; sourceTree = "<group>"; };
 		225278691412CDDE00E48227 /* PreviewViewContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreviewViewContainerView.h; path = Views/PreviewViewContainerView.h; sourceTree = SOURCE_ROOT; };
 		2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreviewViewContainerView.m; path = Views/PreviewViewContainerView.m; sourceTree = SOURCE_ROOT; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
@@ -534,6 +540,8 @@
 				A92BDA2413B431C500B846DF /* youtube_logo_36.png */,
 				A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */,
 				A93E6BD21402966200B06191 /* airplay.png */,
+				223A7C511413FA5000AF75B3 /* channel-detail-shadow.png */,
+				223A7C521413FA5000AF75B3 /* channel-detail-video-shadow.png */,
 				2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */,
 				A9C2788A13BABC920024DCB2 /* channel-shadow-background.png */,
 				221ADF4513DDE01600BC9488 /* channel-bottom-border.png */,
@@ -545,6 +553,7 @@
 				A98C241313D38C030061A594 /* button-watch-later-active.png */,
 				A98C241413D38C030061A594 /* button-watch-later.png */,
 				A99FB6CD140EB57700689040 /* button-gray-background.png */,
+				223A7C561414004A00AF75B3 /* button-red-background.png */,
 				A99FB6CE140EB57700689040 /* button-yellow-background.png */,
 				A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */,
 				A9FEF57A13D3D8C50094514C /* channel-video-background.png */,
@@ -926,6 +935,9 @@
 				A99FB6CC140EAC1900689040 /* ChannelDetailView.xib in Resources */,
 				A99FB6CF140EB57700689040 /* button-gray-background.png in Resources */,
 				A99FB6D0140EB57700689040 /* button-yellow-background.png in Resources */,
+				223A7C531413FA5000AF75B3 /* channel-detail-shadow.png in Resources */,
+				223A7C541413FA5000AF75B3 /* channel-detail-video-shadow.png in Resources */,
+				223A7C571414004A00AF75B3 /* button-red-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
