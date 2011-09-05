@@ -44,6 +44,7 @@
 - (void)issueGetLiveChannel;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
+- (void)issueCreateChannelWithKeyword:(NSString *)str;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;

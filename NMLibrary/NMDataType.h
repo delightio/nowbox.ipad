@@ -21,6 +21,7 @@ typedef enum {
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
 	NMCommandGetChannelDetail,
+	NMCommandCreateKeywordChannel,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetChannelVideoList,
@@ -83,6 +84,9 @@ extern NSString * const NMDidFailSearchChannelsNotification;
 extern NSString * const NMWillGetChannelDetailNotification;
 extern NSString * const NMDidGetChannelDetailNotification;
 extern NSString * const NMDidFailGetChannelDetailNotification;
+extern NSString * const NMWillCreateChannelNotification;
+extern NSString * const NMDidCreateChannelNotification;
+extern NSString * const NMDidFailCreateChannelNotification;
 
 // subscription
 extern NSString * const NMWillSubscribeChannelNotification;

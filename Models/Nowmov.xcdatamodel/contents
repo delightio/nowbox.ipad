@@ -77,7 +77,7 @@
         <element name="NMChannel" positionX="297" positionY="-72" width="153" height="285"/>
         <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
         <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="195"/>
-        <element name="NMVideo" positionX="297" positionY="258" width="128" height="345"/>
-        <element name="NMVideoDetail" positionX="520" positionY="252" width="128" height="150"/>
+        <element name="NMVideo" positionX="297" positionY="258" width="128" height="360"/>
+        <element name="NMVideoDetail" positionX="520" positionY="444" width="128" height="150"/>
     </elements>
 </model>

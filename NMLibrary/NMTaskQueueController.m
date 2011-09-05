@@ -103,6 +103,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueCreateChannelWithKeyword:(NSString *)str {
+	if ( str == nil || [str isEqualToString:@""] ) return;
+	NMCreateChannelTask * task = [[NMCreateChannelTask alloc] initWithKeyword:str];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueGetSubscribedChannels {
 //	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFriendChannels];
 //	[networkController addNewConnectionForTask:task];
