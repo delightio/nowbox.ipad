@@ -20,6 +20,6 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSMutableDictionary * channelDictionary;
 
-- (id)initWithKeyword:(NSString *)str;
+- (id)initWithPlaceholderChannel:(NMChannel *)chnObj;
 
 @end

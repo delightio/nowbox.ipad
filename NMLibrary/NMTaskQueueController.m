@@ -42,6 +42,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	networkController = [[NMNetworkController alloc] init];
 	networkController.dataController = dataController;
 	
+	// handle keyword channel creation
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
+	
 	return self;
 }
 
@@ -61,6 +64,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[managedObjectContext release];
 	[dataController release];
 	[networkController release];
@@ -84,6 +88,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController resetAllChannelsPageNumber];
 }
 
+#pragma mark Notification handler
+- (void)handleChannelCreationNotification:(NSNotification *)aNotification {
+	// received notification of channel creation
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+	[self issueSubscribe:YES channel:chnObj];
+}
+
 #pragma mark Queue tasks to network controller
 - (void)issueGetFeaturedCategories {
 	NMGetCategoriesTask * task = [[NMGetCategoriesTask alloc] init];
@@ -99,13 +110,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initSearchChannelWithKeyword:aKeyword];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-- (void)issueCreateChannelWithKeyword:(NSString *)str {
-	if ( str == nil || [str isEqualToString:@""] ) return;
-	NMCreateChannelTask * task = [[NMCreateChannelTask alloc] initWithKeyword:str];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -212,7 +216,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj {
-	NMEventTask * task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:aSubscribe];
+	NMTask * task = nil;
+	if ( aSubscribe && [chnObj.nm_id integerValue] == 0 ) {
+		// subscribing placeholder channel
+		task = [[NMCreateChannelTask alloc] initWithPlaceholderChannel:chnObj];
+	} else {
+		task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:aSubscribe];
+	}
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

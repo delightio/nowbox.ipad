@@ -174,9 +174,9 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 								   zeroNum, @"nm_id", 
 								   [NSNumber numberWithInteger:NMChannelKeywordType], @"type",
 								   searchWord, @"title",
-								   "http://beta.nowmov.com/images/icons/tag.png", @"thumbnail_uri",
+								   @"", @"thumbnail_uri",
 								   zeroNum, @"video_count",
-								   [NSNull null], @"resource_uri",
+								   @"", @"resource_uri",
 								   [NSNumber numberWithInteger:++i], @"nm_sort_order", nil];
 		[parsedObjectDictionary setObject:fakeDict forKey:zeroNum];
 		[channelIndexSet addIndex:0];

@@ -7,6 +7,7 @@
 //
 
 #import "NMCreateChannelTask.h"
+#import "NMChannel.h"
 #import "NMDataController.h"
 #import "NMGetChannelsTask.h"
 
@@ -17,10 +18,11 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 @implementation NMCreateChannelTask
 @synthesize keyword, channelDictionary, channel;
 
-- (id)initWithKeyword:(NSString *)str {
+- (id)initWithPlaceholderChannel:(NMChannel *)chnObj {
 	self = [super init];
 	command = NMCommandCreateKeywordChannel;
-	self.keyword = str;
+	self.channel = chnObj;
+	self.keyword = channel.title;
 	return self;
 }
 
@@ -32,7 +34,7 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@&type=yeyword", NM_BASE_URL, NM_USER_ACCOUNT_ID, [keyword stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	NSString * urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@&type=keyword", NM_BASE_URL, NM_USER_ACCOUNT_ID, [keyword stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];
 	return request;
@@ -52,9 +54,10 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	// save the new channel
-	self.channel = [ctrl insertNewChannelForID:[channelDictionary objectForKey:@"nm_id"]];
-	[channel setValuesForKeysWithDictionary:channelDictionary];
+	// update the channel with new info
+	channel.thumbnail_uri = [channelDictionary objectForKey:@"thumbnail_uri"];
+	channel.resource_uri = [channelDictionary objectForKey:@"resource_uri"];
+	channel.nm_id = [channelDictionary objectForKey:@"nm_id"];
 }
 
 - (NSString *)willLoadNotificationName {
