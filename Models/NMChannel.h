@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NSString * thumbnail_uri;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * type;
+@property (nonatomic, retain) NSNumber * video_count;
 @property (nonatomic, retain) NSSet *categories;
 @property (nonatomic, retain) NMChannelDetail *detail;
 @property (nonatomic, retain) NSSet *previewThumbnails;

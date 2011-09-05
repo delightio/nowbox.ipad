@@ -208,6 +208,9 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 					chnObj = [ctrl insertNewChannelForID:theKey];
 					[chnObj setValuesForKeysWithDictionary:chnDict];
 					// there's no need to set relationship with the existing channel objects.
+				} else if ( [chnObj.nm_id integerValue] == 0 ) {
+					// this is a placeholder channel, update it's content
+					[chnObj setValuesForKeysWithDictionary:chnDict];
 				}
 				// add the search category
 				[ctrl.internalSearchCategory addChannelsObject:chnObj];
