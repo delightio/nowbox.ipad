@@ -8,13 +8,17 @@
 
 #import "NMTask.h"
 
+@class NMChannel;
+
 @interface NMCreateChannelTask : NMTask {
 	NSString * keyword;
-	NSDictionary * channelDictionary;
+	NMChannel * channel;
+	NSMutableDictionary * channelDictionary;
 }
 
 @property (nonatomic, retain) NSString * keyword;
-@property (nonatomic, retain) NSDictionary * channelDictionary;
+@property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NSMutableDictionary * channelDictionary;
 
 - (id)initWithKeyword:(NSString *)str;
 

@@ -8,13 +8,14 @@
 
 #import "NMCreateChannelTask.h"
 #import "NMDataController.h"
+#import "NMGetChannelsTask.h"
 
 NSString * const NMWillCreateChannelNotification = @"NMWillCreateChannelNotification";
 NSString * const NMDidCreateChannelNotification = @"NMDidCreateChannelNotification";
 NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNotification";
 
 @implementation NMCreateChannelTask
-@synthesize keyword, channelDictionary;
+@synthesize keyword, channelDictionary, channel;
 
 - (id)initWithKeyword:(NSString *)str {
 	self = [super init];
@@ -26,6 +27,7 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 - (void)dealloc {
 	[keyword release];
 	[channelDictionary release];
+	[channel release];
 	[super dealloc];
 }
 
@@ -38,15 +40,21 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 
 - (void)processDownloadedDataInBuffer {
 	if ( [buffer length] == 0 ) {
+		encountersErrorDuringProcessing = YES;
 		return;
 	}
-	self.channelDictionary = [buffer objectFromJSONData];
+	NSDictionary * theDict = [buffer objectFromJSONData];
+	if ( theDict ) {
+		self.channelDictionary = [NMGetChannelsTask normalizeChannelDictionary:theDict];
+	} else {
+		encountersErrorDuringProcessing = YES;
+	}
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
 	// save the new channel
-	NMChannel * chnObj = [ctrl insertNewChannelForID:[channelDictionary objectForKey:@""]];
-	[chnObj setValuesForKeysWithDictionary:channelDictionary];
+	self.channel = [ctrl insertNewChannelForID:[channelDictionary objectForKey:@"nm_id"]];
+	[channel setValuesForKeysWithDictionary:channelDictionary];
 }
 
 - (NSString *)willLoadNotificationName {
@@ -59,6 +67,10 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 
 - (NSString *)didFailNotificationName {
 	return NMDidFailCreateChannelNotification;
+}
+
+- (NSDictionary *)userInfo {
+	return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
 }
 
 @end

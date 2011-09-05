@@ -657,6 +657,8 @@
 				A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */,
 				A970504B13438F860022BF2C /* NMGetChannelsTask.h */,
 				A970504C13438F860022BF2C /* NMGetChannelsTask.m */,
+				A9716108141419F200BBF6C6 /* NMCreateChannelTask.h */,
+				A9716109141419F200BBF6C6 /* NMCreateChannelTask.m */,
 				A9D19B30140E2916008CF101 /* NMGetChannelDetailTask.h */,
 				A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */,
 				A970504D13438F860022BF2C /* NMGetChannelVideoListTask.h */,
@@ -672,8 +674,6 @@
 				A9B19640134C6B0B00CA17A0 /* NMEventTask.m */,
 				A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */,
 				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
-				A9716108141419F200BBF6C6 /* NMCreateChannelTask.h */,
-				A9716109141419F200BBF6C6 /* NMCreateChannelTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";

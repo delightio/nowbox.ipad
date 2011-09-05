@@ -33,6 +33,33 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 @synthesize searchWord;
 @synthesize category;
 
++ (NSMutableDictionary *)normalizeChannelDictionary:(NSDictionary *)chnCtnDict {
+	NSMutableDictionary * pDict = [NSMutableDictionary dictionaryWithCapacity:8];
+	[pDict setObject:[chnCtnDict objectForKey:@"title"] forKey:@"title"];
+	[pDict setObject:[chnCtnDict objectForKey:@"resource_uri"] forKey:@"resource_uri"];
+	NSString * chnType = [[chnCtnDict objectForKey:@"type"] lowercaseString];
+	if ( [chnType isEqualToString:@"user"] ) {
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"account::youtube"] ) {
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelYoutubeType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"account::vimeo"] ) {
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelVimeoType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"keyword"] ) {
+		
+	} else {
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
+	}
+	NSString * thumbURL = [chnCtnDict objectForKey:@"thumbnail_uri"];
+	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
+		[pDict setObject:[NSNull null] forKey:@"thumbnail_uri"];
+	} else {
+		[pDict setObject:thumbURL forKey:@"thumbnail_uri"];
+	}
+	[pDict setObject:[chnCtnDict objectForKey:@"id"] forKey:@"nm_id"];
+	
+	return pDict;
+}
+
 - (id)init {
 	self = [super init];
 	command = NMCommandGetAllChannels;
@@ -80,7 +107,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			urlStr = [NSString stringWithFormat:@"http://%@/categories/%@/channels?user_id=%d&type=featured", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandSearchChannels:
-			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@", NM_BASE_URL, NM_USER_ACCOUNT_ID, searchWord];
+			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@", NM_BASE_URL, NM_USER_ACCOUNT_ID, [searchWord stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			break;
 		default:
 			break;
@@ -105,51 +132,54 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	parsedObjectDictionary = [[NSMutableDictionary alloc] initWithCapacity:[theChs count]];
 	NSDictionary * cDict, * chnCtnDict;
 	NSMutableDictionary * pDict;
-	NSString * theKey;
-	NSString * thumbURL;
-	NSString * chnType;
 	channelIndexSet = [[NSMutableIndexSet alloc] init];
 	NSNumber * idNum;
 	NSInteger i = 0;
 	NSNumber * subscribedNum = nil;
+	BOOL containsKeywordChannel = NO;
 	if ( command == NMCommandGetSubscribedChannels ) {
 		subscribedNum = [NSNumber numberWithBool:YES];
 	}
 	for (cDict in theChs) {
 		for (NSString * rKey in cDict) {				// attribute key cleanser
 			chnCtnDict = [cDict objectForKey:rKey];
-			pDict = [NSMutableDictionary dictionary];
-			for (theKey in channelJSONKeys) {
-				[pDict setObject:[chnCtnDict objectForKey:theKey] forKey:theKey];
-			}
-			chnType = [chnCtnDict objectForKey:@"type"];
-			if ( [chnType isEqualToString:@"User"] ) {
-				[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];
-			} else if ( [chnType isEqualToString:@"Account::Youtube"] ) {
-				[pDict setObject:[NSNumber numberWithInteger:NMChannelYoutubeType] forKey:@"type"];
-			} else if ( [chnType isEqualToString:@"Account::Vimeo"] ) {
-				[pDict setObject:[NSNumber numberWithInteger:NMChannelVimeoType] forKey:@"type"];
-			} else {
-				[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
-			}
-			thumbURL = [chnCtnDict objectForKey:@"thumbnail_uri"];
-			if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
-				[pDict setObject:[NSNull null] forKey:@"thumbnail_uri"];
-			} else {
-				[pDict setObject:thumbURL forKey:@"thumbnail_uri"];
-			}
 			idNum = [chnCtnDict objectForKey:@"id"];
-			[pDict setObject:idNum forKey:@"nm_id"];
-			if ( command == NMCommandGetSubscribedChannels ) {
-				[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_subscribed"];
-			} else {
-				[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+			pDict = [NMGetChannelsTask normalizeChannelDictionary:chnCtnDict];
+			switch (command) {
+				case NMCommandGetSubscribedChannels:
+					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_subscribed"];
+					break;
+					
+				case NMCommandSearchChannels:
+					// check if keyword channel exists
+					if ( [[pDict objectForKey:@"title"] isEqualToString:searchWord] ) {
+						containsKeywordChannel = YES;
+					}
+					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+					break;
+					
+				default:
+					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+					break;
 			}
-			//[pDict setObject:[chnCtnDict objectForKey:@"category_ids"] forKey:@"category_ids"];
 			
 			[channelIndexSet addIndex:[idNum unsignedIntegerValue]];
 			[parsedObjectDictionary setObject:pDict forKey:idNum];
 		}
+	}
+	if ( command == NMCommandSearchChannels && !containsKeywordChannel ) {
+		// create a fake keyword channel
+		NSNumber * zeroNum = [NSNumber numberWithInteger:0];
+		NSDictionary * fakeDict = [NSDictionary dictionaryWithObjectsAndKeys:
+								   zeroNum, @"nm_id", 
+								   [NSNumber numberWithInteger:NMChannelKeywordType], @"type",
+								   searchWord, @"title",
+								   "http://beta.nowmov.com/images/icons/tag.png", @"thumbnail_uri",
+								   zeroNum, @"video_count",
+								   [NSNull null], @"resource_uri",
+								   [NSNumber numberWithInteger:++i], @"nm_sort_order", nil];
+		[parsedObjectDictionary setObject:fakeDict forKey:zeroNum];
+		[channelIndexSet addIndex:0];
 	}
 }
 
