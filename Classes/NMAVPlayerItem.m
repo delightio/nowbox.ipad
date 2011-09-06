@@ -7,10 +7,16 @@
 //
 
 #import "NMAVPlayerItem.h"
+#import "NMLibrary.h"
 
 
 @implementation NMAVPlayerItem
 
 @synthesize nmVideo;
+
+- (void)dealloc {
+	[nmVideo release];
+	[super dealloc];
+}
 
 @end
