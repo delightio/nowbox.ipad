@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1280</int>
 		<string key="IBDocument.SystemVersion">11B26</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1923</string>
+		<string key="IBDocument.InterfaceBuilderVersion">1934</string>
 		<string key="IBDocument.AppKitVersion">1138</string>
 		<string key="IBDocument.HIToolboxVersion">566.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">919</string>
+			<string key="NS.object.0">931</string>
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -350,7 +350,7 @@
 									<object class="IBUILabel" id="46034443">
 										<reference key="NSNextResponder" ref="26659466"/>
 										<int key="NSvFlags">290</int>
-										<string key="NSFrame">{{43, 8}, {85, 24}}</string>
+										<string key="NSFrame">{{52, 8}, {86, 24}}</string>
 										<reference key="NSSuperview" ref="26659466"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="88250425"/>
@@ -382,7 +382,7 @@
 									<object class="IBUIImageView" id="439569595">
 										<reference key="NSNextResponder" ref="26659466"/>
 										<int key="NSvFlags">292</int>
-										<string key="NSFrame">{{11, 8}, {24, 24}}</string>
+										<string key="NSFrame">{{20, 8}, {24, 24}}</string>
 										<reference key="NSSuperview" ref="26659466"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="46034443"/>
@@ -390,7 +390,7 @@
 										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 									</object>
 								</object>
-								<string key="NSFrame">{{157, 0}, {142, 40}}</string>
+								<string key="NSFrame">{{147, 0}, {152, 40}}</string>
 								<reference key="NSSuperview" ref="988095503"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="439569595"/>
@@ -1408,6 +1408,7 @@
 							<string>controlScrollView</string>
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
+							<string>ribbonView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1415,6 +1416,7 @@
 							<string>UIScrollView</string>
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
+							<string>UIView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1425,6 +1427,7 @@
 							<string>controlScrollView</string>
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
+							<string>ribbonView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1443,6 +1446,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">loadedMovieDetailView</string>
 								<string key="candidateClassName">NMMovieDetailView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">ribbonView</string>
+								<string key="candidateClassName">UIView</string>
 							</object>
 						</object>
 					</object>
@@ -1490,6 +1497,6 @@
 				<string>{49, 28}</string>
 			</object>
 		</object>
-		<string key="IBCocoaTouchPluginVersion">919</string>
+		<string key="IBCocoaTouchPluginVersion">931</string>
 	</data>
 </archive>
