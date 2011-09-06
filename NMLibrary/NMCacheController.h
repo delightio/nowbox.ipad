@@ -7,6 +7,7 @@
 //
 
 
+@class NMFileExistsCache;
 @class NMImageDownloadTask;
 @class NMChannel;
 @class NMPreviewThumbnail;
@@ -29,6 +30,9 @@
 	NSNotificationCenter * notificationCenter;
 	
 	NMStyleUtility * styleUtility;
+	
+	// file existence cache
+	NMFileExistsCache * fileExistenceCache;
 	
 	// memory image cache
 //	NSMutableDictionary * filenameImageMemoryCache; disable in-memory cache for the moment

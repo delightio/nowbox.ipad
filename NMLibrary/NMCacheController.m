@@ -7,6 +7,7 @@
 //
 
 #import "NMCacheController.h"
+#import "NMFileExistsCache.h"
 #import "NMImageDownloadTask.h"
 #import "NMTaskQueueController.h"
 #import "NMStyleUtility.h"
@@ -81,6 +82,8 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			[e raise];
 		}
 	}
+	
+	fileExistenceCache = [[NMFileExistsCache alloc] initWithCapacity:48];
 		
 	targetObjectImageViewMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
 	commandIndexTaskMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
@@ -92,6 +95,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 }
 
 - (void)dealloc {
+	[fileExistenceCache release];
 	[targetObjectImageViewMap release];
 	[commandIndexTaskMap release];
 	[channelThumbnailCacheDir release];
@@ -128,9 +132,16 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 	// check if the image is in local file system
 	NSString * fPath;
+	NMFileExistsType t;
 	if ( dtlObj.nm_author_thumbnail_file_name ) {
 		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:dtlObj.nm_author_thumbnail_file_name];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
 			if ( img ) {
 				// file exists in path, load the file
@@ -145,14 +156,26 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		// this extra check is needed because author info is not properly normalized.
 		// same author info is stored repeatedly in NMVideoDetail object
 		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", dtlObj.author_id]];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			iv.image = [UIImage imageWithContentsOfFile:fPath];
 			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.jpg", dtlObj.author_id];
 			return YES;
 		}
 		
 		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", dtlObj.author_id]];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			iv.image = [UIImage imageWithContentsOfFile:fPath];
 			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.png", dtlObj.author_id];
 			return YES;
@@ -197,7 +220,13 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		return YES;
 	} else if ( chn.nm_thumbnail_file_name ) {
 		NSString * fPath = [channelThumbnailCacheDir stringByAppendingPathComponent:chn.nm_thumbnail_file_name];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
 			if ( img ) {
 				// file exists in path, load the file
@@ -243,7 +272,14 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	if ( vdo == nil || iv == nil ) return NO;
 	// check if the file exists
 	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
-	if ( [fileManager fileExistsAtPath:fPath] ) {
+	NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+	if ( t == NMFileExistsNotCached ) {
+		BOOL ex = [fileManager fileExistsAtPath:fPath];
+		[fileExistenceCache setFileExists:ex atPath:fPath];
+		t = ex ? NMFileExists : NMFileDoesNotExist;
+	}
+	
+	if ( t == NMFileExists ) {
 		// open up the file
 		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
 		if ( img ) {
@@ -280,7 +316,13 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	if ( pv == nil || iv == nil ) return NO;
 	// check if the file exists
 	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:pv.nm_thumbnail_file_name];
-	if ( [fileManager fileExistsAtPath:fPath] ) {
+	NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+	if ( t == NMFileExistsNotCached ) {
+		BOOL ex = [fileManager fileExistsAtPath:fPath];
+		[fileExistenceCache setFileExists:ex atPath:fPath];
+		t = ex ? NMFileExists : NMFileDoesNotExist;
+	}
+	if ( t == NMFileExists ) {
 		// open up the file
 		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
 		if ( img ) {
@@ -363,7 +405,31 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 	NMImageDownloadTask * theTask = [aNotification object];
+	NSManagedObject * obj = [[aNotification userInfo] objectForKey:@"target_object"];
 	[commandIndexTaskMap removeObjectForKey:[NSNumber numberWithUnsignedInteger:[theTask commandIndex]]];
+	// update the cache
+	NSString * path = nil;
+	switch (theTask.command) {
+		case NMCommandGetAuthorThumbnail:
+			path = [obj valueForKey:@"nm_author_thumbnail_file_name"];
+			break;
+			
+		case NMCommandGetChannelThumbnail:
+			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			break;
+			
+		case NMCommandGetVideoThumbnail:
+			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			break;
+			
+		case NMCommandGetPreviewThumbnail:
+			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			break;
+			
+		default:
+			break;
+	}
+	if ( path ) [fileExistenceCache setFileExists:YES atPath:path];
 }
 
 - (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {

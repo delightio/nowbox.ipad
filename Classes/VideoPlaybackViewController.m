@@ -1159,6 +1159,7 @@
     if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
         if (gestureRecognizer.state != UIGestureRecognizerStatePossible && gestureRecognizer.state != UIGestureRecognizerStateEnded && gestureRecognizer.state != UIGestureRecognizerStateCancelled && gestureRecognizer.state != UIGestureRecognizerStateFailed) {
             if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+				// disable channel video cell scrolling
                 otherGestureRecognizer.enabled = NO;
                 [temporaryDisabledGestures addObject:otherGestureRecognizer];
             }

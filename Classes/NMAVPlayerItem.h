@@ -15,6 +15,6 @@
     NMVideo * nmVideo;
 }
 
-@property (nonatomic, assign) NMVideo * nmVideo;
+@property (nonatomic, retain) NMVideo * nmVideo;
 
 @end
