@@ -1003,10 +1003,12 @@
 			theDetailView.hidden = NO;
 			theDetailView.alpha = 1.0f;
 		}
+		ribbonView.hidden = NO;
 	} else {
 		for (theDetailView in movieDetailViewArray) {
 			theDetailView.hidden = YES;
 		}
+		ribbonView.hidden = YES;
 	}
 	// slide in/out the prototype channel panel
 	// scale down movie control
