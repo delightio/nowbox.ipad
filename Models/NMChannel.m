@@ -27,6 +27,7 @@
 @dynamic thumbnail_uri;
 @dynamic title;
 @dynamic type;
+@dynamic video_count;
 @dynamic categories;
 @dynamic detail;
 @dynamic previewThumbnails;

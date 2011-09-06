@@ -75,6 +75,7 @@
 		A93D353D14076B9600C8A73F /* airplay-tv-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */; };
 		A93E6BD31402966300B06191 /* airplay.png in Resources */ = {isa = PBXBuildFile; fileRef = A93E6BD21402966200B06191 /* airplay.png */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
+		A9452BC81415E75E00056361 /* NMFileExistsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9452BC71415E75E00056361 /* NMFileExistsCache.m */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
 		A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
@@ -265,6 +266,8 @@
 		A93E6BD21402966200B06191 /* airplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airplay.png; sourceTree = "<group>"; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
+		A9452BC61415E75E00056361 /* NMFileExistsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; path = NMFileExistsCache.h; sourceTree = "<group>"; };
+		A9452BC71415E75E00056361 /* NMFileExistsCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFileExistsCache.m; sourceTree = "<group>"; };
 		A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackModelController.h; sourceTree = "<group>"; };
 		A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackModelController.m; sourceTree = "<group>"; };
 		A951454213AB1E0500327288 /* nowmov-eye-transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nowmov-eye-transparent.png"; sourceTree = "<group>"; };
@@ -646,6 +649,8 @@
 				A970504913438F860022BF2C /* NMTaskQueueController.m */,
 				A9976EFF13BB355200B06DFF /* Supporting Files */,
 				A970504A13438F860022BF2C /* Tasks */,
+				A9452BC61415E75E00056361 /* NMFileExistsCache.h */,
+				A9452BC71415E75E00056361 /* NMFileExistsCache.m */,
 			);
 			path = NMLibrary;
 			sourceTree = "<group>";
@@ -982,6 +987,7 @@
 				A99FB6D3140EE30700689040 /* NMPreviewThumbnail.m in Sources */,
 				2252786B1412CDDE00E48227 /* PreviewViewContainerView.m in Sources */,
 				A971610A141419F200BBF6C6 /* NMCreateChannelTask.m in Sources */,
+				A9452BC81415E75E00056361 /* NMFileExistsCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
