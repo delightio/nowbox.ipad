@@ -35,6 +35,8 @@
 
 // Session management
 - (void)beginNewSession:(NSInteger)sid;
+// User management
+- (void)issueCreateUser;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;

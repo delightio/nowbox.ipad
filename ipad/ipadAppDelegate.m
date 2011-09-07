@@ -37,7 +37,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[defaults registerDefaults:
 	 [NSDictionary dictionaryWithObjectsAndKeys:
 	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE, 
-	  [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, 
+	  [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, 
 	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 

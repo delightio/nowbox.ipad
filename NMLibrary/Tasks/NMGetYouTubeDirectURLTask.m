@@ -50,8 +50,10 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	[theRequest setValue:@"en-us,en;q=0.5" forHTTPHeaderField:@"Accept-Language"];
 	[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
 	[theRequest setValue:@"ytapi-apple-ipad" forHTTPHeaderField:@"X-GData-Client"];
+	// iPad 2 - iOS 5 beta 7
+	[theRequest setValue:@"AIwbFAT0accx3e6XKYznJ2LT381D0m0Fa7TqecYLwbxO71jT6TSdtfWiY95oUVolh5eZnjxrbwv1zKP72bdcx6nLGxVReCnhollht3U7qTpaTBqK1UrsFOKAly82THFBjFkHQSAwolfuKHynjBGvnZMAD8Z8CWFs_muL1LvEfHgYglEhYiMbHJA" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
 	// iPad 2 - iOS 5 beta 6
-	[theRequest setValue:@"AIwbFAQjxbfsHPW4wFXq838qenSQ6UwiR0Exv43nzSqVE47NxlgYNOTChJ1oSF7PIn0ACHcGtwR_AvuaQza6Dg69iMif8V8fd8iv2hve0SkTFSLHv8pDta3OnCXfC6R-9P-BVykR1bzG1s9DQ4qiNSxNaBhKftE9PtATiAJ_5HFa9gyRp0dF_SA" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
+//	[theRequest setValue:@"AIwbFAQjxbfsHPW4wFXq838qenSQ6UwiR0Exv43nzSqVE47NxlgYNOTChJ1oSF7PIn0ACHcGtwR_AvuaQza6Dg69iMif8V8fd8iv2hve0SkTFSLHv8pDta3OnCXfC6R-9P-BVykR1bzG1s9DQ4qiNSxNaBhKftE9PtATiAJ_5HFa9gyRp0dF_SA" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
 	// original in code base
 //	[theRequest setValue:@"AIwbFASGaas2duSR08SqNNVkr8eQczFrT1oqHFMIZqnY67XXoDLeb12oUUV20bKALZJMqHCY-rGSOxbrkDdfgxX-cQ3dpWD7uTZfUk_TWxEIBmoXSd2Z_C7o-jzntFuWUnHfickQfiOIXErVr_4MqQ9Eoqlu0t2aY9f74A-nWYhQ54bOpyc9StM" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
 	// iPad 1 - iOS 4
@@ -83,6 +85,8 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		}
 		if ( reason ) {
 			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", reason, @"reason", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", nil];
+		} else if ( [xmlStr rangeOfString:@"Device token expired"].location != NSNotFound ) {
+			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorDeviceTokenExpired], @"error_code", nil];
 		} else {
 			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", nil];
 		}

@@ -111,6 +111,7 @@
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
 		A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */; };
 		A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */; };
+		A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A98555DF141758CD00079453 /* KeychainItemWrapper.m */; };
 		A98C241513D38C040061A594 /* button-like-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241113D38C030061A594 /* button-like-active.png */; };
 		A98C241613D38C040061A594 /* button-like.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241213D38C030061A594 /* button-like.png */; };
 		A98C241713D38C040061A594 /* button-watch-later-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241313D38C030061A594 /* button-watch-later-active.png */; };
@@ -164,6 +165,7 @@
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
 		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
+		A9E90A8D14173AE700EB38DC /* NMCreateUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */; };
 		A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F1BE6E13FB83CE0006B569 /* NMAirPlayContainerView.m */; };
 		A9F4966113D2E83400A56F50 /* playback_background_pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966013D2E83400A56F50 /* playback_background_pattern.png */; };
 		A9F4966313D2EE5900A56F50 /* playback_video_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */; };
@@ -276,6 +278,7 @@
 		A931613313E0902B009694C3 /* playback-play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play.png"; sourceTree = "<group>"; };
 		A931613413E0902B009694C3 /* toolbar-collapse-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-collapse-active.png"; sourceTree = "<group>"; };
 		A931613513E0902B009694C3 /* toolbar-collapse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-collapse.png"; sourceTree = "<group>"; };
+		A93350B21417A15C00F47CDD /* KeychainAccessGroups.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KeychainAccessGroups.plist; sourceTree = "<group>"; };
 		A93584CE139EE96D0009A264 /* ChannelPanelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelPanelView.xib; sourceTree = "<group>"; };
 		A9398C1913D41B31005E3CB0 /* social-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-facebook.png"; sourceTree = "<group>"; };
 		A9398C1A13D41B31005E3CB0 /* social-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-twitter.png"; sourceTree = "<group>"; };
@@ -345,6 +348,8 @@
 		A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginViewController.h; sourceTree = "<group>"; };
 		A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterLoginViewController.m; sourceTree = "<group>"; };
 		A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwitterLoginView.xib; sourceTree = "<group>"; };
+		A98555DE141758CD00079453 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		A98555DF141758CD00079453 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		A98C241113D38C030061A594 /* button-like-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like-active.png"; sourceTree = "<group>"; };
 		A98C241213D38C030061A594 /* button-like.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like.png"; sourceTree = "<group>"; };
 		A98C241313D38C030061A594 /* button-watch-later-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-watch-later-active.png"; sourceTree = "<group>"; };
@@ -397,6 +402,8 @@
 		A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelManagementView.xib; sourceTree = "<group>"; };
 		A9E4B01513F3EA6F00DAE368 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
 		A9E4B01613F3EA6F00DAE368 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
+		A9E90A8B14173AE700EB38DC /* NMCreateUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCreateUserTask.h; sourceTree = "<group>"; };
+		A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCreateUserTask.m; sourceTree = "<group>"; };
 		A9ECD60E135E9611004B7F78 /* NMCacheController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCacheController.h; sourceTree = "<group>"; };
 		A9ECD60F135E9611004B7F78 /* NMCacheController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCacheController.m; sourceTree = "<group>"; };
 		A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMImageDownloadTask.h; sourceTree = "<group>"; };
@@ -509,6 +516,7 @@
 				A9250149134385BF001759F5 /* InfoPlist.strings */,
 				A925014C134385BF001759F5 /* ipad-Prefix.pch */,
 				A925014D134385BF001759F5 /* main.m */,
+				A93350B21417A15C00F47CDD /* KeychainAccessGroups.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -546,6 +554,8 @@
 				A9A4810C13FD181500850536 /* FeatureDebugViewController.m */,
 				A99FB6C7140EAC0400689040 /* ChannelDetailViewController.h */,
 				A99FB6C8140EAC0400689040 /* ChannelDetailViewController.m */,
+				A98555DE141758CD00079453 /* KeychainItemWrapper.h */,
+				A98555DF141758CD00079453 /* KeychainItemWrapper.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -706,6 +716,8 @@
 				A9B19640134C6B0B00CA17A0 /* NMEventTask.m */,
 				A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */,
 				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
+				A9E90A8B14173AE700EB38DC /* NMCreateUserTask.h */,
+				A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -801,9 +813,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A9250173134385BF001759F5 /* Build configuration list for PBXNativeTarget "nowbox" */;
 			buildPhases = (
+				A925013A134385BF001759F5 /* Resources */,
 				A9250138134385BF001759F5 /* Sources */,
 				A9250139134385BF001759F5 /* Frameworks */,
-				A925013A134385BF001759F5 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -1024,6 +1036,8 @@
 				2252786B1412CDDE00E48227 /* PreviewViewContainerView.m in Sources */,
 				A971610A141419F200BBF6C6 /* NMCreateChannelTask.m in Sources */,
 				A9452BC81415E75E00056361 /* NMFileExistsCache.m in Sources */,
+				A9E90A8D14173AE700EB38DC /* NMCreateUserTask.m in Sources */,
+				A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1100,6 +1114,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1157,6 +1172,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1180,6 +1196,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";

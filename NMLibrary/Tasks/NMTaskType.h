@@ -15,3 +15,4 @@
 #import "NMImageDownloadTask.h"
 #import "NMGetCategoriesTask.h"
 #import "NMGetChannelDetailTask.h"
+#import "NMCreateUserTask.h"

@@ -96,6 +96,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 #pragma mark Queue tasks to network controller
+- (void)issueCreateUser; {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] init];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueGetFeaturedCategories {
 	NMGetCategoriesTask * task = [[NMGetCategoriesTask alloc] init];
 	[networkController addNewConnectionForTask:task];
