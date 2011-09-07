@@ -22,6 +22,7 @@ typedef enum {
 	NMCommandSearchChannels,
 	NMCommandGetChannelDetail,
 	NMCommandCreateKeywordChannel,
+	NMCommandCreateUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetChannelVideoList,
