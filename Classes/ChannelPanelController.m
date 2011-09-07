@@ -221,7 +221,7 @@
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
-	ctnView.textLabel.text = [theChannel.title uppercaseString];
+	ctnView.textLabel.text = theChannel.title;
 	[ctnView.imageView setImageForChannel:theChannel];
 
 	// video row

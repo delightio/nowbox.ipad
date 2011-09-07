@@ -26,7 +26,7 @@
     BOOL shouldDismiss;
 	
 	NMChannel * channel;
-	NSMutableArray * videoThumbnailArray;
+	NSMutableArray * previewViewsArray;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
