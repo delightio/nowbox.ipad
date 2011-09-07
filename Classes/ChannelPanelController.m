@@ -30,6 +30,7 @@
 @synthesize videoViewController;
 @synthesize selectedIndex;
 @synthesize highlightedChannelIndex, highlightedVideoIndex;
+@synthesize fullScreenButton;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];

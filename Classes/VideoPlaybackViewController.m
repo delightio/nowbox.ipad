@@ -1076,6 +1076,9 @@
 
 //		movieView.frame = CGRectMake(0, -340, 640.0f, 360.0f);
 
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-collapse"] forState:UIControlStateNormal];
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-collapse-active"] forState:UIControlStateHighlighted];
+        
         controlScrollView.frame = CGRectMake(0, -360, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
 
         channelController.panelView.frame = theFrame;
@@ -1090,6 +1093,9 @@
 		
 //        movieView.frame = CGRectMake(0, 20.0f, 640.0f, 360.0f);
 
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-expand"] forState:UIControlStateNormal];
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-expand-active"] forState:UIControlStateHighlighted];
+        
         controlScrollView.frame = CGRectMake(0, 0, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
 
         channelController.panelView.frame = theFrame;
