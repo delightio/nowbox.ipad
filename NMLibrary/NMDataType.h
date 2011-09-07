@@ -73,6 +73,11 @@ typedef enum {
 
 
 // Notifications
+// user
+extern NSString * const NMWillCreateUserNotification;
+extern NSString * const NMDidCreateUserNotification;
+extern NSString * const NMDidFailCreateUserNotification;
+
 // channel
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;

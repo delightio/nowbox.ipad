@@ -100,6 +100,7 @@
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
 		A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */; };
 		A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */; };
+		A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A98555DF141758CD00079453 /* KeychainItemWrapper.m */; };
 		A98C241513D38C040061A594 /* button-like-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241113D38C030061A594 /* button-like-active.png */; };
 		A98C241613D38C040061A594 /* button-like.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241213D38C030061A594 /* button-like.png */; };
 		A98C241713D38C040061A594 /* button-watch-later-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241313D38C030061A594 /* button-watch-later-active.png */; };
@@ -326,6 +327,8 @@
 		A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginViewController.h; sourceTree = "<group>"; };
 		A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterLoginViewController.m; sourceTree = "<group>"; };
 		A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwitterLoginView.xib; sourceTree = "<group>"; };
+		A98555DE141758CD00079453 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		A98555DF141758CD00079453 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		A98C241113D38C030061A594 /* button-like-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like-active.png"; sourceTree = "<group>"; };
 		A98C241213D38C030061A594 /* button-like.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like.png"; sourceTree = "<group>"; };
 		A98C241313D38C030061A594 /* button-watch-later-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-watch-later-active.png"; sourceTree = "<group>"; };
@@ -531,6 +534,8 @@
 				A9A4810C13FD181500850536 /* FeatureDebugViewController.m */,
 				A99FB6C7140EAC0400689040 /* ChannelDetailViewController.h */,
 				A99FB6C8140EAC0400689040 /* ChannelDetailViewController.m */,
+				A98555DE141758CD00079453 /* KeychainItemWrapper.h */,
+				A98555DF141758CD00079453 /* KeychainItemWrapper.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -994,6 +999,7 @@
 				A971610A141419F200BBF6C6 /* NMCreateChannelTask.m in Sources */,
 				A9452BC81415E75E00056361 /* NMFileExistsCache.m in Sources */,
 				A9E90A8D14173AE700EB38DC /* NMCreateUserTask.m in Sources */,
+				A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
