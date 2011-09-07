@@ -69,7 +69,7 @@
 	
 	// create the preview view
 	NMCachedImageView * civ;
-	CALayer * theLayer = nil;
+//	CALayer * theLayer = nil;
 	videoThumbnailArray = [[NSMutableArray alloc] initWithCapacity:5];
 	CGFloat idxf = 0.0f;
 	NMStyleUtility * style = [NMStyleUtility sharedStyleUtility];
@@ -79,17 +79,24 @@
         [videoShadowImageView setImage:[[UIImage imageNamed:@"channel-detail-video-shadow"] stretchableImageWithLeftCapWidth:3 topCapHeight:2]];
 
         [thumbnailScrollView addSubview:videoShadowImageView];
+        
+        UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        activityIndicatorView.center = videoShadowImageView.center;
+        [activityIndicatorView startAnimating];
+        [thumbnailScrollView addSubview:activityIndicatorView];
+        
+        [activityIndicatorView release];
         [videoShadowImageView release];
-                                             
+        
 		civ = [[NMCachedImageView alloc] initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING/2, 25.0f, 370.0f, 200.0f)];
 		civ.contentMode = UIViewContentModeScaleAspectFill;
 		civ.backgroundColor = style.blackColor;
 		civ.clipsToBounds = YES;
-		theLayer = civ.layer;
-		theLayer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-		theLayer.shadowOpacity = 1.0f;
-		theLayer.shadowRadius = 5.0f;
-		theLayer.shouldRasterize = YES;
+//		theLayer = civ.layer;
+//		theLayer.shadowOffset = CGSizeMake(0.0f, 0.0f);
+//		theLayer.shadowOpacity = 1.0f;
+//		theLayer.shadowRadius = 5.0f;
+//		theLayer.shouldRasterize = YES;
 		civ.hidden = YES;
 		[videoThumbnailArray addObject:civ];
 		[thumbnailScrollView addSubview:civ];

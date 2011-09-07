@@ -20,7 +20,7 @@
     UIColor * videoDetailPlayedFontColor;
 	UIColor * clearColor, * channelPanelFontColor;
 	UIImage * videoShadowImage;
-	UIImage * videoHighlightedBackgroundImage;
+	UIImage * videoHighlightedBackgroundImage, * videoNormalBackgroundImage, * videoDimmedBackgroundImage;
     UIImage * videoStatusBadImage, * videoStatusHotImage, * videoStatusFavImage;
     UIImage * videoNewSessionIndicatorImage;
 	// channel panel
@@ -28,7 +28,7 @@
 	UIColor * channelPanelHighlightColor;
 	UIColor * channelPanelPlayedColor;
     UIColor * channelBorderColor;
-	UIImage * userPlaceholderImage, * channelContainerBackgroundImage;
+	UIImage * userPlaceholderImage, * channelContainerBackgroundNormalImage, * channelContainerBackgroundHighlightImage;
 	// playback control
 	UIImage * fullScreenImage, * fullScreenActiveImage;
 	UIImage * splitScreenImage, * splitScreenActiveImage;
@@ -46,6 +46,8 @@
 @property (nonatomic, readonly) UIFont * videoDetailFont;
 @property (nonatomic, readonly) UIImage * videoShadowImage;
 @property (nonatomic, readonly) UIImage * videoHighlightedBackgroundImage;
+@property (nonatomic, readonly) UIImage * videoNormalBackgroundImage;
+@property (nonatomic, readonly) UIImage * videoDimmedBackgroundImage;
 @property (nonatomic, readonly) UIColor * videoTitleFontColor;
 @property (nonatomic, readonly) UIColor * videoTitleHighlightedFontColor;
 @property (nonatomic, readonly) UIColor * videoTitlePlayedFontColor;
@@ -64,7 +66,8 @@
 @property (nonatomic, readonly) UIColor * channelPanelPlayedColor;
 @property (nonatomic, readonly) UIColor * channelBorderColor;
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
-@property (nonatomic, readonly) UIImage * channelContainerBackgroundImage;
+@property (nonatomic, readonly) UIImage * channelContainerBackgroundNormalImage;
+@property (nonatomic, readonly) UIImage * channelContainerBackgroundHighlightImage;
 
 @property (nonatomic, readonly) UIImage * fullScreenImage;
 @property (nonatomic, readonly) UIImage * fullScreenActiveImage;

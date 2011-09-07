@@ -89,6 +89,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
+    
 }
 
 - (void)viewDidUnload
@@ -641,12 +642,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         actView = (UIActivityIndicatorView *)[cellToUnsubscribeFrom viewWithTag:15];
         [actView startAnimating];
         
-        UIImageView *imageView = (UIImageView *)[cellToUnsubscribeFrom viewWithTag:11];
+        UIButton *buttonView = (UIButton *)[cellToUnsubscribeFrom viewWithTag:11];
         
         [UIView animateWithDuration:0.3
                          animations:^{
                              [actView setAlpha:1];
-                             [imageView setAlpha:0];
+                             [buttonView setAlpha:0];
                          }
                          completion:^(BOOL finished) {
                          }];

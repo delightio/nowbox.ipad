@@ -14,6 +14,7 @@
 @implementation ChannelContainerView
 @synthesize textLabel;
 @synthesize imageView;
+@synthesize highlighted;
 
 //+ (Class)layerClass {
 //	return [CAGradientLayer class];
@@ -62,7 +63,7 @@
 		textLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 //		[self addSubview:textLabel];
 		
-		CGFloat pos = floorf( (aHeight - 40.0f) / 2.0f );
+//		CGFloat pos = floorf( (aHeight - 40.0f) / 2.0f );
 
 //        UIImageView *imageBackgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(20.0f-3, pos-3, 48.0f, 48.0f)];
 //        imageBackgroundView.image = [UIImage imageNamed:@"channel-thumbnail-frame"];
@@ -85,7 +86,7 @@
 //		[self addSubview:topBorderView];
 //        [topBorderView release];
         
-		imageView = [[NMCachedImageView alloc] initWithFrame:CGRectMake(20.0f, pos, 40.0f, 40.0f)];
+		imageView = [[NMCachedImageView alloc] initWithFrame:CGRectMake(32.0f, 28.0f, 40.0f, 40.0f)];
         imageView.opaque = YES;
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
 		[self addSubview:imageView];
@@ -100,20 +101,29 @@
     // Drawing code
     CGContextRef context = UIGraphicsGetCurrentContext();
 
-    [[NMStyleUtility sharedStyleUtility].channelContainerBackgroundImage drawInRect:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height+2)];
+    if (self.highlighted) {
+        [[NMStyleUtility sharedStyleUtility].channelContainerBackgroundHighlightImage drawInRect:CGRectMake(0, 0, 181, 100)];
+    } else {
+        [[NMStyleUtility sharedStyleUtility].channelContainerBackgroundNormalImage drawInRect:CGRectMake(0, 0, 181, 100)];
+    }
 
     CGContextSetFillColorWithColor(context, textLabel.textColor.CGColor);
     CGSize theStringSize = [textLabel.text  sizeWithFont:textLabel.font constrainedToSize:textLabel.frame.size lineBreakMode:textLabel.lineBreakMode];
     [textLabel.text drawInRect:CGRectMake(80, (self.frame.size.height-theStringSize.height)/2, NM_CHANNEL_COLUMN_WIDTH - 80.0f - 10.0f, theStringSize.height) withFont:textLabel.font lineBreakMode:textLabel.lineBreakMode alignment:textLabel.textAlignment];
 
-    CGFloat pos = floorf( (self.frame.size.height - 40.0f) / 2.0f );
+//    CGFloat pos = floorf( (self.frame.size.height - 40.0f) / 2.0f );
+//    
+//    [[UIImage imageNamed:@"channel-thumbnail-frame"] drawInRect:CGRectMake(20.0f-3, pos-3, 48.0f, 48.0f)];
+//    
+//    [[UIImage imageNamed:@"channel-bottom-border"] drawInRect:CGRectMake(0, self.frame.size.height-1, 167.0f, 2.0f)];
+//    
+//    [[UIImage imageNamed:@"channel-bottom-border"] drawInRect:CGRectMake(0, -1, 167.0f, 2.0f)];
     
-    [[UIImage imageNamed:@"channel-thumbnail-frame"] drawInRect:CGRectMake(20.0f-3, pos-3, 48.0f, 48.0f)];
-    
-    [[UIImage imageNamed:@"channel-bottom-border"] drawInRect:CGRectMake(0, self.frame.size.height-1, 167.0f, 2.0f)];
-    
-    [[UIImage imageNamed:@"channel-bottom-border"] drawInRect:CGRectMake(0, -1, 167.0f, 2.0f)];
-    
+}
+
+-(void)setHighlighted:(BOOL)newHighlighted {
+    highlighted = newHighlighted;
+    [self setNeedsDisplay];
 }
 
  

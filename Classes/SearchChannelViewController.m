@@ -116,26 +116,27 @@
     label = (UILabel *)[cell viewWithTag:13];
     label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
     
-    UIImageView *imageView, *backgroundView;
+    UIImageView *backgroundView;
+    UIButton *buttonView;
     NMCachedImageView *thumbnailView;
     
     thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
     [thumbnailView setImageForChannel:chn];
     
-    imageView = (UIImageView *)[cell viewWithTag:11];
+    buttonView = (UIButton *)[cell viewWithTag:11];
     backgroundView = (UIImageView *)[cell viewWithTag:14];
     if ([chn.nm_subscribed boolValue]) {
-        [imageView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"]];
+        [buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
     } else {
-        [imageView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"]];
+        [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
     }
-    
+        
     UIActivityIndicatorView *actView;
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView setAlpha:0];
-    [imageView setAlpha:1];
+    [buttonView setAlpha:1];
     
     return cell;
     
@@ -155,12 +156,12 @@
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView startAnimating];
     
-    UIImageView *imageView = (UIImageView *)[cell viewWithTag:11];
+    UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
     
     [UIView animateWithDuration:0.3
                      animations:^{
                          [actView setAlpha:1];
-                         [imageView setAlpha:0];
+                         [buttonView setAlpha:0];
                      }
                      completion:^(BOOL finished) {
                      }];

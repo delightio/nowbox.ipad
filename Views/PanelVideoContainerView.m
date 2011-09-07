@@ -14,9 +14,11 @@
 #define NM_VIDEO_CELL_PADDING	10.0f
 
 @implementation PanelVideoContainerView
-@synthesize titleLabel, datePostedLabel, backgroundColorView, highlightedBackgroundImage;
-@synthesize highlightColor, durationLabel, viewsLabel;
-@synthesize normalColor, indexInTable, playedColor;
+@synthesize titleLabel, datePostedLabel, backgroundColorView;
+//@synthesize highlightedBackgroundImage;
+@synthesize durationLabel;
+//@synthesize viewsLabel;
+@synthesize indexInTable;
 @synthesize tableView;
 @synthesize videoRowDelegate;
 @synthesize videoStatusImageView;
@@ -40,19 +42,16 @@
         
         
 		self.backgroundColor = styleUtility.channelPanelBackgroundColor;
-		self.normalColor = styleUtility.channelPanelBackgroundColor;
-		self.playedColor = styleUtility.channelPanelPlayedColor;
-		self.highlightColor = styleUtility.channelPanelHighlightColor;
         
         backgroundColorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, initialFrame.size.width, initialFrame.size.height+NM_VIDEO_CELL_PADDING)];
 //        [backgroundColorView setBackgroundColor:normalColor];
         [backgroundColorView setClipsToBounds:YES];
 //        [self addSubview:backgroundColorView];
         
-        highlightedBackgroundImage = [[UIImageView alloc] initWithImage:styleUtility.videoHighlightedBackgroundImage];
-        [highlightedBackgroundImage setFrame:CGRectMake(initialFrame.size.width-104, -1, 104, 90)];
-        [highlightedBackgroundImage setHidden:YES];
-        [highlightedBackgroundImage setClipsToBounds:YES];
+//        highlightedBackgroundImage = [[UIImageView alloc] initWithImage:styleUtility.videoHighlightedBackgroundImage];
+//        [highlightedBackgroundImage setFrame:CGRectMake(initialFrame.size.width-104, -1, 104, 90)];
+//        [highlightedBackgroundImage setHidden:YES];
+//        [highlightedBackgroundImage setClipsToBounds:YES];
 //        [self addSubview:highlightedBackgroundImage];
 
         titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - 12 - NM_VIDEO_CELL_PADDING * 2.0f)];
@@ -66,7 +65,7 @@
 		titleLabel.highlightedTextColor = styleUtility.videoTitleHighlightedFontColor;
 //		[self addSubview:titleLabel];
         
-        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
+        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
 		datePostedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		datePostedLabel.textColor = styleUtility.videoDetailFontColor;
 		datePostedLabel.backgroundColor = styleUtility.clearColor;
@@ -74,17 +73,17 @@
 		datePostedLabel.highlightedTextColor = styleUtility.videoDetailHighlightedFontColor;
 //		[self addSubview:datePostedLabel];
 
-        viewsLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
-		viewsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-		viewsLabel.textAlignment = UITextAlignmentRight;
-		viewsLabel.textColor = styleUtility.videoDetailFontColor;
-		viewsLabel.backgroundColor = styleUtility.clearColor;
-		viewsLabel.font = styleUtility.videoDetailFont;
-		viewsLabel.highlightedTextColor = styleUtility.videoDetailHighlightedFontColor;
+//        viewsLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
+//		viewsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+//		viewsLabel.textAlignment = UITextAlignmentRight;
+//		viewsLabel.textColor = styleUtility.videoDetailFontColor;
+//		viewsLabel.backgroundColor = styleUtility.clearColor;
+//		viewsLabel.font = styleUtility.videoDetailFont;
+//		viewsLabel.highlightedTextColor = styleUtility.videoDetailHighlightedFontColor;
         
 //		[self addSubview:viewsLabel];
 		
-        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 36.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
+        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
 		durationLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		durationLabel.textAlignment = UITextAlignmentRight;
 		durationLabel.textColor = styleUtility.videoDetailFontColor;
@@ -124,7 +123,7 @@
 -(void)setFrame:(CGRect)frame {
     initialFrame = frame;
     [super setFrame:frame];
-    [highlightedBackgroundImage setFrame:CGRectMake(initialFrame.size.height-104, -1, 104, 90)];
+//    [highlightedBackgroundImage setFrame:CGRectMake(initialFrame.size.height-104, -1, 104, 90)];
 }
 
 - (void)dealloc
@@ -133,10 +132,8 @@
 	[titleLabel release];
 	[datePostedLabel release];
 	[durationLabel release];
-    [viewsLabel release];
-	[highlightColor release];
-	[normalColor release];
-    [highlightedBackgroundImage release];
+//    [viewsLabel release];
+//    [highlightedBackgroundImage release];
     [cellView release];
     [highlightedCellView release];
     [videoStatusImageView release];
@@ -177,29 +174,29 @@
 	NSInteger dur = [aVideo.duration integerValue];
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", dur / 60, dur % 60];
     
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];  
-    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    NSString *formattedOutput = [formatter stringFromNumber:[aVideo view_count]];
-    [formatter release];
+//    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];  
+//    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+//    NSString *formattedOutput = [formatter stringFromNumber:[aVideo view_count]];
+//    [formatter release];
     
-    viewsLabel.text = [NSString stringWithFormat:@"%@ views",formattedOutput];
-    [viewsLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
-    [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 36.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
+//    viewsLabel.text = [NSString stringWithFormat:@"%@ views",formattedOutput];
+//    [viewsLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
+    [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
     
     if ([aVideo.nm_did_play boolValue] || !isVideoPlayable) {
         titleLabel.textColor = [NMStyleUtility sharedStyleUtility].videoTitlePlayedFontColor;
         datePostedLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
         durationLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
-        viewsLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
+//        viewsLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
     }
     else {
         titleLabel.textColor = [NMStyleUtility sharedStyleUtility].videoTitleFontColor;
         datePostedLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
         durationLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
-        viewsLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
+//        viewsLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailFontColor;
     }
     
-    [highlightedCellView configureCellWithPanelVideoContainerView:self highlighted:YES videoPlayed:[aVideo.nm_did_play boolValue]];
+    [highlightedCellView configureCellWithPanelVideoContainerView:self highlighted:YES videoPlayed:NO];
     
     [cellView configureCellWithPanelVideoContainerView:self highlighted:NO videoPlayed:[aVideo.nm_did_play boolValue]];
     

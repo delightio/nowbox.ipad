@@ -29,7 +29,6 @@
 
 
 
-
 - (id)init {
 	self = [super init];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -81,8 +80,8 @@
     if (nil == result)
     {
 //        result = [[[PanelVideoContainerView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
-//        [result setFrame:CGRectMake(0.0, 0.0, 720.0, 90.0)];
-        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, 90.0)] autorelease];
+//        [result setFrame:CGRectMake(0.0, 0.0, 720.0, NM_VIDEO_CELL_HEIGHT)];
+        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, NM_VIDEO_CELL_HEIGHT)] autorelease];
 		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 		result.tableView = aTableView;
     }
@@ -90,7 +89,7 @@
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
         [result setUserInteractionEnabled:NO];
-        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
         [result setIsLoadingCell];
 		[result setIsPlayingVideo:NO];
         return (UITableViewCell *)result;
@@ -100,13 +99,13 @@
 	result.indexInTable = [anIndexPath row];
     [result setUserInteractionEnabled:YES];
     if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
     }
     else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
     }
     else {
-        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
     }
     [result setVideoRowDelegate:self];
     if ([anIndexPath row] > 0) {
