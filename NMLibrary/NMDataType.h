@@ -17,11 +17,12 @@ typedef enum {
 
 typedef enum {
 	NMCommandGetAllChannels			= 1,
-	NMCommandGetFriendChannels,
-	NMCommandGetTopicChannels,
 	NMCommandGetSubscribedChannels,
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
+	NMCommandGetChannelDetail,
+	NMCommandCreateKeywordChannel,
+	NMCommandCreateUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetChannelVideoList,
@@ -30,6 +31,8 @@ typedef enum {
 	NMCommandGetVimeoDirectURL,
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
+	NMCommandGetVideoThumbnail,
+	NMCommandGetPreviewThumbnail,
 } NMCommand;
 
 typedef enum {
@@ -57,11 +60,25 @@ typedef enum {
 	NMErrorNone,
 	NMErrorNoData,
 	NMErrorNoSupportedVideoFormat,
+	NMErrorDeviceTokenExpired,
 	NMErrorYouTubeAPIError,
 } NMErrorType;
 
+typedef enum {
+	NMChannelUnknownType,
+	NMChannelUserType,
+	NMChannelYoutubeType,
+	NMChannelKeywordType,
+	NMChannelVimeoType,
+} NMChannelType;
+
 
 // Notifications
+// user
+extern NSString * const NMWillCreateUserNotification;
+extern NSString * const NMDidCreateUserNotification;
+extern NSString * const NMDidFailCreateUserNotification;
+
 // channel
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;
@@ -72,6 +89,13 @@ extern NSString * const NMDidFailGetChannelsForCategoryNotification;
 extern NSString * const NMWillSearchChannelsNotification;
 extern NSString * const NMDidSearchChannelsNotification;
 extern NSString * const NMDidFailSearchChannelsNotification;
+extern NSString * const NMWillGetChannelDetailNotification;
+extern NSString * const NMDidGetChannelDetailNotification;
+extern NSString * const NMDidFailGetChannelDetailNotification;
+extern NSString * const NMWillCreateChannelNotification;
+extern NSString * const NMDidCreateChannelNotification;
+extern NSString * const NMDidFailCreateChannelNotification;
+
 // subscription
 extern NSString * const NMWillSubscribeChannelNotification;
 extern NSString * const NMDidSubscribeChannelNotification;

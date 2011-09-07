@@ -20,13 +20,16 @@
 	UIImageView * logoView;
 @private
 	NMAVQueuePlayer * player_;
+	UIView * airPlayIndicatorView;
 }
 
 @property (nonatomic, retain) NMAVQueuePlayer * player;
 @property (nonatomic, readonly) UILabel * statusLabel;
 @property (nonatomic, readonly) UIActivityIndicatorView * activityIndicator;
+@property (nonatomic, retain) IBOutlet UIView * airPlayIndicatorView;
 
 - (void)addTarget:(id)atarget action:(SEL)anAction;
 - (void)setActivityIndicationHidden:(BOOL)hidden animated:(BOOL)animated;
+- (void)hideAirPlayIndicatorView:(BOOL)hidden;
 
 @end

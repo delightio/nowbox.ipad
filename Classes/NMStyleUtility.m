@@ -19,7 +19,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize videoTitleFont;
 @synthesize videoDetailFont;
 @synthesize videoShadowImage;
-@synthesize videoHighlightedBackgroundImage;
+@synthesize videoHighlightedBackgroundImage, videoNormalBackgroundImage, videoDimmedBackgroundImage;
 @synthesize videoTitleFontColor;
 @synthesize videoTitleHighlightedFontColor;
 @synthesize videoTitlePlayedFontColor;
@@ -33,7 +33,8 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize channelPanelPlayedColor;
 @synthesize channelBorderColor;
 @synthesize userPlaceholderImage;
-@synthesize channelContainerBackgroundImage;
+@synthesize channelContainerBackgroundNormalImage;
+@synthesize channelContainerBackgroundHighlightImage;
 @synthesize fullScreenImage;
 @synthesize fullScreenActiveImage;
 @synthesize splitScreenImage;
@@ -44,6 +45,9 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize pauseActiveImage;
 @synthesize blackColor;
 @synthesize videoStatusBadImage;
+@synthesize videoStatusFavImage;
+@synthesize videoStatusHotImage;
+@synthesize videoNewSessionIndicatorImage;
 
 + (NMStyleUtility *)sharedStyleUtility {
 	if ( sharedStyleUtility_ == nil ) {
@@ -64,11 +68,17 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[viewCountFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 	
 	// video detail view font
-	channelNameFont = [[UIFont fontWithName:@"ArialMT" size:13.0f] retain];
-	videoDetailFont = [[UIFont fontWithName:@"ArialMT" size:12.0f] retain];
-	videoTitleFont = [[UIFont fontWithName:@"Arial-BoldMT" size:13.0f] retain];
+	if ( NM_RUNNING_IOS_5 ) {
+		channelNameFont = [[UIFont fontWithName:@"Futura-CondensedMedium" size:15.0f] retain];
+	} else {
+		channelNameFont = [[UIFont fontWithName:@"Futura-CondensedExtraBold" size:13.0f] retain];
+	}
+	videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
+	videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
 	videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
-    videoHighlightedBackgroundImage = [[UIImage imageNamed:@"channel-video-background"] retain];
+    videoHighlightedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-highlight"] retain];
+    videoNormalBackgroundImage = [[UIImage imageNamed:@"channel-video-background-normal"] retain];
+    videoDimmedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-dimmed"] retain];
 	videoDetailFontColor = [[UIColor colorWithRed:90.0f / 255.0f green:90.0f / 255.0f blue:90.0f / 255.0f alpha:1.0f] retain];
 	videoDetailHighlightedFontColor = [[UIColor colorWithRed:162.0f / 255.0f green:162.0f / 255.0f blue:162.0f / 255.0f alpha:1.0f] retain];
 	videoDetailPlayedFontColor = [[UIColor colorWithRed:159 / 255.0f green:159 / 255.0f blue:159 / 255.0f alpha:1.0f] retain];
@@ -76,13 +86,14 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	videoTitleHighlightedFontColor = [[UIColor whiteColor] retain];
     videoTitlePlayedFontColor = [[UIColor colorWithRed:133.0f / 255.0f green:133.0f / 255.0f blue:133.0f / 255.0f alpha:1.0f] retain];
 	clearColor = [[UIColor clearColor] retain];
-	channelPanelFontColor = [[UIColor colorWithRed:48.0f / 255.0f green:100.0f / 255.0f blue:138.0f / 255.0f alpha:1.0] retain];
+	channelPanelFontColor = [[UIColor colorWithRed:225.0f / 255.0f green:225.0f / 255.0f blue:225.0f / 255.0f alpha:1.0] retain];
 	channelPanelHighlightColor = [[UIColor colorWithRed:62.0f/255.0f green:62.0f / 255.0f blue:62.0f / 255.0f alpha:1.0] retain];
 	channelPanelBackgroundColor = [[UIColor colorWithRed:245.0f / 255.0f green:245.0f / 255.0f blue:245.0f / 255.0f alpha:1.0] retain];
     channelPanelPlayedColor = [[UIColor colorWithRed:233 / 255.0f green:233 / 255.0f blue:233 / 255.0f alpha:1.0] retain];
-	channelBorderColor = [[UIColor colorWithRed:182.0f / 255.0f green:182.0f / 255.0f blue:182.0f / 255.0f alpha:1.0] retain];
+	channelBorderColor = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0 alpha:1.0] retain];
 	userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
-	channelContainerBackgroundImage = [[UIImage imageNamed:@"channel-shadow-background"] retain];
+	channelContainerBackgroundNormalImage = [[UIImage imageNamed:@"channel-list-cell-normal"] retain];
+	channelContainerBackgroundHighlightImage = [[UIImage imageNamed:@"channel-list-cell-highlighted"] retain];
 	
 	fullScreenImage = [[UIImage imageNamed:@"playback-full-screen"] retain];
 	fullScreenActiveImage = [[UIImage imageNamed:@"playback-full-screen-active"] retain];
@@ -97,12 +108,17 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	blackColor = [[UIColor blackColor] retain];
     
     videoStatusBadImage = [[UIImage imageNamed:@"channel-video-status-bad"] retain];
+    videoStatusHotImage = [[UIImage imageNamed:@"channel-video-status-hot"] retain];
+    videoStatusFavImage = [[UIImage imageNamed:@"channel-video-status-fav"] retain];
+    
+    videoNewSessionIndicatorImage = [[UIImage imageNamed:@"channel-view-new-session"] retain];
 	
 	return self;
 }
 
 - (void)dealloc {
-	[channelContainerBackgroundImage release];
+	[channelContainerBackgroundNormalImage release];
+	[channelContainerBackgroundHighlightImage release];
 	[videoDateFormatter release];
 	[viewCountFormatter release];
 	[channelNameFont release];
@@ -110,6 +126,8 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[videoTitleFont release];
 	[videoShadowImage release];
     [videoHighlightedBackgroundImage release];
+    [videoNormalBackgroundImage release];
+    [videoDimmedBackgroundImage release];
 	[videoTitleFontColor release];
 	[videoTitleHighlightedFontColor release];
 	[videoDetailFontColor release];
@@ -120,6 +138,11 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[channelPanelBackgroundColor release];
     [channelBorderColor release];
 	[userPlaceholderImage release];
+    [videoStatusBadImage release];
+    [videoStatusHotImage release];
+    [videoStatusFavImage release];
+    [videoNewSessionIndicatorImage release];
+    
 	
 	[fullScreenImage release], [fullScreenActiveImage release];
 	[splitScreenImage release],	[splitScreenActiveImage release];

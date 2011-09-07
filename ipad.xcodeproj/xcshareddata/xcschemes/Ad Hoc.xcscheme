@@ -14,8 +14,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A925013B134385BF001759F5"
-               BuildableName = "ipad.app"
-               BlueprintName = "ipad"
+               BuildableName = "nowbox.app"
+               BlueprintName = "nowbox"
                ReferencedContainer = "container:ipad.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -38,6 +38,15 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "A925013B134385BF001759F5"
+            BuildableName = "nowbox.app"
+            BlueprintName = "nowbox"
+            ReferencedContainer = "container:ipad.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.GDB"
@@ -46,13 +55,15 @@
       displayScale = "1.00"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Ad Hoc">
+      buildConfiguration = "Ad Hoc"
+      debugDocumentVersioning = "YES"
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A925013B134385BF001759F5"
-            BuildableName = "ipad.app"
-            BlueprintName = "ipad"
+            BuildableName = "nowbox.app"
+            BlueprintName = "nowbox"
             ReferencedContainer = "container:ipad.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -75,13 +86,14 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Ad Hoc">
+      buildConfiguration = "Ad Hoc"
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A925013B134385BF001759F5"
-            BuildableName = "ipad.app"
-            BlueprintName = "ipad"
+            BuildableName = "nowbox.app"
+            BlueprintName = "nowbox"
             ReferencedContainer = "container:ipad.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

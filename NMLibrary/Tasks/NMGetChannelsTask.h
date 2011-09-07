@@ -24,8 +24,8 @@
 @property (nonatomic, retain) NSString * searchWord;
 @property (nonatomic, retain) NMCategory * category;
 
-- (id)initGetFriendChannels;
-- (id)initGetTopicChannels;
++ (NSMutableDictionary *)normalizeChannelDictionary:(NSDictionary *)chnCtnDict;
+
 - (id)initGetDefaultChannels;
 - (id)initGetChannelForCategory:(NMCategory *)aCat;
 - (id)initSearchChannelWithKeyword:(NSString *)str;

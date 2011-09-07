@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1280</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
+		<string key="IBDocument.SystemVersion">11B26</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1923</string>
 		<string key="IBDocument.AppKitVersion">1138</string>
 		<string key="IBDocument.HIToolboxVersion">566.00</string>
@@ -67,6 +67,7 @@
 						<string key="NSFrame">{{0, 44}, {1024, 344}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="256796477"/>
 						<object class="NSColor" key="IBUIBackgroundColor" id="408660464">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MQA</bytes>
@@ -250,6 +251,25 @@
 						<reference key="IBUIFontDescription" ref="282441018"/>
 						<reference key="IBUIFont" ref="609573130"/>
 					</object>
+					<object class="IBUIImageView" id="256796477">
+						<reference key="NSNextResponder" ref="191373211"/>
+						<int key="NSvFlags">290</int>
+						<string key="NSFrame">{{0, 44}, {1024, 8}}</string>
+						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSWindow"/>
+						<string key="NSReuseIdentifierKey">_NS:554</string>
+						<object class="NSColor" key="IBUIBackgroundColor">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MSAwAA</bytes>
+						</object>
+						<bool key="IBUIOpaque">NO</bool>
+						<bool key="IBUIUserInteractionEnabled">NO</bool>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<object class="NSCustomResource" key="IBUIImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">action-bar-bottom-shadow.png</string>
+						</object>
+					</object>
 				</object>
 				<string key="NSFrameSize">{1024, 380}</string>
 				<reference key="NSSuperview"/>
@@ -326,6 +346,14 @@
 					<int key="connectionID">60</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">fullScreenButton</string>
+						<reference key="source" ref="96030309"/>
+						<reference key="destination" ref="589027199"/>
+					</object>
+					<int key="connectionID">63</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">showFeatureDebugView:</string>
 						<reference key="source" ref="1057073313"/>
@@ -378,7 +406,6 @@
 						<reference key="object" ref="191373211"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="1064860965"/>
 							<reference ref="115682383"/>
 							<reference ref="1057073313"/>
 							<reference ref="422449900"/>
@@ -387,6 +414,8 @@
 							<reference ref="839879883"/>
 							<reference ref="315145116"/>
 							<reference ref="589027199"/>
+							<reference ref="1064860965"/>
+							<reference ref="256796477"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -457,6 +486,11 @@
 						<reference key="object" ref="589027199"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">62</int>
+						<reference key="object" ref="256796477"/>
+						<reference key="parent" ref="191373211"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -484,6 +518,7 @@
 					<string>49.IBPluginDependency</string>
 					<string>53.IBPluginDependency</string>
 					<string>53.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
+					<string>62.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -508,6 +543,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<real value="1"/>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -522,7 +558,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">60</int>
+			<int key="maxID">63</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -588,12 +624,14 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>filterButton</string>
+							<string>fullScreenButton</string>
 							<string>panelView</string>
 							<string>settingButton</string>
 							<string>tableView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>UIButton</string>
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UIButton</string>
@@ -605,6 +643,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>filterButton</string>
+							<string>fullScreenButton</string>
 							<string>panelView</string>
 							<string>settingButton</string>
 							<string>tableView</string>
@@ -613,6 +652,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
 								<string key="name">filterButton</string>
+								<string key="candidateClassName">UIButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">fullScreenButton</string>
 								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -657,6 +700,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>airPlayIndicatorView</string>
 							<string>authorBackgroundView</string>
 							<string>authorImageView</string>
 							<string>authorNameLabel</string>
@@ -671,11 +715,13 @@
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
 							<string>progressSlider</string>
+							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>UIView</string>
 							<string>UIView</string>
 							<string>NMCachedImageView</string>
 							<string>UILabel</string>
@@ -690,6 +736,7 @@
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UISlider</string>
+							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
 						</object>
@@ -698,6 +745,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>airPlayIndicatorView</string>
 							<string>authorBackgroundView</string>
 							<string>authorImageView</string>
 							<string>authorNameLabel</string>
@@ -712,11 +760,16 @@
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
 							<string>progressSlider</string>
+							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">airPlayIndicatorView</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">authorBackgroundView</string>
 								<string key="candidateClassName">UIView</string>
@@ -772,6 +825,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">progressSlider</string>
 								<string key="candidateClassName">UISlider</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">seekBubbleButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">topbarContainerView</string>
@@ -884,10 +941,10 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addVideoToFavorite:</string>
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
-							<string>shareVideo:</string>
 							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
@@ -911,10 +968,10 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addVideoToFavorite:</string>
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
-							<string>shareVideo:</string>
 							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
@@ -923,6 +980,10 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">addVideoToFavorite:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">addVideoToQueue:</string>
 								<string key="candidateClassName">id</string>
@@ -933,10 +994,6 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">seekPlaybackProgress:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">shareVideo:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -969,6 +1026,7 @@
 							<string>controlScrollView</string>
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
+							<string>ribbonView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -976,6 +1034,7 @@
 							<string>UIScrollView</string>
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
+							<string>UIView</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -986,6 +1045,7 @@
 							<string>controlScrollView</string>
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
+							<string>ribbonView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1004,6 +1064,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">loadedMovieDetailView</string>
 								<string key="candidateClassName">NMMovieDetailView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">ribbonView</string>
+								<string key="candidateClassName">UIView</string>
 							</object>
 						</object>
 					</object>
@@ -1026,6 +1090,7 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>action-bar-bottom-shadow.png</string>
 				<string>channel-toolbar-background.png</string>
 				<string>toolbar-channel-management-active.png</string>
 				<string>toolbar-channel-management.png</string>
@@ -1039,15 +1104,16 @@
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{1, 8}</string>
 				<string>{1024, 44}</string>
-				<string>{68, 44}</string>
-				<string>{68, 44}</string>
+				<string>{60, 40}</string>
+				<string>{60, 40}</string>
 				<string>{60, 40}</string>
 				<string>{60, 40}</string>
 				<string>{68, 44}</string>
 				<string>{68, 44}</string>
-				<string>{68, 44}</string>
-				<string>{68, 44}</string>
+				<string>{60, 40}</string>
+				<string>{60, 40}</string>
 				<string>{2, 30}</string>
 			</object>
 		</object>

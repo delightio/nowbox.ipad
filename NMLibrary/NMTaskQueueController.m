@@ -11,6 +11,7 @@
 #import "NMNetworkController.h"
 #import "NMDataController.h"
 #import "NMChannel.h"
+#import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 
@@ -41,6 +42,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	networkController = [[NMNetworkController alloc] init];
 	networkController.dataController = dataController;
 	
+	// handle keyword channel creation
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
+	
 	return self;
 }
 
@@ -60,6 +64,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[managedObjectContext release];
 	[dataController release];
 	[networkController release];
@@ -83,7 +88,20 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController resetAllChannelsPageNumber];
 }
 
+#pragma mark Notification handler
+- (void)handleChannelCreationNotification:(NSNotification *)aNotification {
+	// received notification of channel creation
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+	[self issueSubscribe:YES channel:chnObj];
+}
+
 #pragma mark Queue tasks to network controller
+- (void)issueCreateUser; {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] init];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueGetFeaturedCategories {
 	NMGetCategoriesTask * task = [[NMGetCategoriesTask alloc] init];
 	[networkController addNewConnectionForTask:task];
@@ -149,6 +167,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj {
+	NMGetChannelDetailTask * task = [[NMGetChannelDetailTask alloc] initWithChannel:chnObj];
+	[networkController addNewConnectionForTask:task];
+	return [task autorelease];
+}
+
+
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo {
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
@@ -160,7 +185,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( dtlObj.author_thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithAuthor:dtlObj];
 		[networkController addNewConnectionForTask:task];
-		[task release];
+		[task autorelease];
 	}
 	return task;
 }
@@ -170,13 +195,40 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( chnObj.thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithChannel:chnObj];
 		[networkController addNewConnectionForTask:task];
-		[task release];
+		[task autorelease];
+	}
+	return task;
+}
+
+- (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	NMImageDownloadTask * task = nil;
+	if ( pv.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithPreviewThumbnail:pv];
+		[networkController addNewConnectionForTask:task];
+		[task autorelease];
+	}
+	return task;
+}
+
+
+- (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo {
+	NMImageDownloadTask * task = nil;
+	if ( vdo.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithVideoThumbnail:vdo];
+		[networkController addNewConnectionForTask:task];
+		[task autorelease];
 	}
 	return task;
 }
 
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj {
-	NMEventTask * task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:aSubscribe];
+	NMTask * task = nil;
+	if ( aSubscribe && [chnObj.nm_id integerValue] == 0 ) {
+		// subscribing placeholder channel
+		task = [[NMCreateChannelTask alloc] initWithPlaceholderChannel:chnObj];
+	} else {
+		task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:aSubscribe];
+	}
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

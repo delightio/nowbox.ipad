@@ -276,8 +276,6 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 			if ( task.state == NMTaskExecutionStateConnectionActive ) {
 				switch (task.command) {
 					case NMCommandGetAllChannels:
-					case NMCommandGetFriendChannels:
-					case NMCommandGetTopicChannels:
 					case NMCommandGetSubscribedChannels:
 					case NMCommandGetChannelVideoList:
 						// cancel the task
@@ -309,6 +307,8 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	switch (task.command) {
 		case NMCommandGetChannelThumbnail:
 		case NMCommandGetAuthorThumbnail:
+		case NMCommandGetVideoThumbnail:
+		case NMCommandGetPreviewThumbnail:
 		{
 			NMImageDownloadTask * imgTask = (NMImageDownloadTask *)task;
 			imgTask.httpResponse = (NSHTTPURLResponse *)response;

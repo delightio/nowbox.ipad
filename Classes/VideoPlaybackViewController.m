@@ -22,12 +22,14 @@
 #define NM_PLAYER_ITEM_STATUS_CONTEXT			106
 #define NM_PLAYER_RATE_CONTEXT					107
 #define NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT		108
+
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
 #define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
 #define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER	10001
-
+#define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT	10002
+#define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT		10003
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
@@ -82,6 +84,10 @@
 	// view background
 	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
 	self.view.backgroundColor = bgColor;
+	
+	// ribbon view
+	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
+	ribbonView.layer.shouldRasterize = YES;
 	
 	// playback data model controller
 	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
@@ -410,6 +416,9 @@
 		case NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER:
 			showMovieControlTimestamp = loadedControlView.timeElapsed;
 			break;
+		case NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT:
+		case NM_ANIMATION_RIBBON_FADE_IN_CONTEXT:
+			break;
 			
 		default:
 			break;
@@ -577,7 +586,10 @@
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
 	NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
 #endif
-	((NMAVPlayerItem *)anItem).nmVideo.nm_playback_status = NMVideoQueueStatusPlayed;
+	NMVideo * vdo = ((NMAVPlayerItem *)anItem).nmVideo;
+	if ( [vdo.nm_error integerValue] == NMErrorNone ) {
+		vdo.nm_playback_status = NMVideoQueueStatusPlayed;
+	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"status"];
 }
@@ -730,15 +742,18 @@
 			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
 		}
-		[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
+		if ( playbackModelController.currentVideo ) {
+			[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
+			NSLog(@"##### Will Play Notificaiton - %@", playbackModelController.currentVideo.title);
+		}
 	} else if ( c == NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT ) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 		if ( movieView.player.airPlayVideoActive ) {
 			// update the player interface to indicate that Airplay has been enabled
-			[loadedControlView hideAirPlayIndicatorView:NO];
+			[movieView hideAirPlayIndicatorView:NO];
 		} else {
 			// remove the interface indication
-			[loadedControlView hideAirPlayIndicatorView:YES];
+			[movieView hideAirPlayIndicatorView:YES];
 		}
 #endif
 	}
@@ -825,6 +840,10 @@
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	NMVideoPlaybackViewIsScrolling = YES;
+	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT];
+	ribbonView.alpha = 0.15;
+	[UIView commitAnimations];
+	ribbonView.userInteractionEnabled = NO;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -876,6 +895,11 @@
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
+	// ribbon fade in transition
+	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_IN_CONTEXT];
+	ribbonView.alpha = 1.0f;
+	[UIView commitAnimations];
+	ribbonView.userInteractionEnabled = YES;
 }
 
 
@@ -981,10 +1005,12 @@
 			theDetailView.hidden = NO;
 			theDetailView.alpha = 1.0f;
 		}
+		ribbonView.hidden = NO;
 	} else {
 		for (theDetailView in movieDetailViewArray) {
 			theDetailView.hidden = YES;
 		}
+		ribbonView.hidden = YES;
 	}
 	// slide in/out the prototype channel panel
 	// scale down movie control
@@ -1050,6 +1076,9 @@
 
 //		movieView.frame = CGRectMake(0, -340, 640.0f, 360.0f);
 
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-collapse"] forState:UIControlStateNormal];
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-collapse-active"] forState:UIControlStateHighlighted];
+        
         controlScrollView.frame = CGRectMake(0, -360, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
 
         channelController.panelView.frame = theFrame;
@@ -1064,6 +1093,9 @@
 		
 //        movieView.frame = CGRectMake(0, 20.0f, 640.0f, 360.0f);
 
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-expand"] forState:UIControlStateNormal];
+        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-expand-active"] forState:UIControlStateHighlighted];
+        
         controlScrollView.frame = CGRectMake(0, 0, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
 
         channelController.panelView.frame = theFrame;
@@ -1137,6 +1169,7 @@
     if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
         if (gestureRecognizer.state != UIGestureRecognizerStatePossible && gestureRecognizer.state != UIGestureRecognizerStateEnded && gestureRecognizer.state != UIGestureRecognizerStateCancelled && gestureRecognizer.state != UIGestureRecognizerStateFailed) {
             if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+				// disable channel video cell scrolling
                 otherGestureRecognizer.enabled = NO;
                 [temporaryDisabledGestures addObject:otherGestureRecognizer];
             }

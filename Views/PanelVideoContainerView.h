@@ -14,16 +14,17 @@
     UILabel * titleLabel;
 	UILabel * datePostedLabel;
 	UILabel * durationLabel;
-	UILabel * viewsLabel;
+//	UILabel * viewsLabel;
 	CGSize titleMaxSize;
-	UIColor * highlightColor, * normalColor, *playedColor;
 	NSInteger indexInTable;
 	AGOrientedTableView * tableView;
 	CGRect initialFrame;
-	@private
+	BOOL videoNewSession;
+
+    @private
 	BOOL currentVideoIsPlaying;
     VideoRowController *videoRowDelegate;
-    UIImageView *highlightedBackgroundImage;
+//    UIImageView *highlightedBackgroundImage;
     UIImageView *videoStatusImageView;
     BOOL isVideoPlayable;
     
@@ -31,19 +32,17 @@
 
 }
 
-@property (nonatomic, readonly) UIImageView *highlightedBackgroundImage;
+//@property (nonatomic, readonly) UIImageView *highlightedBackgroundImage;
 @property (nonatomic, readonly) UIImageView *videoStatusImageView;
 @property (nonatomic, readonly) UIView *backgroundColorView;
 @property (nonatomic, readonly) UILabel * titleLabel;
 @property (nonatomic, readonly) UILabel * datePostedLabel;
 @property (nonatomic, readonly) UILabel * durationLabel;
-@property (nonatomic, readonly) UILabel * viewsLabel;
-@property (nonatomic, retain) UIColor * highlightColor;
-@property (nonatomic, retain) UIColor * normalColor;
-@property (nonatomic, retain) UIColor * playedColor;
+//@property (nonatomic, readonly) UILabel * viewsLabel;
 @property (nonatomic, assign) NSInteger indexInTable;
 @property (nonatomic, assign) AGOrientedTableView * tableView;
 @property (nonatomic, assign) VideoRowController *videoRowDelegate;
+@property (nonatomic, assign) BOOL videoNewSession;
 
 - (void)setVideoInfo:(NMVideo *)aVideo;
 - (void)setIsLoadingCell;

@@ -15,6 +15,7 @@
 
 @synthesize player=player_;
 @synthesize activityIndicator, statusLabel;
+@synthesize airPlayIndicatorView;
 
 //- (void)awakeFromNib {
 //	UIPanGestureRecognizer * panRcr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureAction:)];
@@ -59,6 +60,11 @@
 	logoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
 	logoView.alpha = 0.5f;
 	[self addSubview:logoView];
+	
+	if ( NM_RUNNING_IOS_5 ) {
+		// load the view
+		[[NSBundle mainBundle] loadNibNamed:@"AppleTVIndicationView" owner:self options:nil];
+	}
 
 	return self;
 }
@@ -136,6 +142,20 @@
 	activityIndicator.alpha = f;
 	statusLabel.alpha = f;
 	if ( animated ) [UIView commitAnimations];
+}
+
+- (void)hideAirPlayIndicatorView:(BOOL)hidden {
+	CGRect theRect;
+	if ( airPlayIndicatorView.superview && hidden) {
+		// hide
+		[airPlayIndicatorView removeFromSuperview];
+	} else if ( airPlayIndicatorView.superview == nil && !hidden ) {
+		// show
+		theRect = self.bounds;
+		airPlayIndicatorView.center = CGPointMake(theRect.size.width / 2.0f, theRect.size.height / 2.0f);
+		airPlayIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin;
+		[self addSubview:airPlayIndicatorView];
+	}
 }
 
 @end

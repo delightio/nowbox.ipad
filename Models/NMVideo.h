@@ -15,10 +15,11 @@
 
 @interface NMVideo :  NSManagedObject  
 {
-	NSInteger nm_playback_status;
+//	NSInteger nm_playback_status;
 	
 	NMAVPlayerItem * nm_player_item;
 	NMMovieDetailView * nm_movie_detail_view;
+	NSInteger nm_playback_status;
 }
 
 @property (nonatomic, retain) NSString * external_id;
@@ -35,6 +36,7 @@
 @property (nonatomic, retain) NSNumber * nm_retry_count;
 @property (nonatomic, retain) NSNumber * nm_session_id;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
+@property (nonatomic, retain) NSString * nm_thumbnail_file_name;
 @property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSString * source;
 @property (nonatomic, retain) NSNumber * nm_id;

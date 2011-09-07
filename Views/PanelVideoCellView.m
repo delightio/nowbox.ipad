@@ -40,24 +40,37 @@
     CGRect rectangle = self.frame;
     
     if (cellIsHighlighted) {
-        CGContextSetFillColorWithColor(context, cellData.highlightColor.CGColor);
+        [[[NMStyleUtility sharedStyleUtility] videoHighlightedBackgroundImage] drawInRect:rectangle];
+        CGContextSetFillColorWithColor(context, [[UIColor colorWithRed:36/255 green:36/255 blue:36/255 alpha:1] CGColor]);
     } else if (videoHasPlayed) {
-        CGContextSetFillColorWithColor(context, cellData.playedColor.CGColor);
+        [[[NMStyleUtility sharedStyleUtility] videoDimmedBackgroundImage] drawInRect:rectangle];
+        CGContextSetFillColorWithColor(context, [[UIColor colorWithRed:238/255 green:238/255 blue:238/255 alpha:1] CGColor]);
     } else {
-        CGContextSetFillColorWithColor(context, cellData.normalColor.CGColor);
+        [[[NMStyleUtility sharedStyleUtility] videoNormalBackgroundImage] drawInRect:rectangle];
+        CGContextSetFillColorWithColor(context, [[UIColor whiteColor] CGColor]);
     }
-    CGContextFillRect(context, rectangle);
-    
+//    CGContextFillRect(context, CGRectMake(0, 0, 1, 99));
+
+    // "fake" separator border"
     if (cellIsHighlighted) {
-        [cellData.highlightedBackgroundImage.image drawInRect:cellData.highlightedBackgroundImage.frame];
+        CGContextSetFillColorWithColor(context, [[UIColor colorWithRed:36/255 green:36/255 blue:36/255 alpha:1] CGColor]);
+    } else if (videoHasPlayed) {
+        CGContextSetFillColorWithColor(context, [[[NMStyleUtility sharedStyleUtility] channelBorderColor] CGColor]);
+    } else {
+        CGContextSetFillColorWithColor(context, [[[NMStyleUtility sharedStyleUtility] channelBorderColor] CGColor]);
     }
+    CGContextFillRect(context, CGRectMake(rectangle.size.width-1, 0, 1, 100));
     
     [self drawLabel:cellData.titleLabel inContext:context];
     [self drawLabel:cellData.datePostedLabel inContext:context];
     [self drawLabel:cellData.durationLabel inContext:context];
-    [self drawLabel:cellData.viewsLabel inContext:context];
+//    [self drawLabel:cellData.viewsLabel inContext:context];
     
-    [cellData.videoStatusImageView.image drawInRect:CGRectMake(rectangle.size.width-24, 0, 24, 24)];
+    [cellData.videoStatusImageView.image drawInRect:CGRectMake(rectangle.size.width-28, 0, 28, 26)];
+    
+    if (cellData.videoNewSession) {
+        [[[NMStyleUtility sharedStyleUtility] videoNewSessionIndicatorImage] drawInRect:CGRectMake(0, 0, 7, 100)];
+    }
     
 //    CGContextSetFillColorWithColor(context, [NMStyleUtility sharedStyleUtility].channelBorderColor.CGColor);
 //    CGContextFillRect(context, CGRectMake(0, 87, rectangle.size.width, 1));
@@ -65,6 +78,16 @@
 }
 
 - (void)drawLabel:(UILabel *)labelToDraw inContext:(CGContextRef)context {
+    CGRect shadowFrame = labelToDraw.frame;
+    shadowFrame.origin.y++;
+    
+    if (cellIsHighlighted) {
+        CGContextSetFillColorWithColor(context, [[UIColor blackColor] CGColor]);
+    } else {
+        CGContextSetFillColorWithColor(context, [[UIColor whiteColor] CGColor]);
+    }
+    [labelToDraw.text drawInRect:shadowFrame withFont:labelToDraw.font lineBreakMode:labelToDraw.lineBreakMode alignment:labelToDraw.textAlignment];
+
     if (cellIsHighlighted) {
         CGContextSetFillColorWithColor(context, labelToDraw.highlightedTextColor.CGColor);
     } else {

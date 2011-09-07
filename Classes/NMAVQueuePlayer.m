@@ -65,8 +65,11 @@
 
 #pragma mark Public interface
 - (void)advanceToVideo:(NMVideo *)aVideo {
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"advanceToVideo: %@ - will delay call", aVideo.title);
+#endif
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	AVPlayerItem * curItem = self.currentItem;
+	NMAVPlayerItem * curItem = (NMAVPlayerItem *)self.currentItem;
 	if ( curItem == nil ) {
 		// queue this item
 		if ( aVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
@@ -76,6 +79,8 @@
 		}
 	} else {
 		[playbackDelegate player:self stopObservingPlayerItem:curItem];
+		curItem.nmVideo.nm_player_item = nil;
+		curItem.nmVideo = nil;
 		[self advanceToNextItem];
 		[self play];
 	}
@@ -86,9 +91,15 @@
 - (void)revertToVideo:(NMVideo *)aVideo {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	if ( aVideo.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
+#ifdef DEBUG_PLAYER_NAVIGATION
+		NSLog(@"revertToVideo: %@ - cancel and delay call", aVideo.title);
+#endif
 		// we need to resolve the direct URL
 		[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 	} else {
+#ifdef DEBUG_PLAYER_NAVIGATION
+		NSLog(@"revertToVideo: %@ - delay revert to video", aVideo.title);
+#endif
 		[self performSelector:@selector(delayedRevertToVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 	}
 }
@@ -100,6 +111,9 @@
 }
 
 - (void)resolveAndQueueVideo:(NMVideo *)vid {
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"resolveAndQueueVideo: %@ - no delay call", vid.title);
+#endif
 	[self performSelector:@selector(requestResolveVideo:) withObject:vid afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 }
 
@@ -127,6 +141,11 @@
 #endif
 			[self insertItem:cItem afterItem:self.currentItem];
 			insertStatus = YES;
+			// remove the last item
+			NSArray * allItems = self.items;
+			if ( [allItems count] == 4 ) {
+				[self removeItem:[allItems objectAtIndex:3]];
+			}
 		} else {
 #ifdef DEBUG_PLAYER_NAVIGATION
 			NSLog(@"CANNOT insert back");
@@ -139,7 +158,7 @@
 
 - (void)requestResolveVideo:(NMVideo *)vid {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"issue resolution request - %@", vid.title);
+	NSLog(@"issue resolution request - %@, status - %d %@", vid.title, vid.nm_playback_status, [vid objectID]);
 	if ( vid.title == nil ) {
 		NSLog(@"null video title?");
 	}

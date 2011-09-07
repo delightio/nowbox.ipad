@@ -70,7 +70,14 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self checkUpdateChannels];
+	if ( appFirstLaunch ) {
+		debugLabel.text = @"Setting up new user...";
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
+		// create new user
+		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+	} else {
+		[self checkUpdateChannels];
+	}
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -102,8 +109,9 @@
 	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
 
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
-	if ( [lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL || // 12 hours
-		appFirstLaunch ) { 
+	if ( appFirstLaunch || 
+		[lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL // 12 hours
+		) { 
 		// get channel
 		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 		debugLabel.text = @"Fetching channels...";
@@ -116,6 +124,13 @@
 }
 
 #pragma mark Notification
+- (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
+	[[NSUserDefaults standardUserDefaults] setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+	NSLog(@"Created new user: %d", NM_USER_ACCOUNT_ID);
+	// new user created, get channel
+	[self checkUpdateChannels];
+}
+
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 	debugLabel.text = @"Ready to go...";
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];

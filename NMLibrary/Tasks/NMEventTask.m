@@ -10,6 +10,7 @@
 #import "NMDataController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMCategory.h"
 
 NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
 
@@ -152,12 +153,19 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	NMVideo * newVideo = nil;
 	switch (eventType) {
 		case NMEventSubscribeChannel:
-			channel.nm_subscribed = [NSNumber numberWithBool:YES];
+		{
+			channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			break;
+		}
 		case NMEventUnsubscribeChannel:
-			channel.nm_subscribed = [NSNumber numberWithBool:NO];
+		{
+			channel.nm_subscribed = [NSNumber numberWithInteger:0];
+			[ctrl.internalSubscribedChannelsCategory removeChannelsObject:channel];
 			break;
+		}
 		case NMEventEnqueue:
+		{
 			//add video to "watch later" channel
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.myQueueChannel;
@@ -165,6 +173,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			// mark the flag
 			video.nm_watch_later = [NSNumber numberWithBool:YES];
 			break;
+		}
 		case NMEventDequeue:
 		{
 			NSNumber * vid = [video.nm_id retain];
@@ -178,12 +187,14 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			break;
 		}
 		case NMEventShare:
+		{
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.favoriteVideoChannel;
 			[ctrl.favoriteVideoChannel addVideosObject:newVideo];
 			// mark the flag
 			video.nm_favorite = [NSNumber numberWithBool:YES];
 			break;
+		}
 		case NMEventUnfavorite:
 		{
 			NSNumber * vid = [video.nm_id retain];

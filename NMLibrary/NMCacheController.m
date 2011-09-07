@@ -7,10 +7,12 @@
 //
 
 #import "NMCacheController.h"
+#import "NMFileExistsCache.h"
 #import "NMImageDownloadTask.h"
 #import "NMTaskQueueController.h"
 #import "NMStyleUtility.h"
 #import "NMChannel.h"
+#import "NMPreviewThumbnail.h"
 #import "NMVideoDetail.h"
 #import "NMCachedImageView.h"
 
@@ -21,6 +23,9 @@
 static NMCacheController * _sharedCacheController = nil;
 static NSString * const JPIndexPathDictionaryKey = @"idxpath";
 static NSString * const JPTableViewDictionaryKey = @"table";
+
+extern NSString * const NMChannelManagementWillAppearNotification;
+extern NSString * const NMChannelManagementDidDisappearNotification;
 
 @implementation NMCacheController
 
@@ -40,11 +45,16 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:nil];
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:nil];
 	
+	// listen to channel management view notification
+	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
+	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+	
 	// check if the cache directory is here or not. If not, create it.
 	NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 	NSString * cacheBaseDir = [docDir stringByAppendingPathComponent:@"image_cache"];
 	channelThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"channel_thumbnail"] retain];
 	authorThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"author_thumbnail"] retain];
+	videoThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"video_thumbnail"] retain];
 	// file manager
 	fileManager = [[NSFileManager alloc] init];
 	
@@ -66,7 +76,14 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			NSException * e = [NSException exceptionWithName:@"CacheError" reason:@"cannot create cache directory" userInfo:nil];
 			[e raise];
 		}
+		[fileManager createDirectoryAtPath:videoThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:&error];
+		if ( error ) {
+			NSException * e = [NSException exceptionWithName:@"CacheError" reason:@"cannot create cache directory" userInfo:nil];
+			[e raise];
+		}
 	}
+	
+	fileExistenceCache = [[NMFileExistsCache alloc] initWithCapacity:48];
 		
 	targetObjectImageViewMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
 	commandIndexTaskMap = [[NSMutableDictionary alloc] initWithCapacity:MEMORY_CACHE_CAPACITY];
@@ -78,10 +95,12 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 }
 
 - (void)dealloc {
+	[fileExistenceCache release];
 	[targetObjectImageViewMap release];
 	[commandIndexTaskMap release];
 	[channelThumbnailCacheDir release];
 	[authorThumbnailCacheDir release];
+	[videoThumbnailCacheDir release];
 	[fileManager release];
 	[super dealloc];
 }
@@ -113,9 +132,16 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 
 	// check if the image is in local file system
 	NSString * fPath;
+	NMFileExistsType t;
 	if ( dtlObj.nm_author_thumbnail_file_name ) {
 		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:dtlObj.nm_author_thumbnail_file_name];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
 			if ( img ) {
 				// file exists in path, load the file
@@ -130,14 +156,26 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 		// this extra check is needed because author info is not properly normalized.
 		// same author info is stored repeatedly in NMVideoDetail object
 		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", dtlObj.author_id]];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			iv.image = [UIImage imageWithContentsOfFile:fPath];
 			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.jpg", dtlObj.author_id];
 			return YES;
 		}
 		
 		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", dtlObj.author_id]];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			iv.image = [UIImage imageWithContentsOfFile:fPath];
 			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.png", dtlObj.author_id];
 			return YES;
@@ -159,7 +197,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
 			// release original download count
-			[iv.downloadTask releaseDownload];
+			[iv cancelDownload];
 			// retain download count
 			[task retainDownload];
 			iv.downloadTask = task;
@@ -182,7 +220,13 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 		return YES;
 	} else if ( chn.nm_thumbnail_file_name ) {
 		NSString * fPath = [channelThumbnailCacheDir stringByAppendingPathComponent:chn.nm_thumbnail_file_name];
-		if ( [fileManager fileExistsAtPath:fPath] ) {
+		NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
 			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
 			if ( img ) {
 				// file exists in path, load the file
@@ -210,7 +254,7 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
 			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
 			// release original download count
-			[iv.downloadTask releaseDownload];
+			[iv cancelDownload];
 			// retain download count
 			[task retainDownload];
 			iv.downloadTask = task;
@@ -220,6 +264,93 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	}
 	
 	iv.image = styleUtility.userPlaceholderImage;
+	
+	return NO;
+}
+
+- (BOOL)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv {
+	if ( vdo == nil || iv == nil ) return NO;
+	// check if the file exists
+	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
+	NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+	if ( t == NMFileExistsNotCached ) {
+		BOOL ex = [fileManager fileExistsAtPath:fPath];
+		[fileExistenceCache setFileExists:ex atPath:fPath];
+		t = ex ? NMFileExists : NMFileDoesNotExist;
+	}
+	
+	if ( t == NMFileExists ) {
+		// open up the file
+		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+		if ( img ) {
+			iv.image = img;
+			return YES;
+		}
+	}
+	NSUInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+	if ( task ) {
+		// check if "self" is requesting
+		if ( [iv.downloadTask commandIndex] == idxNum ) {
+			// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+			// do nothing
+		} else {
+			// listen to notification
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+			// release original download count
+			[iv cancelDownload];
+			
+			// retain download count
+			[task retainDownload];
+			iv.downloadTask = task;
+		}
+		iv.image = nil;
+		return YES;
+	}
+	
+	return NO;
+}
+
+- (BOOL)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv {
+	if ( pv == nil || iv == nil ) return NO;
+	// check if the file exists
+	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:pv.nm_thumbnail_file_name];
+	NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+	if ( t == NMFileExistsNotCached ) {
+		BOOL ex = [fileManager fileExistsAtPath:fPath];
+		[fileExistenceCache setFileExists:ex atPath:fPath];
+		t = ex ? NMFileExists : NMFileDoesNotExist;
+	}
+	if ( t == NMFileExists ) {
+		// open up the file
+		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+		if ( img ) {
+			iv.image = img;
+			return YES;
+		}
+	}
+	NSUInteger idxNum = [NMImageDownloadTask commandIndexForPreviewThumbnail:pv];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+	if ( task ) {
+		// check if "self" is requesting
+		if ( [iv.downloadTask commandIndex] == idxNum ) {
+			// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+			// do nothing
+		} else {
+			// listen to notification
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+			// release original download count
+			[iv cancelDownload];
+			
+			// retain download count
+			[task retainDownload];
+			iv.downloadTask = task;
+		}
+		iv.image = nil;
+		return YES;
+	}
 	
 	return NO;
 }
@@ -244,9 +375,61 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	return task;
 }
 
+- (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo {
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForVideo:vdo]];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowmovTaskController issueGetThumbnailForVideo:vdo];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	}
+	return task;
+}
+
+- (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForPreviewThumbnail:pv]];
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"preview thumbnail download - command index: %@", idxNum);
+#endif
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowmovTaskController issueGetPreviewThumbnail:pv];
+		if ( task ) {
+			[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+#ifdef DEBUG_IMAGE_CACHE
+			NSLog(@"preview thumbnail download - new command index: %d", [task commandIndex]);
+#endif
+		}
+	}
+	return task;
+}
+
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 	NMImageDownloadTask * theTask = [aNotification object];
+	NSManagedObject * obj = [[aNotification userInfo] objectForKey:@"target_object"];
 	[commandIndexTaskMap removeObjectForKey:[NSNumber numberWithUnsignedInteger:[theTask commandIndex]]];
+	// update the cache
+	NSString * path = nil;
+	switch (theTask.command) {
+		case NMCommandGetAuthorThumbnail:
+			path = [obj valueForKey:@"nm_author_thumbnail_file_name"];
+			break;
+			
+		case NMCommandGetChannelThumbnail:
+			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			break;
+			
+		case NMCommandGetVideoThumbnail:
+			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			break;
+			
+		case NMCommandGetPreviewThumbnail:
+			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			break;
+			
+		default:
+			break;
+	}
+	if ( path ) [fileExistenceCache setFileExists:YES atPath:path];
 }
 
 - (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {
@@ -267,6 +450,20 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 	NSLog(@"write channel image: %@", [channelThumbnailCacheDir stringByAppendingPathComponent:fname]);
 #endif
 	[aData writeToFile:[channelThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
+- (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname {
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"write video image: %@", [videoThumbnailCacheDir stringByAppendingPathComponent:fname]);
+#endif
+	[aData writeToFile:[videoThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
+- (void)writePreviewThumbnailImageData:(NSData *)aData withFileName:(NSString *)fname {
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"write preview thumbnail image: %@", [videoThumbnailCacheDir stringByAppendingPathComponent:fname]);
+#endif
+	[aData writeToFile:[videoThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
 }
 
 #pragma mark housekeeping methods
@@ -305,6 +502,11 @@ static NSString * const JPTableViewDictionaryKey = @"table";
 }
 
 - (void)cleanBeforeSignout {
+	
+}
+
+- (void)handleCleanUpCacheNotification:(NSNotification *)aNotification {
+	// clean up channel thumbnail and video thumbnail files cache. Make sure they do not exceed the cap respectively.
 	
 }
 

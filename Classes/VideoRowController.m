@@ -29,7 +29,6 @@
 
 
 
-
 - (id)init {
 	self = [super init];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -81,8 +80,8 @@
     if (nil == result)
     {
 //        result = [[[PanelVideoContainerView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
-//        [result setFrame:CGRectMake(0.0, 0.0, 720.0, 90.0)];
-        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, 90.0)] autorelease];
+//        [result setFrame:CGRectMake(0.0, 0.0, 720.0, NM_VIDEO_CELL_HEIGHT)];
+        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, NM_VIDEO_CELL_HEIGHT)] autorelease];
 		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 		result.tableView = aTableView;
     }
@@ -90,7 +89,7 @@
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
         [result setUserInteractionEnabled:NO];
-        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
         [result setIsLoadingCell];
 		[result setIsPlayingVideo:NO];
         return (UITableViewCell *)result;
@@ -100,15 +99,21 @@
 	result.indexInTable = [anIndexPath row];
     [result setUserInteractionEnabled:YES];
     if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
     }
     else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
     }
     else {
-        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, 90)];
+        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
     }
     [result setVideoRowDelegate:self];
+    if ([anIndexPath row] > 0) {
+        NMVideo * prevVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row]-1 inSection:0]];
+        [result setVideoNewSession:([[theVideo nm_session_id] intValue] != [[prevVideo nm_session_id] intValue])];
+    } else {
+        [result setVideoNewSession:NO];
+    }
 	[result setVideoInfo:theVideo];
 
     if ( panelController.highlightedChannelIndex == indexInTable && [anIndexPath row] == panelController.highlightedVideoIndex ) {
@@ -124,6 +129,9 @@
     
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	if ([sectionInfo numberOfObjects] == [indexPath row]) {
+        if (!isLoadingNewContent) {
+            return 0;
+        }
         return 150;
     }
     
@@ -264,6 +272,7 @@
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
+    NSLog(@"video playing now: %@",[newVideo title]);
     [self updateChannelTableView:newVideo animated:YES];
 }
 
@@ -276,9 +285,17 @@
 }
 
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification {
-    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
-        isLoadingNewContent = NO;
+	NSDictionary * info = [aNotification userInfo];
+    if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
 //        NSLog(@"handleDidGetChannelVideoListNotification");
+		if ( [[info objectForKey:@"num_video_added"] integerValue] == 0 && [[info objectForKey:@"num_video_received"] integerValue] == [[info objectForKey:@"num_video_requested"] integerValue] ) {
+			// the "if" condition should be interrupted as follow:
+			// The server has returned full page of videos. But, no video is inserted. That means there may be more videos listed in Nowmov server.
+			// poll the server again
+			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+		} else {
+			isLoadingNewContent = NO;
+		}
     }
 }
 
@@ -286,6 +303,8 @@
     if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
         isLoadingNewContent = NO;
 //        NSLog(@"handleDidFailGetChannelVideoListNotification");
+        [videoTableView beginUpdates];
+        [videoTableView endUpdates];
     }
 }
 
@@ -300,29 +319,32 @@
     float reload_distance = -100 - kMediumVideoCellWidth;
     if(y > h + reload_distance) {
         if (!isLoadingNewContent) {
-            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+//            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
             NSLog(@"Load new videos");
             isLoadingNewContent = YES;
+            [videoTableView beginUpdates];
+            [videoTableView endUpdates];
+
             NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 			[schdlr issueGetMoreVideoForChannel:channel];
         }
     }
 }
-
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-//    NSLog(@"scrollViewDidEndScrollingAnimation");
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    NSLog(@"scrollViewWillBeginDragging");
-}
-
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-//    NSLog(@"scrollViewWillBeginDecelerating");
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-//    NSLog(@"scrollViewDidEndDragging willDecelerate");
-}
+//
+//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+////    NSLog(@"scrollViewDidEndScrollingAnimation");
+//}
+//
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+////    NSLog(@"scrollViewWillBeginDragging");
+//}
+//
+//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+////    NSLog(@"scrollViewWillBeginDecelerating");
+//}
+//
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+////    NSLog(@"scrollViewDidEndDragging willDecelerate");
+//}
 
 @end

@@ -45,7 +45,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	
 	// listen to notification
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
@@ -150,7 +150,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	// check if we need to download more. Or, in the case where there's no video, download
 	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
 		// download more video from Nowmov
-		[nowmovTaskController issueGetVideoListForChannel:channel];
+		[nowmovTaskController issueGetMoreVideoForChannel:channel];
 	}
 	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 }
@@ -233,7 +233,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	// check if we need to download more. Or, in the case where there's no video, download
 	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
 		// download more video from Nowmov
-		[nowmovTaskController issueGetVideoListForChannel:channel];
+		[nowmovTaskController issueGetMoreVideoForChannel:channel];
 	}
 	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 }
@@ -296,7 +296,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		self.nextNextIndexPath = nil;
 		self.nextNextVideo = nil;
 		// fetch more video
-		[nowmovTaskController issueGetVideoListForChannel:channel];
+		[nowmovTaskController issueGetMoreVideoForChannel:channel];
 	}
 	return YES;
 }
@@ -363,7 +363,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	if ( [theName isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
 		// error resolving the direct URL. Let the server knows about it
 #ifdef DEBUG_PLAYBACK_QUEUE
-		NSLog(@"received resolution error notificaiton");
+		NSLog(@"received resolution error notificaiton - %@", [aNotification userInfo]);
 #endif
 		NSDictionary * info = [aNotification userInfo];
 		[nowmovTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorCode:[[info objectForKey:@"error_code"] integerValue]];
@@ -388,7 +388,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	}
 	//TODO: remove the video from playlist
 }
-
+/*
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
 	// MOC changes were made where notification is received
 	NSDictionary * userInfo = [aNotification userInfo];
@@ -404,7 +404,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		}
 	} 
 }
-
+*/
 #pragma mark Fetched Results Controller
 - (NSFetchedResultsController *)fetchedResultsController {
     

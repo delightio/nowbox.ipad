@@ -11,9 +11,11 @@
 @class NMDataController;
 @class NMCategory;
 @class NMChannel;
+@class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
 @class NMImageDownloadTask;
+@class NMGetChannelDetailTask;
 
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
@@ -33,6 +35,8 @@
 
 // Session management
 - (void)beginNewSession:(NSInteger)sid;
+// User management
+- (void)issueCreateUser;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;
@@ -42,14 +46,16 @@
 - (void)issueGetLiveChannel;
 - (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
-//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
+- (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
+- (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
 // Channel subscription
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj;
+- (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo;
 
 // Event tracking
 // Share video

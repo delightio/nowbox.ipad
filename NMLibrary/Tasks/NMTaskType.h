@@ -9,7 +9,10 @@
 
 #import "NMGetChannelsTask.h"
 #import "NMGetChannelVideoListTask.h"
+#import "NMCreateChannelTask.h"
 #import "NMGetYouTubeDirectURLTask.h"
 #import "NMEventTask.h"
 #import "NMImageDownloadTask.h"
 #import "NMGetCategoriesTask.h"
+#import "NMGetChannelDetailTask.h"
+#import "NMCreateUserTask.h"

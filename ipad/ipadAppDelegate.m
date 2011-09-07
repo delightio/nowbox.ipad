@@ -37,7 +37,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[defaults registerDefaults:
 	 [NSDictionary dictionaryWithObjectsAndKeys:
 	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE, 
-	  [NSNumber numberWithInteger:1], NM_USER_ACCOUNT_ID_KEY, 
+	  [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, 
 	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 
@@ -149,8 +149,11 @@ NSInteger NM_LAST_CHANNEL_ID;
              
              abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
              */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+//            abort();
+			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+			[alert show];
+			[alert release];
         } 
     }
 }

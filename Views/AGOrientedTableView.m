@@ -13,8 +13,11 @@
 #import "AGOrientedTableView.h"
 #import <objc/runtime.h>
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private Interface
+
+#define VIDEO_ROW_LEFT_PADDING			181.0f
 
 @interface AGOrientedTableView ()
 
@@ -48,7 +51,7 @@
         {
             angle = -M_PI/2.0;
             CGRect frame = self.frame;
-            frame.origin = CGPointMake(167 + abs(frame.size.width - frame.size.height) / 2.0, 
+            frame.origin = CGPointMake(VIDEO_ROW_LEFT_PADDING + abs(frame.size.width - frame.size.height) / 2.0, 
                 (frame.size.height - frame.size.width) / 2.0);
             frame.size = CGSizeMake(frame.size.height, frame.size.width);
             super.frame = frame;

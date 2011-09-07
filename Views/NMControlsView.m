@@ -61,7 +61,7 @@
 	// author segment
 	CALayer * imgLayer2 = [CALayer layer];
 	imgLayer2.shouldRasterize = YES;
-	imgLayer2.frame = CGRectMake(10.0f, 7.0f, 29.0f, 29.0f);
+	imgLayer2.frame = CGRectMake(19.0f, 7.0f, 29.0f, 29.0f);
 	imgLayer2.contents = imgLayer.contents;
 	[authorBackgroundView.layer insertSublayer:imgLayer2 below:authorImageView.layer];
 	
@@ -236,19 +236,6 @@
 	seekBubbleButton.center = thePoint;
 }
 
-- (void)hideAirPlayIndicatorView:(BOOL)hidden {
-	CGRect theRect;
-	if ( airPlayIndicatorView.superview && hidden) {
-		// hide
-		[airPlayIndicatorView removeFromSuperview];
-	} else if ( airPlayIndicatorView.superview == nil && !hidden ) {
-		// show
-		theRect = self.bounds;
-		airPlayIndicatorView.center = CGPointMake(theRect.size.width / 2.0f, theRect.size.height / 2.0f);
-		[self addSubview:airPlayIndicatorView];
-	}
-}
-
 #pragma mark properties
 - (void)resetView {
 	authorNameLabel.text = @"";
@@ -283,18 +270,24 @@
 	theRect.size.width = channelDefaultWidth + titleDiff;
 	channelBackgroundView.frame = theRect;
 	
-	// set author segment position
-	theRect = authorBackgroundView.frame;
-	theRect.origin.x = channelBackgroundView.frame.size.width;
-	// author label
-	authorNameLabel.text = aVideo.detail.author_username;	
-	// author size
-	theSize = [authorNameLabel.text sizeWithFont:authorNameLabel.font constrainedToSize:maximumTitleSize];
-	titleDiff = theSize.width - authorTitleDefaultWidth;
-	theRect.size.width = authorDefaultWidth + titleDiff;
-	authorBackgroundView.frame = theRect;
-	// author image
-	[authorImageView setImageForAuthorThumbnail:aVideo.detail];
+	// check whether we should hide the author segment
+	if ( [chn.thumbnail_uri isEqualToString:aVideo.detail.author_thumbnail_uri] ) {
+		authorBackgroundView.hidden = YES;
+	} else {
+		authorBackgroundView.hidden = NO;
+		// set author segment position
+		theRect = authorBackgroundView.frame;
+		theRect.origin.x = channelBackgroundView.frame.size.width - 10.0f;
+		// author label
+		authorNameLabel.text = aVideo.detail.author_username;	
+		// author size
+		theSize = [authorNameLabel.text sizeWithFont:authorNameLabel.font constrainedToSize:maximumTitleSize];
+		titleDiff = theSize.width - authorTitleDefaultWidth;
+		theRect.size.width = authorDefaultWidth + titleDiff;
+		authorBackgroundView.frame = theRect;
+		// author image
+		[authorImageView setImageForAuthorThumbnail:aVideo.detail];
+	}
 	
 	titleDiff = theRect.size.width + theRect.origin.x;
 	theRect = videoTitleLabel.frame;

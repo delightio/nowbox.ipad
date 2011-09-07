@@ -28,6 +28,7 @@
 @dynamic nm_playback_status;
 @dynamic nm_retry_count;
 @dynamic nm_session_id;
+@dynamic nm_thumbnail_file_name;
 @dynamic source;
 @dynamic nm_id;
 @dynamic channel;
@@ -65,7 +66,7 @@
 }
 
 - (NMAVPlayerItem *)createPlayerItem {
-	if ( nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+	if ( self.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 		NSString * urlStr = NM_USE_HIGH_QUALITY_VIDEO ? [self primitiveNm_direct_url] : [self primitiveNm_direct_sd_url];
 		if ( urlStr && ![urlStr isEqualToString:@""] ) {
 			NMAVPlayerItem * item = [[NMAVPlayerItem alloc] initWithURL:[NSURL URLWithString:urlStr]];

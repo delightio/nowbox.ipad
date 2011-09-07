@@ -17,7 +17,7 @@
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
 
-#define VIDEO_ROW_LEFT_PADDING			167.0f
+#define VIDEO_ROW_LEFT_PADDING			181.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
 #define NM_CHANNEL_CELL_TOP_PADDING		10.0f
 #define NM_CHANNEL_CELL_DETAIL_TOP_MARGIN	40.0f
@@ -30,6 +30,7 @@
 @synthesize videoViewController;
 @synthesize selectedIndex;
 @synthesize highlightedChannelIndex, highlightedVideoIndex;
+@synthesize fullScreenButton;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -160,8 +161,8 @@
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
-    videoTableView.separatorColor = styleUtility.channelBorderColor;
-
+    [videoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
@@ -172,30 +173,40 @@
     videoTableView.allowsSelection = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
-	vdoCtrl.videoTableView = videoTableView;
 	
+    [videoTableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"channel-video-background-normal-rotated"]]];
+    
+    
+    
+    vdoCtrl.videoTableView = videoTableView;
+	
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectZero];
+    videoTableView.tableFooterView = footer;
+    [footer release];
+    
 	videoTableView.tag = 1009;
 	[aContentView insertSubview:videoTableView belowSubview:ctnView];
     
     UIView *loadingOverlayView = [[UIView alloc]initWithFrame:theFrame];
     loadingOverlayView.tag = 1008;
-    [loadingOverlayView setBackgroundColor:styleUtility.channelPanelBackgroundColor];
+    [loadingOverlayView setBackgroundColor:[UIColor clearColor]];
+    [loadingOverlayView setOpaque:NO];
     UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityView.center = CGPointMake(425, 44);
+    activityView.center = CGPointMake(425, 50);
     [activityView startAnimating];
     [loadingOverlayView addSubview:activityView];
     [activityView release];
     [aContentView insertSubview:loadingOverlayView aboveSubview:videoTableView];
     [loadingOverlayView release];
     
-    UIView *bottomSeparatorView = [[UIView alloc]initWithFrame:CGRectMake(167, aContentView.bounds.size.height-1, aContentView.bounds.size.width-167, 1)];
-    bottomSeparatorView.opaque = YES;
-    bottomSeparatorView.backgroundColor = styleUtility.channelBorderColor;
+//    UIView *bottomSeparatorView = [[UIView alloc]initWithFrame:CGRectMake(167, aContentView.bounds.size.height-1, aContentView.bounds.size.width-167, 1)];
+//    bottomSeparatorView.opaque = YES;
+//    bottomSeparatorView.backgroundColor = styleUtility.channelBorderColor;
+//    
+//    [aContentView addSubview:bottomSeparatorView];
+//    [bottomSeparatorView release];
     
-    [aContentView addSubview:bottomSeparatorView];
-    [bottomSeparatorView release];
-    
-    UIImageView *videoListLeftShadow = [[UIImageView alloc] initWithFrame:CGRectMake(168, 0, 9, aContentView.bounds.size.height)];
+    UIImageView *videoListLeftShadow = [[UIImageView alloc] initWithFrame:CGRectMake(181, 0, 8, aContentView.bounds.size.height)];
     videoListLeftShadow.image = [UIImage imageNamed:@"channel-shadow-background-right"];
     [aContentView addSubview:videoListLeftShadow];
     [videoListLeftShadow release];
@@ -212,7 +223,6 @@
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
 	[ctnView.imageView setImageForChannel:theChannel];
-    [ctnView setNeedsDisplay];
 
 	// video row
 	AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
@@ -233,13 +243,14 @@
     [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] > 1)];
     
 NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-	if ( theChannel == nil || [theChannel.videos count] == 0 ) {
+	if ( [theChannel.videos count] == 0 ) {
 		[schdlr issueGetVideoListForChannel:theChannel];
 	}
     
     if (highlightedChannelIndex == [indexPath row]) {
         [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil] animated:NO];
     }
+    [ctnView setHighlighted:(highlightedChannelIndex == [indexPath row])];
 
 }
 
@@ -256,6 +267,9 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0]];
         AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
         
+        ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
+        [ctnView setHighlighted:NO];
+        
         NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
         PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
         [cell setIsPlayingVideo:NO];
@@ -267,6 +281,9 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0]];
     AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
     
+    ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
+    [ctnView setHighlighted:YES];
+
     NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
     PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
     [cell setIsPlayingVideo:YES];
@@ -359,11 +376,16 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     AGOrientedTableView * htView = (AGOrientedTableView *)[(UITableViewCell *)[aTableView cellForRowAtIndexPath:indexPath] viewWithTag:1009];
     
+    if (highlightedChannelIndex == [indexPath row]) {
+        [htView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+        return;
+    }
+    
     for (int i=0; i<[[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]; i++) {
         NMVideo * theVideo = [htView.tableController.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        NSLog(@"%@ %d", [theVideo title], [theVideo nm_playback_status]);
-//        if (([theVideo nm_playback_status] >= 0) && ([theVideo nm_playback_status] < NMVideoQueueStatusPlaying)) {
-        if ([theVideo nm_playback_status] >= 0) {
+        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
+//        if ((theVideo.nm_playback_status >= 0) && (theVideo.nm_playback_status < NMVideoQueueStatusPlaying)) {
+        if (theVideo.nm_playback_status >= 0 && theVideo.nm_playback_status < NMVideoQueueStatusPlayed) {
             [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             break;
         }
@@ -390,13 +412,13 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed == %@", [NSNumber numberWithBool:YES]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

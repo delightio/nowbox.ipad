@@ -16,6 +16,7 @@
 	NSUserDefaults * userDefaults;
 	
 	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
+	BOOL viewPushedByNavigationController;
 }
 
 - (IBAction)changeHQSetting:(id)sender;
