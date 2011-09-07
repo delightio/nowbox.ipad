@@ -77,26 +77,7 @@
 	emailNotificationSwitch.tag = NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG;
 	[emailNotificationSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
-#if TARGET_IPHONE_SIMULATOR
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleCreateChannelNotificaiton:) name:NMDidCreateChannelNotification object:nil];
-	[nc addObserver:self selector:@selector(handleFailCreateChannelNotification:) name:NMDidFailCreateChannelNotification object:nil];
-#endif
 }
-
-#if TARGET_IPHONE_SIMULATOR
-- (void)handleCreateChannelNotificaiton:(NSNotification *)aNotificaiton {
-	
-}
-
-- (void)handleFailCreateChannelNotification:(NSNotification *)aNotificaiton {
-	NSDictionary * info = [aNotificaiton userInfo];
-	NMTask * task = [info objectForKey:@"task"];
-	NSString * resultStr = [[NSString alloc] initWithData:task.buffer encoding:NSUTF8StringEncoding];
-	NSLog(@"fail creating channel %d, %@", task.httpStatusCode, resultStr);
-	[resultStr release];
-}
-#endif
 
 - (void)viewDidUnload
 {
@@ -181,11 +162,7 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#if TARGET_IPHONE_SIMULATOR
-	return 6;
-#else
 	return 5;
-#endif
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -248,15 +225,6 @@
 					break;
 			}
 			break;
-#if TARGET_IPHONE_SIMULATOR
-		case 5:
-			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-			if (cell == nil) {
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-			}
-			cell.textLabel.text = @"Create Keyword Channel";
-			break;
-#endif
 			
 		default:
 			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -337,11 +305,6 @@
 		[self.navigationController pushViewController:twitterCtrl animated:YES];
 		[twitterCtrl release];
 	}
-#if TARGET_IPHONE_SIMULATOR
-	if ( indexPath.section == 5 ) {
-		[[NMTaskQueueController sharedTaskQueueController] issueCreateChannelWithKeyword:[NSString stringWithFormat:@"testing_%d", rand()]];
-	}
-#endif
 }
 
 

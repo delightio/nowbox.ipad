@@ -36,7 +36,7 @@ NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotifica
 	NSDictionary * theDict = [buffer objectFromJSONData];
 	NSInteger uid = [[theDict objectForKey:@"id"] integerValue];
 	if ( uid ) {
-		// save the data to Keychain
+		//TODO: save the data to Keychain
 		
 		// update global variable
 		NM_USER_ACCOUNT_ID = uid;

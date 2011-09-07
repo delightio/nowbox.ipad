@@ -363,7 +363,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	if ( [theName isEqualToString:NMDidFailGetYouTubeDirectURLNotification] ) {
 		// error resolving the direct URL. Let the server knows about it
 #ifdef DEBUG_PLAYBACK_QUEUE
-		NSLog(@"received resolution error notificaiton");
+		NSLog(@"received resolution error notificaiton - %@", [aNotification userInfo]);
 #endif
 		NSDictionary * info = [aNotification userInfo];
 		[nowmovTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorCode:[[info objectForKey:@"error_code"] integerValue]];

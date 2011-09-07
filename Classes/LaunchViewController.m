@@ -72,7 +72,7 @@
 	[super viewDidAppear:animated];
 	if ( appFirstLaunch ) {
 		debugLabel.text = @"Setting up new user...";
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidCreateUserlNotification:) name:NMDidCreateUserNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		// create new user
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 	} else {
@@ -125,6 +125,8 @@
 
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
+	[[NSUserDefaults standardUserDefaults] setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+	NSLog(@"Created new user: %d", NM_USER_ACCOUNT_ID);
 	// new user created, get channel
 	[self checkUpdateChannels];
 }

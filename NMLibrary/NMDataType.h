@@ -60,6 +60,7 @@ typedef enum {
 	NMErrorNone,
 	NMErrorNoData,
 	NMErrorNoSupportedVideoFormat,
+	NMErrorDeviceTokenExpired,
 	NMErrorYouTubeAPIError,
 } NMErrorType;
 
