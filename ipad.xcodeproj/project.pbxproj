@@ -66,7 +66,6 @@
 		A931613D13E0902B009694C3 /* playback-play.png in Resources */ = {isa = PBXBuildFile; fileRef = A931613313E0902B009694C3 /* playback-play.png */; };
 		A931613E13E0902B009694C3 /* toolbar-collapse-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931613413E0902B009694C3 /* toolbar-collapse-active.png */; };
 		A931613F13E0902B009694C3 /* toolbar-collapse.png in Resources */ = {isa = PBXBuildFile; fileRef = A931613513E0902B009694C3 /* toolbar-collapse.png */; };
-		A93350B31417A15C00F47CDD /* KeychainAccessGroups.plist in Resources */ = {isa = PBXBuildFile; fileRef = A93350B21417A15C00F47CDD /* KeychainAccessGroups.plist */; };
 		A93584CF139EE96D0009A264 /* ChannelPanelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A93584CE139EE96D0009A264 /* ChannelPanelView.xib */; };
 		A9398C1D13D41B31005E3CB0 /* social-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1913D41B31005E3CB0 /* social-facebook.png */; };
 		A9398C1E13D41B31005E3CB0 /* social-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1A13D41B31005E3CB0 /* social-twitter.png */; };
@@ -787,9 +786,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A9250173134385BF001759F5 /* Build configuration list for PBXNativeTarget "nowbox" */;
 			buildPhases = (
+				A925013A134385BF001759F5 /* Resources */,
 				A9250138134385BF001759F5 /* Sources */,
 				A9250139134385BF001759F5 /* Frameworks */,
-				A925013A134385BF001759F5 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -949,7 +948,6 @@
 				A99FB6CC140EAC1900689040 /* ChannelDetailView.xib in Resources */,
 				A99FB6CF140EB57700689040 /* button-gray-background.png in Resources */,
 				A99FB6D0140EB57700689040 /* button-yellow-background.png in Resources */,
-				A93350B31417A15C00F47CDD /* KeychainAccessGroups.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1080,7 +1078,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_ENTITLEMENTS = KeychainAccessGroups.plist;
+				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1138,7 +1136,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_ENTITLEMENTS = KeychainAccessGroups.plist;
+				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1162,7 +1160,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_ENTITLEMENTS = KeychainAccessGroups.plist;
+				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
