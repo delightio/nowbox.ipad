@@ -466,6 +466,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return theOrder;
 }
 
+- (void)updateMyQueueChannelHideStatus {
+	myQueueChannel.nm_hidden = [NSNumber numberWithBool:[myQueueChannel.videos anyObject] == nil];
+}
+
+- (void)updateFavoriteChannelHideStatus {
+	BOOL hideChannel = YES;
+	if ( NM_USER_SHOW_FAVORITE_CHANNEL && [favoriteVideoChannel.videos anyObject] ) {
+		hideChannel = NO;
+	}
+	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:hideChannel];
+}
+
 #pragma mark Video 
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
 	NMVideo * dupVideo = [self insertNewVideo];

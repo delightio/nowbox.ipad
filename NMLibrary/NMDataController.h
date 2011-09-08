@@ -80,6 +80,8 @@
 - (NMChannel *)lastSessionChannel;
 - (void)batchDeleteChannels:(NSArray *)chnAy;
 - (NSInteger)maxChannelSortOrder;
+- (void)updateMyQueueChannelHideStatus;
+- (void)updateFavoriteChannelHideStatus;
 // video
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;
