@@ -331,7 +331,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// fetch last video played
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_id == %@", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND nm_id == %@", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	NMChannel * chnObj = nil;
@@ -342,7 +342,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		// get the first channel
 		request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_id > 0"]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND nm_id > 0"]];
 		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
 		[request setSortDescriptors:[NSArray arrayWithObject:sortDsptr]];
 		[sortDsptr release];
