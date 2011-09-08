@@ -42,6 +42,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
+	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID AND channel == $CHANNEL"] retain];
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
@@ -56,6 +57,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	[channelNamePredicateTemplate release];
 	[subscribedChannelsPredicate release];
 	[objectForIDPredicateTemplate release];
+	[videoInChannelPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
@@ -467,7 +469,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)updateMyQueueChannelHideStatus {
-	myQueueChannel.nm_hidden = [NSNumber numberWithBool:[myQueueChannel.videos anyObject] == nil];
+	myQueueChannel.nm_hidden = [NSNumber numberWithBool:([myQueueChannel.videos anyObject] == nil)];
 }
 
 - (void)updateFavoriteChannelHideStatus {
@@ -579,6 +581,36 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	[request release];
 	[pool release];
+}
+
+- (void)deleteVideoWithID:(NSNumber *)vid fromChannel:(NMChannel *)chn {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[videoInChannelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:vid, @"OBJECT_ID", chn, @"CHANNEL", nil]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"channel", nil]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		for (NMVideo * vdo in result) {
+			[managedObjectContext deleteObject:vdo];
+		}
+	}
+}
+
+- (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey {
+	// this method is used when remove a video from favorite or watch later channel. videos are copied. Other NMVideo MOs with the same nm_id should be updated as well
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	NMVideo * vidObj = nil;
+	if ( [result count] ) {
+		for (vidObj in result) {
+			[vidObj setValue:val forKey:akey];
+		}
+	}
 }
 
 - (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn {

@@ -49,7 +49,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
-	  [NSNumber numberWithBool:NO], NM_SHOW_FAVORITE_CHANNEL_KEY,
+	  [NSNumber numberWithBool:YES], NM_SHOW_FAVORITE_CHANNEL_KEY,
 	  [NSNumber numberWithBool:NO], NM_ENABLE_PUSH_NOTIFICATION_KEY,
 	  [NSNumber numberWithBool:NO], NM_ENABLE_EMAIL_NOTIFICATION_KEY,
 	  [NSNumber numberWithInteger:0], NM_USER_FAVORITES_CHANNEL_ID_KEY,

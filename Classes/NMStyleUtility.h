@@ -36,6 +36,9 @@
 	UIImage * playImage, * playActiveImage;
 	UIImage * pauseImage, * pauseActiveImage;
 	
+	UIImage * favoriteImage, * favoriteActiveImage;
+	UIImage * watchLaterImage, * watchLaterActiveImage;
+	
 	UIColor * blackColor;
 }
 
@@ -78,6 +81,10 @@
 @property (nonatomic, readonly) UIImage * playActiveImage;
 @property (nonatomic, readonly) UIImage * pauseImage;
 @property (nonatomic, readonly) UIImage * pauseActiveImage;
+@property (nonatomic, readonly) UIImage * favoriteImage;
+@property (nonatomic, readonly) UIImage * favoriteActiveImage;
+@property (nonatomic, readonly) UIImage * watchLaterImage;
+@property (nonatomic, readonly) UIImage * watchLaterActiveImage;
 
 @property (nonatomic, readonly) UIColor * blackColor;
 

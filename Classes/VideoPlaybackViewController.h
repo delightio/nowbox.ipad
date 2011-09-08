@@ -15,6 +15,7 @@
 #import "NMAVQueuePlayer.h"
 #import "NMAVPlayerItem.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "NMStyleUtility.h"
 
 @class NMVideo;
 @class NMChannel;
@@ -31,7 +32,8 @@
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIView * ribbonView;
-	//IBOutlet UITextView * debugMessageView;
+	IBOutlet UIButton * favoriteButton;
+	IBOutlet UIButton * watchLaterButton;
 	NMMovieView * movieView;
 	
 	NMMovieDetailView * loadedMovieDetailView;
@@ -66,6 +68,7 @@
     NSMutableArray *temporaryDisabledGestures;
     BOOL pinchTemporarilyDisabled;
 	ipadAppDelegate * appDelegate;
+	NMStyleUtility * styleUtility;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
@@ -90,6 +93,14 @@
 
 // playback view update
 - (void)markPlaybackCheckpoint;
+// buttons management
+- (void)updateRibbonButtons;
+- (void)updateFavoriteButton;
+- (void)updateWatchLaterButton;
+- (void)animateFavoriteButtonsToInactive;			// buttons deliberately has "s" because there are 2 favorite buttons
+- (void)animateWatchLaterButtonsToInactive;
+- (void)animateFavoriteButtonsToActive;
+- (void)animateWatchLaterButtonsToActive;
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;

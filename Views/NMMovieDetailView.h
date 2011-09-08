@@ -20,8 +20,8 @@
 	IBOutlet UILabel * otherInfoLabel;
 	IBOutlet UILabel * descriptionLabel;
 	IBOutlet UIView * moviePlaceholderView;
-	IBOutlet UIButton * watchLaterButton;
-	IBOutlet UIButton * likeButton;
+//	IBOutlet UIButton * watchLaterButton;
+//	IBOutlet UIButton * likeButton;
 	IBOutlet UIImageView * shadowImageView;
 	
 @private
@@ -34,7 +34,7 @@
 }
 
 @property (nonatomic, assign) NMVideo * video;
-@property (nonatomic, assign) UIButton * watchLaterButton;
-@property (nonatomic, assign) UIButton * likeButton;
+//@property (nonatomic, assign) UIButton * watchLaterButton;
+//@property (nonatomic, assign) UIButton * likeButton;
 
 @end
