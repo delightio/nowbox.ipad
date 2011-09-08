@@ -17,6 +17,9 @@
 #define NM_CHANNEL_COLUMN_WIDTH		181.0f
 
 extern NSInteger NM_USER_ACCOUNT_ID;
+extern NSInteger NM_USER_FAVORITES_CHANNEL_ID;
+extern NSInteger NM_USER_WATCH_LATER_CHANNEL_ID;
+extern NSInteger NM_USER_HISTORY_CHANNEL_ID;
 extern BOOL NM_USE_HIGH_QUALITY_VIDEO;
 extern BOOL NM_RUNNING_IOS_5;
 extern NSString * const NMChannelManagementWillAppearNotification;

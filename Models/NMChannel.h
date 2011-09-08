@@ -14,6 +14,7 @@
 @interface NMChannel : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * nm_current_page;
+@property (nonatomic, retain) NSNumber * nm_hidden;
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_last_vid;
 @property (nonatomic, retain) NSNumber * nm_sort_order;

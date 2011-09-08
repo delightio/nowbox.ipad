@@ -8,6 +8,7 @@
     </entity>
     <entity name="NMChannel" representedClassName="NMChannel">
         <attribute name="nm_current_page" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="nm_hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_last_vid" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
@@ -75,10 +76,10 @@
     </entity>
     <elements>
         <element name="NMCategory" positionX="18" positionY="54" width="128" height="105"/>
-        <element name="NMChannel" positionX="297" positionY="-72" width="153" height="300"/>
+        <element name="NMChannel" positionX="297" positionY="-72" width="153" height="315"/>
         <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
         <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="195"/>
-        <element name="NMVideo" positionX="297" positionY="258" width="128" height="360"/>
+        <element name="NMVideo" positionX="297" positionY="306" width="128" height="360"/>
         <element name="NMVideoDetail" positionX="520" positionY="444" width="128" height="150"/>
     </elements>
 </model>

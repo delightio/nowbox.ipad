@@ -408,7 +408,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0"]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
