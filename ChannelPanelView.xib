@@ -257,7 +257,6 @@
 						<string key="NSFrame">{{0, 44}, {1024, 8}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:554</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -345,6 +344,14 @@
 						<reference key="destination" ref="1057073313"/>
 					</object>
 					<int key="connectionID">60</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">fullScreenButton</string>
+						<reference key="source" ref="96030309"/>
+						<reference key="destination" ref="589027199"/>
+					</object>
+					<int key="connectionID">63</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -551,7 +558,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">62</int>
+			<int key="maxID">63</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -617,12 +624,14 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>filterButton</string>
+							<string>fullScreenButton</string>
 							<string>panelView</string>
 							<string>settingButton</string>
 							<string>tableView</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>UIButton</string>
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UIButton</string>
@@ -634,6 +643,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>filterButton</string>
+							<string>fullScreenButton</string>
 							<string>panelView</string>
 							<string>settingButton</string>
 							<string>tableView</string>
@@ -642,6 +652,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
 								<string key="name">filterButton</string>
+								<string key="candidateClassName">UIButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">fullScreenButton</string>
 								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -1092,14 +1106,14 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{1, 8}</string>
 				<string>{1024, 44}</string>
-				<string>{68, 44}</string>
-				<string>{68, 44}</string>
+				<string>{60, 40}</string>
+				<string>{60, 40}</string>
 				<string>{60, 40}</string>
 				<string>{60, 40}</string>
 				<string>{68, 44}</string>
 				<string>{68, 44}</string>
-				<string>{68, 44}</string>
-				<string>{68, 44}</string>
+				<string>{60, 40}</string>
+				<string>{60, 40}</string>
 				<string>{2, 30}</string>
 			</object>
 		</object>

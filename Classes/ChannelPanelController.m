@@ -30,6 +30,7 @@
 @synthesize videoViewController;
 @synthesize selectedIndex;
 @synthesize highlightedChannelIndex, highlightedVideoIndex;
+@synthesize fullScreenButton;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -220,7 +221,7 @@
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
-	ctnView.textLabel.text = [theChannel.title uppercaseString];
+	ctnView.textLabel.text = theChannel.title;
 	[ctnView.imageView setImageForChannel:theChannel];
 
 	// video row

@@ -22,6 +22,7 @@ typedef enum {
 	// toolbar buttons
 	IBOutlet UIButton * settingButton;
 	IBOutlet UIButton * filterButton;
+    IBOutlet UIButton * fullScreenButton;
 	
 	UIView *panelView;
 @private
@@ -37,6 +38,7 @@ typedef enum {
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
 @property (nonatomic, retain) IBOutlet UIView *panelView;
+@property (nonatomic, retain) IBOutlet UIButton * fullScreenButton;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, assign) VideoPlaybackViewController * videoViewController;

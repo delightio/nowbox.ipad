@@ -9,6 +9,7 @@
 #import "ChannelDetailViewController.h"
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
+#import "ChannelPreviewView.h"
 
 #define NM_THUMBNAIL_PADDING		20.0f
 
@@ -34,6 +35,8 @@
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    [previewViewsArray removeAllObjects];
+    [previewViewsArray release];
 	[super dealloc];
 }
 
@@ -68,40 +71,17 @@
 	descriptionDefaultFrame = descriptionLabel.frame;
 	
 	// create the preview view
-	NMCachedImageView * civ;
-//	CALayer * theLayer = nil;
-	videoThumbnailArray = [[NSMutableArray alloc] initWithCapacity:5];
+	previewViewsArray = [[NSMutableArray alloc] initWithCapacity:5];
 	CGFloat idxf = 0.0f;
-	NMStyleUtility * style = [NMStyleUtility sharedStyleUtility];
 	for (NSUInteger i = 0; i < 5; i++) {
         
-        UIImageView *videoShadowImageView = [[UIImageView alloc]initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING/2 - 3, 25.0f - 2, 378.0f, 208.0f)];
-        [videoShadowImageView setImage:[[UIImage imageNamed:@"channel-detail-video-shadow"] stretchableImageWithLeftCapWidth:3 topCapHeight:2]];
+        ChannelPreviewView *previewView = [[ChannelPreviewView alloc] initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING/2, 25.0f, 370.0f, 200.0f)];
+        
+		[previewViewsArray addObject:previewView];
+        [thumbnailScrollView addSubview:previewView];
 
-        [thumbnailScrollView addSubview:videoShadowImageView];
+        [previewView release];
         
-        UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        activityIndicatorView.center = videoShadowImageView.center;
-        [activityIndicatorView startAnimating];
-        [thumbnailScrollView addSubview:activityIndicatorView];
-        
-        [activityIndicatorView release];
-        [videoShadowImageView release];
-        
-		civ = [[NMCachedImageView alloc] initWithFrame:CGRectMake( idxf * (NM_THUMBNAIL_PADDING + 370.0f) + NM_THUMBNAIL_PADDING/2, 25.0f, 370.0f, 200.0f)];
-		civ.contentMode = UIViewContentModeScaleAspectFill;
-		civ.backgroundColor = style.blackColor;
-		civ.clipsToBounds = YES;
-//		theLayer = civ.layer;
-//		theLayer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-//		theLayer.shadowOpacity = 1.0f;
-//		theLayer.shadowRadius = 5.0f;
-//		theLayer.shouldRasterize = YES;
-		civ.hidden = YES;
-		[videoThumbnailArray addObject:civ];
-		[thumbnailScrollView addSubview:civ];
-		
-		[civ release];
 		idxf += 1.0f;
 	}
 }
@@ -154,9 +134,8 @@
 	descriptionLabel.text = @"";
 	channelThumbnailView.image = nil;
 	metricLabel.text = @"";
-	for (NMCachedImageView * iv in videoThumbnailArray) {
-		iv.hidden = YES;
-		iv.image = nil;
+	for (ChannelPreviewView * cpv in previewViewsArray) {
+        [cpv clearPreviewImage];
 	}
 	self.channel = nil;
 }
@@ -199,28 +178,36 @@
 }
 
 - (void)setPreviewImages {
-	NMCachedImageView * civ;
+//	NMCachedImageView * civ;
+    ChannelPreviewView *cpv;
 	NSUInteger i = 0;
 	// load the video preview thumbnail
 	NSSet * vdoThumbnails = channel.previewThumbnails;
 	// order NMPreviewThumbnail objects is not important. No need to get sorted array of the items
 	for (NMPreviewThumbnail * thePreview in vdoThumbnails) {
+        NSLog(@"PREVIEW: %@",[thePreview description]);
 		// issue request to get preview thumbnail
-		civ = [videoThumbnailArray objectAtIndex:i++];
-		[civ setImageForPreviewThumbnail:thePreview];
-		civ.hidden = NO;
+        cpv = (ChannelPreviewView *)[previewViewsArray objectAtIndex:i++];
+        [cpv setPreviewImage:thePreview];
+        [cpv setHidden:NO];
+//		civ = [(ChannelPreviewView *)[previewViewsArray objectAtIndex:i++] civ];
+//		[civ setImageForPreviewThumbnail:thePreview];
+//		civ.hidden = NO;
 		if ( i == 5 ) break;
 	}
 	for (NSUInteger j = i; j < 5; j++) {
-		civ = [videoThumbnailArray objectAtIndex:j];
+        cpv = (ChannelPreviewView *)[previewViewsArray objectAtIndex:i++];
 		// hide the rest of the image view
-		civ.hidden = YES;
+        [cpv setHidden:YES];
+//		civ = [(ChannelPreviewView *)[previewViewsArray objectAtIndex:j] civ];
+//		// hide the rest of the image view
+//		civ.hidden = YES;
 	}
 	// configure scroll view
-	if ( civ == nil ) {
+	if ( cpv == nil ) {
 		thumbnailScrollView.contentSize = CGSizeZero;
 	} else {
-		thumbnailScrollView.contentSize = CGSizeMake((NM_THUMBNAIL_PADDING + civ.bounds.size.width) * (CGFloat)i, thumbnailScrollView.bounds.size.height);
+		thumbnailScrollView.contentSize = CGSizeMake((NM_THUMBNAIL_PADDING + cpv.bounds.size.width) * (CGFloat)i, thumbnailScrollView.bounds.size.height);
 	}
 }
 
