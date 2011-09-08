@@ -138,18 +138,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
+//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
+//#if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
+//	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
+//#endif
+//	if ( [chnObj.nm_id integerValue] < 0 ) return;
+//	// if it's a new channel, we should have special handling on fail
+//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
+
+- (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj {
 #if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
 #endif
-	if ( [chnObj.nm_id integerValue] < 0 ) return;
-	// if it's a new channel, we should have special handling on fail
-	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-- (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj {
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetMoreVideoForChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -165,11 +168,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 //	[task release];
 //}
 
-- (void)issueGetLiveChannel {
-	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] init];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueGetLiveChannel {
+//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] init];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj {
 	NMGetChannelDetailTask * task = [[NMGetChannelDetailTask alloc] initWithChannel:chnObj];

@@ -241,7 +241,7 @@
     
 NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( [theChannel.videos count] == 0 ) {
-		[schdlr issueGetVideoListForChannel:theChannel];
+		[schdlr issueGetMoreVideoForChannel:theChannel];
 	}
     
     if (highlightedChannelIndex == [indexPath row]) {

@@ -25,7 +25,7 @@ typedef enum {
 	NMCommandCreateUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
-	NMCommandGetChannelVideoList,
+//	NMCommandGetChannelVideoList,
 	NMCommandGetMoreVideoForChannel,
 	NMCommandGetYouTubeDirectURL,
 	NMCommandGetVimeoDirectURL,
@@ -61,6 +61,7 @@ typedef enum {
 	NMErrorNoData,
 	NMErrorNoSupportedVideoFormat,
 	NMErrorDeviceTokenExpired,
+	NMErrorVideoNotAvailableInCurrentLocation,
 	NMErrorYouTubeAPIError,
 } NMErrorType;
 
