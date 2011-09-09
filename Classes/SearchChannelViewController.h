@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "NMLibrary.h"
 
+@class ChannelDetailViewController;
+
 
 @interface SearchChannelViewController : UIViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate> {
     IBOutlet UISearchBar * searchBar;
@@ -16,6 +18,7 @@
     
     UITableViewCell *channelCell;
 
+    ChannelDetailViewController * channelDetailViewController;
 }
 
 @property (nonatomic, retain) IBOutlet UISearchBar * searchBar;

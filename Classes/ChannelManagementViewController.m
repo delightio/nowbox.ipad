@@ -672,9 +672,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                      }
                      completion:^(BOOL finished) {
                      }];
-    NSLog(@"cell %@",[cell description]);
-    NSLog(@"cell indexpath %d",[channelsTableView indexPathForCell:cell].row);
-    NSLog(@"cell indexpath %d",[channelsTableView indexPathForRowAtPoint:CGPointMake([cell frame].origin.x, [cell frame].origin.y)].row);
     NMChannel * chn;
     if (selectedIndex == 0) {
         chn = [myChannelsFetchedResultsController objectAtIndexPath:[channelsTableView indexPathForCell:cell]];
