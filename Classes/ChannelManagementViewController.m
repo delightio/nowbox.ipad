@@ -631,7 +631,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         return 38;
     }
     else {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
         CGSize textLabelSize = [[text uppercaseString] sizeWithFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16]];
+#else
+        CGSize textLabelSize = [[text uppercaseString] sizeWithFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f]];
+#endif
         return textLabelSize.width+40;
     }
     return 0;
