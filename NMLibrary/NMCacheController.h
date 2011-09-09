@@ -42,16 +42,16 @@
 + (NMCacheController *)sharedCacheController;
 
 // display image from file cache
-- (BOOL)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv;
-- (BOOL)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
-- (BOOL)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
-- (BOOL)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
+- (void)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv;
+- (void)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
+//- (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
+- (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
 
 // interface for NMCachedImageView
-- (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn;
-- (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl;
-- (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo;
-- (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
+- (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
+- (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl imageView:(NMCachedImageView *)iv;
+- (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
+- (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
 //- (void)saveCacheWithInfo:(NSDictionary *)userInfo;
 
 // saving image from server
@@ -59,6 +59,10 @@
 - (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname;
 - (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname;
 - (void)writePreviewThumbnailImageData:(NSData *)aData withFileName:(NSString *)fname;
+
+// notification handler
+- (void)handleImageDownloadNotification:(NSNotification *)aNotification;
+- (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification;
 
 - (void)cacheWakeUpCheck;
 
