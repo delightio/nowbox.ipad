@@ -30,6 +30,7 @@
 @synthesize channelViewButton, playPauseButton;
 @synthesize controlsHidden, timeRangeBuffered;
 @synthesize seekBubbleButton, isSeeking;
+@synthesize favoriteButton, watchLaterButton;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];

@@ -48,6 +48,8 @@
 	IBOutlet UIView * channelBackgroundView;
 	IBOutlet UIView * authorBackgroundView;
 	IBOutlet UIView * topbarContainerView;
+	UIButton * favoriteButton;
+	UIButton * watchLaterButton;
 	// segment width
 	CGFloat channelDefaultWidth, authorDefaultWidth;
 	CGFloat channelTitleDefaultWidth, authorTitleDefaultWidth;
@@ -85,6 +87,9 @@
 @property (nonatomic, assign) UIButton * channelViewButton;
 @property (nonatomic, assign) UIButton * playPauseButton;
 @property (nonatomic, retain) UIButton * seekBubbleButton;
+@property (nonatomic, assign) IBOutlet UIButton * favoriteButton;
+@property (nonatomic, assign) IBOutlet UIButton * watchLaterButton;
+
 @property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
 @property (nonatomic, assign) BOOL isSeeking;
 

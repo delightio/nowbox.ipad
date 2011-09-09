@@ -21,6 +21,7 @@ extern NSInteger NM_USER_FAVORITES_CHANNEL_ID;
 extern NSInteger NM_USER_WATCH_LATER_CHANNEL_ID;
 extern NSInteger NM_USER_HISTORY_CHANNEL_ID;
 extern BOOL NM_USE_HIGH_QUALITY_VIDEO;
+extern BOOL NM_USER_SHOW_FAVORITE_CHANNEL;
 extern BOOL NM_RUNNING_IOS_5;
 extern NSString * const NMChannelManagementWillAppearNotification;
 extern NSString * const NMChannelManagementDidDisappearNotification;

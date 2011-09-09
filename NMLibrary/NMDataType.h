@@ -25,7 +25,7 @@ typedef enum {
 	NMCommandCreateUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
-	NMCommandGetChannelVideoList,
+//	NMCommandGetChannelVideoList,
 	NMCommandGetMoreVideoForChannel,
 	NMCommandGetYouTubeDirectURL,
 	NMCommandGetVimeoDirectURL,
@@ -61,6 +61,7 @@ typedef enum {
 	NMErrorNoData,
 	NMErrorNoSupportedVideoFormat,
 	NMErrorDeviceTokenExpired,
+	NMErrorVideoNotAvailableInCurrentLocation,
 	NMErrorYouTubeAPIError,
 } NMErrorType;
 
@@ -107,6 +108,9 @@ extern NSString * const NMDidFailUnsubscribeChannelNotification;
 extern NSString * const NMWillShareVideoNotification;
 extern NSString * const NMDidShareVideoNotification;
 extern NSString * const NMDidFailShareVideoNotification;
+extern NSString * const NMWillUnfavoriteVideoNotification;
+extern NSString * const NMDidUnfavoriteVideoNotification;
+extern NSString * const NMDidFailUnfavoriteVideoNotification;
 extern NSString * const NMWillEnqueueVideoNotification;
 extern NSString * const NMDidEnqueueVideoNotification;
 extern NSString * const NMDidFailEnqueueVideoNotification;

@@ -43,8 +43,8 @@
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword;
 // Channel
 - (void)issueGetSubscribedChannels;
-- (void)issueGetLiveChannel;
-- (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
+//- (void)issueGetLiveChannel;
+//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;

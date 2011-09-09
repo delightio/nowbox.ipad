@@ -19,8 +19,9 @@ NSInteger NM_USER_ACCOUNT_ID				= 0;
 NSInteger NM_USER_FAVORITES_CHANNEL_ID		= 0;
 NSInteger NM_USER_WATCH_LATER_CHANNEL_ID	= 0;
 NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
-NSNumber * NM_SESSION_ID					= nil;
+BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
+NSNumber * NM_SESSION_ID					= nil;
 
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
 BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
@@ -137,18 +138,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
+//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj {
+//#if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
+//	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
+//#endif
+//	if ( [chnObj.nm_id integerValue] < 0 ) return;
+//	// if it's a new channel, we should have special handling on fail
+//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
+
+- (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj {
 #if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
 #endif
-	if ( [chnObj.nm_id integerValue] < 0 ) return;
-	// if it's a new channel, we should have special handling on fail
-	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-- (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj {
 	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetMoreVideoForChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -164,11 +168,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 //	[task release];
 //}
 
-- (void)issueGetLiveChannel {
-	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] init];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueGetLiveChannel {
+//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] init];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj {
 	NMGetChannelDetailTask * task = [[NMGetChannelDetailTask alloc] initWithChannel:chnObj];
