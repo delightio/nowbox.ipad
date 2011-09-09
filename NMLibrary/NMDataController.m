@@ -105,9 +105,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (void)resetAllChannelsPageNumber {
 	NSArray * subChn = self.subscribedChannels;
-	NSNumber * pgNum = [NSNumber numberWithInteger:1];
+	NSNumber * pgNum = [NSNumber numberWithInteger:0];
 	for (NMChannel * chnObj in subChn) {
-		// reset the page number to 1. Page number always start at 1.
+		// reset the page number to 1. Page number always start at 0.
 		chnObj.nm_current_page = pgNum;
 	}
 }
