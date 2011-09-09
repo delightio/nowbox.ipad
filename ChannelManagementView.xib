@@ -12,10 +12,9 @@
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<string>IBUITableView</string>
-			<string>IBUIImageView</string>
-			<string>IBUIView</string>
 			<string>IBProxyObject</string>
+			<string>IBUIView</string>
+			<string>IBUITableView</string>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -73,16 +72,12 @@
 								<string key="NSFrameSize">{758, 70}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="959790454"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:165</string>
 								<reference key="IBUIBackgroundColor" ref="321368810"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<double key="IBUIContentInset.top">0.0</double>
-								<double key="IBUIContentInset.bottom">10</double>
-								<double key="IBUIContentInset.left">0.0</double>
-								<double key="IBUIContentInset.right">0.0</double>
 								<bool key="IBUIAlwaysBounceVertical">YES</bool>
 								<int key="IBUISeparatorStyle">1</int>
 								<int key="IBUISectionIndexMinimumDisplayRowCount">0</int>
@@ -90,21 +85,6 @@
 								<float key="IBUIRowHeight">44</float>
 								<float key="IBUISectionHeaderHeight">22</float>
 								<float key="IBUISectionFooterHeight">22</float>
-							</object>
-							<object class="IBUIImageView" id="959790454">
-								<reference key="NSNextResponder" ref="465591970"/>
-								<int key="NSvFlags">289</int>
-								<string key="NSFrame">{{658, 0}, {100, 70}}</string>
-								<reference key="NSSuperview" ref="465591970"/>
-								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="840363466"/>
-								<string key="NSReuseIdentifierKey">_NS:365</string>
-								<bool key="IBUIUserInteractionEnabled">NO</bool>
-								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<object class="NSCustomResource" key="IBUIImage">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">category-list-fade.png</string>
-								</object>
 							</object>
 						</object>
 						<string key="NSFrame">{{5, 5}, {758, 994}}</string>
@@ -244,7 +224,6 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="840363466"/>
 							<reference ref="650864921"/>
-							<reference ref="959790454"/>
 						</object>
 						<reference key="parent" ref="191373211"/>
 					</object>
@@ -260,11 +239,6 @@
 						<reference key="parent" ref="465591970"/>
 						<string key="objectName">Channel Table</string>
 					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">16</int>
-						<reference key="object" ref="959790454"/>
-						<reference key="parent" ref="465591970"/>
-					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -277,7 +251,6 @@
 					<string>-2.IBPluginDependency</string>
 					<string>1.IBPluginDependency</string>
 					<string>12.IBPluginDependency</string>
-					<string>16.IBPluginDependency</string>
 					<string>4.CustomClassName</string>
 					<string>4.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
@@ -287,7 +260,6 @@
 					<string>ChannelManagementViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>UIResponder</string>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -396,10 +368,6 @@
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">category-list-fade.png</string>
-			<string key="NS.object.0">{100, 1}</string>
-		</object>
 		<string key="IBCocoaTouchPluginVersion">919</string>
 	</data>
 </archive>
