@@ -211,7 +211,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		{
 			NSNumber * vid = [video.nm_id retain];
 			// remove video
-			[ctrl deleteVideoWithID:vid fromChannel:ctrl.myQueueChannel];
+			[ctrl deleteVideoWithID:vid fromChannel:ctrl.favoriteVideoChannel];
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:vid forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
 			[vid release];

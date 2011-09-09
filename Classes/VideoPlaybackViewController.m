@@ -612,12 +612,6 @@
 }
 
 #pragma mark VideoPlaybackModelController delegate methods
-//- (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid {
-////	if ( movieView.player == nil ) {
-////		// create player
-////		[self preparePlayerForVideo:vid];
-////	}
-//}
 
 - (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
 	// queue this video
@@ -1252,7 +1246,7 @@
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
-	[nowmovTaskController issueEnqueue:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo];
+	[nowmovTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
 }
 
