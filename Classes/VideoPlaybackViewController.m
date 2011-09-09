@@ -30,6 +30,8 @@
 #define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER	10001
 #define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT	10002
 #define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT		10003
+#define NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT		10004
+#define NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT		10005
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
@@ -74,6 +76,7 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+	styleUtility = [NMStyleUtility sharedStyleUtility];
 	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 //	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
@@ -156,9 +159,11 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	// event
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
 
@@ -283,6 +288,7 @@
 	
 	// update the interface if necessary
 	[movieView setActivityIndicationHidden:NO animated:NO];
+	[self updateRibbonButtons];
 //	if ( playbackModelController.currentVideo == nil ) {
 		// we need to wait for video to come. show loading view
 		//controlScrollView.scrollEnabled = NO;
@@ -420,9 +426,128 @@
 		case NM_ANIMATION_RIBBON_FADE_IN_CONTEXT:
 			break;
 			
+		case NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT:
+			[self updateFavoriteButton];
+			break;
+			
+		case NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT:
+			[self updateWatchLaterButton];
+			break;
+			
 		default:
 			break;
 	}
+}
+
+#pragma mark Ribbon management
+
+- (void)updateRibbonButtons {
+	[self updateFavoriteButton];
+	[self updateWatchLaterButton];
+}
+
+- (void)updateFavoriteButton {
+	// configure ribbon views in Full Screen control view and the ribbon view
+	NMVideo * vdo = playbackModelController.currentVideo;
+	
+	// make the buttons respond to tapping
+	favoriteButton.userInteractionEnabled = YES;
+	loadedControlView.favoriteButton.userInteractionEnabled = YES;
+	
+	if ( [vdo.nm_favorite boolValue] ) {
+		// update image
+		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateNormal];
+		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateHighlighted];
+		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateSelected];
+		[loadedControlView.favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateNormal];
+		[loadedControlView.favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateHighlighted];
+		[loadedControlView.favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateSelected];
+	} else {
+		// update image
+		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateNormal];
+		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateHighlighted];
+		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateSelected];
+		[loadedControlView.favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateNormal];
+		[loadedControlView.favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateHighlighted];
+		[loadedControlView.favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateSelected];
+	}
+	if ( favoriteButton.selected ) {
+		favoriteButton.selected = NO;
+		loadedControlView.favoriteButton.selected = NO;
+	}
+}
+
+- (void)updateWatchLaterButton {
+	// configure ribbon views in Full Screen control view and the ribbon view
+	NMVideo * vdo = playbackModelController.currentVideo;
+	
+	// make the buttons respond to tapping
+	watchLaterButton.userInteractionEnabled = YES;
+	loadedControlView.watchLaterButton.userInteractionEnabled = YES;
+	
+	if ( [vdo.nm_watch_later boolValue] ) {
+		// update image
+		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateNormal];
+		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateHighlighted];
+		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateSelected];
+		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateNormal];
+		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateHighlighted];
+		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateSelected];
+	} else {
+		// update image
+		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateNormal];
+		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateHighlighted];
+		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateSelected];
+		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateNormal];
+		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateHighlighted];
+		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateSelected];
+	}
+	if ( watchLaterButton.selected ) {
+		watchLaterButton.selected = NO;
+		loadedControlView.watchLaterButton.selected = NO;
+	}
+}
+
+- (void)animateFavoriteButtonsToInactive {
+	favoriteButton.selected = YES;
+	favoriteButton.userInteractionEnabled = NO;
+	loadedControlView.favoriteButton.selected = YES;
+	loadedControlView.favoriteButton.userInteractionEnabled = NO;
+	
+	[UIView beginAnimations:nil context:nil];
+	favoriteButton.alpha = 0.25f;
+	loadedControlView.favoriteButton.alpha = 0.25f;
+	[UIView commitAnimations];
+}
+
+- (void)animateWatchLaterButtonsToInactive {
+	watchLaterButton.selected = YES;
+	watchLaterButton.userInteractionEnabled = NO;
+	loadedControlView.watchLaterButton.selected = YES;
+	loadedControlView.watchLaterButton.userInteractionEnabled = NO;
+	
+	[UIView beginAnimations:nil context:nil];
+	watchLaterButton.alpha = 0.25f;
+	loadedControlView.watchLaterButton.alpha = 0.25f;
+	[UIView commitAnimations];
+}
+
+- (void)animateFavoriteButtonsToActive {
+	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT];
+	favoriteButton.alpha = 1.0f;
+	loadedControlView.favoriteButton.alpha = 1.0f;
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView commitAnimations];
+}
+
+- (void)animateWatchLaterButtonsToActive {
+	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT];
+	watchLaterButton.alpha = 1.0f;
+	loadedControlView.watchLaterButton.alpha = 1.0f;
+	[UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView commitAnimations];
 }
 
 #pragma mark Video queuing
@@ -473,6 +598,7 @@
 	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
+	[self updateRibbonButtons];
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {
@@ -486,12 +612,6 @@
 }
 
 #pragma mark VideoPlaybackModelController delegate methods
-//- (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid {
-////	if ( movieView.player == nil ) {
-////		// create player
-////		[self preparePlayerForVideo:vid];
-////	}
-//}
 
 - (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
 	// queue this video
@@ -668,21 +788,16 @@
 	if ( vidObj == nil ) return;
 	
 	NSString * name = [aNotification name];
-	if ( [name isEqualToString:NMDidShareVideoNotification] ) {
-		// shared the video successfully
-		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
-			vidObj.nm_movie_detail_view.likeButton.selected = YES;
-		}
-	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] ) {
+	if ( [name isEqualToString:NMDidShareVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+		[self animateFavoriteButtonsToActive];
+	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+		[self animateFavoriteButtonsToActive];
+	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// queued a video successfully, animate the icon to appropriate state
-		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
-			vidObj.nm_movie_detail_view.watchLaterButton.selected = YES;
-		}
-	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] ) {
+		[self animateWatchLaterButtonsToActive];
+	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// dequeued a video successfully
-		if ( playbackModelController.currentVideo == vidObj || playbackModelController.previousVideo == vidObj || playbackModelController.nextVideo == vidObj ) {
-			vidObj.nm_movie_detail_view.watchLaterButton.selected = NO;
-		}
+		[self animateWatchLaterButtonsToActive];
 	}
 }
 
@@ -874,6 +989,7 @@
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
+			[self updateRibbonButtons];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -887,6 +1003,7 @@
 			[playbackModelController moveToPreviousVideo];
 			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
+			[self updateRibbonButtons];
 		}
 	} else {
 		// play the video again
@@ -1122,15 +1239,15 @@
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
-	[nowmovTaskController issueShare:YES video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-	UIButton * btn = (UIButton *)sender;
-	btn.enabled = NO;
+	NMVideo * vdo = playbackModelController.currentVideo;
+	[nowmovTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[self animateFavoriteButtonsToInactive];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
-	[nowmovTaskController issueEnqueue:YES video:playbackModelController.currentVideo];
-	UIButton * btn = (UIButton *)sender;
-	btn.enabled = NO;
+	NMVideo * vdo = playbackModelController.currentVideo;
+	[nowmovTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
+	[self animateWatchLaterButtonsToInactive];
 }
 
 // seek bar

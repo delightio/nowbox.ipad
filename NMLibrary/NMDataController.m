@@ -42,6 +42,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
+	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID AND channel == $CHANNEL"] retain];
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
@@ -56,6 +57,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	[channelNamePredicateTemplate release];
 	[subscribedChannelsPredicate release];
 	[objectForIDPredicateTemplate release];
+	[videoInChannelPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
@@ -103,9 +105,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (void)resetAllChannelsPageNumber {
 	NSArray * subChn = self.subscribedChannels;
-	NSNumber * pgNum = [NSNumber numberWithInteger:1];
+	NSNumber * pgNum = [NSNumber numberWithInteger:0];
 	for (NMChannel * chnObj in subChn) {
-		// reset the page number to 1. Page number always start at 1.
+		// reset the page number to 1. Page number always start at 0.
 		chnObj.nm_current_page = pgNum;
 	}
 }
@@ -331,7 +333,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// fetch last video played
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_id == %@", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND nm_id == %@", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	NMChannel * chnObj = nil;
@@ -342,7 +344,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		// get the first channel
 		request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_id > 0"]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND nm_id > 0"]];
 		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
 		[request setSortDescriptors:[NSArray arrayWithObject:sortDsptr]];
 		[sortDsptr release];
@@ -361,7 +363,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	if ( myQueueChannel == nil ) {
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"title like %@", @"Watch Later"]];
+		[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_WATCH_LATER_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 //		if ( result == nil || [result count] == 0 ) {
@@ -387,7 +389,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	if ( favoriteVideoChannel == nil ) {
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"title like %@", @"Favorites"]];
+		[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_FAVORITES_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 //		if ( result == nil || [result count] == 0 ) {
@@ -464,6 +466,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		theOrder = [[[result objectAtIndex:0] valueForKey:@"sort_order"] integerValue];
 	}
 	return theOrder;
+}
+
+- (void)updateMyQueueChannelHideStatus {
+	myQueueChannel.nm_hidden = [NSNumber numberWithBool:([myQueueChannel.videos anyObject] == nil)];
+}
+
+- (void)updateFavoriteChannelHideStatus {
+	BOOL hideChannel = YES;
+	if ( NM_USER_SHOW_FAVORITE_CHANNEL && [favoriteVideoChannel.videos anyObject] ) {
+		hideChannel = NO;
+	}
+	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:hideChannel];
 }
 
 #pragma mark Video 
@@ -567,6 +581,36 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	[request release];
 	[pool release];
+}
+
+- (void)deleteVideoWithID:(NSNumber *)vid fromChannel:(NMChannel *)chn {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[videoInChannelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:vid, @"OBJECT_ID", chn, @"CHANNEL", nil]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"channel", nil]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		for (NMVideo * vdo in result) {
+			[managedObjectContext deleteObject:vdo];
+		}
+	}
+}
+
+- (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey {
+	// this method is used when remove a video from favorite or watch later channel. videos are copied. Other NMVideo MOs with the same nm_id should be updated as well
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	NMVideo * vidObj = nil;
+	if ( [result count] ) {
+		for (vidObj in result) {
+			[vidObj setValue:val forKey:akey];
+		}
+	}
 }
 
 - (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn {

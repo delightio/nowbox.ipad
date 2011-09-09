@@ -33,6 +33,10 @@
 @synthesize fullScreenButton;
 
 - (void)awakeFromNib {
+    
+    highlightedVideoIndex = -1;
+    highlightedChannelIndex = -1;
+    
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -244,7 +248,7 @@
     
 NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( [theChannel.videos count] == 0 ) {
-		[schdlr issueGetVideoListForChannel:theChannel];
+		[schdlr issueGetMoreVideoForChannel:theChannel];
 	}
     
     if (highlightedChannelIndex == [indexPath row]) {
@@ -384,8 +388,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     for (int i=0; i<[[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]; i++) {
         NMVideo * theVideo = [htView.tableController.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
         NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
-//        if ((theVideo.nm_playback_status >= 0) && (theVideo.nm_playback_status < NMVideoQueueStatusPlaying)) {
-        if (theVideo.nm_playback_status >= 0 && theVideo.nm_playback_status < NMVideoQueueStatusPlayed) {
+        if (theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue])) {
             [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             break;
         }
@@ -412,7 +415,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0"]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];

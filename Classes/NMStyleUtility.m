@@ -48,6 +48,10 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize videoStatusFavImage;
 @synthesize videoStatusHotImage;
 @synthesize videoNewSessionIndicatorImage;
+@synthesize favoriteImage;
+@synthesize favoriteActiveImage;
+@synthesize watchLaterImage;
+@synthesize watchLaterActiveImage;
 
 + (NMStyleUtility *)sharedStyleUtility {
 	if ( sharedStyleUtility_ == nil ) {
@@ -113,6 +117,11 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     
     videoNewSessionIndicatorImage = [[UIImage imageNamed:@"channel-view-new-session"] retain];
 	
+	favoriteImage = [[UIImage imageNamed:@"button-like"] retain];
+	favoriteActiveImage = [[UIImage imageNamed:@"button-like-active"] retain];
+	watchLaterImage = [[UIImage imageNamed:@"button-watch-later"] retain];
+	watchLaterActiveImage = [[UIImage imageNamed:@"button-watch-later-active"] retain];
+	
 	return self;
 }
 
@@ -143,12 +152,14 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     [videoStatusFavImage release];
     [videoNewSessionIndicatorImage release];
     
-	
 	[fullScreenImage release], [fullScreenActiveImage release];
 	[splitScreenImage release],	[splitScreenActiveImage release];
 	
 	[playImage release], [playActiveImage release];
 	[pauseImage release], [pauseActiveImage release];
+	
+	[favoriteImage release], [favoriteActiveImage release];
+	[watchLaterImage release], [watchLaterActiveImage release];
 	
 	[blackColor release];
 	[super dealloc];

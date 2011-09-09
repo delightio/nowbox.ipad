@@ -36,6 +36,10 @@
 }
 
 - (void)dealloc {
+	[favoriteChannelSwitch release];
+	[hdSwitch release];
+	[pushNotificationSwitch release];
+	[emailNotificationSwitch release];
     [super dealloc];
 }
 
@@ -67,6 +71,7 @@
 
 	favoriteChannelSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 	favoriteChannelSwitch.tag = NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG;
+	favoriteChannelSwitch.on = NM_USER_SHOW_FAVORITE_CHANNEL;
 	[favoriteChannelSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
 	pushNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
@@ -116,6 +121,8 @@
 			[userDefaults setBool:theSwitch.on forKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
 			break;
 		case NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG:
+			NM_USER_SHOW_FAVORITE_CHANNEL = theSwitch.on;
+			[[NMTaskQueueController sharedTaskQueueController].dataController updateFavoriteChannelHideStatus];
 			[userDefaults setBool:theSwitch.on forKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
 			break;
 		case NM_SETTING_PUSH_NOTIFICATION_SWITCH_TAG:

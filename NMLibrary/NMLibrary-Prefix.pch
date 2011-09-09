@@ -8,7 +8,11 @@
 #import <CoreData/CoreData.h>
 
 extern NSInteger NM_USER_ACCOUNT_ID;
+extern NSInteger NM_USER_FAVORITES_CHANNEL_ID;
+extern NSInteger NM_USER_WATCH_LATER_CHANNEL_ID;
+extern NSInteger NM_USER_HISTORY_CHANNEL_ID;
 extern NSNumber * NM_SESSION_ID;
+extern BOOL NM_USER_SHOW_FAVORITE_CHANNEL;
 extern BOOL NM_USE_HIGH_QUALITY_VIDEO;
 extern NSInteger NM_LAST_CHANNEL_ID;
 

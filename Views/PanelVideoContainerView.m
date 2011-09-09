@@ -65,7 +65,7 @@
 		titleLabel.highlightedTextColor = styleUtility.videoTitleHighlightedFontColor;
 //		[self addSubview:titleLabel];
         
-        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
+        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
 		datePostedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		datePostedLabel.textColor = styleUtility.videoDetailFontColor;
 		datePostedLabel.backgroundColor = styleUtility.clearColor;
@@ -83,7 +83,7 @@
         
 //		[self addSubview:viewsLabel];
 		
-        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
+        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
 		durationLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		durationLabel.textAlignment = UITextAlignmentRight;
 		durationLabel.textColor = styleUtility.videoDetailFontColor;
@@ -181,7 +181,7 @@
     
 //    viewsLabel.text = [NSString stringWithFormat:@"%@ views",formattedOutput];
 //    [viewsLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
-    [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
+    [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
     
     if ([aVideo.nm_did_play boolValue] || !isVideoPlayable) {
         titleLabel.textColor = [NMStyleUtility sharedStyleUtility].videoTitlePlayedFontColor;

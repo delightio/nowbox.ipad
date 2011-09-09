@@ -23,9 +23,9 @@
 
 #define kShortVideoLengthSeconds   120
 #define kMediumVideoLengthSeconds   600
-#define kShortVideoCellWidth    240.0f
-#define kMediumVideoCellWidth    480.0f
-#define kLongVideoCellWidth    720.0f
+#define kShortVideoCellWidth    202.0f
+#define kMediumVideoCellWidth    404.0f
+#define kLongVideoCellWidth    606.0f
 
 
 

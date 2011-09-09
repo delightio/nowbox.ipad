@@ -83,16 +83,16 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	return mdict;
 }
 
-- (id)initWithChannel:(NMChannel *)aChn {
-	self = [super init];
-	command = NMCommandGetChannelVideoList;
-	self.channel = aChn;
-	self.channelName = aChn.title;
-	self.targetID = aChn.nm_id;
-	self.urlString = aChn.resource_uri;
-	totalNumberOfRows = 0;
-	return self;
-}
+//- (id)initWithChannel:(NMChannel *)aChn {
+//	self = [super init];
+//	command = NMCommandGetChannelVideoList;
+//	self.channel = aChn;
+//	self.channelName = aChn.title;
+//	self.targetID = aChn.nm_id;
+//	self.urlString = aChn.resource_uri;
+//	totalNumberOfRows = 0;
+//	return self;
+//}
 
 - (id)initGetMoreVideoForChannel:(NMChannel *)aChn {
 	self = [super init];
@@ -116,18 +116,18 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = nil;
-	switch (command) {
-		case NMCommandGetMoreVideoForChannel:
+//	switch (command) {
+//		case NMCommandGetMoreVideoForChannel:
 			urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
-			break;
-			
-		case NMCommandGetChannelVideoList:
-			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
-			break;
-			
-		default:
-			break;
-	}
+//			break;
+//			
+//		case NMCommandGetChannelVideoList:
+//			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+//			break;
+//			
+//		default:
+//			break;
+//	}
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Get Channel Video List: %@", urlStr);
@@ -229,32 +229,32 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	switch (command) {
-		case NMCommandGetChannelVideoList:
-		{
-			// delete all existing channel
-			NSSet * chnVideos = channel.videos;
-			if ( chnVideos ) [ctrl batchDeleteVideos:chnVideos];
-			// put in all videos
-			[self insertAllVideosInController:ctrl];
-			if ( numberOfRowsFromServer ) {
-				channel.nm_current_page = [NSNumber numberWithInteger:1];
-			}
-			break;
-		}
-		case NMCommandGetMoreVideoForChannel:
+//	switch (command) {
+//		case NMCommandGetChannelVideoList:
+//		{
+//			// delete all existing channel
+//			NSSet * chnVideos = channel.videos;
+//			if ( chnVideos ) [ctrl batchDeleteVideos:chnVideos];
+//			// put in all videos
+//			[self insertAllVideosInController:ctrl];
+//			if ( numberOfRowsFromServer ) {
+//				channel.nm_current_page = [NSNumber numberWithInteger:1];
+//			}
+//			break;
+//		}
+//		case NMCommandGetMoreVideoForChannel:
 			if ( [parsedObjects count] ) {
 				[self insertOnlyNewVideosInController:ctrl];
 				// update the page number
-				if ( numberOfRowsFromServer ) {
+				if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
 					channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
 				}
 			}
-			break;
-			
-		default:
-			break;
-	}
+//			break;
+//			
+//		default:
+//			break;
+//	}
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
 #endif

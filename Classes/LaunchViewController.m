@@ -57,7 +57,11 @@
 	
 	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 	NM_USER_ACCOUNT_ID = [userDefaults integerForKey:NM_USER_ACCOUNT_ID_KEY];
+	NM_USER_WATCH_LATER_CHANNEL_ID = [userDefaults integerForKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+	NM_USER_FAVORITES_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+	NM_USER_HISTORY_CHANNEL_ID = [userDefaults integerForKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 	NM_USE_HIGH_QUALITY_VIDEO = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
+	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 }
 
@@ -125,7 +129,11 @@
 
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
-	[[NSUserDefaults standardUserDefaults] setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+	[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 	NSLog(@"Created new user: %d", NM_USER_ACCOUNT_ID);
 	// new user created, get channel
 	[self checkUpdateChannels];
@@ -140,6 +148,11 @@
 	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
 	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+	// set the user channels to hide
+	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+	NSNumber * yesNum = [NSNumber numberWithBool:YES];
+	dataCtrl.myQueueChannel.nm_hidden = yesNum;
+	dataCtrl.favoriteVideoChannel.nm_hidden = yesNum;
 }
 
 @end

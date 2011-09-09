@@ -9,6 +9,7 @@
 #import "SearchChannelViewController.h"
 #import "CategoryTableCell.h"
 #import "NMCachedImageView.h"
+#import "ChannelDetailViewController.h"
 
 
 @implementation SearchChannelViewController
@@ -49,6 +50,9 @@
 	[nc addObserver:self selector:@selector(handleDidSearchNotification:) name:NMDidSearchChannelsNotification object:nil];
 
     [tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    
+	// load the channel detail view
+	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
     
 
 }
@@ -150,26 +154,10 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    UIActivityIndicatorView *actView;
-    actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
-    [actView startAnimating];
-    
-    UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
-    
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         [actView setAlpha:1];
-                         [buttonView setAlpha:0];
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-    
-    NMChannel * chn = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
-
+    NMChannel * chn;
+    chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
+    channelDetailViewController.channel = chn;
+    [self.navigationController pushViewController:channelDetailViewController animated:YES];
 }
 
 
@@ -308,6 +296,27 @@
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	[ctrl.dataController clearSearchResultCache];
 	[ctrl issueChannelSearchForKeyword:searchText];
+}
+
+-(IBAction)toggleChannelSubscriptionStatus:(id)sender {
+    UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
+    
+    UIActivityIndicatorView *actView;
+    actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+    [actView startAnimating];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         [actView setAlpha:1];
+                         [sender setAlpha:0];
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    NMChannel * chn;
+    chn = [fetchedResultsController_ objectAtIndexPath:[tableView indexPathForCell:cell]];
+    
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+    
 }
 
 @end

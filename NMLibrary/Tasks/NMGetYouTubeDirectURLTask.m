@@ -99,7 +99,12 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	if ( mediaContents == nil || [mediaContents count] == 0 ) {
 		// no data
 		encountersErrorDuringProcessing = YES;
-		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", nil];
+		NSDictionary * ytStateDict = [dict valueForKey:@"entry.app$control.yt$state"];
+		if ( ytStateDict && [[ytStateDict objectForKey:@"reasonCode"] isEqualToString:@"requesterRegion"] ) {
+			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorVideoNotAvailableInCurrentLocation], @"error_code", nil];
+		} else {
+			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", nil];
+		}
 		return;
 	}
 	// get the MP4 link

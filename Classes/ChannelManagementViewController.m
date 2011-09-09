@@ -65,7 +65,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
 	self.title = @"Find Channels";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
@@ -81,6 +81,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
     [categoriesTableView setAlwaysBounceVertical:YES];
     [categoriesTableView setShowsVerticalScrollIndicator:NO];
+    
+    categoriesTableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"category-list-normal-bg-turned"]];
 
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
@@ -670,9 +672,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                      }
                      completion:^(BOOL finished) {
                      }];
-    NSLog(@"cell %@",[cell description]);
-    NSLog(@"cell indexpath %d",[channelsTableView indexPathForCell:cell].row);
-    NSLog(@"cell indexpath %d",[channelsTableView indexPathForRowAtPoint:CGPointMake([cell frame].origin.x, [cell frame].origin.y)].row);
     NMChannel * chn;
     if (selectedIndex == 0) {
         chn = [myChannelsFetchedResultsController objectAtIndexPath:[channelsTableView indexPathForCell:cell]];

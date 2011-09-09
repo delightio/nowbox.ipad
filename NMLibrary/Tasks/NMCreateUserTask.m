@@ -40,6 +40,9 @@ NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotifica
 		
 		// update global variable
 		NM_USER_ACCOUNT_ID = uid;
+		NM_USER_WATCH_LATER_CHANNEL_ID = [[theDict objectForKey:@"queue_channel_id"] integerValue];
+		NM_USER_FAVORITES_CHANNEL_ID = [[theDict objectForKey:@"favorite_channel_id"] integerValue];
+		NM_USER_HISTORY_CHANNEL_ID = [[theDict objectForKey:@"history_channel_id"] integerValue];
 	} else {
 		encountersErrorDuringProcessing = YES;
 	}

@@ -11,7 +11,7 @@
 @interface NMCachedImageView : UIImageView {
 	NMCacheController * cacheController;
 	NMImageDownloadTask * downloadTask;
-	NSNotificationCenter * notificationCenter;
+//	NSNotificationCenter * notificationCenter;
 	NMChannel * channel;
 	NMVideo * video;
 	NMVideoDetail * videoDetail;
@@ -26,9 +26,13 @@
 
 - (void)setImageForChannel:(NMChannel *)chn;
 - (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl;
-- (void)setImageForVideoThumbnail:(NMVideo *)vdo;
+//- (void)setImageForVideoThumbnail:(NMVideo *)vdo;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 
-- (void)cancelDownload;
+- (void)delayedIssueChannelImageDownloadRequest;
+- (void)delayedIssueAuthorImageDownloadRequest;
+- (void)delayedIssueVideoImageDownloadRequest;
+
+//- (void)cancelDownload;
 
 @end

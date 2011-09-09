@@ -16,6 +16,7 @@
 @implementation NMChannel
 
 @dynamic nm_current_page;
+@dynamic nm_hidden;
 @dynamic nm_id;
 @dynamic nm_last_vid;
 @dynamic nm_sort_order;
