@@ -10,7 +10,7 @@
 #import "JSONKit.h"
 
 #define NM_URL_REQUEST_TIMEOUT		30.0f
-#define NM_BASE_URL					@"api.nowmov.com/1"
+#define NM_BASE_URL					@"api.nowbox.com/1"
 
 @class NMDataController;
 
