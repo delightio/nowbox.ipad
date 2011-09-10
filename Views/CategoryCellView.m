@@ -70,10 +70,17 @@
     else {
         CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
         
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
+        [[categoryTitle uppercaseString] drawInRect:CGRectMake(0, 26, rectangle.size.width, 30) withFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+        CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
+        
+        [[categoryTitle uppercaseString] drawInRect:CGRectMake(0, 25, rectangle.size.width, 30) withFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+#else
         [[categoryTitle uppercaseString] drawInRect:CGRectMake(0, 26, rectangle.size.width, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
         CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
         
         [[categoryTitle uppercaseString] drawInRect:CGRectMake(0, 25, rectangle.size.width, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+#endif
     }
 }
 
