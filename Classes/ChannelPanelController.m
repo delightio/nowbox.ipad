@@ -235,6 +235,9 @@
     htView.tableController.indexInTable = [indexPath row];
     htView.tableController.isLoadingNewContent = NO;
     
+    
+    // rather than reload, should let the table take care of redraw
+    
 	[htView reloadData];
     if (!useSamePosition) {
         [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
