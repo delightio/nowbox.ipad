@@ -72,11 +72,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[viewCountFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 	
 	// video detail view font
-	if ( NM_RUNNING_IOS_5 ) {
-		channelNameFont = [[UIFont fontWithName:@"Futura-CondensedExtraBold" size:13.0f] retain];
-	} else {
-		channelNameFont = [[UIFont fontWithName:@"HelveticaNeue" size:12.0f] retain];
-	}
+    channelNameFont = [[UIFont fontWithName:@"HelveticaNeue" size:12.0f] retain];
 	videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
 	videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
 	videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
