@@ -73,9 +73,9 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	
 	// video detail view font
 	if ( NM_RUNNING_IOS_5 ) {
-		channelNameFont = [[UIFont fontWithName:@"HelveticaNeue" size:12.0f] retain];
-	} else {
 		channelNameFont = [[UIFont fontWithName:@"Futura-CondensedExtraBold" size:13.0f] retain];
+	} else {
+		channelNameFont = [[UIFont fontWithName:@"HelveticaNeue" size:12.0f] retain];
 	}
 	videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
 	videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
