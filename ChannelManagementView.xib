@@ -44,18 +44,19 @@
 						<int key="NSvFlags">274</int>
 						<object class="NSMutableArray" key="NSSubviews">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBUITableView" id="840363466">
+							<object class="IBUITableView" id="650864921">
 								<reference key="NSNextResponder" ref="465591970"/>
-								<int key="NSvFlags">274</int>
-								<string key="NSFrame">{{0, 70}, {758, 924}}</string>
+								<int key="NSvFlags">292</int>
+								<string key="NSFrameSize">{758, 70}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="840363466"/>
 								<string key="NSReuseIdentifierKey">_NS:165</string>
 								<object class="NSColor" key="IBUIBackgroundColor" id="321368810">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MQA</bytes>
 								</object>
+								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<bool key="IBUIAlwaysBounceVertical">YES</bool>
@@ -66,16 +67,15 @@
 								<float key="IBUISectionHeaderHeight">22</float>
 								<float key="IBUISectionFooterHeight">22</float>
 							</object>
-							<object class="IBUITableView" id="650864921">
+							<object class="IBUITableView" id="840363466">
 								<reference key="NSNextResponder" ref="465591970"/>
-								<int key="NSvFlags">292</int>
-								<string key="NSFrameSize">{758, 70}</string>
+								<int key="NSvFlags">274</int>
+								<string key="NSFrame">{{0, 70}, {758, 924}}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:165</string>
 								<reference key="IBUIBackgroundColor" ref="321368810"/>
-								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<bool key="IBUIAlwaysBounceVertical">YES</bool>

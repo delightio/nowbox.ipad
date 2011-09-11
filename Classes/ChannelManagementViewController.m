@@ -297,13 +297,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
         }
 
-        UILabel *label;
-        label = (UILabel *)[cell viewWithTag:12];
-        label.text = chn.title;
-        
-        label = (UILabel *)[cell viewWithTag:13];
-        label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
-        
         UIImageView *backgroundView;
         UIButton *buttonView;
         NMCachedImageView *thumbnailView;
@@ -320,6 +313,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
             [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
         }
+        
+        UILabel *label;
+        label = (UILabel *)[cell viewWithTag:12];
+        label.text = chn.title;
+        
+        label = (UILabel *)[cell viewWithTag:13];
+        label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
         
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
