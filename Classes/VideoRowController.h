@@ -21,7 +21,7 @@
 	NSInteger indexInTable;
 	NMStyleUtility * styleUtility;
 	ChannelPanelController * panelController;
-    BOOL isLoadingNewContent;
+    BOOL isLoadingNewContent, isAnimatingNewContentCell;
     CGPoint tempOffset;
 }
 
@@ -37,4 +37,6 @@
 -(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath;
+- (void)resetAnimatingVariable;
+
 @end

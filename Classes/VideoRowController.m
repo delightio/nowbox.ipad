@@ -287,6 +287,8 @@
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification {
 	NSDictionary * info = [aNotification userInfo];
     if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
+        isLoadingNewContent = NO;
+        isAnimatingNewContentCell = YES;
 //        NSLog(@"handleDidGetChannelVideoListNotification");
 		if ( [[info objectForKey:@"num_video_added"] integerValue] == 0 && [[info objectForKey:@"num_video_received"] integerValue] == [[info objectForKey:@"num_video_requested"] integerValue] ) {
 			// the "if" condition should be interrupted as follow:
@@ -294,17 +296,21 @@
 			// poll the server again
 			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 		} else {
-			isLoadingNewContent = NO;
 		}
+        [videoTableView beginUpdates];
+        [videoTableView endUpdates];
+        [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
     }
 }
 
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification {
     if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
         isLoadingNewContent = NO;
+        isAnimatingNewContentCell = YES;
 //        NSLog(@"handleDidFailGetChannelVideoListNotification");
         [videoTableView beginUpdates];
         [videoTableView endUpdates];
+        [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
     }
 }
 
@@ -318,7 +324,7 @@
     float h = size.height;
     float reload_distance = -100 - kMediumVideoCellWidth;
     if(y > h + reload_distance) {
-        if (!isLoadingNewContent) {
+        if (!isLoadingNewContent && !isAnimatingNewContentCell) {
 //            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
             NSLog(@"Load new videos");
             isLoadingNewContent = YES;
@@ -346,5 +352,10 @@
 //- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 ////    NSLog(@"scrollViewDidEndDragging willDecelerate");
 //}
+
+#pragma mark helpers
+- (void)resetAnimatingVariable {
+    isAnimatingNewContentCell = NO;
+}
 
 @end
