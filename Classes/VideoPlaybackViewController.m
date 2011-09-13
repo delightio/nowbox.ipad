@@ -707,6 +707,7 @@
 	NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
 #endif
 	NMVideo * vdo = ((NMAVPlayerItem *)anItem).nmVideo;
+	if ( vdo == nil ) return;
 	if ( [vdo.nm_error integerValue] == NMErrorNone ) {
 		vdo.nm_playback_status = NMVideoQueueStatusPlayed;
 	}

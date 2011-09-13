@@ -166,6 +166,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 			[alert release];
 			
 			// we should relaunch the app if there's error saving the context
+			// reset the context
+			//[managedObjectContext reset];
+			// fetch stuff as if it's a new channel
+			
         } 
     }
 }
