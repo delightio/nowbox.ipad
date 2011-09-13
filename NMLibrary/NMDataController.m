@@ -12,6 +12,7 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "NMGetChannelVideoListTask.h"
 
 
 NSString * const NMCategoryEntityName = @"NMCategory";
@@ -696,7 +697,16 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 				NSLog(@"can't save cache %@", error);
 			}
 			break;
-			
+		case NMCommandGetMoreVideoForChannel:
+		{
+			NMGetChannelVideoListTask * theTask = (NMGetChannelVideoListTask *)task;
+			if ( theTask.numberOfVideoAdded ) {
+				if ( ![managedObjectContext save:&error] ) {
+					NSLog(@"can't save cache %@", error);
+				}
+			}
+			break;
+		}
 		default:
 			break;
 	}

@@ -32,7 +32,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 @implementation NMGetChannelVideoListTask
 @synthesize channel, channelName;
 @synthesize newChannel, urlString;
-@synthesize currentPage;
+@synthesize currentPage, numberOfVideoAdded;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {

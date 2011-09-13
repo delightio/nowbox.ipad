@@ -27,6 +27,7 @@
 @property (nonatomic, retain) NSString * urlString;
 @property (nonatomic) NSUInteger currentPage;
 @property (nonatomic) BOOL newChannel;
+@property (nonatomic) NSUInteger numberOfVideoAdded;
 
 // in this wind-down version. we only have one single channel - Live
 //- (id)initWithChannel:(NMChannel *)aChn;
