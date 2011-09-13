@@ -243,7 +243,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 //			break;
 //		}
 //		case NMCommandGetMoreVideoForChannel:
-			if ( [parsedObjects count] ) {
+			if ( numberOfRowsFromServer ) {
 				[self insertOnlyNewVideosInController:ctrl];
 				// update the page number
 				if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
