@@ -251,9 +251,9 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 		[schdlr issueGetMoreVideoForChannel:theChannel];
 	}
     
-    if (highlightedChannelIndex == [indexPath row]) {
-        [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil] animated:NO];
-    }
+//    if (highlightedChannelIndex == [indexPath row]) {
+//        [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil] animated:NO];
+//    }
     [ctnView setHighlighted:(highlightedChannelIndex == [indexPath row])];
 
 }

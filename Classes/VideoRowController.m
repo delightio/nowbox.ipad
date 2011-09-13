@@ -248,7 +248,7 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [videoTableView scrollRectToVisible:CGRectMake(tempOffset.x, tempOffset.y, 1, 1) animated:NO];
+    //[videoTableView scrollRectToVisible:CGRectMake(tempOffset.x, tempOffset.y, 1, 1) animated:NO];
     [videoTableView endUpdates];
 }
 
