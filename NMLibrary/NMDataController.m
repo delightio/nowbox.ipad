@@ -686,29 +686,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //		[cacheController showImageForTask:(JPImageDownloadTask *)task];
 //	} else {
 		NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-		[task saveProcessedDataInController:self];
+		BOOL shouldSave = [task saveProcessedDataInController:self];
 		[pool release];
 		
-		NSError * error = nil;
-	switch (task.command) {
-		case NMCommandGetAllChannels:
-		case NMCommandGetSubscribedChannels:
-			if ( ![managedObjectContext save:&error] ) {
-				NSLog(@"can't save cache %@", error);
-			}
-			break;
-		case NMCommandGetMoreVideoForChannel:
-		{
-			NMGetChannelVideoListTask * theTask = (NMGetChannelVideoListTask *)task;
-			if ( theTask.numberOfVideoAdded ) {
-				if ( ![managedObjectContext save:&error] ) {
-					NSLog(@"can't save cache %@", error);
-				}
-			}
-			break;
+	NSError * error = nil;
+	if ( shouldSave ) {
+		if ( ![managedObjectContext save:&error] ) {
+			NSLog(@"can't save cache %@", error);
 		}
-		default:
-			break;
 	}
 	// send notification
 	NSString * notifyStr;

@@ -66,7 +66,7 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	}
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	// get all categories in core data
 	// check if the local cache complies with the new set from server
 	NSArray * allCategories = ctrl.categories;
@@ -97,6 +97,7 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 		NMCategory * cat = [ctrl insertNewCategoryForID:[dict objectForKey:@"nm_id"]];
 		[cat setValuesForKeysWithDictionary:dict];
 	}];
+	return NO;
 }
 
 - (NSString *)willLoadNotificationName {

@@ -183,7 +183,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self.image = [UIImage imageWithData:buffer];
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	// create the image object
 //	self.image = [UIImage imageWithData:buffer];	// seems that it's not safe to use UIImage in worker thread
 	// update channel MOC with new file name
@@ -210,6 +210,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 				break;
 		}
 	}
+	return NO;
 }
 
 - (NSString *)willLoadNotificationName {

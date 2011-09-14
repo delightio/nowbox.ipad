@@ -229,7 +229,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	}
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 //	switch (command) {
 //		case NMCommandGetChannelVideoList:
 //		{
@@ -259,7 +259,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
 #endif
-
+	return numberOfVideoAdded > 0;
 }
 
 - (NSString *)willLoadNotificationName {

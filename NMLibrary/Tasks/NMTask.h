@@ -46,7 +46,7 @@
 - (void)clearDataBuffer;
 - (NSMutableURLRequest *)URLRequest;
 - (void)processDownloadedDataInBuffer;
-- (void)saveProcessedDataInController:(NMDataController *)ctrl;
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl;
 - (BOOL)checkDictionaryContainsError:(NSDictionary *)dict;
 - (NSUInteger)commandIndex;
 
