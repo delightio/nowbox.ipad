@@ -116,7 +116,7 @@
     }
 	[result setVideoInfo:theVideo];
 
-    if ( panelController.highlightedChannelIndex == indexInTable && [anIndexPath row] == panelController.highlightedVideoIndex ) {
+    if ( panelController.highlightedChannel == channel && [anIndexPath row] == panelController.highlightedVideoIndex ) {
 		[result setIsPlayingVideo:YES];
 	} else {
 		[result setIsPlayingVideo:NO];

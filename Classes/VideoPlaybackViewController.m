@@ -1146,7 +1146,7 @@
 		panelIsFullScreen = YES;
 	}
     
-    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:channelController.highlightedChannelIndex];
+    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
 }
 
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
@@ -1341,7 +1341,7 @@
     if (panelHidden) {
 		[self toggleChannelPanel:sender];
     } else {
-        [self channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:channelController.highlightedChannelIndex];
+        [self channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:[channelController highlightedChannelIndex]];
     }
 }
 
@@ -1351,7 +1351,7 @@
         gr.enabled = YES;
     }
     [temporaryDisabledGestures removeAllObjects];
-    [self channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:channelController.highlightedChannelIndex];
+    [self channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:[channelController highlightedChannelIndex]];
 }
 
 - (void)handleChannelViewPinched:(id)sender {
@@ -1383,7 +1383,7 @@
             panelIsFullScreen = YES;
         }
         
-        [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:channelController.highlightedChannelIndex];
+        [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
 
     }
 }
