@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1280</int>
 		<string key="IBDocument.SystemVersion">11B26</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1923</string>
+		<string key="IBDocument.InterfaceBuilderVersion">1934</string>
 		<string key="IBDocument.AppKitVersion">1138</string>
 		<string key="IBDocument.HIToolboxVersion">566.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">919</string>
+			<string key="NS.object.0">931</string>
 		</object>
 		<object class="NSArray" key="IBDocument.IntegratedClassDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -186,7 +186,7 @@
 					<object class="IBUIImageView" id="361661318">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">-2147483356</int>
-						<string key="NSFrame">{{753, 7}, {2, 30}}</string>
+						<string key="NSFrame">{{753, 0}, {2, 42}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1057073313"/>
@@ -201,7 +201,7 @@
 					<object class="IBUIImageView" id="839879883">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{823, 7}, {2, 30}}</string>
+						<string key="NSFrame">{{823, 0}, {2, 42}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="35337061"/>
@@ -213,7 +213,7 @@
 					<object class="IBUIImageView" id="315145116">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{893, 7}, {2, 30}}</string>
+						<string key="NSFrame">{{893, 0}, {2, 42}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="422449900"/>
@@ -257,6 +257,7 @@
 						<string key="NSFrame">{{0, 44}, {1024, 8}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:554</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -711,6 +712,7 @@
 							<string>controlContainerView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
+							<string>favoriteButton</string>
 							<string>otherInfoLabel</string>
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
@@ -718,6 +720,7 @@
 							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
+							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -732,6 +735,7 @@
 							<string>UIView</string>
 							<string>UILabel</string>
 							<string>UILabel</string>
+							<string>UIButton</string>
 							<string>UILabel</string>
 							<string>UIButton</string>
 							<string>UIView</string>
@@ -739,6 +743,7 @@
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
+							<string>UIButton</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -756,6 +761,7 @@
 							<string>controlContainerView</string>
 							<string>currentTimeLabel</string>
 							<string>durationLabel</string>
+							<string>favoriteButton</string>
 							<string>otherInfoLabel</string>
 							<string>playPauseButton</string>
 							<string>progressContainerView</string>
@@ -763,6 +769,7 @@
 							<string>seekBubbleButton</string>
 							<string>topbarContainerView</string>
 							<string>videoTitleLabel</string>
+							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -811,6 +818,10 @@
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">favoriteButton</string>
+								<string key="candidateClassName">UIButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">otherInfoLabel</string>
 								<string key="candidateClassName">UILabel</string>
 							</object>
@@ -838,6 +849,10 @@
 								<string key="name">videoTitleLabel</string>
 								<string key="candidateClassName">UILabel</string>
 							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">watchLaterButton</string>
+								<string key="candidateClassName">UIButton</string>
+							</object>
 						</object>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -855,24 +870,20 @@
 							<string>authorLabel</string>
 							<string>authorThumbnailView</string>
 							<string>descriptionLabel</string>
-							<string>likeButton</string>
 							<string>moviePlaceholderView</string>
 							<string>otherInfoLabel</string>
 							<string>shadowImageView</string>
 							<string>titleLabel</string>
-							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UILabel</string>
 							<string>NMCachedImageView</string>
 							<string>UILabel</string>
-							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
 							<string>UIImageView</string>
 							<string>UILabel</string>
-							<string>UIButton</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -882,12 +893,10 @@
 							<string>authorLabel</string>
 							<string>authorThumbnailView</string>
 							<string>descriptionLabel</string>
-							<string>likeButton</string>
 							<string>moviePlaceholderView</string>
 							<string>otherInfoLabel</string>
 							<string>shadowImageView</string>
 							<string>titleLabel</string>
-							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -904,10 +913,6 @@
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">likeButton</string>
-								<string key="candidateClassName">UIButton</string>
-							</object>
-							<object class="IBToOneOutletInfo">
 								<string key="name">moviePlaceholderView</string>
 								<string key="candidateClassName">UIView</string>
 							</object>
@@ -922,10 +927,6 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">titleLabel</string>
 								<string key="candidateClassName">UILabel</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">watchLaterButton</string>
-								<string key="candidateClassName">UIButton</string>
 							</object>
 						</object>
 					</object>
@@ -1024,17 +1025,21 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelController</string>
 							<string>controlScrollView</string>
+							<string>favoriteButton</string>
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>ChannelPanelController</string>
 							<string>UIScrollView</string>
+							<string>UIButton</string>
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
 							<string>UIView</string>
+							<string>UIButton</string>
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1043,9 +1048,11 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>channelController</string>
 							<string>controlScrollView</string>
+							<string>favoriteButton</string>
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1058,6 +1065,10 @@
 								<string key="candidateClassName">UIScrollView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">favoriteButton</string>
+								<string key="candidateClassName">UIButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">loadedControlView</string>
 								<string key="candidateClassName">NMControlsView</string>
 							</object>
@@ -1068,6 +1079,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">ribbonView</string>
 								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">watchLaterButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 						</object>
 					</object>
@@ -1114,9 +1129,9 @@
 				<string>{68, 44}</string>
 				<string>{60, 40}</string>
 				<string>{60, 40}</string>
-				<string>{2, 30}</string>
+				<string>{2, 42}</string>
 			</object>
 		</object>
-		<string key="IBCocoaTouchPluginVersion">919</string>
+		<string key="IBCocoaTouchPluginVersion">931</string>
 	</data>
 </archive>
