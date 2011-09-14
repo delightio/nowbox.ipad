@@ -178,6 +178,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)showSearchView:(id)sender {
 	SearchChannelViewController * vc = [[SearchChannelViewController alloc] init];
+    [vc clearSearchResults];
 	[self.navigationController pushViewController:vc animated:YES];
 	[vc release];
 //	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];

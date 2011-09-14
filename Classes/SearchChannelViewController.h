@@ -27,4 +27,6 @@
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 
+-(void)clearSearchResults;
+
 @end

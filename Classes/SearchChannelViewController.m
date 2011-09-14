@@ -292,6 +292,11 @@
 	[tableView endUpdates];
 }
 
+-(void)clearSearchResults {
+    NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
+	[ctrl.dataController clearSearchResultCache];
+}
+
 #pragma mark UIScrollViewDelegate methods
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView == tableView) {
