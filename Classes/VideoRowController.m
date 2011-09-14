@@ -64,6 +64,7 @@
 }
 
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath {
+    indexInTable = [[panelController.fetchedResultsController indexPathForObject:channel] row];
     [panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
 
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
@@ -255,7 +256,7 @@
 -(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate {
     if (newVideo) {
         if ([newVideo channel] == channel) {
-            
+            indexInTable = [[panelController.fetchedResultsController indexPathForObject:channel] row];
             // select / deselect cells
             [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
             
