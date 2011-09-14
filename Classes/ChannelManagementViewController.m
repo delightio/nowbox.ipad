@@ -80,7 +80,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     categoriesTableView.orientedTableViewDataSource = self;
     categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
     [categoriesTableView setAlwaysBounceVertical:YES];
-    [categoriesTableView setShowsVerticalScrollIndicator:NO];
+//    [categoriesTableView setShowsVerticalScrollIndicator:NO];
     
     categoriesTableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"category-list-normal-bg-turned"]];
 

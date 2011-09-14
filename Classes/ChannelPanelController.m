@@ -511,16 +511,6 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-//    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-//    for (int i=0; i<[sectionInfo numberOfObjects]; i++) {
-//        NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-//        if (theChannel == videoViewController.currentChannel) {
-//            NSLog(@"2OLD CHANNEL: %@, NEW CHANNEL: %@",[highlightedChannel title], [theChannel title]);
-//            highlightedChannel = theChannel;
-//            break;
-//        }
-//    }
-
     [tableView endUpdates];
 }
 

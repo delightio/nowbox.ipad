@@ -336,22 +336,6 @@
         }
     }
 }
-//
-//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-////    NSLog(@"scrollViewDidEndScrollingAnimation");
-//}
-//
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-////    NSLog(@"scrollViewWillBeginDragging");
-//}
-//
-//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-////    NSLog(@"scrollViewWillBeginDecelerating");
-//}
-//
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-////    NSLog(@"scrollViewDidEndDragging willDecelerate");
-//}
 
 #pragma mark helpers
 - (void)resetAnimatingVariable {
