@@ -44,6 +44,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID AND channel == $CHANNEL"] retain];
+	channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
+	channelAndSessionPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND nm_session_id == $SESSION_ID"] retain];
+
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
@@ -59,6 +62,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[subscribedChannelsPredicate release];
 	[objectForIDPredicateTemplate release];
 	[videoInChannelPredicateTemplate release];
+	[channelPredicateTemplate release];
+	[channelAndSessionPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
@@ -614,11 +619,19 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
-- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn {
+- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setResultType:NSDictionaryResultType];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_session_id == %@", chn, NM_SESSION_ID]];
+	NSPredicate * thePredicate = nil;
+	if ( flag ) {
+		// take session into account
+		thePredicate = [channelAndSessionPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:chn, @"CHANNEL", NM_SESSION_ID, @"SESSION_ID", nil]];
+	} else {
+		// ignore session
+		thePredicate = [channelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chn forKey:@"CHANNEL"]];
+	}
+	[request setPredicate:thePredicate];
 	
 	NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"nm_sort_order"];
 	NSExpression * maxSortOrderExpression = [NSExpression expressionForFunction:@"max:" arguments:[NSArray arrayWithObject:keyPathExpression]];

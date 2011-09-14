@@ -165,7 +165,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
 	NSUInteger vidCount = 0;
-	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel] + 1;
+	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
 	for (dict in parsedObjects) {
 		vidObj = [ctrl insertNewVideo];
 		[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
@@ -200,7 +200,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			[idIndexSet addIndex:[vidObj.nm_id unsignedIntegerValue]];
 		}
 		numberOfVideoAdded = 0;
-		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel] + 1;
+		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
 		for (dict in parsedObjects) {
 			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"nm_id"] unsignedIntegerValue]] ) {
 				numberOfVideoAdded++;

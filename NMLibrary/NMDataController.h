@@ -23,6 +23,8 @@
 	NSPredicate * subscribedChannelsPredicate;
 	NSPredicate * objectForIDPredicateTemplate;
 	NSPredicate * videoInChannelPredicateTemplate;
+	NSPredicate * channelPredicateTemplate;
+	NSPredicate * channelAndSessionPredicateTemplate;
 	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription;
@@ -94,6 +96,6 @@
 - (void)batchDeleteVideos:(NSSet *)vdoSet;
 - (void)deleteVideoWithID:(NSNumber *)vid fromChannel:(NMChannel *)chn;
 - (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey;
-- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn;
+- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag;
 
 @end

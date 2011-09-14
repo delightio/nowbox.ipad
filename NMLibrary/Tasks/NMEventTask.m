@@ -173,7 +173,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			//add video to "watch later" channel
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.myQueueChannel;
-			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel] + 1];
+			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel sessionOnly:NO] + 1];
 			NSNumber * yesNum = [NSNumber numberWithBool:YES];
 			newVideo.nm_watch_later = yesNum;
 			[ctrl.myQueueChannel addVideosObject:newVideo];
@@ -181,7 +181,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_watch_later"];
 			// show/hide channel
 			[ctrl updateMyQueueChannelHideStatus];
-			break;
+			return YES;
 		}
 		case NMEventDequeue:
 		{
@@ -194,13 +194,13 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[vid release];
 			// show/hide channel
 			[ctrl updateMyQueueChannelHideStatus];
-			break;
+			return YES;
 		}
 		case NMEventShare:
 		{
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.favoriteVideoChannel;
-			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel] + 1];
+			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
 			NSNumber * yesNum = [NSNumber numberWithBool:YES];
 			newVideo.nm_favorite = yesNum;
 			// mark the flag
