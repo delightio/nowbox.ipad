@@ -18,14 +18,14 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
 	self = [super initWithCoder:aDecoder];
 	cacheController = [NMCacheController sharedCacheController];
-	notificationCenter = [NSNotificationCenter defaultCenter];
+//	notificationCenter = [NSNotificationCenter defaultCenter];
 	return self;
 }
 
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	cacheController = [NMCacheController sharedCacheController];
-	notificationCenter = [NSNotificationCenter defaultCenter];
+//	notificationCenter = [NSNotificationCenter defaultCenter];
 	
 	return self;
 }
@@ -36,7 +36,7 @@
 //}
 
 - (void)dealloc {
-	[notificationCenter removeObserver:self];
+//	[notificationCenter removeObserver:self];
 	[downloadTask release];
 	[channel release];
 	[videoDetail release];
@@ -60,138 +60,138 @@
 	// update the view
 	NSDictionary * userInfo = [aNotification userInfo];
 	self.image = [userInfo objectForKey:@"image"];
-	[notificationCenter removeObserver:self];
+	[cacheController handleImageDownloadNotification:aNotification];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.downloadTask = nil;
 }
 
 - (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {
-	[notificationCenter removeObserver:self];
+	[cacheController handleImageDownloadFailedNotification:aNotification];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	self.downloadTask = nil;
-	// TODO: retry?
 }
 
 #pragma mark delayed method call
 - (void)delayedIssueChannelImageDownloadRequest {
-	self.downloadTask = [cacheController downloadImageForChannel:channel];
-	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
-	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
+	self.downloadTask = [cacheController downloadImageForChannel:channel imageView:self];
 }
 
 - (void)delayedIssueAuthorImageDownloadRequest {
-	self.downloadTask = [cacheController downloadImageForAuthor:videoDetail];
-	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
-	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
+	self.downloadTask = [cacheController downloadImageForAuthor:videoDetail imageView:self];
 }
 
 - (void)delayedIssueVideoImageDownloadRequest {
-	self.downloadTask = [cacheController downloadImageForVideo:video];
-	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
-	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
+	self.downloadTask = [cacheController downloadImageForVideo:video imageView:self];
 }
 
 #pragma mark Setter
 - (void)setImageForChannel:(NMChannel *)chn {
-	// check if there's local cache
-	if ( [cacheController setImageForChannel:chn imageView:self] ) {
-		return;
-	}
-		
-	// no local cache. need to get from server
-	if ( downloadTask ) {
-		// stop listening to notification
-		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
-		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
-		// cancel the previous download task
-		[downloadTask releaseDownload];
-		self.downloadTask = nil;
-	} else {
-		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	}
-	
-	// issue delay request
 	self.channel = chn;
-	[self performSelector:@selector(delayedIssueChannelImageDownloadRequest) withObject:nil afterDelay:0.5];
-}
-
-- (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl {
 	// check if there's local cache
-	if ( [cacheController setImageForAuthor:dtl imageView:self] ) {
-		return;
-	}
-	
-	// no local cache. need to get from server
-	if ( downloadTask ) {
-		// stop listening to notification
-		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
-		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
-		// cancel the previous download task
-		[downloadTask releaseDownload];
-		self.downloadTask = nil;
-	} else {
-		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	}
-	
-	// issue delay request
-	self.videoDetail = dtl;
-	[self performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:0.5];
-}
-
-- (void)setImageForVideoThumbnail:(NMVideo *)vdo {
-	// check if there's local cache
-	if ( [cacheController setImageForVideo:vdo imageView:self] ) {
-		return;
-	}
-	
-	// no local cache. need to get from server
-	if ( downloadTask ) {
-		// stop listening to notification
-		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
-		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
-		// cancel the previous download task
-		[downloadTask releaseDownload];
-		self.downloadTask = nil;
-	} else {
-		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	}
-	
-	// issue delay request
-	self.video = vdo;
-	[self performSelector:@selector(delayedIssueVideoImageDownloadRequest) withObject:nil afterDelay:0.25];
-}
-
-- (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv {
-	// check if there's local cache
-	if ( [cacheController setImageForPreviewThumbnail:pv imageView:self] ) {
-		return;
-	}
-	
-	// no local cache. need to get from server
-	if ( downloadTask == nil ) {
+	[cacheController setImageForChannel:chn imageView:self];
+//		
+//	// no local cache. need to get from server
+//	if ( downloadTask ) {
 //		// stop listening to notification
 //		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
 //		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
 //		// cancel the previous download task
 //		[downloadTask releaseDownload];
 //		self.downloadTask = nil;
-	
-		// issue delay request
-		self.previewThumbnail = pv;
-		self.downloadTask = [cacheController downloadImageForPreviewThumbnail:pv];
-		[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
-		[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
-	}
+//	} else {
+//		// clean up any previous delayed request
+//		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueDownloadRequest) object:nil];
+//	}
+//	
+//	// issue delay request
+//	self.channel = chn;
+//	[self performSelector:@selector(delayedIssueChannelImageDownloadRequest) withObject:nil afterDelay:0.5];
 }
 
-- (void)cancelDownload {
-	// stop listening first
-	if ( downloadTask ) {
-		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
-		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
-		[downloadTask releaseDownload];
-	}
+- (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl {
+	self.videoDetail = dtl;
+	// check if there's local cache
+	[cacheController setImageForAuthor:dtl imageView:self];
+//	if ( [cacheController setImageForAuthor:dtl imageView:self] ) {
+//		return;
+//	}
+//	
+//	// no local cache. need to get from server
+//	if ( downloadTask ) {
+//		// stop listening to notification
+//		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+//		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+//		// cancel the previous download task
+//		[downloadTask releaseDownload];
+//		self.downloadTask = nil;
+//	} else {
+//		// clean up any previous delayed request
+//		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueAuthorImageDownloadRequest) object:nil];
+//	}
+//	
+//	// issue delay request
+//	self.videoDetail = dtl;
+//	[self performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:0.5];
 }
+
+//- (void)setImageForVideoThumbnail:(NMVideo *)vdo {
+//	self.video = vdo;
+//	// check if there's local cache
+//	[cacheController setImageForVideo:vdo imageView:self];
+////	if ( [cacheController setImageForVideo:vdo imageView:self] ) {
+////		return;
+////	}
+////	
+////	// no local cache. need to get from server
+////	if ( downloadTask ) {
+////		// stop listening to notification
+////		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+////		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+////		// cancel the previous download task
+////		[downloadTask releaseDownload];
+////		self.downloadTask = nil;
+////	} else {
+////		// clean up any previous delayed request
+////		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueVideoImageDownloadRequest) object:nil];
+////	}
+////	
+////	// issue delay request
+////	self.video = vdo;
+////	[self performSelector:@selector(delayedIssueVideoImageDownloadRequest) withObject:nil afterDelay:0.25];
+//}
+
+- (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	self.previewThumbnail = pv;
+	// check if there's local cache
+	[cacheController setImageForPreviewThumbnail:pv imageView:self];
+//	if ( [cacheController setImageForPreviewThumbnail:pv imageView:self] ) {
+//		return;
+//	}
+//	
+//	// no local cache. need to get from server
+//	if ( downloadTask == nil ) {
+////		// stop listening to notification
+////		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+////		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+////		// cancel the previous download task
+////		[downloadTask releaseDownload];
+////		self.downloadTask = nil;
+//	
+//		// issue delay request
+//		self.previewThumbnail = pv;
+//		self.downloadTask = [cacheController downloadImageForPreviewThumbnail:pv];
+//		[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:self.downloadTask];
+//		[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:self.downloadTask];
+//	}
+}
+
+//- (void)cancelDownload {
+//	// stop listening first
+//	if ( downloadTask ) {
+//		[notificationCenter removeObserver:self name:NMDidDownloadImageNotification object:downloadTask];
+//		[notificationCenter removeObserver:self name:NMDidFailDownloadImageNotification object:downloadTask];
+//		[downloadTask releaseDownload];
+//	}
+//}
 
 @end
