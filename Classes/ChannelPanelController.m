@@ -503,6 +503,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             
         case NSFetchedResultsChangeUpdate: {
             // the entire channel row shouldn't have to be reconfigured, this should be done in the video row controller
+            UITableViewCell *cell = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+            AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
+            htView.tableController.indexInTable = [newIndexPath row];
+            if (htView.tableController.channel == highlightedChannel) {
+                [self didSelectNewVideoWithChannelIndex:[newIndexPath row] andVideoIndex:highlightedVideoIndex];
+            }
             //            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];	
             break;
         }
