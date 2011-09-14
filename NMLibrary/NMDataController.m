@@ -96,9 +96,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
 	// nm_session_id <= %@ AND NOT ANY categories = %@
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id < %@ AND nm_watch_later == NO AND nm_favorite == NO AND NOT nm_playback_status IN %@", [NSNumber numberWithInteger:sid], 
-						   [NSArray arrayWithObjects:[NSNumber numberWithInteger:NMVideoQueueStatusCurrentVideo], [NSNumber numberWithInteger:NMVideoQueueStatusQueued], nil]
-							]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id < %@ AND nm_watch_later == NO AND nm_favorite == NO AND NOT (channel.nm_id == %@ AND channel.nm_last_vid == nm_id)", [NSNumber numberWithInteger:sid], [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"channel", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	for (NMVideo * vid in result) {

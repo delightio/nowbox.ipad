@@ -119,6 +119,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 //	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
 	// start a new session
 	userDefaults = [NSUserDefaults standardUserDefaults];
@@ -131,7 +132,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 		// use the same session
 		[[NMTaskQueueController sharedTaskQueueController] resumeSession:sid];
 	}
-	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 	// init core data
 	
 	// show the UI
@@ -183,6 +183,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 }
 
 - (void)saveChannelID:(NSNumber *)chnNum {
+	NM_LAST_CHANNEL_ID = [chnNum integerValue];
 	[userDefaults setInteger:[chnNum integerValue] forKey:NM_LAST_CHANNEL_ID_KEY];
 }
 

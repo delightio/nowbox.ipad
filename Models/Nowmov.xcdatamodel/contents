@@ -51,7 +51,7 @@
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_favorite" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
-        <attribute name="nm_playback_status" optional="YES" attributeType="Integer 32" valueTransformerName="" defaultValueString="0"/>
+        <attribute name="nm_playback_status" optional="YES" transient="YES" attributeType="Integer 32" valueTransformerName="" defaultValueString="0"/>
         <attribute name="nm_retry_count" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_session_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
