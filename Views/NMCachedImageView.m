@@ -106,7 +106,7 @@
 		self.downloadTask = nil;
 	} else {
 		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueDownloadRequest) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	}
 	
 	// issue delay request
@@ -130,7 +130,7 @@
 		self.downloadTask = nil;
 	} else {
 		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueAuthorImageDownloadRequest) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	}
 	
 	// issue delay request
@@ -154,7 +154,7 @@
 		self.downloadTask = nil;
 	} else {
 		// clean up any previous delayed request
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedIssueVideoImageDownloadRequest) object:nil];
+		[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	}
 	
 	// issue delay request
