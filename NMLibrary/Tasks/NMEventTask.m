@@ -173,6 +173,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			//add video to "watch later" channel
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.myQueueChannel;
+			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel] + 1];
 			NSNumber * yesNum = [NSNumber numberWithBool:YES];
 			newVideo.nm_watch_later = yesNum;
 			[ctrl.myQueueChannel addVideosObject:newVideo];
@@ -199,6 +200,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		{
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.favoriteVideoChannel;
+			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel] + 1];
 			NSNumber * yesNum = [NSNumber numberWithBool:YES];
 			newVideo.nm_favorite = yesNum;
 			// mark the flag

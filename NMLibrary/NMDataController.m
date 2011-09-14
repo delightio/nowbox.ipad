@@ -682,12 +682,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)saveCacheForTask:(NMTask *)task {
-//	if ( task.command > NMCommandImageDownloadCommandBoundary ) {
-//		[cacheController showImageForTask:(JPImageDownloadTask *)task];
-//	} else {
-		NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-		BOOL shouldSave = [task saveProcessedDataInController:self];
-		[pool release];
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	BOOL shouldSave = [task saveProcessedDataInController:self];
+	[pool release];
 		
 	NSError * error = nil;
 	if ( shouldSave ) {
@@ -704,7 +701,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		notifyStr = [task didFailNotificationName];
 		if ( notifyStr ) [notificationCenter postNotificationName:notifyStr object:task userInfo:[task userInfo]];
 	}
-//	}
 }
 
 @end
