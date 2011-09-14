@@ -299,8 +299,11 @@
             if ([[info objectForKey:@"num_video_added"] integerValue]==0) {
                 [videoTableView beginUpdates];
                 [videoTableView endUpdates];
-                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[videoTableView numberOfRowsInSection:0]-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+                // don't need to scroll if no new videos are added
+//                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[videoTableView numberOfRowsInSection:0]-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
             } else {
+                [videoTableView beginUpdates];
+                [videoTableView endUpdates];
                 [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([videoTableView numberOfRowsInSection:0]- 1 - [[info objectForKey:@"num_video_added"] integerValue]) inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             }
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
@@ -335,11 +338,11 @@
     UIEdgeInsets inset = aScrollView.contentInset;
     float y = offset.y + bounds.size.height - inset.bottom;
     float h = size.height;
-    float reload_distance = -100 - kMediumVideoCellWidth;
+    float reload_distance = -kMediumVideoCellWidth-100;
     if(y > h + reload_distance) {
         if (!isLoadingNewContent && !isAnimatingNewContentCell) {
 //            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-            NSLog(@"Load new videos");
+            NSLog(@"Load new videos y:%f, h:%f, r:%f",y,h,reload_distance);
             isLoadingNewContent = YES;
             [videoTableView beginUpdates];
             [videoTableView endUpdates];
