@@ -33,7 +33,8 @@ typedef enum {
 	NSMutableArray *containerViewPool;
 	VideoPlaybackViewController * videoViewController;
 	NSInteger selectedIndex;
-    NSInteger highlightedChannelIndex, highlightedVideoIndex;
+    NSInteger highlightedVideoIndex;
+    NMChannel *highlightedChannel;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
@@ -44,7 +45,7 @@ typedef enum {
 @property (nonatomic, assign) VideoPlaybackViewController * videoViewController;
 @property (nonatomic, readonly) NSInteger selectedIndex;
 @property (nonatomic, assign) NSInteger highlightedVideoIndex;
-@property (nonatomic, assign) NSInteger highlightedChannelIndex;
+@property (nonatomic, assign) NMChannel *highlightedChannel;
 
 - (void)panelWillAppear;
 - (void)panelWillDisappear;
@@ -61,5 +62,6 @@ typedef enum {
 - (IBAction)showChannelManagementView:(id)sender;
 
 -(void)customPanning:(UIPanGestureRecognizer *)sender;
+-(NSInteger)highlightedChannelIndex;
 
 @end

@@ -12,7 +12,7 @@
 @class ChannelDetailViewController;
 
 
-@interface SearchChannelViewController : UIViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate> {
+@interface SearchChannelViewController : UIViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, UITableViewDelegate> {
     IBOutlet UISearchBar * searchBar;
     IBOutlet UITableView * tableView;
     
@@ -26,5 +26,7 @@
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
+
+-(void)clearSearchResults;
 
 @end

@@ -40,6 +40,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view from its nib.
     [[searchBar.subviews objectAtIndex:0] removeFromSuperview];
     searchBar.backgroundColor = [UIColor clearColor];
@@ -63,6 +64,11 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [tableView reloadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -158,6 +164,7 @@
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
     channelDetailViewController.channel = chn;
     [self.navigationController pushViewController:channelDetailViewController animated:YES];
+    [searchBar resignFirstResponder];
 }
 
 
@@ -290,7 +297,23 @@
 	[tableView endUpdates];
 }
 
+-(void)clearSearchResults {
+    NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
+	[ctrl.dataController clearSearchResultCache];
+}
+
+#pragma mark UIScrollViewDelegate methods
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView == tableView) {
+        [searchBar resignFirstResponder];
+    }
+}
+
 #pragma mark UISearchBarDelegate methods
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar {
+    [searchBar resignFirstResponder];
+}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
@@ -299,6 +322,7 @@
 }
 
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
+    [searchBar resignFirstResponder];
     UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
     
     UIActivityIndicatorView *actView;
@@ -318,5 +342,6 @@
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
     
 }
+
 
 @end

@@ -67,8 +67,8 @@
     [panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
 
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
-    [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
     [panelController.videoViewController playVideo:theVideo];
+    [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
     
 }
 
@@ -116,7 +116,7 @@
     }
 	[result setVideoInfo:theVideo];
 
-    if ( panelController.highlightedChannelIndex == indexInTable && [anIndexPath row] == panelController.highlightedVideoIndex ) {
+    if ( panelController.highlightedChannel == channel && [anIndexPath row] == panelController.highlightedVideoIndex ) {
 		[result setIsPlayingVideo:YES];
 	} else {
 		[result setIsPlayingVideo:NO];
@@ -296,10 +296,25 @@
 			// poll the server again
 			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 		} else {
+            if ([[info objectForKey:@"num_video_added"] integerValue]==0) {
+                [videoTableView beginUpdates];
+                [videoTableView endUpdates];
+                // don't need to scroll if no new videos are added
+//                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[videoTableView numberOfRowsInSection:0]-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            } else {
+                [videoTableView beginUpdates];
+                [videoTableView endUpdates];
+                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([videoTableView numberOfRowsInSection:0]- 1 - [[info objectForKey:@"num_video_added"] integerValue]) inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+            }
+            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
 		}
-        [videoTableView beginUpdates];
-        [videoTableView endUpdates];
-        [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
+        // should probably check if new videos were added to decide whether to scroll or not
+        
+        UITableViewCell *cell = (UITableViewCell *)[self.videoTableView superview];
+        UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
+        [loadingOverlayView setHidden:([self.videoTableView numberOfRowsInSection:0] > 1)];
+
+        
     }
 }
 
@@ -308,8 +323,9 @@
         isLoadingNewContent = NO;
         isAnimatingNewContentCell = YES;
 //        NSLog(@"handleDidFailGetChannelVideoListNotification");
-        [videoTableView beginUpdates];
-        [videoTableView endUpdates];
+        // should probably check if new videos were added to decide whether to scroll or not
+//        [videoTableView beginUpdates];
+//        [videoTableView endUpdates];
         [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
     }
 }
@@ -322,11 +338,11 @@
     UIEdgeInsets inset = aScrollView.contentInset;
     float y = offset.y + bounds.size.height - inset.bottom;
     float h = size.height;
-    float reload_distance = -100 - kMediumVideoCellWidth;
+    float reload_distance = -kMediumVideoCellWidth-100;
     if(y > h + reload_distance) {
         if (!isLoadingNewContent && !isAnimatingNewContentCell) {
 //            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-            NSLog(@"Load new videos");
+            NSLog(@"Load new videos y:%f, h:%f, r:%f",y,h,reload_distance);
             isLoadingNewContent = YES;
             [videoTableView beginUpdates];
             [videoTableView endUpdates];
@@ -336,22 +352,6 @@
         }
     }
 }
-//
-//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-////    NSLog(@"scrollViewDidEndScrollingAnimation");
-//}
-//
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-////    NSLog(@"scrollViewWillBeginDragging");
-//}
-//
-//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-////    NSLog(@"scrollViewWillBeginDecelerating");
-//}
-//
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-////    NSLog(@"scrollViewDidEndDragging willDecelerate");
-//}
 
 #pragma mark helpers
 - (void)resetAnimatingVariable {

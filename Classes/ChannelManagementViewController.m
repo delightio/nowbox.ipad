@@ -80,7 +80,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     categoriesTableView.orientedTableViewDataSource = self;
     categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
     [categoriesTableView setAlwaysBounceVertical:YES];
-    [categoriesTableView setShowsVerticalScrollIndicator:NO];
+//    [categoriesTableView setShowsVerticalScrollIndicator:NO];
     
     categoriesTableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"category-list-normal-bg-turned"]];
 
@@ -128,6 +128,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+    
+    [channelsTableView reloadData];
 
 }
 
@@ -178,6 +180,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)showSearchView:(id)sender {
 	SearchChannelViewController * vc = [[SearchChannelViewController alloc] init];
+    [vc clearSearchResults];
 	[self.navigationController pushViewController:vc animated:YES];
 	[vc release];
 //	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
