@@ -12,7 +12,7 @@
 @class ChannelDetailViewController;
 
 
-@interface SearchChannelViewController : UIViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate> {
+@interface SearchChannelViewController : UIViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, UITableViewDelegate> {
     IBOutlet UISearchBar * searchBar;
     IBOutlet UITableView * tableView;
     

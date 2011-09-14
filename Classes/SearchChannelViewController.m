@@ -40,6 +40,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view from its nib.
     [[searchBar.subviews objectAtIndex:0] removeFromSuperview];
     searchBar.backgroundColor = [UIColor clearColor];
@@ -158,6 +159,7 @@
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
     channelDetailViewController.channel = chn;
     [self.navigationController pushViewController:channelDetailViewController animated:YES];
+    [searchBar resignFirstResponder];
 }
 
 
@@ -290,7 +292,18 @@
 	[tableView endUpdates];
 }
 
+#pragma mark UIScrollViewDelegate methods
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView == tableView) {
+        [searchBar resignFirstResponder];
+    }
+}
+
 #pragma mark UISearchBarDelegate methods
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar {
+    [searchBar resignFirstResponder];
+}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
@@ -318,5 +331,6 @@
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
     
 }
+
 
 @end
