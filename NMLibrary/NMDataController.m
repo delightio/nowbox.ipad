@@ -496,6 +496,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	dupVideo.nm_playback_status = srcVideo.nm_playback_status;
 	dupVideo.nm_direct_url = srcVideo.nm_direct_url;
 	dupVideo.nm_direct_sd_url = srcVideo.nm_direct_sd_url;
+	dupVideo.nm_favorite = srcVideo.nm_favorite;
+	dupVideo.nm_watch_later = srcVideo.nm_watch_later;
 	
 	dupVideo.duration = srcVideo.duration;
 	dupVideo.external_id = srcVideo.external_id;
