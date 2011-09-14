@@ -151,8 +151,11 @@
 }
 
 - (void)setVideoInfo:(NMVideo *)aVideo {
+    NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+
     isVideoPlayable = ([[aVideo nm_error] intValue] == 0) && (aVideo.nm_playback_status >= 0);
-    BOOL isVideoFavorited = ([[aVideo nm_favorite] intValue] == 1);
+    BOOL isVideoFavorited = (([[aVideo nm_favorite] intValue] == 1) && ([aVideo channel] != [dataCtrl favoriteVideoChannel]));
+    BOOL isVideoQueued = (([[aVideo nm_watch_later] intValue] == 1) && ([aVideo channel] != [dataCtrl myQueueChannel]));
     
     CGSize labelSize = CGSizeMake(initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - 12 - NM_VIDEO_CELL_PADDING * 2.0f);
     CGSize theStringSize = [aVideo.title  sizeWithFont:titleLabel.font constrainedToSize:labelSize lineBreakMode:titleLabel.lineBreakMode];
@@ -163,6 +166,9 @@
     }
     else if (isVideoFavorited) {
         videoStatusImageView.image = [NMStyleUtility sharedStyleUtility].videoStatusFavImage;
+    }
+    else if (isVideoQueued) {
+        videoStatusImageView.image = [NMStyleUtility sharedStyleUtility].videoStatusQueuedImage;
     }
     else {
         videoStatusImageView.image = nil;

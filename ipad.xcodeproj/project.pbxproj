@@ -27,6 +27,7 @@
 		223A7C541413FA5000AF75B3 /* channel-detail-video-shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 223A7C521413FA5000AF75B3 /* channel-detail-video-shadow.png */; };
 		223A7C571414004A00AF75B3 /* button-red-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 223A7C561414004A00AF75B3 /* button-red-background.png */; };
 		2252786B1412CDDE00E48227 /* PreviewViewContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */; };
+		2275AD5114214867003C3FFC /* channel-video-status-watch-later.png in Resources */ = {isa = PBXBuildFile; fileRef = 2275AD5014214867003C3FFC /* channel-video-status-watch-later.png */; };
 		227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 227F2DF313CEB99400E2805E /* AGOrientedTableView.m */; };
 		22A19757140D792900DE074E /* channel-video-status-hot.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19756140D792900DE074E /* channel-video-status-hot.png */; };
 		22A1975A140D7AAA00DE074E /* channel-video-status-fav.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A19759140D7AAA00DE074E /* channel-video-status-fav.png */; };
@@ -216,6 +217,7 @@
 		223A7C561414004A00AF75B3 /* button-red-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-red-background.png"; sourceTree = "<group>"; };
 		225278691412CDDE00E48227 /* PreviewViewContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreviewViewContainerView.h; path = Views/PreviewViewContainerView.h; sourceTree = SOURCE_ROOT; };
 		2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreviewViewContainerView.m; path = Views/PreviewViewContainerView.m; sourceTree = SOURCE_ROOT; };
+		2275AD5014214867003C3FFC /* channel-video-status-watch-later.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-watch-later.png"; sourceTree = "<group>"; };
 		227F2DF213CEB99400E2805E /* AGOrientedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGOrientedTableView.h; sourceTree = "<group>"; };
 		227F2DF313CEB99400E2805E /* AGOrientedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGOrientedTableView.m; sourceTree = "<group>"; };
 		22A19756140D792900DE074E /* channel-video-status-hot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-hot.png"; sourceTree = "<group>"; };
@@ -602,6 +604,7 @@
 				221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */,
 				22A19756140D792900DE074E /* channel-video-status-hot.png */,
 				22A19759140D7AAA00DE074E /* channel-video-status-fav.png */,
+				2275AD5014214867003C3FFC /* channel-video-status-watch-later.png */,
 				A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */,
 				A92E3E7D14040E4000B30313 /* internal-channel-history.png */,
 				A92E3E7E14040E4000B30313 /* internal-channel-queue.png */,
@@ -1002,6 +1005,7 @@
 				223015DC1416EC9F006FC44E /* channel-video-background-normal-rotated.png in Resources */,
 				223015DE1416F173006FC44E /* action-bar-bottom-shadow.png in Resources */,
 				223015E41416F378006FC44E /* movie-detail-swipe-indicator.png in Resources */,
+				2275AD5114214867003C3FFC /* channel-video-status-watch-later.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

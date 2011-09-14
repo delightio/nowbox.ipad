@@ -21,7 +21,7 @@
 	UIColor * clearColor, * channelPanelFontColor;
 	UIImage * videoShadowImage;
 	UIImage * videoHighlightedBackgroundImage, * videoNormalBackgroundImage, * videoDimmedBackgroundImage;
-    UIImage * videoStatusBadImage, * videoStatusHotImage, * videoStatusFavImage;
+    UIImage * videoStatusBadImage, * videoStatusHotImage, * videoStatusFavImage, * videoStatusQueuedImage;
     UIImage * videoNewSessionIndicatorImage;
 	// channel panel
 	UIColor * channelPanelBackgroundColor;
@@ -60,6 +60,7 @@
 @property (nonatomic, readonly) UIImage * videoStatusBadImage;
 @property (nonatomic, readonly) UIImage * videoStatusHotImage;
 @property (nonatomic, readonly) UIImage * videoStatusFavImage;
+@property (nonatomic, readonly) UIImage * videoStatusQueuedImage;
 @property (nonatomic, readonly) UIImage * videoNewSessionIndicatorImage;
 
 @property (nonatomic, readonly) UIColor * clearColor;
