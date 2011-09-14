@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
+extern NSString * const NM_LAST_SESSION_DATE;
 extern NSString * const NM_USER_ACCOUNT_ID_KEY;
 extern NSString * const NM_USER_FAVORITES_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_WATCH_LATER_CHANNEL_ID_KEY;

@@ -87,9 +87,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	sessionID = sid;
 	NM_SESSION_ID = [[NSNumber alloc] initWithInteger:sid];
 	// delete expired videos
+#ifdef DEBUG_SESSION
+	NSLog(@"session to delete: %d", sessionID - 2);
+#endif
 	[dataController deleteVideosWithSessionID:sessionID - 2];
 	// update all page number
 	[dataController resetAllChannelsPageNumber];
+}
+
+- (void)resumeSession:(NSInteger)sid {
+	sessionID = sid;
+	NM_SESSION_ID = [[NSNumber alloc] initWithInteger:sid];
 }
 
 #pragma mark Notification handler

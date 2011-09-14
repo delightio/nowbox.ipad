@@ -219,6 +219,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			} else {
 				// update the view count
 				vidObj.view_count = [dict objectForKey:@"view_count"];
+				// do NOT update the session ID
 			}
 			vidCount++;
 		}

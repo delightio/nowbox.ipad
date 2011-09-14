@@ -529,6 +529,7 @@
 			children = (
 				A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */,
 				A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */,
+				A9C8E36C1420F3BF004D5DD4 /* New Group */,
 				A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */,
 				A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */,
 				A970501413438F860022BF2C /* SocialSignInViewController.h */,
@@ -789,6 +790,13 @@
 				A9976F0013BB355200B06DFF /* NMLibrary-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A9C8E36C1420F3BF004D5DD4 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 		A9EB20F413AAE1E000BC2E29 /* demo_graphics */ = {
@@ -1185,7 +1193,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_PLAYBACK_NETWORK_CALL,
+					DEBUG_SESSION,
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_PLAYBACK_QUEUE,
 				);
@@ -1222,8 +1230,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_VIDEO_LIST_REFRESH,
+					DEBUG_SESSION,
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_PLAYBACK_QUEUE,
 				);

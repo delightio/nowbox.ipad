@@ -35,6 +35,7 @@
 
 // Session management
 - (void)beginNewSession:(NSInteger)sid;
+- (void)resumeSession:(NSInteger)sid;
 // User management
 - (void)issueCreateUser;
 // Category
