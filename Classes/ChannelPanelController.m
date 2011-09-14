@@ -250,6 +250,10 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 		[schdlr issueGetMoreVideoForChannel:theChannel];
 	}
     
+    if (highlightedChannel == theChannel) {
+        [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil] animated:NO];
+    }
+    
     [ctnView setHighlighted:(highlightedChannel == theChannel)];
 
 }
@@ -265,7 +269,6 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     // first, unhighlight the old cell
     NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newChannelIndex inSection:0]];
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
-    
 
     if ((newVideoIndex != highlightedVideoIndex) || (theChannel != highlightedChannel)) {
         
@@ -498,10 +501,11 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];
+        case NSFetchedResultsChangeUpdate: {
+            // the entire channel row shouldn't have to be reconfigured, this should be done in the video row controller
+            //            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];	
             break;
-            
+        }
         case NSFetchedResultsChangeMove:
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
