@@ -317,6 +317,7 @@
 }
 
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
+    [searchBar resignFirstResponder];
     UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
     
     UIActivityIndicatorView *actView;
