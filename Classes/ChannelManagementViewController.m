@@ -128,6 +128,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+    
+    [channelsTableView reloadData];
 
 }
 
