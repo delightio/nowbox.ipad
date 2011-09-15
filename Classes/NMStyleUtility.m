@@ -46,6 +46,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize blackColor;
 @synthesize videoStatusBadImage;
 @synthesize videoStatusFavImage;
+@synthesize videoStatusQueuedImage;
 @synthesize videoStatusHotImage;
 @synthesize videoNewSessionIndicatorImage;
 @synthesize favoriteImage;
@@ -110,6 +111,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     videoStatusBadImage = [[UIImage imageNamed:@"channel-video-status-bad"] retain];
     videoStatusHotImage = [[UIImage imageNamed:@"channel-video-status-hot"] retain];
     videoStatusFavImage = [[UIImage imageNamed:@"channel-video-status-fav"] retain];
+    videoStatusQueuedImage = [[UIImage imageNamed:@"channel-video-status-watch-later"] retain];
     
     videoNewSessionIndicatorImage = [[UIImage imageNamed:@"channel-view-new-session"] retain];
 	
@@ -146,6 +148,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     [videoStatusBadImage release];
     [videoStatusHotImage release];
     [videoStatusFavImage release];
+    [videoStatusQueuedImage release];
     [videoNewSessionIndicatorImage release];
     
 	[fullScreenImage release], [fullScreenActiveImage release];
