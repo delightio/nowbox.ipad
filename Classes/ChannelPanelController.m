@@ -233,6 +233,14 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
 	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 	ctnView.textLabel.text = theChannel.title;
+    if ([[theChannel.title componentsSeparatedByString:@" "] count] == 1) {
+        CGPoint labelCenter = ctnView.textLabel.center;
+        [ctnView.textLabel setFrame:CGRectMake(0, 0, ctnView.frame.size.width, 20)];
+        ctnView.textLabel.center = labelCenter;
+    } else {
+        [ctnView.textLabel setFrame:CGRectMake(0, 0, ctnView.frame.size.width, cell.contentView.bounds.size.height)];
+    }
+
 	[ctnView.imageView setImageForChannel:theChannel];
 
 	// video row
@@ -289,7 +297,6 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
         [cell setIsPlayingVideo:NO];
     }
-    NSLog(@"1OLD CHANNEL: %@, NEW CHANNEL: %@",[highlightedChannel title], [theChannel title]);
 
     highlightedChannel = theChannel;
     highlightedVideoIndex = newVideoIndex;
