@@ -262,12 +262,11 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     [self configureCell:cell atIndexPath:indexPath retainPosition:NO];
 }
 
-- (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex {
+- (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex {
     // used for highlight / unhighlight row, and what to do when row is selected(?)
 //    NSLog(@"selected channel index: %d, video index: %d",newChannelIndex,newVideoIndex);
 
     // first, unhighlight the old cell
-    NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newChannelIndex inSection:0]];
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
 
     if ((newVideoIndex != highlightedVideoIndex) || (theChannel != highlightedChannel)) {
@@ -507,7 +506,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
             htView.tableController.indexInTable = [newIndexPath row];
             if (htView.tableController.channel == highlightedChannel) {
-                [self didSelectNewVideoWithChannelIndex:[newIndexPath row] andVideoIndex:highlightedVideoIndex];
+                [self didSelectNewVideoWithChannel:htView.tableController.channel andVideoIndex:highlightedVideoIndex];
             }
             //            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];	
             break;

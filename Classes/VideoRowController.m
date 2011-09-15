@@ -64,12 +64,10 @@
 }
 
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath {
-    indexInTable = [[panelController.fetchedResultsController indexPathForObject:channel] row];
     [panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
-
+    [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[indexPath row]];
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
     [panelController.videoViewController playVideo:theVideo];
-    [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[indexPath row]];
     
 }
 
@@ -256,9 +254,8 @@
 -(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate {
     if (newVideo) {
         if ([newVideo channel] == channel) {
-            indexInTable = [[panelController.fetchedResultsController indexPathForObject:channel] row];
             // select / deselect cells
-            [panelController didSelectNewVideoWithChannelIndex:indexInTable andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
+            [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
             
             // scroll to the current video
             [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:shouldAnimate];

@@ -52,7 +52,7 @@ typedef enum {
 - (void)panelWillBecomeFullScreen;
 - (void)panelWillEnterHalfScreen:(NMPlaybackViewModeType)fromViewMode;
 
-- (void)didSelectNewVideoWithChannelIndex:(NSInteger)newChannelIndex andVideoIndex:(NSInteger)newVideoIndex;
+- (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex;
 
 - (IBAction)showFeatureDebugView:(id)sender;
 
