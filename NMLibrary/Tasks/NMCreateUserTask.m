@@ -48,7 +48,7 @@ NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotifica
 	}
 }
 
-//- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+//- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 //	// nth to do
 //}
 

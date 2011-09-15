@@ -71,8 +71,8 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 	return;
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
-	
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	return NO;
 }
 
 - (BOOL)checkDictionaryContainsError:(NSDictionary *)dict {

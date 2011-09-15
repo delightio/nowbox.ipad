@@ -65,7 +65,7 @@
 		titleLabel.highlightedTextColor = styleUtility.videoTitleHighlightedFontColor;
 //		[self addSubview:titleLabel];
         
-        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
+        datePostedLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
 		datePostedLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		datePostedLabel.textColor = styleUtility.videoDetailFontColor;
 		datePostedLabel.backgroundColor = styleUtility.clearColor;
@@ -83,7 +83,7 @@
         
 //		[self addSubview:viewsLabel];
 		
-        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
+        durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f)];
 		durationLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		durationLabel.textAlignment = UITextAlignmentRight;
 		durationLabel.textColor = styleUtility.videoDetailFontColor;
@@ -151,8 +151,11 @@
 }
 
 - (void)setVideoInfo:(NMVideo *)aVideo {
+    NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+
     isVideoPlayable = ([[aVideo nm_error] intValue] == 0) && (aVideo.nm_playback_status >= 0);
-    BOOL isVideoFavorited = ([[aVideo nm_favorite] intValue] == 1);
+    BOOL isVideoFavorited = (([[aVideo nm_favorite] intValue] == 1) && ([aVideo channel] != [dataCtrl favoriteVideoChannel]));
+    BOOL isVideoQueued = (([[aVideo nm_watch_later] intValue] == 1) && ([aVideo channel] != [dataCtrl myQueueChannel]));
     
     CGSize labelSize = CGSizeMake(initialFrame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, initialFrame.size.height - 12 - NM_VIDEO_CELL_PADDING * 2.0f);
     CGSize theStringSize = [aVideo.title  sizeWithFont:titleLabel.font constrainedToSize:labelSize lineBreakMode:titleLabel.lineBreakMode];
@@ -163,6 +166,9 @@
     }
     else if (isVideoFavorited) {
         videoStatusImageView.image = [NMStyleUtility sharedStyleUtility].videoStatusFavImage;
+    }
+    else if (isVideoQueued) {
+        videoStatusImageView.image = [NMStyleUtility sharedStyleUtility].videoStatusQueuedImage;
     }
     else {
         videoStatusImageView.image = nil;
@@ -181,7 +187,7 @@
     
 //    viewsLabel.text = [NSString stringWithFormat:@"%@ views",formattedOutput];
 //    [viewsLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 20.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
-    [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 26.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
+    [durationLabel setFrame:CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, self.frame.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 12.0f)];
     
     if ([aVideo.nm_did_play boolValue] || !isVideoPlayable) {
         titleLabel.textColor = [NMStyleUtility sharedStyleUtility].videoTitlePlayedFontColor;

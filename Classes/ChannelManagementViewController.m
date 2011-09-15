@@ -65,7 +65,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
 	self.title = @"Find Channels";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
@@ -80,7 +80,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     categoriesTableView.orientedTableViewDataSource = self;
     categoriesTableView.tableViewOrientation = kAGTableViewOrientationHorizontal;
     [categoriesTableView setAlwaysBounceVertical:YES];
-    [categoriesTableView setShowsVerticalScrollIndicator:NO];
+//    [categoriesTableView setShowsVerticalScrollIndicator:NO];
+    
+    categoriesTableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"category-list-normal-bg-turned"]];
 
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
@@ -126,6 +128,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+    
+    [channelsTableView reloadData];
 
 }
 
@@ -176,6 +180,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)showSearchView:(id)sender {
 	SearchChannelViewController * vc = [[SearchChannelViewController alloc] init];
+    [vc clearSearchResults];
 	[self.navigationController pushViewController:vc animated:YES];
 	[vc release];
 //	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
@@ -295,13 +300,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
         }
 
-        UILabel *label;
-        label = (UILabel *)[cell viewWithTag:12];
-        label.text = chn.title;
-        
-        label = (UILabel *)[cell viewWithTag:13];
-        label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
-        
         UIImageView *backgroundView;
         UIButton *buttonView;
         NMCachedImageView *thumbnailView;
@@ -318,6 +316,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
             [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
         }
+        
+        UILabel *label;
+        label = (UILabel *)[cell viewWithTag:12];
+        label.text = chn.title;
+        
+        label = (UILabel *)[cell viewWithTag:13];
+        label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
         
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
@@ -570,20 +575,23 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         switch(type) {
                 
             case NSFetchedResultsChangeInsert:
-                [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [categoriesTableView reloadData];
                 break;
                 
             case NSFetchedResultsChangeDelete:
-                [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [categoriesTableView reloadData];
                 break;
                 
             case NSFetchedResultsChangeUpdate:
-                [categoriesTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [categoriesTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[indexPath row]*2+1 inSection:[indexPath section]]] withRowAnimation:UITableViewRowAnimationFade];
                 break;
                 
             case NSFetchedResultsChangeMove:
-                [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+//                [categoriesTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//                [categoriesTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+                [categoriesTableView reloadData];
                 break;
         }
     }
@@ -629,7 +637,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         return 38;
     }
     else {
-        CGSize textLabelSize = [[text uppercaseString] sizeWithFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16]];
+        CGSize textLabelSize;
+        if ( NM_RUNNING_IOS_5 ) {
+            textLabelSize = [[text uppercaseString] sizeWithFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16]];
+        }
+        else {
+            textLabelSize = [[text uppercaseString] sizeWithFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f]];
+        }
         return textLabelSize.width+40;
     }
     return 0;
@@ -670,9 +684,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                      }
                      completion:^(BOOL finished) {
                      }];
-    NSLog(@"cell %@",[cell description]);
-    NSLog(@"cell indexpath %d",[channelsTableView indexPathForCell:cell].row);
-    NSLog(@"cell indexpath %d",[channelsTableView indexPathForRowAtPoint:CGPointMake([cell frame].origin.x, [cell frame].origin.y)].row);
     NMChannel * chn;
     if (selectedIndex == 0) {
         chn = [myChannelsFetchedResultsController objectAtIndexPath:[channelsTableView indexPathForCell:cell]];

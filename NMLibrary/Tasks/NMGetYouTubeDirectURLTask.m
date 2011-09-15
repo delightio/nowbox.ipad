@@ -146,7 +146,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 #endif
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	if ( encountersErrorDuringProcessing ) {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 		NSLog(@"direct URL resolution failed: %@", video.title);
@@ -159,6 +159,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		video.nm_direct_url = directURLString;
 		video.nm_direct_sd_url = directSDURLString;
 	}
+	return NO;
 }
 
 - (NSString *)willLoadNotificationName {

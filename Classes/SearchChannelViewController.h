@@ -9,13 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "NMLibrary.h"
 
+@class ChannelDetailViewController;
 
-@interface SearchChannelViewController : UIViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate> {
+
+@interface SearchChannelViewController : UIViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UIScrollViewDelegate, UITableViewDelegate> {
     IBOutlet UISearchBar * searchBar;
     IBOutlet UITableView * tableView;
     
     UITableViewCell *channelCell;
 
+    ChannelDetailViewController * channelDetailViewController;
 }
 
 @property (nonatomic, retain) IBOutlet UISearchBar * searchBar;
@@ -23,5 +26,7 @@
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
+
+-(void)clearSearchResults;
 
 @end

@@ -66,7 +66,7 @@
     [self drawLabel:cellData.durationLabel inContext:context];
 //    [self drawLabel:cellData.viewsLabel inContext:context];
     
-    [cellData.videoStatusImageView.image drawInRect:CGRectMake(rectangle.size.width-28, 0, 28, 26)];
+    [cellData.videoStatusImageView.image drawInRect:CGRectMake(rectangle.size.width-27, 0, 28, 26)];
     
     if (cellData.videoNewSession) {
         [[[NMStyleUtility sharedStyleUtility] videoNewSessionIndicatorImage] drawInRect:CGRectMake(0, 0, 7, 100)];

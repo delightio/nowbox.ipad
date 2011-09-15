@@ -12,6 +12,7 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "NMGetChannelVideoListTask.h"
 
 
 NSString * const NMCategoryEntityName = @"NMCategory";
@@ -43,6 +44,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID AND channel == $CHANNEL"] retain];
+	channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
+	channelAndSessionPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND nm_session_id == $SESSION_ID"] retain];
+
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
@@ -58,6 +62,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[subscribedChannelsPredicate release];
 	[objectForIDPredicateTemplate release];
 	[videoInChannelPredicateTemplate release];
+	[channelPredicateTemplate release];
+	[channelAndSessionPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
@@ -95,7 +101,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
 	// nm_session_id <= %@ AND NOT ANY categories = %@
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id <= %@", [NSNumber numberWithInteger:sid]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id < %@ AND NOT channel IN %@ AND NOT (channel.nm_id == %@ AND channel.nm_last_vid == nm_id)", [NSNumber numberWithInteger:sid], [NSArray arrayWithObjects:self.myQueueChannel, self.favoriteVideoChannel, nil], [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"channel", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	for (NMVideo * vid in result) {
@@ -490,6 +496,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	dupVideo.nm_playback_status = srcVideo.nm_playback_status;
 	dupVideo.nm_direct_url = srcVideo.nm_direct_url;
 	dupVideo.nm_direct_sd_url = srcVideo.nm_direct_sd_url;
+	dupVideo.nm_favorite = srcVideo.nm_favorite;
+	dupVideo.nm_watch_later = srcVideo.nm_watch_later;
 	
 	dupVideo.duration = srcVideo.duration;
 	dupVideo.external_id = srcVideo.external_id;
@@ -613,11 +621,19 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
-- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn {
+- (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setResultType:NSDictionaryResultType];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_session_id == %@", chn, NM_SESSION_ID]];
+	NSPredicate * thePredicate = nil;
+	if ( flag ) {
+		// take session into account
+		thePredicate = [channelAndSessionPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:chn, @"CHANNEL", NM_SESSION_ID, @"SESSION_ID", nil]];
+	} else {
+		// ignore session
+		thePredicate = [channelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chn forKey:@"CHANNEL"]];
+	}
+	[request setPredicate:thePredicate];
 	
 	NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"nm_sort_order"];
 	NSExpression * maxSortOrderExpression = [NSExpression expressionForFunction:@"max:" arguments:[NSArray arrayWithObject:keyPathExpression]];
@@ -681,24 +697,15 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)saveCacheForTask:(NMTask *)task {
-//	if ( task.command > NMCommandImageDownloadCommandBoundary ) {
-//		[cacheController showImageForTask:(JPImageDownloadTask *)task];
-//	} else {
-		NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-		[task saveProcessedDataInController:self];
-		[pool release];
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	BOOL shouldSave = [task saveProcessedDataInController:self];
+	[pool release];
 		
-		NSError * error = nil;
-	switch (task.command) {
-		case NMCommandGetAllChannels:
-		case NMCommandGetSubscribedChannels:
-			if ( ![managedObjectContext save:&error] ) {
-				NSLog(@"can't save cache %@", error);
-			}
-			break;
-			
-		default:
-			break;
+	NSError * error = nil;
+	if ( shouldSave ) {
+		if ( ![managedObjectContext save:&error] ) {
+			NSLog(@"can't save cache %@", error);
+		}
 	}
 	// send notification
 	NSString * notifyStr;
@@ -709,7 +716,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		notifyStr = [task didFailNotificationName];
 		if ( notifyStr ) [notificationCenter postNotificationName:notifyStr object:task userInfo:[task userInfo]];
 	}
-//	}
 }
 
 @end

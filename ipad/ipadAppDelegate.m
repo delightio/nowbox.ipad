@@ -19,6 +19,7 @@ NSString * const NM_USER_WATCH_LATER_CHANNEL_ID_KEY = @"NM_USER_WATCH_LATER_CHAN
 NSString * const NM_USER_HISTORY_CHANNEL_ID_KEY = @"NM_USER_HISTORY_CHANNEL_ID_KEY";
 // app session
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
+NSString * const NM_LAST_SESSION_DATE		= @"NM_LAST_SESSION_DATE";
 NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
 NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
@@ -43,7 +44,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:
 	 [NSDictionary dictionaryWithObjectsAndKeys:
-	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE, 
+	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE,
+	  [NSDate distantPast], NM_LAST_SESSION_DATE,
 	  [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, 
 	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
@@ -117,13 +119,19 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 //	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
 	// start a new session
 	userDefaults = [NSUserDefaults standardUserDefaults];
-	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY] + 1;
-	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
-	[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
-	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
+	NSDate * theDate = [userDefaults objectForKey:NM_LAST_SESSION_DATE];
+	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY];
+	if ( [theDate timeIntervalSinceNow] < 1800.0f ) {	// 30 min
+		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:++sid];
+		[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
+	} else {
+		// use the same session
+		[[NMTaskQueueController sharedTaskQueueController] resumeSession:sid];
+	}
 	// init core data
 	
 	// show the UI
@@ -164,11 +172,18 @@ NSInteger NM_LAST_CHANNEL_ID;
 			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
 			[alert show];
 			[alert release];
+			
+			// we should relaunch the app if there's error saving the context
+			// reset the context
+			//[managedObjectContext reset];
+			// fetch stuff as if it's a new channel
+			
         } 
     }
 }
 
 - (void)saveChannelID:(NSNumber *)chnNum {
+	NM_LAST_CHANNEL_ID = [chnNum integerValue];
 	[userDefaults setInteger:[chnNum integerValue] forKey:NM_LAST_CHANNEL_ID_KEY];
 }
 

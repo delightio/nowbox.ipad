@@ -153,26 +153,27 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 #endif
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	NMVideo * newVideo = nil;
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{
 			channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
 			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
-			break;
+			return YES;
 		}
 		case NMEventUnsubscribeChannel:
 		{
 			channel.nm_subscribed = [NSNumber numberWithInteger:0];
 			[ctrl.internalSubscribedChannelsCategory removeChannelsObject:channel];
-			break;
+			return YES;
 		}
 		case NMEventEnqueue:
 		{
 			//add video to "watch later" channel
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.myQueueChannel;
+			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel sessionOnly:NO] + 1];
 			NSNumber * yesNum = [NSNumber numberWithBool:YES];
 			newVideo.nm_watch_later = yesNum;
 			[ctrl.myQueueChannel addVideosObject:newVideo];
@@ -180,7 +181,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_watch_later"];
 			// show/hide channel
 			[ctrl updateMyQueueChannelHideStatus];
-			break;
+			return YES;
 		}
 		case NMEventDequeue:
 		{
@@ -193,19 +194,20 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[vid release];
 			// show/hide channel
 			[ctrl updateMyQueueChannelHideStatus];
-			break;
+			return YES;
 		}
 		case NMEventShare:
 		{
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.favoriteVideoChannel;
+			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
 			NSNumber * yesNum = [NSNumber numberWithBool:YES];
 			newVideo.nm_favorite = yesNum;
 			// mark the flag
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_favorite"];
 			// show/hide channel
 			[ctrl updateFavoriteChannelHideStatus];
-			break;
+			return YES;
 		}
 		case NMEventUnfavorite:
 		{
@@ -217,11 +219,12 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[vid release];
 			// show/hide channel
 			[ctrl updateFavoriteChannelHideStatus];
-			break;
+			return YES;
 		}	
 		default:
 			break;
 	}
+	return NO;
 }
 
 - (NSString *)willLoadNotificationName {

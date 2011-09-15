@@ -46,6 +46,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize blackColor;
 @synthesize videoStatusBadImage;
 @synthesize videoStatusFavImage;
+@synthesize videoStatusQueuedImage;
 @synthesize videoStatusHotImage;
 @synthesize videoNewSessionIndicatorImage;
 @synthesize favoriteImage;
@@ -72,11 +73,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[viewCountFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 	
 	// video detail view font
-	if ( NM_RUNNING_IOS_5 ) {
-		channelNameFont = [[UIFont fontWithName:@"Futura-CondensedMedium" size:15.0f] retain];
-	} else {
-		channelNameFont = [[UIFont fontWithName:@"Futura-CondensedExtraBold" size:13.0f] retain];
-	}
+    channelNameFont = [[UIFont fontWithName:@"HelveticaNeue" size:12.0f] retain];
 	videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
 	videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
 	videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
@@ -114,6 +111,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     videoStatusBadImage = [[UIImage imageNamed:@"channel-video-status-bad"] retain];
     videoStatusHotImage = [[UIImage imageNamed:@"channel-video-status-hot"] retain];
     videoStatusFavImage = [[UIImage imageNamed:@"channel-video-status-fav"] retain];
+    videoStatusQueuedImage = [[UIImage imageNamed:@"channel-video-status-watch-later"] retain];
     
     videoNewSessionIndicatorImage = [[UIImage imageNamed:@"channel-view-new-session"] retain];
 	
@@ -150,6 +148,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     [videoStatusBadImage release];
     [videoStatusHotImage release];
     [videoStatusFavImage release];
+    [videoStatusQueuedImage release];
     [videoNewSessionIndicatorImage release];
     
 	[fullScreenImage release], [fullScreenActiveImage release];

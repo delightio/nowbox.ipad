@@ -41,7 +41,7 @@ typedef enum {
 	NMVideoQueueStatusResolvingDirectURL,
 	NMVideoQueueStatusDirectURLReady,
 	NMVideoQueueStatusQueued,
-	NMVideoQueueStatusPlaying,
+	NMVideoQueueStatusCurrentVideo,
 	NMVideoQueueStatusPlayed,
 } NMVideoQueueStatusType;
 

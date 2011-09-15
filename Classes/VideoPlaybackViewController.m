@@ -699,16 +699,24 @@
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
+	// no need to update status of NMVideo. "Queued" status is updated in "queueVideo" method
 }
 
 - (void)player:(NMAVQueuePlayer *)aPlayer stopObservingPlayerItem:(AVPlayerItem *)anItem {
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
-	NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
+	if ( theItem.nmVideo ) {
+		NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
+	} else {
+		NSLog(@"KVO observing object is nil");
+	}
 #endif
 	NMVideo * vdo = ((NMAVPlayerItem *)anItem).nmVideo;
+	if ( vdo == nil ) return;
 	if ( [vdo.nm_error integerValue] == NMErrorNone ) {
 		vdo.nm_playback_status = NMVideoQueueStatusPlayed;
+	} else {
+		vdo.nm_playback_status = NMVideoQueueStatusError;
 	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"status"];
@@ -827,7 +835,7 @@
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
-		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusPlaying;
+		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusCurrentVideo;
 		// never change currentIndex here!!
 		// ====== update interface ======
 		[self configureControlViewForVideo:[self playerCurrentVideo]];
@@ -858,6 +866,9 @@
 			didPlayToEnd = NO;
 		}
 		if ( playbackModelController.currentVideo ) {
+#ifdef DEBUG_SESSION
+			NSLog(@"Session ID of current video: %@", playbackModelController.currentVideo.nm_session_id);
+#endif
 			[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
 			NSLog(@"##### Will Play Notificaiton - %@", playbackModelController.currentVideo.title);
 		}
@@ -1145,7 +1156,7 @@
 		panelIsFullScreen = YES;
 	}
     
-    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:channelController.highlightedChannelIndex];
+    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
 }
 
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
@@ -1340,7 +1351,7 @@
     if (panelHidden) {
 		[self toggleChannelPanel:sender];
     } else {
-        [self channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:channelController.highlightedChannelIndex];
+        [self channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:[channelController highlightedChannelIndex]];
     }
 }
 
@@ -1350,7 +1361,7 @@
         gr.enabled = YES;
     }
     [temporaryDisabledGestures removeAllObjects];
-    [self channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:channelController.highlightedChannelIndex];
+    [self channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:[channelController highlightedChannelIndex]];
 }
 
 - (void)handleChannelViewPinched:(id)sender {
@@ -1382,7 +1393,7 @@
             panelIsFullScreen = YES;
         }
         
-        [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:channelController.highlightedChannelIndex];
+        [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
 
     }
 }

@@ -80,7 +80,7 @@ NSString * const NMDidFailGetChannelDetailNotification = @"NMDidFailGetChannelDe
 	}
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	// create the Channel Detail MO
 	if ( channel.detail == nil ) {
 		channel.detail = [ctrl insertNewChannelDetail];
@@ -96,6 +96,7 @@ NSString * const NMDidFailGetChannelDetailNotification = @"NMDidFailGetChannelDe
 		[thumbObj setValuesForKeysWithDictionary:theDict];
 		thumbObj.channel = channel;
 	}
+	return NO;
 }
 
 - (NSString *)willLoadNotificationName {

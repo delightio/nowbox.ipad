@@ -49,7 +49,6 @@
             CGRect frame = self.frame;
             frame.origin = CGPointMake(abs(frame.size.width - frame.size.height) / 2.0, 
                                        (frame.size.height - frame.size.width) / -2.0);
-//            frame.origin = CGPointMake(0,0);
             super.frame = frame;
         }
         self.transform = CGAffineTransformMakeRotation(angle);
@@ -61,8 +60,14 @@
 {
     if (_tableViewOrientation == kAGTableViewOrientationHorizontal)
     {
-        aFrame.origin = CGPointMake((aFrame.size.width - aFrame.size.height) / 2.0, 
-            (aFrame.size.height - aFrame.size.width) / 2.0);
+        // FIXME: don't know why iOS 4 and 5 is rendering the transform differently
+        if (NM_RUNNING_IOS_5) {
+            aFrame.origin = CGPointMake(abs(aFrame.size.width - aFrame.size.height) / 2.0, 
+                                       (aFrame.size.height - aFrame.size.width) / -2.0);
+        } else {
+            aFrame.origin = CGPointMake(230-abs(aFrame.size.width - aFrame.size.height) / 2.0, 
+                                       230-(aFrame.size.height - aFrame.size.width) / -2.0);
+        }
     }
     [super setFrame:aFrame];
 }

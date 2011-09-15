@@ -13,6 +13,8 @@
     PanelVideoContainerView *cellData;
     BOOL cellIsHighlighted;
     BOOL videoHasPlayed;
+    BOOL isWatchLaterChannel;
+    BOOL isFavoritesChannel;
 }
 
 - (void)configureCellWithPanelVideoContainerView:(PanelVideoContainerView *)cell highlighted:(BOOL)isHighlighted videoPlayed:(BOOL)videoPlayedPreviously;

@@ -53,11 +53,12 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 	}
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	// update the channel with new info
 	channel.thumbnail_uri = [channelDictionary objectForKey:@"thumbnail_uri"];
 	channel.resource_uri = [channelDictionary objectForKey:@"resource_uri"];
 	channel.nm_id = [channelDictionary objectForKey:@"nm_id"];
+	return NO;
 }
 
 - (NSString *)willLoadNotificationName {

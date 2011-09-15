@@ -126,6 +126,11 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetDetailForChannel:channel];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [thumbnailScrollView setContentOffset:CGPointMake(0, 0)];
+}
+
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 
@@ -185,7 +190,6 @@
 	NSSet * vdoThumbnails = channel.previewThumbnails;
 	// order NMPreviewThumbnail objects is not important. No need to get sorted array of the items
 	for (NMPreviewThumbnail * thePreview in vdoThumbnails) {
-        NSLog(@"PREVIEW: %@",[thePreview description]);
 		// issue request to get preview thumbnail
         cpv = (ChannelPreviewView *)[previewViewsArray objectAtIndex:i++];
         [cpv setPreviewImage:thePreview];

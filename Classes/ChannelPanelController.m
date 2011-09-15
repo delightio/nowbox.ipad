@@ -29,10 +29,13 @@
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoViewController;
 @synthesize selectedIndex;
-@synthesize highlightedChannelIndex, highlightedVideoIndex;
+@synthesize highlightedChannel, highlightedVideoIndex;
 @synthesize fullScreenButton;
 
 - (void)awakeFromNib {
+    
+    highlightedVideoIndex = -1;
+    
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -231,6 +234,9 @@
     htView.tableController.indexInTable = [indexPath row];
     htView.tableController.isLoadingNewContent = NO;
     
+    
+    // rather than reload, should let the table take care of redraw
+    
 	[htView reloadData];
     if (!useSamePosition) {
         [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
@@ -244,10 +250,11 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 		[schdlr issueGetMoreVideoForChannel:theChannel];
 	}
     
-    if (highlightedChannelIndex == [indexPath row]) {
+    if (highlightedChannel == theChannel) {
         [htView.tableController updateChannelTableView:[videoViewController currentVideoForPlayer:nil] animated:NO];
     }
-    [ctnView setHighlighted:(highlightedChannelIndex == [indexPath row])];
+    
+    [ctnView setHighlighted:(highlightedChannel == theChannel)];
 
 }
 
@@ -260,8 +267,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 //    NSLog(@"selected channel index: %d, video index: %d",newChannelIndex,newVideoIndex);
 
     // first, unhighlight the old cell
-    if ((newVideoIndex != highlightedVideoIndex) || (newChannelIndex != highlightedChannelIndex)) {
-        UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0]];
+    NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newChannelIndex inSection:0]];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
+
+    if ((newVideoIndex != highlightedVideoIndex) || (theChannel != highlightedChannel)) {
+        
+        UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
         AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
         
         ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
@@ -271,11 +282,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
         [cell setIsPlayingVideo:NO];
     }
+    NSLog(@"1OLD CHANNEL: %@, NEW CHANNEL: %@",[highlightedChannel title], [theChannel title]);
 
-    highlightedChannelIndex = newChannelIndex;
+    highlightedChannel = theChannel;
     highlightedVideoIndex = newVideoIndex;
 
-    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedChannelIndex inSection:0]];
+    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
     AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
     
     ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
@@ -373,7 +385,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     AGOrientedTableView * htView = (AGOrientedTableView *)[(UITableViewCell *)[aTableView cellForRowAtIndexPath:indexPath] viewWithTag:1009];
     
-    if (highlightedChannelIndex == [indexPath row]) {
+    if (highlightedChannel == htView.tableController.channel) {
         [htView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
         return;
     }
@@ -381,8 +393,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     for (int i=0; i<[[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]; i++) {
         NMVideo * theVideo = [htView.tableController.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
         NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
-//        if ((theVideo.nm_playback_status >= 0) && (theVideo.nm_playback_status < NMVideoQueueStatusPlaying)) {
-        if (theVideo.nm_playback_status >= 0 && theVideo.nm_playback_status < NMVideoQueueStatusPlayed) {
+        if (theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue])) {
             [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             break;
         }
@@ -446,6 +457,11 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 }    
 
 
+-(NSInteger)highlightedChannelIndex {
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
+    return [indexPath row];
+}
+
 #pragma mark -
 #pragma mark Fetched results controller delegate
 
@@ -477,24 +493,25 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     switch(type) {
             
         case NSFetchedResultsChangeInsert: {
-            if ([newIndexPath row] <= highlightedChannelIndex) {
-                highlightedChannelIndex++;
-            }
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         }
         case NSFetchedResultsChangeDelete:
-            if ([newIndexPath row] <= highlightedChannelIndex) {
-                highlightedChannelIndex--;
-            }
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];
+        case NSFetchedResultsChangeUpdate: {
+            // the entire channel row shouldn't have to be reconfigured, this should be done in the video row controller
+            UITableViewCell *cell = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+            AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
+            htView.tableController.indexInTable = [newIndexPath row];
+            if (htView.tableController.channel == highlightedChannel) {
+                [self didSelectNewVideoWithChannelIndex:[newIndexPath row] andVideoIndex:highlightedVideoIndex];
+            }
+            //            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];	
             break;
-            
+        }
         case NSFetchedResultsChangeMove:
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
@@ -504,15 +521,6 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-    for (int i=0; i<[sectionInfo numberOfObjects]; i++) {
-        NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        if (theChannel == videoViewController.currentChannel) {
-            highlightedChannelIndex = i;
-            break;
-        }
-    }
-
     [tableView endUpdates];
 }
 

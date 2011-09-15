@@ -183,7 +183,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	}
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	id<NSFastEnumeration> theChannelPool = nil;
 	switch (command) {
 		case NMCommandGetChannelsForCategory:
@@ -216,7 +216,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 				[ctrl.internalSearchCategory addChannelsObject:chnObj];
 				//[chnObj addCategoriesObject:ctrl.internalSearchCategory];
 			}
-			return;		// return this function
+			return NO;		// return this function
 		}
 		default:
 			break;
@@ -273,6 +273,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			}
 		}];
 	}
+	return YES;
 }
 
 - (NSString *)willLoadNotificationName {

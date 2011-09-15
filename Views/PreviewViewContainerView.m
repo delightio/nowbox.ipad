@@ -10,6 +10,8 @@
 
 @implementation PreviewViewContainerView
 
+@synthesize scrollView;
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];

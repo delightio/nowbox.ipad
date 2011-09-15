@@ -9,6 +9,7 @@
 #import "SearchChannelViewController.h"
 #import "CategoryTableCell.h"
 #import "NMCachedImageView.h"
+#import "ChannelDetailViewController.h"
 
 
 @implementation SearchChannelViewController
@@ -39,6 +40,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view from its nib.
     [[searchBar.subviews objectAtIndex:0] removeFromSuperview];
     searchBar.backgroundColor = [UIColor clearColor];
@@ -50,6 +52,9 @@
 
     [tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
+	// load the channel detail view
+	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
+    
 
 }
 
@@ -59,6 +64,11 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [tableView reloadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -150,26 +160,11 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    UIActivityIndicatorView *actView;
-    actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
-    [actView startAnimating];
-    
-    UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
-    
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         [actView setAlpha:1];
-                         [buttonView setAlpha:0];
-                     }
-                     completion:^(BOOL finished) {
-                     }];
-    
-    NMChannel * chn = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
-
+    NMChannel * chn;
+    chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
+    channelDetailViewController.channel = chn;
+    [self.navigationController pushViewController:channelDetailViewController animated:YES];
+    [searchBar resignFirstResponder];
 }
 
 
@@ -302,12 +297,51 @@
 	[tableView endUpdates];
 }
 
+-(void)clearSearchResults {
+    NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
+	[ctrl.dataController clearSearchResultCache];
+}
+
+#pragma mark UIScrollViewDelegate methods
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView == tableView) {
+        [searchBar resignFirstResponder];
+    }
+}
+
 #pragma mark UISearchBarDelegate methods
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar {
+    [searchBar resignFirstResponder];
+}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	[ctrl.dataController clearSearchResultCache];
 	[ctrl issueChannelSearchForKeyword:searchText];
 }
+
+-(IBAction)toggleChannelSubscriptionStatus:(id)sender {
+    [searchBar resignFirstResponder];
+    UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
+    
+    UIActivityIndicatorView *actView;
+    actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+    [actView startAnimating];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         [actView setAlpha:1];
+                         [sender setAlpha:0];
+                     }
+                     completion:^(BOOL finished) {
+                     }];
+    NMChannel * chn;
+    chn = [fetchedResultsController_ objectAtIndexPath:[tableView indexPathForCell:cell]];
+    
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+    
+}
+
 
 @end

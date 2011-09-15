@@ -32,7 +32,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 @implementation NMGetChannelVideoListTask
 @synthesize channel, channelName;
 @synthesize newChannel, urlString;
-@synthesize currentPage;
+@synthesize currentPage, numberOfVideoAdded;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {
@@ -165,7 +165,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
 	NSUInteger vidCount = 0;
-	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel] + 1;
+	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
 	for (dict in parsedObjects) {
 		vidObj = [ctrl insertNewVideo];
 		[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
@@ -200,7 +200,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			[idIndexSet addIndex:[vidObj.nm_id unsignedIntegerValue]];
 		}
 		numberOfVideoAdded = 0;
-		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel] + 1;
+		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
 		for (dict in parsedObjects) {
 			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"nm_id"] unsignedIntegerValue]] ) {
 				numberOfVideoAdded++;
@@ -219,6 +219,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			} else {
 				// update the view count
 				vidObj.view_count = [dict objectForKey:@"view_count"];
+				// do NOT update the session ID
 			}
 			vidCount++;
 		}
@@ -228,7 +229,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	}
 }
 
-- (void)saveProcessedDataInController:(NMDataController *)ctrl {
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 //	switch (command) {
 //		case NMCommandGetChannelVideoList:
 //		{
@@ -243,7 +244,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 //			break;
 //		}
 //		case NMCommandGetMoreVideoForChannel:
-			if ( [parsedObjects count] ) {
+			if ( numberOfRowsFromServer ) {
 				[self insertOnlyNewVideosInController:ctrl];
 				// update the page number
 				if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
@@ -258,7 +259,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
 #endif
-
+	return numberOfVideoAdded > 0;
 }
 
 - (NSString *)willLoadNotificationName {
