@@ -23,6 +23,9 @@
 #define NM_CHANNEL_CELL_DETAIL_TOP_MARGIN	40.0f
 #define NM_CONTAINER_VIEW_POOL_SIZE		8
 
+NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlayNewlySubscribedChannelNotification";
+
+
 @implementation ChannelPanelController
 @synthesize panelView, tableView;
 @synthesize managedObjectContext=managedObjectContext_;
@@ -48,6 +51,11 @@
     UIPanGestureRecognizer *panningGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(customPanning:)] autorelease];
     panningGesture.delegate = self;
     [tableView addGestureRecognizer:panningGesture];
+    
+    NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handlePlayNewlySubscribedChannelNotification:) name:NMShouldPlayNewlySubscribedChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
+
 }
 
 - (void)dealloc {
@@ -561,6 +569,24 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             break;
     }
 }
+
+#pragma mark play newly subscribed channel
+- (void)handlePlayNewlySubscribedChannelNotification:(NSNotification *)aNotification {
+	NMChannel * targetChn = [[aNotification userInfo] objectForKey:@"channel"];
+	// do not proceed if not the same channel object as the current one.
+    NSLog(@"CHDESC: %@", [targetChn description]);
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:targetChn];
+    NSLog(@"ROW: %d", [indexPath row]);
+    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
+    AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
+    NSLog(@"DESC: %@", [htView description]);
+    [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+}
+
+- (void)handleSubscriptionNotification:(NSNotification *)aNotification {
+    [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[tableView numberOfRowsInSection:0]-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
 
 
 @end

@@ -149,3 +149,6 @@ extern NSString * const NMVideoDetailEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;
+
+// channel management subscribe and play notification
+extern NSString * const NMShouldPlayNewlySubscribedChannelNotification;

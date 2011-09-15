@@ -67,6 +67,7 @@
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetDetailNotification:) name:NMDidGetChannelDetailNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidFailNotification:) name:NMDidFailGetChannelDetailNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	
 	descriptionDefaultFrame = descriptionLabel.frame;
 	
@@ -275,11 +276,22 @@
                          completion:^(BOOL finished) {
                              if (shouldDismiss) {
                                  // TODO: play the first video of the channel here
-                                 [self dismissModalViewControllerAnimated:YES];
                              }
                          }];
     }
 }
+
+- (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification {
+    if (!shouldDismiss) {
+        return;
+    }
+	NSDictionary * info = [aNotification userInfo];
+    if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NMShouldPlayNewlySubscribedChannelNotification object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", nil]];
+        [self dismissModalViewControllerAnimated:YES];
+    }
+}
+
 
 
 @end
