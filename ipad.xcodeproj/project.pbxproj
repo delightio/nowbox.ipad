@@ -50,7 +50,6 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
-		A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
 		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
@@ -89,7 +88,6 @@
 		A93D353D14076B9600C8A73F /* airplay-tv-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */; };
 		A93E6BD31402966300B06191 /* airplay.png in Resources */ = {isa = PBXBuildFile; fileRef = A93E6BD21402966200B06191 /* airplay.png */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
-		A9452BC81415E75E00056361 /* NMFileExistsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9452BC71415E75E00056361 /* NMFileExistsCache.m */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
 		A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
@@ -107,7 +105,6 @@
 		A97050A4134392FA0022BF2C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050A3134392FA0022BF2C /* CoreData.framework */; };
 		A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
 		A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
-		A971610A141419F200BBF6C6 /* NMCreateChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9716109141419F200BBF6C6 /* NMCreateChannelTask.m */; };
 		A9719F451402F54C00393975 /* seek-time-bubble-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9719F441402F54C00393975 /* seek-time-bubble-background.png */; };
 		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
 		A9776A4C13AAF0AF004FA2F3 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */; };
@@ -130,15 +127,6 @@
 		A9976F0813BB35AD00B06DFF /* NMCacheController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD60F135E9611004B7F78 /* NMCacheController.m */; };
 		A9976F0913BB35AD00B06DFF /* NMNetworkController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504713438F860022BF2C /* NMNetworkController.m */; };
 		A9976F0A13BB35AD00B06DFF /* NMTaskQueueController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504913438F860022BF2C /* NMTaskQueueController.m */; };
-		A9976F0B13BB35AD00B06DFF /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
-		A9976F0C13BB35AD00B06DFF /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
-		A9976F0E13BB35AD00B06DFF /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
-		A9976F0F13BB35AD00B06DFF /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
-		A9976F1013BB35AD00B06DFF /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
-		A9976F1113BB35AD00B06DFF /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
-		A9976F1213BB35AD00B06DFF /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
-		A9976F1E13BB360200B06DFF /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050A3134392FA0022BF2C /* CoreData.framework */; };
-		A9976F1F13BB366300B06DFF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
 		A9976F2213BB388000B06DFF /* NMMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506413438F860022BF2C /* NMMovieView.m */; };
 		A9976F2313BB38BE00B06DFF /* libNMLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9976EFC13BB355200B06DFF /* libNMLibrary.a */; };
 		A9976F2413BB3A2800B06DFF /* NMControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A970506213438F860022BF2C /* NMControlsView.m */; };
@@ -158,8 +146,19 @@
 		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
 		A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */; };
+		A9D027B1142217590064A89D /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
+		A9D027B2142217590064A89D /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
+		A9D027B3142217590064A89D /* NMCreateChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9716109141419F200BBF6C6 /* NMCreateChannelTask.m */; };
+		A9D027B4142217590064A89D /* NMGetChannelDetailTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */; };
+		A9D027B5142217590064A89D /* NMGetChannelVideoListTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504E13438F860022BF2C /* NMGetChannelVideoListTask.m */; };
+		A9D027B6142217590064A89D /* NMGetVimeoDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505613438F860022BF2C /* NMGetVimeoDirectURLTask.m */; };
+		A9D027B7142217590064A89D /* NMGetYouTubeDirectURLTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505813438F860022BF2C /* NMGetYouTubeDirectURLTask.m */; };
+		A9D027B8142217590064A89D /* NMTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970505A13438F860022BF2C /* NMTask.m */; };
+		A9D027B9142217590064A89D /* NMEventTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B19640134C6B0B00CA17A0 /* NMEventTask.m */; };
+		A9D027BA142217590064A89D /* NMImageDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */; };
+		A9D027BB142217590064A89D /* NMCreateUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */; };
+		A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9452BC71415E75E00056361 /* NMFileExistsCache.m */; };
 		A9D19B2B140E274E008CF101 /* NMChannelDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B2A140E274E008CF101 /* NMChannelDetail.m */; };
-		A9D19B32140E2917008CF101 /* NMGetChannelDetailTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */; };
 		A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */; };
 		A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */; };
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
@@ -168,7 +167,6 @@
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
 		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
-		A9E90A8D14173AE700EB38DC /* NMCreateUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */; };
 		A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F1BE6E13FB83CE0006B569 /* NMAirPlayContainerView.m */; };
 		A9F4966113D2E83400A56F50 /* playback_background_pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966013D2E83400A56F50 /* playback_background_pattern.png */; };
 		A9F4966313D2EE5900A56F50 /* playback_video_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */; };
@@ -456,8 +454,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9976EFD13BB355200B06DFF /* Foundation.framework in Frameworks */,
-				A9976F1E13BB360200B06DFF /* CoreData.framework in Frameworks */,
-				A9976F1F13BB366300B06DFF /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1040,7 +1036,6 @@
 				A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */,
 				A991188A13E759E20067E987 /* SettingsViewController.m in Sources */,
 				2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */,
-				A900603D13EFE78100B05645 /* NMGetCategoriesTask.m in Sources */,
 				A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */,
 				A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */,
 				A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */,
@@ -1051,14 +1046,10 @@
 				22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */,
 				A9A4810D13FD181500850536 /* FeatureDebugViewController.m in Sources */,
 				A9D19B2B140E274E008CF101 /* NMChannelDetail.m in Sources */,
-				A9D19B32140E2917008CF101 /* NMGetChannelDetailTask.m in Sources */,
 				A9042600140E2EEC0028B972 /* NMChannel.m in Sources */,
 				A99FB6C9140EAC0400689040 /* ChannelDetailViewController.m in Sources */,
 				A99FB6D3140EE30700689040 /* NMPreviewThumbnail.m in Sources */,
 				2252786B1412CDDE00E48227 /* PreviewViewContainerView.m in Sources */,
-				A971610A141419F200BBF6C6 /* NMCreateChannelTask.m in Sources */,
-				A9452BC81415E75E00056361 /* NMFileExistsCache.m in Sources */,
-				A9E90A8D14173AE700EB38DC /* NMCreateUserTask.m in Sources */,
 				A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */,
 				2230160814180094006FC44E /* ChannelPreviewView.m in Sources */,
 				22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */,
@@ -1074,13 +1065,18 @@
 				A9976F0813BB35AD00B06DFF /* NMCacheController.m in Sources */,
 				A9976F0913BB35AD00B06DFF /* NMNetworkController.m in Sources */,
 				A9976F0A13BB35AD00B06DFF /* NMTaskQueueController.m in Sources */,
-				A9976F0B13BB35AD00B06DFF /* NMGetChannelsTask.m in Sources */,
-				A9976F0C13BB35AD00B06DFF /* NMGetChannelVideoListTask.m in Sources */,
-				A9976F0E13BB35AD00B06DFF /* NMGetVimeoDirectURLTask.m in Sources */,
-				A9976F0F13BB35AD00B06DFF /* NMGetYouTubeDirectURLTask.m in Sources */,
-				A9976F1013BB35AD00B06DFF /* NMTask.m in Sources */,
-				A9976F1113BB35AD00B06DFF /* NMEventTask.m in Sources */,
-				A9976F1213BB35AD00B06DFF /* NMImageDownloadTask.m in Sources */,
+				A9D027B1142217590064A89D /* NMGetCategoriesTask.m in Sources */,
+				A9D027B2142217590064A89D /* NMGetChannelsTask.m in Sources */,
+				A9D027B3142217590064A89D /* NMCreateChannelTask.m in Sources */,
+				A9D027B4142217590064A89D /* NMGetChannelDetailTask.m in Sources */,
+				A9D027B5142217590064A89D /* NMGetChannelVideoListTask.m in Sources */,
+				A9D027B6142217590064A89D /* NMGetVimeoDirectURLTask.m in Sources */,
+				A9D027B7142217590064A89D /* NMGetYouTubeDirectURLTask.m in Sources */,
+				A9D027B8142217590064A89D /* NMTask.m in Sources */,
+				A9D027B9142217590064A89D /* NMEventTask.m in Sources */,
+				A9D027BA142217590064A89D /* NMImageDownloadTask.m in Sources */,
+				A9D027BB142217590064A89D /* NMCreateUserTask.m in Sources */,
+				A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

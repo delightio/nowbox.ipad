@@ -107,6 +107,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	for (NMVideo * vid in result) {
 		[managedObjectContext deleteObject:vid];
 	}
+	[request release];
 }
 
 - (void)resetAllChannelsPageNumber {

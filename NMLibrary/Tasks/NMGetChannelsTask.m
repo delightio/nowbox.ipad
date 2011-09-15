@@ -92,6 +92,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	[channelJSONKeys release];
 	[trendingChannel release];
 	[category release];
+	[searchWord release];
+	[channelIndexSet release];
 	[parsedObjectDictionary release];
 	[super dealloc];
 }
