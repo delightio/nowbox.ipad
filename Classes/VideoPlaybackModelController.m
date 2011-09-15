@@ -366,7 +366,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		NSLog(@"received resolution error notificaiton - %@", [aNotification userInfo]);
 #endif
 		NSDictionary * info = [aNotification userInfo];
-		[nowmovTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorCode:[[info objectForKey:@"error_code"] integerValue]];
+		[nowmovTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorInfo:info];
 	} else if ( [theName isEqualToString:NMURLConnectionErrorNotification] ) {
 		// general network error. 
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE

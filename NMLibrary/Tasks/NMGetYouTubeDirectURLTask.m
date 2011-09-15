@@ -86,7 +86,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		if ( reason ) {
 			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", reason, @"reason", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", nil];
 		} else if ( [xmlStr rangeOfString:@"Device token expired"].location != NSNotFound ) {
-			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorDeviceTokenExpired], @"error_code", nil];
+			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorDeviceTokenExpired], @"error_code", @"Device token expired", @"reason", nil];
 		} else {
 			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", nil];
 		}
@@ -99,9 +99,9 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	if ( mediaContents == nil || [mediaContents count] == 0 ) {
 		// no data
 		encountersErrorDuringProcessing = YES;
-		NSDictionary * ytStateDict = [dict valueForKey:@"entry.app$control.yt$state"];
-		if ( ytStateDict && [[ytStateDict objectForKey:@"reasonCode"] isEqualToString:@"requesterRegion"] ) {
-			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorVideoNotAvailableInCurrentLocation], @"error_code", nil];
+		NSDictionary * ytStateDict = [dict valueForKeyPath:@"entry.app$control.yt$state"];
+		if ( ytStateDict ) {
+			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", [ytStateDict objectForKey:@"reasonCode"], @"reason", nil];
 		} else {
 			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", nil];
 		}

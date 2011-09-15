@@ -20,7 +20,6 @@
 	NMVideo * video;
 	NMChannel * channel;
 	NSNumber * channelID;
-	NSInteger errorCode;
 	NSDictionary * resultDictionary;
 	BOOL playedToEnd;
 }
@@ -32,7 +31,6 @@
 @property (nonatomic) NSInteger elapsedSeconds;
 //@property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL playedToEnd;
-@property (nonatomic) NSInteger errorCode;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v;
 - (id)initWithChannel:(NMChannel *)aChn subscribe:(BOOL)abool;

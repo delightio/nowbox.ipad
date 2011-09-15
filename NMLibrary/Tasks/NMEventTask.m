@@ -43,7 +43,6 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 @synthesize channelID;
 @synthesize resultDictionary;
 @synthesize elapsedSeconds, playedToEnd;
-@synthesize errorCode;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v {
 	self = [super init];
@@ -125,8 +124,15 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	NSString * urlStr = nil;
 	switch (eventType) {
 		case NMEventExamine:
-			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, evtStr, NM_USER_ACCOUNT_ID];
+		{
+			NSString * reasonStr = [errorInfo objectForKey:@"reason"];
+			if ( reasonStr ) {
+				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&action=%@&user_id=%d&reason=%@", NM_BASE_URL, channelID, targetID, evtStr, NM_USER_ACCOUNT_ID, [reasonStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			} else {
+				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, evtStr, NM_USER_ACCOUNT_ID];
+			}
 			break;
+		}
 		case NMEventSubscribeChannel:
 		case NMEventUnsubscribeChannel:
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
