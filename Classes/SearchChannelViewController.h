@@ -28,5 +28,6 @@
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 
 -(void)clearSearchResults;
+- (void)performSearchWithText:(NSString *)searchText;
 
 @end

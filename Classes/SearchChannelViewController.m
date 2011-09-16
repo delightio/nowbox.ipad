@@ -313,12 +313,13 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar {
     [searchBar resignFirstResponder];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [self performSelector:@selector(performSearchWithText:) withObject:searchBar.text];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
-	[ctrl.dataController clearSearchResultCache];
-	[ctrl issueChannelSearchForKeyword:searchText];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0f];
 }
 
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
@@ -341,6 +342,13 @@
     
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
     
+}
+
+#pragma mark delayed search
+- (void)performSearchWithText:(NSString *)searchText {
+    NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
+	[ctrl.dataController clearSearchResultCache];
+	[ctrl issueChannelSearchForKeyword:searchText];
 }
 
 
