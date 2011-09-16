@@ -280,26 +280,24 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 - (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex {
     // used for highlight / unhighlight row, and what to do when row is selected(?)
-//    NSLog(@"selected channel index: %d, video index: %d",newChannelIndex,newVideoIndex);
+    NSLog(@"deselected channel index: %@, video index: %d",[highlightedChannel title],highlightedVideoIndex);
 
     // first, unhighlight the old cell
-    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
 
-    if ((newVideoIndex != highlightedVideoIndex) || (theChannel != highlightedChannel)) {
-        
-        UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
-        AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
-        
+    for (UITableViewCell *channelCell in [tableView visibleCells]) {
+        for (PanelVideoContainerView *cell in [(AGOrientedTableView *)[channelCell viewWithTag:1009] visibleCells]) {
+            [cell setIsPlayingVideo:NO];
+        }
         ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
         [ctnView setHighlighted:NO];
-        
-        NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
-        PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
-        [cell setIsPlayingVideo:NO];
     }
+    
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:theChannel];
 
     highlightedChannel = theChannel;
     highlightedVideoIndex = newVideoIndex;
+
+    NSLog(@"selected channel index: %@, video index: %d",[theChannel title],newVideoIndex);
 
     UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
     AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
