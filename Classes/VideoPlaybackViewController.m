@@ -1363,6 +1363,16 @@
 }
 
 -(void)swipedDown:(UIGestureRecognizer *)sender {
+    CGRect theFrame;
+	theFrame = channelController.panelView.frame;
+	BOOL panelHidden = YES;
+	if ( theFrame.origin.y < 768.0 ) {
+		// assume the panel is visible
+		panelHidden = NO;
+	}
+    if (panelHidden) {
+        return;
+    }
     pinchTemporarilyDisabled = YES;
     for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
         gr.enabled = YES;
