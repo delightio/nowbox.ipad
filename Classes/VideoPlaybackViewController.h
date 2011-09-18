@@ -46,6 +46,7 @@
 	BOOL isAspectFill;
 	BOOL firstShowControlView;
 	CGFloat movieXOffset;
+	CGRect fullScreenRect, splitViewRect;
 	
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
