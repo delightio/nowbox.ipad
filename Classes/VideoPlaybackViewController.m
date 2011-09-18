@@ -84,10 +84,6 @@
 	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
 	
-	// view background
-	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-	self.view.backgroundColor = bgColor;
-	
 	// ribbon view
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
 	ribbonView.layer.shouldRasterize = YES;
@@ -1073,35 +1069,37 @@
 	CGRect viewRect;
 	// make the movie detail view visible
 	NMMovieDetailView * theDetailView;
-	theDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
-	theDetailView.hidden = NO;
-	theDetailView.alpha = 0.0f;
-	viewRect = theDetailView.frame;
-	viewRect.origin = controlScrollView.contentOffset;
-	theDetailView.frame = viewRect;
-	
-	if ( playbackModelController.previousVideo ) {
-		theDetailView = playbackModelController.previousVideo.nm_movie_detail_view;
-		theDetailView.hidden = NO;
-		theDetailView.alpha = 1.0f;
-		viewRect = theDetailView.frame;
-		viewRect.origin = controlScrollView.contentOffset;
-		viewRect.origin.x -= 1024.0f;
-		theDetailView.frame = viewRect;
-	}
-	
-	if ( playbackModelController.nextVideo ) {
-		theDetailView = playbackModelController.nextVideo.nm_movie_detail_view;
-		theDetailView.hidden = NO;
-		theDetailView.alpha = 1.0f;
-		viewRect = theDetailView.frame;
-		viewRect.origin = controlScrollView.contentOffset;
-		viewRect.origin.x += 1024.0f;
-		theDetailView.frame = viewRect;
-	}
+//	theDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
+//	theDetailView.hidden = NO;
+//	theDetailView.alpha = 0.0f;
+//	viewRect = theDetailView.frame;
+//	viewRect.origin = controlScrollView.contentOffset;
+//	theDetailView.frame = viewRect;
+//	
+//	if ( playbackModelController.previousVideo ) {
+//		theDetailView = playbackModelController.previousVideo.nm_movie_detail_view;
+//		theDetailView.hidden = NO;
+//		theDetailView.alpha = 1.0f;
+//		viewRect = theDetailView.frame;
+//		viewRect.origin = controlScrollView.contentOffset;
+//		viewRect.origin.x -= 1024.0f;
+//		theDetailView.frame = viewRect;
+//	}
+//	
+//	if ( playbackModelController.nextVideo ) {
+//		theDetailView = playbackModelController.nextVideo.nm_movie_detail_view;
+//		theDetailView.hidden = NO;
+//		theDetailView.alpha = 1.0f;
+//		viewRect = theDetailView.frame;
+//		viewRect.origin = controlScrollView.contentOffset;
+//		viewRect.origin.x += 1024.0f;
+//		theDetailView.frame = viewRect;
+//	}
 	
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.5f];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
 		movieXOffset = 0.0f;
@@ -1110,6 +1108,9 @@
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
+		// fade in detail view
+		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
+		ribbonView.alpha = 1.0f;
 		// slide in
 		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height-8;
 		channelController.panelView.frame = theFrame;
@@ -1122,9 +1123,11 @@
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];
-//		loadedControlView.frame = viewRect;
+		// fade out detail view
+		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 0.0f;
 		// reset offset value
 		movieXOffset = 0.0f;
+		ribbonView.alpha = 0.0f;
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
@@ -1136,16 +1139,17 @@
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
-		for (theDetailView in movieDetailViewArray) {
-			theDetailView.hidden = NO;
-			theDetailView.alpha = 1.0f;
-		}
-		ribbonView.hidden = NO;
+		
+//		for (theDetailView in movieDetailViewArray) {
+//			theDetailView.hidden = NO;
+//			theDetailView.alpha = 1.0f;
+//		}
+//		ribbonView.hidden = NO;
 	} else {
-		for (theDetailView in movieDetailViewArray) {
-			theDetailView.hidden = YES;
-		}
-		ribbonView.hidden = YES;
+//		for (theDetailView in movieDetailViewArray) {
+//			theDetailView.hidden = YES;
+//		}
+//		ribbonView.hidden = YES;
 	}
 	// slide in/out the prototype channel panel
 	// scale down movie control
