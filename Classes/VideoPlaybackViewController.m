@@ -27,11 +27,12 @@
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
 #define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
-#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER	10001
-#define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT	10002
-#define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT		10003
+#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER			10001
+#define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT			10002
+#define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT				10003
 #define NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT		10004
-#define NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT		10005
+#define NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT	10005
+#define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
@@ -84,10 +85,6 @@
 	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
 	
-	// view background
-	UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-	self.view.backgroundColor = bgColor;
-	
 	// ribbon view
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
 	ribbonView.layer.shouldRasterize = YES;
@@ -127,6 +124,7 @@
 	loadedControlView.frame = movieView.frame;
 	loadedControlView.controlDelegate = self;
 	[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
+	[loadedControlView setTopBarHidden:YES animated:NO];
 	
 	// put the view to scroll view
 	[controlScrollView addSubview:loadedControlView];
@@ -432,6 +430,16 @@
 			
 		case NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT:
 			[self updateWatchLaterButton];
+			break;
+			
+		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
+			// show the top bar with animation
+			[loadedControlView setTopBarHidden:NO animated:YES];
+			// hide all movie detail view
+			for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+				theDetailView.hidden = YES;
+			}
+			ribbonView.hidden = YES;
 			break;
 			
 		default:
@@ -1072,36 +1080,36 @@
 
 	CGRect viewRect;
 	// make the movie detail view visible
-	NMMovieDetailView * theDetailView;
-	theDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
-	theDetailView.hidden = NO;
-	theDetailView.alpha = 0.0f;
-	viewRect = theDetailView.frame;
-	viewRect.origin = controlScrollView.contentOffset;
-	theDetailView.frame = viewRect;
+//	theDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
+//	theDetailView.hidden = NO;
+//	theDetailView.alpha = 0.0f;
+//	viewRect = theDetailView.frame;
+//	viewRect.origin = controlScrollView.contentOffset;
+//	theDetailView.frame = viewRect;
+//	
+//	if ( playbackModelController.previousVideo ) {
+//		theDetailView = playbackModelController.previousVideo.nm_movie_detail_view;
+//		theDetailView.hidden = NO;
+//		theDetailView.alpha = 1.0f;
+//		viewRect = theDetailView.frame;
+//		viewRect.origin = controlScrollView.contentOffset;
+//		viewRect.origin.x -= 1024.0f;
+//		theDetailView.frame = viewRect;
+//	}
+//	
+//	if ( playbackModelController.nextVideo ) {
+//		theDetailView = playbackModelController.nextVideo.nm_movie_detail_view;
+//		theDetailView.hidden = NO;
+//		theDetailView.alpha = 1.0f;
+//		viewRect = theDetailView.frame;
+//		viewRect.origin = controlScrollView.contentOffset;
+//		viewRect.origin.x += 1024.0f;
+//		theDetailView.frame = viewRect;
+//	}
 	
-	if ( playbackModelController.previousVideo ) {
-		theDetailView = playbackModelController.previousVideo.nm_movie_detail_view;
-		theDetailView.hidden = NO;
-		theDetailView.alpha = 1.0f;
-		viewRect = theDetailView.frame;
-		viewRect.origin = controlScrollView.contentOffset;
-		viewRect.origin.x -= 1024.0f;
-		theDetailView.frame = viewRect;
-	}
-	
-	if ( playbackModelController.nextVideo ) {
-		theDetailView = playbackModelController.nextVideo.nm_movie_detail_view;
-		theDetailView.hidden = NO;
-		theDetailView.alpha = 1.0f;
-		viewRect = theDetailView.frame;
-		viewRect.origin = controlScrollView.contentOffset;
-		viewRect.origin.x += 1024.0f;
-		theDetailView.frame = viewRect;
-	}
-	
-	[UIView beginAnimations:nil context:nil];
+	[UIView beginAnimations:nil context:(panelHidden ? nil : (void *)NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT)];
 	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.5f];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
 		movieXOffset = 0.0f;
@@ -1110,6 +1118,8 @@
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
+		// fade in detail view
+		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 		// slide in
 		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height-8;
 		channelController.panelView.frame = theFrame;
@@ -1117,14 +1127,18 @@
 		
 //		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
+		[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+		[UIView setAnimationDelegate:self];
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];
-//		loadedControlView.frame = viewRect;
+		// fade out detail view
+		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 0.0f;
 		// reset offset value
 		movieXOffset = 0.0f;
+		ribbonView.alpha = 0.0f;
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
@@ -1136,21 +1150,23 @@
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
-		for (theDetailView in movieDetailViewArray) {
+		// unhide the ribbon view
+		ribbonView.hidden = NO;
+		// hide the top bar (no animation is needed)
+		[loadedControlView setTopBarHidden:YES animated:NO];
+		// animate showing of the ribbon
+		[UIView beginAnimations:nil context:nil];
+		[UIView setAnimationDelay:0.2f];
+		[UIView setAnimationDuration:0.3f];
+		ribbonView.alpha = 1.0f;
+		[UIView commitAnimations];
+		// unhide all movie detail view
+		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
 			theDetailView.hidden = NO;
 			theDetailView.alpha = 1.0f;
 		}
-		ribbonView.hidden = NO;
-	} else {
-		for (theDetailView in movieDetailViewArray) {
-			theDetailView.hidden = YES;
-		}
-		ribbonView.hidden = YES;
 	}
-	// slide in/out the prototype channel panel
-	// scale down movie control
-	// scale playback view
-	// slide in/out channel panel
+	// for the case of hiding the Channel View, we take the movie detail view away after the animation has finished.
 }
 
 - (IBAction)toggleChannelPanelFullScreen:(id)sender {

@@ -153,18 +153,18 @@
 											<int key="NSColorSpace">3</int>
 											<bytes key="NSWhite">MAA</bytes>
 										</object>
-										<string key="IBUIShadowOffset">{0, 1}</string>
+										<string key="IBUIShadowOffset">{0, 2}</string>
 										<int key="IBUIBaselineAdjustment">1</int>
 										<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 										<float key="IBUIMinimumFontSize">10</float>
-										<object class="IBUIFontDescription" key="IBUIFontDescription" id="452875236">
-											<string key="name">Arial-BoldMT</string>
-											<string key="family">Arial</string>
+										<object class="IBUIFontDescription" key="IBUIFontDescription" id="423926453">
+											<string key="name">HelveticaNeue-Bold</string>
+											<string key="family">Helvetica Neue</string>
 											<int key="traits">2</int>
 											<double key="pointSize">13</double>
 										</object>
-										<object class="NSFont" key="IBUIFont" id="896559792">
-											<string key="NSName">Arial-BoldMT</string>
+										<object class="NSFont" key="IBUIFont" id="922875689">
+											<string key="NSName">HelveticaNeue-Bold</string>
 											<double key="NSSize">13</double>
 											<int key="NSfFlags">16</int>
 										</object>
@@ -198,13 +198,13 @@
 										<reference key="IBUITextColor" ref="513829447"/>
 										<nil key="IBUIHighlightedColor"/>
 										<reference key="IBUIShadowColor" ref="592406915"/>
-										<string key="IBUIShadowOffset">{0, 1}</string>
+										<string key="IBUIShadowOffset">{0, 2}</string>
 										<int key="IBUIBaselineAdjustment">1</int>
 										<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 										<float key="IBUIMinimumFontSize">10</float>
 										<int key="IBUITextAlignment">2</int>
-										<reference key="IBUIFontDescription" ref="452875236"/>
-										<reference key="IBUIFont" ref="896559792"/>
+										<reference key="IBUIFontDescription" ref="423926453"/>
+										<reference key="IBUIFont" ref="922875689"/>
 									</object>
 								</object>
 								<string key="NSFrame">{{60, 0}, {904, 40}}</string>
@@ -235,7 +235,6 @@
 						<string key="NSFrame">{{487, 706}, {49, 28}}</string>
 						<reference key="NSSuperview" ref="802969940"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:226</string>
 						<object class="NSColor" key="IBUIBackgroundColor" id="646561178">
 							<int key="NSColorSpace">3</int>
@@ -262,8 +261,17 @@
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">seek-time-bubble-background.png</string>
 						</object>
-						<reference key="IBUIFontDescription" ref="452875236"/>
-						<reference key="IBUIFont" ref="896559792"/>
+						<object class="IBUIFontDescription" key="IBUIFontDescription">
+							<string key="name">Arial-BoldMT</string>
+							<string key="family">Arial</string>
+							<int key="traits">2</int>
+							<double key="pointSize">13</double>
+						</object>
+						<object class="NSFont" key="IBUIFont">
+							<string key="NSName">Arial-BoldMT</string>
+							<double key="NSSize">13</double>
+							<int key="NSfFlags">16</int>
+						</object>
 					</object>
 					<object class="IBUIView" id="988095503">
 						<reference key="NSNextResponder" ref="802969940"/>
@@ -458,13 +466,13 @@
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
-									<string key="name">ArialMT</string>
-									<string key="family">Arial</string>
+									<string key="name">HelveticaNeue-Medium</string>
+									<string key="family">Helvetica Neue</string>
 									<int key="traits">0</int>
 									<double key="pointSize">13</double>
 								</object>
 								<object class="NSFont" key="IBUIFont">
-									<string key="NSName">ArialMT</string>
+									<string key="NSName">HelveticaNeue-Medium</string>
 									<double key="NSSize">13</double>
 									<int key="NSfFlags">16</int>
 								</object>

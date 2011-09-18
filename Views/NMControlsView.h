@@ -99,6 +99,7 @@
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)resetView;
 - (void)updateViewForVideo:(NMVideo *)aVideo;
+- (void)setTopBarHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)setPlayButtonStateForRate:(CGFloat)aRate;
 
 - (void)showLastVideoMessage;

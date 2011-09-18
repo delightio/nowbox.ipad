@@ -158,6 +158,20 @@
 	}
 }
 
+- (void)setTopBarHidden:(BOOL)hidden animated:(BOOL)animated {
+	if ( animated ) {
+		[UIView beginAnimations:nil context:nil];
+		[UIView setAnimationDelay:0.1f];
+	}
+	if ( hidden ) {
+		// set top bar to hidden
+		topbarContainerView.alpha = 0.0f;
+	} else {
+		topbarContainerView.alpha = 1.0f;
+	}
+	if ( animated ) [UIView commitAnimations];
+}
+
 - (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated {
 	if ( aMode == playbackMode_ ) return;
 	
@@ -176,7 +190,7 @@
 			sliderRect = CGRectMake(126.0, 0.0, NM_RUNNING_IOS_5 ? 712.0f : 772.0f, 0.0f);
 			
 			// show the top bar
-			topbarContainerView.alpha = 1.0f;
+//			topbarContainerView.alpha = 1.0f;
 			// change button image
 			[channelViewButton setImage:styleUtility.splitScreenImage forState:UIControlStateNormal];
 			[channelViewButton setImage:styleUtility.splitScreenActiveImage forState:UIControlStateHighlighted];
@@ -197,7 +211,7 @@
 			self.frame = viewRect;
 			sliderRect = CGRectMake(126.0, 0.0, NM_RUNNING_IOS_5 ? 328.0f : 388.0f, 0.0f);
 			
-			topbarContainerView.alpha = 0.0f;
+//			topbarContainerView.alpha = 0.0f;
 			[channelViewButton setImage:styleUtility.fullScreenImage forState:UIControlStateNormal];
 			[channelViewButton setImage:styleUtility.fullScreenActiveImage forState:UIControlStateHighlighted];
 			

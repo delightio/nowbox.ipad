@@ -49,6 +49,9 @@
 	otherInfoDefaultPosition = otherInfoLabel.center;
 	
 	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
+	// the background image
+	self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
+	// the fake movie view box
 	CALayer * blackLayer = [CALayer layer];
 	blackLayer.shouldRasterize = YES;
 	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
