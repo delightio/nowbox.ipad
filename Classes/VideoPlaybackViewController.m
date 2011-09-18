@@ -33,6 +33,7 @@
 #define NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT		10004
 #define NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT	10005
 #define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
+#define NM_ANIMATION_SPLIT_VIEW_CONTEXT					10007
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
@@ -84,6 +85,8 @@
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
+	fullScreenRect = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
+	splitViewRect = CGRectMake(0.0f, 0.0f, 1024.0f, 380.0f);
 	
 	// ribbon view
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
@@ -108,6 +111,7 @@
 		loadedMovieDetailView.frame = theFrame;
 		loadedMovieDetailView.alpha = 0.0f;
 		[controlScrollView addSubview:loadedMovieDetailView];
+		// movie detail view doesn't need to respond to autoresize
 	}
 	self.loadedMovieDetailView = nil;
 	
@@ -115,6 +119,7 @@
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
 	[controlScrollView addSubview:movieView];
+	controlScrollView.frame = splitViewRect;
 	
 	// pre-load control view
 	// load the nib
@@ -442,6 +447,9 @@
 			ribbonView.hidden = YES;
 			break;
 			
+		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
+			controlScrollView.frame = splitViewRect;
+			break;
 		default:
 			break;
 	}
@@ -688,7 +696,7 @@
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
-	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 768.0f);
+	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 	currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
 	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
 //	controlScrollView.contentOffset = thePoint;
@@ -1079,37 +1087,12 @@
 	}
 
 	CGRect viewRect;
-	// make the movie detail view visible
-//	theDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
-//	theDetailView.hidden = NO;
-//	theDetailView.alpha = 0.0f;
-//	viewRect = theDetailView.frame;
-//	viewRect.origin = controlScrollView.contentOffset;
-//	theDetailView.frame = viewRect;
-//	
-//	if ( playbackModelController.previousVideo ) {
-//		theDetailView = playbackModelController.previousVideo.nm_movie_detail_view;
-//		theDetailView.hidden = NO;
-//		theDetailView.alpha = 1.0f;
-//		viewRect = theDetailView.frame;
-//		viewRect.origin = controlScrollView.contentOffset;
-//		viewRect.origin.x -= 1024.0f;
-//		theDetailView.frame = viewRect;
-//	}
-//	
-//	if ( playbackModelController.nextVideo ) {
-//		theDetailView = playbackModelController.nextVideo.nm_movie_detail_view;
-//		theDetailView.hidden = NO;
-//		theDetailView.alpha = 1.0f;
-//		viewRect = theDetailView.frame;
-//		viewRect.origin = controlScrollView.contentOffset;
-//		viewRect.origin.x += 1024.0f;
-//		theDetailView.frame = viewRect;
-//	}
 	
-	[UIView beginAnimations:nil context:(panelHidden ? nil : (void *)NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT)];
+	[UIView beginAnimations:nil context:(panelHidden ? (void *)NM_ANIMATION_SPLIT_VIEW_CONTEXT : (void *)NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT)];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:0.5f];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView setAnimationDelegate:self];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
 		movieXOffset = 0.0f;
@@ -1127,8 +1110,6 @@
 		
 //		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
-		[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-		[UIView setAnimationDelegate:self];
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
@@ -1165,6 +1146,9 @@
 			theDetailView.hidden = NO;
 			theDetailView.alpha = 1.0f;
 		}
+	} else {
+		// panel is showing. i.e. we animate to Full Screen Playback Mode. We need to make sure the scrollview is occupying the full screen before animation begins.
+		controlScrollView.frame = fullScreenRect;
 	}
 	// for the case of hiding the Channel View, we take the movie detail view away after the animation has finished.
 }
