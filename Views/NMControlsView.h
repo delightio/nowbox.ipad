@@ -12,6 +12,7 @@
 #import "ChannelPanelController.h"
 #import "NMStyleUtility.h"
 #import "NMCachedImageView.h"
+#import "NMSeekBar.h"
 
 @class NMMovieView;
 @class NMAirPlayContainerView;
@@ -55,7 +56,7 @@
 	CGFloat channelTitleDefaultWidth, authorTitleDefaultWidth;
 	CGSize maximumTitleSize;
 	
-	IBOutlet UISlider * progressSlider;
+	IBOutlet NMSeekBar * progressSlider;
 	CGRect sliderRect;
 		
 	CGFloat pxWidthPerSecond;

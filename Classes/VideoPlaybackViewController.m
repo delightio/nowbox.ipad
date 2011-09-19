@@ -22,6 +22,7 @@
 #define NM_PLAYER_ITEM_STATUS_CONTEXT			106
 #define NM_PLAYER_RATE_CONTEXT					107
 #define NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT		108
+#define NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT	109
 
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
@@ -714,6 +715,7 @@
 #endif
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
+	[anItem addObserver:self forKeyPath:@"loadedTimeRanges" options:0 context:(void *)NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
 	// no need to update status of NMVideo. "Queued" status is updated in "queueVideo" method
 }
@@ -735,6 +737,7 @@
 		vdo.nm_playback_status = NMVideoQueueStatusError;
 	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+	[anItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
 	[anItem removeObserver:self forKeyPath:@"status"];
 }
 
@@ -886,7 +889,6 @@
 			NSLog(@"Session ID of current video: %@", playbackModelController.currentVideo.nm_session_id);
 #endif
 			[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
-			NSLog(@"##### Will Play Notificaiton - %@", playbackModelController.currentVideo.title);
 		}
 	} else if ( c == NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT ) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
@@ -943,6 +945,13 @@
 		NSLog(@"rate change: %f", movieView.player.rate);
 		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
 		 */
+	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT && object == movieView.player.currentItem ) {
+		// buffering progress
+		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+		NSArray * ay = theItem.loadedTimeRanges;
+		if ( [ay count] ) {
+			loadedControlView.timeRangeBuffered = [[ay objectAtIndex:0] CMTimeRangeValue];
+		}
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
 		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
@@ -1270,9 +1279,8 @@
 
 // seek bar
 - (IBAction)seekPlaybackProgress:(id)sender {
-	UISlider * slider = (UISlider *)sender;
-	NMVideo * curVideo = playbackModelController.currentVideo;
-	CMTime theTime = CMTimeMake((int64_t)([curVideo.duration floatValue] * slider.value), 1);
+	NMSeekBar * slider = (NMSeekBar *)sender;
+	CMTime theTime = CMTimeMake((int64_t)slider.currentTime, 1);
 	[movieView.player seekToTime:theTime];
 	[loadedControlView updateSeekBubbleLocation];
 }
