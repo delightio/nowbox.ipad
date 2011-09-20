@@ -348,8 +348,10 @@
 #pragma mark delayed search
 - (void)performSearchWithText:(NSString *)searchText {
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
-	[ctrl.dataController clearSearchResultCache];
-	[ctrl issueChannelSearchForKeyword:searchText];
+    [ctrl.dataController clearSearchResultCache];
+    if ([searchText length] > 0) {
+        [ctrl issueChannelSearchForKeyword:searchText];
+    }
 }
 
 
