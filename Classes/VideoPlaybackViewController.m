@@ -35,6 +35,7 @@
 #define NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT	10005
 #define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
 #define NM_ANIMATION_SPLIT_VIEW_CONTEXT					10007
+#define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
@@ -43,7 +44,6 @@
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewForVideo:(NMVideo *)aVideo;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
-- (void)translateMovieViewByOffset:(CGFloat)offset;
 - (void)playCurrentVideo;
 - (void)stopVideo;
 - (void)setupPlayer;
@@ -291,7 +291,7 @@
 	}
 	
 	// update the interface if necessary
-	[movieView setActivityIndicationHidden:NO animated:NO];
+//	[movieView setActivityIndicationHidden:NO animated:NO];
 	[self updateRibbonButtons];
 //	if ( playbackModelController.currentVideo == nil ) {
 		// we need to wait for video to come. show loading view
@@ -362,7 +362,7 @@
 		loadedControlView.timeElapsed = sec;
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
-			[movieView setActivityIndicationHidden:YES animated:YES];
+//			[movieView setActivityIndicationHidden:YES animated:YES];
 		}
 		if ( showMovieControlTimestamp > 0 ) {
 			// check if it's time to auto hide control
@@ -375,15 +375,6 @@
 	}];
 	// retain the time observer
 	[timeObserver retain];
-}
-
-- (void)translateMovieViewByOffset:(CGFloat)offset {
-	CGPoint pos = movieView.center;
-	pos.x += movieView.bounds.size.width * offset;
-	movieView.center = pos;
-//	CGRect theFrame = movieView.frame;
-//	theFrame.origin.x += theFrame.size.width * offset;
-//	movieView.frame = theFrame;
 }
 
 #pragma mark Control Views Management
@@ -400,6 +391,11 @@
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
+	[UIView animateWithDuration:0.5f animations:^{
+		movieView.alpha = 1.0f;
+	} completion:^(BOOL finished) {
+		[loadedControlView setControlsHidden:NO animated:NO];
+	}];
 }
 
 - (NMMovieDetailView *)getFreeMovieDetailView {
@@ -450,6 +446,10 @@
 			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
+			break;
+		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
+			controlScrollView.scrollEnabled = YES;
+			[self configureControlViewForVideo:[self playerCurrentVideo]];
 			break;
 		default:
 			break;
@@ -596,7 +596,8 @@
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
-		controlScrollView.scrollEnabled = YES;
+		[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//		controlScrollView.scrollEnabled = YES;
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
@@ -608,7 +609,7 @@
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
 	// show progress indicator
-	[movieView setActivityIndicationHidden:NO animated:NO];
+//	[movieView setActivityIndicationHidden:NO animated:NO];
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
@@ -621,7 +622,7 @@
 - (void)launchPlayVideo:(NMVideo *)aVideo {
 	// a dedicated method for setting video to play when the app is being launched. This method avoids calling AVQueuePlayer removeAllItems.
 	// show progress indicator
-	[movieView setActivityIndicationHidden:NO animated:NO];
+//	[movieView setActivityIndicationHidden:NO animated:NO];
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
@@ -845,7 +846,8 @@
 //				} else {
 //					videoDurationInvalid = YES;
 //				}
-				[movieView setActivityIndicationHidden:YES animated:YES];
+//				[movieView setActivityIndicationHidden:YES animated:YES];
+				[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 				break;
 			}
 			default:
@@ -857,7 +859,7 @@
 		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusCurrentVideo;
 		// never change currentIndex here!!
 		// ====== update interface ======
-		[self configureControlViewForVideo:[self playerCurrentVideo]];
+//		[self configureControlViewForVideo:[self playerCurrentVideo]]; moved to animation delegate
 		// update the time
 
 		[UIView beginAnimations:nil context:nil];
@@ -865,7 +867,7 @@
 		[loadedControlView setControlsHidden:NO animated:NO];
 		
 		// make the movie view visible - in the case of finish playing to the end of video, the movie view is set invisible
-		if ( movieView.alpha < 1.0 ) movieView.alpha = 1.0;
+//		if ( movieView.alpha < 1.0 ) movieView.alpha = 1.0;
 		
 		[UIView commitAnimations];
 		
@@ -1024,22 +1026,23 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
-	scrollView.scrollEnabled = YES;
+//	scrollView.scrollEnabled = YES; move to animation handler
 	if ( scrollView.contentOffset.x > currentXOffset ) {
-		[movieView setActivityIndicationHidden:NO animated:NO];
+//		[movieView setActivityIndicationHidden:NO animated:NO];
 		didSkippedVideo = YES;
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
+			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
 			NSLog(@"can't move to next video. no video!!");
 #endif
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
-		[movieView setActivityIndicationHidden:NO animated:NO];
+//		[movieView setActivityIndicationHidden:NO animated:NO];
 		didSkippedVideo = YES;
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {

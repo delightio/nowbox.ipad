@@ -54,11 +54,11 @@
 	// the background image
 	self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
 	// the fake movie view box
-//	CALayer * blackLayer = [CALayer layer];
-//	blackLayer.shouldRasterize = YES;
-//	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
-//	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
-//	[self.layer addSublayer:blackLayer];
+	CALayer * blackLayer = [CALayer layer];
+	blackLayer.shouldRasterize = YES;
+	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
+	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
+	[self.layer insertSublayer:blackLayer below:movieThumbnailView.layer];
 }
 
 - (void)setVideo:(NMVideo *)aVideo {
@@ -123,6 +123,14 @@
 	}
 	
 	if ( self.alpha == 0.0f ) self.alpha = 1.0f;
+}
+
+- (void)fadeOutThumbnailView:(id)sender context:(void *)ctx {
+	[UIView beginAnimations:nil context:ctx];
+	movieThumbnailView.alpha = 0.0f;
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView setAnimationDelegate:sender];
+	[UIView commitAnimations];
 }
 
 @end

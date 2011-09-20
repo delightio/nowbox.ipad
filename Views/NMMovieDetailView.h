@@ -32,4 +32,6 @@
 
 @property (nonatomic, assign) NMVideo * video;
 
+- (void)fadeOutThumbnailView:(id)sender context:(void *)ctx;
+
 @end

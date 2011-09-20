@@ -50,6 +50,7 @@
 	pos.y += activityIndicator.bounds.size.height;
 	statusLabel.center = pos;
 	statusLabel.text = @"Loading";
+	statusLabel.alpha = 0.0f;
 	[self addSubview:statusLabel];
 	
 	UIImage * ytLogo = [UIImage imageNamed:@"youtube_logo_36"];

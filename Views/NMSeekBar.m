@@ -104,7 +104,8 @@
 
 - (void)setDuration:(NSInteger)d {
 	duration = d;
-	widthPerSec = (self.bounds.size.width - 2.0f) / ((CGFloat)d);
+	if ( d ) widthPerSec = (self.bounds.size.width - 2.0f) / ((CGFloat)d);
+	else widthPerSec = 0.0f;
 	// reset size of other bar
 	NMSeekBarLayoutLayer * theLayer = (NMSeekBarLayoutLayer *)self.layer;
 	CGRect theRect = theLayer.progressLayer.bounds;

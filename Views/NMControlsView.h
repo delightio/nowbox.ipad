@@ -59,8 +59,8 @@
 	IBOutlet NMSeekBar * progressSlider;
 	CGRect sliderRect;
 		
-	CGFloat pxWidthPerSecond;
-	CGFloat progressBarWidth;
+//	CGFloat pxWidthPerSecond;
+//	CGFloat progressBarWidth;
 	
 	CMTimeRange timeRangeBuffered;
 	NSInteger duration;
