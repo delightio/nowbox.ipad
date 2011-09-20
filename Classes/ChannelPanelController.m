@@ -280,7 +280,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 - (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex {
     // used for highlight / unhighlight row, and what to do when row is selected(?)
-    NSLog(@"deselected channel index: %@, video index: %d",[highlightedChannel title],highlightedVideoIndex);
+//    NSLog(@"deselected channel index: %@, video index: %d",[highlightedChannel title],highlightedVideoIndex);
 
     // first, unhighlight the old cell
 
@@ -297,7 +297,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     highlightedChannel = theChannel;
     highlightedVideoIndex = newVideoIndex;
 
-    NSLog(@"selected channel index: %@, video index: %d",[theChannel title],newVideoIndex);
+//    NSLog(@"selected channel index: %@, video index: %d",[theChannel title],newVideoIndex);
 
     UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
     AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
@@ -306,8 +306,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     [ctnView setHighlighted:YES];
 
     NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
-    PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
-    [cell setIsPlayingVideo:YES];
+    
+    if ([htView numberOfRowsInSection:0] > 1) {
+        PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
+        [cell setIsPlayingVideo:YES];
+    }
+
 
 }
 
@@ -579,13 +583,17 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 - (void)handlePlayNewlySubscribedChannelNotification:(NSNotification *)aNotification {
 	NMChannel * targetChn = [[aNotification userInfo] objectForKey:@"channel"];
 	// do not proceed if not the same channel object as the current one.
-    NSLog(@"CHDESC: %@", [targetChn description]);
+//    NSLog(@"CHDESC: %@", [targetChn description]);
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:targetChn];
-    NSLog(@"ROW: %d", [indexPath row]);
-    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
-    AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
-    NSLog(@"DESC: %@", [htView description]);
-    [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+//    NSLog(@"ROW: %d", [indexPath row]);
+    if ([tableView numberOfRowsInSection:0]>0) {
+        UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
+        AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
+        // htview num rows always have at least 1 because of the loading cell, checking against the FRC object would be a better idea down the line
+        if ([htView numberOfRowsInSection:0] > 1) {
+            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        }
+    }
 }
 
 - (void)handleSubscriptionNotification:(NSNotification *)aNotification {

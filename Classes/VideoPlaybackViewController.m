@@ -1160,6 +1160,7 @@
 		controlScrollView.frame = fullScreenRect;
 	}
 	// for the case of hiding the Channel View, we take the movie detail view away after the animation has finished.
+    pinchTemporarilyDisabled = NO;
 }
 
 - (IBAction)toggleChannelPanelFullScreen:(id)sender {
@@ -1212,6 +1213,7 @@
     theFrame = channelController.panelView.frame;
     [UIView beginAnimations:nil context:nil];
 	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.5f];
 
     if (shouldToggleToFullScreen) {
         theFrame = channelController.panelView.frame;
@@ -1246,6 +1248,7 @@
         [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
     }
     [UIView commitAnimations];
+    pinchTemporarilyDisabled = NO;
 }
 
 - (void)movieViewTouchUp:(id)sender {
@@ -1371,6 +1374,7 @@
 }
 
 -(void)swipedDown:(UIGestureRecognizer *)sender {
+    pinchTemporarilyDisabled = YES;
     CGRect theFrame;
 	theFrame = channelController.panelView.frame;
 	BOOL panelHidden = YES;
@@ -1379,9 +1383,13 @@
 		panelHidden = NO;
 	}
     if (panelHidden) {
+        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
+            gr.enabled = YES;
+        }
+        [temporaryDisabledGestures removeAllObjects];
+        pinchTemporarilyDisabled = NO;
         return;
     }
-    pinchTemporarilyDisabled = YES;
     for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
         gr.enabled = YES;
     }
@@ -1395,7 +1403,11 @@
     }
     UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
     // sometimes pinch is disabled on cancel, make sure to reenable it
-    rcr.enabled = YES;
+    //    rcr.enabled = YES;
+    
+    if (pinchTemporarilyDisabled) {
+        rcr.enabled = !pinchTemporarilyDisabled;
+    }
 
     if (rcr.state == UIGestureRecognizerStateCancelled) {
         for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
@@ -1426,8 +1438,13 @@
 - (void)handleMovieViewPinched:(id)sender {
     UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
     // sometimes pinch is disabled on cancel, make sure to reenable it
-    rcr.enabled = YES;
+    
+//    rcr.enabled = YES;
 
+    if (pinchTemporarilyDisabled) {
+        rcr.enabled = !pinchTemporarilyDisabled;
+    }
+    
     if (rcr.state == UIGestureRecognizerStateCancelled) {
         for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
             gr.enabled = YES;

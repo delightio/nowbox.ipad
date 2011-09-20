@@ -311,11 +311,18 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	}
 }
 
+- (NSDictionary *)failUserInfo {
+	if ( command == NMCommandSearchChannels ) {
+		return [NSDictionary dictionaryWithObject:searchWord forKey:@"keyword"];
+	}
+	return nil;
+}
+
 - (NSDictionary *)userInfo {
 	switch (command) {
 		case NMCommandSearchChannels:
 		{
-			break;
+			return [NSDictionary dictionaryWithObject:searchWord forKey:@"keyword"];
 		}
 		case NMCommandGetChannelsForCategory:
 		{

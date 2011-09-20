@@ -302,7 +302,7 @@
             } else {
                 [videoTableView beginUpdates];
                 [videoTableView endUpdates];
-                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([videoTableView numberOfRowsInSection:0]- 1 - [[info objectForKey:@"num_video_added"] integerValue]) inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+//                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([videoTableView numberOfRowsInSection:0]- 1 - [[info objectForKey:@"num_video_added"] integerValue]) inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             }
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
 		}
@@ -317,7 +317,8 @@
 }
 
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification {
-    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+    if (chnObj && [chnObj isEqual:channel] ) {
         isLoadingNewContent = NO;
         isAnimatingNewContentCell = YES;
 //        NSLog(@"handleDidFailGetChannelVideoListNotification");

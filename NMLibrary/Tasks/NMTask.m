@@ -105,4 +105,8 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 	return nil;
 }
 
+- (NSDictionary *)failUserInfo {
+	return nil;
+}
+
 @end

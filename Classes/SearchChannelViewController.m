@@ -69,6 +69,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [tableView reloadData];
+    [searchBar becomeFirstResponder];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -347,8 +348,10 @@
 #pragma mark delayed search
 - (void)performSearchWithText:(NSString *)searchText {
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
-	[ctrl.dataController clearSearchResultCache];
-	[ctrl issueChannelSearchForKeyword:searchText];
+    [ctrl.dataController clearSearchResultCache];
+    if ([searchText length] > 0) {
+        [ctrl issueChannelSearchForKeyword:searchText];
+    }
 }
 
 

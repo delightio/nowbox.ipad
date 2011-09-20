@@ -54,5 +54,6 @@
 - (NSString *)didLoadNotificationName;
 - (NSString *)didFailNotificationName;
 - (NSDictionary *)userInfo;
+- (NSDictionary *)failUserInfo;
 
 @end

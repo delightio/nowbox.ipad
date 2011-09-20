@@ -274,6 +274,10 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	return NMDidFailGetChannelVideoListNotification;
 }
 
+- (NSDictionary *)failUserInfo {
+	return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
+}
+
 - (NSDictionary *)userInfo {
 	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfRowsFromServer], @"num_video_received", [NSNumber numberWithUnsignedInteger:NM_NUMBER_OF_VIDEOS_PER_PAGE], @"num_video_requested", channel, @"channel", nil];
 }
