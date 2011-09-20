@@ -302,7 +302,7 @@
             } else {
                 [videoTableView beginUpdates];
                 [videoTableView endUpdates];
-                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([videoTableView numberOfRowsInSection:0]- 1 - [[info objectForKey:@"num_video_added"] integerValue]) inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+//                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([videoTableView numberOfRowsInSection:0]- 1 - [[info objectForKey:@"num_video_added"] integerValue]) inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             }
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
 		}
