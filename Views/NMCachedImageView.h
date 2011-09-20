@@ -26,13 +26,13 @@
 
 - (void)setImageForChannel:(NMChannel *)chn;
 - (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl;
-//- (void)setImageForVideoThumbnail:(NMVideo *)vdo;
+- (void)setImageForVideoThumbnail:(NMVideo *)vdo;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 
 - (void)delayedIssueChannelImageDownloadRequest;
 - (void)delayedIssueAuthorImageDownloadRequest;
 - (void)delayedIssueVideoImageDownloadRequest;
 
-//- (void)cancelDownload;
+- (void)cancelDownload;
 
 @end

@@ -289,47 +289,62 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	
 }
 
-//- (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv {
-//	if ( vdo == nil || iv == nil ) return;
-//	// check if the file exists
-//	NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
-//	NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
-//	if ( t == NMFileExistsNotCached ) {
-//		BOOL ex = [fileManager fileExistsAtPath:fPath];
-//		[fileExistenceCache setFileExists:ex atPath:fPath];
-//		t = ex ? NMFileExists : NMFileDoesNotExist;
-//	}
-//	
-//	if ( t == NMFileExists ) {
-//		// open up the file
-//		UIImage * img = [UIImage imageWithContentsOfFile:fPath];
-//		if ( img ) {
-//			iv.image = img;
-//			return;
-//		}
-//	}
-//	NSUInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
-//	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
-//	if ( task ) {
-//		// check if "self" is requesting
-//		if ( [iv.downloadTask commandIndex] == idxNum ) {
-//			// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
-//			// do nothing
-//		} else {
-//			// listen to notification
-//			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
-//			[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
-//			// release original download count
-//			[iv cancelDownload];
-//			
-//			// retain download count
-//			[task retainDownload];
-//			iv.downloadTask = task;
-//		}
-//		iv.image = nil;
-//		return;
-//	}
-//}
+- (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv {
+	if ( vdo == nil || iv == nil ) return;
+	// check if the file exists
+	if ( [vdo.nm_thumbnail_file_name length] ) {
+		NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
+		NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		
+		if ( t == NMFileExists ) {
+			// open up the file
+			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+			if ( img ) {
+				iv.image = img;
+				return;
+			}
+		}
+	}
+	if ( [vdo.thumbnail_uri length] ) {
+		// check if there's already an existing task requesting the image
+		NSUInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
+		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+		// no delay download in video thumbnail. therefore, there's no need to cancel previous perform request
+		if ( task ) {
+			// check if "self" is requesting
+			if ( [iv.downloadTask commandIndex] == idxNum ) {
+				// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+				// do nothing
+			} else {
+				// stop listening the notification
+				[notificationCenter removeObserver:iv];
+				// listen to notification
+				[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+				[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+				// release original download count
+				[iv.downloadTask releaseDownload];
+				// retain download count
+				[task retainDownload];
+				iv.downloadTask = task;
+			}
+		} else {
+			// the video does not contain any existing download task
+			if ( iv.downloadTask ) {
+				// stop listening
+				[notificationCenter removeObserver:iv];
+				[iv.downloadTask releaseDownload];
+				iv.downloadTask = nil;
+			}
+			[iv delayedIssueVideoImageDownloadRequest];
+		}
+	}
+	iv.image = nil;
+}
 
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv {
 	if ( pv == nil || iv == nil ) return;

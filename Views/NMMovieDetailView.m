@@ -14,7 +14,6 @@
 
 @implementation NMMovieDetailView
 @synthesize video=video_;
-//@synthesize watchLaterButton, likeButton;
 
 //- (id)initWithFrame:(CGRect)frame
 //{
@@ -48,15 +47,18 @@
 	titleMaxSize.height *= 3.0f;
 	otherInfoDefaultPosition = otherInfoLabel.center;
 	
-	shadowImageView.image = [[NMStyleUtility sharedStyleUtility].videoShadowImage stretchableImageWithLeftCapWidth:0 topCapHeight:2];
+	CALayer * bitmapShadow = [CALayer layer];
+	bitmapShadow.frame = CGRectMake(640.0f, 0.0f, 20.0f, 380.0f);
+	bitmapShadow.contents = (id)[NMStyleUtility sharedStyleUtility].videoShadowImage.CGImage;
+	[self.layer addSublayer:bitmapShadow];
 	// the background image
 	self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
 	// the fake movie view box
-	CALayer * blackLayer = [CALayer layer];
-	blackLayer.shouldRasterize = YES;
-	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
-	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
-	[self.layer addSublayer:blackLayer];
+//	CALayer * blackLayer = [CALayer layer];
+//	blackLayer.shouldRasterize = YES;
+//	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
+//	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
+//	[self.layer addSublayer:blackLayer];
 }
 
 - (void)setVideo:(NMVideo *)aVideo {
@@ -67,6 +69,8 @@
 		video_ = nil;
 		
 		// reset the view
+		[movieThumbnailView cancelDownload];
+		movieThumbnailView.image = nil;
 		authorThumbnailView.image = nil;
 		authorLabel.text = nil;
 		titleLabel.text = nil;
@@ -100,7 +104,10 @@
 	// author info
 	[authorThumbnailView setImageForAuthorThumbnail:dtlObj];
 	authorLabel.text = dtlObj.author_username;
-//	NSLog(@"setting movie detail: %@", aVideo.title);
+	
+	// movie thumbnail
+	movieThumbnailView.alpha = 0.5f;
+	[movieThumbnailView setImageForVideoThumbnail:aVideo];
 	
 	// set position of the description
 	if ( aVideo.detail.nm_description ) {
