@@ -413,7 +413,8 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 //	} else {
 	if ( theTask.httpStatusCode >= 400 && !theTask.executeSaveActionOnError ) {
 		// fire error notification right here
-		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil]];
+		NSDictionary * errorInfo = [theTask failUserInfo];
+		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:(errorInfo == nil ? [NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil] : errorInfo)];
 		[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 	} else {
 		[dataController createDataParsingOperationForTask:theTask];
