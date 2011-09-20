@@ -317,7 +317,8 @@
 }
 
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification {
-    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+    if (chnObj && [chnObj isEqual:channel] ) {
         isLoadingNewContent = NO;
         isAnimatingNewContentCell = YES;
 //        NSLog(@"handleDidFailGetChannelVideoListNotification");
