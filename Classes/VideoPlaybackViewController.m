@@ -1204,6 +1204,7 @@
     theFrame = channelController.panelView.frame;
     [UIView beginAnimations:nil context:nil];
 	[UIView setAnimationBeginsFromCurrentState:YES];
+	[UIView setAnimationDuration:0.5f];
 
     if (shouldToggleToFullScreen) {
         theFrame = channelController.panelView.frame;
