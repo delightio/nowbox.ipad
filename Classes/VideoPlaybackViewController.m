@@ -396,7 +396,7 @@
 	[UIView animateWithDuration:0.5f animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
-		[loadedControlView setControlsHidden:NO animated:NO];
+		[loadedControlView setControlsHidden:NO animated:YES];
 	}];
 }
 
@@ -1043,6 +1043,7 @@
 	} else {
 		// play the video again
 		[self playCurrentVideo];
+		scrollView.scrollEnabled = YES;
 		// this method pairs with "stopVideo" in scrollViewDidEndDragging
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 	}
