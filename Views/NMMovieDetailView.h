@@ -20,6 +20,7 @@
 	IBOutlet UILabel * otherInfoLabel;
 	IBOutlet UILabel * descriptionLabel;
 	IBOutlet NMCachedImageView * movieThumbnailView;
+	IBOutlet UIView * infoContainerView;
 	
 @private
 	NMStyleUtility * style;
@@ -28,10 +29,13 @@
 	CGRect titleDefaultFrame;
 	CGPoint otherInfoDefaultPosition;
 	CGSize titleMaxSize;
+	
+	CALayer * blackLayer, * bitmapShadow;
 }
 
 @property (nonatomic, assign) NMVideo * video;
 
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx;
+- (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;
 
 @end

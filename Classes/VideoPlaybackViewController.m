@@ -43,6 +43,7 @@
 //- (void)queueVideoToPlayer:(NMVideo *)vid;
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewForVideo:(NMVideo *)aVideo;
+- (void)configureDetailViewForContext:(NSInteger)ctx;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
 - (void)playCurrentVideo;
 - (void)stopVideo;
@@ -393,7 +394,7 @@
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
-	[UIView animateWithDuration:0.5f delay:0.5f options:0 animations:^{
+	[UIView animateWithDuration:0.25f delay:0.5f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		[loadedControlView setControlsHidden:NO animated:YES];
@@ -440,14 +441,16 @@
 			// show the top bar with animation
 			[loadedControlView setTopBarHidden:NO animated:YES];
 			// hide all movie detail view
-			for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-				theDetailView.hidden = YES;
-			}
+//			for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+//				theDetailView.hidden = YES;
+//			}
+			[self configureDetailViewForContext:ctxInt];
 			ribbonView.hidden = YES;
 			break;
 			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
+			[self configureDetailViewForContext:ctxInt];
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
@@ -587,7 +590,7 @@
 	// will activate again on "currentItem" change kvo notification
 	controlScrollView.scrollEnabled = NO;
 	// fade out the view
-	[UIView animateWithDuration:0.25f animations:^(void) {
+	[UIView animateWithDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
 		currentXOffset += 1024.0f;
@@ -980,6 +983,25 @@
 	ribbonView.userInteractionEnabled = YES;
 }
 
+- (void)configureDetailViewForContext:(NSInteger)ctx {
+	switch (ctx) {
+		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
+			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
+				// hide everything except the thumbnail view
+				[dtlView configureMovieThumbnailForFullScreen:NO];
+			}
+			break;
+			
+		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
+			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
+				[dtlView configureMovieThumbnailForFullScreen:YES];
+			}
+			break;
+			
+		default:
+			break;
+	}
+}
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	[self playCurrentVideo];

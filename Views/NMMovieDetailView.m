@@ -47,14 +47,14 @@
 	titleMaxSize.height *= 3.0f;
 	otherInfoDefaultPosition = otherInfoLabel.center;
 	
-	CALayer * bitmapShadow = [CALayer layer];
+	bitmapShadow = [CALayer layer];
 	bitmapShadow.frame = CGRectMake(640.0f, 0.0f, 20.0f, 380.0f);
 	bitmapShadow.contents = (id)[NMStyleUtility sharedStyleUtility].videoShadowImage.CGImage;
 	[self.layer addSublayer:bitmapShadow];
 	// the background image
 	self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
 	// the fake movie view box
-	CALayer * blackLayer = [CALayer layer];
+	blackLayer = [CALayer layer];
 	blackLayer.shouldRasterize = YES;
 	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
 	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
@@ -132,6 +132,20 @@
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:sender];
 	[UIView commitAnimations];
+}
+
+- (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
+	if ( isFullScreen ) {
+		infoContainerView.hidden = YES;
+		bitmapShadow.hidden = YES;
+		// resize view
+		movieThumbnailView.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
+	} else {
+		infoContainerView.hidden = NO;
+		bitmapShadow.hidden = YES;
+		movieThumbnailView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
+	}
+	blackLayer.frame = movieThumbnailView.frame;
 }
 
 @end
