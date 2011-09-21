@@ -134,6 +134,7 @@
 	
 	// put the view to scroll view
 	[controlScrollView addSubview:loadedControlView];
+	controlScrollView.decelerationRate = UIScrollViewDecelerationRateNormal / 2.0f;
 	
 	// set up player
 	[self setupPlayer];
@@ -411,9 +412,9 @@
 
 - (void)hideControlView {
 	if ( loadedControlView.alpha > 0.0f ) {
-		[UIView beginAnimations:nil context:nil];
-		loadedControlView.alpha = 0.0f;
-		[UIView commitAnimations];
+		[UIView animateWithDuration:0.25f animations:^{
+			loadedControlView.alpha = 0.0f;
+		}];
 	}
 }
 
@@ -605,6 +606,7 @@
 }
 
 - (void)playVideo:(NMVideo *)aVideo {
+	// Channel View calls this method when user taps a video from the table
 	// stop video
 	[self stopVideo];
 	// flush the video player
@@ -617,8 +619,10 @@
 	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
-	[self updateRibbonButtons];
-	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+	ribbonView.alpha = 0.15;
+	ribbonView.userInteractionEnabled = NO;
+//	[self updateRibbonButtons];
+//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {
@@ -703,9 +707,14 @@
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 	currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
 	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
-//	controlScrollView.contentOffset = thePoint;
-	[controlScrollView setContentOffset:thePoint animated:YES];
-	[self configureControlViewForVideo:playbackModelController.currentVideo];
+//	[controlScrollView scrollRectToVisible:CGRectMake(currentXOffset, 0.0f, 1024.0f, 380.0f) animated:YES];
+	[UIView animateWithDuration:0.5f animations:^{
+		controlScrollView.contentOffset = thePoint;
+	} completion:^(BOOL finished) {
+		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+	}];
+//	[controlScrollView setContentOffset:thePoint animated:YES];
+//	[self configureControlViewForVideo:playbackModelController.currentVideo];
 }
 
 
@@ -968,32 +977,16 @@
 }
 
 #pragma mark Playback view UI update
-//- (void)setCurrentTime:(NSInteger)sec {
-//	currentTimeLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
-//	if ( videoDurationInvalid ) {
-//		CMTime t = movieView.player.currentItem.asset.duration;
-//		if ( t.flags & kCMTimeFlags_Valid ) {
-//			NSInteger sec = t.value / t.timescale;
-//			totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
-//			videoDurationInvalid = NO;
-//		}
-//	}
-//}
+- (void)delayRestoreDetailView {
+	// update which video the buttons hook up to
+	[self updateRibbonButtons];
+	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+	[UIView animateWithDuration:0.25f animations:^{
+		ribbonView.alpha = 1.0f;
+	}];
+	ribbonView.userInteractionEnabled = YES;
+}
 
-//- (void)updateControlsForVideoAtIndex:(NSUInteger)idx {
-//	NMVideo * vid = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
-////	channelNameLabel.text = [currentChannel.title capitalizedString];
-////	videoTitleLabel.text = [vid.title uppercaseString];
-//	CMTime t = movieView.player.currentItem.asset.duration;
-//	// check if the time is value
-//	if ( t.flags & kCMTimeFlags_Valid ) {
-//		NSInteger sec = t.value / t.timescale;
-//		totalDurationLabel.text = [NSString stringWithFormat:@"%02d:%02d", sec / 60, sec % 60];
-//	} else {
-//		videoDurationInvalid = YES;
-//	}
-//}
-//
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	[self playCurrentVideo];
@@ -1002,9 +995,9 @@
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	NMVideoPlaybackViewIsScrolling = YES;
-	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT];
-	ribbonView.alpha = 0.15;
-	[UIView commitAnimations];
+	[UIView animateWithDuration:0.25f animations:^{
+		ribbonView.alpha = 0.15;
+	}];
 	ribbonView.userInteractionEnabled = NO;
 }
 
@@ -1052,6 +1045,7 @@
 			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
+			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 		}
 	} else {
 		// play the video again
@@ -1061,9 +1055,9 @@
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
-	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_RIBBON_FADE_IN_CONTEXT];
-	ribbonView.alpha = 1.0f;
-	[UIView commitAnimations];
+	[UIView animateWithDuration:0.25f animations:^{
+		ribbonView.alpha = 1.0f;
+	}];
 	ribbonView.userInteractionEnabled = YES;
 }
 
