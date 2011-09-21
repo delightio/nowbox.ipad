@@ -51,15 +51,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
 	[theRequest setValue:@"ytapi-apple-ipad" forHTTPHeaderField:@"X-GData-Client"];
 	// iPad 2 - iOS 5 beta 7
-	[theRequest setValue:@"AIwbFAT0accx3e6XKYznJ2LT381D0m0Fa7TqecYLwbxO71jT6TSdtfWiY95oUVolh5eZnjxrbwv1zKP72bdcx6nLGxVReCnhollht3U7qTpaTBqK1UrsFOKAly82THFBjFkHQSAwolfuKHynjBGvnZMAD8Z8CWFs_muL1LvEfHgYglEhYiMbHJA" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
-	// iPad 2 - iOS 5 beta 6
-//	[theRequest setValue:@"AIwbFAQjxbfsHPW4wFXq838qenSQ6UwiR0Exv43nzSqVE47NxlgYNOTChJ1oSF7PIn0ACHcGtwR_AvuaQza6Dg69iMif8V8fd8iv2hve0SkTFSLHv8pDta3OnCXfC6R-9P-BVykR1bzG1s9DQ4qiNSxNaBhKftE9PtATiAJ_5HFa9gyRp0dF_SA" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
-	// original in code base
-//	[theRequest setValue:@"AIwbFASGaas2duSR08SqNNVkr8eQczFrT1oqHFMIZqnY67XXoDLeb12oUUV20bKALZJMqHCY-rGSOxbrkDdfgxX-cQ3dpWD7uTZfUk_TWxEIBmoXSd2Z_C7o-jzntFuWUnHfickQfiOIXErVr_4MqQ9Eoqlu0t2aY9f74A-nWYhQ54bOpyc9StM" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
-	// iPad 1 - iOS 4
-	// X-Youtube-Deviceauthtoken: AIwbFATQRBoJV9hoDwYIn39aWXnTrQ-AXtAUxv3Y5A1rUL5sQhC1ejd3TFkbAt54vH-doizadgX8EzEk9a8rsFM5cVBWal4CPpTMVs25fe4DbSOfyhZ3IyjCLE8lA0PUj26WRjz8A8cQHLuVIJrKrM6hn7O1e69u6ZwRiBAMuznVT6acCwP-Lcw\r\n
-	// iPhone 4 - iOS 4
-	// X-Youtube-Deviceauthtoken: AIwbFARWDLJN0LYiXyui9dq87-VqrwMUO2EdnIFBeYB8wNEykr9TWImjnGeI9UWb54FS1iNhxC_4jChJPekAi-Q94LB-jxDuVbnvlXa2EEvPaqN6dnwVH_d5jGY6Ea1uu6yDXnYDSCJgcH2a9pvNZcPrkUo83ZpcMdObCP_0kfzo62eO-LxfKvc\r\n
+	[theRequest setValue:@"AIwbFATJ0brTv13WA0IMrYz2j82NNJPeCte_WA_9mXMd10oPGD4_p33OM0yVrLqDqctY5W6m5X-OIjxlZ4_azQlgn26zwAqOYXnTPyiDvxk7N-vbUbl4XLizMQbsOMiM3rXtYteJ3MuYOWfmHx_2iI6sJvJeI4WsOoACT0WZnzXJqazEbuBt8Sg" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
 	[theRequest setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
 
 	return theRequest;
