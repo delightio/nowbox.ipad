@@ -93,9 +93,6 @@
 	}
 	
 	// load the progress bar image
-	[progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"progress-bright-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
-	[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"progress-dark-side"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
-	[progressSlider setThumbImage:[UIImage imageNamed:@"progress-nub"] forState:UIControlStateNormal];
 	sliderRect = CGRectMake(126.0, 0.0, NM_RUNNING_IOS_5 ? 712.0f : 772.0f, 0.0f);
 	
 	// hide the bubble
@@ -247,7 +244,7 @@
 
 - (void)updateSeekBubbleLocation {
 	CGPoint thePoint = seekBubbleButton.center;
-	thePoint.x = sliderRect.size.width * progressSlider.value + sliderRect.origin.x;
+	thePoint.x = progressSlider.nubPosition.x + sliderRect.origin.x;
 	seekBubbleButton.center = thePoint;
 }
 
@@ -266,7 +263,7 @@
 		lastVideoMessage = nil;
 	}
 	// reset progress bar
-	progressSlider.value = 0.0f;
+	progressSlider.duration = 0;
 	
 	self.alpha = 1.0;
 	[self setControlsHidden:YES animated:NO];
@@ -332,13 +329,14 @@
 
 - (void)setDuration:(NSInteger)aDur {
 	duration = aDur;
-	fduration = (CGFloat)aDur;
-	if ( aDur ) {
-		pxWidthPerSecond = progressBarWidth / (CGFloat)aDur;
-	} else {
-		pxWidthPerSecond = 0.0f;
-	}
+	//fduration = (CGFloat)aDur;
+//	if ( aDur ) {
+//		pxWidthPerSecond = progressBarWidth / (CGFloat)aDur;
+//	} else {
+//		pxWidthPerSecond = 0.0f;
+//	}
 	durationLabel.text = [NSString stringWithFormat:@"%02d:%02d", aDur / 60, aDur % 60];
+	progressSlider.duration = aDur;
 }
 
 - (void)setTimeElapsed:(NSInteger)aTime {
@@ -357,11 +355,11 @@
 	if ( isSeeking ) {
 		[seekBubbleButton setTitle:currentTimeLabel.text forState:UIControlStateNormal];
 	}
-	if ( !isSeeking && fduration > 0.0f ) progressSlider.value = ((CGFloat)aTime)/fduration;
+	if ( !isSeeking && duration > 0.0f ) progressSlider.currentTime = aTime;
 }
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {
-	NSLog(@"%lld %lld", aRange.start.value / aRange.start.timescale, aRange.duration.value / aRange.duration.timescale);
+	progressSlider.bufferTime = (aRange.start.value + aRange.duration.value) / aRange.duration.timescale;
 }
 
 @end

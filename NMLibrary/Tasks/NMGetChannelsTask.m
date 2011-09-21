@@ -176,7 +176,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 								   zeroNum, @"nm_id", 
 								   [NSNumber numberWithInteger:NMChannelKeywordType], @"type",
 								   searchWord, @"title",
-								   @"", @"thumbnail_uri",
+								   @"http://nowbox.com/images/icons/tag.png", @"thumbnail_uri",
 								   zeroNum, @"video_count",
 								   @"", @"resource_uri",
 								   [NSNumber numberWithInteger:++i], @"nm_sort_order", nil];

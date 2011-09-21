@@ -44,7 +44,7 @@
 // display image from file cache
 - (void)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv;
 - (void)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
-//- (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
+- (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
 
 // interface for NMCachedImageView

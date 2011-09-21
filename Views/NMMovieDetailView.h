@@ -19,10 +19,8 @@
 	IBOutlet UILabel * titleLabel;
 	IBOutlet UILabel * otherInfoLabel;
 	IBOutlet UILabel * descriptionLabel;
-	IBOutlet UIView * moviePlaceholderView;
-//	IBOutlet UIButton * watchLaterButton;
-//	IBOutlet UIButton * likeButton;
-	IBOutlet UIImageView * shadowImageView;
+	IBOutlet NMCachedImageView * movieThumbnailView;
+	IBOutlet UIView * infoContainerView;
 	
 @private
 	NMStyleUtility * style;
@@ -31,10 +29,13 @@
 	CGRect titleDefaultFrame;
 	CGPoint otherInfoDefaultPosition;
 	CGSize titleMaxSize;
+	
+	CALayer * blackLayer, * bitmapShadow;
 }
 
 @property (nonatomic, assign) NMVideo * video;
-//@property (nonatomic, assign) UIButton * watchLaterButton;
-//@property (nonatomic, assign) UIButton * likeButton;
+
+- (void)fadeOutThumbnailView:(id)sender context:(void *)ctx;
+- (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;
 
 @end
