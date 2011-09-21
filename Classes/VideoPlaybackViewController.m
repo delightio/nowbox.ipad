@@ -293,6 +293,7 @@
 	// update the interface if necessary
 //	[movieView setActivityIndicationHidden:NO animated:NO];
 	[self updateRibbonButtons];
+	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 //	if ( playbackModelController.currentVideo == nil ) {
 		// we need to wait for video to come. show loading view
 		//controlScrollView.scrollEnabled = NO;
@@ -617,6 +618,7 @@
 	// play the specified video
 	[playbackModelController setVideo:aVideo];
 	[self updateRibbonButtons];
+	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {
