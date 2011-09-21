@@ -393,7 +393,7 @@
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
-	[UIView animateWithDuration:0.5f animations:^{
+	[UIView animateWithDuration:0.5f delay:0.5f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		[loadedControlView setControlsHidden:NO animated:YES];
@@ -705,7 +705,9 @@
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-	currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+	if ( newOffset == currentXOffset ) return;
+	currentXOffset = newOffset;
 	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
 //	[controlScrollView scrollRectToVisible:CGRectMake(currentXOffset, 0.0f, 1024.0f, 380.0f) animated:YES];
 	[UIView animateWithDuration:0.5f animations:^{
@@ -947,10 +949,8 @@
 				[movieView setActivityIndicationHidden:YES animated:YES];
 			}
 			NSLog(@"skipping video - play rate: %f %d", movieView.player.rate, didSkippedVideo);
-		}
+		}*/
 		NSLog(@"rate change: %f", movieView.player.rate);
-		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
-		 */
 	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT && object == movieView.player.currentItem ) {
 		// buffering progress
 		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;

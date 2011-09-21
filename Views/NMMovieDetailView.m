@@ -106,7 +106,7 @@
 	authorLabel.text = dtlObj.author_username;
 	
 	// movie thumbnail
-	movieThumbnailView.alpha = 0.5f;
+	movieThumbnailView.alpha = 1.0f;
 	[movieThumbnailView setImageForVideoThumbnail:aVideo];
 	
 	// set position of the description
@@ -128,7 +128,7 @@
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx {
 	[UIView beginAnimations:nil context:ctx];
 	movieThumbnailView.alpha = 0.0f;
-	[UIView setAnimationDuration:0.5f];
+	[UIView setAnimationDuration:1.0f];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:sender];
 	[UIView commitAnimations];
