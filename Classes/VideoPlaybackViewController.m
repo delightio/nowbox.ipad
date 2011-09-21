@@ -873,16 +873,9 @@
 //		[self configureControlViewForVideo:[self playerCurrentVideo]]; moved to animation delegate
 		// update the time
 
-		[UIView beginAnimations:nil context:nil];
 		// show the control view
-		[loadedControlView setControlsHidden:NO animated:NO];
+		[loadedControlView setControlsHidden:NO animated:YES];
 		
-		// make the movie view visible - in the case of finish playing to the end of video, the movie view is set invisible
-//		if ( movieView.alpha < 1.0 ) movieView.alpha = 1.0;
-		
-		[UIView commitAnimations];
-		
-		// perform the delay method after 2 sec to hide the control view
 		showMovieControlTimestamp = 1;
 		
 //		t = movieView.player.currentItem.asset.duration;
@@ -961,9 +954,9 @@
 	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT && object == movieView.player.currentItem ) {
 		// buffering progress
 		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
-		NSArray * ay = theItem.loadedTimeRanges;
-		if ( [ay count] ) {
-			loadedControlView.timeRangeBuffered = [[ay objectAtIndex:0] CMTimeRangeValue];
+		NSValue * theRangeValue = [theItem.loadedTimeRanges lastObject];
+		if ( theRangeValue ) {
+			loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
 		}
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {

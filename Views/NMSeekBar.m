@@ -90,21 +90,19 @@
 
 - (void)setBufferTime:(NSInteger)bTime {
 	bufferTime = bTime;
-	if ( bufferTime > currentTime ) {
-		// set the width
-		NMSeekBarLayoutLayer * theLayer = (NMSeekBarLayoutLayer *)self.layer;
-		CGRect theRect = theLayer.bufferLayer.bounds;
-		theRect.size.width = roundf(widthPerSec * ((CGFloat)bTime));
-		[CATransaction begin];
-		[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-		theLayer.bufferLayer.bounds = theRect;
-		[CATransaction commit];
-	}
+	// set the width
+	NMSeekBarLayoutLayer * theLayer = (NMSeekBarLayoutLayer *)self.layer;
+	CGRect theRect = theLayer.bufferLayer.bounds;
+	theRect.size.width = roundf(widthPerSec * ((CGFloat)bTime));
+	[CATransaction begin];
+	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+	theLayer.bufferLayer.bounds = theRect;
+	[CATransaction commit];
 }
 
 - (void)setDuration:(NSInteger)d {
 	duration = d;
-	if ( d ) widthPerSec = (self.bounds.size.width - 2.0f) / ((CGFloat)d);
+	if ( d ) widthPerSec = (self.bounds.size.width - 2.0f) / (CGFloat)(d - 1);	// less the duration by 1 to offset Youtube video inaccuracy
 	else widthPerSec = 0.0f;
 	// reset size of other bar
 	NMSeekBarLayoutLayer * theLayer = (NMSeekBarLayoutLayer *)self.layer;
