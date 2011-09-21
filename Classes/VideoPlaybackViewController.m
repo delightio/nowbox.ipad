@@ -708,7 +708,11 @@
 #endif
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-	if ( newOffset == currentXOffset ) return;
+	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
+	else if ( currentXOffset == 0.0f && ribbonView.alpha < 1.0f ) {
+		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+		return;
+	}
 	currentXOffset = newOffset;
 	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
 //	[controlScrollView scrollRectToVisible:CGRectMake(currentXOffset, 0.0f, 1024.0f, 380.0f) animated:YES];
