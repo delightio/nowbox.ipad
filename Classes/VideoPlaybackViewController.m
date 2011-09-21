@@ -450,7 +450,6 @@
 			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
-			[self configureDetailViewForContext:ctxInt];
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
@@ -1170,6 +1169,7 @@
 			theDetailView.hidden = NO;
 			theDetailView.alpha = 1.0f;
 		}
+		[self configureDetailViewForContext:NM_ANIMATION_SPLIT_VIEW_CONTEXT];
 	} else {
 		// panel is showing. i.e. we animate to Full Screen Playback Mode. We need to make sure the scrollview is occupying the full screen before animation begins.
 		controlScrollView.frame = fullScreenRect;

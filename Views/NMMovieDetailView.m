@@ -142,7 +142,7 @@
 		movieThumbnailView.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
 	} else {
 		infoContainerView.hidden = NO;
-		bitmapShadow.hidden = YES;
+		bitmapShadow.hidden = NO;
 		movieThumbnailView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
 	}
 	blackLayer.frame = movieThumbnailView.frame;
