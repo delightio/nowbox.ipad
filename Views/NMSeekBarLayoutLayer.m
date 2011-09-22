@@ -7,11 +7,13 @@
 //
 
 #import "NMSeekBarLayoutLayer.h"
+#import "NMSeekBar.h"
 
 @implementation NMSeekBarLayoutLayer
 @synthesize bufferLayer, progressLayer;
 @synthesize barBackgroundLayer, nubLayer;
 @synthesize originalWidth;
+@synthesize parentBar;
 
 //- (id)init
 //{
@@ -42,6 +44,7 @@
 	theFrame.size.width = newWidth;
 	barBackgroundLayer.bounds = theFrame;
 	
+	[parentBar updateWidthPerPixel];
 	// update length
 	theFrame = bufferLayer.bounds;
 	theFrame.size.width = theFrame.size.width * newWidth / originalWidth;

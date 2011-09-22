@@ -1089,7 +1089,7 @@
 	} else {
 		if ( playbackModelController.nextVideo == nil ) {
 			// already playing the last video in the channel
-			[loadedControlView showLastVideoMessage];
+//			[loadedControlView showLastVideoMessage];
 		} else {
 			// next
 			[self showNextVideo:NO];
@@ -1133,8 +1133,6 @@
 		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height-8;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillEnterHalfScreen:NMFullScreenPlaybackMode];
-		
-//		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
@@ -1150,10 +1148,6 @@
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillDisappear];
-		
-		// scale up
-//		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
-//		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
