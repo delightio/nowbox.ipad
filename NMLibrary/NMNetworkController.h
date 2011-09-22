@@ -16,6 +16,7 @@
 	NSMutableDictionary * connectionPool;
 	NSMutableDictionary * taskPool;
 	NSMutableArray * pendingTaskBuffer;
+	NSLock * pendingTaskBufferLock;
 	
 	//TODO: not sure if needed
 //	NMTaskQueueScheduler * scheduler;
@@ -61,5 +62,6 @@
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
 
 - (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj;
+- (void)forceCancelAllTasks;
 
 @end
