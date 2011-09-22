@@ -130,6 +130,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
     
     [channelsTableView reloadData];
+    
+    [categoriesTableView flashScrollIndicators];
 
 }
 
@@ -571,7 +573,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
       newIndexPath:(NSIndexPath *)newIndexPath {
 
     if (controller == categoryFetchedResultsController) {
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row+2 inSection:indexPath.section];
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row*2+1 inSection:indexPath.section];
         switch(type) {
                 
             case NSFetchedResultsChangeInsert:
@@ -585,7 +587,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 break;
                 
             case NSFetchedResultsChangeUpdate:
-                [categoriesTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[indexPath row]*2+1 inSection:[indexPath section]]] withRowAnimation:UITableViewRowAnimationFade];
+                [categoriesTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:[indexPath row] inSection:[indexPath section]]] withRowAnimation:UITableViewRowAnimationFade];
                 break;
                 
             case NSFetchedResultsChangeMove:
