@@ -397,7 +397,9 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	// clear the previous selection
 	selectedIndex = [indexPath row];
-	NSLog(@"selected column at index %d", [indexPath row]);
+//	NSLog(@"selected column at index %d", [indexPath row]);
+    
+    [aTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     
     AGOrientedTableView * htView = (AGOrientedTableView *)[(UITableViewCell *)[aTableView cellForRowAtIndexPath:indexPath] viewWithTag:1009];
     
