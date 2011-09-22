@@ -17,6 +17,7 @@
 	self = [super initWithCoder:aDecoder];
 	
 	NMSeekBarLayoutLayer * selfLayer = (NMSeekBarLayoutLayer *)self.layer;
+	selfLayer.parentBar = self;
 	selfLayer.sublayerTransform = CATransform3DMakeTranslation(0.0f, 7.5f, 0.0f);
 	CGFloat myWidth = self.bounds.size.width;
 	selfLayer.originalWidth = myWidth;
@@ -72,6 +73,12 @@
 
 + (Class)layerClass {
 	return [NMSeekBarLayoutLayer class];
+}
+
+- (void)updateWidthPerPixel {
+	if ( duration ) {
+		widthPerSec = (self.bounds.size.width - 2.0f) / (CGFloat)(duration - 1);
+	}
 }
 
 #pragma mark Time attributes

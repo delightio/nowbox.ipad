@@ -29,4 +29,6 @@
 @property (nonatomic) NSInteger duration;
 @property (nonatomic, readonly) CGPoint nubPosition;
 
+- (void)updateWidthPerPixel;
+
 @end

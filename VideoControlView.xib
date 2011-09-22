@@ -194,7 +194,7 @@
 									</object>
 									<object class="IBUIView" id="468801470">
 										<reference key="NSNextResponder" ref="587854499"/>
-										<int key="NSvFlags">290</int>
+										<int key="NSvFlags">274</int>
 										<string key="NSFrame">{{64, 8}, {776, 24}}</string>
 										<reference key="NSSuperview" ref="587854499"/>
 										<reference key="NSWindow"/>
@@ -1292,9 +1292,9 @@
 							<string>authorLabel</string>
 							<string>authorThumbnailView</string>
 							<string>descriptionLabel</string>
-							<string>moviePlaceholderView</string>
+							<string>infoContainerView</string>
+							<string>movieThumbnailView</string>
 							<string>otherInfoLabel</string>
-							<string>shadowImageView</string>
 							<string>titleLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1303,8 +1303,8 @@
 							<string>NMCachedImageView</string>
 							<string>UILabel</string>
 							<string>UIView</string>
+							<string>NMCachedImageView</string>
 							<string>UILabel</string>
-							<string>UIImageView</string>
 							<string>UILabel</string>
 						</object>
 					</object>
@@ -1315,9 +1315,9 @@
 							<string>authorLabel</string>
 							<string>authorThumbnailView</string>
 							<string>descriptionLabel</string>
-							<string>moviePlaceholderView</string>
+							<string>infoContainerView</string>
+							<string>movieThumbnailView</string>
 							<string>otherInfoLabel</string>
-							<string>shadowImageView</string>
 							<string>titleLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1335,16 +1335,16 @@
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">moviePlaceholderView</string>
+								<string key="name">infoContainerView</string>
 								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">movieThumbnailView</string>
+								<string key="candidateClassName">NMCachedImageView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">otherInfoLabel</string>
 								<string key="candidateClassName">UILabel</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">shadowImageView</string>
-								<string key="candidateClassName">UIImageView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">titleLabel</string>

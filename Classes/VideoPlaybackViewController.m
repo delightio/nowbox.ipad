@@ -620,9 +620,9 @@
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
-	[playbackModelController setVideo:aVideo];
-	ribbonView.alpha = 0.15;
+	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
 	ribbonView.userInteractionEnabled = NO;
+	[playbackModelController setVideo:aVideo];
 //	[self updateRibbonButtons];
 //	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 }
@@ -708,7 +708,10 @@
 #endif
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-	if ( newOffset == currentXOffset ) return;
+	if ( ribbonView.alpha < 1.0f ) {
+		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+	}
+	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
 	currentXOffset = newOffset;
 	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
 //	[controlScrollView scrollRectToVisible:CGRectMake(currentXOffset, 0.0f, 1024.0f, 380.0f) animated:YES];
@@ -1086,7 +1089,7 @@
 	} else {
 		if ( playbackModelController.nextVideo == nil ) {
 			// already playing the last video in the channel
-			[loadedControlView showLastVideoMessage];
+//			[loadedControlView showLastVideoMessage];
 		} else {
 			// next
 			[self showNextVideo:NO];
@@ -1130,8 +1133,6 @@
 		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height-8;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillEnterHalfScreen:NMFullScreenPlaybackMode];
-		
-//		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 	} else {
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
@@ -1147,10 +1148,6 @@
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
 		[channelController panelWillDisappear];
-		
-		// scale up
-//		movieView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
-//		controlScrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
