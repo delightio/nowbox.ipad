@@ -198,18 +198,6 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 	videoTableView.tag = 1009;
 	[aContentView insertSubview:videoTableView belowSubview:ctnView];
     
-    UIView *loadingOverlayView = [[UIView alloc]initWithFrame:theFrame];
-    loadingOverlayView.tag = 1008;
-    [loadingOverlayView setBackgroundColor:[UIColor clearColor]];
-    [loadingOverlayView setOpaque:NO];
-    UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityView.center = CGPointMake(425, 50);
-    [activityView startAnimating];
-    [loadingOverlayView addSubview:activityView];
-    [activityView release];
-    [aContentView insertSubview:loadingOverlayView aboveSubview:videoTableView];
-    [loadingOverlayView release];
-    
 //    UIView *bottomSeparatorView = [[UIView alloc]initWithFrame:CGRectMake(167, aContentView.bounds.size.height-1, aContentView.bounds.size.width-167, 1)];
 //    bottomSeparatorView.opaque = YES;
 //    bottomSeparatorView.backgroundColor = styleUtility.channelBorderColor;
@@ -248,7 +236,7 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 	htView.tableController.fetchedResultsController = nil;
 	htView.tableController.channel = theChannel;
     htView.tableController.indexInTable = [indexPath row];
-    htView.tableController.isLoadingNewContent = NO;
+    htView.tableController.isLoadingNewContent = YES;
     
     
     // rather than reload, should let the table take care of redraw
@@ -258,8 +246,7 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
         [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     }
     
-    UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
-    [loadingOverlayView setHidden:([htView numberOfRowsInSection:0] > 1)];
+    htView.tableController.isLoadingNewContent = !([htView numberOfRowsInSection:0] > 1);
     
 NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( [theChannel.videos count] == 0 ) {
@@ -286,7 +273,9 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
     for (UITableViewCell *channelCell in [tableView visibleCells]) {
         for (PanelVideoContainerView *cell in [(AGOrientedTableView *)[channelCell viewWithTag:1009] visibleCells]) {
-            [cell setIsPlayingVideo:NO];
+            if ([cell class] == [PanelVideoContainerView class]) {
+                [cell setIsPlayingVideo:NO];
+            }
         }
         ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
         [ctnView setHighlighted:NO];

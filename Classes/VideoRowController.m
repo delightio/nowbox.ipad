@@ -19,6 +19,7 @@
 @synthesize channel, panelController;
 @synthesize indexInTable;
 @synthesize isLoadingNewContent;
+@synthesize loadingCell;
 
 
 #define kShortVideoLengthSeconds   120
@@ -32,7 +33,7 @@
 - (id)init {
 	self = [super init];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-	
+    
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
@@ -74,6 +75,19 @@
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
 {
     
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
+        static NSString *CellIdentifier = @"LoadMoreView";
+        
+        UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
+            cell = loadingCell;
+            self.loadingCell = nil;
+        }
+        return (UITableViewCell *)cell;
+    }
+    
     // sharing cells between rows, so dequeueing from panelController.tableView instead 
     PanelVideoContainerView *result = (PanelVideoContainerView *)[panelController.tableView dequeueReusableCellWithIdentifier:@"Reuse"];
     if (nil == result)
@@ -83,15 +97,6 @@
         result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, NM_VIDEO_CELL_HEIGHT)] autorelease];
 		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 		result.tableView = aTableView;
-    }
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
-        [result setUserInteractionEnabled:NO];
-        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
-        [result setIsLoadingCell];
-		[result setIsPlayingVideo:NO];
-        return (UITableViewCell *)result;
     }
     
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];

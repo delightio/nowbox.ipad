@@ -144,7 +144,7 @@
     
     videoStatusImageView.image = nil;
     
-    datePostedLabel.text = @"Loading more videos...";
+    datePostedLabel.text = @"Loading Videos...";
     datePostedLabel.textColor = [NMStyleUtility sharedStyleUtility].videoDetailPlayedFontColor;
     [cellView configureCellWithPanelVideoContainerView:self highlighted:NO videoPlayed:NO];
 

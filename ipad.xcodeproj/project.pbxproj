@@ -12,6 +12,7 @@
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
 		221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */ = {isa = PBXBuildFile; fileRef = 221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */; };
+		221EE3B5142BEACA00519DF8 /* VideoPanelLoadMoreView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */; };
 		223015D31416D13D006FC44E /* channel-video-background-dimmed.png in Resources */ = {isa = PBXBuildFile; fileRef = 223015D01416D13D006FC44E /* channel-video-background-dimmed.png */; };
 		223015D41416D13D006FC44E /* channel-video-background-highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 223015D11416D13D006FC44E /* channel-video-background-highlight.png */; };
 		223015D51416D13D006FC44E /* channel-video-background-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 223015D21416D13D006FC44E /* channel-video-background-normal.png */; };
@@ -200,6 +201,7 @@
 		221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-thumbnail-frame.png"; sourceTree = "<group>"; };
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
 		221C6FF813FA7C17008CF42A /* channel-video-status-bad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-status-bad.png"; sourceTree = "<group>"; };
+		221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoPanelLoadMoreView.xib; sourceTree = "<group>"; };
 		223015D01416D13D006FC44E /* channel-video-background-dimmed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-background-dimmed.png"; sourceTree = "<group>"; };
 		223015D11416D13D006FC44E /* channel-video-background-highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-background-highlight.png"; sourceTree = "<group>"; };
 		223015D21416D13D006FC44E /* channel-video-background-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-video-background-normal.png"; sourceTree = "<group>"; };
@@ -794,6 +796,7 @@
 				A9A4810F13FD189F00850536 /* FeatureDebugView.xib */,
 				A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */,
 				A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */,
+				221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -1012,6 +1015,7 @@
 				223015DE1416F173006FC44E /* action-bar-bottom-shadow.png in Resources */,
 				223015E41416F378006FC44E /* movie-detail-swipe-indicator.png in Resources */,
 				2275AD5114214867003C3FFC /* channel-video-status-watch-later.png in Resources */,
+				221EE3B5142BEACA00519DF8 /* VideoPanelLoadMoreView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
