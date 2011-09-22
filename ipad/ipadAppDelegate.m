@@ -113,10 +113,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 */
 	[viewController markPlaybackCheckpoint];
 	[self saveContext];
-	// release the UI - in particular, remove just the movie player to save memory footprint
-	
-	// release core data
-	
+	// cancel tasks
+	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
