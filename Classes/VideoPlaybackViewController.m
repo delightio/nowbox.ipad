@@ -120,6 +120,8 @@
 	// === don't change the sequence in this block ===
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
+	// set target-action methods
+	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
 	[controlScrollView addSubview:movieView];
 	controlScrollView.frame = splitViewRect;
 	
@@ -174,33 +176,31 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
 
 	// setup gesture recognizer
-	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
-    pinRcr.delegate = self;
-	[controlScrollView addGestureRecognizer:pinRcr];
-	[pinRcr release];
-	// set target-action methods
-	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
+//	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
+//    pinRcr.delegate = self;
+//	[controlScrollView addGestureRecognizer:pinRcr];
+//	[pinRcr release];
     
-    UISwipeGestureRecognizer *swipeGestureUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)] autorelease];
-    swipeGestureUp.numberOfTouchesRequired = 2;
-    swipeGestureUp.delegate = self;
-    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
-    [self.view addGestureRecognizer:swipeGestureUp];
+//    UISwipeGestureRecognizer *swipeGestureUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)] autorelease];
+//    swipeGestureUp.numberOfTouchesRequired = 2;
+//    swipeGestureUp.delegate = self;
+//    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
+//    [self.view addGestureRecognizer:swipeGestureUp];
     
-    UISwipeGestureRecognizer *swipeGestureDown = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)] autorelease];
-    swipeGestureDown.numberOfTouchesRequired = 2;
-    swipeGestureDown.delegate = self;
-    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.view addGestureRecognizer:swipeGestureDown];
+//    UISwipeGestureRecognizer *swipeGestureDown = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)] autorelease];
+//    swipeGestureDown.numberOfTouchesRequired = 2;
+//    swipeGestureDown.delegate = self;
+//    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
+//    [self.view addGestureRecognizer:swipeGestureDown];
     
-	UIPinchGestureRecognizer * pinRcr2 = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleChannelViewPinched:)];
-    pinRcr2.delegate = self;
-	[channelController.panelView addGestureRecognizer:pinRcr2];
-	[pinRcr2 release];
+//	UIPinchGestureRecognizer * pinRcr2 = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleChannelViewPinched:)];
+//    pinRcr2.delegate = self;
+//	[channelController.panelView addGestureRecognizer:pinRcr2];
+//	[pinRcr2 release];
 
     
     // used for temporarily disabling tableview scroll when using 2 fingers to show full screen channel view
-    temporaryDisabledGestures = [[NSMutableArray alloc]initWithObjects:nil];
+//    temporaryDisabledGestures = [[NSMutableArray alloc]initWithObjects:nil];
     
 }
 
