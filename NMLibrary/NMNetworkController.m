@@ -288,10 +288,15 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 - (void)forceCancelAllTasks {
 	// cancel the connection
 	NSURLConnection * conn;
+	NMTask * theTask;
 	for (id theKey in connectionPool) {
 		conn = [connectionPool objectForKey:theKey];
 		[conn cancel];
 		[self returnNetworkResource];
+		theTask = [taskPool objectForKey:theKey];
+		if ( [theTask didCancelNotificationName] ) {
+			[self postNotificationOnMainThread:[theTask didCancelNotificationName] object:self userInfo:[theTask cancelUserInfo]];
+		}
 	}
 	[connectionPool removeAllObjects];
 	[taskPool removeAllObjects];

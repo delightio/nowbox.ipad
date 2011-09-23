@@ -121,9 +121,7 @@ extern NSString * const NMDidFailDequeueVideoNotification;
 extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
 extern NSString * const NMDidFailGetChannelVideoListNotification;
-extern NSString * const NMWillGetMoreChannelVideNotification;
-extern NSString * const NMDidGetMoreChannelVideoNotification;
-extern NSString * const NMDidFailGetMoreChannelVideoNotification;
+extern NSString * const NMDidCancelGetChannelVideListNotification;
 
 extern NSString * const NMWillGetFeaturedCategoriesNotification;
 extern NSString * const NMDidGetFeaturedCategoriesNotification;

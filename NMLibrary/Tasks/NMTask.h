@@ -53,7 +53,9 @@
 - (NSString *)willLoadNotificationName;
 - (NSString *)didLoadNotificationName;
 - (NSString *)didFailNotificationName;
+- (NSString *)didCancelNotificationName;
 - (NSDictionary *)userInfo;
 - (NSDictionary *)failUserInfo;
+- (NSDictionary *)cancelUserInfo;
 
 @end
