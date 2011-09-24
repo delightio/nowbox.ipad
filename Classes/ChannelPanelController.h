@@ -39,18 +39,12 @@ typedef enum {
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
 @property (nonatomic, retain) IBOutlet UIView *panelView;
-@property (nonatomic, retain) IBOutlet UIButton * fullScreenButton;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, assign) VideoPlaybackViewController * videoViewController;
 @property (nonatomic, readonly) NSInteger selectedIndex;
 @property (nonatomic, assign) NSInteger highlightedVideoIndex;
 @property (nonatomic, assign) NMChannel *highlightedChannel;
-
-- (void)panelWillAppear;
-- (void)panelWillDisappear;
-- (void)panelWillBecomeFullScreen;
-- (void)panelWillEnterHalfScreen:(NMPlaybackViewModeType)fromViewMode;
 
 - (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex;
 
@@ -63,5 +57,6 @@ typedef enum {
 
 -(void)customPanning:(UIPanGestureRecognizer *)sender;
 -(NSInteger)highlightedChannelIndex;
+- (void)setDisplayMode:(NMPlaybackViewModeType)aMode;
 
 @end

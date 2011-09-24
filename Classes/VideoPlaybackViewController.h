@@ -80,7 +80,6 @@
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 
 - (IBAction)playStopVideo:(id)sender;
-- (IBAction)skipCurrentVideo:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;
 - (IBAction)toggleChannelPanelFullScreen:(id)sender;
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;

@@ -29,6 +29,8 @@
 	UIColor * channelPanelPlayedColor;
     UIColor * channelBorderColor;
 	UIImage * userPlaceholderImage, * channelContainerBackgroundNormalImage, * channelContainerBackgroundHighlightImage;
+	UIImage * toolbarExpandImage, * toolbarExpandHighlightedImage;
+	UIImage * toolbarCollapseImage, * toolbarCollapseHighlightedImage;
 	// playback control
 	UIImage * fullScreenImage, * fullScreenActiveImage;
 	UIImage * splitScreenImage, * splitScreenActiveImage;
@@ -72,6 +74,10 @@
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
 @property (nonatomic, readonly) UIImage * channelContainerBackgroundNormalImage;
 @property (nonatomic, readonly) UIImage * channelContainerBackgroundHighlightImage;
+@property (nonatomic, readonly) UIImage * toolbarExpandImage;
+@property (nonatomic, readonly) UIImage * toolbarExpandHighlightedImage;
+@property (nonatomic, readonly) UIImage * toolbarCollapseImage;
+@property (nonatomic, readonly) UIImage * toolbarCollapseHighlightedImage;
 
 @property (nonatomic, readonly) UIImage * fullScreenImage;
 @property (nonatomic, readonly) UIImage * fullScreenActiveImage;

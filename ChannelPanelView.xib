@@ -64,7 +64,7 @@
 					<object class="IBUITableView" id="1064860965">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{0, 44}, {1024, 344}}</string>
+						<string key="NSFrame">{{0, 44}, {1024, 712}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="256796477"/>
@@ -272,7 +272,7 @@
 						</object>
 					</object>
 				</object>
-				<string key="NSFrameSize">{1024, 380}</string>
+				<string key="NSFrameSize">{1024, 748}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="115682383"/>
@@ -739,7 +739,7 @@
 							<string>UILabel</string>
 							<string>UIButton</string>
 							<string>UIView</string>
-							<string>UISlider</string>
+							<string>NMSeekBar</string>
 							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UILabel</string>
@@ -835,7 +835,7 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">progressSlider</string>
-								<string key="candidateClassName">UISlider</string>
+								<string key="candidateClassName">NMSeekBar</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">seekBubbleButton</string>
@@ -870,9 +870,9 @@
 							<string>authorLabel</string>
 							<string>authorThumbnailView</string>
 							<string>descriptionLabel</string>
-							<string>moviePlaceholderView</string>
+							<string>infoContainerView</string>
+							<string>movieThumbnailView</string>
 							<string>otherInfoLabel</string>
-							<string>shadowImageView</string>
 							<string>titleLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -881,8 +881,8 @@
 							<string>NMCachedImageView</string>
 							<string>UILabel</string>
 							<string>UIView</string>
+							<string>NMCachedImageView</string>
 							<string>UILabel</string>
-							<string>UIImageView</string>
 							<string>UILabel</string>
 						</object>
 					</object>
@@ -893,9 +893,9 @@
 							<string>authorLabel</string>
 							<string>authorThumbnailView</string>
 							<string>descriptionLabel</string>
-							<string>moviePlaceholderView</string>
+							<string>infoContainerView</string>
+							<string>movieThumbnailView</string>
 							<string>otherInfoLabel</string>
-							<string>shadowImageView</string>
 							<string>titleLabel</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -913,16 +913,16 @@
 								<string key="candidateClassName">UILabel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
-								<string key="name">moviePlaceholderView</string>
+								<string key="name">infoContainerView</string>
 								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">movieThumbnailView</string>
+								<string key="candidateClassName">NMCachedImageView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">otherInfoLabel</string>
 								<string key="candidateClassName">UILabel</string>
-							</object>
-							<object class="IBToOneOutletInfo">
-								<string key="name">shadowImageView</string>
-								<string key="candidateClassName">UIImageView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">titleLabel</string>
@@ -933,6 +933,14 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/NMMovieDetailView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">NMSeekBar</string>
+					<string key="superclassName">UIControl</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/NMSeekBar.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

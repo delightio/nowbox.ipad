@@ -148,7 +148,7 @@
 	// load channel view
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
 	theFrame = channelController.panelView.frame;
-	theFrame.origin.y = self.view.bounds.size.height - theFrame.size.height-8;
+	theFrame.origin.y = splitViewRect.size.height;
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
 	[self.view addSubview:channelController.panelView];
@@ -180,28 +180,6 @@
     pinRcr.delegate = self;
 	[movieView addGestureRecognizer:pinRcr];
 	[pinRcr release];
-    
-//    UISwipeGestureRecognizer *swipeGestureUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedUp:)] autorelease];
-//    swipeGestureUp.numberOfTouchesRequired = 2;
-//    swipeGestureUp.delegate = self;
-//    swipeGestureUp.direction = UISwipeGestureRecognizerDirectionUp;
-//    [self.view addGestureRecognizer:swipeGestureUp];
-    
-//    UISwipeGestureRecognizer *swipeGestureDown = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedDown:)] autorelease];
-//    swipeGestureDown.numberOfTouchesRequired = 2;
-//    swipeGestureDown.delegate = self;
-//    swipeGestureDown.direction = UISwipeGestureRecognizerDirectionDown;
-//    [self.view addGestureRecognizer:swipeGestureDown];
-    
-//	UIPinchGestureRecognizer * pinRcr2 = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleChannelViewPinched:)];
-//    pinRcr2.delegate = self;
-//	[channelController.panelView addGestureRecognizer:pinRcr2];
-//	[pinRcr2 release];
-
-    
-    // used for temporarily disabling tableview scroll when using 2 fingers to show full screen channel view
-//    temporaryDisabledGestures = [[NSMutableArray alloc]initWithObjects:nil];
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -1089,27 +1067,6 @@
 
 #pragma mark Target-action methods
 
-- (IBAction)skipCurrentVideo:(id)sender {
-	UIView * btn = (UIView *)sender;
-	if ( btn.tag == 1000 ) {
-		// prev
-	} else {
-		if ( playbackModelController.nextVideo == nil ) {
-			// already playing the last video in the channel
-//			[loadedControlView showLastVideoMessage];
-		} else {
-			// next
-			[self showNextVideo:NO];
-		}
-		// buffer the next next video
-		//		[self requestAddVideoAtIndex:currentIndex + 2];
-		//		if ( currentIndex < numberOfVideos ) {
-		//			currentIndex++;
-		//		}
-		//		[movieView.player advanceToNextItem];
-	}
-}
-
 - (IBAction)toggleChannelPanel:(id)sender {
 	CGRect theFrame;
 	theFrame = channelController.panelView.frame;
@@ -1139,7 +1096,6 @@
 		// slide in
 		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height-8;
 		channelController.panelView.frame = theFrame;
-		[channelController panelWillEnterHalfScreen:NMFullScreenPlaybackMode];
 	} else {
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
@@ -1154,7 +1110,6 @@
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
-		[channelController panelWillDisappear];
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
@@ -1196,78 +1151,93 @@
 }
 
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
-    CGRect theFrame;
-	theFrame = channelController.panelView.frame;
-
-	BOOL panelIsFullScreen = NO;
-	if ( theFrame.origin.y < 380.0 ) {
-		// assume the panel is full screen
-		panelIsFullScreen = YES;
-	}
-    
-    if (!panelIsFullScreen && !shouldToggleToFullScreen && shouldResume) {
-        [self toggleChannelPanel:nil];
-    }
-    
-    if (panelIsFullScreen == shouldToggleToFullScreen) {
-        // no need to do anything else
-        return;
-    }
-
-//    if (shouldToggleToFullScreen) {
-//        [self stopVideo];
-//    }
-//    else {
-//        if (shouldResume) {
-//            [self playCurrentVideo];
-//        }
-//    }
-  
-    // resize animation is slow, so doing this out of animation
-    if (shouldToggleToFullScreen) {
-        theFrame.size.height = 748-8;
-        channelController.panelView.frame = theFrame;
-    }    
-    
-    theFrame = channelController.panelView.frame;
-    [UIView beginAnimations:nil context:nil];
+	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:0.5f];
-
-    if (shouldToggleToFullScreen) {
-        theFrame = channelController.panelView.frame;
-        // the dimensions are hard coded :(
-        theFrame.origin.y = 20;
-
-//		movieView.frame = CGRectMake(0, -340, 640.0f, 360.0f);
-
-        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-collapse"] forState:UIControlStateNormal];
-        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-collapse-active"] forState:UIControlStateHighlighted];
-        
-        controlScrollView.frame = CGRectMake(0, -360, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
-
-        channelController.panelView.frame = theFrame;
-        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-        
-    }
-    else {
-        theFrame = channelController.panelView.frame;
-        // the dimensions are hard coded :(
-        theFrame.size.height = 380;
-        theFrame.origin.y = 380;
-		
-//        movieView.frame = CGRectMake(0, 20.0f, 640.0f, 360.0f);
-
-        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-expand"] forState:UIControlStateNormal];
-        [channelController.fullScreenButton setImage:[UIImage imageNamed:@"toolbar-expand-active"] forState:UIControlStateHighlighted];
-        
-        controlScrollView.frame = CGRectMake(0, 0, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
-
-        channelController.panelView.frame = theFrame;
-        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-    }
-    [UIView commitAnimations];
-//    pinchTemporarilyDisabled = NO;
+	CGRect theFrame;
+	theFrame = channelController.panelView.frame;
+	if ( shouldToggleToFullScreen ) {
+		// move the channel panel up
+		theFrame.origin.y = 20.0f;
+		[channelController setDisplayMode:NMFullScreenChannelMode];
+	} else {
+		// move the panel down
+		theFrame.origin.y = splitViewRect.size.height;
+		[channelController setDisplayMode:NMHalfScreenMode];
+	}
+	channelController.panelView.frame = theFrame;
+	[UIView commitAnimations];
+//    CGRect theFrame;
+//	theFrame = channelController.panelView.frame;
+//
+//	BOOL panelIsFullScreen = NO;
+//	if ( theFrame.origin.y < 380.0 ) {
+//		// assume the panel is full screen
+//		panelIsFullScreen = YES;
+//	}
+//    
+//    if (!panelIsFullScreen && !shouldToggleToFullScreen && shouldResume) {
+//        [self toggleChannelPanel:nil];
+//    }
+//    
+//    if (panelIsFullScreen == shouldToggleToFullScreen) {
+//        // no need to do anything else
+//        return;
+//    }
+//
+////    if (shouldToggleToFullScreen) {
+////        [self stopVideo];
+////    }
+////    else {
+////        if (shouldResume) {
+////            [self playCurrentVideo];
+////        }
+////    }
+//  
+//    // resize animation is slow, so doing this out of animation
+//    if (shouldToggleToFullScreen) {
+//        theFrame.size.height = 748-8;
+//        channelController.panelView.frame = theFrame;
+//    }    
+//    
+//    theFrame = channelController.panelView.frame;
+//    [UIView beginAnimations:nil context:nil];
+//	[UIView setAnimationBeginsFromCurrentState:YES];
+//	[UIView setAnimationDuration:0.5f];
+//
+//    if (shouldToggleToFullScreen) {
+//        theFrame = channelController.panelView.frame;
+//        // the dimensions are hard coded :(
+//        theFrame.origin.y = 20;
+//
+////		movieView.frame = CGRectMake(0, -340, 640.0f, 360.0f);
+//
+//        [channelController.fullScreenButton setImage:styleUtility.toolbarCollapseImage forState:UIControlStateNormal];
+//        [channelController.fullScreenButton setImage:styleUtility.toolbarCollapseHighlightedImage forState:UIControlStateHighlighted];
+//        
+//        controlScrollView.frame = CGRectMake(0, -360, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
+//
+//        channelController.panelView.frame = theFrame;
+//        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+//        
+//    }
+//    else {
+//        theFrame = channelController.panelView.frame;
+//        // the dimensions are hard coded :(
+//        theFrame.size.height = 380;
+//        theFrame.origin.y = 380;
+//		
+////        movieView.frame = CGRectMake(0, 20.0f, 640.0f, 360.0f);
+//
+//        [channelController.fullScreenButton setImage:styleUtility.toolbarExpandImage forState:UIControlStateNormal];
+//        [channelController.fullScreenButton setImage:styleUtility.toolbarExpandHighlightedImage forState:UIControlStateHighlighted];
+//        
+//        controlScrollView.frame = CGRectMake(0, 0, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
+//
+//        channelController.panelView.frame = theFrame;
+//        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+//    }
+//    [UIView commitAnimations];
 }
 
 - (void)movieViewTouchUp:(id)sender {
@@ -1329,131 +1299,6 @@
 }
 
 # pragma mark gestures
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-//{
-//    if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
-//        if (gestureRecognizer.state != UIGestureRecognizerStatePossible && gestureRecognizer.state != UIGestureRecognizerStateEnded && gestureRecognizer.state != UIGestureRecognizerStateCancelled && gestureRecognizer.state != UIGestureRecognizerStateFailed) {
-//            if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-//				// disable channel video cell scrolling
-//                otherGestureRecognizer.enabled = NO;
-//                [temporaryDisabledGestures addObject:otherGestureRecognizer];
-//            }
-//            return YES;
-//        } else {
-//            pinchTemporarilyDisabled = NO;
-//        }
-//        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//            gr.enabled = YES;
-//        }
-//        [temporaryDisabledGestures removeAllObjects];
-//        return YES;
-//    }
-//    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
-//        if (gestureRecognizer.state != UIGestureRecognizerStatePossible && gestureRecognizer.state != UIGestureRecognizerStateEnded && gestureRecognizer.state != UIGestureRecognizerStateCancelled && gestureRecognizer.state != UIGestureRecognizerStateFailed) {
-//            if ([otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] || [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
-//                otherGestureRecognizer.enabled = NO;
-//                [temporaryDisabledGestures addObject:otherGestureRecognizer];
-//            } else {
-//                pinchTemporarilyDisabled = NO;
-//            }
-//            return YES;
-//        }
-//        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//            gr.enabled = YES;
-//        }
-//        [temporaryDisabledGestures removeAllObjects];
-//        return YES;
-//    }
-//    for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//        gr.enabled = YES;
-//    }
-//    [temporaryDisabledGestures removeAllObjects];
-//    return YES;
-//}
-//
-//-(void)swipedUp:(UIGestureRecognizer *)sender {
-//    pinchTemporarilyDisabled = YES;
-//    for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//        gr.enabled = YES;
-//    }
-//    [temporaryDisabledGestures removeAllObjects];
-//    
-//    CGRect theFrame;
-//	theFrame = channelController.panelView.frame;
-//	BOOL panelHidden = YES;
-//	if ( theFrame.origin.y < 768.0 ) {
-//		// assume the panel is visible
-//		panelHidden = NO;
-//	}
-//    if (panelHidden) {
-//		[self toggleChannelPanel:sender];
-//    } else {
-//        [self channelPanelToggleToFullScreen:YES resumePlaying:YES centerToRow:[channelController highlightedChannelIndex]];
-//    }
-//}
-//
-//-(void)swipedDown:(UIGestureRecognizer *)sender {
-//    pinchTemporarilyDisabled = YES;
-//    CGRect theFrame;
-//	theFrame = channelController.panelView.frame;
-//	BOOL panelHidden = YES;
-//	if ( theFrame.origin.y < 768.0 ) {
-//		// assume the panel is visible
-//		panelHidden = NO;
-//	}
-//    if (panelHidden) {
-//        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//            gr.enabled = YES;
-//        }
-//        [temporaryDisabledGestures removeAllObjects];
-//        pinchTemporarilyDisabled = NO;
-//        return;
-//    }
-//    for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//        gr.enabled = YES;
-//    }
-//    [temporaryDisabledGestures removeAllObjects];
-//    [self channelPanelToggleToFullScreen:NO resumePlaying:YES centerToRow:[channelController highlightedChannelIndex]];
-//}
-//
-//- (void)handleChannelViewPinched:(id)sender {
-//    if (pinchTemporarilyDisabled) {
-//        return;
-//    }
-//    UIPinchGestureRecognizer * rcr = (UIPinchGestureRecognizer *)sender;
-//    // sometimes pinch is disabled on cancel, make sure to reenable it
-//    //    rcr.enabled = YES;
-//    
-//    if (pinchTemporarilyDisabled) {
-//        rcr.enabled = !pinchTemporarilyDisabled;
-//    }
-//
-//    if (rcr.state == UIGestureRecognizerStateCancelled) {
-//        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//            gr.enabled = YES;
-//        }
-//        [temporaryDisabledGestures removeAllObjects];
-//    }
-//    
-//    if (rcr.state == UIGestureRecognizerStateEnded) {
-//        for (UIGestureRecognizer *gr in temporaryDisabledGestures) {
-//            gr.enabled = YES;
-//        }
-//        [temporaryDisabledGestures removeAllObjects];
-//        
-//        CGRect theFrame;
-//        theFrame = channelController.panelView.frame;
-//        BOOL panelIsFullScreen = NO;
-//        if ( theFrame.origin.y < 380.0 ) {
-//            // assume the panel is full screen
-//            panelIsFullScreen = YES;
-//        }
-//        
-//        [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
-//
-//    }
-//}
-
 - (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateCancelled:

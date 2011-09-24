@@ -33,7 +33,6 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 @synthesize videoViewController;
 @synthesize selectedIndex;
 @synthesize highlightedChannel, highlightedVideoIndex;
-@synthesize fullScreenButton;
 
 - (void)awakeFromNib {
     
@@ -67,19 +66,21 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 }
 
 #pragma mark View transition methods
-- (void)panelWillAppear {
-	
-}
-- (void)panelWillDisappear {
-	
-}
-
-- (void)panelWillBecomeFullScreen {
-	
-}
-
-- (void)panelWillEnterHalfScreen:(NMPlaybackViewModeType)fromViewMode {
-	
+- (void)setDisplayMode:(NMPlaybackViewModeType)aMode {
+	switch (aMode) {
+		case NMFullScreenChannelMode:
+			[fullScreenButton setImage:styleUtility.toolbarCollapseImage forState:UIControlStateNormal];
+			[fullScreenButton setImage:styleUtility.toolbarCollapseHighlightedImage forState:UIControlStateHighlighted];
+			break;
+			
+		case NMHalfScreenMode:
+			[fullScreenButton setImage:styleUtility.toolbarExpandImage forState:UIControlStateNormal];
+			[fullScreenButton setImage:styleUtility.toolbarExpandHighlightedImage forState:UIControlStateHighlighted];
+			break;
+			
+		default:
+			break;
+	}
 }
 
 #pragma mark Target action methods
