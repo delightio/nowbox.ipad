@@ -66,8 +66,8 @@
     NSManagedObjectContext *managedObjectContext_;
 	NSNotificationCenter * defaultNotificationCenter;
 
-    NSMutableArray *temporaryDisabledGestures;
-    BOOL pinchTemporarilyDisabled;
+//    NSMutableArray *temporaryDisabledGestures;
+//    BOOL pinchTemporarilyDisabled;
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
 }
