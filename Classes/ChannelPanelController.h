@@ -58,5 +58,6 @@ typedef enum {
 -(void)customPanning:(UIPanGestureRecognizer *)sender;
 -(NSInteger)highlightedChannelIndex;
 - (void)setDisplayMode:(NMPlaybackViewModeType)aMode;
+- (void)postAnimationChangeForDisplayMode:(NMPlaybackViewModeType)aMode;
 
 @end

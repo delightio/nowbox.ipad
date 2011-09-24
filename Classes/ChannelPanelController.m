@@ -66,6 +66,22 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 }
 
 #pragma mark View transition methods
+- (void)postAnimationChangeForDisplayMode:(NMPlaybackViewModeType)aMode {
+	switch (aMode) {
+		case NMFullScreenChannelMode:
+			tableView.contentInset = UIEdgeInsetsZero;
+			break;
+			
+		case NMHalfScreenMode:
+			tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
+			break;
+			
+		default:
+			break;
+	}
+	tableView.scrollIndicatorInsets = tableView.contentInset;
+}
+
 - (void)setDisplayMode:(NMPlaybackViewModeType)aMode {
 	switch (aMode) {
 		case NMFullScreenChannelMode:

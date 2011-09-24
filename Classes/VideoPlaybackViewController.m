@@ -36,6 +36,7 @@
 #define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
 #define NM_ANIMATION_SPLIT_VIEW_CONTEXT					10007
 #define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
+#define NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT		10009
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
@@ -426,8 +427,13 @@
 			ribbonView.hidden = YES;
 			break;
 			
+		case NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT:
+			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
+			break;
+			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
+			[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
@@ -1094,7 +1100,7 @@
 		// fade in detail view
 		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 		// slide in
-		theFrame.origin.y = self.view.bounds.size.height - channelController.panelView.frame.size.height-8;
+		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
 	} else {
 		// slide out the channel view
@@ -1151,21 +1157,27 @@
 }
 
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
-	[UIView beginAnimations:nil context:nil];
+	CGRect theFrame = channelController.panelView.frame;
+	CGRect scrollFrame = controlScrollView.frame;
+	
+	[UIView beginAnimations:nil context:(void*)(shouldToggleToFullScreen ? NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT : NM_ANIMATION_SPLIT_VIEW_CONTEXT)];
 	[UIView setAnimationBeginsFromCurrentState:YES];
 	[UIView setAnimationDuration:0.5f];
-	CGRect theFrame;
-	theFrame = channelController.panelView.frame;
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView setAnimationDelegate:self];
 	if ( shouldToggleToFullScreen ) {
 		// move the channel panel up
 		theFrame.origin.y = 20.0f;
 		[channelController setDisplayMode:NMFullScreenChannelMode];
+		scrollFrame.origin.y -= scrollFrame.size.height;
 	} else {
 		// move the panel down
 		theFrame.origin.y = splitViewRect.size.height;
 		[channelController setDisplayMode:NMHalfScreenMode];
+		scrollFrame.origin.y = splitViewRect.origin.y;
 	}
 	channelController.panelView.frame = theFrame;
+	controlScrollView.frame = scrollFrame;
 	[UIView commitAnimations];
 //    CGRect theFrame;
 //	theFrame = channelController.panelView.frame;
