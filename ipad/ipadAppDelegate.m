@@ -12,6 +12,8 @@
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
 
+#define NM_SESSION_DURATION		1800.0f // 30 min
+
 // user data
 NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
 NSString * const NM_USER_FAVORITES_CHANNEL_ID_KEY = @"NM_USER_FAVORITES_CHANNEL_ID_KEY";
@@ -127,7 +129,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	userDefaults = [NSUserDefaults standardUserDefaults];
 	NSDate * theDate = [userDefaults objectForKey:NM_LAST_SESSION_DATE];
 	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY];
-	if ( [theDate timeIntervalSinceNow] < 1800.0f ) {	// 30 min
+	if ( [theDate timeIntervalSinceNow] < -NM_SESSION_DURATION ) {	// 30 min
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:++sid];
 		[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
 	} else {
