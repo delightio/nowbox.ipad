@@ -45,7 +45,7 @@
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
 	BOOL firstShowControlView;
-	BOOL scrollBeyondThreshold;
+//	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
 	CGRect fullScreenRect, splitViewRect;
 	

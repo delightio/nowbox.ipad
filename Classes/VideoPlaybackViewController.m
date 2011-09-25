@@ -953,7 +953,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			}
 			NSLog(@"skipping video - play rate: %f %d", movieView.player.rate, didSkippedVideo);
 		}*/
-		NSLog(@"rate change: %f", movieView.player.rate);
 	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT && object == movieView.player.currentItem ) {
 		// buffering progress
 		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
@@ -1020,17 +1019,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
 	
-	if ( !scrollBeyondThreshold && dx > 8.0f ) scrollBeyondThreshold = YES;
+//	if ( !scrollBeyondThreshold && dx > 8.0f ) {
+//		scrollBeyondThreshold = YES;
+//		NSLog(@"scrolled beyond threshold");
+//	}
 	
 	movieView.alpha = (1024.0 - dx) / 1024.0;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	// this delegate method is called when user has lifted their thumb out of the screen
-	if ( scrollBeyondThreshold ) [self stopVideo];
+//	if ( scrollBeyondThreshold ) [self stopVideo];
+	[self stopVideo];
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 	scrollView.scrollEnabled = NO;
-	scrollBeyondThreshold = NO;
+//	scrollBeyondThreshold = NO;
 //	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 }
 
@@ -1079,10 +1082,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Gesture delegate methods
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-	if ( !scrollBeyondThreshold ) {
-		controlScrollView.scrollEnabled = NO;
-	}
-	return !NMVideoPlaybackViewIsScrolling;
+//	NSLog(@"should begin gesture: %d", !scrollBeyondThreshold);
+//	if ( !scrollBeyondThreshold ) {
+//		controlScrollView.scrollEnabled = NO;
+//	}
+//	return !scrollBeyondThreshold;
+	controlScrollView.scrollEnabled = NO;
+	return YES;
 }
 
 #pragma mark Target-action methods
@@ -1361,7 +1367,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				}
 			} else {
 				// check if it's a pinch out gesture
-				if ( sender.velocity > 5.0 && sender.scale > 1.4 ) {
+				if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
 					NSLog(@"pinch out fired");
 					[self toggleChannelPanel:sender.view];
 				}
