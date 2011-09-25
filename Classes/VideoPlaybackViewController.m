@@ -38,6 +38,8 @@
 #define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
 #define NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT		10009
 
+BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
+
 @interface VideoPlaybackViewController (PrivateMethods)
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx;
@@ -439,6 +441,8 @@
 			
 		case NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT:
 //			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
+			// animation done. Rest flag.
+			NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			break;
 			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
@@ -1169,6 +1173,7 @@
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
 	CGRect theFrame = channelController.panelView.frame;
 	CGRect scrollFrame = controlScrollView.frame;
+	CGPoint rvPosition = ribbonView.center;
 	
 	[UIView beginAnimations:nil context:(void*)(shouldToggleToFullScreen ? NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT : NM_ANIMATION_SPLIT_VIEW_CONTEXT)];
 	[UIView setAnimationBeginsFromCurrentState:YES];
@@ -1176,16 +1181,21 @@
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:self];
 	if ( shouldToggleToFullScreen ) {
+		NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = YES;
 		// move the channel panel up
 		theFrame.origin.y = 20.0f;
 		[channelController setDisplayMode:NMFullScreenChannelMode];
 		scrollFrame.origin.y -= scrollFrame.size.height;
+		rvPosition.y -= splitViewRect.size.height;
+		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
 	} else {
 		// move the panel down
 		theFrame.origin.y = splitViewRect.size.height;
 		[channelController setDisplayMode:NMHalfScreenMode];
 		scrollFrame.origin.y = splitViewRect.origin.y;
+		rvPosition.y += splitViewRect.size.height;
+		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
 	}
 	channelController.panelView.frame = theFrame;
