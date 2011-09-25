@@ -55,6 +55,8 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 	[nc addObserver:self selector:@selector(handlePlayNewlySubscribedChannelNotification:) name:NMShouldPlayNewlySubscribedChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 
+	// channel view is launched in split view configuration. set content inset
+	tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
 }
 
 - (void)dealloc {

@@ -12,8 +12,8 @@
 @class NMAVQueuePlayer;
 
 @interface NMMovieView : UIView {
-	SEL action;
-	id target;
+//	SEL action;
+//	id target;
 	CGPoint initialCenter;
 	UIActivityIndicatorView * activityIndicator;
 	UILabel * statusLabel;
@@ -28,7 +28,7 @@
 @property (nonatomic, readonly) UIActivityIndicatorView * activityIndicator;
 @property (nonatomic, retain) IBOutlet UIView * airPlayIndicatorView;
 
-- (void)addTarget:(id)atarget action:(SEL)anAction;
+//- (void)addTarget:(id)atarget action:(SEL)anAction;
 - (void)setActivityIndicationHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)hideAirPlayIndicatorView:(BOOL)hidden;
 

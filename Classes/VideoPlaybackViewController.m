@@ -122,7 +122,17 @@
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
 	// set target-action methods
-	[movieView addTarget:self action:@selector(movieViewTouchUp:)];
+	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
+	dblTapRcgr.numberOfTapsRequired = 2;
+	[movieView addGestureRecognizer:dblTapRcgr];
+	
+	UITapGestureRecognizer * tapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewTouchUp:)];
+	tapRcgr.numberOfTapsRequired = 1;
+	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
+	[movieView addGestureRecognizer:tapRcgr];
+	[tapRcgr release];
+	[dblTapRcgr release];
+	
 	[controlScrollView addSubview:movieView];
 	controlScrollView.frame = splitViewRect;
 	
@@ -428,12 +438,12 @@
 			break;
 			
 		case NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT:
-			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
+//			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
 			break;
 			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
-			[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
+//			[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
@@ -1004,19 +1014,19 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	CGFloat dx;
-	if ( scrollView.contentOffset.x < currentXOffset ) {
-		dx = currentXOffset - scrollView.contentOffset.x;
-	} else {
-		dx = scrollView.contentOffset.x - currentXOffset;
-	}
+	dx = ABS(currentXOffset - scrollView.contentOffset.x);
+	
+	if ( !scrollBeyondThreshold && dx > 8.0f ) scrollBeyondThreshold = YES;
+	
 	movieView.alpha = (1024.0 - dx) / 1024.0;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	// this delegate method is called when user has lifted their thumb out of the screen
-	[self stopVideo];
+	if ( scrollBeyondThreshold ) [self stopVideo];
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 	scrollView.scrollEnabled = NO;
+	scrollBeyondThreshold = NO;
 //	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 }
 
@@ -1065,7 +1075,7 @@
 
 #pragma mark Gesture delegate methods
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-	if ( !NMVideoPlaybackViewIsScrolling ) {
+	if ( !scrollBeyondThreshold ) {
 		controlScrollView.scrollEnabled = NO;
 	}
 	return !NMVideoPlaybackViewIsScrolling;
@@ -1170,11 +1180,13 @@
 		theFrame.origin.y = 20.0f;
 		[channelController setDisplayMode:NMFullScreenChannelMode];
 		scrollFrame.origin.y -= scrollFrame.size.height;
+		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
 	} else {
 		// move the panel down
 		theFrame.origin.y = splitViewRect.size.height;
 		[channelController setDisplayMode:NMHalfScreenMode];
 		scrollFrame.origin.y = splitViewRect.origin.y;
+		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
 	}
 	channelController.panelView.frame = theFrame;
 	controlScrollView.frame = scrollFrame;
@@ -1259,6 +1271,10 @@
 	[UIView setAnimationDelegate:self];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView commitAnimations];
+}
+
+- (void)movieViewDoubleTap:(id)sender {
+	[self playStopVideo:sender];
 }
 
 - (void)controlsViewTouchUp:(id)sender {
