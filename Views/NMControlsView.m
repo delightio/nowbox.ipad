@@ -31,6 +31,7 @@
 @synthesize controlsHidden, timeRangeBuffered;
 @synthesize seekBubbleButton, isSeeking;
 @synthesize favoriteButton, watchLaterButton;
+@synthesize playbackMode=playbackMode_;
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -220,6 +221,7 @@
 			break;
 	}
 	playbackMode_ = aMode;
+	self.alpha = 0.0f;
 }
 
 - (void)setPlayButtonStateForRate:(CGFloat)aRate {

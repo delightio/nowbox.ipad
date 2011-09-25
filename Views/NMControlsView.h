@@ -84,6 +84,7 @@
 @property (nonatomic, assign) NSInteger timeElapsed;
 @property (nonatomic, assign) CMTimeRange timeRangeBuffered;
 @property (nonatomic, readonly) BOOL controlsHidden;
+@property (nonatomic, readonly) NMPlaybackViewModeType playbackMode;
 
 @property (nonatomic, assign) UIButton * channelViewButton;
 @property (nonatomic, assign) UIButton * playPauseButton;

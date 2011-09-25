@@ -388,7 +388,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView animateWithDuration:0.25f delay:0.5f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
-		[loadedControlView setControlsHidden:NO animated:YES];
+		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
+			[loadedControlView setControlsHidden:NO animated:YES];
+		}
 	}];
 }
 
@@ -430,7 +432,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			
 		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
 			// show the top bar with animation
-			[loadedControlView setTopBarHidden:NO animated:YES];
+			[loadedControlView setTopBarHidden:NO animated:NO];
 			// hide all movie detail view
 //			for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
 //				theDetailView.hidden = YES;
@@ -879,7 +881,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// update the time
 
 		// show the control view
-		[loadedControlView setControlsHidden:NO animated:YES];
+		// fix ticket https://pipely.lighthouseapp.com/projects/77614/tickets/468
+//		[loadedControlView setControlsHidden:NO animated:YES];
 		
 		showMovieControlTimestamp = 1;
 		
@@ -1116,7 +1119,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
-		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 		// fade in detail view
 		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 		// slide in
@@ -1127,7 +1129,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
-		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];
 		// fade out detail view
 		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 0.0f;
 		// reset offset value
@@ -1139,6 +1140,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
+		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
 		// unhide the ribbon view
 		ribbonView.hidden = NO;
 		// hide the top bar (no animation is needed)
@@ -1156,6 +1158,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 		[self configureDetailViewForContext:NM_ANIMATION_SPLIT_VIEW_CONTEXT];
 	} else {
+		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];
 		// panel is showing. i.e. we animate to Full Screen Playback Mode. We need to make sure the scrollview is occupying the full screen before animation begins.
 		controlScrollView.frame = fullScreenRect;
 	}
