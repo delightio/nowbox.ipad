@@ -43,7 +43,8 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 //	tableView.separatorColor = [UIColor clearColor];
 //	tableView.separatorColor = styleUtility.channelBorderColor;
-	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
+//	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
+	tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nowbox_background"]];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
