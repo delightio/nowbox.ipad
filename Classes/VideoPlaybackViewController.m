@@ -267,6 +267,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		currentChannel = [chnObj retain];
 	}
+	if ( chnObj == nil ) {
+		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+			theDetailView.video = nil;
+		}
+		
+		[loadedControlView resetView];
+		return;	// return if the channel object is nil
+	}
+	
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
@@ -279,19 +288,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[movieView.player resolveAndQueueVideos:vidAy];
 	}
 	
-	if ( chnObj == nil ) {
-		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-			theDetailView.video = nil;
-		}
-		
-		[loadedControlView resetView];
-		return;	// return if the channel object is nil
-	}
-	
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 	[self updateRibbonButtons];
-	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 	//	if ( playbackModelController.currentVideo == nil ) {
 	// we need to wait for video to come. show loading view
 	//controlScrollView.scrollEnabled = NO;
@@ -870,9 +870,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //					videoDurationInvalid = YES;
 //				}
 //				[movieView setActivityIndicationHidden:YES animated:YES];
-				[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 				if ( !playFirstVideoOnLaunchWhenReady ) {
 					[self stopVideo];
+				} else {
+					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 				}
 				break;
 			}

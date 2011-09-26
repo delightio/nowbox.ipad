@@ -13,6 +13,11 @@
 
 
 #define GP_CHANNEL_UPDATE_INTERVAL	-12.0 * 3600.0
+#ifdef DEBUG_ONBOARD_PROCESS
+#define NM_ALWAYS_SHOW_ONBOARD_PROCESS	YES
+#else
+#define NM_ALWAYS_SHOW_ONBOARD_PROCESS	NO
+#endif
 
 @implementation LaunchViewController
 @synthesize applicationDelegate;
@@ -81,7 +86,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	if ( appFirstLaunch ) {
+	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		// create new user
@@ -119,7 +124,7 @@
 	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
 
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
-	if ( appFirstLaunch || 
+	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch || 
 		[lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL // 12 hours
 		) { 
 		// get channel
@@ -147,10 +152,16 @@
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	if ( appFirstLaunch ) {
-		// user first launch the app. get channel in the first channel
-		[applicationDelegate.viewController setCurrentChannel:[dataCtrl lastSessionChannel] startPlaying:NO];
-		// load the video thumbnail
+	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
+		// show the playback view controller
+		[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:[dataCtrl lastSessionChannel]];
+		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
+		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+		// wait for notification of video list
+		// load the view controller
+		CGRect theFrame = applicationDelegate.viewController.view.frame;
+		NSLog(@"trigger to load the view from nib, %f", theFrame.size.width);
 	} else {
 		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
@@ -164,6 +175,21 @@
 		NSNumber * yesNum = [NSNumber numberWithBool:YES];
 		dataCtrl.myQueueChannel.nm_hidden = yesNum;
 		dataCtrl.favoriteVideoChannel.nm_hidden = yesNum;
+	}
+}
+
+- (void)handleGetVideosNotification:(NSNotification *)aNotification {
+	if ( [[aNotification name] isEqualToString:NMDidGetChannelVideoListNotification] ) {
+		// download video thumbnail
+		NSDictionary * info = [aNotification userInfo];
+		NMChannel * chnObj = [info objectForKey:@"channel"];
+		if ( [[info objectForKey:@"num_video_added"] integerValue] ) {
+			// assign the channel to the playback view controller
+			[applicationDelegate.viewController setCurrentChannel:chnObj startPlaying:NO];
+			// load the video thumbnail
+			
+			// get image of the first video
+		}
 	}
 }
 
