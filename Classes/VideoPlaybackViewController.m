@@ -450,9 +450,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			controlScrollView.frame = splitViewRect;
             [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             
-            if (shouldResumePlayingVideoAfterTransition) {
-                [self playCurrentVideo];
-            }
+//            if (shouldResumePlayingVideoAfterTransition) {
+//                [self playCurrentVideo];
+//            }
             
 //			[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
 			break;
@@ -1189,9 +1189,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     shouldResumePlayingVideoAfterTransition = shouldResume;
     rowIndexToCenterOn = indexInTable;
     
-    if (shouldToggleToFullScreen) {
-        [self stopVideo];
-    }
+//    if (shouldToggleToFullScreen) {
+//        [self stopVideo];
+//    }
     
 	CGRect theFrame = channelController.panelView.frame;
 	CGRect scrollFrame = controlScrollView.frame;
