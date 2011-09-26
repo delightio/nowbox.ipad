@@ -10,6 +10,7 @@
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
+#import "LaunchController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -54,6 +55,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)hideControlView;
 
 - (NMVideo *)playerCurrentVideo;
+- (void)showLaunchView;
 
 // debug message
 - (void)printDebugMessage:(NSString *)str;
@@ -64,6 +66,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @implementation VideoPlaybackViewController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize currentChannel;
+@synthesize currentVideo;
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize loadedMovieDetailView;
@@ -164,7 +167,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	theFrame.origin.y = splitViewRect.size.height;
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
-	[self.view addSubview:channelController.panelView];
+	[topLevelContainerView addSubview:channelController.panelView];
     
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
@@ -193,12 +196,48 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     pinRcr.delegate = self;
 	[movieView addGestureRecognizer:pinRcr];
 	[pinRcr release];
+	
+	// create the launch view
+	launchController = [[LaunchController alloc] init];
+	launchController.viewController = self;
+	[[NSBundle mainBundle] loadNibNamed:@"LaunchView" owner:launchController options:nil];
+	[self showLaunchView];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self playCurrentVideo];
 }
+
+- (void)showLaunchView {
+	[launchController loadView];
+	[self.view addSubview:launchController.view];
+}
+
+- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
+	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
+		self.view.center = CGPointMake(1536.0f, 384.0f);
+		// slide in the view
+		[UIView animateWithDuration:1.0f animations:^{
+			topLevelContainerView.center = launchController.view.center;
+			launchController.view.center = CGPointMake(-512.0f, 384.0f);
+		} completion:^(BOOL finished) {
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+		}];
+	} else {
+		// cross fade
+		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.75f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+		}];
+	}
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
@@ -221,6 +260,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 
 - (void)dealloc {
+	[launchController release];
 	[managedObjectContext_ release];
 	
 	[loadedControlView release];
@@ -298,6 +338,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	//	}
 	
 	//TODO: update the scroll view content size, set position of movie view and control view
+}
+
+- (NMVideo *)currentVideo {
+	return playbackModelController.currentVideo;
 }
 
 #pragma mark Playback Control
@@ -870,9 +914,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //					videoDurationInvalid = YES;
 //				}
 //				[movieView setActivityIndicationHidden:YES animated:YES];
-				if ( !playFirstVideoOnLaunchWhenReady ) {
-					[self stopVideo];
-				} else {
+				if ( playFirstVideoOnLaunchWhenReady ) {
 					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 				}
 				break;
@@ -953,6 +995,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //		if ( movieView.player.rate > 0.0f && movieView.activityIndicator.alpha > 0.0 ) {
 //			[movieView setActivityIndicationHidden:YES animated:YES];
 //		}
+		CGFloat theRate = movieView.player.rate;
+		if ( !playFirstVideoOnLaunchWhenReady && theRate > 0.0 ) {
+			[self stopVideo];
+			playFirstVideoOnLaunchWhenReady = NO;
+		}
 		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
 		/*
 		if ( didSkippedVideo ) {

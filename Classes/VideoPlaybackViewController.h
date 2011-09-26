@@ -22,6 +22,7 @@
 @class NMTaskQueueController;
 @class ChannelPanelController;
 @class ipadAppDelegate;
+@class LaunchController;
 
 
 /*!
@@ -30,6 +31,7 @@
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
 @interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
+	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIView * ribbonView;
 	IBOutlet UIButton * favoriteButton;
@@ -59,6 +61,7 @@
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
+	LaunchController * launchController;
 	id timeObserver;
 	
 	NSInteger showMovieControlTimestamp;
@@ -74,6 +77,7 @@
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
+@property (nonatomic, readonly) NMVideo * currentVideo;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) IBOutlet NMMovieDetailView * loadedMovieDetailView;
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
@@ -108,6 +112,9 @@
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
 - (void)launchPlayVideo:(NMVideo *)aVideo;
+
+// launch view / onboard process
+- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer;

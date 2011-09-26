@@ -27,7 +27,8 @@ extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
 
 @interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
 	VideoPlaybackViewController *viewController;
-	LaunchViewController *launchViewController;
+//	LaunchViewController *launchViewController;
+//	UINavigationController * navigationViewController;
 
 @private
 	NSUserDefaults * userDefaults;
@@ -38,7 +39,8 @@ extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet VideoPlaybackViewController * viewController;
-@property (nonatomic, retain) IBOutlet LaunchViewController * launchViewController;
+//@property (nonatomic, retain) IBOutlet LaunchViewController * launchViewController;
+//@property (nonatomic, retain) IBOutlet UINavigationController * navigationViewController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;

@@ -8,7 +8,6 @@
 
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
-#import "LaunchViewController.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
 
@@ -38,8 +37,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 
 @synthesize window=_window;
+//@synthesize navigationViewController;
 @synthesize viewController;
-@synthesize launchViewController;
+//@synthesize launchViewController;
 @synthesize managedObjectContext=managedObjectContext_;
 
 + (void)initialize {
@@ -77,7 +77,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	}
 
 	[NMStyleUtility sharedStyleUtility];
-	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+//	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	self.viewController.appDelegate = self;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
@@ -91,7 +91,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	}
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 	
-	self.window.rootViewController = self.launchViewController;
+	self.window.rootViewController = viewController;
 	[self.window makeKeyAndVisible];
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
@@ -197,7 +197,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (void)dealloc
 {
 	[_window release];
-	[launchViewController release];
+//	[navigationViewController release];
+//	[launchViewController release];
 	[viewController release];
     [super dealloc];
 }

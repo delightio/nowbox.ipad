@@ -82,6 +82,7 @@
 		A931613E13E0902B009694C3 /* toolbar-collapse-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931613413E0902B009694C3 /* toolbar-collapse-active.png */; };
 		A931613F13E0902B009694C3 /* toolbar-collapse.png in Resources */ = {isa = PBXBuildFile; fileRef = A931613513E0902B009694C3 /* toolbar-collapse.png */; };
 		A93584CF139EE96D0009A264 /* ChannelPanelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A93584CE139EE96D0009A264 /* ChannelPanelView.xib */; };
+		A9389B85143109CE00959946 /* LaunchController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9389B84143109CE00959946 /* LaunchController.m */; };
 		A9398C1D13D41B31005E3CB0 /* social-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1913D41B31005E3CB0 /* social-facebook.png */; };
 		A9398C1E13D41B31005E3CB0 /* social-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1A13D41B31005E3CB0 /* social-twitter.png */; };
 		A9398C1F13D41B31005E3CB0 /* social-vimeo.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C1B13D41B31005E3CB0 /* social-vimeo.png */; };
@@ -122,7 +123,6 @@
 		A98C241D13D399D70061A594 /* ribbon.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241C13D399D70061A594 /* ribbon.png */; };
 		A991188A13E759E20067E987 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A991188913E759E20067E987 /* SettingsViewController.m */; };
 		A991188C13E759F30067E987 /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A991188B13E759F30067E987 /* SettingsView.xib */; };
-		A994523913A734B600B117E2 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A994523813A734B600B117E2 /* LaunchViewController.m */; };
 		A9976EFD13BB355200B06DFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A9976F0613BB35AD00B06DFF /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
 		A9976F0713BB35AD00B06DFF /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504313438F860022BF2C /* NMDataController.m */; };
@@ -295,6 +295,8 @@
 		A931613513E0902B009694C3 /* toolbar-collapse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-collapse.png"; sourceTree = "<group>"; };
 		A93350B21417A15C00F47CDD /* KeychainAccessGroups.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = KeychainAccessGroups.plist; sourceTree = "<group>"; };
 		A93584CE139EE96D0009A264 /* ChannelPanelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelPanelView.xib; sourceTree = "<group>"; };
+		A9389B83143109CE00959946 /* LaunchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchController.h; sourceTree = "<group>"; };
+		A9389B84143109CE00959946 /* LaunchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchController.m; sourceTree = "<group>"; };
 		A9398C1913D41B31005E3CB0 /* social-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-facebook.png"; sourceTree = "<group>"; };
 		A9398C1A13D41B31005E3CB0 /* social-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-twitter.png"; sourceTree = "<group>"; };
 		A9398C1B13D41B31005E3CB0 /* social-vimeo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-vimeo.png"; sourceTree = "<group>"; };
@@ -374,8 +376,6 @@
 		A991188813E759E20067E987 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		A991188913E759E20067E987 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		A991188B13E759F30067E987 /* SettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
-		A994523713A734B600B117E2 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
-		A994523813A734B600B117E2 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
 		A9976EFC13BB355200B06DFF /* libNMLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNMLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9976F0013BB355200B06DFF /* NMLibrary-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMLibrary-Prefix.pch"; sourceTree = "<group>"; };
 		A99BA0A813A7540B0010F202 /* VideoRowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowController.h; sourceTree = "<group>"; };
@@ -559,8 +559,6 @@
 				A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */,
 				A99BA0A813A7540B0010F202 /* VideoRowController.h */,
 				A99BA0A913A7540B0010F202 /* VideoRowController.m */,
-				A994523713A734B600B117E2 /* LaunchViewController.h */,
-				A994523813A734B600B117E2 /* LaunchViewController.m */,
 				A9D9EE1C13AABEB0009ABBEA /* NMStyleUtility.h */,
 				A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */,
 				A991188813E759E20067E987 /* SettingsViewController.h */,
@@ -579,6 +577,8 @@
 				A98555DF141758CD00079453 /* KeychainItemWrapper.m */,
 				22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */,
 				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
+				A9389B83143109CE00959946 /* LaunchController.h */,
+				A9389B84143109CE00959946 /* LaunchController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1052,7 +1052,6 @@
 				A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */,
 				A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */,
 				A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */,
-				A994523913A734B600B117E2 /* LaunchViewController.m in Sources */,
 				A99BA0AA13A7540B0010F202 /* VideoRowController.m in Sources */,
 				A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */,
 				A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */,
@@ -1085,6 +1084,7 @@
 				22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */,
 				A9E8E3B01427BBBD00ECD077 /* NMSeekBar.m in Sources */,
 				A9E8E3B11427BBBD00ECD077 /* NMSeekBarLayoutLayer.m in Sources */,
+				A9389B85143109CE00959946 /* LaunchController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1232,7 +1232,6 @@
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_ONBOARD_PROCESS,
 					DEBUG_IMAGE_CACHE,
 				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";

@@ -84,6 +84,7 @@
 	} else {
 		return;
 	}
+	NSLog(@"setting movie detail for: %@", aVideo.title);
 	// video info - try to show the whole title, max three lines
 	CGRect theRect = titleLabel.frame;
 	theRect.size = [aVideo.title sizeWithFont:titleLabel.font constrainedToSize:titleMaxSize];
