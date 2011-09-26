@@ -57,6 +57,9 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 
 	// channel view is launched in split view configuration. set content inset
 	tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
+    
+    [nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
+
 }
 
 - (void)dealloc {
@@ -611,5 +614,11 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 }
 
 
+#pragma mark new video begin playing
+- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
+    NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:[newVideo channel]];
+    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+}
 
 @end
