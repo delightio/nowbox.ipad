@@ -44,7 +44,6 @@
 	
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
-	BOOL firstShowControlView;
 //	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
 	CGRect fullScreenRect, splitViewRect;
@@ -59,6 +58,7 @@
 //	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
+	BOOL playFirstVideoOnLaunchWhenReady;
 	id timeObserver;
 	
 	NSInteger showMovieControlTimestamp;
@@ -92,6 +92,8 @@
 - (IBAction)touchDownProgressBar:(id)sender;
 - (IBAction)touchUpProgressBar:(id)sender;
 
+// setting channel
+- (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag;
 // playback view update
 - (void)markPlaybackCheckpoint;
 // buttons management

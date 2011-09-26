@@ -146,6 +146,9 @@
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
+		A9BD9C0D142FA9E400F6453C /* onboard-label-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = A9BD9C0B142FA9E400F6453C /* onboard-label-logo.png */; };
+		A9BD9C0E142FA9E400F6453C /* onboard-right-label-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9BD9C0C142FA9E400F6453C /* onboard-right-label-background.png */; };
+		A9BD9C10142FB64100F6453C /* onboard-label-arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9BD9C0F142FB64100F6453C /* onboard-label-arrow.png */; };
 		A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */; };
 		A9D027B1142217590064A89D /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
 		A9D027B2142217590064A89D /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
@@ -396,6 +399,9 @@
 		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
 		A9B3EE6D13B91C330058E114 /* NMVideoDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideoDetail.h; sourceTree = "<group>"; };
 		A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideoDetail.m; sourceTree = "<group>"; };
+		A9BD9C0B142FA9E400F6453C /* onboard-label-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-label-logo.png"; sourceTree = "<group>"; };
+		A9BD9C0C142FA9E400F6453C /* onboard-right-label-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-right-label-background.png"; sourceTree = "<group>"; };
+		A9BD9C0F142FB64100F6453C /* onboard-label-arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-label-arrow.png"; sourceTree = "<group>"; };
 		A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppleTVIndicationView.xib; sourceTree = "<group>"; };
 		A9D19B29140E274E008CF101 /* NMChannelDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelDetail.h; sourceTree = "<group>"; };
 		A9D19B2A140E274E008CF101 /* NMChannelDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelDetail.m; sourceTree = "<group>"; };
@@ -613,6 +619,9 @@
 				A92E3E7D14040E4000B30313 /* internal-channel-history.png */,
 				A92E3E7E14040E4000B30313 /* internal-channel-queue.png */,
 				223015E31416F378006FC44E /* movie-detail-swipe-indicator.png */,
+				A9BD9C0F142FB64100F6453C /* onboard-label-arrow.png */,
+				A9BD9C0B142FA9E400F6453C /* onboard-label-logo.png */,
+				A9BD9C0C142FA9E400F6453C /* onboard-right-label-background.png */,
 				A931612C13E0902B009694C3 /* playback-full-screen-active.png */,
 				A931612D13E0902B009694C3 /* playback-full-screen.png */,
 				A931612E13E0902B009694C3 /* playback-normal-screen-active.png */,
@@ -1016,6 +1025,9 @@
 				223015E41416F378006FC44E /* movie-detail-swipe-indicator.png in Resources */,
 				2275AD5114214867003C3FFC /* channel-video-status-watch-later.png in Resources */,
 				221EE3B5142BEACA00519DF8 /* VideoPanelLoadMoreView.xib in Resources */,
+				A9BD9C0D142FA9E400F6453C /* onboard-label-logo.png in Resources */,
+				A9BD9C0E142FA9E400F6453C /* onboard-right-label-background.png in Resources */,
+				A9BD9C10142FB64100F6453C /* onboard-label-arrow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1214,12 +1226,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_SESSION,
-					DEBUG_PLAYER_NAVIGATION,
-					DEBUG_PLAYBACK_QUEUE,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_IMAGE_CACHE;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1252,15 +1259,7 @@
 				DSTROOT = /tmp/NMLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_CONNECTION_CONTROLLER,
-					DEBUG_PLAYER_DEBUG_MESSAGE,
-					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_SESSION,
-					DEBUG_PLAYER_NAVIGATION,
-					DEBUG_PLAYBACK_QUEUE,
-					DEBUG_VIDEO_LIST_REFRESH,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_IMAGE_CACHE;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

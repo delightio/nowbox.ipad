@@ -10,11 +10,15 @@
 
 
 @class VideoPlaybackViewController;
+@class ipadAppDelegate;
 
 @interface LaunchViewController : UIViewController <UITextFieldDelegate> {
-    IBOutlet UILabel * debugLabel;
+    IBOutlet UIButton * progressLabel;
 	BOOL appFirstLaunch;
+	ipadAppDelegate * applicationDelegate;
 }
+
+@property (nonatomic, assign) ipadAppDelegate * applicationDelegate;
 
 - (void)checkUpdateChannels;
 

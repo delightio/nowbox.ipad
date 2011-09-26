@@ -15,6 +15,7 @@
 #define GP_CHANNEL_UPDATE_INTERVAL	-12.0 * 3600.0
 
 @implementation LaunchViewController
+@synthesize applicationDelegate;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -52,8 +53,14 @@
 {
     [super viewDidLoad];
 	
+	applicationDelegate = [[UIApplication sharedApplication] delegate];
+
+	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
+	[progressLabel setBackgroundImage:[[UIImage imageNamed:@"onboard-right-label-background"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
+
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
+	
 	
 	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 	NM_USER_ACCOUNT_ID = [userDefaults integerForKey:NM_USER_ACCOUNT_ID_KEY];
@@ -75,7 +82,7 @@
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	if ( appFirstLaunch ) {
-		debugLabel.text = @"Setting up new user...";
+		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		// create new user
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
@@ -98,12 +105,11 @@
 //}
 
 - (void)showVideoViewAnimated {
-	ipadAppDelegate * appDelegate = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
-	appDelegate.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-	[self presentModalViewController:appDelegate.viewController animated:YES];
+	applicationDelegate.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+	[self presentModalViewController:applicationDelegate.viewController animated:YES];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
-	appDelegate.viewController.currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.lastSessionChannel;
+	applicationDelegate.viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
@@ -118,7 +124,7 @@
 		) { 
 		// get channel
 		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-		debugLabel.text = @"Fetching channels...";
+		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
 		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
@@ -140,19 +146,25 @@
 }
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-	debugLabel.text = @"Ready to go...";
-	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
-	[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
-	// begin new session
-	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
-	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
-	// set the user channels to hide
 	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	NSNumber * yesNum = [NSNumber numberWithBool:YES];
-	dataCtrl.myQueueChannel.nm_hidden = yesNum;
-	dataCtrl.favoriteVideoChannel.nm_hidden = yesNum;
+	if ( appFirstLaunch ) {
+		// user first launch the app. get channel in the first channel
+		[applicationDelegate.viewController setCurrentChannel:[dataCtrl lastSessionChannel] startPlaying:NO];
+		// load the video thumbnail
+	} else {
+		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
+		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
+		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:1.0f];
+		// begin new session
+		NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+		// set the user channels to hide
+		NSNumber * yesNum = [NSNumber numberWithBool:YES];
+		dataCtrl.myQueueChannel.nm_hidden = yesNum;
+		dataCtrl.favoriteVideoChannel.nm_hidden = yesNum;
+	}
 }
 
 @end

@@ -253,6 +253,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 
 - (void)setCurrentChannel:(NMChannel *)chnObj {
+	[self setCurrentChannel:chnObj startPlaying:YES];
+}
+
+- (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag {
 	if ( currentChannel ) {
 		if ( currentChannel != chnObj ) {
 			// clear all task related to the previous channel
@@ -266,6 +270,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
+	playFirstVideoOnLaunchWhenReady = aPlayFlag;
 	currentXOffset = 0.0f;
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
@@ -284,13 +289,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	
 	// update the interface if necessary
-//	[movieView setActivityIndicationHidden:NO animated:NO];
+	//	[movieView setActivityIndicationHidden:NO animated:NO];
 	[self updateRibbonButtons];
 	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-//	if ( playbackModelController.currentVideo == nil ) {
-		// we need to wait for video to come. show loading view
-		//controlScrollView.scrollEnabled = NO;
-//	}
+	//	if ( playbackModelController.currentVideo == nil ) {
+	// we need to wait for video to come. show loading view
+	//controlScrollView.scrollEnabled = NO;
+	//	}
 	
 	//TODO: update the scroll view content size, set position of movie view and control view
 }
@@ -866,6 +871,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //				}
 //				[movieView setActivityIndicationHidden:YES animated:YES];
 				[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+				if ( !playFirstVideoOnLaunchWhenReady ) {
+					[self stopVideo];
+				}
 				break;
 			}
 			default:
