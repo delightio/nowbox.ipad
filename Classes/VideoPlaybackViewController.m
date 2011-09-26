@@ -443,12 +443,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
 			// animation done. Rest flag.
 			NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
-            [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 			break;
 			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
-            [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
             
             if (shouldResumePlayingVideoAfterTransition) {
                 [self playCurrentVideo];
@@ -1180,7 +1178,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		panelIsFullScreen = YES;
 	}
     
-    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         // scrollToRowAtIndexPath cannot be used here because of weird rotated video cell behavior.  mimic with setContentOffset
+                         UITableViewCell *cell = [channelController.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[channelController highlightedChannelIndex] inSection:0]];
+                         [channelController.tableView setContentOffset:CGPointMake(cell.frame.origin.x, cell.frame.origin.y + cell.frame.size.height/2 - ((channelController.tableView.frame.size.height-channelController.tableView.contentInset.bottom)/2))];
+                     }
+                     completion:^(BOOL finished) {
+                         [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
+                     }];
+    
 }
 
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
@@ -1202,7 +1209,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView setAnimationDuration:0.5f];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:self];
-	if ( shouldToggleToFullScreen ) {
+
+    if ( shouldToggleToFullScreen ) {
 		NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = YES;
 		// move the channel panel up
 		theFrame.origin.y = 20.0f;
@@ -1222,6 +1230,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	channelController.panelView.frame = theFrame;
 	controlScrollView.frame = scrollFrame;
+    
+    
+    UITableViewCell *cell = [channelController.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[channelController highlightedChannelIndex] inSection:0]];
+    [channelController.tableView setContentOffset:CGPointMake(cell.frame.origin.x, cell.frame.origin.y + cell.frame.size.height/2 - ((channelController.tableView.frame.size.height-channelController.tableView.contentInset.bottom)/2))];
+
     
 	[UIView commitAnimations];
 //    CGRect theFrame;
