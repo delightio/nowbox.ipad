@@ -59,10 +59,6 @@
 //	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
-    
-    BOOL shouldResumePlayingVideoAfterTransition;
-    int rowIndexToCenterOn;
-    
 	id timeObserver;
 	
 	NSInteger showMovieControlTimestamp;
