@@ -56,17 +56,17 @@
         CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
         
         if ( NM_RUNNING_IOS_5 ) {
-            [@"MY" drawInRect:CGRectMake(2, 26, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+            [@"MY" drawInRect:CGRectMake(4, 26, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
             CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
             
-            [@"MY" drawInRect:CGRectMake(2, 25, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+            [@"MY" drawInRect:CGRectMake(4, 25, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
         } else {
-            [@"MY" drawInRect:CGRectMake(2, 26, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+            [@"MY" drawInRect:CGRectMake(4, 26, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
             CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
             
-            [@"MY" drawInRect:CGRectMake(2, 25, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+            [@"MY" drawInRect:CGRectMake(4, 25, rectangle.size.width/2, 30) withFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
         }
-        [[UIImage imageNamed:@"category-list-my-channels"] drawInRect:CGRectMake(37, 26, 30, 17)];
+        [[UIImage imageNamed:@"category-list-my-channels"] drawInRect:CGRectMake(39, 24, 26, 22)];
     } else if ([categoryTitle isEqualToString:@"<SEPARATOR>"]) {
         if (self.highlighted) {
             [[UIImage imageNamed:@"category-list-normal-bg"] drawInRect:CGRectMake(0, 0, 2, 70)];
