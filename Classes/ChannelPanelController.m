@@ -33,9 +33,10 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 @synthesize videoViewController;
 @synthesize selectedIndex;
 @synthesize highlightedChannel, highlightedVideoIndex;
+@synthesize displayMode;
 
 - (void)awakeFromNib {
-    
+	displayMode = NMHalfScreenMode;
     highlightedVideoIndex = -1;
     
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -103,6 +104,7 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 		default:
 			break;
 	}
+	displayMode = aMode;
 }
 
 #pragma mark Target action methods

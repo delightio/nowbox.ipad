@@ -1274,7 +1274,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView setAnimationDuration:0.5f];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:self];
-	if ( shouldToggleToFullScreen ) {
+	if ( shouldToggleToFullScreen && channelController.displayMode != NMFullScreenChannelMode ) {
 		NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = YES;
 		// move the channel panel up
 		theFrame.origin.y = 20.0f;
@@ -1283,7 +1283,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		rvPosition.y -= splitViewRect.size.height;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
-	} else {
+	} else if ( !shouldToggleToFullScreen && channelController.displayMode != NMHalfScreenMode ) {
 		// move the panel down
 		theFrame.origin.y = splitViewRect.size.height;
 		[channelController setDisplayMode:NMHalfScreenMode];

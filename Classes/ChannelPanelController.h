@@ -35,6 +35,7 @@ typedef enum {
 	NSInteger selectedIndex;
     NSInteger highlightedVideoIndex;
     NMChannel *highlightedChannel;
+	NMPlaybackViewModeType displayMode;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
@@ -45,6 +46,7 @@ typedef enum {
 @property (nonatomic, readonly) NSInteger selectedIndex;
 @property (nonatomic, assign) NSInteger highlightedVideoIndex;
 @property (nonatomic, assign) NMChannel *highlightedChannel;
+@property (nonatomic, assign) NMPlaybackViewModeType displayMode;
 
 - (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex;
 
@@ -57,7 +59,6 @@ typedef enum {
 
 -(void)customPanning:(UIPanGestureRecognizer *)sender;
 -(NSInteger)highlightedChannelIndex;
-- (void)setDisplayMode:(NMPlaybackViewModeType)aMode;
 - (void)postAnimationChangeForDisplayMode:(NMPlaybackViewModeType)aMode;
 
 @end
