@@ -56,6 +56,10 @@
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 #ifdef DEBUG_IMAGE_CACHE
 	NSLog(@"download notification");
+	NMTask * theTask = [aNotification object];
+	if ( theTask.command == NMCommandGetVideoThumbnail ) {
+		NSLog(@"\tvideo thumbnail: %@", [[aNotification userInfo] valueForKeyPath:@"target_object.title"]);
+	}
 #endif
 	// update the view
 	NSDictionary * userInfo = [aNotification userInfo];
