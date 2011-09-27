@@ -16,7 +16,7 @@
 	BOOL appFirstLaunch;
 	VideoPlaybackViewController * viewController;
 	
-	NSMutableIndexSet * thumbnailVideoIndex;
+	NSMutableIndexSet * thumbnailVideoIndex, * resolutionVideoIndex;
 	NMChannel * channel;
 }
 

@@ -71,6 +71,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize loadedControlView;
 @synthesize loadedMovieDetailView;
 @synthesize appDelegate;
+@synthesize launchModeActive;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -194,7 +195,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
-	[movieView addGestureRecognizer:pinRcr];
+	[controlScrollView addGestureRecognizer:pinRcr];
 	[pinRcr release];
 	
 	// create the launch view
@@ -208,36 +209,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[super viewDidAppear:animated];
 	[self playCurrentVideo];
 }
-
-- (void)showLaunchView {
-	[launchController loadView];
-	[self.view addSubview:launchController.view];
-}
-
-- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
-	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
-		self.view.center = CGPointMake(1536.0f, 384.0f);
-		// slide in the view
-		[UIView animateWithDuration:1.0f animations:^{
-			topLevelContainerView.center = launchController.view.center;
-			launchController.view.center = CGPointMake(-512.0f, 384.0f);
-		} completion:^(BOOL finished) {
-			// remove launch view
-			[launchController.view removeFromSuperview];
-			[launchController release];
-			launchController = nil;
-		}];
-	} else {
-		// cross fade
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.75f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
-			// remove launch view
-			[launchController.view removeFromSuperview];
-			[launchController release];
-			launchController = nil;
-		}];
-	}
-}
-
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
@@ -274,6 +245,47 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[movieView release];
 //    [temporaryDisabledGestures release];
 	[super dealloc];
+}
+
+#pragma mark Launch / onboard process
+- (void)setLaunchModeActive:(BOOL)flag {
+	if ( flag ) {
+		// set to full screen
+		[self toggleChannelPanel:nil];
+	}
+	launchModeActive = flag;
+}
+
+- (void)showLaunchView {
+	[launchController loadView];
+	[self.view addSubview:launchController.view];
+}
+
+- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
+	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
+		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
+		playbackModelController.currentVideo.nm_movie_detail_view.video = playbackModelController.currentVideo;
+		[self.view bringSubviewToFront:topLevelContainerView];
+		// slide in the view
+		[UIView animateWithDuration:0.5f animations:^{
+			topLevelContainerView.center = launchController.view.center;
+		} completion:^(BOOL finished) {
+			playFirstVideoOnLaunchWhenReady = YES;
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+			[self playCurrentVideo];
+		}];
+	} else {
+		// cross fade
+		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.75f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+		}];
+	}
 }
 
 #pragma mark Playback data structure
@@ -998,9 +1010,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		CGFloat theRate = movieView.player.rate;
 		if ( !playFirstVideoOnLaunchWhenReady && theRate > 0.0 ) {
 			[self stopVideo];
-			playFirstVideoOnLaunchWhenReady = NO;
+			[loadedControlView setPlayButtonStateForRate:0.0f];
+		} else {
+			[loadedControlView setPlayButtonStateForRate:theRate];
 		}
-		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
 		/*
 		if ( didSkippedVideo ) {
 			if ( movieView.player.rate == 0.0f ) {

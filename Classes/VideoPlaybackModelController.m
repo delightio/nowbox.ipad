@@ -484,6 +484,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					// reset the movie detail view
 					currentVideo.nm_movie_detail_view.video = nil;
 					self.currentVideo = [controller objectAtIndexPath:indexPath];
+					NSLog(@"FRC delete case - current video - %@", self.currentVideo.title);
 					// info the delegate about the current video change
 					[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 					
@@ -576,6 +577,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				// inserting the first video
 				self.currentIndexPath = newIndexPath;
 				self.currentVideo = (NMVideo *)anObject;
+				NSLog(@"FRC insert case - current video - %@", self.currentVideo.title);
 				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 				
 				// insert the next and next next video in this call too. If subsequent call for indexPath of next or next next video happens, we will not insert the same video again. 

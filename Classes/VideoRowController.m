@@ -275,7 +275,6 @@
 #pragma mark Notification handling
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
-    NSLog(@"video playing now: %@",[newVideo title]);
     [self updateChannelTableView:newVideo animated:YES];
 }
 

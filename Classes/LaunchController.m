@@ -26,6 +26,8 @@
 - (void)dealloc {
 	[view release];
 	[channel release];
+	[thumbnailVideoIndex release];
+	[resolutionVideoIndex release];
 	[super dealloc];
 }
 
@@ -51,6 +53,7 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		// create new user
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+		viewController.launchModeActive = YES;
 	} else {
 		[self checkUpdateChannels];
 	}
@@ -73,7 +76,7 @@
 	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFromRight];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
-	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+//	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
@@ -120,22 +123,23 @@
 	NSNumber * yesNum = [NSNumber numberWithBool:YES];
 	dataCtrl.myQueueChannel.nm_hidden = yesNum;
 	dataCtrl.favoriteVideoChannel.nm_hidden = yesNum;
-//	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
-//		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
-////		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-////		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
-//		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
-//		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
-//		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
-//		// assign the channel to playback view controller
-//		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
-//		[viewController setCurrentChannel:channel startPlaying:NO];
-//		// wait for notification of video list
-//	} else {
+	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
+		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
+//		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+//		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
+		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
+		resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
+		// assign the channel to playback view controller
+		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+		[viewController setCurrentChannel:channel startPlaying:NO];
+		// wait for notification of video list
+	} else {
 		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:1.0f];
-//	}
+	}
 }
 
 //- (void)handleGetVideosNotification:(NSNotification *)aNotification {
@@ -162,7 +166,7 @@
 			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
 		} else {
 			NSLog(@"resolved video: %d", idx);
-			[thumbnailVideoIndex addIndex:idx];
+			[resolutionVideoIndex addIndex:idx];
 		}
 	}
 }
@@ -173,7 +177,7 @@
 	if ( theTask.command == NMCommandGetVideoThumbnail ) {
 		NMVideo * targetVdo = [[aNotification userInfo] objectForKey:@"target_object"];
 		NSUInteger idx = [targetVdo.nm_id unsignedIntegerValue];
-		if ( [thumbnailVideoIndex containsIndex:idx] ) {
+		if ( [resolutionVideoIndex containsIndex:idx] ) {
 			NSLog(@"time to leave launch view (vthumbnail)");
 			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
 		} else {

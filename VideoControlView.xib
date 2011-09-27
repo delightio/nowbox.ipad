@@ -119,11 +119,11 @@
 								</object>
 								<object class="NSCustomResource" key="IBUIHighlightedImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">playback-play-active.png</string>
+									<string key="NSResourceName">playback-pause-active.png</string>
 								</object>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">playback-play.png</string>
+									<string key="NSResourceName">playback-pause.png</string>
 								</object>
 								<reference key="IBUIFontDescription" ref="682651679"/>
 								<reference key="IBUIFont" ref="509354331"/>
@@ -954,7 +954,7 @@
 					<string>NMSeekBar</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="2"/>
+					<real value="0.0"/>
 					<string>NMControlsView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1376,7 +1376,6 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
-							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -1384,7 +1383,6 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1403,7 +1401,6 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
-							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -1425,10 +1422,6 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">seekPlaybackProgress:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">skipCurrentVideo:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -1459,6 +1452,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1468,6 +1462,7 @@
 							<string>UIButton</string>
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
+							<string>UIView</string>
 							<string>UIView</string>
 							<string>UIButton</string>
 						</object>
@@ -1482,6 +1477,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1508,6 +1504,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">ribbonView</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">topLevelContainerView</string>
 								<string key="candidateClassName">UIView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -1539,8 +1539,8 @@
 				<string>button-watch-later.png</string>
 				<string>playback-full-screen-active.png</string>
 				<string>playback-full-screen.png</string>
-				<string>playback-play-active.png</string>
-				<string>playback-play.png</string>
+				<string>playback-pause-active.png</string>
+				<string>playback-pause.png</string>
 				<string>ribbon.png</string>
 				<string>seek-time-bubble-background.png</string>
 			</object>

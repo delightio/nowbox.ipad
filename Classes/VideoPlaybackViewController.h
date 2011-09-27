@@ -61,6 +61,7 @@
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
+	BOOL launchModeActive;
 	LaunchController * launchController;
 	id timeObserver;
 	
@@ -83,6 +84,7 @@
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
+@property (nonatomic) BOOL launchModeActive;
 
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;

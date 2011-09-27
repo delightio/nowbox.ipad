@@ -14,6 +14,7 @@
 
 @implementation NMMovieDetailView
 @synthesize video=video_;
+@synthesize movieThumbnailView;
 
 //- (id)initWithFrame:(CGRect)frame
 //{
