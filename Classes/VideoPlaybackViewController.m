@@ -777,21 +777,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
-//	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-//	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-//	if ( ribbonView.alpha < 1.0f ) {
-//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-//	}
-//	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
-//	currentXOffset = newOffset;
-//	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
-//	[UIView animateWithDuration:0.5f animations:^{
-//		controlScrollView.contentOffset = thePoint;
-//	} completion:^(BOOL finished) {
-//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-//	}];
-
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
+	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+	if ( ribbonView.alpha < 1.0f ) {
+		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+	}
+	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
+	currentXOffset = newOffset;
+	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
+	[UIView animateWithDuration:0.5f animations:^{
+		controlScrollView.contentOffset = thePoint;
+	} completion:^(BOOL finished) {
+		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+	}];
+
+//	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 
 }
 
