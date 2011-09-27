@@ -42,7 +42,7 @@
 	maximumTitleSize = CGSizeMake(256.0f, 40.0f);
 
 	playbackMode_ = NMFullScreenPlaybackMode;
-	buttonPlayState = YES;
+	buttonPlayState = NO;
 //	[self setPlaybackMode:NMHalfScreenMode animated:NO];
 	// top bar view
 	topbarContainerView.layer.shouldRasterize = YES;
@@ -231,7 +231,7 @@
 		[playPauseButton setImage:styleUtility.playImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.playActiveImage forState:UIControlStateHighlighted];
 		buttonPlayState = YES;
-	} else if ( buttonPlayState ) {
+	} else if ( aRate > 0.0f && buttonPlayState ) {
 		buttonPlayState = NO;
 		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.pauseActiveImage forState:UIControlStateHighlighted];

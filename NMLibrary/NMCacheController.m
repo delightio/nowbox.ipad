@@ -291,6 +291,9 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 - (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv {
 	if ( vdo == nil || iv == nil ) return;
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"running cache controller logic for %@", vdo.title);
+#endif
 	// check if the file exists
 	if ( [vdo.nm_thumbnail_file_name length] ) {
 		NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];

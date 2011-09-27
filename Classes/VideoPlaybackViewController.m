@@ -10,6 +10,7 @@
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
+#import "LaunchController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -54,6 +55,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)hideControlView;
 
 - (NMVideo *)playerCurrentVideo;
+- (void)showLaunchView;
 
 // debug message
 - (void)printDebugMessage:(NSString *)str;
@@ -64,10 +66,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @implementation VideoPlaybackViewController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize currentChannel;
+@synthesize currentVideo;
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize loadedMovieDetailView;
 @synthesize appDelegate;
+@synthesize launchModeActive;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -164,7 +168,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	theFrame.origin.y = splitViewRect.size.height;
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
-	[self.view addSubview:channelController.panelView];
+	[topLevelContainerView addSubview:channelController.panelView];
     
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
@@ -191,8 +195,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
-	[movieView addGestureRecognizer:pinRcr];
+	[controlScrollView addGestureRecognizer:pinRcr];
 	[pinRcr release];
+	
+	// create the launch view
+	launchController = [[LaunchController alloc] init];
+	launchController.viewController = self;
+	[[NSBundle mainBundle] loadNibNamed:@"LaunchView" owner:launchController options:nil];
+	[self showLaunchView];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -221,6 +231,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 
 - (void)dealloc {
+	[launchController release];
 	[managedObjectContext_ release];
 	
 	[loadedControlView release];
@@ -234,6 +245,47 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[movieView release];
 //    [temporaryDisabledGestures release];
 	[super dealloc];
+}
+
+#pragma mark Launch / onboard process
+- (void)setLaunchModeActive:(BOOL)flag {
+	if ( flag ) {
+		// set to full screen
+		[self toggleChannelPanel:nil];
+	}
+	launchModeActive = flag;
+}
+
+- (void)showLaunchView {
+	[launchController loadView];
+	[self.view addSubview:launchController.view];
+}
+
+- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
+	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
+		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
+		playbackModelController.currentVideo.nm_movie_detail_view.video = playbackModelController.currentVideo;
+		[self.view bringSubviewToFront:topLevelContainerView];
+		// slide in the view
+		[UIView animateWithDuration:0.5f animations:^{
+			topLevelContainerView.center = launchController.view.center;
+		} completion:^(BOOL finished) {
+			playFirstVideoOnLaunchWhenReady = YES;
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+			[self playCurrentVideo];
+		}];
+	} else {
+		// cross fade
+		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.75f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+		}];
+	}
 }
 
 #pragma mark Playback data structure
@@ -267,6 +319,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		currentChannel = [chnObj retain];
 	}
+	if ( chnObj == nil ) {
+		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+			theDetailView.video = nil;
+		}
+		
+		[loadedControlView resetView];
+		return;	// return if the channel object is nil
+	}
+	
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
@@ -279,25 +340,20 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[movieView.player resolveAndQueueVideos:vidAy];
 	}
 	
-	if ( chnObj == nil ) {
-		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-			theDetailView.video = nil;
-		}
-		
-		[loadedControlView resetView];
-		return;	// return if the channel object is nil
-	}
-	
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 	[self updateRibbonButtons];
-	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 	//	if ( playbackModelController.currentVideo == nil ) {
 	// we need to wait for video to come. show loading view
 	//controlScrollView.scrollEnabled = NO;
 	//	}
 	
 	//TODO: update the scroll view content size, set position of movie view and control view
+}
+
+- (NMVideo *)currentVideo {
+	return playbackModelController.currentVideo;
 }
 
 #pragma mark Playback Control
@@ -450,10 +506,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
 			// animation done. Rest flag.
 			NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
+            [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 			break;
 			
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
+            [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+            
+//            if (shouldResumePlayingVideoAfterTransition) {
+//                [self playCurrentVideo];
+//            }
+            
 //			[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
@@ -870,9 +933,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //					videoDurationInvalid = YES;
 //				}
 //				[movieView setActivityIndicationHidden:YES animated:YES];
-				[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-				if ( !playFirstVideoOnLaunchWhenReady ) {
-					[self stopVideo];
+				if ( playFirstVideoOnLaunchWhenReady ) {
+					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 				}
 				break;
 			}
@@ -952,7 +1014,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //		if ( movieView.player.rate > 0.0f && movieView.activityIndicator.alpha > 0.0 ) {
 //			[movieView setActivityIndicationHidden:YES animated:YES];
 //		}
-		[loadedControlView setPlayButtonStateForRate:movieView.player.rate];
+		CGFloat theRate = movieView.player.rate;
+		if ( !playFirstVideoOnLaunchWhenReady && theRate > 0.0 ) {
+			[self stopVideo];
+			[loadedControlView setPlayButtonStateForRate:0.0f];
+		} else {
+			[loadedControlView setPlayButtonStateForRate:theRate];
+		}
 		/*
 		if ( didSkippedVideo ) {
 			if ( movieView.player.rate == 0.0f ) {
@@ -1188,6 +1256,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
+    
+    
+    shouldResumePlayingVideoAfterTransition = shouldResume;
+    rowIndexToCenterOn = indexInTable;
+    
+//    if (shouldToggleToFullScreen) {
+//        [self stopVideo];
+//    }
+    
 	CGRect theFrame = channelController.panelView.frame;
 	CGRect scrollFrame = controlScrollView.frame;
 	CGPoint rvPosition = ribbonView.center;
@@ -1197,7 +1274,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView setAnimationDuration:0.5f];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:self];
-	if ( shouldToggleToFullScreen ) {
+	if ( shouldToggleToFullScreen && channelController.displayMode != NMFullScreenChannelMode ) {
 		NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = YES;
 		// move the channel panel up
 		theFrame.origin.y = 20.0f;
@@ -1206,7 +1283,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		rvPosition.y -= splitViewRect.size.height;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
-	} else {
+	} else if ( !shouldToggleToFullScreen && channelController.displayMode != NMHalfScreenMode ) {
 		// move the panel down
 		theFrame.origin.y = splitViewRect.size.height;
 		[channelController setDisplayMode:NMHalfScreenMode];
@@ -1217,6 +1294,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	channelController.panelView.frame = theFrame;
 	controlScrollView.frame = scrollFrame;
+    
 	[UIView commitAnimations];
 //    CGRect theFrame;
 //	theFrame = channelController.panelView.frame;

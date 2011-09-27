@@ -145,12 +145,12 @@
 }
 
 - (IBAction)debugPlaybackQueue:(id)sender {
-	NMAVQueuePlayer * qPlayer = [playbackViewController getQueuePlayer];
-	NSArray * itemsAy = qPlayer.items;
-	NSLog(@"num video in queue: %d", [itemsAy count]);
-	for (NMAVPlayerItem * item in itemsAy) {
-		NSLog(@"\t%@", item.nmVideo.title);
-	}
+//	NMAVQueuePlayer * qPlayer = [playbackViewController getQueuePlayer];
+//	NSArray * itemsAy = qPlayer.items;
+//	NSLog(@"num video in queue: %d", [itemsAy count]);
+//	for (NMAVPlayerItem * item in itemsAy) {
+//		NSLog(@"\t%@", item.nmVideo.title);
+//	}
 }
 
 #pragma mark Table View

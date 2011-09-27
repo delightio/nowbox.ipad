@@ -34,6 +34,7 @@
 }
 
 @property (nonatomic, assign) NMVideo * video;
+@property (nonatomic, readonly) NMCachedImageView * movieThumbnailView;
 
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx;
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;

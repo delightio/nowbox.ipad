@@ -33,9 +33,10 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 @synthesize videoViewController;
 @synthesize selectedIndex;
 @synthesize highlightedChannel, highlightedVideoIndex;
+@synthesize displayMode;
 
 - (void)awakeFromNib {
-    
+	displayMode = NMHalfScreenMode;
     highlightedVideoIndex = -1;
     
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -58,6 +59,9 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 
 	// channel view is launched in split view configuration. set content inset
 	tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
+    
+    [nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
+
 }
 
 - (void)dealloc {
@@ -100,6 +104,7 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 		default:
 			break;
 	}
+	displayMode = aMode;
 }
 
 #pragma mark Target action methods
@@ -612,5 +617,11 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 }
 
 
+#pragma mark new video begin playing
+- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
+    NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:[newVideo channel]];
+    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+}
 
 @end
