@@ -231,12 +231,10 @@
 		[playPauseButton setImage:styleUtility.playImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.playActiveImage forState:UIControlStateHighlighted];
 		buttonPlayState = YES;
-		NSLog(@"Control View: Play");
 	} else if ( aRate > 0.0f && buttonPlayState ) {
 		buttonPlayState = NO;
 		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.pauseActiveImage forState:UIControlStateHighlighted];
-		NSLog(@"Control View: Pause");
 	}
 }
 

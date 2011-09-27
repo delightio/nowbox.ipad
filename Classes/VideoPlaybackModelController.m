@@ -571,8 +571,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		case NSFetchedResultsChangeInsert:
 		{
 			rowCountHasChanged = YES;
-			NMVideo * vid = (NMVideo *)anObject;
-			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
+//			NMVideo * vid = (NMVideo *)anObject;
+//			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
 			if ( currentIndexPath == nil && newIndexPath.row == 0 ) {
 				// inserting the first video
 				self.currentIndexPath = newIndexPath;
