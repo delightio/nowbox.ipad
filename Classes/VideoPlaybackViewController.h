@@ -63,6 +63,9 @@
 	BOOL playFirstVideoOnLaunchWhenReady;
 	BOOL launchModeActive;
 	LaunchController * launchController;
+    BOOL shouldResumePlayingVideoAfterTransition;
+    int rowIndexToCenterOn;
+    
 	id timeObserver;
 	
 	NSInteger showMovieControlTimestamp;
