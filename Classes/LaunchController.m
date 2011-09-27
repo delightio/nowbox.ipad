@@ -156,33 +156,31 @@
 
 - (void)handleDidResolveURLNotification:(NSNotification *)aNotification {
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
-	NSLog(@"resolved current: %@, target: %@", viewController.currentVideo.title, vdo.title);
-	if ( vdo && [viewController.currentVideo isEqual:vdo] ) {
-		// check if the video thumbnail has been downloaded
-		NSUInteger idx = [vdo.nm_id unsignedIntegerValue];
-		if ( [thumbnailVideoIndex containsIndex:idx] ) {
-			// the video thumbnail is ready. i.e. it's good to exit launch view.
-			NSLog(@"time to leave launch view (URL)");
+	[resolutionVideoIndex addIndex:[vdo.nm_id unsignedIntegerValue]];
+	NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
+		// contains the direct URL, check if it contains the thumbnail as well
+		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
+			// ready to show the launch view
+			[NSObject cancelPreviousPerformRequestsWithTarget:self];
 			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
-		} else {
-			NSLog(@"resolved video: %d", idx);
-			[resolutionVideoIndex addIndex:idx];
 		}
 	}
 }
 
 - (void)handleVideoThumbnailReadyNotification:(NSNotification *)aNotification {
 	NMTask * theTask = (NMTask *)[aNotification object];
-	NSLog(@"image download task completed: %d", theTask.command);
 	if ( theTask.command == NMCommandGetVideoThumbnail ) {
 		NMVideo * targetVdo = [[aNotification userInfo] objectForKey:@"target_object"];
-		NSUInteger idx = [targetVdo.nm_id unsignedIntegerValue];
-		if ( [resolutionVideoIndex containsIndex:idx] ) {
-			NSLog(@"time to leave launch view (vthumbnail)");
-			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
-		} else {
-			NSLog(@"added thumbnail: %d", idx);
-			[thumbnailVideoIndex addIndex:idx];
+		// store all indexes. the order of downloading video thumbnail is not guaranteed. need to check against all indexes downloaded. 
+		[thumbnailVideoIndex addIndex:[targetVdo.nm_id unsignedIntegerValue]];
+		NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
+			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
+				// ready to show launch view
+				[NSObject cancelPreviousPerformRequestsWithTarget:self];
+				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
+			}
 		}
 	}
 }

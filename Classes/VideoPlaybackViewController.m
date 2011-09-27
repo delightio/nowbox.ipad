@@ -120,13 +120,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		loadedMovieDetailView.frame = theFrame;
 		loadedMovieDetailView.alpha = 0.0f;
 		[controlScrollView addSubview:loadedMovieDetailView];
+		self.loadedMovieDetailView = nil;
 		// movie detail view doesn't need to respond to autoresize
 	}
-	self.loadedMovieDetailView = nil;
 	
 	// === don't change the sequence in this block ===
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
+	movieView.alpha = 0.0f;
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
 	dblTapRcgr.numberOfTapsRequired = 2;
@@ -265,6 +266,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
 		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		playbackModelController.currentVideo.nm_movie_detail_view.video = playbackModelController.currentVideo;
+		NSLog(@"onboard - first thumbnail alpha: %f, movie view alpha: %f", playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha, movieView.alpha);
 		[self.view bringSubviewToFront:topLevelContainerView];
 		// slide in the view
 		[UIView animateWithDuration:0.5f animations:^{
@@ -275,7 +277,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[launchController.view removeFromSuperview];
 			[launchController release];
 			launchController = nil;
-			[self playCurrentVideo];
+			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 		}];
 	} else {
 		// cross fade
@@ -446,7 +448,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
-	[UIView animateWithDuration:0.25f delay:0.5f options:0 animations:^{
+	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
@@ -522,6 +524,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
 			[self configureControlViewForVideo:[self playerCurrentVideo]];
+			[self playCurrentVideo];
 			break;
 		default:
 			break;
@@ -774,22 +777,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
+//	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
+//	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+//	if ( ribbonView.alpha < 1.0f ) {
+//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+//	}
+//	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
+//	currentXOffset = newOffset;
+//	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
+//	[UIView animateWithDuration:0.5f animations:^{
+//		controlScrollView.contentOffset = thePoint;
+//	} completion:^(BOOL finished) {
+//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+//	}];
+
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-	if ( ribbonView.alpha < 1.0f ) {
-		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-	}
-	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
-	currentXOffset = newOffset;
-	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
-//	[controlScrollView scrollRectToVisible:CGRectMake(currentXOffset, 0.0f, 1024.0f, 380.0f) animated:YES];
-	[UIView animateWithDuration:0.5f animations:^{
-		controlScrollView.contentOffset = thePoint;
-	} completion:^(BOOL finished) {
-		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-	}];
-//	[controlScrollView setContentOffset:thePoint animated:YES];
-//	[self configureControlViewForVideo:playbackModelController.currentVideo];
+
 }
 
 

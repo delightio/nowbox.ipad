@@ -15,8 +15,9 @@
 
 @protocol VideoPlaybackModelControllerDelegate <NSObject>
 
-//- (void)controller:(VideoPlaybackModelController *)ctrl shouldBeginPlayingVideo:(NMVideo *)vid;
-//- (void)controller:(VideoPlaybackModelController *)ctrl didResolvedURLOfVideo:(NMVideo *)vid;
+/*!
+ When changes happen in Core Data, the FRC delegate method in VideoPlaybackModelControllerDelegate is called. To invoke related interface change in the delegate object, this method is called.
+ */
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum;
 - (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
