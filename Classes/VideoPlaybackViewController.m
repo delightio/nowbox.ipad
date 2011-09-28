@@ -526,7 +526,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
             [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-            
+            if ( launchModeActive ) {
+				// remove the view
+				[launchController.progressContainerView removeFromSuperview];
+				[launchController.view removeFromSuperview];
+				[launchController release];
+				launchController = nil;
+				launchModeActive = NO;
+			}
 //            if (shouldResumePlayingVideoAfterTransition) {
 //                [self playCurrentVideo];
 //            }
@@ -1235,6 +1242,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in
 		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
+		if ( launchModeActive ) {
+			// hide the progress label
+			launchController.progressContainerView.alpha = 0.0f;
+		}
+
 	} else {
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
