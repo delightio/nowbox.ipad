@@ -71,5 +71,8 @@
  */
 - (void)cleanUpCache;
 - (void)cleanBeforeSignout;
+
+// debug
+- (void)removeAllFiles;
 @end
 

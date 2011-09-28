@@ -571,4 +571,15 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	
 }
 
+- (void)removeAllFiles {
+	// remove the directories and their contents
+	[fileManager removeItemAtPath:channelThumbnailCacheDir error:nil];
+	[fileManager removeItemAtPath:authorThumbnailCacheDir error:nil];
+	[fileManager removeItemAtPath:videoThumbnailCacheDir error:nil];
+	// re-create the directories
+	[fileManager createDirectoryAtPath:channelThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
+	[fileManager createDirectoryAtPath:authorThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
+	[fileManager createDirectoryAtPath:videoThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
+}
+
 @end

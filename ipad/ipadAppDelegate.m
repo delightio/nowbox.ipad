@@ -83,6 +83,12 @@ NSInteger NM_LAST_CHANNEL_ID;
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
 	userDefaults = [NSUserDefaults standardUserDefaults];
+#ifdef DEBUG_ONBOARD_PROCESS
+	[userDefaults setBool:YES forKey:NM_FIRST_LAUNCH_KEY];
+	[[NMCacheController sharedCacheController] removeAllFiles];
+	// delete image cache
+	// clear core data
+#endif
 	// check first launch
 	if ( [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY] ) {
 		// first time launching the app
@@ -257,13 +263,14 @@ NSInteger NM_LAST_CHANNEL_ID;
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Nowmov.sqlite"];
     
-	//MARK: debug code
-//	NSLog(@"debug!!!!!!  removing local cache");
-//	NSFileManager * fm = [NSFileManager defaultManager];
-//	if ( [fm fileExistsAtPath:[storeURL path]] ) {
-//		// remove the file
-//		[fm removeItemAtURL:storeURL error:nil];
-//	}
+#ifdef DEBUG_ONBOARD_PROCESS
+	NSLog(@"debug!!!!!!  removing local cache to fool onboard process");
+	NSFileManager * fm = [NSFileManager defaultManager];
+	if ( [fm fileExistsAtPath:[storeURL path]] ) {
+		// remove the file
+		[fm removeItemAtURL:storeURL error:nil];
+	}
+#endif
 
     NSError *error = nil;
     persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
