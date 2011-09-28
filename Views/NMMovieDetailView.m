@@ -137,6 +137,16 @@
 	[UIView commitAnimations];
 }
 
+- (void)slowFadeOutThumbnailView:(id)sender context:(void *)ctx {
+	[UIView beginAnimations:nil context:ctx];
+	[UIView setAnimationDuration:0.25f];
+	[UIView setAnimationDelay:1.25f];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView setAnimationDelegate:sender];
+	movieThumbnailView.alpha = 0.0f;
+	[UIView commitAnimations];
+}
+
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
 	if ( isFullScreen ) {
 		infoContainerView.hidden = YES;

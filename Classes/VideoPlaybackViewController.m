@@ -69,6 +69,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize currentVideo;
 @synthesize channelController;
 @synthesize loadedControlView;
+@synthesize controlScrollView;
 @synthesize loadedMovieDetailView;
 @synthesize appDelegate;
 @synthesize launchModeActive;
@@ -259,29 +260,40 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)showLaunchView {
 	[launchController loadView];
+	UIView * theView = launchController.progressContainerView;
+	[theView removeFromSuperview];
 	[self.view addSubview:launchController.view];
+	CGRect winRect = self.view.bounds;
+	CGRect theRect = theView.frame;
+	theRect.origin.x = winRect.size.width - theRect.size.width;
+	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
+	theView.frame = theRect;
+	[self.view addSubview:launchController.progressContainerView];
 }
 
 - (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
 	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
 		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
-		playbackModelController.currentVideo.nm_movie_detail_view.video = playbackModelController.currentVideo;
+		controlScrollView.scrollEnabled = NO;
+//		playbackModelController.currentVideo.nm_movie_detail_view.video = playbackModelController.currentVideo;
 		NSLog(@"onboard - first thumbnail alpha: %f, movie view alpha: %f", playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha, movieView.alpha);
 		[self.view bringSubviewToFront:topLevelContainerView];
+		[self.view bringSubviewToFront:launchController.progressContainerView];
 		// slide in the view
 		[UIView animateWithDuration:0.5f animations:^{
 			topLevelContainerView.center = launchController.view.center;
 		} completion:^(BOOL finished) {
 			playFirstVideoOnLaunchWhenReady = YES;
 			// remove launch view
-			[launchController.view removeFromSuperview];
-			[launchController release];
-			launchController = nil;
-			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//			[launchController.view removeFromSuperview];
+//			[launchController release];
+//			launchController = nil;
+			[launchController showSwipeInstruction];
+			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 		}];
 	} else {
 		// cross fade
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.75f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
 			// remove launch view
 			[launchController.view removeFromSuperview];
 			[launchController release];
@@ -777,21 +789,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
-	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-	if ( ribbonView.alpha < 1.0f ) {
-		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-	}
-	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
-	currentXOffset = newOffset;
-	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
-	[UIView animateWithDuration:0.5f animations:^{
-		controlScrollView.contentOffset = thePoint;
-	} completion:^(BOOL finished) {
-		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-	}];
-
 //	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
+//	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+//	if ( ribbonView.alpha < 1.0f ) {
+//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+//	}
+//	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
+//	currentXOffset = newOffset;
+//	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
+//	[UIView animateWithDuration:0.5f animations:^{
+//		controlScrollView.contentOffset = thePoint;
+//	} completion:^(BOOL finished) {
+//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+//	}];
+
+	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 
 }
 
@@ -1095,6 +1107,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.alpha = 0.15;
 	}];
 	ribbonView.userInteractionEnabled = NO;
+	if ( launchModeActive ) {
+		[launchController dimProgressLabel];
+	}
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1136,6 +1151,19 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		else
 			NSLog(@"can't move to next video. no video!!");
 #endif
+		if ( launchModeActive ) {
+			// hide the progress label
+			[UIView animateWithDuration:0.25f animations:^{
+				launchController.progressContainerView.alpha = 0.0f;
+			} completion:^(BOOL finished) {
+				// remove the view
+				[launchController.progressContainerView removeFromSuperview];
+				[launchController.view removeFromSuperview];
+				[launchController release];
+				launchController = nil;
+				launchModeActive = NO;
+			}];
+		}
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 //		[movieView setActivityIndicationHidden:NO animated:NO];
 		didSkippedVideo = YES;
@@ -1153,6 +1181,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		scrollView.scrollEnabled = YES;
 		// this method pairs with "stopVideo" in scrollViewDidEndDragging
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
+		
+		if ( launchModeActive ) {
+			[launchController restoreProgressLabel];
+		}
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition

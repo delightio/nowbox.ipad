@@ -20,11 +20,13 @@
 
 @implementation LaunchController
 @synthesize view;
+@synthesize progressContainerView;
 @synthesize viewController;
 @synthesize channel;
 
 - (void)dealloc {
 	[view release];
+	[progressContainerView release];
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
@@ -100,6 +102,34 @@
 	}
 }
 
+- (void)showSwipeInstruction {
+	[progressLabel setTitle:@"Swipe to show next" forState:UIControlStateNormal];
+	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
+	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
+	[UIView animateWithDuration:0.25f animations:^{
+		CGRect theFrame = progressLabel.frame;
+		theFrame.origin.x = 0.0f;
+		theFrame.size.width = 190.0f;
+		progressLabel.frame = theFrame;
+	} completion:^(BOOL finished) {
+		viewController.controlScrollView.scrollEnabled = YES;
+	}];
+}
+
+- (void)dimProgressLabel {
+	if ( progressLabel.alpha < 1.0f ) return;
+	[UIView animateWithDuration:0.25f animations:^{
+		progressLabel.alpha = 0.5f;
+	} completion:nil];
+}
+
+- (void)restoreProgressLabel {
+	if ( progressLabel.alpha != 1.0f ) return;
+	[UIView animateWithDuration:0.25f animations:^{
+		progressLabel.alpha = 1.0f;
+	} completion:nil];
+}
+
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
@@ -161,9 +191,17 @@
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
+			[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 			// ready to show the launch view
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
+			// hide progress label
+			[UIView animateWithDuration:0.25f animations:^{
+				CGRect theFrame = progressLabel.frame;
+				theFrame.origin.x += theFrame.size.width - 12.0f;
+				theFrame.size.width = 12.0f;
+				progressLabel.frame = theFrame;
+				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
+			}];
 		}
 	}
 }
@@ -177,9 +215,17 @@
 		NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
 			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
+				[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 				// ready to show launch view
 				[NSObject cancelPreviousPerformRequestsWithTarget:self];
-				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
+				// hide progress label
+				[UIView animateWithDuration:0.25f animations:^{
+					CGRect theFrame = progressLabel.frame;
+					theFrame.origin.x += theFrame.size.width - 12.0f;
+					theFrame.size.width = 12.0f;
+					progressLabel.frame = theFrame;
+					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
+				}];
 			}
 		}
 	}

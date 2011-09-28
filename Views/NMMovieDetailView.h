@@ -37,6 +37,7 @@
 @property (nonatomic, readonly) NMCachedImageView * movieThumbnailView;
 
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx;
+- (void)slowFadeOutThumbnailView:(id)sender context:(void *)ctx;
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;
 
 @end
