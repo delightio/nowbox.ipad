@@ -201,7 +201,6 @@
 								<string key="NSFrame">{{365, 182}, {11, 31}}</string>
 								<reference key="NSSuperview" ref="126145415"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:554</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
@@ -830,7 +829,6 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
-							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -838,7 +836,6 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -857,7 +854,6 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
-							<string>skipCurrentVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -879,10 +875,6 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">seekPlaybackProgress:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">skipCurrentVideo:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -913,6 +905,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -922,6 +915,7 @@
 							<string>UIButton</string>
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
+							<string>UIView</string>
 							<string>UIView</string>
 							<string>UIButton</string>
 						</object>
@@ -936,6 +930,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -962,6 +957,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">ribbonView</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">topLevelContainerView</string>
 								<string key="candidateClassName">UIView</string>
 							</object>
 							<object class="IBToOneOutletInfo">

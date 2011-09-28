@@ -170,7 +170,7 @@
 		[nowmovTaskController issueGetDirectURLForVideo:vid];
 	} else if ( vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 		[self queueVideo:vid];
-		if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
+		if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 			[playbackDelegate player:self willBeginPlayingVideo:vid];
 		}
 	}
@@ -194,7 +194,7 @@
 		case 0:
 		{
 			// the queue player is currently empty. we should queue the current video and start playing it.
-			if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
+			if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 				// play the video
 				[self insertVideoToEndOfQueue:vid];
 				[self play];
@@ -213,7 +213,7 @@
 		}
 		case 1:
 		{
-			if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
+			if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 				if ( [self revertPreviousItem:[vid createPlayerItem]] ) {
 					vid.nm_playback_status = NMVideoQueueStatusQueued;
 				}
@@ -224,7 +224,7 @@
 					[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 					[self removeItem:otherItem];
 				}
-			} else if ( vid == [playbackDelegate nextVideoForPlayer:self] ) {
+			} else if ( [vid isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
 				// there's already a video in the queue. That's the current item. We will queue next and next next video into the queue if available
 				[self insertVideoToEndOfQueue:vid];
 				
@@ -237,7 +237,7 @@
 		}
 		case 2:
 		{
-			if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
+			if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 				// we wanna play the current video while there's already videos in the queue. This indicates user has scrolled back to the previous video
 				if ( [self revertPreviousItem:[vid createPlayerItem]] ) {
 					vid.nm_playback_status = NMVideoQueueStatusQueued;
@@ -255,7 +255,7 @@
 					[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 					[self removeItem:otherItem];
 				}
-			} else if ( vid == [playbackDelegate nextNextVideoForPlayer:self] ) {
+			} else if ( [vid isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
 				// there are 2 videos queued. Queue the next next video
 				[self insertVideoToEndOfQueue:vid];
 			}
@@ -264,7 +264,7 @@
 		case 3:
 		{
 			// check if the video is before or after the current set of video. Only queue video to the front of the player for this case
-			if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
+			if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 //				NMVideo * nVid = ((NMAVPlayerItem *)self.currentItem).nmVideo;
 //				NSComparisonResult crs = [nVid.nm_fetch_timestamp compare:vid.nm_fetch_timestamp];
 //				if ( crs == NSOrderedDescending || (crs == NSOrderedSame && [nVid.nm_sort_order compare:vid.nm_sort_order] == NSOrderedDescending) ) {
@@ -307,7 +307,7 @@
 	NSLog(@"resolved: %@", vid.title);
 #endif
 	[self queueVideo:vid];
-	if ( vid == [playbackDelegate currentVideoForPlayer:self] ) {
+	if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 		[playbackDelegate player:self willBeginPlayingVideo:vid];
 		[self play];
 	}
