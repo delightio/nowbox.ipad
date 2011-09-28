@@ -149,7 +149,6 @@
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
-		A9BD9C0D142FA9E400F6453C /* onboard-label-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = A9BD9C0B142FA9E400F6453C /* onboard-label-logo.png */; };
 		A9BD9C0E142FA9E400F6453C /* onboard-right-label-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9BD9C0C142FA9E400F6453C /* onboard-right-label-background.png */; };
 		A9BD9C10142FB64100F6453C /* onboard-label-arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9BD9C0F142FB64100F6453C /* onboard-label-arrow.png */; };
 		A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */; };
@@ -405,7 +404,6 @@
 		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
 		A9B3EE6D13B91C330058E114 /* NMVideoDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideoDetail.h; sourceTree = "<group>"; };
 		A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideoDetail.m; sourceTree = "<group>"; };
-		A9BD9C0B142FA9E400F6453C /* onboard-label-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-label-logo.png"; sourceTree = "<group>"; };
 		A9BD9C0C142FA9E400F6453C /* onboard-right-label-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-right-label-background.png"; sourceTree = "<group>"; };
 		A9BD9C0F142FB64100F6453C /* onboard-label-arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-label-arrow.png"; sourceTree = "<group>"; };
 		A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppleTVIndicationView.xib; sourceTree = "<group>"; };
@@ -627,7 +625,6 @@
 				223015E31416F378006FC44E /* movie-detail-swipe-indicator.png */,
 				2238D5C01430752A00F8CDBF /* nowbox_background.png */,
 				A9BD9C0F142FB64100F6453C /* onboard-label-arrow.png */,
-				A9BD9C0B142FA9E400F6453C /* onboard-label-logo.png */,
 				A924150714332A9700C83A7D /* onboard-nowbox-logo.png */,
 				A924150A14332AA700C83A7D /* onboard-label-separator.png */,
 				A9BD9C0C142FA9E400F6453C /* onboard-right-label-background.png */,
@@ -1034,7 +1031,6 @@
 				223015E41416F378006FC44E /* movie-detail-swipe-indicator.png in Resources */,
 				2275AD5114214867003C3FFC /* channel-video-status-watch-later.png in Resources */,
 				221EE3B5142BEACA00519DF8 /* VideoPanelLoadMoreView.xib in Resources */,
-				A9BD9C0D142FA9E400F6453C /* onboard-label-logo.png in Resources */,
 				A9BD9C0E142FA9E400F6453C /* onboard-right-label-background.png in Resources */,
 				A9BD9C10142FB64100F6453C /* onboard-label-arrow.png in Resources */,
 				2238D5C11430752A00F8CDBF /* nowbox_background.png in Resources */,
