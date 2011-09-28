@@ -57,6 +57,8 @@
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
 		A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */; };
+		A924150814332A9700C83A7D /* onboard-nowbox-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = A924150714332A9700C83A7D /* onboard-nowbox-logo.png */; };
+		A924150B14332AA700C83A7D /* onboard-label-separator.png in Resources */ = {isa = PBXBuildFile; fileRef = A924150A14332AA700C83A7D /* onboard-label-separator.png */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A925014B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250149134385BF001759F5 /* InfoPlist.strings */; };
@@ -263,6 +265,8 @@
 		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
 		A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoContainerView.m; sourceTree = "<group>"; };
+		A924150714332A9700C83A7D /* onboard-nowbox-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-nowbox-logo.png"; sourceTree = "<group>"; };
+		A924150A14332AA700C83A7D /* onboard-label-separator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-label-separator.png"; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -624,6 +628,8 @@
 				2238D5C01430752A00F8CDBF /* nowbox_background.png */,
 				A9BD9C0F142FB64100F6453C /* onboard-label-arrow.png */,
 				A9BD9C0B142FA9E400F6453C /* onboard-label-logo.png */,
+				A924150714332A9700C83A7D /* onboard-nowbox-logo.png */,
+				A924150A14332AA700C83A7D /* onboard-label-separator.png */,
 				A9BD9C0C142FA9E400F6453C /* onboard-right-label-background.png */,
 				A931612C13E0902B009694C3 /* playback-full-screen-active.png */,
 				A931612D13E0902B009694C3 /* playback-full-screen.png */,
@@ -1032,6 +1038,8 @@
 				A9BD9C0E142FA9E400F6453C /* onboard-right-label-background.png in Resources */,
 				A9BD9C10142FB64100F6453C /* onboard-label-arrow.png in Resources */,
 				2238D5C11430752A00F8CDBF /* nowbox_background.png in Resources */,
+				A924150814332A9700C83A7D /* onboard-nowbox-logo.png in Resources */,
+				A924150B14332AA700C83A7D /* onboard-label-separator.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

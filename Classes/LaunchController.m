@@ -27,6 +27,7 @@
 - (void)dealloc {
 	[view release];
 	[progressContainerView release];
+	[separatorView release];
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
@@ -34,8 +35,17 @@
 }
 
 - (void)loadView {
+	// background pattern of the whole launch view
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-	[progressLabel setBackgroundImage:[[UIImage imageNamed:@"onboard-right-label-background"] stretchableImageWithLeftCapWidth:6 topCapHeight:0] forState:UIControlStateNormal];
+	// background image of progress container view
+	CALayer * theLayer = progressContainerView.layer;
+	theLayer.contents = (id)[UIImage imageNamed:@"onboard-right-label-background"].CGImage;
+	theLayer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
+	// the separator
+	separatorView = [[UIView alloc] initWithFrame:CGRectMake(190.0f, 10.0f, 2.0f, 30.0f)];
+	separatorView.backgroundColor = [NMStyleUtility sharedStyleUtility].clearColor;
+	separatorView.layer.contents = (id)[UIImage imageNamed:@"onboard-label-separator"].CGImage;
+	[progressContainerView addSubview:separatorView];
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
@@ -107,26 +117,28 @@
 	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
 	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
 	[UIView animateWithDuration:0.25f animations:^{
-		CGRect theFrame = progressLabel.frame;
-		theFrame.origin.x = 0.0f;
-		theFrame.size.width = 190.0f;
-		progressLabel.frame = theFrame;
+		CGRect theFrame = progressContainerView.frame;
+		theFrame.origin.x -= 190.0f;
+		theFrame.size.width += 190.0f;
+		progressContainerView.frame = theFrame;
+		progressLabel.alpha = 1.0f;
+		separatorView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		viewController.controlScrollView.scrollEnabled = YES;
 	}];
 }
 
 - (void)dimProgressLabel {
-	if ( progressLabel.alpha < 1.0f ) return;
+	if ( progressContainerView.alpha < 1.0f ) return;
 	[UIView animateWithDuration:0.25f animations:^{
-		progressLabel.alpha = 0.5f;
+		progressContainerView.alpha = 0.5f;
 	} completion:nil];
 }
 
 - (void)restoreProgressLabel {
-	if ( progressLabel.alpha != 1.0f ) return;
+	if ( progressContainerView.alpha == 1.0f ) return;
 	[UIView animateWithDuration:0.25f animations:^{
-		progressLabel.alpha = 1.0f;
+		progressContainerView.alpha = 1.0f;
 	} completion:nil];
 }
 
@@ -196,10 +208,12 @@
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
 			// hide progress label
 			[UIView animateWithDuration:0.25f animations:^{
-				CGRect theFrame = progressLabel.frame;
-				theFrame.origin.x += theFrame.size.width - 12.0f;
-				theFrame.size.width = 12.0f;
-				progressLabel.frame = theFrame;
+				CGRect theFrame = progressContainerView.frame;
+				theFrame.origin.x += theFrame.size.width - 135.0f;
+				theFrame.size.width = 135.0f;
+				progressContainerView.frame = theFrame;
+				progressLabel.alpha = 0.0f;
+				separatorView.alpha = 0.0f;
 				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
 			}];
 		}
@@ -220,10 +234,12 @@
 				[NSObject cancelPreviousPerformRequestsWithTarget:self];
 				// hide progress label
 				[UIView animateWithDuration:0.25f animations:^{
-					CGRect theFrame = progressLabel.frame;
-					theFrame.origin.x += theFrame.size.width - 12.0f;
-					theFrame.size.width = 12.0f;
-					progressLabel.frame = theFrame;
+					CGRect theFrame = progressContainerView.frame;
+					theFrame.origin.x += theFrame.size.width - 135.0f;
+					theFrame.size.width = 135.0f;
+					progressContainerView.frame = theFrame;
+					progressLabel.alpha = 0.0f;
+					separatorView.alpha = 0.0f;
 					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
 				}];
 			}

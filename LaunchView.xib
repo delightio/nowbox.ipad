@@ -54,12 +54,12 @@
 								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:569</string>
 								<bool key="IBUIClipsSubviews">YES</bool>
-								<int key="IBUIContentMode">10</int>
+								<int key="IBUIContentMode">4</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">onboard-label-logo.png</string>
+									<string key="NSResourceName">onboard-nowbox-logo.png</string>
 								</object>
 							</object>
 							<object class="IBUIButton" id="127859069">
@@ -254,7 +254,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">24</int>
+			<int key="maxID">25</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -324,8 +324,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">onboard-label-logo.png</string>
-			<string key="NS.object.0">{135, 50}</string>
+			<string key="NS.key.0">onboard-nowbox-logo.png</string>
+			<string key="NS.object.0">{93, 14}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">931</string>
 	</data>

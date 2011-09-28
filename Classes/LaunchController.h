@@ -13,6 +13,7 @@
 @interface LaunchController : NSObject {
 	UIView * view;
 	UIView * progressContainerView;
+	UIView * separatorView;
     IBOutlet UIButton * progressLabel;
 	IBOutlet UIImageView * logoImageView;
 	BOOL appFirstLaunch;
