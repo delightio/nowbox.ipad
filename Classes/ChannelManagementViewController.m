@@ -218,39 +218,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 }
 
 -(float)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (tableView == channelsTableView) {
-        return 0;
-    }
-    return 10;
+    return 0;
 }
 
 -(float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (tableView == channelsTableView) {
-        return 0;
-    }
-    return 10;
-}
-
-
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (tableView == channelsTableView) {
-        return nil;
-    }
-    
-    UIImageView *theView = [[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 70, 10)] autorelease];
-    theView.image = [UIImage imageNamed:@"category-list-normal-bg-turned"];
-    return theView;
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    if (tableView == channelsTableView) {
-        return nil;
-    }
-    
-    UIImageView *theView = [[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 70, 10)] autorelease];
-    theView.image = [UIImage imageNamed:@"category-list-normal-bg-turned"];
-    return theView;
+    return 0;
 }
 
 
