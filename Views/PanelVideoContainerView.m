@@ -23,6 +23,7 @@
 @synthesize videoRowDelegate;
 @synthesize videoStatusImageView;
 @synthesize videoNewSession;
+@synthesize isFirstCell;
 
 - (id)initWithFrame:(CGRect)frame
 {
