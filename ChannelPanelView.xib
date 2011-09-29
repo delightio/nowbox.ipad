@@ -64,7 +64,7 @@
 					<object class="IBUITableView" id="1064860965">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{0, 44}, {1024, 712}}</string>
+						<string key="NSFrame">{{0, 44}, {1024, 704}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="256796477"/>
@@ -257,6 +257,7 @@
 						<string key="NSFrame">{{0, 44}, {1024, 8}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:554</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -1029,6 +1030,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1038,6 +1040,7 @@
 							<string>UIButton</string>
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
+							<string>UIView</string>
 							<string>UIView</string>
 							<string>UIButton</string>
 						</object>
@@ -1052,6 +1055,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1078,6 +1082,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">ribbonView</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">topLevelContainerView</string>
 								<string key="candidateClassName">UIView</string>
 							</object>
 							<object class="IBToOneOutletInfo">

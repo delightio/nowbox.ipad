@@ -126,6 +126,8 @@
 		[result setIsPlayingVideo:NO];
 	}
     
+    [result setIsFirstCell:([anIndexPath row] == 0)];
+    
     return (UITableViewCell *)result;
 }
 
