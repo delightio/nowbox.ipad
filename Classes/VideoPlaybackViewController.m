@@ -1035,12 +1035,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			}
 			NSLog(@"skipping video - play rate: %f %d", movieView.player.rate, didSkippedVideo);
 		}*/
-	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT && object == movieView.player.currentItem ) {
-		// buffering progress
-		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
-		NSValue * theRangeValue = [theItem.loadedTimeRanges lastObject];
-		if ( theRangeValue ) {
-			loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT ) {
+		if ( object == movieView.player.currentItem ) {
+			// buffering progress
+			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+			NSValue * theRangeValue = [theItem.loadedTimeRanges lastObject];
+			if ( theRangeValue ) {
+				loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+			}
 		}
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
