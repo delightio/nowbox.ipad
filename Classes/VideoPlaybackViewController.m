@@ -1093,10 +1093,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	NMVideoPlaybackViewIsScrolling = YES;
-	[UIView animateWithDuration:0.25f animations:^{
-		ribbonView.alpha = 0.15;
-	}];
-	ribbonView.userInteractionEnabled = NO;
+//	[UIView animateWithDuration:0.25f animations:^{
+//		ribbonView.alpha = 0.15;
+//	}];
+//	ribbonView.userInteractionEnabled = NO;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
