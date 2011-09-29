@@ -171,6 +171,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	channelController.videoViewController = self;
 	[topLevelContainerView addSubview:channelController.panelView];
     
+    [channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
+    
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
