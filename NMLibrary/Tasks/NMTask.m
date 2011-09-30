@@ -101,11 +101,19 @@ NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
 	return NMTaskFailNotification;
 }
 
+- (NSString *)didCancelNotificationName {
+	return nil;
+}
+
 - (NSDictionary *)userInfo {
 	return nil;
 }
 
 - (NSDictionary *)failUserInfo {
+	return nil;
+}
+
+- (NSDictionary *)cancelUserInfo {
 	return nil;
 }
 

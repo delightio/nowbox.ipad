@@ -66,4 +66,5 @@
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 
+- (void)cancelAllTasks;
 @end

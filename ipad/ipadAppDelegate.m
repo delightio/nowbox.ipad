@@ -126,6 +126,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	// release core data
 	
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_LAST_SESSION_DATE];
+	// cancel tasks
+//	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

@@ -37,6 +37,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	pendingTaskBuffer = [[NSMutableArray alloc] init];
 	connectionDateLog = [[NSMutableArray alloc] initWithCapacity:NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION];
 	networkConnectionLock = [[NSLock alloc] init];
+	pendingTaskBufferLock = [[NSLock alloc] init];
 	isDone = NO;
 	maxNumberOfConnection = NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION;
 	defaultCenter = [[NSNotificationCenter defaultCenter] retain];
@@ -53,6 +54,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[connectionPool release];
 	[pendingTaskBuffer release];
 	[networkConnectionLock release];
+	[pendingTaskBufferLock release];
 	[connectionDateLog release];
 	[dataController release];
 	[super dealloc];
@@ -98,33 +100,21 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 
 #pragma mark Connection management
 - (void)addNewConnectionForTasks:(NSArray *)tasks {
-	@synchronized(pendingTaskBuffer) {
-		[pendingTaskBuffer addObjectsFromArray:tasks];
-		NMTask *t;
-		for (t in tasks) {
-			t.state = NMTaskExecutionStateWaitingInConnectionQueue;
-//			if ( t.command == NMCommandGetChannelThumbnail ) {
-//				@synchronized(activeChannelThumbnailDownloadSet) {
-//					NMImageDownloadTask * imgTask = (NMImageDownloadTask *)t;
-//					[activeChannelThumbnailDownloadSet addObject:imgTask.imageURLString];
-//				}
-//			}
-		}
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer addObjectsFromArray:tasks];
+	NMTask *t;
+	for (t in tasks) {
+		t.state = NMTaskExecutionStateWaitingInConnectionQueue;
 	}
+	[pendingTaskBufferLock unlock];
 	[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
 }
 
 - (void)addNewConnectionForTask:(NMTask *)aTask {
-	@synchronized(pendingTaskBuffer) {
-		[pendingTaskBuffer addObject:aTask];
-		aTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
-//		if ( aTask.command == NMCommandGetChannelThumbnail ) {
-//			@synchronized(activeChannelThumbnailDownloadSet) {
-//				NMImageDownloadTask * imgTask = (NMImageDownloadTask *)aTask;
-//				[activeChannelThumbnailDownloadSet addObject:imgTask.imageURLString];
-//			}
-//		}
-	}
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer addObject:aTask];
+	aTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
+	[pendingTaskBufferLock unlock];
 	[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
 }
 /*
@@ -165,48 +155,48 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	BOOL didRunOutResource = NO;
 	NSMutableArray * rmTaskAy = nil;
 	NSUInteger taskIdx;
-	@synchronized(pendingTaskBuffer) {
-		for (theTask in pendingTaskBuffer) {
-			if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {
-				taskIdx = [theTask commandIndex];
-				if ( [commandIndexPool containsIndex:taskIdx] ) {
-					// remove the task without performing it
-					if ( rmTaskAy == nil ) {
-						rmTaskAy = [NSMutableArray arrayWithCapacity:2];
-					}
-					[rmTaskAy addObject:theTask];
-#ifdef DEBUG_CONNECTION_CONTROLLER
-					NSLog(@"Network Controller: command repeated. Discard Task: %d", taskIdx);
-#endif
-					continue;
-				} 
-				if ( [self tryGetNetworkResource] ) {
-#ifdef DEBUG_CONNECTION_CONTROLLER
-					NSLog(@"Network Controller: added command: %d", taskIdx);
-#endif
-					// add command index to the pool only when we have enough resource
-					[commandIndexPool addIndex:taskIdx];
-					
-					theTask.state = NMTaskExecutionStateConnectionActive;
-					request = [theTask URLRequest];
-					conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
-					key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
-					[connectionPool setObject:conn forKey:key];
-					[taskPool setObject:theTask forKey:key];
-					[conn release];
-					
-					// create notification object
-					NSString * notStr = [theTask willLoadNotificationName];
-					if ( notStr ) [self postNotificationOnMainThread:notStr object:self userInfo:nil];
-				} else {
-					didRunOutResource = YES;
-					break;
+	[pendingTaskBufferLock lock];
+	for (theTask in pendingTaskBuffer) {
+		if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {
+			taskIdx = [theTask commandIndex];
+			if ( [commandIndexPool containsIndex:taskIdx] ) {
+				// remove the task without performing it
+				if ( rmTaskAy == nil ) {
+					rmTaskAy = [NSMutableArray arrayWithCapacity:2];
 				}
+				[rmTaskAy addObject:theTask];
+#ifdef DEBUG_CONNECTION_CONTROLLER
+				NSLog(@"Network Controller: command repeated. Discard Task: %d", taskIdx);
+#endif
+				continue;
+			} 
+			if ( [self tryGetNetworkResource] ) {
+#ifdef DEBUG_CONNECTION_CONTROLLER
+				NSLog(@"Network Controller: added command: %d", taskIdx);
+#endif
+				// add command index to the pool only when we have enough resource
+				[commandIndexPool addIndex:taskIdx];
+				
+				theTask.state = NMTaskExecutionStateConnectionActive;
+				request = [theTask URLRequest];
+				conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+				key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
+				[connectionPool setObject:conn forKey:key];
+				[taskPool setObject:theTask forKey:key];
+				[conn release];
+				
+				// create notification object
+				NSString * notStr = [theTask willLoadNotificationName];
+				if ( notStr ) [self postNotificationOnMainThread:notStr object:self userInfo:nil];
+			} else {
+				didRunOutResource = YES;
+				break;
 			}
 		}
-		// remove these commands
-		if ( rmTaskAy ) [pendingTaskBuffer removeObjectsInArray:rmTaskAy];
 	}
+	// remove these commands
+	if ( rmTaskAy ) [pendingTaskBuffer removeObjectsInArray:rmTaskAy];
+	[pendingTaskBufferLock unlock];
 	return didRunOutResource;
 }
 
@@ -271,28 +261,50 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 }
 
 - (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj {
-	@synchronized(pendingTaskBuffer) {
-		for (NMTask * task in pendingTaskBuffer) {
-			if ( task.state == NMTaskExecutionStateConnectionActive ) {
-				switch (task.command) {
-					case NMCommandGetAllChannels:
-					case NMCommandGetSubscribedChannels:
-					case NMCommandGetMoreVideoForChannel:
-						// cancel the task
-						if ( [task.targetID isEqualToNumber:chnObj.nm_id]) {
-							task.state = NMTaskExecutionStateCanceled;
-						}
-						break;
-					case NMCommandGetYouTubeDirectURL:
-						// cancel the task
+	[pendingTaskBufferLock lock];
+	for (NMTask * task in pendingTaskBuffer) {
+		if ( task.state == NMTaskExecutionStateConnectionActive ) {
+			switch (task.command) {
+				case NMCommandGetAllChannels:
+				case NMCommandGetSubscribedChannels:
+				case NMCommandGetMoreVideoForChannel:
+					// cancel the task
+					if ( [task.targetID isEqualToNumber:chnObj.nm_id]) {
 						task.state = NMTaskExecutionStateCanceled;
-						break;
-					default:
-						break;
-				}
+					}
+					break;
+				case NMCommandGetYouTubeDirectURL:
+					// cancel the task
+					task.state = NMTaskExecutionStateCanceled;
+					break;
+				default:
+					break;
 			}
 		}
 	}
+	[pendingTaskBufferLock unlock];
+}
+
+- (void)forceCancelAllTasks {
+	// cancel the connection
+	NSURLConnection * conn;
+	NMTask * theTask;
+	for (id theKey in connectionPool) {
+		conn = [connectionPool objectForKey:theKey];
+		[conn cancel];
+		[self returnNetworkResource];
+		theTask = [taskPool objectForKey:theKey];
+		if ( [theTask didCancelNotificationName] ) {
+			[self postNotificationOnMainThread:[theTask didCancelNotificationName] object:self userInfo:[theTask cancelUserInfo]];
+		}
+	}
+	[connectionPool removeAllObjects];
+	[taskPool removeAllObjects];
+	[commandIndexPool removeAllIndexes];
+	// clear up tasks not yet executed
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer removeAllObjects];
+	[pendingTaskBufferLock unlock];
 }
 
 #pragma mark NSURLConnection delegate methods
@@ -337,9 +349,9 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 		[taskPool removeObjectForKey:key];
 		[commandIndexPool removeIndex:[task commandIndex]];
 		// remove task
-		@synchronized(pendingTaskBuffer) {
-			[pendingTaskBuffer removeObject:task];
-		}
+		[pendingTaskBufferLock lock];
+		[pendingTaskBuffer removeObject:task];
+		[pendingTaskBufferLock unlock];
 	} else {
 		[task.buffer appendData:data];
 	}
@@ -360,9 +372,9 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	// release the task
 	[taskPool removeObjectForKey:key];
 	[commandIndexPool removeIndex:[task commandIndex]];
-	@synchronized(pendingTaskBuffer) {
-		[pendingTaskBuffer removeObject:task];
-	}
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer removeObject:task];
+	[pendingTaskBufferLock unlock];
 	
 	// inform the user
 #ifdef DEBUG_CONNECTION_CONTROLLER 
@@ -384,9 +396,9 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 		[taskPool removeObjectForKey:key];
 		[commandIndexPool removeIndex:[theTask commandIndex]];
 		// remove task
-		@synchronized(pendingTaskBuffer) {
-			[pendingTaskBuffer removeObject:theTask];
-		}
+		[pendingTaskBufferLock lock];
+		[pendingTaskBuffer removeObject:theTask];
+		[pendingTaskBufferLock unlock];
 		return;
 	}
 	
@@ -424,9 +436,9 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[taskPool removeObjectForKey:key];
 	[commandIndexPool removeIndex:[theTask commandIndex]];
 	// remove task
-	@synchronized(pendingTaskBuffer) {
-		[pendingTaskBuffer removeObject:theTask];
-	}
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer removeObject:theTask];
+	[pendingTaskBufferLock unlock];
 }
 
 @end

@@ -18,11 +18,7 @@
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
 NSString * const NMDidFailGetChannelVideoListNotification = @"NMDidFailGetChannelVideoListNotification";
-
-// notification name for getting more videos in a channel
-NSString * const NMWillGetMoreChannelVideNotification = @"NMWillGetMoreChannelVideNotification";
-NSString * const NMDidGetMoreChannelVideoNotification = @"NMDidGetMoreChannelVideoNotification";
-NSString * const NMDidFailGetMoreChannelVideoNotification = @"NMDidFailGetMoreChannelVideoNotification";
+NSString * const NMDidCancelGetChannelVideListNotification = @"NMDidCancelGetChannelVideListNotification";
 
 
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
@@ -274,12 +270,20 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	return NMDidFailGetChannelVideoListNotification;
 }
 
-- (NSDictionary *)failUserInfo {
-	return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
+- (NSString *)didCancelNotificationName {
+	return NMDidCancelGetChannelVideListNotification;
 }
 
 - (NSDictionary *)userInfo {
 	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", [NSNumber numberWithUnsignedInteger:numberOfRowsFromServer], @"num_video_received", [NSNumber numberWithUnsignedInteger:NM_NUMBER_OF_VIDEOS_PER_PAGE], @"num_video_requested", channel, @"channel", nil];
+}
+
+- (NSDictionary *)failUserInfo {
+	return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
+}
+
+- (NSDictionary *)cancelUserInfo {
+	return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
 }
 
 @end
