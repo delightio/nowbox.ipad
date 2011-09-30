@@ -70,6 +70,7 @@
 @property (nonatomic, readonly) NMVideo * firstVideo;
 
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, readonly) NSUInteger numberOfVideos;
 @property (nonatomic, assign) id<VideoPlaybackModelControllerDelegate> dataDelegate;
 
 @property (nonatomic, retain) UITextView * debugMessageView;

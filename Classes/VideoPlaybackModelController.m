@@ -28,7 +28,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 @synthesize currentIndexPath, previousIndexPath, nextIndexPath, nextNextIndexPath;
 @synthesize currentVideo, nextVideo, nextNextVideo, previousVideo;
-@synthesize channel, dataDelegate;
+@synthesize channel, dataDelegate, numberOfVideos;
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext;
 @synthesize debugMessageView;
 

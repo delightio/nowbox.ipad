@@ -812,18 +812,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-	if ( currentXOffset != newOffset ) {
-		// update offset
-		currentXOffset = newOffset;
-		// move over to the new location
-		[UIView animateWithDuration:0.5f animations:^{
-			controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
-		} completion:^(BOOL finished) {
-			[self delayRestoreDetailView];
-		}];
+	if ( totalNum ) {
+		if ( currentXOffset != newOffset ) {
+			// update offset
+			currentXOffset = newOffset;
+			// move over to the new location
+			[UIView animateWithDuration:0.5f animations:^{
+				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
+			} completion:^(BOOL finished) {
+				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+			}];
+		} else {
+			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+		}
 	}
 }
-
 
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
 
