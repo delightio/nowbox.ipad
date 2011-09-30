@@ -685,7 +685,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		currentXOffset += 1024.0f;
 		// scroll to next video
 		// translate the movie view
-		controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
+		[UIView animateWithDuration:0.5f animations:^{
+			controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
+		}];
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
