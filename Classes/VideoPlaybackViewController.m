@@ -172,6 +172,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	channelController.videoViewController = self;
 	[topLevelContainerView addSubview:channelController.panelView];
     
+    [channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
+    
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
@@ -1090,12 +1092,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			}
 			NSLog(@"skipping video - play rate: %f %d", movieView.player.rate, didSkippedVideo);
 		}*/
-	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT && object == movieView.player.currentItem ) {
-		// buffering progress
-		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
-		NSValue * theRangeValue = [theItem.loadedTimeRanges lastObject];
-		if ( theRangeValue ) {
-			loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT ) {
+		if ( object == movieView.player.currentItem ) {
+			// buffering progress
+			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+			NSValue * theRangeValue = [theItem.loadedTimeRanges lastObject];
+			if ( theRangeValue ) {
+				loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+			}
 		}
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
@@ -1146,10 +1150,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	NMVideoPlaybackViewIsScrolling = YES;
-	[UIView animateWithDuration:0.25f animations:^{
-		ribbonView.alpha = 0.15;
-	}];
-	ribbonView.userInteractionEnabled = NO;
+	if ( NM_RUNNING_IOS_5 ) {
+		[UIView animateWithDuration:0.25f animations:^{
+			ribbonView.alpha = 0.15;
+		}];
+		ribbonView.userInteractionEnabled = NO;
+	}
 	if ( launchModeActive ) {
 		[launchController dimProgressLabel];
 	}

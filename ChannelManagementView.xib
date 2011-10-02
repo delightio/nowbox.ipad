@@ -59,6 +59,10 @@
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<double key="IBUIContentInset.top">10</double>
+								<double key="IBUIContentInset.bottom">10</double>
+								<double key="IBUIContentInset.left">0.0</double>
+								<double key="IBUIContentInset.right">0.0</double>
 								<bool key="IBUIAlwaysBounceVertical">YES</bool>
 								<double key="IBUIScrollIndicatorInsets.top">0.0</double>
 								<double key="IBUIScrollIndicatorInsets.bottom">0.0</double>

@@ -28,6 +28,8 @@
     UIImageView *videoStatusImageView;
     BOOL isVideoPlayable;
     
+    BOOL isFirstCell;
+    
     PanelVideoCellView *cellView, *highlightedCellView;
 
 }
@@ -43,6 +45,7 @@
 @property (nonatomic, assign) AGOrientedTableView * tableView;
 @property (nonatomic, assign) VideoRowController *videoRowDelegate;
 @property (nonatomic, assign) BOOL videoNewSession;
+@property (nonatomic, assign) BOOL isFirstCell;
 
 - (void)setVideoInfo:(NMVideo *)aVideo;
 - (void)setIsLoadingCell;

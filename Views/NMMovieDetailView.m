@@ -60,6 +60,13 @@
 	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
 	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
 	[self.layer insertSublayer:blackLayer below:movieThumbnailView.layer];
+	// update the font
+	if ( !NM_RUNNING_IOS_5 ) {
+		UIFont * theFont = [UIFont systemFontOfSize:12.0f];
+		descriptionLabel.font = theFont;
+		otherInfoLabel.font = theFont;
+		authorLabel.font = theFont;
+	}
 }
 
 - (void)setVideo:(NMVideo *)aVideo {

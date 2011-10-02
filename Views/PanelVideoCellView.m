@@ -61,6 +61,10 @@
     }
     CGContextFillRect(context, CGRectMake(rectangle.size.width-1, 0, 1, 100));
     
+    if (cellData.isFirstCell) {
+        CGContextFillRect(context, CGRectMake(0, 0, 1, 100));
+    }
+    
     [self drawLabel:cellData.titleLabel inContext:context];
     [self drawLabel:cellData.datePostedLabel inContext:context];
     [self drawLabel:cellData.durationLabel inContext:context];
@@ -69,7 +73,7 @@
     [cellData.videoStatusImageView.image drawInRect:CGRectMake(rectangle.size.width-27, 0, 28, 26)];
     
     if (cellData.videoNewSession) {
-        [[[NMStyleUtility sharedStyleUtility] videoNewSessionIndicatorImage] drawInRect:CGRectMake(0, 0, 7, 100)];
+        [[[NMStyleUtility sharedStyleUtility] videoNewSessionIndicatorImage] drawInRect:CGRectMake(0, 0, 6, 100)];
     }
     
 //    CGContextSetFillColorWithColor(context, [NMStyleUtility sharedStyleUtility].channelBorderColor.CGColor);
