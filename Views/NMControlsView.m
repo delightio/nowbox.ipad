@@ -91,6 +91,8 @@
 		[theView addSubview:volumeView];
 		
 		[theView release];
+	} else {
+		videoTitleLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
 	}
 	
 	// load the progress bar image

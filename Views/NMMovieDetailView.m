@@ -62,10 +62,10 @@
 	[self.layer insertSublayer:blackLayer below:movieThumbnailView.layer];
 	// update the font
 	if ( !NM_RUNNING_IOS_5 ) {
-		UIFont * theFont = [UIFont systemFontOfSize:12.0f];
+		UIFont * theFont = [NMStyleUtility sharedStyleUtility].channelNameFont;
 		descriptionLabel.font = theFont;
 		otherInfoLabel.font = theFont;
-		authorLabel.font = theFont;
+		authorLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
 	}
 }
 
