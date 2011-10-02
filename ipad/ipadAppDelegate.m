@@ -138,13 +138,13 @@ NSInteger NM_LAST_CHANNEL_ID;
 	userDefaults = [NSUserDefaults standardUserDefaults];
 	NSDate * theDate = [userDefaults objectForKey:NM_LAST_SESSION_DATE];
 	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY];
-//	if ( [theDate timeIntervalSinceNow] < -NM_SESSION_DURATION ) {	// 30 min
+	if ( [theDate timeIntervalSinceNow] < -NM_SESSION_DURATION ) {	// 30 min
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:++sid];
 		[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
-//	} else {
-//		// use the same session
-//		[[NMTaskQueueController sharedTaskQueueController] resumeSession:sid];
-//	}
+	} else {
+		// use the same session
+		[[NMTaskQueueController sharedTaskQueueController] resumeSession:sid];
+	}
 	// init core data
 	
 	// show the UI
