@@ -293,12 +293,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}];
 	} else {
 		// cross fade
+#if __IPHONE_4_3 < __IPHONE_OS_VERSION_MAX_ALLOWED
 		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
 			// remove launch view
 			[launchController.view removeFromSuperview];
 			[launchController release];
 			launchController = nil;
 		}];
+#else
+		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:0 completion:^(BOOL finished) {
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+		}];
+#endif
 	}
 }
 
@@ -313,6 +322,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// send event back to nowmov server
 	currentChannel.nm_last_vid = theVideo.nm_id;
+	theVideo = playbackModelController.previousVideo;
+	if ( theVideo ) {
+		currentChannel.nm_last_vid_previous = theVideo.nm_id;
+	} else {
+		currentChannel.nm_last_vid_previous = [NSNumber numberWithInteger:0];
+	}
+	theVideo = playbackModelController.nextVideo;
+	if ( theVideo ) {
+		currentChannel.nm_last_vid_next = theVideo.nm_id;
+	} else {
+		currentChannel.nm_last_vid_next = [NSNumber numberWithInteger:0];
+	}
 	// send event back to nowmov server
 	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 }

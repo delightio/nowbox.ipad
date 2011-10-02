@@ -577,7 +577,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				// inserting the first video
 				self.currentIndexPath = newIndexPath;
 				self.currentVideo = (NMVideo *)anObject;
-				NSLog(@"FRC insert case - current video - %@", self.currentVideo.title);
 				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 				
 				// insert the next and next next video in this call too. If subsequent call for indexPath of next or next next video happens, we will not insert the same video again. 

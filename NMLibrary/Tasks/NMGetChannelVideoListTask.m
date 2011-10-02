@@ -126,7 +126,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 //	}
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"Get Channel Video List: %@", urlStr);
+	NSLog(@"Get Channel Video List: %@ %@", urlStr, channelName);
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	
@@ -267,10 +267,16 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSString *)didFailNotificationName {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"Did fail getting video - %@", channelName);
+#endif
 	return NMDidFailGetChannelVideoListNotification;
 }
 
 - (NSString *)didCancelNotificationName {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"Did cancel getting video - %@", channelName);
+#endif
 	return NMDidCancelGetChannelVideListNotification;
 }
 
