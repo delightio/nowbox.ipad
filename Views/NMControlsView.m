@@ -312,6 +312,9 @@
 	videoTitleLabel.frame = theRect;
 	videoTitleLabel.text = aVideo.title;
 	
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"control view, duration: %d", [aVideo.duration integerValue]);
+#endif
 	self.duration = [aVideo.duration integerValue];
 }
 

@@ -471,6 +471,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"configure control view for: %@, %@", aVideo.title, aVideo.nm_id);
+#endif
 	[loadedControlView resetView];
 	if ( aVideo ) {
 		[loadedControlView updateViewForVideo:aVideo];
@@ -1155,6 +1158,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			ribbonView.alpha = 0.15;
 		}];
 		ribbonView.userInteractionEnabled = NO;
+	} else {
+		ribbonView.alpha = 0.15;
 	}
 	if ( launchModeActive ) {
 		[launchController dimProgressLabel];
