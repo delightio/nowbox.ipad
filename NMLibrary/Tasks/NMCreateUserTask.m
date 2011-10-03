@@ -23,6 +23,7 @@ NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotifica
 - (NSMutableURLRequest *)URLRequest {
 	// get current local
 	NSLog(@"current locale: %@", [[NSLocale currentLocale] localeIdentifier]);
+	NSLog(@"timezone: %@", [[NSTimeZone systemTimeZone] name]);
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users", NM_BASE_URL];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];
