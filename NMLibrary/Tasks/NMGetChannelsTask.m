@@ -50,7 +50,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 	}
 	NSString * thumbURL = [chnCtnDict objectForKey:@"thumbnail_uri"];
-	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
+	if ( thumbURL == nil || [thumbURL isEqual:@""] ) {
 		[pDict setObject:[NSNull null] forKey:@"thumbnail_uri"];
 	} else {
 		[pDict setObject:thumbURL forKey:@"thumbnail_uri"];

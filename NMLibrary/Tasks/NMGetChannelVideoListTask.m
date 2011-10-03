@@ -71,7 +71,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
 	// author thumbnail
 	NSString * thumbURL = [dict valueForKeyPath:@"author.thumbnail_uri"];
-	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
+	if ( thumbURL == nil || [thumbURL isEqual:@""] ) {
 		[mdict setObject:[NSNull null] forKey:@"author_thumbnail_uri"];
 	} else {
 		[mdict setObject:thumbURL forKey:@"author_thumbnail_uri"];

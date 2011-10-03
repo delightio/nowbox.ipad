@@ -62,7 +62,9 @@
 	
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
+		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
+		[nc addObserver:self selector:@selector(handleDidFailCreateUserNotification:) name:NMDidFailCreateUserNotification object:nil];
 		// create new user
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 		viewController.launchModeActive = YES;
@@ -130,9 +132,13 @@
 
 - (void)dimProgressLabel {
 	if ( progressContainerView.alpha < 1.0f ) return;
-	[UIView animateWithDuration:0.25f animations:^{
+	if ( NM_RUNNING_IOS_5 ) {
+		[UIView animateWithDuration:0.25f animations:^{
+			progressContainerView.alpha = 0.5f;
+		} completion:nil];
+	} else {
 		progressContainerView.alpha = 0.5f;
-	} completion:nil];
+	}
 }
 
 - (void)restoreProgressLabel {
@@ -152,6 +158,10 @@
 	NSLog(@"Created new user: %d", NM_USER_ACCOUNT_ID);
 	// new user created, get channel
 	[self checkUpdateChannels];
+}
+
+- (void)handleDidFailCreateUserNotification:(NSNotification *)aNotification {
+	NSLog(@"fail to create new user");
 }
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
