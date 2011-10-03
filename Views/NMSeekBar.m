@@ -140,6 +140,8 @@
 	if ( !self.tracking ) return;
 	UITouch * aTouch = [touches anyObject];
 	CGPoint thePoint = [aTouch locationInView:self];
+	if ( thePoint.x > self.bounds.size.width || thePoint.x < 0.0f ) return;
+	
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	nubLayer.position = CGPointMake(thePoint.x + 0.5f, 3.5f);

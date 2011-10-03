@@ -65,6 +65,7 @@
 		A925014E134385BF001759F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A925014D134385BF001759F5 /* main.m */; };
 		A9250151134385BF001759F5 /* ipadAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9250150134385BF001759F5 /* ipadAppDelegate.m */; };
 		A9250154134385BF001759F5 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9250152134385BF001759F5 /* MainWindow.xib */; };
+		A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */; };
 		A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
@@ -277,6 +278,7 @@
 		A925014F134385BF001759F5 /* ipadAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipadAppDelegate.h; sourceTree = "<group>"; };
 		A9250150134385BF001759F5 /* ipadAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadAppDelegate.m; sourceTree = "<group>"; };
 		A9250153134385BF001759F5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
 		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
@@ -588,6 +590,7 @@
 		A970501813438F860022BF2C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */,
 				A9EB20F413AAE1E000BC2E29 /* demo_graphics */,
 				A970503213438F860022BF2C /* Icon.png */,
 				A92BDA2413B431C500B846DF /* youtube_logo_36.png */,
@@ -1036,6 +1039,7 @@
 				2238D5C11430752A00F8CDBF /* nowbox_background.png in Resources */,
 				A924150814332A9700C83A7D /* onboard-nowbox-logo.png in Resources */,
 				A924150B14332AA700C83A7D /* onboard-label-separator.png in Resources */,
+				A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

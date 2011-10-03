@@ -89,7 +89,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)viewDidLoad {
     [super viewDidLoad];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-	[[UIApplication sharedApplication] setStatusBarHidden:NO];
+//	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 //	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	currentXOffset = 0.0f;
@@ -310,6 +310,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			launchController = nil;
 		}];
 #endif
+	}
+	if ( !launchModeActive ) {
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 	}
 }
 
