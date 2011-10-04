@@ -277,8 +277,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
 		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		controlScrollView.scrollEnabled = NO;
-//		playbackModelController.currentVideo.nm_movie_detail_view.video = playbackModelController.currentVideo;
-		NSLog(@"onboard - first thumbnail alpha: %f, movie view alpha: %f", playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha, movieView.alpha);
+//		NSLog(@"onboard - first thumbnail alpha: %f, movie view alpha: %f", playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha, movieView.alpha);
+		// reset the alpha value
+		playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha = 1.0f;
+		movieView.alpha = 0.0f;
+		// delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
 		[self.view bringSubviewToFront:topLevelContainerView];
 		[self.view bringSubviewToFront:launchController.progressContainerView];
 		// slide in the view
@@ -286,12 +289,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			topLevelContainerView.center = launchController.view.center;
 		} completion:^(BOOL finished) {
 			playFirstVideoOnLaunchWhenReady = YES;
-			// remove launch view
-//			[launchController.view removeFromSuperview];
-//			[launchController release];
-//			launchController = nil;
 			[launchController showSwipeInstruction];
 			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 		}];
 	} else {
 		// cross fade

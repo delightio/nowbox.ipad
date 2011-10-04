@@ -224,7 +224,7 @@
 				progressContainerView.frame = theFrame;
 				progressLabel.alpha = 0.0f;
 				separatorView.alpha = 0.0f;
-				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
+				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 			}];
 		}
 	}
@@ -250,7 +250,7 @@
 					progressContainerView.frame = theFrame;
 					progressLabel.alpha = 0.0f;
 					separatorView.alpha = 0.0f;
-					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.75f];
+					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 				}];
 			}
 		}
