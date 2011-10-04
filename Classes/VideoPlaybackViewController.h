@@ -49,6 +49,7 @@
 //	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
 	CGRect fullScreenRect, splitViewRect;
+	CGRect topLeftRect;
 	
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
@@ -69,7 +70,7 @@
 	id timeObserver;
 	
 	NSInteger showMovieControlTimestamp;
-	
+		
 	@private
     NSManagedObjectContext *managedObjectContext_;
 	NSNotificationCenter * defaultNotificationCenter;

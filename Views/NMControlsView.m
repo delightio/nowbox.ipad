@@ -109,23 +109,23 @@
     [super dealloc];
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	UITouch * atouch = [touches anyObject];
-	if ( atouch.tapCount == 1 ) {
-		CGPoint touchPoint = [atouch locationInView:self];
-		if ( !CGRectContainsPoint(controlContainerView.frame, touchPoint) ) {
-			// the touch up does NOT happen in the control.
-			[target performSelector:action withObject:self];
-			return;
-		}
-	}
-	[super touchesEnded:touches withEvent:event];
-}
+//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+//	UITouch * atouch = [touches anyObject];
+//	if ( atouch.tapCount == 1 ) {
+//		CGPoint touchPoint = [atouch locationInView:self];
+//		if ( !CGRectContainsPoint(controlContainerView.frame, touchPoint) ) {
+//			// the touch up does NOT happen in the control.
+//			[target performSelector:action withObject:self];
+//			return;
+//		}
+//	}
+//	[super touchesEnded:touches withEvent:event];
+//}
 
-- (void)addTarget:(id)atarget action:(SEL)anAction {
-	target = atarget;
-	action = anAction;
-}
+//- (void)addTarget:(id)atarget action:(SEL)anAction {
+//	target = atarget;
+//	action = anAction;
+//}
 
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated {
 	if ( animated ) {

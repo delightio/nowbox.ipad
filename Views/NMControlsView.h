@@ -74,8 +74,8 @@
 	id<NMControlsViewDelegate> controlDelegate;
 	
 	@private
-	SEL action;
-	id target;
+//	SEL action;
+//	id target;
 	NMPlaybackViewModeType playbackMode_;
 }
 
@@ -95,7 +95,7 @@
 @property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
 @property (nonatomic, assign) BOOL isSeeking;
 
-- (void)addTarget:(id)atarget action:(SEL)anAction;
+//- (void)addTarget:(id)atarget action:(SEL)anAction;
 
 - (void)setPlaybackMode:(NMPlaybackViewModeType)aMode animated:(BOOL)animated;
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated;

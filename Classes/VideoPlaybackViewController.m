@@ -29,7 +29,7 @@
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
 #define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
-#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER			10001
+//#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER			10001
 #define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT			10002
 #define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT				10003
 #define NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT		10004
@@ -97,6 +97,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	showMovieControlTimestamp = -1;
 	fullScreenRect = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
 	splitViewRect = CGRectMake(0.0f, 0.0f, 1024.0f, 380.0f);
+	topLeftRect = CGRectMake(0.0f, 0.0f, 200.0f, 200.0f);
 	
 	// ribbon view
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
@@ -147,8 +148,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// pre-load control view
 	// load the nib
 	[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
-	// hook up with target-action
-	[loadedControlView addTarget:self action:@selector(controlsViewTouchUp:)];
+//	// top left corner gesture recognizer
+//	UITapGestureRecognizer * topLeftRcgr = [[UITapGestureRecognizer alloc] initWithTarget:@selector() action:self];
+//	topLeftRcgr.
+	// tap handling
+	tapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(controlsViewTouchUp:)];
+	tapRcgr.numberOfTapsRequired = 1;
+	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
+	[loadedControlView addGestureRecognizer:tapRcgr];
+	[tapRcgr release];
 	loadedControlView.frame = movieView.frame;
 	loadedControlView.controlDelegate = self;
 	[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
@@ -519,9 +527,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger ctxInt = (NSInteger)context;
 	switch (ctxInt) {
-		case NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER:
-			showMovieControlTimestamp = loadedControlView.timeElapsed;
-			break;
 		case NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT:
 		case NM_ANIMATION_RIBBON_FADE_IN_CONTEXT:
 			break;
@@ -1466,13 +1471,25 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //    [UIView commitAnimations];
 }
 
-- (void)movieViewTouchUp:(id)sender {
+- (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
+	CGPoint viewPoint = [sender locationInView:self.view];
+	if ( CGRectContainsPoint(topLeftRect, viewPoint) && loadedControlView.playbackMode == NMFullScreenPlaybackMode ) {
+		// change to split view
+		[self toggleChannelPanel:sender];
+	} else {
+		loadedControlView.hidden = NO;
+		[UIView animateWithDuration:0.25f animations:^{
+			loadedControlView.alpha = 1.0f;
+		} completion:^(BOOL finished) {
+			showMovieControlTimestamp = loadedControlView.timeElapsed;
+		}];
+	}
 	// show the control view
-	[UIView beginAnimations:nil context:(void*)NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER];
-	loadedControlView.alpha = 1.0;
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView commitAnimations];
+//	[UIView beginAnimations:nil context:(void*)NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER];
+//	loadedControlView.alpha = 1.0;
+//	[UIView setAnimationDelegate:self];
+//	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+//	[UIView commitAnimations];
 }
 
 - (void)movieViewDoubleTap:(id)sender {
@@ -1480,11 +1497,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)controlsViewTouchUp:(id)sender {
-	UIView * v = (UIView *)sender;
+//	UIView * v = (UIView *)sender;
+	[UIView animateWithDuration:0.25f animations:^{
+		loadedControlView.alpha = 0.0f;
+	} completion:^(BOOL finished) {
+		if ( finished ) {
+			loadedControlView.hidden = YES;
+		}
+	}];
 	// hide the control view
-	[UIView beginAnimations:nil context:nil];
-	v.alpha = 0.0;
-	[UIView commitAnimations];
+//	[UIView beginAnimations:nil context:nil];
+//	v.alpha = 0.0;
+//	[UIView commitAnimations];
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
@@ -1565,6 +1589,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			break;
 	}
 }
+
+#pragma mark Gesture delegate methods
+
 
 #pragma mark Debug
 
