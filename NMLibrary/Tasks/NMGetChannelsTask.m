@@ -45,7 +45,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	} else if ( [chnType isEqualToString:@"account::vimeo"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelVimeoType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"keyword"] ) {
-		
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelKeywordType] forKey:@"type"];
 	} else {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 	}
@@ -149,7 +149,11 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			pDict = [NMGetChannelsTask normalizeChannelDictionary:chnCtnDict];
 			switch (command) {
 				case NMCommandGetSubscribedChannels:
+#ifdef DEBUG_CHANNEL
+					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+#else
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_subscribed"];
+#endif
 					break;
 					
 				case NMCommandSearchChannels:
@@ -169,6 +173,12 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			[parsedObjectDictionary setObject:pDict forKey:idNum];
 		}
 	}
+#ifdef DEBUG_CHANNEL
+	// create test channel
+	[channelIndexSet addIndex:999999];
+	pDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Test Channel", @"title", @"https://project.headnix.com/pipely/channel.json", @"resource_uri", [NSNumber numberWithInteger:NMChannelKeywordType], @"type", [NSNull null], @"thumbnail_uri", [NSNumber numberWithInteger:999999], @"nm_id", [NSNumber numberWithInteger:++i], @"nm_subscribed", nil];
+	[parsedObjectDictionary setObject:pDict forKey:[NSNumber numberWithInteger:999999]];
+#endif
 	if ( command == NMCommandSearchChannels && !containsKeywordChannel ) {
 		// create a fake keyword channel
 		NSNumber * zeroNum = [NSNumber numberWithInteger:0];

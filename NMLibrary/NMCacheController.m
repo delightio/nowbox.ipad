@@ -215,7 +215,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 				iv.downloadTask = nil;
 			}
 			// no existing download task for this image. create new download task
-			[iv delayedIssueAuthorImageDownloadRequest];
+			[iv performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:1.0f];
 		}
 	}
 
@@ -282,7 +282,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 				iv.downloadTask = nil;
 			}
 			// no existing download task for this image. create new download task
-			[iv delayedIssueChannelImageDownloadRequest];
+			[iv performSelector:@selector(delayedIssueChannelImageDownloadRequest) withObject:nil afterDelay:1.0f];
 		}
 	}
 	iv.image = styleUtility.userPlaceholderImage;
@@ -464,6 +464,8 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	return task;
 }
 
+#pragma mark Notification handler
+
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 	NMImageDownloadTask * theTask = [aNotification object];
 	NSManagedObject * obj = [[aNotification userInfo] objectForKey:@"target_object"];
@@ -472,25 +474,30 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSString * path = nil;
 	switch (theTask.command) {
 		case NMCommandGetAuthorThumbnail:
-			path = [obj valueForKey:@"nm_author_thumbnail_file_name"];
+			path = [authorThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_author_thumbnail_file_name"]];
 			break;
 			
 		case NMCommandGetChannelThumbnail:
-			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			path = [channelThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
 			break;
 			
 		case NMCommandGetVideoThumbnail:
-			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			path = [videoThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
 			break;
 			
 		case NMCommandGetPreviewThumbnail:
-			path = [obj valueForKey:@"nm_thumbnail_file_name"];
+			path = [videoThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
 			break;
 			
 		default:
 			break;
 	}
-	if ( path ) [fileExistenceCache setFileExists:YES atPath:path];
+	if ( path ) {
+#ifdef DEBUG_IMAGE_CACHE
+		NSLog(@"updated file cache for: %@", path);
+#endif
+		[fileExistenceCache setFileExists:YES atPath:path];
+	}
 }
 
 - (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {

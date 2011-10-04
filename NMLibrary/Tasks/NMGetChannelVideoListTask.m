@@ -112,18 +112,15 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = nil;
-//	switch (command) {
-//		case NMCommandGetMoreVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
-//			break;
-//			
-//		case NMCommandGetChannelVideoList:
-//			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
-//			break;
-//			
-//		default:
-//			break;
-//	}
+#ifdef DEBUG_CHANNEL
+	if ( [targetID integerValue] == 999999 ) {
+		urlStr = urlString;
+	} else {
+		urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+	}
+#else
+	urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+#endif
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Get Channel Video List: %@ %@", urlStr, channelName);
