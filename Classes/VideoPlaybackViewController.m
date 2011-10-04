@@ -151,12 +151,20 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //	// top left corner gesture recognizer
 //	UITapGestureRecognizer * topLeftRcgr = [[UITapGestureRecognizer alloc] initWithTarget:@selector() action:self];
 //	topLeftRcgr.
-	// tap handling
+	// double-tap handling
+	dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
+	dblTapRcgr.numberOfTapsRequired = 2;
+	dblTapRcgr.delegate = loadedControlView;
+	[loadedControlView addGestureRecognizer:dblTapRcgr];
+	// single-tap handling
 	tapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(controlsViewTouchUp:)];
 	tapRcgr.numberOfTapsRequired = 1;
+	tapRcgr.delegate = loadedControlView;
 	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
 	[loadedControlView addGestureRecognizer:tapRcgr];
 	[tapRcgr release];
+	[dblTapRcgr release];
+	 
 	loadedControlView.frame = movieView.frame;
 	loadedControlView.controlDelegate = self;
 	[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
@@ -1472,18 +1480,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
-	CGPoint viewPoint = [sender locationInView:self.view];
-	if ( CGRectContainsPoint(topLeftRect, viewPoint) && loadedControlView.playbackMode == NMFullScreenPlaybackMode ) {
-		// change to split view
-		[self toggleChannelPanel:sender];
-	} else {
-		loadedControlView.hidden = NO;
-		[UIView animateWithDuration:0.25f animations:^{
-			loadedControlView.alpha = 1.0f;
-		} completion:^(BOOL finished) {
-			showMovieControlTimestamp = loadedControlView.timeElapsed;
-		}];
-	}
+	loadedControlView.hidden = NO;
+	[UIView animateWithDuration:0.25f animations:^{
+		loadedControlView.alpha = 1.0f;
+	} completion:^(BOOL finished) {
+		showMovieControlTimestamp = loadedControlView.timeElapsed;
+	}];
 	// show the control view
 //	[UIView beginAnimations:nil context:(void*)NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER];
 //	loadedControlView.alpha = 1.0;

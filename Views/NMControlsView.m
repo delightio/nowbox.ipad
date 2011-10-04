@@ -35,9 +35,9 @@
 
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-	channelDefaultWidth = channelBackgroundView.bounds.size.width;
+	channelDefaultWidth = segmentChannelButton.bounds.size.width;
 	authorDefaultWidth = authorBackgroundView.bounds.size.width;
-	channelTitleDefaultWidth = channelNameLabel.bounds.size.width;
+	channelTitleDefaultWidth = [[segmentChannelButton titleForState:UIControlStateNormal] sizeWithFont:segmentChannelButton.titleLabel.font].width;
 	authorTitleDefaultWidth = authorNameLabel.bounds.size.width;
 	maximumTitleSize = CGSizeMake(256.0f, 40.0f);
 
@@ -49,16 +49,17 @@
 	topbarContainerView.layer.contents = (id)[UIImage imageNamed:@"top-bar-title-background"].CGImage;
 	
 	// channel segment
-	channelBackgroundView.layer.shouldRasterize = YES;
-	channelBackgroundView.layer.contents = (id)[UIImage imageNamed:@"top-bar-channel-background"].CGImage;
+//	channelBackgroundView.layer.shouldRasterize = YES;
+//	channelBackgroundView.layer.contents = (id)[UIImage imageNamed:@"top-bar-channel-background"].CGImage;
 	CGRect theRect = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
-	channelBackgroundView.layer.contentsCenter = theRect;
+//	channelBackgroundView.layer.contentsCenter = theRect;
+	[segmentChannelButton setBackgroundImage:[[UIImage imageNamed:@"top-bar-channel-background"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateNormal];
 	
 	CALayer * imgLayer = [CALayer layer];
 	imgLayer.shouldRasterize = YES;
 	imgLayer.contents = (id)[UIImage imageNamed:@"top-bar-image-frame"].CGImage;
-	imgLayer.frame = CGRectMake(17.0f, 7.0f, 29.0f, 29.0f);
-	[channelBackgroundView.layer insertSublayer:imgLayer below:channelImageView.layer];
+	imgLayer.frame = CGRectMake(13.0f, 7.0f, 29.0f, 29.0f);
+	[segmentChannelButton.layer insertSublayer:imgLayer below:channelImageView.layer];
 	
 	// author segment
 	CALayer * imgLayer2 = [CALayer layer];
@@ -255,7 +256,8 @@
 #pragma mark properties
 - (void)resetView {
 	authorNameLabel.text = @"";
-	channelNameLabel.text = @"";
+//	channelNameLabel.text = @"";
+	[segmentChannelButton setTitle:@"" forState:UIControlStateNormal];
 	videoTitleLabel.text = @"";
 	durationLabel.text = @"--:--";
 	currentTimeLabel.text = @"--:--";
@@ -277,14 +279,15 @@
 	NMChannel * chn = aVideo.channel;
 	// channel imjage
 	[channelImageView setImageForChannel:chn];
-	channelNameLabel.text = chn.title;
+//	channelNameLabel.text = chn.title;
+	[segmentChannelButton setTitle:chn.title forState:UIControlStateNormal];
 	// channel width
-	CGSize theSize = [channelNameLabel.text sizeWithFont:channelNameLabel.font constrainedToSize:maximumTitleSize];
+	CGSize theSize = [chn.title sizeWithFont:segmentChannelButton.titleLabel.font constrainedToSize:maximumTitleSize];
 	CGFloat titleDiff = theSize.width - channelTitleDefaultWidth;
 	// set channel segment width
-	CGRect theRect = channelBackgroundView.frame;
+	CGRect theRect = segmentChannelButton.frame;
 	theRect.size.width = channelDefaultWidth + titleDiff;
-	channelBackgroundView.frame = theRect;
+	segmentChannelButton.frame = theRect;
 	
 	// check whether we should hide the author segment
 	if ( [chn.thumbnail_uri isEqualToString:aVideo.detail.author_thumbnail_uri] ) {
@@ -293,7 +296,7 @@
 		authorBackgroundView.hidden = NO;
 		// set author segment position
 		theRect = authorBackgroundView.frame;
-		theRect.origin.x = channelBackgroundView.frame.size.width - 10.0f;
+		theRect.origin.x = segmentChannelButton.frame.size.width - 10.0f;
 		// author label
 		authorNameLabel.text = aVideo.detail.author_username;	
 		// author size
@@ -370,6 +373,16 @@
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {
 	progressSlider.bufferTime = (aRange.start.value + aRange.duration.value) / aRange.duration.timescale;
+}
+
+#pragma mark Gesture delegate
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+	// do not even begin recognizing the gesture
+	CGPoint thePoint = [gestureRecognizer locationInView:self];
+	if ( CGRectContainsPoint(controlContainerView.frame, thePoint) || CGRectContainsPoint(topbarContainerView.frame, thePoint) ) {
+		return NO;
+	}
+	return YES;
 }
 
 @end

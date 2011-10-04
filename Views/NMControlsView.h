@@ -24,7 +24,7 @@
 @end
 
 
-@interface NMControlsView : UIView {
+@interface NMControlsView : UIView <UIGestureRecognizerDelegate> {
 	IBOutlet UILabel * videoTitleLabel;
 	IBOutlet UILabel * otherInfoLabel;
 	
@@ -42,13 +42,14 @@
 	IBOutlet UIView * progressContainerView;
 	MPVolumeView * volumeView;
 	// top bar
-	IBOutlet UILabel * channelNameLabel;
+//	IBOutlet UILabel * channelNameLabel;
 	IBOutlet UILabel * authorNameLabel;
 	IBOutlet NMCachedImageView * channelImageView;
 	IBOutlet NMCachedImageView * authorImageView;
-	IBOutlet UIView * channelBackgroundView;
+//	IBOutlet UIView * channelBackgroundView;
 	IBOutlet UIView * authorBackgroundView;
 	IBOutlet UIView * topbarContainerView;
+	IBOutlet UIButton * segmentChannelButton;
 	UIButton * favoriteButton;
 	UIButton * watchLaterButton;
 	// segment width
@@ -91,6 +92,8 @@
 @property (nonatomic, retain) UIButton * seekBubbleButton;
 @property (nonatomic, assign) IBOutlet UIButton * favoriteButton;
 @property (nonatomic, assign) IBOutlet UIButton * watchLaterButton;
+//@property (nonatomic, readonly) IBOutlet UIView * channelBackgroundView;
+@property (nonatomic, readonly) IBOutlet UIView * authorBackgroundView;
 
 @property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
 @property (nonatomic, assign) BOOL isSeeking;
