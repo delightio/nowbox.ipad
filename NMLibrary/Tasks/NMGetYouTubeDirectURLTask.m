@@ -51,7 +51,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
 	[theRequest setValue:@"ytapi-apple-ipad" forHTTPHeaderField:@"X-GData-Client"];
 	// iPad 2 - iOS 5 beta 7
-	[theRequest setValue:@"AIwbFATJ0brTv13WA0IMrYz2j82NNJPeCte_WA_9mXMd10oPGD4_p33OM0yVrLqDqctY5W6m5X-OIjxlZ4_azQlgn26zwAqOYXnTPyiDvxk7N-vbUbl4XLizMQbsOMiM3rXtYteJ3MuYOWfmHx_2iI6sJvJeI4WsOoACT0WZnzXJqazEbuBt8Sg" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
+	[theRequest setValue:@"AIwbFAQnQEpiZxQ0Payjh_yBYxYpu1_blFsXxw4CuiDFAFczVD-1N2Ibmo6k-8zezbXMO36Dt6Y1lUmeAtA21Hd1vIcywt9l4M4rEfe7xA-nGB4ASOC8T_-2IO6yUs3hMJXjKwdtlrOy2-WBbSq50MYSZaq3D3FIsnlo04fSlooMK0PxhCckM1k" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
 	[theRequest setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
 
 	return theRequest;
