@@ -14,6 +14,8 @@ extern NSString * const NM_USER_ACCOUNT_ID_KEY;
 extern NSString * const NM_USER_FAVORITES_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_WATCH_LATER_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_HISTORY_CHANNEL_ID_KEY;
+extern NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY;
+extern NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY;
 extern NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
 extern NSString * const NM_FIRST_LAUNCH_KEY;

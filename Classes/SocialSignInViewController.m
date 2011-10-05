@@ -9,6 +9,7 @@
 #import "SocialSignInViewController.h"
 #import "VideoPlaybackViewController.h"
 #import "NMVideo.h"
+#import "ipadAppDelegate.h"
 
 
 @implementation SocialSignInViewController
@@ -27,6 +28,7 @@
 //
 - (void)dealloc {
 	[videoViewController release];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
 }
 
@@ -51,6 +53,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	self.title = @"Connect";
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -90,6 +93,15 @@
 //		urlStr = [NSString stringWithFormat:@"http://vimeo.com/%@", video.external_id];
 //	}
 //	[SHKTwitter shareURL:[NSURL URLWithString:urlStr] title:video.title];
+}
+
+#pragma mark Notificaiton handler
+- (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
+	// save the user
+	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+	// channel refresh command is issued in TaskQueueScheduler
 }
 
 @end

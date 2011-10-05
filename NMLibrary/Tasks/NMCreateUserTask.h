@@ -16,9 +16,13 @@
 
 @interface NMCreateUserTask : NMTask {
 	NSURL * verificationURL;
+	NSString * email;
+//	NSDictionary * userDictionary;
 }
 
 @property (nonatomic, retain) NSURL * verificationURL;
+@property (nonatomic, retain) NSString * email;
+@property (nonatomic, retain) NSDictionary * userDictionary;
 
 - (id)initTwitterVerificationWithURL:(NSURL *)aURL;
 - (id)initFacebookVerificationWithURL:(NSURL *)aURL;

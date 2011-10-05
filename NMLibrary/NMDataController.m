@@ -431,8 +431,29 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+	[request setEntity:channelEntityDescription];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", chnAy]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		NSManagedObject * mobj;
+		for (mobj in result) {
+			[managedObjectContext deleteObject:mobj];
+		}
+	}
+	[request release];
+	// clean up cache
+	[channelCacheDictionary removeAllObjects];
+	
+	[pool release];
+}
+
+- (void)batchDeleteChannelForIDs:(NSArray *)idAy {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id in %@", idAy]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {

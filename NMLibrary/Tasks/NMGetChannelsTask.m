@@ -46,6 +46,10 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelVimeoType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"keyword"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelKeywordType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"facebookstream"] ) {
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserFacebookType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"twitterstream"] ) {
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserTwitterType] forKey:@"type"];
 	} else {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 	}

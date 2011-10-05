@@ -25,6 +25,7 @@ typedef enum {
 	NMCommandCreateUser,
 	NMCommandVerifyFacebookUser,
 	NMCommandVerifyTwitterUser,
+	NMCommandEditUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 //	NMCommandGetChannelVideoList,
@@ -72,6 +73,8 @@ typedef enum {
 	NMChannelYoutubeType,
 	NMChannelKeywordType,
 	NMChannelVimeoType,
+	NMChannelUserFacebookType,
+	NMChannelUserTwitterType,
 } NMChannelType;
 
 
@@ -80,7 +83,12 @@ typedef enum {
 extern NSString * const NMWillCreateUserNotification;
 extern NSString * const NMDidCreateUserNotification;
 extern NSString * const NMDidFailCreateUserNotification;
-
+extern NSString * const NMWillEditUserNotification;
+extern NSString * const NMDidEditUserNotification;
+extern NSString * const NMDidFailEditUserNotification;
+extern NSString * const NMWillVerifyUserNotification;
+extern NSString * const NMDidVerifyUserNotification;
+extern NSString * const NMDidFailVerifyUserNotification;
 // channel
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;

@@ -19,6 +19,8 @@ NSInteger NM_USER_ACCOUNT_ID				= 0;
 NSInteger NM_USER_FAVORITES_CHANNEL_ID		= 0;
 NSInteger NM_USER_WATCH_LATER_CHANNEL_ID	= 0;
 NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
+NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
+NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
 NSNumber * NM_SESSION_ID					= nil;
@@ -47,7 +49,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	networkController.dataController = dataController;
 	
 	// handle keyword channel creation
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
 	
 	return self;
 }
@@ -105,6 +109,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// received notification of channel creation
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
 	[self issueSubscribe:YES channel:chnObj];
+}
+
+- (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
+	// get that particular channel
+	[self issueGetSubscribedChannels];
 }
 
 #pragma mark Queue tasks to network controller

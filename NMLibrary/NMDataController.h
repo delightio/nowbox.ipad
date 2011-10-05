@@ -82,6 +82,7 @@
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (NMChannel *)lastSessionChannel;
 - (void)batchDeleteChannels:(NSArray *)chnAy;
+- (void)batchDeleteChannelForIDs:(NSArray *)idAy;
 - (NSInteger)maxChannelSortOrder;
 - (void)updateMyQueueChannelHideStatus;
 - (void)updateFavoriteChannelHideStatus;
