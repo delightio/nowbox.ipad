@@ -9,9 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface TwitterLoginViewController : UIViewController <UIWebViewDelegate> {
+	IBOutlet UIActivityIndicatorView * loadingIndicator;
+	IBOutlet UILabel * progressLabel;
 	UIWebView *loginWebView;
+	UIView * progressContainerView;
 }
 
 @property (retain, nonatomic) IBOutlet UIWebView *loginWebView;
+@property (nonatomic, retain) IBOutlet UIView * progressContainerView;
 
 @end

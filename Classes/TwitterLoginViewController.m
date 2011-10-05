@@ -7,9 +7,11 @@
 //
 
 #import "TwitterLoginViewController.h"
+#import "ipadAppDelegate.h"
+#import "NMLibrary.h"
 
 @implementation TwitterLoginViewController
-@synthesize loginWebView;
+@synthesize loginWebView, progressContainerView;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -45,6 +47,8 @@
 	[loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
 	
 	self.title = @"Twitter Login";
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -62,17 +66,47 @@
 }
 
 - (void)dealloc {
+	[progressContainerView release];
     [loginWebView release];
     [super dealloc];
+}
+
+#pragma mark Notificaiton handler
+- (void)delayPushOutView {
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
+	// save the user
+	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+	// channel refresh command is issued in TaskQueueScheduler
+	
+	progressLabel.text = @"Verified Successfully";
+	[loadingIndicator stopAnimating];
+	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:2.0f];
 }
 
 #pragma mark Webview delegate methods
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSURL * theURL = [request URL];
+	NSLog(@"Twitter URL: %@", theURL);
 	if ( [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
 		// we should intercept this call. Use task queue scheduler.
 		// pass the interface control back the the channel management view controller
+		progressContainerView.alpha = 0.0f;
+		progressContainerView.frame = self.view.bounds;
+		[self.view addSubview:progressContainerView];
 		// show a dark gray screen for now.
+		[[NMTaskQueueController sharedTaskQueueController] issueVerifyTwitterAccountWithURL:theURL];
+		
+		[UIView animateWithDuration:0.25f animations:^{
+			progressContainerView.alpha = 1.0f;
+		} completion:^(BOOL finished) {
+			[loadingIndicator startAnimating];
+		}];
+		
 		return NO;
 	}
 	return YES;

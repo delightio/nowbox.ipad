@@ -123,6 +123,19 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] initTwitterVerificationWithURL:aURL];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] initFacebookVerificationWithURL:aURL];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+
 - (void)issueGetFeaturedCategories {
 	NMGetCategoriesTask * task = [[NMGetCategoriesTask alloc] init];
 	[networkController addNewConnectionForTask:task];

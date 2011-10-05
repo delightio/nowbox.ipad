@@ -38,6 +38,8 @@
 - (void)resumeSession:(NSInteger)sid;
 // User management
 - (void)issueCreateUser;
+- (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
+- (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;
