@@ -13,6 +13,7 @@ NSString * const NMDidCreateUserNotification = @"NMDidCreateUserNotification";
 NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotification";
 
 @implementation NMCreateUserTask
+@synthesize verificationURL;
 
 - (id)init {
 	self = [super init];
@@ -20,12 +21,37 @@ NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotifica
 	return self;
 }
 
+- (id)initTwitterVerificationWithURL:(NSURL *)aURL {
+	self = [super init];
+	command = NMCommandVerifyTwitterUser;
+	self.verificationURL = aURL;
+	return self;
+}
+
+- (id)initFacebookVerificationWithURL:(NSURL *)aURL {
+	self = [super init];
+	command = NMCommandVerifyFacebookUser;
+	self.verificationURL = aURL;
+	return self;
+}
+
 - (NSMutableURLRequest *)URLRequest {
-	// get current local
-	NSLog(@"timezone: %@", [[NSTimeZone systemTimeZone] name]);
-	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users?locale=%@", NM_BASE_URL, [[NSLocale currentLocale] localeIdentifier]];
-	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
-	[request setHTTPMethod:@"POST"];
+	NSMutableURLRequest * request;
+	switch (command) {
+		case NMCommandCreateUser:
+		{
+			NSLog(@"timezone: %@", [[NSTimeZone systemTimeZone] name]);
+			NSString * urlStr = [NSString stringWithFormat:@"http://%@/users?locale=%@", NM_BASE_URL, [[NSLocale currentLocale] localeIdentifier]];
+			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+			[request setHTTPMethod:@"POST"];
+		}
+			
+		default:
+		{
+			request = [NSMutableURLRequest requestWithURL:verificationURL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+			return request;
+		}
+	}
 	return request;
 }
 

@@ -68,7 +68,13 @@
 
 #pragma mark Webview delegate methods
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-	NSLog(@"%@", [request URL]);
+	NSURL * theURL = [request URL];
+	if ( [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
+		// we should intercept this call. Use task queue scheduler.
+		// pass the interface control back the the channel management view controller
+		// show a dark gray screen for now.
+		return NO;
+	}
 	return YES;
 }
 @end

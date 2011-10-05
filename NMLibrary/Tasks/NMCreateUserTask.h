@@ -8,6 +8,19 @@
 
 #import "NMTask.h"
 
-@interface NMCreateUserTask : NMTask
+/*!
+ Handles 2 situations:
+ * create new user, or
+ * verify a user after logged in
+ */
+
+@interface NMCreateUserTask : NMTask {
+	NSURL * verificationURL;
+}
+
+@property (nonatomic, retain) NSURL * verificationURL;
+
+- (id)initTwitterVerificationWithURL:(NSURL *)aURL;
+- (id)initFacebookVerificationWithURL:(NSURL *)aURL;
 
 @end
