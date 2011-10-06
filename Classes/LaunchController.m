@@ -25,6 +25,7 @@
 @synthesize channel;
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[view release];
 	[progressContainerView release];
 	[separatorView release];
