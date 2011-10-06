@@ -85,6 +85,7 @@
             cell = loadingCell;
             self.loadingCell = nil;
         }
+        [cell setHidden:!isLoadingNewContent];
         return (UITableViewCell *)cell;
     }
     
@@ -291,34 +292,20 @@
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification {
 	NSDictionary * info = [aNotification userInfo];
     if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
-        isLoadingNewContent = NO;
-        isAnimatingNewContentCell = YES;
-//        NSLog(@"handleDidGetChannelVideoListNotification");
 		if ( [[info objectForKey:@"num_video_added"] integerValue] == 0 && [[info objectForKey:@"num_video_received"] integerValue] == [[info objectForKey:@"num_video_requested"] integerValue] ) {
 			// the "if" condition should be interrupted as follow:
 			// The server has returned full page of videos. But, no video is inserted. That means there may be more videos listed in Nowmov server.
 			// poll the server again
 			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 		} else {
-            if ([[info objectForKey:@"num_video_added"] integerValue]==0) {
-                [videoTableView beginUpdates];
-                [videoTableView endUpdates];
-                // don't need to scroll if no new videos are added
-//                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[videoTableView numberOfRowsInSection:0]-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            } else {
-                [videoTableView beginUpdates];
-                [videoTableView endUpdates];
-//                [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([videoTableView numberOfRowsInSection:0]- 1 - [[info objectForKey:@"num_video_added"] integerValue]) inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-            }
+//            if ([[info objectForKey:@"num_video_added"] integerValue]==0) {
+//            }
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
+            isLoadingNewContent = NO;
+            isAnimatingNewContentCell = YES;
+            [videoTableView beginUpdates];
+            [videoTableView endUpdates];
 		}
-        // should probably check if new videos were added to decide whether to scroll or not
-        
-        UITableViewCell *cell = (UITableViewCell *)[self.videoTableView superview];
-        UIView * loadingOverlayView = (UIView *)[cell viewWithTag:1008];
-        [loadingOverlayView setHidden:([self.videoTableView numberOfRowsInSection:0] > 1)];
-
-        
     }
 }
 
@@ -360,6 +347,7 @@
 
 #pragma mark helpers
 - (void)resetAnimatingVariable {
+    isLoadingNewContent = NO;
     isAnimatingNewContentCell = NO;
 }
 

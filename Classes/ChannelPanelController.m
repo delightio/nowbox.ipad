@@ -261,7 +261,7 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 	htView.tableController.fetchedResultsController = nil;
 	htView.tableController.channel = theChannel;
     htView.tableController.indexInTable = [indexPath row];
-    htView.tableController.isLoadingNewContent = YES;
+    htView.tableController.isLoadingNewContent = NO;
     
     
     // rather than reload, should let the table take care of redraw
@@ -271,10 +271,9 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
         [htView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     }
     
-    htView.tableController.isLoadingNewContent = !([htView numberOfRowsInSection:0] > 1);
-    
 NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
 	if ( [theChannel.videos count] == 0 ) {
+        htView.tableController.isLoadingNewContent = YES;
 		[schdlr issueGetMoreVideoForChannel:theChannel];
 	}
     
