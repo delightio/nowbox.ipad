@@ -81,6 +81,7 @@
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 	// channel refresh command is issued in TaskQueueScheduler
 	
 	progressLabel.text = @"Verified Successfully";

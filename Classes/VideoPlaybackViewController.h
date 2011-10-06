@@ -106,7 +106,7 @@
 // setting channel
 - (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag;
 // playback view update
-- (void)markPlaybackCheckpoint;
+- (NSArray *)markPlaybackCheckpoint;
 // buttons management
 - (void)updateRibbonButtons;
 - (void)updateFavoriteButton;

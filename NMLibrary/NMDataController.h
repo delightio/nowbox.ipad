@@ -33,6 +33,7 @@
 	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
 	
 //	NMChannel * trendingChannel;
+	NSArray * lastSessionVideoIDs;
 	
 	// for channel search
 	// the category object that contains all search result
@@ -57,6 +58,7 @@
 //@property (nonatomic, readonly) NMChannel * trendingChannel;
 @property (nonatomic, readonly) NSArray * subscribedChannels;	// for debug purpose
 @property (nonatomic, readonly) NSArray * categories;
+@property (nonatomic, retain) NSArray * lastSessionVideoIDs;
 @property (nonatomic, retain) NMChannel * myQueueChannel;
 @property (nonatomic, retain) NMChannel * favoriteVideoChannel;
 
