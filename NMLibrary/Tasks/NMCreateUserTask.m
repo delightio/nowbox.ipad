@@ -89,7 +89,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 
 - (void)processDownloadedDataInBuffer {
 	if ( [buffer length] == 0 ) {
-		encountersErrorDuringProcessing = YES;
+		encountersErrorDuringProcessing = NO;
 		return;
 	}
 	// parse the returned JSON object
