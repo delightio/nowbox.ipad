@@ -40,6 +40,7 @@
 	[nc addObserver:self selector:@selector(handleWillGetChannelVideListNotification:) name:NMWillGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
     return self;
 }
 
@@ -312,13 +313,20 @@
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification {
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
     if (chnObj && [chnObj isEqual:channel] ) {
-        isLoadingNewContent = NO;
-        isAnimatingNewContentCell = YES;
 //        NSLog(@"handleDidFailGetChannelVideoListNotification");
-        // should probably check if new videos were added to decide whether to scroll or not
-//        [videoTableView beginUpdates];
-//        [videoTableView endUpdates];
-        [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
+        isLoadingNewContent = NO;
+        isAnimatingNewContentCell = NO;
+        [videoTableView reloadData];
+    }
+}
+
+- (void)handleDidCancelGetChannelVideListNotification:(NSNotification *)aNotification {
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+    if (chnObj && [chnObj isEqual:channel] ) {
+//        NSLog(@"handleDidCancelGetChannelVideListNotification");
+        isLoadingNewContent = NO;
+        isAnimatingNewContentCell = NO;
+        [videoTableView reloadData];
     }
 }
 
