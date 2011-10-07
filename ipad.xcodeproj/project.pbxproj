@@ -54,6 +54,10 @@
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
 		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
+		A90F21FF143F63CA006B298D /* TwitterLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F21FE143F63CA006B298D /* TwitterLoading.html */; };
+		A90F2201143F63E1006B298D /* loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = A90F2200143F63E1006B298D /* loading.gif */; };
+		A90F2203143F643F006B298D /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = A90F2202143F643F006B298D /* style.css */; };
+		A90F2205143F6CAF006B298D /* FacebookLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F2204143F6CAF006B298D /* FacebookLoading.html */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
 		A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */; };
@@ -259,6 +263,10 @@
 		A90425FF140E2EEC0028B972 /* NMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel.m; sourceTree = "<group>"; };
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
 		A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVQueuePlayer.m; sourceTree = "<group>"; };
+		A90F21FE143F63CA006B298D /* TwitterLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TwitterLoading.html; sourceTree = "<group>"; };
+		A90F2200143F63E1006B298D /* loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = loading.gif; sourceTree = "<group>"; };
+		A90F2202143F643F006B298D /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
+		A90F2204143F6CAF006B298D /* FacebookLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FacebookLoading.html; sourceTree = "<group>"; };
 		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
 		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
@@ -475,6 +483,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A90F21FD143F63CA006B298D /* HTML */ = {
+			isa = PBXGroup;
+			children = (
+				A90F2200143F63E1006B298D /* loading.gif */,
+				A90F21FE143F63CA006B298D /* TwitterLoading.html */,
+				A90F2204143F6CAF006B298D /* FacebookLoading.html */,
+				A90F2202143F643F006B298D /* style.css */,
+			);
+			path = HTML;
+			sourceTree = "<group>";
+		};
 		A9250131134385BF001759F5 = {
 			isa = PBXGroup;
 			children = (
@@ -531,6 +550,7 @@
 		A9250147134385BF001759F5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A90F21FD143F63CA006B298D /* HTML */,
 				A9250148134385BF001759F5 /* ipad-Info.plist */,
 				A9250149134385BF001759F5 /* InfoPlist.strings */,
 				A925014C134385BF001759F5 /* ipad-Prefix.pch */,
@@ -1031,6 +1051,10 @@
 				A924150814332A9700C83A7D /* onboard-nowbox-logo.png in Resources */,
 				A924150B14332AA700C83A7D /* onboard-label-separator.png in Resources */,
 				A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */,
+				A90F21FF143F63CA006B298D /* TwitterLoading.html in Resources */,
+				A90F2201143F63E1006B298D /* loading.gif in Resources */,
+				A90F2203143F643F006B298D /* style.css in Resources */,
+				A90F2205143F6CAF006B298D /* FacebookLoading.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
