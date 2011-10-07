@@ -50,5 +50,6 @@ extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
 
 - (void)saveContext;
 - (void)saveChannelID:(NSNumber *)chnNum;
+- (void)saveCurrentVideoList:(NSArray *)vdoIDs;
 
 @end

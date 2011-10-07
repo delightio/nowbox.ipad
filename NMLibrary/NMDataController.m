@@ -32,6 +32,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize internalSearchCategory;
 @synthesize internalSubscribedChannelsCategory;
 @synthesize myQueueChannel, favoriteVideoChannel;
+@synthesize lastSessionVideoIDs;
 
 - (id)init {
 	self = [super init];
@@ -55,6 +56,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (void)dealloc {
 	[myQueueChannel release], [favoriteVideoChannel release];
+	[lastSessionVideoIDs release];
 //	[trendingChannel release];
 	[categoryCacheDictionary release];
 	[channelCacheDictionary release];
@@ -101,19 +103,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
 	// nm_session_id <= %@ AND NOT ANY categories = %@
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id < %@ AND NOT channel IN %@ AND NOT (channel.nm_id == %@ AND (channel.nm_last_vid == nm_id OR channel.nm_last_vid_previous == nm_id OR channel.nm_last_vid_next == nm_id))", [NSNumber numberWithInteger:sid], [NSArray arrayWithObjects:self.myQueueChannel, self.favoriteVideoChannel, nil], [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
+	NSPredicate * thePredicate;
+	if ( [lastSessionVideoIDs count] ) {
+		thePredicate = [NSPredicate predicateWithFormat:@"nm_session_id < %@ AND NOT channel IN %@ AND NOT (channel.nm_id == %@ AND nm_id IN %@)", [NSNumber numberWithInteger:sid], [NSArray arrayWithObjects:self.myQueueChannel, self.favoriteVideoChannel, nil], [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID], lastSessionVideoIDs];
+	} else {
+		thePredicate = [NSPredicate predicateWithFormat:@"nm_session_id < %@ AND NOT channel IN %@ AND channel.nm_id != %@", [NSNumber numberWithInteger:sid], [NSArray arrayWithObjects:self.myQueueChannel, self.favoriteVideoChannel, nil], [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]];
+	}
+	[request setPredicate:thePredicate];
 //	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_session_id < %@ AND NOT channel IN %@ AND channel.nm_id != %@", [NSNumber numberWithInteger:sid], [NSArray arrayWithObjects:self.myQueueChannel, self.favoriteVideoChannel, nil], [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"channel", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	
-	//DEBUG
-	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]];
-	NSNumber * lastNum = chnObj.nm_last_vid;
-	
 	for (NMVideo * vid in result) {
-		if ( [vid.nm_id isEqualToNumber:lastNum] ) {
-			NSLog(@"you are fucked!!");
-		}
 		[managedObjectContext deleteObject:vid];
 	}
 	[request release];

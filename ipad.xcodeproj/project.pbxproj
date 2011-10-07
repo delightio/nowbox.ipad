@@ -54,6 +54,10 @@
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
 		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
+		A90F21FF143F63CA006B298D /* TwitterLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F21FE143F63CA006B298D /* TwitterLoading.html */; };
+		A90F2201143F63E1006B298D /* loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = A90F2200143F63E1006B298D /* loading.gif */; };
+		A90F2203143F643F006B298D /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = A90F2202143F643F006B298D /* style.css */; };
+		A90F2205143F6CAF006B298D /* FacebookLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F2204143F6CAF006B298D /* FacebookLoading.html */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
 		A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */; };
@@ -113,8 +117,8 @@
 		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
 		A9776A4C13AAF0AF004FA2F3 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */; };
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
-		A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */; };
-		A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */; };
+		A97EBE5D13F7B2AF00CC0F5C /* SocialLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */; };
+		A97EBE6013F7B2BF00CC0F5C /* SocialLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */; };
 		A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A98555DF141758CD00079453 /* KeychainItemWrapper.m */; };
 		A98C241513D38C040061A594 /* button-like-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241113D38C030061A594 /* button-like-active.png */; };
 		A98C241613D38C040061A594 /* button-like.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241213D38C030061A594 /* button-like.png */; };
@@ -259,6 +263,10 @@
 		A90425FF140E2EEC0028B972 /* NMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel.m; sourceTree = "<group>"; };
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
 		A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVQueuePlayer.m; sourceTree = "<group>"; };
+		A90F21FE143F63CA006B298D /* TwitterLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TwitterLoading.html; sourceTree = "<group>"; };
+		A90F2200143F63E1006B298D /* loading.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = loading.gif; sourceTree = "<group>"; };
+		A90F2202143F643F006B298D /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
+		A90F2204143F6CAF006B298D /* FacebookLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FacebookLoading.html; sourceTree = "<group>"; };
 		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
 		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
@@ -362,9 +370,9 @@
 		A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-icon.png"; sourceTree = "<group>"; };
 		A97E237E13A6E8F400EBA5EE /* ChannelPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelPanelController.h; sourceTree = "<group>"; };
 		A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelPanelController.m; sourceTree = "<group>"; };
-		A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginViewController.h; sourceTree = "<group>"; };
-		A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterLoginViewController.m; sourceTree = "<group>"; };
-		A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwitterLoginView.xib; sourceTree = "<group>"; };
+		A97EBE5B13F7B2AF00CC0F5C /* SocialLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialLoginViewController.h; sourceTree = "<group>"; };
+		A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialLoginViewController.m; sourceTree = "<group>"; };
+		A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialLoginView.xib; sourceTree = "<group>"; };
 		A98555DE141758CD00079453 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		A98555DF141758CD00079453 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		A98C241113D38C030061A594 /* button-like-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like-active.png"; sourceTree = "<group>"; };
@@ -475,6 +483,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A90F21FD143F63CA006B298D /* HTML */ = {
+			isa = PBXGroup;
+			children = (
+				A90F2200143F63E1006B298D /* loading.gif */,
+				A90F21FE143F63CA006B298D /* TwitterLoading.html */,
+				A90F2204143F6CAF006B298D /* FacebookLoading.html */,
+				A90F2202143F643F006B298D /* style.css */,
+			);
+			path = HTML;
+			sourceTree = "<group>";
+		};
 		A9250131134385BF001759F5 = {
 			isa = PBXGroup;
 			children = (
@@ -531,6 +550,7 @@
 		A9250147134385BF001759F5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A90F21FD143F63CA006B298D /* HTML */,
 				A9250148134385BF001759F5 /* ipad-Info.plist */,
 				A9250149134385BF001759F5 /* InfoPlist.strings */,
 				A925014C134385BF001759F5 /* ipad-Prefix.pch */,
@@ -562,8 +582,8 @@
 				A991188913E759E20067E987 /* SettingsViewController.m */,
 				A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */,
 				A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */,
-				A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */,
-				A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */,
+				A97EBE5B13F7B2AF00CC0F5C /* SocialLoginViewController.h */,
+				A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */,
 				22ADFA0513FC2AAD003CF27E /* SearchChannelViewController.h */,
 				22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */,
 				A9A4810B13FD181500850536 /* FeatureDebugViewController.h */,
@@ -800,7 +820,7 @@
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
 				A991188B13E759F30067E987 /* SettingsView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
-				A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */,
+				A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */,
 				22ADF9DB13FB2032003CF27E /* FindChannelTableCell.xib */,
 				22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */,
 				A9A4810F13FD189F00850536 /* FeatureDebugView.xib */,
@@ -981,7 +1001,7 @@
 				A991188C13E759F30067E987 /* SettingsView.xib in Resources */,
 				2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */,
 				A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */,
-				A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */,
+				A97EBE6013F7B2BF00CC0F5C /* SocialLoginView.xib in Resources */,
 				221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */,
 				22ADF9BC13FAF40C003CF27E /* category-list-fade.png in Resources */,
 				22ADF9BD13FAF40C003CF27E /* category-list-my-channels.png in Resources */,
@@ -1031,6 +1051,10 @@
 				A924150814332A9700C83A7D /* onboard-nowbox-logo.png in Resources */,
 				A924150B14332AA700C83A7D /* onboard-label-separator.png in Resources */,
 				A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */,
+				A90F21FF143F63CA006B298D /* TwitterLoading.html in Resources */,
+				A90F2201143F63E1006B298D /* loading.gif in Resources */,
+				A90F2203143F643F006B298D /* style.css in Resources */,
+				A90F2205143F6CAF006B298D /* FacebookLoading.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1065,7 +1089,7 @@
 				2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */,
 				A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */,
 				A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */,
-				A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */,
+				A97EBE5D13F7B2AF00CC0F5C /* SocialLoginViewController.m in Sources */,
 				A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */,
 				22ADF99D13FAF39A003CF27E /* CategoryCellView.m in Sources */,
 				22ADF99E13FAF39A003CF27E /* CategoryTableCell.m in Sources */,
@@ -1169,7 +1193,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_IMAGE_CACHE;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1229,7 +1253,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_IMAGE_CACHE;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1246,7 +1270,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_IMAGE_CACHE;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1263,7 +1287,10 @@
 				DSTROOT = /tmp/NMLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_CONNECTION_CONTROLLER;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_PLAYBACK_NETWORK_CALL,
+					DEBUG_SESSION,
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1277,7 +1304,10 @@
 				DSTROOT = /tmp/NMLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_CONNECTION_CONTROLLER;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_PLAYBACK_NETWORK_CALL,
+					DEBUG_SESSION,
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1291,7 +1321,10 @@
 				DSTROOT = /tmp/NMLibrary.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_CONNECTION_CONTROLLER;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_PLAYBACK_NETWORK_CALL,
+					DEBUG_SESSION,
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

@@ -89,7 +89,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 
 - (void)processDownloadedDataInBuffer {
 	if ( [buffer length] == 0 ) {
-		encountersErrorDuringProcessing = YES;
+		encountersErrorDuringProcessing = NO;
 		return;
 	}
 	// parse the returned JSON object
@@ -117,10 +117,12 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 		}
 		case NMCommandVerifyFacebookUser:
 			NM_USER_FACEBOOK_CHANNEL_ID = [[userDictionary objectForKey:@"facebook_channel_id"] integerValue];
+			NM_USER_ACCOUNT_ID = uid;
 			break;
 			
 		case NMCommandVerifyTwitterUser:
 			NM_USER_TWITTER_CHANNEL_ID = [[userDictionary objectForKey:@"twitter_channel_id"] integerValue];
+			NM_USER_ACCOUNT_ID = uid;
 			break;
 			
 		default:

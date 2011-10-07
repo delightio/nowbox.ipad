@@ -334,7 +334,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Playback data structure
 
-- (void)markPlaybackCheckpoint {
+- (NSArray *)markPlaybackCheckpoint {
 	NMVideo * theVideo = [self playerCurrentVideo];
 	CMTime aTime = movieView.player.currentTime;
 	if ( aTime.flags & kCMTimeFlags_Valid ) {
@@ -343,20 +343,23 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// send event back to nowmov server
 	currentChannel.nm_last_vid = theVideo.nm_id;
+	NSMutableArray * vdoAy = [NSMutableArray arrayWithCapacity:4];
+	[vdoAy addObject:theVideo.nm_id];
 	theVideo = playbackModelController.previousVideo;
 	if ( theVideo ) {
-		currentChannel.nm_last_vid_previous = theVideo.nm_id;
-	} else {
-		currentChannel.nm_last_vid_previous = [NSNumber numberWithInteger:0];
+		[vdoAy addObject:theVideo.nm_id];
 	}
 	theVideo = playbackModelController.nextVideo;
 	if ( theVideo ) {
-		currentChannel.nm_last_vid_next = theVideo.nm_id;
-	} else {
-		currentChannel.nm_last_vid_next = [NSNumber numberWithInteger:0];
+		[vdoAy addObject:theVideo.nm_id];
+	}
+	theVideo = playbackModelController.nextNextVideo;
+	if ( theVideo ) {
+		[vdoAy addObject:theVideo.nm_id];
 	}
 	// send event back to nowmov server
 	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	return vdoAy;
 }
 
 

@@ -22,6 +22,7 @@ NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY = @"NM_USER_FACEBOOK_CHANNEL_ID
 NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY = @"NM_USER_TWITTER_CHANNEL_ID_KEY";
 // app session
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
+NSString * const NM_LAST_VIDEO_LIST_KEY		= @"NM_LAST_VIDEO_LIST_KEY";
 NSString * const NM_LAST_SESSION_DATE		= @"NM_LAST_SESSION_DATE";
 NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
@@ -61,6 +62,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  [NSNumber numberWithInteger:0], NM_USER_FAVORITES_CHANNEL_ID_KEY,
 	  [NSNumber numberWithInteger:0], NM_USER_WATCH_LATER_CHANNEL_ID_KEY,
 	  [NSNumber numberWithInteger:0], NM_USER_HISTORY_CHANNEL_ID_KEY,
+	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
 	  nil]];
 }
 
@@ -121,7 +123,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
 	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	 */
-	[viewController markPlaybackCheckpoint];
+	[self saveCurrentVideoList:[viewController markPlaybackCheckpoint]];
 	[self saveContext];
 	// release the UI - in particular, remove just the movie player to save memory footprint
 	
@@ -137,9 +139,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 //	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
 	// start a new session
-	userDefaults = [NSUserDefaults standardUserDefaults];
 	NSDate * theDate = [userDefaults objectForKey:NM_LAST_SESSION_DATE];
 	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY];
+	NSArray * vdoList = [userDefaults objectForKey:NM_LAST_VIDEO_LIST_KEY];
+	[NMTaskQueueController sharedTaskQueueController].dataController.lastSessionVideoIDs = vdoList;
 	if ( [theDate timeIntervalSinceNow] < -NM_SESSION_DURATION ) {	// 30 min
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:++sid];
 		[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
@@ -167,7 +170,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 Save data if appropriate.
 	 See also applicationDidEnterBackground:.
 	 */
-	[viewController markPlaybackCheckpoint];
+	[self saveCurrentVideoList:[viewController markPlaybackCheckpoint]];
 	[self saveContext];
 }
 
@@ -200,6 +203,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (void)saveChannelID:(NSNumber *)chnNum {
 	NM_LAST_CHANNEL_ID = [chnNum integerValue];
 	[userDefaults setInteger:[chnNum integerValue] forKey:NM_LAST_CHANNEL_ID_KEY];
+}
+
+- (void)saveCurrentVideoList:(NSArray *)vdoIDs {
+	[userDefaults setObject:vdoIDs forKey:NM_LAST_VIDEO_LIST_KEY];
 }
 
 #pragma mark -

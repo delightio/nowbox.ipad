@@ -1,5 +1,5 @@
 //
-//  TwitterLoginViewController.h
+//  SocialLoginViewController.h
 //  ipad
 //
 //  Created by Bill So on 14/8/11.
@@ -8,14 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TwitterLoginViewController : UIViewController <UIWebViewDelegate> {
+typedef enum {
+	LoginTwitterType,
+	LoginFacebookType,
+} SocialLoginType;
+
+@interface SocialLoginViewController : UIViewController <UIWebViewDelegate> {
 	IBOutlet UIActivityIndicatorView * loadingIndicator;
 	IBOutlet UILabel * progressLabel;
 	UIWebView *loginWebView;
 	UIView * progressContainerView;
+	SocialLoginType loginType;
 }
 
 @property (retain, nonatomic) IBOutlet UIWebView *loginWebView;
 @property (nonatomic, retain) IBOutlet UIView * progressContainerView;
+@property (nonatomic, assign) SocialLoginType loginType;
 
 @end

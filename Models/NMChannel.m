@@ -19,8 +19,6 @@
 @dynamic nm_hidden;
 @dynamic nm_id;
 @dynamic nm_last_vid;
-@dynamic nm_last_vid_previous;
-@dynamic nm_last_vid_next;
 @dynamic nm_sort_order;
 @dynamic nm_subscribed;
 @dynamic nm_thumbnail_file_name;
