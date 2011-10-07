@@ -8,7 +8,7 @@
 
 #import "SettingsViewController.h"
 #import "ipadAppDelegate.h"
-#import "TwitterLoginViewController.h"
+#import "SocialLoginViewController.h"
 #import "NMLibrary.h"
 
 #define NM_SETTING_HD_SWITCH_TAG					1001
@@ -307,10 +307,22 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ( indexPath.section == 2 && indexPath.row == 0 ) {
-		TwitterLoginViewController * twitterCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
-		[self.navigationController pushViewController:twitterCtrl animated:YES];
-		[twitterCtrl release];
+	if ( indexPath.section == 2 ) {
+		SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+		switch (indexPath.row) {
+			case 0:
+				socialCtrl.loginType = LoginTwitterType;
+				break;
+				
+			case 1:
+				socialCtrl.loginType = LoginFacebookType;
+				break;
+				
+			default:
+				break;
+		}
+		[self.navigationController pushViewController:socialCtrl animated:YES];
+		[socialCtrl release];
 	}
 }
 

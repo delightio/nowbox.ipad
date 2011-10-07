@@ -117,8 +117,8 @@
 		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
 		A9776A4C13AAF0AF004FA2F3 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */; };
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
-		A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */; };
-		A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */; };
+		A97EBE5D13F7B2AF00CC0F5C /* SocialLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */; };
+		A97EBE6013F7B2BF00CC0F5C /* SocialLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */; };
 		A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A98555DF141758CD00079453 /* KeychainItemWrapper.m */; };
 		A98C241513D38C040061A594 /* button-like-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241113D38C030061A594 /* button-like-active.png */; };
 		A98C241613D38C040061A594 /* button-like.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241213D38C030061A594 /* button-like.png */; };
@@ -370,9 +370,9 @@
 		A9776A4713AAF0AF004FA2F3 /* twitter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-icon.png"; sourceTree = "<group>"; };
 		A97E237E13A6E8F400EBA5EE /* ChannelPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelPanelController.h; sourceTree = "<group>"; };
 		A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelPanelController.m; sourceTree = "<group>"; };
-		A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterLoginViewController.h; sourceTree = "<group>"; };
-		A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterLoginViewController.m; sourceTree = "<group>"; };
-		A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwitterLoginView.xib; sourceTree = "<group>"; };
+		A97EBE5B13F7B2AF00CC0F5C /* SocialLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialLoginViewController.h; sourceTree = "<group>"; };
+		A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialLoginViewController.m; sourceTree = "<group>"; };
+		A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialLoginView.xib; sourceTree = "<group>"; };
 		A98555DE141758CD00079453 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		A98555DF141758CD00079453 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		A98C241113D38C030061A594 /* button-like-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like-active.png"; sourceTree = "<group>"; };
@@ -582,8 +582,8 @@
 				A991188913E759E20067E987 /* SettingsViewController.m */,
 				A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */,
 				A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */,
-				A97EBE5B13F7B2AF00CC0F5C /* TwitterLoginViewController.h */,
-				A97EBE5C13F7B2AF00CC0F5C /* TwitterLoginViewController.m */,
+				A97EBE5B13F7B2AF00CC0F5C /* SocialLoginViewController.h */,
+				A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */,
 				22ADFA0513FC2AAD003CF27E /* SearchChannelViewController.h */,
 				22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */,
 				A9A4810B13FD181500850536 /* FeatureDebugViewController.h */,
@@ -820,7 +820,7 @@
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
 				A991188B13E759F30067E987 /* SettingsView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
-				A97EBE5F13F7B2BF00CC0F5C /* TwitterLoginView.xib */,
+				A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */,
 				22ADF9DB13FB2032003CF27E /* FindChannelTableCell.xib */,
 				22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */,
 				A9A4810F13FD189F00850536 /* FeatureDebugView.xib */,
@@ -1001,7 +1001,7 @@
 				A991188C13E759F30067E987 /* SettingsView.xib in Resources */,
 				2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */,
 				A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */,
-				A97EBE6013F7B2BF00CC0F5C /* TwitterLoginView.xib in Resources */,
+				A97EBE6013F7B2BF00CC0F5C /* SocialLoginView.xib in Resources */,
 				221C6FF913FA7C17008CF42A /* channel-video-status-bad.png in Resources */,
 				22ADF9BC13FAF40C003CF27E /* category-list-fade.png in Resources */,
 				22ADF9BD13FAF40C003CF27E /* category-list-my-channels.png in Resources */,
@@ -1089,7 +1089,7 @@
 				2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */,
 				A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */,
 				A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */,
-				A97EBE5D13F7B2AF00CC0F5C /* TwitterLoginViewController.m in Sources */,
+				A97EBE5D13F7B2AF00CC0F5C /* SocialLoginViewController.m in Sources */,
 				A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */,
 				22ADF99D13FAF39A003CF27E /* CategoryCellView.m in Sources */,
 				22ADF99E13FAF39A003CF27E /* CategoryTableCell.m in Sources */,
