@@ -114,14 +114,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"channel", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	
-	//DEBUG
-	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]];
-	NSNumber * lastNum = chnObj.nm_last_vid;
-	
 	for (NMVideo * vid in result) {
-		if ( [vid.nm_id isEqualToNumber:lastNum] ) {
-			NSLog(@"you are fucked!!");
-		}
 		[managedObjectContext deleteObject:vid];
 	}
 	[request release];

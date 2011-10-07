@@ -260,6 +260,9 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSString *)didLoadNotificationName {
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"Did get video - %@", channelName);
+#endif
 	return NMDidGetChannelVideoListNotification;
 }
 
