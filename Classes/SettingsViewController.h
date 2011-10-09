@@ -10,7 +10,7 @@
 
 @interface SettingsViewController : UITableViewController <UITextFieldDelegate> {
 	IBOutlet UITextField * userIDField;
-	IBOutlet UISwitch * hqSwitch;
+	IBOutlet UISwitch * hqSwitch, * mobileBrowserSwitch;
 	IBOutlet UILabel * reloadNote;
 	
 	NSUserDefaults * userDefaults;
@@ -18,8 +18,5 @@
 	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
 	BOOL viewPushedByNavigationController;
 }
-
-- (IBAction)changeHQSetting:(id)sender;
-- (IBAction)reloadApp:(id)sender;
 
 @end

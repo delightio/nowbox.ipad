@@ -15,6 +15,7 @@
 #define NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG		1002
 #define NM_SETTING_PUSH_NOTIFICATION_SWITCH_TAG		1003
 #define NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG	1004
+#define	NM_SETTING_MOBILE_BROWSER_SWITCH_TAG		1005
 
 @implementation SettingsViewController
 
@@ -68,6 +69,11 @@
 	hdSwitch.tag = NM_SETTING_HD_SWITCH_TAG;
 	hdSwitch.on = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
 	[hdSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+	
+	mobileBrowserSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+	mobileBrowserSwitch.tag = NM_SETTING_MOBILE_BROWSER_SWITCH_TAG;
+	mobileBrowserSwitch.on = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
+	[mobileBrowserSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 
 	favoriteChannelSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 	favoriteChannelSwitch.tag = NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG;
@@ -120,6 +126,10 @@
 			NM_USE_HIGH_QUALITY_VIDEO = theSwitch.on;
 			[userDefaults setBool:theSwitch.on forKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
 			break;
+		case NM_SETTING_MOBILE_BROWSER_SWITCH_TAG:
+			NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = theSwitch.tag;
+			[userDefaults setBool:theSwitch.on forKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
+			break;
 		case NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG:
 			NM_USER_SHOW_FAVORITE_CHANNEL = theSwitch.on;
 			[[NMTaskQueueController sharedTaskQueueController].dataController updateFavoriteChannelHideStatus];
@@ -139,15 +149,6 @@
 
 - (void)dismissView:(id)sender {
 	[self dismissModalViewControllerAnimated:YES];
-}
-
-- (IBAction)changeHQSetting:(id)sender {
-	[[NSUserDefaults standardUserDefaults] setBool:hqSwitch.on forKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
-}
-
-- (IBAction)reloadApp:(id)sender {
-	reloadNote.hidden = NO;
-	[userIDField resignFirstResponder];
 }
 
 #pragma mark text edit delegate
@@ -176,6 +177,7 @@
 {
 	NSInteger numRow = 1;
 	switch (section) {
+		case 0:
 		case 2:
 		case 4:
 			numRow = 2;
@@ -197,6 +199,27 @@
     UITableViewCell * cell;
 	NSString * lblStr = nil;
 	switch (indexPath.section) {
+		case 0:
+			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+			if (cell == nil) {
+				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+			}
+			switch (indexPath.row) {
+				case 0:
+					// HD
+					lblStr = @"HD";
+					cell.accessoryView = hdSwitch;
+					break;
+				case 1:
+					// Mobile browser resolution
+					lblStr = @"Mobile Browser Resolution";
+					cell.accessoryView = mobileBrowserSwitch;
+				default:
+					break;
+			}
+			cell.textLabel.text = lblStr;
+			break;
 		case 1:
 			cell = [tableView dequeueReusableCellWithIdentifier:EmailCellIdentifier];
 			if ( cell == nil ) {
@@ -240,11 +263,6 @@
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			}
 			switch (indexPath.section) {
-				case 0:
-					// HD
-					lblStr = @"HD";
-					cell.accessoryView = hdSwitch;
-					break;
 				case 3:
 					lblStr = @"Show Favorites Channel";
 					cell.accessoryView = favoriteChannelSwitch;
