@@ -127,7 +127,6 @@
 		A98C241B13D38C3C0061A594 /* channel-toolbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */; };
 		A98C241D13D399D70061A594 /* ribbon.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241C13D399D70061A594 /* ribbon.png */; };
 		A991188A13E759E20067E987 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A991188913E759E20067E987 /* SettingsViewController.m */; };
-		A991188C13E759F30067E987 /* SettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A991188B13E759F30067E987 /* SettingsView.xib */; };
 		A9976EFD13BB355200B06DFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A9976F0613BB35AD00B06DFF /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
 		A9976F0713BB35AD00B06DFF /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504313438F860022BF2C /* NMDataController.m */; };
@@ -383,7 +382,6 @@
 		A98C241C13D399D70061A594 /* ribbon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ribbon.png; sourceTree = "<group>"; };
 		A991188813E759E20067E987 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		A991188913E759E20067E987 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		A991188B13E759F30067E987 /* SettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsView.xib; sourceTree = "<group>"; };
 		A9976EFC13BB355200B06DFF /* libNMLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNMLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9976F0013BB355200B06DFF /* NMLibrary-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMLibrary-Prefix.pch"; sourceTree = "<group>"; };
 		A99BA0A813A7540B0010F202 /* VideoRowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowController.h; sourceTree = "<group>"; };
@@ -817,7 +815,6 @@
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
-				A991188B13E759F30067E987 /* SettingsView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
 				A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */,
 				22ADF9DB13FB2032003CF27E /* FindChannelTableCell.xib */,
@@ -990,7 +987,6 @@
 				A92CE47313E56B4C00007B04 /* top-bar-channel-background.png in Resources */,
 				A92CE47613E56BCB00007B04 /* top-bar-title-background.png in Resources */,
 				A9FDD38E13E61B5400758BD7 /* top-bar-image-frame.png in Resources */,
-				A991188C13E759F30067E987 /* SettingsView.xib in Resources */,
 				2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */,
 				A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */,
 				A97EBE6013F7B2BF00CC0F5C /* SocialLoginView.xib in Resources */,

@@ -134,7 +134,6 @@ NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlay
 }
 
 - (IBAction)showSettingsView:(id)sender {
-//	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithNibName:@"SettingsView" bundle:nil];
 	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:settingCtrl];
 	navCtrl.navigationBar.barStyle = UIBarStyleBlack;
