@@ -38,6 +38,7 @@
 
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx;
 - (void)slowFadeOutThumbnailView:(id)sender context:(void *)ctx;
+- (void)restoreThumbnailView;
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;
 
 @end

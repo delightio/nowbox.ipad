@@ -1219,6 +1219,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1242,11 +1243,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		didSkippedVideo = YES;
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
+			// instruct the data model to rearrange itself
 			[playbackModelController moveToPreviousVideo];
 			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
+			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 	} else {
 		// play the video again

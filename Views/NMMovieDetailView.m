@@ -155,6 +155,10 @@
 	[UIView commitAnimations];
 }
 
+- (void)restoreThumbnailView {
+	if ( movieThumbnailView.alpha == 0.0f ) movieThumbnailView.alpha = 1.0f;
+}
+
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
 	if ( isFullScreen ) {
 		infoContainerView.hidden = YES;
