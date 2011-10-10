@@ -295,7 +295,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         label.text = chn.title;
         
         label = (UILabel *)[cell viewWithTag:13];
-        label.text = [NSString stringWithFormat:@"Posted %d videos, %d followers", 0, 0];
+        label.text = [NSString stringWithFormat:@"Posted %@ videos, %d followers", chn.video_count, 0];
         
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];

@@ -98,7 +98,7 @@
 	} else {
 		descriptionLabel.text = @"";
 	}
-	metricLabel.text = @"Subscribers xx,xxx,xxx";
+	metricLabel.text = [NSString stringWithFormat:@"Posted %@ videos", channel.video_count];
 
     unsubscribeButton.enabled = YES;
     subscribeButton.enabled = YES;
