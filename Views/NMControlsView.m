@@ -277,7 +277,7 @@
 
 - (void)updateViewForVideo:(NMVideo *)aVideo {
 	NMChannel * chn = aVideo.channel;
-	// channel imjage
+	// channel image
 	[channelImageView setImageForChannel:chn];
 //	channelNameLabel.text = chn.title;
 	[segmentChannelButton setTitle:chn.title forState:UIControlStateNormal];

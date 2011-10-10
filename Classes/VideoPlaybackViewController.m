@@ -792,7 +792,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"offset of next MDV: %f", xOffset);
+	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
@@ -811,7 +811,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"offset of previous MDV: %f", xOffset);
+	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
@@ -830,7 +830,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"offset of current MDV: %f actual: %f %@", xOffset, theDetailView.frame.origin.x, ctrl.currentVideo.title);
+	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
 #endif
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
@@ -1341,10 +1341,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.alpha = 1.0f;
 		[UIView commitAnimations];
 		// unhide all movie detail view
-		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-			theDetailView.hidden = NO;
-			theDetailView.alpha = 1.0f;
-		}
+//		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+//			theDetailView.hidden = NO;
+//			theDetailView.alpha = 1.0f;
+//		}
 		[self configureDetailViewForContext:NM_ANIMATION_SPLIT_VIEW_CONTEXT];
 	} else {
 		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];

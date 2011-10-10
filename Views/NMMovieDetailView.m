@@ -88,6 +88,7 @@
 		titleLabel.frame = titleDefaultFrame;
 		descriptionLabel.frame = descriptionDefaultFrame;
 		otherInfoLabel.center = otherInfoDefaultPosition;
+		self.alpha = 0.0f;
 		return;
 	} else {
 		NSLog(@"movie detail view did nothing");
