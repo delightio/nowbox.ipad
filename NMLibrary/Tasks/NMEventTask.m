@@ -192,14 +192,21 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventDequeue:
 		{
 			// get the video from Watch Later channel
-			NSNumber * vid = [video.nm_id retain];
 			//remove video to "watch later" channel
-			[ctrl deleteVideoWithID:vid fromChannel:ctrl.myQueueChannel];
+			video.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
 			// update the original video object
-			[ctrl batchUpdateVideoWithID:vid forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
-			[vid release];
+			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
 			// show/hide channel
 			[ctrl updateMyQueueChannelHideStatus];
+//			// get the video from Watch Later channel
+//			NSNumber * vid = [video.nm_id retain];
+//			//remove video to "watch later" channel
+//			[ctrl deleteVideoWithID:vid fromChannel:ctrl.myQueueChannel];
+//			// update the original video object
+//			[ctrl batchUpdateVideoWithID:vid forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
+//			[vid release];
+//			// show/hide channel
+//			[ctrl updateMyQueueChannelHideStatus];
 			return YES;
 		}
 		case NMEventShare:
@@ -217,14 +224,20 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		}
 		case NMEventUnfavorite:
 		{
-			NSNumber * vid = [video.nm_id retain];
 			// remove video
-			[ctrl deleteVideoWithID:vid fromChannel:ctrl.favoriteVideoChannel];
+			video.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
 			// update the original video object
-			[ctrl batchUpdateVideoWithID:vid forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
-			[vid release];
+			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
 			// show/hide channel
 			[ctrl updateFavoriteChannelHideStatus];
+//			NSNumber * vid = [video.nm_id retain];
+//			// remove video
+//			[ctrl deleteVideoWithID:vid fromChannel:ctrl.favoriteVideoChannel];
+//			// update the original video object
+//			[ctrl batchUpdateVideoWithID:vid forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
+//			[vid release];
+//			// show/hide channel
+//			[ctrl updateFavoriteChannelHideStatus];
 			return YES;
 		}	
 		default:

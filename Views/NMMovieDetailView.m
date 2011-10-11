@@ -92,7 +92,7 @@
 		return;
 	} else {
 		NSLog(@"movie detail view did nothing");
-	return;
+		return;
 	}
 	// video info - try to show the whole title, max three lines
 	CGRect theRect = titleLabel.frame;
