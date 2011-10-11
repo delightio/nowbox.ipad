@@ -336,6 +336,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (NSArray *)markPlaybackCheckpoint {
 	NMVideo * theVideo = [self playerCurrentVideo];
+	// theVideo is null if there's no video playing (say, when there's no network connection)
+	if ( theVideo == nil ) return;
 	CMTime aTime = movieView.player.currentTime;
 	if ( aTime.flags & kCMTimeFlags_Valid ) {
 		currentChannel.nm_time_elapsed_value = [NSNumber numberWithLongLong:aTime.value];
