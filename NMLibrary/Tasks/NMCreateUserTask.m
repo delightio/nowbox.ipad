@@ -54,7 +54,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 - (void)dealloc {
 	[email release];
 	[verificationURL release];
-//	[userDictionary release];
+	[userDictionary release];
 	[super dealloc];
 }
 
@@ -93,8 +93,8 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 		return;
 	}
 	// parse the returned JSON object
-	NSDictionary * theDict = [buffer objectFromJSONData];
-	NSInteger uid = [[theDict objectForKey:@"id"] integerValue];
+	self.userDictionary = [buffer objectFromJSONData];
+	NSInteger uid = [[userDictionary objectForKey:@"id"] integerValue];
 	switch (command) {
 		case NMCommandCreateUser:
 		{
@@ -103,9 +103,9 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 				
 				// update global variable
 				NM_USER_ACCOUNT_ID = uid;
-				NM_USER_WATCH_LATER_CHANNEL_ID = [[theDict objectForKey:@"queue_channel_id"] integerValue];
-				NM_USER_FAVORITES_CHANNEL_ID = [[theDict objectForKey:@"favorite_channel_id"] integerValue];
-				NM_USER_HISTORY_CHANNEL_ID = [[theDict objectForKey:@"history_channel_id"] integerValue];
+				NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
+				NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
+				NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
 			} else {
 				encountersErrorDuringProcessing = YES;
 			}
@@ -127,70 +127,39 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 			
 		default:
 		{
-			// verification command
-//			self.userDictionary = theDict;
 			break;
 		}
 	}
 }
 
-//- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-//	if ( command != NMCommandVerifyTwitterUser && command != NMCommandVerifyFacebookUser ) return NO;
-//	// merge all channels with current list from server
-//	NSArray * newSubscribedChannels = [userDictionary objectForKey:@"subscribed_channel_ids"];
-//	NSArray * channelAy = ctrl.subscribedChannels;
-//	NMChannel * chnObj;
-//	NSUInteger idx;
-//	NSMutableArray * chnToDeleteAy = nil;
-//	if ( newSubscribedChannels ) {
-//		NSUInteger order = 10;
-//		// loop through all local subscribed channels
-//		for (chnObj in channelAy) {
-//			idx = [newSubscribedChannels indexOfObject:chnObj.nm_id];
-//			if ( idx == NSNotFound ) {
-//				if ( chnToDeleteAy == nil ) chnToDeleteAy = [NSMutableArray arrayWithCapacity:4];
-//				[chnToDeleteAy addObject:chnObj.nm_id];
-//			} else {
-//				// local channel exists in the server set
-//				chnObj.nm_subscribed = [NSNumber numberWithUnsignedInteger:order++];
-//			}
-//		}
-//	}
-//	// check whether user channels exists
-//	NSNumber * idNum = nil;
-//	switch (command) {
-//		case NMCommandVerifyFacebookUser:
-//			idNum = [userDictionary objectForKey:@"facebook_channel_id"];
-//			if ( idNum ) {
-//				NM_USER_FACEBOOK_CHANNEL_ID = [idNum integerValue];
-//				if ( [chnToDeleteAy indexOfObject:idNum] ) {
-//					// raise the channel to the top
-//					// remove the channel from the "to-be-deleted set"
-//					[chnToDeleteAy removeObject:idNum];
-//				} // else, create new channel later
-//			}
-//			break;
-//			
-//		case NMCommandVerifyTwitterUser:
-//			idNum = [userDictionary objectForKey:@"twitter_channel_id"];
-//			if ( idNum ) {
-//				NM_USER_TWITTER_CHANNEL_ID = [idNum integerValue];
-//				if ( [chnToDeleteAy indexOfObject:idNum] ) {
-//					[chnToDeleteAy removeObject:idNum];
-//				}
-//			}
-//			break;
-//			
-//		default:
-//			break;
-//	}
-//	if ( [chnToDeleteAy count] ) {
-//		// delete all these channels
-//		[ctrl batchDeleteChannelForIDs:chnToDeleteAy];
-//	}
-//	// No need to add new list of subscribed channels here. Make sure the task queue scheduler call for channel list refresh after this is finished.
-//	return YES;
-//}
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	if ( command != NMCommandVerifyTwitterUser && command != NMCommandVerifyFacebookUser ) return NO;
+	/*
+	 When this task is done, the backend should queue the "Get Channels" task to merge changes in channels.
+	 In this task, there's NO need to merge the channels. Just create the Facebook or Twitter stream channel
+	*/
+	NSNumber * idNum = nil;
+	switch (command) {
+		case NMCommandVerifyFacebookUser:
+			idNum = [userDictionary objectForKey:@"facebook_channel_id"];
+			break;
+			
+		case NMCommandVerifyTwitterUser:
+			idNum = [userDictionary objectForKey:@"twitter_channel_id"];
+			break;
+			
+		default:
+			break;
+	}
+	NMChannel * chnObj = [ctrl channelForID:idNum];
+	if ( chnObj == nil ) {
+		// create the new object
+		chnObj = [ctrl insertNewChannelForID:idNum];
+		chnObj.nm_hidden = [NSNumber numberWithBool:YES];
+		// the reset of the attributes are left for the "Get Channels" task to set.
+	}
+	return YES;
+}
 
 - (NSString *)willLoadNotificationName {
 	switch (command) {

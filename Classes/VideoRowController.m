@@ -306,9 +306,9 @@
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
             isLoadingNewContent = NO;
             isAnimatingNewContentCell = YES;
-			[videoTableView reloadData];
-//            [videoTableView beginUpdates];
-//            [videoTableView endUpdates];
+//			[videoTableView reloadData];
+            [videoTableView beginUpdates];
+            [videoTableView endUpdates];
 		}
     }
 }

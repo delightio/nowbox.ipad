@@ -17,7 +17,7 @@
 @interface NMCreateUserTask : NMTask {
 	NSURL * verificationURL;
 	NSString * email;
-//	NSDictionary * userDictionary;
+	NSDictionary * userDictionary;
 }
 
 @property (nonatomic, retain) NSURL * verificationURL;
