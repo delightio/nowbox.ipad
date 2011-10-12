@@ -88,6 +88,7 @@
 - (NSInteger)maxChannelSortOrder;
 - (void)updateMyQueueChannelHideStatus;
 - (void)updateFavoriteChannelHideStatus;
+- (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 // video
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;

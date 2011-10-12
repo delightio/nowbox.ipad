@@ -536,6 +536,17 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 //	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:hideChannel];
 }
 
+- (BOOL)channelContainsVideo:(NMChannel *)chnObj {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", chnObj]];
+	[request setFetchLimit:1];
+	[request setResultType:NSManagedObjectIDResultType];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	return [result count] > 0;
+}
+
 #pragma mark Video 
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
 	NMVideo * dupVideo = [self insertNewVideo];

@@ -223,32 +223,21 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-//	switch (command) {
-//		case NMCommandGetChannelVideoList:
-//		{
-//			// delete all existing channel
-//			NSSet * chnVideos = channel.videos;
-//			if ( chnVideos ) [ctrl batchDeleteVideos:chnVideos];
-//			// put in all videos
-//			[self insertAllVideosInController:ctrl];
-//			if ( numberOfRowsFromServer ) {
-//				channel.nm_current_page = [NSNumber numberWithInteger:1];
-//			}
-//			break;
-//		}
-//		case NMCommandGetMoreVideoForChannel:
-			if ( numberOfRowsFromServer ) {
-				[self insertOnlyNewVideosInController:ctrl];
-				// update the page number
-				if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
-					channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
-				}
-			}
-//			break;
-//			
-//		default:
-//			break;
-//	}
+	if ( numberOfRowsFromServer ) {
+		[self insertOnlyNewVideosInController:ctrl];
+		// update the page number
+		if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
+			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
+		}
+	}
+	if ( ![ctrl channelContainsVideo:channel] ) {
+		// the channel is empty after update
+		if ( ![channel.nm_hidden boolValue] ) {
+			channel.nm_hidden = [NSNumber numberWithBool:YES];
+		}
+	} else if ( [channel.nm_hidden boolValue] ) {
+		channel.nm_hidden = [NSNumber numberWithBool:NO];
+	}
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
 #endif
