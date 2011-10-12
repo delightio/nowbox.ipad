@@ -507,15 +507,33 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)updateMyQueueChannelHideStatus {
-	myQueueChannel.nm_hidden = [NSNumber numberWithBool:([myQueueChannel.videos anyObject] == nil)];
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", myQueueChannel]];
+	[request setFetchLimit:1];
+	[request setResultType:NSManagedObjectIDResultType];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	myQueueChannel.nm_hidden = [NSNumber numberWithBool:[result count] == 0];
+	[request release];
+//	myQueueChannel.nm_hidden = [NSNumber numberWithBool:([myQueueChannel.videos anyObject] == nil)];
 }
 
 - (void)updateFavoriteChannelHideStatus {
-	BOOL hideChannel = YES;
-	if ( NM_USER_SHOW_FAVORITE_CHANNEL && [favoriteVideoChannel.videos anyObject] ) {
-		hideChannel = NO;
-	}
-	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:hideChannel];
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", favoriteVideoChannel]];
+	[request setFetchLimit:1];
+	[request setResultType:NSManagedObjectIDResultType];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:[result count] == 0];
+	[request release];
+//	BOOL hideChannel = YES;
+//	if ( NM_USER_SHOW_FAVORITE_CHANNEL && [favoriteVideoChannel.videos anyObject] ) {
+//		hideChannel = NO;
+//	}
+//	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:hideChannel];
 }
 
 #pragma mark Video 
