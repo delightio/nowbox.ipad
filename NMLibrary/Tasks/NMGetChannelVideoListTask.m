@@ -230,13 +230,17 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
 		}
 	}
-	if ( ![ctrl channelContainsVideo:channel] ) {
-		// the channel is empty after update
-		if ( ![channel.nm_hidden boolValue] ) {
-			channel.nm_hidden = [NSNumber numberWithBool:YES];
+	NSInteger chnID = [targetID integerValue];
+	if ( chnID == NM_USER_TWITTER_CHANNEL_ID || chnID == NM_USER_FACEBOOK_CHANNEL_ID ) {
+		// check if we need to show/hide the stream channel
+		if ( ![ctrl channelContainsVideo:channel] ) {
+			// the channel is empty after update
+			if ( ![channel.nm_hidden boolValue] ) {
+				channel.nm_hidden = [NSNumber numberWithBool:YES];
+			}
+		} else if ( [channel.nm_hidden boolValue] ) {
+			channel.nm_hidden = [NSNumber numberWithBool:NO];
 		}
-	} else if ( [channel.nm_hidden boolValue] ) {
-		channel.nm_hidden = [NSNumber numberWithBool:NO];
 	}
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
