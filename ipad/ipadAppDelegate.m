@@ -144,13 +144,18 @@ NSInteger NM_LAST_CHANNEL_ID;
 	NSDate * theDate = [userDefaults objectForKey:NM_LAST_SESSION_DATE];
 	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY];
 	NSArray * vdoList = [userDefaults objectForKey:NM_LAST_VIDEO_LIST_KEY];
-	[NMTaskQueueController sharedTaskQueueController].dataController.lastSessionVideoIDs = vdoList;
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	tqc.dataController.lastSessionVideoIDs = vdoList;
 	if ( [theDate timeIntervalSinceNow] < -NM_SESSION_DURATION ) {	// 30 min
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:++sid];
 		[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
 	} else {
 		// use the same session
 		[[NMTaskQueueController sharedTaskQueueController] resumeSession:sid];
+	}
+	if ( ![userDefaults boolForKey:NM_FIRST_LAUNCH_KEY] ) {
+		// poll the server to see if those hidden has got content now.
+		[tqc issueRefreshHiddenSubscribedChannels];
 	}
 	// init core data
 	

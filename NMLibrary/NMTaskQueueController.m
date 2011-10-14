@@ -238,6 +238,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return task;
 }
 
+- (void)issueRefreshHiddenSubscribedChannels {
+	NSArray * chns = [dataController hiddenSubscribedChannels];
+	if ( chns ) {
+		// loop through them and issue refresh request
+		for (NMChannel * chnObj in chns) {
+			[self issueGetMoreVideoForChannel:chnObj];
+		}
+	}
+}
+
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv {
 	NMImageDownloadTask * task = nil;
 	if ( pv.thumbnail_uri ) {

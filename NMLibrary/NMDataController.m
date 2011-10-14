@@ -321,6 +321,15 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return chnObj;
 }
 
+- (NSArray *)hiddenSubscribedChannels {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == 0 AND nm_video_last_refreshed < %@", [NSDate dateWithTimeIntervalSinceNow:-600]]]; // 10 min
+	[request setReturnsObjectsAsFaults:NO];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	return [result count] == 0 ? nil : result;
+}
+
 - (NSDictionary *)fetchChannelsForNames:(NSArray *)channelAy {
 	// channels are created when the app launch or after sign in. Probably don't need to optimize the operation that much
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];

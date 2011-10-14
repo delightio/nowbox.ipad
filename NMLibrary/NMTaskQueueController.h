@@ -46,8 +46,6 @@
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword;
 // Channel
 - (void)issueGetSubscribedChannels;
-//- (void)issueGetLiveChannel;
-//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
@@ -59,6 +57,10 @@
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj;
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo;
+/*
+ Refresh channels which user has subscribed but set hidden by the app. A channel is set hidden if it's a user/stream channel and it has no video.
+ */
+- (void)issueRefreshHiddenSubscribedChannels;
 
 // Event tracking
 // Share video
