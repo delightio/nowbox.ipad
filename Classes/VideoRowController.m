@@ -66,7 +66,8 @@
 }
 
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath {
-    [panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
+	if ( !NM_AIRPLAY_ACTIVE ) 
+		[panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
     [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[indexPath row]];
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
     [panelController.videoViewController playVideo:theVideo];

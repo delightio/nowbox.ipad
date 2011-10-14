@@ -24,6 +24,7 @@
 #define NM_CONTAINER_VIEW_POOL_SIZE		8
 
 NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlayNewlySubscribedChannelNotification";
+BOOL NM_AIRPLAY_ACTIVE = NO;
 
 
 @implementation ChannelPanelController

@@ -1063,6 +1063,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( movieView.player.airPlayVideoActive ) {
 			// update the player interface to indicate that Airplay has been enabled
 			[movieView hideAirPlayIndicatorView:NO];
+			NM_AIRPLAY_ACTIVE = YES;
 			// Apple TV does not send remote event back to app. No need to implement for now.
 			// receive remote event
 //			[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -1070,6 +1071,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			// remove the interface indication
 			[movieView hideAirPlayIndicatorView:YES];
+			NM_AIRPLAY_ACTIVE = NO;
 			// Apple TV does not send remote event back to app. No need to implement for now.
 //			[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 //			[self resignFirstResponder];
