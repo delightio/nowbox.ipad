@@ -245,6 +245,8 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
 #endif
+	// update last refreshed time stamp
+	channel.nm_video_last_refreshed = [NSDate date];
 	return numberOfVideoAdded > 0;
 }
 
