@@ -41,6 +41,7 @@
 	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
+	[nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
     return self;
 }
 
@@ -332,6 +333,10 @@
         isAnimatingNewContentCell = NO;
         [videoTableView reloadData];
     }
+}
+
+- (void)handleNewSessionNotification:(NSNotification *)aNotification {
+	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 }
 
 #pragma mark trigger load new

@@ -26,6 +26,8 @@ BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
 BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= NO;
 NSNumber * NM_SESSION_ID					= nil;
 
+NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
+
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
 BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
@@ -98,6 +100,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController deleteVideosWithSessionID:sessionID - 2];
 	// update all page number
 	[dataController resetAllChannelsPageNumber];
+	// post notification
+	[[NSNotificationCenter defaultCenter] postNotificationName:NMBeginNewSessionNotification object:self];
 }
 
 - (void)resumeSession:(NSInteger)sid {
