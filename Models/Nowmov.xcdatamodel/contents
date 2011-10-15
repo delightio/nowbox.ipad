@@ -18,6 +18,7 @@
         <attribute name="nm_time_elapsed_value" optional="YES" attributeType="Integer 64" defaultValueString="0"/>
         <attribute name="nm_video_last_refreshed" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="resource_uri" optional="YES" attributeType="String"/>
+        <attribute name="subscriber_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="thumbnail_uri" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -77,7 +78,7 @@
     </entity>
     <elements>
         <element name="NMCategory" positionX="18" positionY="54" width="128" height="105"/>
-        <element name="NMChannel" positionX="297" positionY="-72" width="153" height="330"/>
+        <element name="NMChannel" positionX="297" positionY="-72" width="153" height="345"/>
         <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
         <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="195"/>
         <element name="NMVideo" positionX="297" positionY="306" width="128" height="360"/>

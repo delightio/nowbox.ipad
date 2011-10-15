@@ -38,6 +38,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	[pDict setObject:[chnCtnDict objectForKey:@"title"] forKey:@"title"];
 	[pDict setObject:[chnCtnDict objectForKey:@"resource_uri"] forKey:@"resource_uri"];
 	[pDict setObject:[chnCtnDict objectForKey:@"video_count"] forKey:@"video_count"];
+	[pDict setObject:[chnCtnDict objectForKey:@"subscriber_count"] forKey:@"subscriber_count"];
 	NSString * chnType = [[chnCtnDict objectForKey:@"type"] lowercaseString];
 	if ( [chnType isEqualToString:@"user"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];

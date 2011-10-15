@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSNumber * nm_time_elapsed_value;
 @property (nonatomic, retain) NSDate * nm_video_last_refreshed;
 @property (nonatomic, retain) NSString * resource_uri;
+@property (nonatomic, retain) NSNumber * subscriber_count;
 @property (nonatomic, retain) NSString * thumbnail_uri;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * type;

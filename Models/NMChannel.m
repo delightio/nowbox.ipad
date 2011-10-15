@@ -25,6 +25,7 @@
 @dynamic nm_time_elapsed_timescale;
 @dynamic nm_time_elapsed_value;
 @dynamic nm_video_last_refreshed;
+@dynamic subscriber_count;
 @dynamic resource_uri;
 @dynamic thumbnail_uri;
 @dynamic title;
