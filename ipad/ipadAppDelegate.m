@@ -54,7 +54,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  [NSDate distantPast], NM_LAST_SESSION_DATE,
 	  [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, 
-	  [NSNumber numberWithBool:NO], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
+	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
