@@ -17,6 +17,7 @@
 	NMEventType eventType;
 //	CGFloat duration;	// duration of video
 	NSInteger elapsedSeconds;	// time elapse
+	NSInteger startSecond;
 	NMVideo * video;
 	NMChannel * channel;
 	NSNumber * channelID;
@@ -29,6 +30,7 @@
 @property (nonatomic, retain) NSNumber * channelID;
 @property (nonatomic, retain) NSDictionary * resultDictionary;
 @property (nonatomic) NSInteger elapsedSeconds;
+@property (nonatomic) NSInteger startSecond;
 //@property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL playedToEnd;
 

@@ -65,7 +65,8 @@
 // Event tracking
 // Share video
 - (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
-- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec;
 - (void)issueExamineVideo:(NMVideo *)aVideo errorInfo:(NSDictionary *)errDict;
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;

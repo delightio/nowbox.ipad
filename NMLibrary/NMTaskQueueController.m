@@ -294,15 +294,24 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSendViewEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd {
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
-//	task.duration = vdur;
 	task.playedToEnd = aEnd;
 	// how long the user has watched a video
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
+
+- (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
+	// how long the user has watched a video
+	task.elapsedSeconds = sec;
+	task.startSecond = aStart;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 
 - (void)issueExamineVideo:(NMVideo *)aVideo errorInfo:(NSDictionary *)errDict {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventExamine forVideo:aVideo];

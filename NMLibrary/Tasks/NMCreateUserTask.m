@@ -64,8 +64,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandCreateUser:
 		{
-			NSLog(@"timezone: %@", [[NSTimeZone systemTimeZone] name]);
-			urlStr = [NSString stringWithFormat:@"http://%@/users?locale=%@", NM_BASE_URL, [[NSLocale currentLocale] localeIdentifier]];
+			urlStr = [NSString stringWithFormat:@"http://%@/users?locale=%@&time_zone=%@", NM_BASE_URL, [[NSLocale currentLocale] localeIdentifier], [[NSTimeZone systemTimeZone] name]];
 			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 			[request setHTTPMethod:@"POST"];
 			break;

@@ -70,6 +70,8 @@
 	id timeObserver;
 	
 	NSInteger showMovieControlTimestamp;
+	// for posting seek event
+	NSInteger lastTimeElapsed, lastStartTime;
 		
 	@private
     NSManagedObjectContext *managedObjectContext_;

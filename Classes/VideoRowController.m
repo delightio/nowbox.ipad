@@ -304,7 +304,7 @@
 		} else {
 //            if ([[info objectForKey:@"num_video_added"] integerValue]==0) {
 //            }
-			NSLog(@"should hide \"loading label\": %@", channel.title);
+//			NSLog(@"should hide \"loading label\": %@", channel.title);
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
             isLoadingNewContent = NO;
             isAnimatingNewContentCell = YES;
@@ -351,7 +351,7 @@
     if(y > h + reload_distance) {
         if (!isLoadingNewContent && !isAnimatingNewContentCell) {
 //            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-            NSLog(@"Load new videos y:%f, h:%f, r:%f",y,h,reload_distance);
+//            NSLog(@"Load new videos y:%f, h:%f, r:%f",y,h,reload_distance);
             isLoadingNewContent = YES;
             [videoTableView beginUpdates];
             [videoTableView endUpdates];

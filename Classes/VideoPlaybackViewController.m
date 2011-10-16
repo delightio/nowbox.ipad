@@ -360,7 +360,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[vdoAy addObject:theVideo.nm_id];
 	}
 	// send event back to nowmov server
-	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	return vdoAy;
 }
 
@@ -719,7 +719,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// send tracking event
 	NMVideo * theVideo = [self playerCurrentVideo];
-	[nowmovTaskController issueSendViewEventForVideo:theVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:aEndOfVideo];
+	[nowmovTaskController issueSendViewEventForVideo:theVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:aEndOfVideo];
 	// visually transit to next video just like the user has tapped next button
 	//if ( aEndOfVideo ) {
 	// disable interface scrolling
@@ -952,7 +952,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self playCurrentVideo];
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
 	// send event back to server
-	[nowmovTaskController issueSendViewEventForVideo:item.nmVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	[nowmovTaskController issueSendViewEventForVideo:item.nmVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 }
 
 - (void)handleChannelManagementNotification:(NSNotification *)aNotification {
@@ -1026,6 +1026,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
+		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusCurrentVideo;
@@ -1554,6 +1555,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView beginAnimations:nil context:nil];
 	loadedControlView.seekBubbleButton.alpha = 1.0f;
 	[UIView commitAnimations];
+	lastStartTime = lastTimeElapsed;
+	lastTimeElapsed = loadedControlView.timeElapsed;
 }
 
 - (IBAction)touchUpProgressBar:(id)sender {
@@ -1563,6 +1566,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView beginAnimations:nil context:nil];
 	loadedControlView.seekBubbleButton.alpha = 0.0f;
 	[UIView commitAnimations];
+	// send the event
+	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed];
+	lastTimeElapsed = showMovieControlTimestamp;
 }
 
 # pragma mark gestures
@@ -1585,13 +1591,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			if ( panelHidden ) {
 				// check if it's a pinch in gesture
 				if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
-					NSLog(@"pinch in fired");
 					[self toggleChannelPanel:sender.view];
 				}
 			} else {
 				// check if it's a pinch out gesture
 				if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
-					NSLog(@"pinch out fired");
 					[self toggleChannelPanel:sender.view];
 				}
 			}

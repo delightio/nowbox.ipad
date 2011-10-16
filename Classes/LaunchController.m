@@ -157,7 +157,6 @@
 	[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
-	NSLog(@"Created new user: %d", NM_USER_ACCOUNT_ID);
 	// new user created, get channel
 	[self checkUpdateChannels];
 }
