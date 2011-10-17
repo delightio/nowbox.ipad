@@ -124,25 +124,18 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)handleSocialMediaLogoutNotification:(NSNotification *)aNotification {
 	NMSignOutUserTask * task = (NMSignOutUserTask *)aNotification.object;
-	NSMutableArray * chnAy = [NSMutableArray arrayWithCapacity:4];
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	switch (task.command) {
 		case NMCommandDeauthoriseTwitterAccount:
-			if ( NM_USER_FACEBOOK_CHANNEL_ID == 0 ) {
-				signingOutAllServices = YES;
-			}
 			// remove twitter stream channel
-			[chnAy addObject:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
+			[dataController markChannelDeleteStatusForID:NM_USER_TWITTER_CHANNEL_ID];
 			NM_USER_TWITTER_CHANNEL_ID = 0;
 			[defs setInteger:0 forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 			break;
 			
 		case NMCommandDeauthoriseFaceBookAccount:
-			if ( NM_USER_TWITTER_CHANNEL_ID == 0 ) {
-				signingOutAllServices = YES;
-			}
 			// remove facebook stream channel
-			[chnAy addObject:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
+			[dataController markChannelDeleteStatusForID:NM_USER_FACEBOOK_CHANNEL_ID];
 			NM_USER_FACEBOOK_CHANNEL_ID = 0;
 			[defs setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 			break;
@@ -150,33 +143,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		default:
 			break;
 	}
-	// check if the user is logging in other services
-	if ( signingOutAllServices ) {
-		// remove all user channels - watch later, favorite
-		[chnAy addObject:[NSNumber numberWithInteger:NM_USER_WATCH_LATER_CHANNEL_ID]];
-		[chnAy addObject:[NSNumber numberWithInteger:NM_USER_FAVORITES_CHANNEL_ID]];
-		// reset global var
-		NM_USER_FAVORITES_CHANNEL_ID = 0;
-		NM_USER_WATCH_LATER_CHANNEL_ID = 0;
-		NM_USER_HISTORY_CHANNEL_ID = 0;
-		// update user var
-		[defs setInteger:0 forKey:NM_USER_ACCOUNT_ID_KEY];
-		[defs setInteger:0 forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
-		[defs setInteger:0 forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
-		[defs setInteger:0 forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
-
-		// listen to notification
-		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-		[nc addObserver:self selector:@selector(handleUserCreationNotification:) name:NMDidCreateUserNotification object:nil];
-		[nc addObserver:self selector:@selector(handleUserCreationNotification:) name:NMDidFailCreateUserNotification object:nil];
-		// issue create new user request as if it's the first launch case
-		[self issueCreateUser];
-	}
-	[dataController markDeleteStatusOfChannels:chnAy];
-}
-
-- (void)handleUserCreationNotification:(NSNotification *)aNotification {
-	[self issueGetSubscribedChannels];
 }
 
 #pragma mark Queue tasks to network controller

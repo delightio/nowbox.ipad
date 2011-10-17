@@ -315,7 +315,7 @@
 		A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-expand-active.png"; sourceTree = "<group>"; };
 		A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "airplay-tv-indicator.png"; sourceTree = "<group>"; };
 		A93E6BD21402966200B06191 /* airplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airplay.png; sourceTree = "<group>"; };
-		A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; path = NMSignOutUserTask.h; sourceTree = "<group>"; };
+		A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSignOutUserTask.h; sourceTree = "<group>"; };
 		A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NMSignOutUserTask.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
@@ -1291,6 +1291,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_EVENT_TRACKING,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_SESSION,
@@ -1309,6 +1310,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_EVENT_TRACKING,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_SESSION,
@@ -1327,6 +1329,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_EVENT_TRACKING,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_SESSION,

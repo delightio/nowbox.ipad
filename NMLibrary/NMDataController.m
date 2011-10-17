@@ -543,12 +543,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
-- (void)markDeleteStatusOfChannels:(NSArray *)chnIDAy {
+- (void)markChannelDeleteStatusForID:(NSInteger)chnID {
 	//TODO: set those channels as hidden for now. Gotta make a special status for "marked as delete"
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	// don't need predicate template for now. There's not much performance concern in deleting channel
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id in %@", chnIDAy]];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:chnID] forKey:@"OBJECT_ID"]]];
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NSNumber * yesNum = [NSNumber numberWithBool:YES];

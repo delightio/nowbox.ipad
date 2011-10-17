@@ -20,7 +20,6 @@
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
 	NSInteger sessionID;
-	BOOL signingOutAllServices;
 	
 	NMNetworkController * networkController;
 	NMDataController * dataController;
