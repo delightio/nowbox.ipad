@@ -20,6 +20,7 @@
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
 	NSInteger sessionID;
+	BOOL signingOutAllServices;
 	
 	NMNetworkController * networkController;
 	NMDataController * dataController;
@@ -40,6 +41,8 @@
 - (void)issueCreateUser;
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
+- (void)issueSignOutTwitterAccount;
+- (void)issueSignOutFacebookAccout;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;

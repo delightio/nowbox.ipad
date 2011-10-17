@@ -515,34 +515,48 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return theOrder;
 }
 
-- (void)updateMyQueueChannelHideStatus {
+- (void)updateChannelHiddenStatus:(NMChannel *)chnObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", myQueueChannel]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", chnObj]];
 	[request setFetchLimit:1];
 	[request setResultType:NSManagedObjectIDResultType];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	
-	myQueueChannel.nm_hidden = [NSNumber numberWithBool:[result count] == 0];
+	chnObj.nm_hidden = [NSNumber numberWithBool:[result count] == 0];
 	[request release];
-//	myQueueChannel.nm_hidden = [NSNumber numberWithBool:([myQueueChannel.videos anyObject] == nil)];
 }
 
 - (void)updateFavoriteChannelHideStatus {
+	if ( NM_USER_SHOW_FAVORITE_CHANNEL ) {
+		NSFetchRequest * request = [[NSFetchRequest alloc] init];
+		[request setEntity:videoEntityDescription];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", favoriteVideoChannel]];
+		[request setFetchLimit:1];
+		[request setResultType:NSManagedObjectIDResultType];
+		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+		favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:[result count] == 0];
+		[request release];
+	} else {
+		// always hide the channel
+		favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:YES];
+	}
+}
+
+- (void)markDeleteStatusOfChannels:(NSArray *)chnIDAy {
+	//TODO: set those channels as hidden for now. Gotta make a special status for "marked as delete"
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", favoriteVideoChannel]];
-	[request setFetchLimit:1];
-	[request setResultType:NSManagedObjectIDResultType];
+	[request setEntity:channelEntityDescription];
+	// don't need predicate template for now. There's not much performance concern in deleting channel
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id in %@", chnIDAy]];
+	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	
-	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:[result count] == 0];
-	[request release];
-//	BOOL hideChannel = YES;
-//	if ( NM_USER_SHOW_FAVORITE_CHANNEL && [favoriteVideoChannel.videos anyObject] ) {
-//		hideChannel = NO;
-//	}
-//	favoriteVideoChannel.nm_hidden = [NSNumber numberWithBool:hideChannel];
+	NSNumber * yesNum = [NSNumber numberWithBool:YES];
+	for (NMChannel * chnObj in result) {
+		chnObj.nm_hidden = yesNum;
+	}
+	// save changes
+	[managedObjectContext save:nil];
 }
 
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj {

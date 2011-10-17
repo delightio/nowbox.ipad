@@ -97,6 +97,7 @@
 		A9398C2713D4290D005E3CB0 /* toolbar-expand-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */; };
 		A93D353D14076B9600C8A73F /* airplay-tv-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */; };
 		A93E6BD31402966300B06191 /* airplay.png in Resources */ = {isa = PBXBuildFile; fileRef = A93E6BD21402966200B06191 /* airplay.png */; };
+		A93EF2FF144BEDF2004F72C5 /* NMSignOutUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
@@ -314,6 +315,8 @@
 		A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-expand-active.png"; sourceTree = "<group>"; };
 		A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "airplay-tv-indicator.png"; sourceTree = "<group>"; };
 		A93E6BD21402966200B06191 /* airplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airplay.png; sourceTree = "<group>"; };
+		A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; path = NMSignOutUserTask.h; sourceTree = "<group>"; };
+		A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NMSignOutUserTask.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
 		A9452BC61415E75E00056361 /* NMFileExistsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFileExistsCache.h; sourceTree = "<group>"; };
@@ -335,7 +338,7 @@
 		A970504113438F860022BF2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		A970504213438F860022BF2C /* NMDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMDataController.h; sourceTree = "<group>"; };
 		A970504313438F860022BF2C /* NMDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMDataController.m; sourceTree = "<group>"; };
-		A970504413438F860022BF2C /* NMDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMDataType.h; sourceTree = "<group>"; };
+		A970504413438F860022BF2C /* NMDataType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = NMDataType.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A970504513438F860022BF2C /* NMLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMLibrary.h; sourceTree = "<group>"; };
 		A970504613438F860022BF2C /* NMNetworkController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMNetworkController.h; sourceTree = "<group>"; };
 		A970504713438F860022BF2C /* NMNetworkController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMNetworkController.m; sourceTree = "<group>"; };
@@ -762,6 +765,8 @@
 				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
 				A9E90A8B14173AE700EB38DC /* NMCreateUserTask.h */,
 				A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */,
+				A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */,
+				A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1095,6 +1100,7 @@
 				A9E8E3B01427BBBD00ECD077 /* NMSeekBar.m in Sources */,
 				A9E8E3B11427BBBD00ECD077 /* NMSeekBarLayoutLayer.m in Sources */,
 				A9389B85143109CE00959946 /* LaunchController.m in Sources */,
+				A93EF2FF144BEDF2004F72C5 /* NMSignOutUserTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

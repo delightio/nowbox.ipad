@@ -187,7 +187,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			// mark the flag
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_watch_later"];
 			// show/hide channel
-			[ctrl updateMyQueueChannelHideStatus];
+			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
 		}
 		case NMEventDequeue:
@@ -198,7 +198,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
 			// show/hide channel
-			[ctrl updateMyQueueChannelHideStatus];
+			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
 		}
 		case NMEventShare:
@@ -211,7 +211,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			// mark the flag
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_favorite"];
 			// show/hide channel
-			[ctrl updateFavoriteChannelHideStatus];
+			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;
 		}
 		case NMEventUnfavorite:
@@ -221,7 +221,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
 			// show/hide channel
-			[ctrl updateFavoriteChannelHideStatus];
+			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;
 		}	
 		default:

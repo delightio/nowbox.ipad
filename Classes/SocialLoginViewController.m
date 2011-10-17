@@ -63,7 +63,9 @@
 	NSURL * theURL = [[NSBundle mainBundle] URLForResource:filename withExtension:@"html"];
 	[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	[nc addObserver:self selector:@selector(handleLoginFailNotification:) name:NMDidFailVerifyUserNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -100,6 +102,7 @@
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[progressContainerView release];
     [loginWebView release];
     [super dealloc];
@@ -121,6 +124,12 @@
 	progressLabel.text = @"Verified Successfully";
 	[loadingIndicator stopAnimating];
 	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];
+}
+
+- (void)handleLoginFailNotification:(NSNotification *)aNotification {
+	progressLabel.text = @"Verification Process Failed";
+	[loadingIndicator stopAnimating];
+	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0f];
 }
 
 #pragma mark Webview delegate methods

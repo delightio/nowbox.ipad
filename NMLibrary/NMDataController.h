@@ -87,8 +87,9 @@
 - (void)batchDeleteChannels:(NSArray *)chnAy;
 - (void)batchDeleteChannelForIDs:(NSArray *)idAy;
 - (NSInteger)maxChannelSortOrder;
-- (void)updateMyQueueChannelHideStatus;
+- (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
 - (void)updateFavoriteChannelHideStatus;
+- (void)markDeleteStatusOfChannels:(NSArray *)chnIDAy;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 // video
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;

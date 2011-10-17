@@ -245,11 +245,11 @@
 			switch (indexPath.row) {
 				case 0:
 					cell.textLabel.text = @"Twitter";
-					cell.detailTextLabel.text = @"Login";
+					cell.detailTextLabel.text = NM_USER_TWITTER_CHANNEL_ID ? @"Logout" : @"Login";
 					break;
 				case 1:
 					cell.textLabel.text = @"Facebook";
-					cell.detailTextLabel.text = @"Login";
+					cell.detailTextLabel.text = NM_USER_FACEBOOK_CHANNEL_ID ? @"Logout" : @"Login";
 					break;
 				default:
 					break;
@@ -326,21 +326,28 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	if ( indexPath.section == 2 ) {
-		SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-		switch (indexPath.row) {
-			case 0:
+		SocialLoginViewController * socialCtrl;
+		if ( indexPath.row == 0 ) {
+			if ( NM_USER_TWITTER_CHANNEL_ID ) {
+				// logout twitter
+				[[NMTaskQueueController sharedTaskQueueController] issueSignOutTwitterAccount];
+			} else {
+				// login twitter
+				socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 				socialCtrl.loginType = LoginTwitterType;
-				break;
-				
-			case 1:
+				[self.navigationController pushViewController:socialCtrl animated:YES];
+				[socialCtrl release];
+			}
+		} else if ( indexPath.row == 1 && NM_USER_FACEBOOK_CHANNEL_ID ) {
+			if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+				[[NMTaskQueueController sharedTaskQueueController] issueSignOutFacebookAccout];
+			} else {
+				socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 				socialCtrl.loginType = LoginFacebookType;
-				break;
-				
-			default:
-				break;
+				[self.navigationController pushViewController:socialCtrl animated:YES];
+				[socialCtrl release];
+			}
 		}
-		[self.navigationController pushViewController:socialCtrl animated:YES];
-		[socialCtrl release];
 	}
 }
 

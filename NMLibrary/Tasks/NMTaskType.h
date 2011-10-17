@@ -16,3 +16,4 @@
 #import "NMGetCategoriesTask.h"
 #import "NMGetChannelDetailTask.h"
 #import "NMCreateUserTask.h"
+#import "NMSignOutUserTask.h"
