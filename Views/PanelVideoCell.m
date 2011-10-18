@@ -181,6 +181,7 @@
     // Draw labels
     CGRect titleRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, bounds.size.width - NM_VIDEO_CELL_PADDING*2, bounds.size.height - NM_VIDEO_CELL_PADDING*2 - 12);
     CGContextSetFillColorWithColor(context, [titleFontColor CGColor]);
+    
     [title drawInRect:titleRect 
              withFont:styleUtility.videoTitleFont 
         lineBreakMode:UILineBreakModeWordWrap
