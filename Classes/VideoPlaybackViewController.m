@@ -514,9 +514,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
-		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
+//		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
 			[loadedControlView setControlsHidden:NO animated:YES];
-		}
+//		}
 	}];
 }
 
@@ -1191,6 +1191,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( launchModeActive ) {
 		[launchController dimProgressLabel];
 	}
+	[self hideControlView];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1423,77 +1424,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	controlScrollView.frame = scrollFrame;
     
 	[UIView commitAnimations];
-//    CGRect theFrame;
-//	theFrame = channelController.panelView.frame;
-//
-//	BOOL panelIsFullScreen = NO;
-//	if ( theFrame.origin.y < 380.0 ) {
-//		// assume the panel is full screen
-//		panelIsFullScreen = YES;
-//	}
-//    
-//    if (!panelIsFullScreen && !shouldToggleToFullScreen && shouldResume) {
-//        [self toggleChannelPanel:nil];
-//    }
-//    
-//    if (panelIsFullScreen == shouldToggleToFullScreen) {
-//        // no need to do anything else
-//        return;
-//    }
-//
-////    if (shouldToggleToFullScreen) {
-////        [self stopVideo];
-////    }
-////    else {
-////        if (shouldResume) {
-////            [self playCurrentVideo];
-////        }
-////    }
-//  
-//    // resize animation is slow, so doing this out of animation
-//    if (shouldToggleToFullScreen) {
-//        theFrame.size.height = 748-8;
-//        channelController.panelView.frame = theFrame;
-//    }    
-//    
-//    theFrame = channelController.panelView.frame;
-//    [UIView beginAnimations:nil context:nil];
-//	[UIView setAnimationBeginsFromCurrentState:YES];
-//	[UIView setAnimationDuration:0.5f];
-//
-//    if (shouldToggleToFullScreen) {
-//        theFrame = channelController.panelView.frame;
-//        // the dimensions are hard coded :(
-//        theFrame.origin.y = 20;
-//
-////		movieView.frame = CGRectMake(0, -340, 640.0f, 360.0f);
-//
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarCollapseImage forState:UIControlStateNormal];
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarCollapseHighlightedImage forState:UIControlStateHighlighted];
-//        
-//        controlScrollView.frame = CGRectMake(0, -360, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
-//
-//        channelController.panelView.frame = theFrame;
-//        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-//        
-//    }
-//    else {
-//        theFrame = channelController.panelView.frame;
-//        // the dimensions are hard coded :(
-//        theFrame.size.height = 380;
-//        theFrame.origin.y = 380;
-//		
-////        movieView.frame = CGRectMake(0, 20.0f, 640.0f, 360.0f);
-//
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarExpandImage forState:UIControlStateNormal];
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarExpandHighlightedImage forState:UIControlStateHighlighted];
-//        
-//        controlScrollView.frame = CGRectMake(0, 0, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
-//
-//        channelController.panelView.frame = theFrame;
-//        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-//    }
-//    [UIView commitAnimations];
 }
 
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
@@ -1503,12 +1433,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
 	}];
-	// show the control view
-//	[UIView beginAnimations:nil context:(void*)NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER];
-//	loadedControlView.alpha = 1.0;
-//	[UIView setAnimationDelegate:self];
-//	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-//	[UIView commitAnimations];
 }
 
 - (void)movieViewDoubleTap:(id)sender {
@@ -1524,10 +1448,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			loadedControlView.hidden = YES;
 		}
 	}];
-	// hide the control view
-//	[UIView beginAnimations:nil context:nil];
-//	v.alpha = 0.0;
-//	[UIView commitAnimations];
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
