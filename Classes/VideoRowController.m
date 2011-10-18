@@ -84,8 +84,7 @@
 }
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
-{
-    
+{    
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
         static NSString *CellIdentifier = @"LoadMoreView";
@@ -327,7 +326,7 @@
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
             isLoadingNewContent = NO;
             isAnimatingNewContentCell = YES;
-//			[videoTableView reloadData];
+			[videoTableView reloadData];
             [videoTableView beginUpdates];
             [videoTableView endUpdates];
 		}

@@ -46,7 +46,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 //	tableView.separatorColor = [UIColor clearColor];
 //	tableView.separatorColor = styleUtility.channelBorderColor;
 //	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-	tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nowbox_background"]];
+///	tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nowbox_background"]];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
@@ -198,7 +198,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
     [videoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    
+
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
@@ -210,7 +210,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
 	
-    [videoTableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"channel-video-background-normal-rotated"]]];
+//    [videoTableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"channel-video-background-normal-rotated"]]];
     
     
     

@@ -85,12 +85,6 @@
     [self setNeedsDisplay];
 }
 
-- (void)setBounds:(CGRect)bounds
-{
-    [super setBounds:bounds];
-    [self setNeedsDisplay];
-}
-
 + (void)drawGradientInRect:(CGRect)rect startColor:(UIColor *)startColor endColor:(UIColor *)endColor context:(CGContextRef)context
 {
     CGGradientRef gradient;
@@ -115,8 +109,9 @@
     CGColorSpaceRelease(rgbColorspace); 
 }
 
+//- (void)drawContentView:(CGRect)rect highlighted:(BOOL)aHighlighted
 - (void)drawRect:(CGRect)rect
-{
+{    
     NMStyleUtility *styleUtility = [NMStyleUtility sharedStyleUtility];
     
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -158,7 +153,9 @@
     }
     
     // Draw background gradient
-    [PanelVideoCell drawGradientInRect:bounds startColor:backgroundStartColor endColor:backgroundEndColor context:context];
+//    [PanelVideoCell drawGradientInRect:bounds startColor:backgroundStartColor endColor:backgroundEndColor context:context];
+    CGContextSetFillColorWithColor(context, [backgroundStartColor CGColor]);
+    CGContextFillRect(context, bounds);
     
     // Draw dividers
     CGContextSetFillColorWithColor(context, [borderTopColor CGColor]);
@@ -239,7 +236,7 @@
     [super touchesCancelled:touches withEvent:event];
 }
 
--(void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {
+- (void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {
     if (state != PanelVideoCellStateUnplayable) {
         if (videoRowDelegate) {
             [self setHighlighted:YES];
