@@ -429,7 +429,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
 		// run the timer method
 		if ( !pollingTimer ) {
-			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:60.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
+			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:30.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
 		} else {
 			[pollingTimer fire];
 		}
