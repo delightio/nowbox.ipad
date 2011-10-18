@@ -212,7 +212,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	videoTableView.tableController = vdoCtrl;
 	
     [videoTableView setOpaque:YES];
-    [videoTableView setBackgroundColor:[UIColor clearColor]];
+    [videoTableView setBackgroundColor:[UIColor colorWithRed:235/255.0f green:235/255.0f blue:235/255.0f alpha:1.0]];
     
     
     

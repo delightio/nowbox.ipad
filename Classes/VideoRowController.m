@@ -131,6 +131,7 @@
     [cell setDateString:[[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:theVideo.published_at]];
     [cell setTag:anIndexPath.row];
     [cell setVideoRowDelegate:self];
+    [cell setViewed:[theVideo.nm_did_play boolValue]];
     
     NSInteger duration = [theVideo.duration integerValue];
 	[cell setDuration:[NSString stringWithFormat:@"%02d:%02d", duration / 60, duration % 60]];

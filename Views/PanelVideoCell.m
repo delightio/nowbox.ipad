@@ -150,8 +150,14 @@
         borderTopColor = [styleUtility channelPanelCellDefaultTopBorder];
         borderBottomColor = [styleUtility channelPanelCellDefaultBottomBorder];
         dividerColor = [styleUtility channelPanelCellDefaultDivider];
-        titleFontColor = [styleUtility videoTitleFontColor]; 
-        detailFontColor = [styleUtility videoDetailFontColor];
+        
+        if (state == PanelVideoCellStateUnplayable) {
+            titleFontColor = [styleUtility videoTitleFontColor]; 
+            detailFontColor = [styleUtility videoDetailFontColor];
+        } else {
+            titleFontColor = [styleUtility videoTitlePlayedFontColor];
+            detailFontColor = [styleUtility videoDetailPlayedFontColor];            
+        }
     }
     
     // Draw background gradient
