@@ -30,9 +30,11 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.opaque = YES;
+        self.clearsContextBeforeDrawing = YES;
         self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.userInteractionEnabled = YES;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.backgroundColor = [UIColor clearColor];
         
         UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleDoubleTap:)];
@@ -153,9 +155,10 @@
     }
     
     // Draw background gradient
-//    [PanelVideoCell drawGradientInRect:bounds startColor:backgroundStartColor endColor:backgroundEndColor context:context];
-    CGContextSetFillColorWithColor(context, [backgroundStartColor CGColor]);
-    CGContextFillRect(context, bounds);
+    [PanelVideoCell drawGradientInRect:bounds startColor:backgroundStartColor endColor:backgroundEndColor context:context];
+    
+//    CGContextSetFillColorWithColor(context, [backgroundStartColor CGColor]);
+//    CGContextFillRect(context, bounds);
     
     // Draw dividers
     CGContextSetFillColorWithColor(context, [borderTopColor CGColor]);
@@ -200,10 +203,15 @@
 
 - (void)setIsPlayingVideo:(BOOL)playing {
     isPlayingVideo = playing;
-    [self setHighlighted:playing];
+    [self changeViewToHighlighted:playing];
 }
 
 - (void)setHighlighted:(BOOL)isHighlighted animated:(BOOL)animated
+{
+    // Do nothing, we will handle highlighting ourselves
+}
+
+- (void)changeViewToHighlighted:(BOOL)isHighlighted 
 {
     highlighted = isHighlighted;
     [self setNeedsDisplay];
@@ -219,27 +227,27 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	// highlight
-    [self setHighlighted:YES];
+    [self changeViewToHighlighted:YES];
     [super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	// check if touch up inside the view itself
-    [self setHighlighted:isPlayingVideo];
+    [self changeViewToHighlighted:isPlayingVideo];
     [super touchesEnded:touches withEvent:event];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
 	// remove highlight
     // only if it wasn't highlighted previously
-    [self setHighlighted:isPlayingVideo];
+    [self changeViewToHighlighted:isPlayingVideo];
     [super touchesCancelled:touches withEvent:event];
 }
 
 - (void)handleSingleDoubleTap:(UIGestureRecognizer *)sender {
     if (state != PanelVideoCellStateUnplayable) {
         if (videoRowDelegate) {
-            [self setHighlighted:YES];
+            [self changeViewToHighlighted:YES];
             [videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:self.tag inSection:0]];
         }
     }

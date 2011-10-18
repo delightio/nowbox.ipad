@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ABTableViewCell.h"
 
 @class VideoRowController;
 
@@ -33,5 +32,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isPlayingVideo;
 @property (nonatomic, retain) UIImage *statusImage;
 @property (nonatomic, assign) VideoRowController *videoRowDelegate;
+
+- (void)changeViewToHighlighted:(BOOL)isHighlighted;
 
 @end

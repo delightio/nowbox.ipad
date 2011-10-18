@@ -195,10 +195,11 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	CGRect theFrame = aContentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+    
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
     [videoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-
+    
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
@@ -210,7 +211,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
 	
-//    [videoTableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"channel-video-background-normal-rotated"]]];
+    [videoTableView setOpaque:YES];
+    [videoTableView setBackgroundColor:[UIColor clearColor]];
     
     
     

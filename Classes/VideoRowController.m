@@ -143,9 +143,9 @@
     }
 
     if ( panelController.highlightedChannel == channel && [anIndexPath row] == panelController.highlightedVideoIndex ) {
-		[cell setSelected:YES];
+		[cell setIsPlayingVideo:YES];
 	} else {
-		[cell setSelected:NO];
+		[cell setIsPlayingVideo:NO];
 	}
     
     [cell setFirstCell:([anIndexPath row] == 0)];
