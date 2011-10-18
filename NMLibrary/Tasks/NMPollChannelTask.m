@@ -14,17 +14,19 @@ NSString * const NMDidPollChannelNotification = @"NMDidPollChannelNotification";
 NSString * const NMDidFailPollChannelNotification = @"NMDidFailPollChannelNotification";
 
 @implementation NMPollChannelTask
-@synthesize channel;
+@synthesize channel, datePopulated;
 
 - (id)initWithChannel:(NMChannel *)chnObj {
 	self = [super init];
 	self.channel = chnObj;
+	self.targetID = chnObj.nm_id;
 	command = NMCommandPollChannel;
 	return self;
 }
 
 - (void)dealloc {
 	[channel release];
+	[datePopulated release];
 	[super dealloc];
 }
 
@@ -40,17 +42,16 @@ NSString * const NMDidFailPollChannelNotification = @"NMDidFailPollChannelNotifi
 	// we are only interested in the "populated_at" value
 	if ( [buffer length] == 0 ) return;
 	NSDictionary * dict = [buffer objectFromJSONData];
-	if ( [[dict objectForKey:@"populated__at"] integerValue] == 0 ) {
-		// the channel has never been populated yet. Still need to poll the server
-		populated = NO;
-	} else {
+	float unixPopTime = [[dict objectForKey:@"populated_at"] floatValue];
+	if ( unixPopTime != 0.0f ) {
 		// there's no more need to poll server on this task.
-		populated = YES;
+		self.datePopulated = [NSDate dateWithTimeIntervalSince1970:unixPopTime];
 	}
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	return NO;
+	channel.populated_at = datePopulated;
+	return YES;
 }
 
 - (NSString *)willLoadNotificationName {
@@ -66,7 +67,7 @@ NSString * const NMDidFailPollChannelNotification = @"NMDidFailPollChannelNotifi
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:populated], @"populated", channel, @"channel", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(datePopulated != nil)], @"populated", channel, @"channel", nil];
 }
 
 @end

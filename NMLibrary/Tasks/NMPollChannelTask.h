@@ -16,10 +16,11 @@
 
 @interface NMPollChannelTask : NMTask {
 	NMChannel * channel;
-	BOOL populated;
+	NSDate * datePopulated;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NSDate * datePopulated;
 
 - (id)initWithChannel:(NMChannel *)chnObj;
 
