@@ -12,7 +12,6 @@
 #import "VideoRowController.h"
 #import "ChannelContainerView.h"
 #import "AGOrientedTableView.h"
-#import "PanelVideoContainerView.h"
 #import "SettingsViewController.h"
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
@@ -299,8 +298,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     // first, unhighlight the old cell
 
     for (UITableViewCell *channelCell in [tableView visibleCells]) {
-        for (PanelVideoContainerView *cell in [(AGOrientedTableView *)[channelCell viewWithTag:1009] visibleCells]) {
-            if ([cell class] == [PanelVideoContainerView class]) {
+        for (PanelVideoCell *cell in [(AGOrientedTableView *)[channelCell viewWithTag:1009] visibleCells]) {
+            if ([cell class] == [PanelVideoCell class]) {
                 [cell setIsPlayingVideo:NO];
             }
         }
@@ -324,7 +323,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
     
     if ([htView numberOfRowsInSection:0] > 1) {
-        PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
+        PanelVideoCell *cell = (PanelVideoCell *)[htView cellForRowAtIndexPath:rowToReload];
         [cell setIsPlayingVideo:YES];
     }
 

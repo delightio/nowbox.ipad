@@ -34,7 +34,6 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.userInteractionEnabled = YES;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.backgroundColor = [UIColor clearColor];
         
         UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleDoubleTap:)];
@@ -180,21 +179,44 @@
     
     // Draw labels
     CGRect titleRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, bounds.size.width - NM_VIDEO_CELL_PADDING*2, bounds.size.height - NM_VIDEO_CELL_PADDING*2 - 12);
-    CGContextSetFillColorWithColor(context, [titleFontColor CGColor]);
+    CGRect dateRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
+    CGRect durationRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
     
+    if (viewed && !highlighted) {
+        // Draw text shadows
+        CGRect titleShadowRect = CGRectOffset(titleRect, 0, 1);
+        CGRect dateShadowRect = CGRectOffset(dateRect, 0, 1);
+        CGRect durationShadowRect = CGRectOffset(durationRect, 0, 1);
+        CGContextSetFillColorWithColor(context, [[UIColor whiteColor] CGColor]);
+        
+        [title drawInRect:titleShadowRect 
+                 withFont:styleUtility.videoTitleFont 
+            lineBreakMode:UILineBreakModeWordWrap
+                alignment:UITextAlignmentLeft];
+        
+        [dateString drawInRect:dateShadowRect
+                      withFont:styleUtility.videoDetailFont 
+                 lineBreakMode:UILineBreakModeClip
+                     alignment:UITextAlignmentLeft];
+        
+        [duration drawInRect:durationShadowRect
+                    withFont:styleUtility.videoDetailFont 
+               lineBreakMode:UILineBreakModeClip
+                   alignment:UITextAlignmentRight];
+    }    
+    
+    CGContextSetFillColorWithColor(context, [titleFontColor CGColor]);
     [title drawInRect:titleRect 
              withFont:styleUtility.videoTitleFont 
         lineBreakMode:UILineBreakModeWordWrap
             alignment:UITextAlignmentLeft];
     
-    CGRect dateRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
     CGContextSetFillColorWithColor(context, [detailFontColor CGColor]);
     [dateString drawInRect:dateRect
                   withFont:styleUtility.videoDetailFont 
              lineBreakMode:UILineBreakModeClip
                  alignment:UITextAlignmentLeft];
     
-    CGRect durationRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
     CGContextSetFillColorWithColor(context, [detailFontColor CGColor]);
     [duration drawInRect:durationRect
                 withFont:styleUtility.videoDetailFont 
@@ -216,6 +238,12 @@
 - (void)setHighlighted:(BOOL)isHighlighted animated:(BOOL)animated
 {
     // Do nothing, we will handle highlighting ourselves
+}
+
+- (void)setViewed:(BOOL)isViewed
+{
+    viewed = isViewed;
+    [self setNeedsDisplay];
 }
 
 - (void)changeViewToHighlighted:(BOOL)isHighlighted 

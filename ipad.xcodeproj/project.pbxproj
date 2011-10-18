@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2212124B13F1C271001A0F58 /* PanelVideoCellView.m */; };
 		2212125F13F311FC001A0F58 /* channel-shadow-background-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */; };
 		221ADF4313DDD92F00BC9488 /* channel-thumbnail-frame.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */; };
 		221ADF4613DDE01600BC9488 /* channel-bottom-border.png in Resources */ = {isa = PBXBuildFile; fileRef = 221ADF4513DDE01600BC9488 /* channel-bottom-border.png */; };
@@ -61,7 +60,6 @@
 		A90F2205143F6CAF006B298D /* FacebookLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F2204143F6CAF006B298D /* FacebookLoading.html */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A91BC92013AEE87D0039C0F4 /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */; };
-		A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */; };
 		A924150814332A9700C83A7D /* onboard-nowbox-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = A924150714332A9700C83A7D /* onboard-nowbox-logo.png */; };
 		A924150B14332AA700C83A7D /* onboard-label-separator.png in Resources */ = {isa = PBXBuildFile; fileRef = A924150A14332AA700C83A7D /* onboard-label-separator.png */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
@@ -203,8 +201,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2212124A13F1C271001A0F58 /* PanelVideoCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCellView.h; sourceTree = "<group>"; };
-		2212124B13F1C271001A0F58 /* PanelVideoCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCellView.m; sourceTree = "<group>"; };
 		2212125E13F311FC001A0F58 /* channel-shadow-background-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-shadow-background-right.png"; sourceTree = "<group>"; };
 		221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-thumbnail-frame.png"; sourceTree = "<group>"; };
 		221ADF4513DDE01600BC9488 /* channel-bottom-border.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-bottom-border.png"; sourceTree = "<group>"; };
@@ -271,8 +267,6 @@
 		A90F2204143F6CAF006B298D /* FacebookLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FacebookLoading.html; sourceTree = "<group>"; };
 		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
 		A91BC91F13AEE87D0039C0F4 /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
-		A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoContainerView.h; sourceTree = "<group>"; };
-		A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoContainerView.m; sourceTree = "<group>"; };
 		A924150714332A9700C83A7D /* onboard-nowbox-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-nowbox-logo.png"; sourceTree = "<group>"; };
 		A924150A14332AA700C83A7D /* onboard-label-separator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-label-separator.png"; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -786,16 +780,12 @@
 				A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */,
 				A973AC2513AAFAD90050025B /* NMChannelPanelView.h */,
 				A973AC2613AAFAD90050025B /* NMChannelPanelView.m */,
-				A91BC93013AFEAEA0039C0F4 /* PanelVideoContainerView.h */,
-				A91BC93113AFEAEA0039C0F4 /* PanelVideoContainerView.m */,
 				A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */,
 				A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */,
 				A9A8E7BD13E4B96300552E6E /* NMCachedImageView.h */,
 				A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */,
 				A9F1BE6D13FB83CE0006B569 /* NMAirPlayContainerView.h */,
 				A9F1BE6E13FB83CE0006B569 /* NMAirPlayContainerView.m */,
-				2212124A13F1C271001A0F58 /* PanelVideoCellView.h */,
-				2212124B13F1C271001A0F58 /* PanelVideoCellView.m */,
 				22ADF99913FAF39A003CF27E /* CategoryCellView.h */,
 				22ADF99A13FAF39A003CF27E /* CategoryCellView.m */,
 				22ADF99B13FAF39A003CF27E /* CategoryTableCell.h */,
@@ -1073,13 +1063,11 @@
 				A9976F2413BB3A2800B06DFF /* NMControlsView.m in Sources */,
 				A9976F2213BB388000B06DFF /* NMMovieView.m in Sources */,
 				A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */,
-				A91BC93213AFEAEA0039C0F4 /* PanelVideoContainerView.m in Sources */,
 				A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */,
 				A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */,
 				227F2DF413CEB99400E2805E /* AGOrientedTableView.m in Sources */,
 				A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */,
 				A991188A13E759E20067E987 /* SettingsViewController.m in Sources */,
-				2212124C13F1C271001A0F58 /* PanelVideoCellView.m in Sources */,
 				A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */,
 				A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */,
 				A97EBE5D13F7B2AF00CC0F5C /* SocialLoginViewController.m in Sources */,

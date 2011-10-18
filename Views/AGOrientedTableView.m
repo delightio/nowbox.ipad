@@ -110,7 +110,6 @@
     if (self.tableViewOrientation == kAGTableViewOrientationHorizontal)
     {
         cell.transform = CGAffineTransformMakeRotation(M_PI/2.0);
-        cell.contentView.transform = CGAffineTransformMakeRotation(M_PI/2.0);        
     }
     return cell;
 }

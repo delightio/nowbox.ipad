@@ -7,7 +7,6 @@
 //
 
 #import "VideoRowController.h"
-#import "PanelVideoContainerView.h"
 #import "ChannelContainerView.h"
 #import "VideoPlaybackViewController.h"
 #import "PanelVideoCell.h"
