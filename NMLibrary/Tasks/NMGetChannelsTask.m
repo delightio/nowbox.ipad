@@ -271,6 +271,10 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 				// create the new object
 				chn = [ctrl insertNewChannelForID:[chnDict objectForKey:@"nm_id"]];
 				[chn setValuesForKeysWithDictionary:chnDict];
+				// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
+				if ( [chn.type integerValue] == NMChannelUserType ) {
+					chn.nm_hidden = [NSNumber numberWithBool:YES];
+				}
 			} else {
 				// the channel already exists, just update the sort order.
 				chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];

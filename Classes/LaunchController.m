@@ -152,11 +152,6 @@
 
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
-	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
-	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
-	[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
-	[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
-	[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 	// new user created, get channel
 	[self checkUpdateChannels];
 }
@@ -166,16 +161,12 @@
 }
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+//	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
 	// begin new session
 	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
 	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
 	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
-	// set the user channels to hide
-	NSNumber * yesNum = [NSNumber numberWithBool:YES];
-	dataCtrl.myQueueChannel.nm_hidden = yesNum;
-	dataCtrl.favoriteVideoChannel.nm_hidden = yesNum;
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
 //		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidGetChannelVideoListNotification object:nil];

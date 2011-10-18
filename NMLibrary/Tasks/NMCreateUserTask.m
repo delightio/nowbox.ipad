@@ -95,6 +95,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	// parse the returned JSON object
 	self.userDictionary = [buffer objectFromJSONData];
 	NSInteger uid = [[userDictionary objectForKey:@"id"] integerValue];
+	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	switch (command) {
 		case NMCommandCreateUser:
 		{
@@ -106,6 +107,10 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 				NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
 				NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
 				NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
+				[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+				[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+				[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+				[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 			} else {
 				encountersErrorDuringProcessing = YES;
 			}
@@ -117,12 +122,28 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 		}
 		case NMCommandVerifyFacebookUser:
 			NM_USER_FACEBOOK_CHANNEL_ID = [[userDictionary objectForKey:@"facebook_channel_id"] integerValue];
+			//TODO: code below is not needed when user login is fully implemented on the server side
 			NM_USER_ACCOUNT_ID = uid;
+			NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
+			NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
+			NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
+			[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+			[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+			[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+			[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 			break;
 			
 		case NMCommandVerifyTwitterUser:
 			NM_USER_TWITTER_CHANNEL_ID = [[userDictionary objectForKey:@"twitter_channel_id"] integerValue];
+			//TODO: code below is not needed when user login is fully implemented on the server side
 			NM_USER_ACCOUNT_ID = uid;
+			NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
+			NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
+			NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
+			[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+			[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+			[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+			[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 			break;
 			
 		default:
