@@ -36,6 +36,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize managedObjectContext;
 @synthesize networkController;
 @synthesize dataController;
+@synthesize pollingTimer;
+@synthesize unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
 	if ( sharedTaskQueueController_ == nil ) {
@@ -56,6 +58,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidSignOutUserNotification object:nil];
+	// polling server for channel update
+	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleFailChannelPollingNotification:) name:NMDidFailEditUserNotification object:nil];
 	
 	return self;
 }
@@ -81,6 +87,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController release];
 	[networkController release];
 	[NM_SESSION_ID release];
+	[pollingTimer release];
 	[super dealloc];
 }
 
@@ -118,8 +125,14 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
+	shouldFireServerPolling = YES;
 	// get that particular channel
 	[self issueGetSubscribedChannels];
+}
+
+- (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
+	shouldFireServerPolling = NO;
+	[self pollServerForChannelReadiness];
 }
 
 - (void)handleSocialMediaLogoutNotification:(NSNotification *)aNotification {
@@ -250,7 +263,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return [task autorelease];
 }
 
-
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo {
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
@@ -365,5 +377,64 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }
+
+#pragma mark Channel Polling
+- (void)issuePollServerForChannel:(NMChannel *)chnObj {
+	NMPollChannelTask * task = [[NMPollChannelTask alloc] initWithChannel:chnObj];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+	return;
+}
+
+- (void)pollServerForChannelReadiness {
+	// check the list of channels
+	NSArray * result = [dataController channelsNeverPopulatedBefore];
+	if ( result ) {
+		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
+		// run the timer method
+		if ( !pollingTimer ) {
+			self.pollingTimer = [NSTimer timerWithTimeInterval:60.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
+		} else {
+			[pollingTimer fire];
+		}
+		// issue poll request for each channel
+	}
+}
+
+- (void)stopPollingServer {
+	if ( pollingTimer ) {
+		[pollingTimer invalidate];
+		self.pollingTimer = nil;
+	}
+}
+
+- (void)pollingTimerMethod:(NSTimer *)aTimer {
+	NSLog(@"polling timer method called");
+	for (NMChannel * chnObj in unpopulatedChannels) {
+		[self issuePollServerForChannel:chnObj];
+	}
+}
+
+- (void)handleChannelPollingNotification:(NSNotification *)aNotification {
+	// check polling status
+	NSDictionary * dict = [aNotification userInfo];
+	NMChannel * chnObj = [dict objectForKey:@"channel"];
+	BOOL popStatus = [[dict objectForKey:@"populated"] boolValue];
+	if ( popStatus ) {
+		// populated - remove from the list
+		[unpopulatedChannels removeObject:chnObj];
+		// fire the get channel list request
+		[self issueGetMoreVideoForChannel:chnObj];
+	}
+	if ( [unpopulatedChannels count] == 0 ) {
+		// all channels have been processed and populated
+		[pollingTimer invalidate];
+		self.pollingTimer = nil;
+	}
+}
+
+//- (void)handleFailChannelPollingNotification:(NSNotification *)aNotification {
+//	
+//}
 
 @end

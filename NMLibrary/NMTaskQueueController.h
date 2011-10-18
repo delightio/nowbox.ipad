@@ -23,11 +23,18 @@
 	
 	NMNetworkController * networkController;
 	NMDataController * dataController;
+	
+	// polling channel population status
+	NSTimer * pollingTimer;
+	NSMutableArray * unpopulatedChannels;
+	BOOL shouldFireServerPolling;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
+@property (nonatomic, retain) NSTimer * pollingTimer;
+@property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 
@@ -54,6 +61,10 @@
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
 // Channel subscription
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
+// Polling channel
+- (void)issuePollServerForChannel:(NMChannel *)chnObj;
+- (void)pollServerForChannelReadiness;
+- (void)stopPollingServer;
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;

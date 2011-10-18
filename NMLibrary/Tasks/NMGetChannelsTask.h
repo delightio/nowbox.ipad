@@ -13,14 +13,14 @@
 
 @interface NMGetChannelsTask : NMTask {
 	NSArray * channelJSONKeys;
-	NMChannel * trendingChannel;
+//	NMChannel * trendingChannel;
 	NMCategory * category;
 	NSString * searchWord;
 	NSMutableIndexSet * channelIndexSet;
 	NSMutableDictionary * parsedObjectDictionary;
 }
 
-@property (nonatomic, retain) NMChannel * trendingChannel;
+//@property (nonatomic, retain) NMChannel * trendingChannel;
 @property (nonatomic, retain) NSString * searchWord;
 @property (nonatomic, retain) NMCategory * category;
 

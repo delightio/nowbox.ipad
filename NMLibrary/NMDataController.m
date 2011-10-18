@@ -570,6 +570,17 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return [result count] > 0;
 }
 
+- (NSArray *)channelsNeverPopulatedBefore {
+	// get all stream and keyword channels that have never been populated before. The backend needs to poll the server to see if videos are available in those channels
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"type IN %@ AND populated_at == %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelKeywordType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserFacebookType], nil], [NSDate dateWithTimeIntervalSince1970:0.0f]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	return [result count] ? result : nil;
+}
+
 #pragma mark Video 
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
 	NMVideo * dupVideo = [self insertNewVideo];

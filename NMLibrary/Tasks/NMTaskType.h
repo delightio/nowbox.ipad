@@ -17,3 +17,4 @@
 #import "NMGetChannelDetailTask.h"
 #import "NMCreateUserTask.h"
 #import "NMSignOutUserTask.h"
+#import "NMPollChannelTask.h"

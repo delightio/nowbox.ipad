@@ -91,6 +91,7 @@
 - (void)updateFavoriteChannelHideStatus;
 - (void)markChannelDeleteStatusForID:(NSInteger)chnID;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
+- (NSArray *)channelsNeverPopulatedBefore;
 // video
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;

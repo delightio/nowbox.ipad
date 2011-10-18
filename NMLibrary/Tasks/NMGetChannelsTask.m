@@ -29,7 +29,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 
 @implementation NMGetChannelsTask
 
-@synthesize trendingChannel;
+//@synthesize trendingChannel;
 @synthesize searchWord;
 @synthesize category;
 
@@ -39,6 +39,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	[pDict setObject:[chnCtnDict objectForKey:@"resource_uri"] forKey:@"resource_uri"];
 	[pDict setObject:[chnCtnDict objectForKey:@"video_count"] forKey:@"video_count"];
 	[pDict setObject:[chnCtnDict objectForKey:@"subscriber_count"] forKey:@"subscriber_count"];
+	[pDict setObject:[NSDate dateWithTimeIntervalSince1970:[[chnCtnDict objectForKey:@"populated_at"] floatValue]] forKey:@"populated_at"];
 	NSString * chnType = [[chnCtnDict objectForKey:@"type"] lowercaseString];
 	if ( [chnType isEqualToString:@"user"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];
@@ -96,7 +97,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 
 - (void)dealloc {
 	[channelJSONKeys release];
-	[trendingChannel release];
+//	[trendingChannel release];
 	[category release];
 	[searchWord release];
 	[channelIndexSet release];
@@ -354,11 +355,11 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		}
 		default:
 		{
-			if ( trendingChannel ) {
-				return [NSDictionary dictionaryWithObjectsAndKeys:trendingChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
-			} else {
+//			if ( trendingChannel ) {
+//				return [NSDictionary dictionaryWithObjectsAndKeys:trendingChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
+//			} else {
 				return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"type"];
-			}
+//			}
 		}
 	}
 	return nil;
