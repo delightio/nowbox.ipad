@@ -172,13 +172,13 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 		default:
 			break;
 	}
-	NMChannel * chnObj = [ctrl channelForID:idNum];
-	if ( chnObj == nil ) {
-		// create the new object
-		chnObj = [ctrl insertNewChannelForID:idNum];
-		chnObj.nm_hidden = [NSNumber numberWithBool:YES];
-		// the reset of the attributes are left for the "Get Channels" task to set.
-	}
+//	NMChannel * chnObj = [ctrl channelForID:idNum];
+//	if ( chnObj == nil ) {
+//		// create the new object
+//		chnObj = [ctrl insertNewChannelForID:idNum];
+//		chnObj.nm_hidden = [NSNumber numberWithBool:YES];
+//		// the reset of the attributes are left for the "Get Channels" task to set.
+//	}
 	return YES;
 }
 

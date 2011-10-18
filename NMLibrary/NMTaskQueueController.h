@@ -27,7 +27,7 @@
 	// polling channel population status
 	NSTimer * pollingTimer;
 	NSMutableArray * unpopulatedChannels;
-	BOOL shouldFireServerPolling;
+	BOOL didFinishLogin;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;

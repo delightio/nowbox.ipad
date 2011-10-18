@@ -125,14 +125,50 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
-	shouldFireServerPolling = YES;
+	didFinishLogin = YES;
 	// get that particular channel
 	[self issueGetSubscribedChannels];
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
-	shouldFireServerPolling = NO;
-	[self pollServerForChannelReadiness];
+	if ( !didFinishLogin ) return;
+	
+	didFinishLogin = NO;
+	// user channels
+	NSDate * unixDateZero = [NSDate dateWithTimeIntervalSince1970:0.0f];
+	if ( [dataController.myQueueChannel.populated_at compare:unixDateZero] == NSOrderedDescending ) {
+		// my queue channel has been populated before, need to fetch the videos in it.
+		[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
+	}
+	if ( [dataController.favoriteVideoChannel.populated_at compare:unixDateZero] == NSOrderedDescending ) {
+		[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
+	}
+	// stream channel (twitter/facebook), we don't distinguish here whether the user has just logged in twitter or facebook. no harm fetching video list for 
+	NMChannel * chnObj = nil;
+	BOOL shouldFirePollingLogic = NO;
+	if ( NM_USER_TWITTER_CHANNEL_ID ) {
+		chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
+		if ( [chnObj.populated_at compare:unixDateZero] != NSOrderedDescending ) {
+			// never populated before
+			shouldFirePollingLogic = YES;
+		} else {
+			// fetch the list of video in this twitter stream channel
+			[self issueGetMoreVideoForChannel:chnObj];
+		}
+	}
+	if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+		chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
+		if ( [chnObj.populated_at compare:unixDateZero] != NSOrderedDescending ) {
+			// never populated before
+			shouldFirePollingLogic = YES;
+		} else {
+			// fetch the list of video in this twitter stream channel
+			[self issueGetMoreVideoForChannel:chnObj];
+		}
+	}
+	if ( shouldFirePollingLogic ) {
+		[self pollServerForChannelReadiness];
+	}
 }
 
 - (void)handleSocialMediaLogoutNotification:(NSNotification *)aNotification {

@@ -328,7 +328,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 	}
 	if ( !launchModeActive ) {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+		[[UIApplication sharedApplication] setStatusBarHidden:NO];
 	}
 }
 
@@ -1311,7 +1312,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in the channel view with animation
 		movieXOffset = 0.0f;
 		//MARK: not sure if we still need to show/hide status bar
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+		[[UIApplication sharedApplication] setStatusBarHidden:NO];
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		// fade in detail view
@@ -1326,7 +1328,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 	} else {
 		// slide out the channel view
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+		[[UIApplication sharedApplication] setStatusBarHidden:YES];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		// fade out detail view

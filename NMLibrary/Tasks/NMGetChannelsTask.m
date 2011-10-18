@@ -271,6 +271,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			if ( chn == nil ) {
 				// create the new object
 				chn = [ctrl insertNewChannelForID:[chnDict objectForKey:@"nm_id"]];
+				NSLog(@"create channel: %@ %@", [chnDict objectForKey:@"nm_id"], [chnDict objectForKey:@"title"]);
 				[chn setValuesForKeysWithDictionary:chnDict];
 				// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
 				if ( [chn.type integerValue] == NMChannelUserType ) {
