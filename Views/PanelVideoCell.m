@@ -151,12 +151,12 @@
         borderBottomColor = [styleUtility channelPanelCellDefaultBottomBorder];
         dividerColor = [styleUtility channelPanelCellDefaultDivider];
         
-        if (state == PanelVideoCellStateUnplayable) {
-            titleFontColor = [styleUtility videoTitleFontColor]; 
-            detailFontColor = [styleUtility videoDetailFontColor];
-        } else {
+        if (state == PanelVideoCellStateUnplayable) {            
             titleFontColor = [styleUtility videoTitlePlayedFontColor];
             detailFontColor = [styleUtility videoDetailPlayedFontColor];            
+        } else {
+            titleFontColor = [styleUtility videoTitleFontColor]; 
+            detailFontColor = [styleUtility videoDetailFontColor];
         }
     }
     
