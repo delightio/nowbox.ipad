@@ -9,6 +9,7 @@
 #import "NMControlsView.h"
 #import "NMMovieView.h"
 #import "NMAirPlayContainerView.h"
+#import "NMAVPlayerItem.h"
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 
@@ -134,7 +135,7 @@
 	}
 	if ( hidden ) {
 		self.alpha = 0.0;
-	} else {
+	} else if ( !hidden ) {
 		self.alpha = 1.0;
 	}
 	if ( animated ) {
@@ -234,6 +235,7 @@
 		[playPauseButton setImage:styleUtility.playImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.playActiveImage forState:UIControlStateHighlighted];
 		buttonPlayState = YES;
+		[self setControlsHidden:NO animated:YES];
 	} else if ( aRate > 0.0f && buttonPlayState ) {
 		buttonPlayState = NO;
 		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
@@ -279,7 +281,6 @@
 	NMChannel * chn = aVideo.channel;
 	// channel image
 	[channelImageView setImageForChannel:chn];
-//	channelNameLabel.text = chn.title;
 	[segmentChannelButton setTitle:chn.title forState:UIControlStateNormal];
 	// channel width
 	CGSize theSize = [chn.title sizeWithFont:segmentChannelButton.titleLabel.font constrainedToSize:maximumTitleSize];
@@ -322,6 +323,10 @@
 	NSLog(@"control view, duration: %d", [aVideo.duration integerValue]);
 #endif
 	self.duration = [aVideo.duration integerValue];
+	NSValue * theRangeValue = [aVideo.nm_player_item.loadedTimeRanges lastObject];
+	if ( theRangeValue ) {
+		self.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+	}
 }
 
 //- (void)setChannel:(NSString *)cname {

@@ -27,6 +27,23 @@
 	UIColor * channelPanelBackgroundColor;
 	UIColor * channelPanelHighlightColor;
 	UIColor * channelPanelPlayedColor;
+    
+    UIColor * channelPanelCellDefaultBackgroundStart;
+    UIColor * channelPanelCellDefaultBackgroundEnd;
+    UIColor * channelPanelCellDefaultTopBorder;
+    UIColor * channelPanelCellDefaultBottomBorder;
+    UIColor * channelPanelCellDefaultDivider;
+    UIColor * channelPanelCellHighlightedBackgroundStart;
+    UIColor * channelPanelCellHighlightedBackgroundEnd;
+    UIColor * channelPanelCellHighlightedTopBorder;
+    UIColor * channelPanelCellHighlightedBottomBorder;
+    UIColor * channelPanelCellHighlightedDivider;    
+    UIColor * channelPanelCellDimmedBackgroundStart;
+    UIColor * channelPanelCellDimmedBackgroundEnd;
+    UIColor * channelPanelCellDimmedTopBorder;
+    UIColor * channelPanelCellDimmedBottomBorder;
+    UIColor * channelPanelCellDimmedDivider;
+
     UIColor * channelBorderColor;
 	UIImage * userPlaceholderImage, * channelContainerBackgroundNormalImage, * channelContainerBackgroundHighlightImage;
 	UIImage * toolbarExpandImage, * toolbarExpandHighlightedImage;
@@ -70,6 +87,25 @@
 @property (nonatomic, readonly) UIColor * channelPanelBackgroundColor;
 @property (nonatomic, readonly) UIColor * channelPanelHighlightColor;
 @property (nonatomic, readonly) UIColor * channelPanelPlayedColor;
+
+@property (nonatomic, readonly) UIColor * channelPanelCellDefaultBackgroundStart;
+@property (nonatomic, readonly) UIColor * channelPanelCellDefaultBackgroundEnd;
+@property (nonatomic, readonly) UIColor * channelPanelCellDefaultTopBorder;
+@property (nonatomic, readonly) UIColor * channelPanelCellDefaultBottomBorder;
+@property (nonatomic, readonly) UIColor * channelPanelCellDefaultDivider;
+
+@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedBackgroundStart;
+@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedBackgroundEnd;
+@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedTopBorder;
+@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedBottomBorder;
+@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedDivider;
+
+@property (nonatomic, readonly) UIColor * channelPanelCellDimmedBackgroundStart;
+@property (nonatomic, readonly) UIColor * channelPanelCellDimmedBackgroundEnd;
+@property (nonatomic, readonly) UIColor * channelPanelCellDimmedTopBorder;
+@property (nonatomic, readonly) UIColor * channelPanelCellDimmedBottomBorder;
+@property (nonatomic, readonly) UIColor * channelPanelCellDimmedDivider;
+
 @property (nonatomic, readonly) UIColor * channelBorderColor;
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
 @property (nonatomic, readonly) UIImage * channelContainerBackgroundNormalImage;
