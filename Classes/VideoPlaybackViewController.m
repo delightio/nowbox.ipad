@@ -306,7 +306,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} completion:^(BOOL finished) {
 			playFirstVideoOnLaunchWhenReady = YES;
 			[launchController showSwipeInstruction];
-			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 		}];
 	} else {
@@ -405,13 +405,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 	[self updateRibbonButtons];
-//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-	//	if ( playbackModelController.currentVideo == nil ) {
-	// we need to wait for video to come. show loading view
-	//controlScrollView.scrollEnabled = NO;
-	//	}
-	
-	//TODO: update the scroll view content size, set position of movie view and control view
 }
 
 - (NMVideo *)currentVideo {
@@ -514,9 +507,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
-		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
+//		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
 			[loadedControlView setControlsHidden:NO animated:YES];
-		}
+//		}
 	}];
 }
 
@@ -740,7 +733,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
-		[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//		[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 //		controlScrollView.scrollEnabled = YES;
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -753,8 +746,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self stopVideo];
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
-	// show progress indicator
-//	[movieView setActivityIndicationHidden:NO animated:NO];
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
@@ -763,8 +754,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
 	ribbonView.userInteractionEnabled = NO;
 	[playbackModelController setVideo:aVideo];
-//	[self updateRibbonButtons];
-//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {
@@ -846,19 +835,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
-//	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-//	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-//	if ( ribbonView.alpha < 1.0f ) {
-//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-//	}
-//	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
-//	currentXOffset = newOffset;
-//	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
-//	[UIView animateWithDuration:0.5f animations:^{
-//		controlScrollView.contentOffset = thePoint;
-//	} completion:^(BOOL finished) {
-//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-//	}];
 
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
@@ -1009,26 +985,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		switch (movieView.player.status) {
 			case AVPlayerStatusReadyToPlay:
 			{
-				// the instance is ready to play. show time and progress view
-//				[loadedControlView setControlsHidden:NO animated:YES];
-//				t = movieView.player.currentItem.asset.duration;
-//				// check if the time is value
-//				if ( t.flags & kCMTimeFlags_Valid ) {
-//					loadedControlView.duration = t.value / t.timescale;
-//					videoDurationInvalid = NO;
-//				} else {
-//					videoDurationInvalid = YES;
+				shouldFadeOutVideoThumbnail = YES;
+//				if ( playFirstVideoOnLaunchWhenReady ) {
+//					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 //				}
-//				[movieView setActivityIndicationHidden:YES animated:YES];
-				if ( playFirstVideoOnLaunchWhenReady ) {
-					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-				}
 				break;
 			}
 			default:
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
+		shouldFadeOutVideoThumbnail = YES;
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
@@ -1044,14 +1011,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		
 		showMovieControlTimestamp = 1;
 		
-//		t = movieView.player.currentItem.asset.duration;
-//		// check if the time is valid
-//		if ( t.flags & kCMTimeFlags_Valid ) {
-//			loadedControlView.duration = t.value / t.timescale;
-//			videoDurationInvalid = NO;
-//		} else {
-//			videoDurationInvalid = YES;
-//		}
 		if ( didPlayToEnd ) {
 			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
@@ -1062,6 +1021,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 			[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
 		}
+		// set the initial buffering progress. this is important. It's possible that a video is fully buffered. In this case, player will not post any KVO on loadedTimeRanges.
 	} else if ( c == NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT ) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 		if ( movieView.player.airPlayVideoActive ) {
@@ -1089,7 +1049,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
 #endif
 	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-//		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+		if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f ) {
+			[self playCurrentVideo];
+		}
 //		NSLog(@"%@ buffer status - keep up: %d full: %d", theItem.nmVideo.title, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull);
 	} else if ( c == NM_PLAYER_ITEM_STATUS_CONTEXT ) {
 //		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
@@ -1097,13 +1060,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( c == NM_PLAYER_RATE_CONTEXT ) {
 		// NOTE:
 		// AVQueuePlayer may not post any KVO notification to us on "rate" change.
-//		if ( didSkippedVideo && movieView.player.rate == 0.0f ) {
-//			// show loading
-//			[movieView setActivityIndicationHidden:NO animated:YES];
-//		}
-//		if ( movieView.player.rate > 0.0f && movieView.activityIndicator.alpha > 0.0 ) {
-//			[movieView setActivityIndicationHidden:YES animated:YES];
-//		}
 		CGFloat theRate = movieView.player.rate;
 		if ( !playFirstVideoOnLaunchWhenReady && theRate > 0.0 ) {
 			[self stopVideo];
@@ -1111,17 +1067,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			[loadedControlView setPlayButtonStateForRate:theRate];
 		}
-		/*
-		if ( didSkippedVideo ) {
-			if ( movieView.player.rate == 0.0f ) {
-				// show loading
-				[movieView setActivityIndicationHidden:NO animated:YES];
-			} else {
-				didSkippedVideo = NO;
-				[movieView setActivityIndicationHidden:YES animated:YES];
-			}
-			NSLog(@"skipping video - play rate: %f %d", movieView.player.rate, didSkippedVideo);
-		}*/
 	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT ) {
 		if ( object == movieView.player.currentItem ) {
 			// buffering progress
@@ -1129,6 +1074,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			NSValue * theRangeValue = [theItem.loadedTimeRanges lastObject];
 			if ( theRangeValue ) {
 				loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+				if ( shouldFadeOutVideoThumbnail ) {
+					shouldFadeOutVideoThumbnail = NO;
+					[theItem.nmVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+				}
 			}
 		}
 	}
@@ -1146,7 +1095,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)delayRestoreDetailView {
 	// update which video the buttons hook up to
 	[self updateRibbonButtons];
-	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 	[UIView animateWithDuration:0.25f animations:^{
 		ribbonView.alpha = 1.0f;
 	}];
@@ -1191,6 +1140,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( launchModeActive ) {
 		[launchController dimProgressLabel];
 	}
+	[self hideControlView];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1226,7 +1176,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
@@ -1257,7 +1207,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 	} else {
@@ -1423,77 +1373,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	controlScrollView.frame = scrollFrame;
     
 	[UIView commitAnimations];
-//    CGRect theFrame;
-//	theFrame = channelController.panelView.frame;
-//
-//	BOOL panelIsFullScreen = NO;
-//	if ( theFrame.origin.y < 380.0 ) {
-//		// assume the panel is full screen
-//		panelIsFullScreen = YES;
-//	}
-//    
-//    if (!panelIsFullScreen && !shouldToggleToFullScreen && shouldResume) {
-//        [self toggleChannelPanel:nil];
-//    }
-//    
-//    if (panelIsFullScreen == shouldToggleToFullScreen) {
-//        // no need to do anything else
-//        return;
-//    }
-//
-////    if (shouldToggleToFullScreen) {
-////        [self stopVideo];
-////    }
-////    else {
-////        if (shouldResume) {
-////            [self playCurrentVideo];
-////        }
-////    }
-//  
-//    // resize animation is slow, so doing this out of animation
-//    if (shouldToggleToFullScreen) {
-//        theFrame.size.height = 748-8;
-//        channelController.panelView.frame = theFrame;
-//    }    
-//    
-//    theFrame = channelController.panelView.frame;
-//    [UIView beginAnimations:nil context:nil];
-//	[UIView setAnimationBeginsFromCurrentState:YES];
-//	[UIView setAnimationDuration:0.5f];
-//
-//    if (shouldToggleToFullScreen) {
-//        theFrame = channelController.panelView.frame;
-//        // the dimensions are hard coded :(
-//        theFrame.origin.y = 20;
-//
-////		movieView.frame = CGRectMake(0, -340, 640.0f, 360.0f);
-//
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarCollapseImage forState:UIControlStateNormal];
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarCollapseHighlightedImage forState:UIControlStateHighlighted];
-//        
-//        controlScrollView.frame = CGRectMake(0, -360, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
-//
-//        channelController.panelView.frame = theFrame;
-//        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-//        
-//    }
-//    else {
-//        theFrame = channelController.panelView.frame;
-//        // the dimensions are hard coded :(
-//        theFrame.size.height = 380;
-//        theFrame.origin.y = 380;
-//		
-////        movieView.frame = CGRectMake(0, 20.0f, 640.0f, 360.0f);
-//
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarExpandImage forState:UIControlStateNormal];
-//        [channelController.fullScreenButton setImage:styleUtility.toolbarExpandHighlightedImage forState:UIControlStateHighlighted];
-//        
-//        controlScrollView.frame = CGRectMake(0, 0, controlScrollView.frame.size.width, controlScrollView.frame.size.height);
-//
-//        channelController.panelView.frame = theFrame;
-//        [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexInTable inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-//    }
-//    [UIView commitAnimations];
 }
 
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
@@ -1503,12 +1382,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
 	}];
-	// show the control view
-//	[UIView beginAnimations:nil context:(void*)NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER];
-//	loadedControlView.alpha = 1.0;
-//	[UIView setAnimationDelegate:self];
-//	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-//	[UIView commitAnimations];
 }
 
 - (void)movieViewDoubleTap:(id)sender {
@@ -1524,10 +1397,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			loadedControlView.hidden = YES;
 		}
 	}];
-	// hide the control view
-//	[UIView beginAnimations:nil context:nil];
-//	v.alpha = 0.0;
-//	[UIView commitAnimations];
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
