@@ -27,6 +27,7 @@ BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= NO;
 NSNumber * NM_SESSION_ID					= nil;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
+NSString * const NMShowErrorAlertNotification = @"NMShowErrorAlertNotification";
 
 static NMTaskQueueController * sharedTaskQueueController_ = nil;
 BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
