@@ -9,6 +9,7 @@
 #import "NMControlsView.h"
 #import "NMMovieView.h"
 #import "NMAirPlayContainerView.h"
+#import "NMAVPlayerItem.h"
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 
@@ -279,7 +280,6 @@
 	NMChannel * chn = aVideo.channel;
 	// channel image
 	[channelImageView setImageForChannel:chn];
-//	channelNameLabel.text = chn.title;
 	[segmentChannelButton setTitle:chn.title forState:UIControlStateNormal];
 	// channel width
 	CGSize theSize = [chn.title sizeWithFont:segmentChannelButton.titleLabel.font constrainedToSize:maximumTitleSize];
@@ -322,6 +322,10 @@
 	NSLog(@"control view, duration: %d", [aVideo.duration integerValue]);
 #endif
 	self.duration = [aVideo.duration integerValue];
+	NSValue * theRangeValue = [aVideo.nm_player_item.loadedTimeRanges lastObject];
+	if ( theRangeValue ) {
+		self.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+	}
 }
 
 //- (void)setChannel:(NSString *)cname {

@@ -405,13 +405,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 	[self updateRibbonButtons];
-//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-	//	if ( playbackModelController.currentVideo == nil ) {
-	// we need to wait for video to come. show loading view
-	//controlScrollView.scrollEnabled = NO;
-	//	}
-	
-	//TODO: update the scroll view content size, set position of movie view and control view
 }
 
 - (NMVideo *)currentVideo {
@@ -753,8 +746,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self stopVideo];
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
-	// show progress indicator
-//	[movieView setActivityIndicationHidden:NO animated:NO];
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
@@ -763,8 +754,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
 	ribbonView.userInteractionEnabled = NO;
 	[playbackModelController setVideo:aVideo];
-//	[self updateRibbonButtons];
-//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {
@@ -846,19 +835,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
-//	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-//	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
-//	if ( ribbonView.alpha < 1.0f ) {
-//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-//	}
-//	if ( currentXOffset > 0.0f && newOffset == currentXOffset ) return;
-//	currentXOffset = newOffset;
-//	CGPoint thePoint = CGPointMake(currentXOffset, 0.0f);
-//	[UIView animateWithDuration:0.5f animations:^{
-//		controlScrollView.contentOffset = thePoint;
-//	} completion:^(BOOL finished) {
-//		[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
-//	}];
 
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
 	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
@@ -1029,6 +1005,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
+		NSLog(@"current item context");
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
@@ -1044,14 +1021,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		
 		showMovieControlTimestamp = 1;
 		
-//		t = movieView.player.currentItem.asset.duration;
-//		// check if the time is valid
-//		if ( t.flags & kCMTimeFlags_Valid ) {
-//			loadedControlView.duration = t.value / t.timescale;
-//			videoDurationInvalid = NO;
-//		} else {
-//			videoDurationInvalid = YES;
-//		}
 		if ( didPlayToEnd ) {
 			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
@@ -1062,6 +1031,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 			[defaultNotificationCenter postNotificationName:NMWillBeginPlayingVideoNotification object:self userInfo:[NSDictionary dictionaryWithObject:playbackModelController.currentVideo forKey:@"video"]];
 		}
+		// set the initial buffering progress. this is important. It's possible that a video is fully buffered. In this case, player will not post any KVO on loadedTimeRanges.
 	} else if ( c == NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT ) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 		if ( movieView.player.airPlayVideoActive ) {
@@ -1097,13 +1067,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( c == NM_PLAYER_RATE_CONTEXT ) {
 		// NOTE:
 		// AVQueuePlayer may not post any KVO notification to us on "rate" change.
-//		if ( didSkippedVideo && movieView.player.rate == 0.0f ) {
-//			// show loading
-//			[movieView setActivityIndicationHidden:NO animated:YES];
-//		}
-//		if ( movieView.player.rate > 0.0f && movieView.activityIndicator.alpha > 0.0 ) {
-//			[movieView setActivityIndicationHidden:YES animated:YES];
-//		}
 		CGFloat theRate = movieView.player.rate;
 		if ( !playFirstVideoOnLaunchWhenReady && theRate > 0.0 ) {
 			[self stopVideo];
@@ -1111,17 +1074,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			[loadedControlView setPlayButtonStateForRate:theRate];
 		}
-		/*
-		if ( didSkippedVideo ) {
-			if ( movieView.player.rate == 0.0f ) {
-				// show loading
-				[movieView setActivityIndicationHidden:NO animated:YES];
-			} else {
-				didSkippedVideo = NO;
-				[movieView setActivityIndicationHidden:YES animated:YES];
-			}
-			NSLog(@"skipping video - play rate: %f %d", movieView.player.rate, didSkippedVideo);
-		}*/
 	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT ) {
 		if ( object == movieView.player.currentItem ) {
 			// buffering progress
@@ -1130,6 +1082,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			if ( theRangeValue ) {
 				loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
 			}
+			CMTimeRange rg = [theRangeValue CMTimeRangeValue];
+			NSLog(@"Buffering range: %lld, %lld", rg.start.value, rg.duration.value);
 		}
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
