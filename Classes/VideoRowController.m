@@ -7,10 +7,9 @@
 //
 
 #import "VideoRowController.h"
-#import "PanelVideoContainerView.h"
 #import "ChannelContainerView.h"
 #import "VideoPlaybackViewController.h"
-
+#import "PanelVideoCell.h"
 
 @implementation VideoRowController
 @synthesize managedObjectContext=managedObjectContext_;
@@ -33,6 +32,7 @@
 - (id)init {
 	self = [super init];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
+    recycledCells = [[NSMutableSet alloc] init];
     
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
@@ -51,6 +51,8 @@
 	[channel release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
+    [recycledCells release];
+    
 	[super dealloc];
 }
 
@@ -75,9 +77,13 @@
     
 }
 
-- (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
+- (void)recycleCell:(PanelVideoCell *)cell
 {
-    
+    [recycledCells addObject:cell];
+}
+
+- (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
+{    
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
         static NSString *CellIdentifier = @"LoadMoreView";
@@ -92,47 +98,59 @@
         return (UITableViewCell *)cell;
     }
     
-    // sharing cells between rows, so dequeueing from panelController.tableView instead 
-    PanelVideoContainerView *result = (PanelVideoContainerView *)[panelController.tableView dequeueReusableCellWithIdentifier:@"Reuse"];
-    if (nil == result)
-    {
-//        result = [[[PanelVideoContainerView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
-//        [result setFrame:CGRectMake(0.0, 0.0, 720.0, NM_VIDEO_CELL_HEIGHT)];
-        result = [[[PanelVideoContainerView alloc] initWithFrame:CGRectMake(0.0, 0.0, 720.0, NM_VIDEO_CELL_HEIGHT)] autorelease];
-		result.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-		result.tableView = aTableView;
+    // TODO: Share cells between rows
+    static NSString *CellIdentifier = @"VideoCell";
+//    PanelVideoCell *cell = (PanelVideoCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    PanelVideoCell *cell = [[[recycledCells anyObject] retain] autorelease];
+    if (cell) {
+        [recycledCells removeObject:cell];
+    } else {
+        cell = [[PanelVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
-	result.indexInTable = [anIndexPath row];
-    [result setUserInteractionEnabled:YES];
-    if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kShortVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
-    }
-    else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
-        [result setFrame:CGRectMake(0, 0, kMediumVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
-    }
-    else {
-        [result setFrame:CGRectMake(0, 0, kLongVideoCellWidth, NM_VIDEO_CELL_HEIGHT)];
-    }
-    [result setVideoRowDelegate:self];
-    if ([anIndexPath row] > 0) {
-        NMVideo * prevVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row]-1 inSection:0]];
-        [result setVideoNewSession:([[theVideo nm_session_id] intValue] != [[prevVideo nm_session_id] intValue])];
+    // Configure the cell
+    NMVideo *theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
+    NMDataController *dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+    
+    BOOL isVideoPlayable = ([[theVideo nm_error] intValue] == 0) && (theVideo.nm_playback_status >= 0);
+    BOOL isVideoFavorited = (([[theVideo nm_favorite] intValue] == 1) && ([theVideo channel] != [dataCtrl favoriteVideoChannel]));
+    BOOL isVideoQueued = (([[theVideo nm_watch_later] intValue] == 1) && ([theVideo channel] != [dataCtrl myQueueChannel]));
+
+    if (!isVideoPlayable) {
+        [cell setState:PanelVideoCellStateUnplayable];
+    } else if (isVideoFavorited) {
+        [cell setState:PanelVideoCellStateFavorite];
+    } else if (isVideoQueued) {
+        [cell setState:PanelVideoCellStateQueued];
     } else {
-        [result setVideoNewSession:NO];
+        [cell setState:PanelVideoCellStateDefault];
     }
-	[result setVideoInfo:theVideo];
+    
+    [cell setTitle:theVideo.title];
+    [cell setDateString:[[NMStyleUtility sharedStyleUtility].videoDateFormatter stringFromDate:theVideo.published_at]];
+    [cell setTag:anIndexPath.row];
+    [cell setVideoRowDelegate:self];
+    [cell setViewed:[theVideo.nm_did_play boolValue]];
+    
+    NSInteger duration = [theVideo.duration integerValue];
+	[cell setDuration:[NSString stringWithFormat:@"%02d:%02d", duration / 60, duration % 60]];
+    
+    if ([anIndexPath row] > 0) {
+        NMVideo *prevVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row]-1 inSection:0]];
+        [cell setSessionStartCell:([[theVideo nm_session_id] intValue] != [[prevVideo nm_session_id] intValue])];
+    } else {
+        [cell setSessionStartCell:NO];
+    }
 
     if ( panelController.highlightedChannel == channel && [anIndexPath row] == panelController.highlightedVideoIndex ) {
-		[result setIsPlayingVideo:YES];
+		[cell setIsPlayingVideo:YES];
 	} else {
-		[result setIsPlayingVideo:NO];
+		[cell setIsPlayingVideo:NO];
 	}
     
-    [result setIsFirstCell:([anIndexPath row] == 0)];
+    [cell setFirstCell:([anIndexPath row] == 0)];
     
-    return (UITableViewCell *)result;
+    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -197,7 +215,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:[NSString stringWithFormat:@"%i", channel.nm_id]];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
@@ -308,7 +326,7 @@
             [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
             isLoadingNewContent = NO;
             isAnimatingNewContentCell = YES;
-//			[videoTableView reloadData];
+			[videoTableView reloadData];
             [videoTableView beginUpdates];
             [videoTableView endUpdates];
 		}

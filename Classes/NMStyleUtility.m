@@ -31,6 +31,21 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize channelPanelBackgroundColor;
 @synthesize channelPanelHighlightColor;
 @synthesize channelPanelPlayedColor;
+@synthesize channelPanelCellDefaultBackgroundStart;
+@synthesize channelPanelCellDefaultBackgroundEnd;
+@synthesize channelPanelCellDefaultTopBorder;
+@synthesize channelPanelCellDefaultBottomBorder;
+@synthesize channelPanelCellDefaultDivider;
+@synthesize channelPanelCellHighlightedBackgroundStart;
+@synthesize channelPanelCellHighlightedBackgroundEnd;
+@synthesize channelPanelCellHighlightedTopBorder;
+@synthesize channelPanelCellHighlightedBottomBorder;
+@synthesize channelPanelCellHighlightedDivider;
+@synthesize channelPanelCellDimmedBackgroundStart;
+@synthesize channelPanelCellDimmedBackgroundEnd;
+@synthesize channelPanelCellDimmedTopBorder;
+@synthesize channelPanelCellDimmedBottomBorder;
+@synthesize channelPanelCellDimmedDivider;
 @synthesize channelBorderColor;
 @synthesize userPlaceholderImage;
 @synthesize channelContainerBackgroundNormalImage;
@@ -95,6 +110,25 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	channelPanelHighlightColor = [[UIColor colorWithRed:62.0f/255.0f green:62.0f / 255.0f blue:62.0f / 255.0f alpha:1.0] retain];
 	channelPanelBackgroundColor = [[UIColor colorWithRed:245.0f / 255.0f green:245.0f / 255.0f blue:245.0f / 255.0f alpha:1.0] retain];
     channelPanelPlayedColor = [[UIColor colorWithRed:233 / 255.0f green:233 / 255.0f blue:233 / 255.0f alpha:1.0] retain];
+    
+    channelPanelCellDefaultBackgroundStart = [[UIColor colorWithRed:240 / 255.0f green:240 / 255.0f blue:240 / 255.0f alpha:1.0] retain];    
+    channelPanelCellDefaultBackgroundEnd = [[UIColor colorWithRed:231 / 255.0f green:231 / 255.0f blue:231 / 255.0f alpha:1.0] retain];    
+    channelPanelCellDefaultTopBorder = [[UIColor colorWithRed:255 / 255.0f green:255 / 255.0f blue:255 / 255.0f alpha:1.0] retain];    
+    channelPanelCellDefaultBottomBorder = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];    
+    channelPanelCellDefaultDivider = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];    
+    
+    channelPanelCellHighlightedBackgroundStart = [[UIColor colorWithRed:47 / 255.0f green:47 / 255.0f blue:47 / 255.0f alpha:1.0] retain];    
+    channelPanelCellHighlightedBackgroundEnd = [[UIColor colorWithRed:61 / 255.0f green:61 / 255.0f blue:61 / 255.0f alpha:1.0] retain];    
+    channelPanelCellHighlightedTopBorder = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
+    channelPanelCellHighlightedBottomBorder = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
+    channelPanelCellHighlightedDivider = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
+    
+    channelPanelCellDimmedBackgroundStart = [[UIColor colorWithRed:211 / 255.0f green:211 / 255.0f blue:211 / 255.0f alpha:1.0] retain];    
+    channelPanelCellDimmedBackgroundEnd = [[UIColor colorWithRed:211 / 255.0f green:211 / 255.0f blue:211 / 255.0f alpha:1.0] retain];    
+    channelPanelCellDimmedTopBorder = [[UIColor colorWithRed:238 / 255.0f green:238 / 255.0f blue:238 / 255.0f alpha:1.0] retain];    
+    channelPanelCellDimmedBottomBorder = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];       
+    channelPanelCellDimmedDivider = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];       
+    
 	channelBorderColor = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0 alpha:1.0] retain];
 	userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
 	channelContainerBackgroundNormalImage = [[UIImage imageNamed:@"channel-list-cell-normal"] retain];
@@ -151,6 +185,24 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[channelPanelFontColor release];
 	[channelPanelHighlightColor release];
 	[channelPanelBackgroundColor release];
+    
+    [channelPanelCellDefaultBackgroundStart release];
+    [channelPanelCellDefaultBackgroundEnd release];
+    [channelPanelCellDefaultTopBorder release];
+    [channelPanelCellDefaultBottomBorder release];
+    [channelPanelCellDefaultDivider release];
+    [channelPanelCellHighlightedBackgroundStart release];
+    [channelPanelCellHighlightedBackgroundEnd release];
+    [channelPanelCellHighlightedTopBorder release];
+    [channelPanelCellHighlightedBottomBorder release];
+    [channelPanelCellHighlightedDivider release];
+
+    [channelPanelCellDimmedBackgroundStart release];
+    [channelPanelCellDimmedBackgroundEnd release];
+    [channelPanelCellDimmedTopBorder release];
+    [channelPanelCellDimmedBottomBorder release];
+    [channelPanelCellDimmedDivider release];
+    
     [channelBorderColor release];
 	[userPlaceholderImage release];
 	[toolbarExpandImage release], [toolbarExpandHighlightedImage release];

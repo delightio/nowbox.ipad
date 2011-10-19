@@ -8,7 +8,7 @@
 
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
-
+#import "PanelVideoCell.h"
 
 @class ChannelPanelController;
 @class AGOrientedTableView;
@@ -25,7 +25,7 @@
     CGPoint tempOffset;
     
     IBOutlet UITableViewCell *loadingCell;
-
+    NSMutableSet *recycledCells;
 }
 
 @property (nonatomic, assign) AGOrientedTableView * videoTableView;
@@ -41,6 +41,7 @@
 -(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath;
+- (void)recycleCell:(PanelVideoCell *)cell;
 - (void)resetAnimatingVariable;
 
 @end
