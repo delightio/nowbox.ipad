@@ -109,7 +109,7 @@
     UITableViewCell *cell = [self.orientedTableViewDataSource tableView:tableView cellForRowAtIndexPath:indexPath];
     if (self.tableViewOrientation == kAGTableViewOrientationHorizontal)
     {
-        cell.contentView.transform = CGAffineTransformMakeRotation(M_PI/2.0);
+        cell.transform = CGAffineTransformMakeRotation(M_PI/2.0);
     }
     return cell;
 }

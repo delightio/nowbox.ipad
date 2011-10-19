@@ -12,7 +12,6 @@
 #import "VideoRowController.h"
 #import "ChannelContainerView.h"
 #import "AGOrientedTableView.h"
-#import "PanelVideoContainerView.h"
 #import "SettingsViewController.h"
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
@@ -46,7 +45,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 //	tableView.separatorColor = [UIColor clearColor];
 //	tableView.separatorColor = styleUtility.channelBorderColor;
 //	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-	tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nowbox_background"]];
+///	tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nowbox_background"]];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
@@ -195,6 +194,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	CGRect theFrame = aContentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
+    
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
     [videoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -210,7 +210,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
 	
-    [videoTableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"channel-video-background-normal-rotated"]]];
+    [videoTableView setOpaque:YES];
+    [videoTableView setBackgroundColor:[UIColor colorWithRed:235/255.0f green:235/255.0f blue:235/255.0f alpha:1.0]];
     
     
     
@@ -297,8 +298,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     // first, unhighlight the old cell
 
     for (UITableViewCell *channelCell in [tableView visibleCells]) {
-        for (PanelVideoContainerView *cell in [(AGOrientedTableView *)[channelCell viewWithTag:1009] visibleCells]) {
-            if ([cell class] == [PanelVideoContainerView class]) {
+        for (PanelVideoCell *cell in [(AGOrientedTableView *)[channelCell viewWithTag:1009] visibleCells]) {
+            if ([cell class] == [PanelVideoCell class]) {
                 [cell setIsPlayingVideo:NO];
             }
         }
@@ -322,7 +323,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
     
     if ([htView numberOfRowsInSection:0] > 1) {
-        PanelVideoContainerView *cell = (PanelVideoContainerView *)[htView cellForRowAtIndexPath:rowToReload];
+        PanelVideoCell *cell = (PanelVideoCell *)[htView cellForRowAtIndexPath:rowToReload];
         [cell setIsPlayingVideo:YES];
     }
 
