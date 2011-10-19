@@ -177,26 +177,15 @@
 		resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
 		// assign the channel to playback view controller
 		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+		// no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
 		[viewController setCurrentChannel:channel startPlaying:NO];
-		// wait for notification of video list
+		// wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
 	} else {
 		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:1.0f];
 	}
 }
-
-//- (void)handleGetVideosNotification:(NSNotification *)aNotification {
-//	if ( [[aNotification name] isEqualToString:NMDidGetChannelVideoListNotification] ) {
-//		// download video thumbnail
-//		NSDictionary * info = [aNotification userInfo];
-//		NMChannel * chnObj = [info objectForKey:@"channel"];
-//		if ( [chnObj isEqual:channel] && [[info objectForKey:@"num_video_received"] integerValue]) {
-//			// assign the channel to the playback view controller
-//			[viewController setCurrentChannel:chnObj startPlaying:NO];
-//		}
-//	}
-//}
 
 - (void)handleDidResolveURLNotification:(NSNotification *)aNotification {
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
