@@ -306,7 +306,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} completion:^(BOOL finished) {
 			playFirstVideoOnLaunchWhenReady = YES;
 			[launchController showSwipeInstruction];
-			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 		}];
 	} else {
@@ -733,7 +733,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
-		[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//		[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 //		controlScrollView.scrollEnabled = YES;
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -985,27 +985,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		switch (movieView.player.status) {
 			case AVPlayerStatusReadyToPlay:
 			{
-				// the instance is ready to play. show time and progress view
-//				[loadedControlView setControlsHidden:NO animated:YES];
-//				t = movieView.player.currentItem.asset.duration;
-//				// check if the time is value
-//				if ( t.flags & kCMTimeFlags_Valid ) {
-//					loadedControlView.duration = t.value / t.timescale;
-//					videoDurationInvalid = NO;
-//				} else {
-//					videoDurationInvalid = YES;
+				shouldFadeOutVideoThumbnail = YES;
+//				if ( playFirstVideoOnLaunchWhenReady ) {
+//					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 //				}
-//				[movieView setActivityIndicationHidden:YES animated:YES];
-				if ( playFirstVideoOnLaunchWhenReady ) {
-					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-				}
 				break;
 			}
 			default:
 				break;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
-		NSLog(@"current item context");
+		shouldFadeOutVideoThumbnail = YES;
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
@@ -1059,7 +1049,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
 #endif
 	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-//		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+		if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f ) {
+			[self playCurrentVideo];
+		}
 //		NSLog(@"%@ buffer status - keep up: %d full: %d", theItem.nmVideo.title, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull);
 	} else if ( c == NM_PLAYER_ITEM_STATUS_CONTEXT ) {
 //		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
@@ -1081,9 +1074,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			NSValue * theRangeValue = [theItem.loadedTimeRanges lastObject];
 			if ( theRangeValue ) {
 				loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
+				if ( shouldFadeOutVideoThumbnail ) {
+					shouldFadeOutVideoThumbnail = NO;
+					[theItem.nmVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+				}
 			}
-			CMTimeRange rg = [theRangeValue CMTimeRangeValue];
-			NSLog(@"Buffering range: %lld, %lld", rg.start.value, rg.duration.value);
 		}
 	}
 	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
@@ -1100,7 +1095,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)delayRestoreDetailView {
 	// update which video the buttons hook up to
 	[self updateRibbonButtons];
-	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 	[UIView animateWithDuration:0.25f animations:^{
 		ribbonView.alpha = 1.0f;
 	}];
@@ -1181,7 +1176,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
@@ -1212,7 +1207,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 	} else {

@@ -135,7 +135,7 @@
 	}
 	if ( hidden ) {
 		self.alpha = 0.0;
-	} else {
+	} else if ( !hidden ) {
 		self.alpha = 1.0;
 	}
 	if ( animated ) {
@@ -235,6 +235,7 @@
 		[playPauseButton setImage:styleUtility.playImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.playActiveImage forState:UIControlStateHighlighted];
 		buttonPlayState = YES;
+		[self setControlsHidden:NO animated:YES];
 	} else if ( aRate > 0.0f && buttonPlayState ) {
 		buttonPlayState = NO;
 		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
