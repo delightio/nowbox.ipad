@@ -429,6 +429,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)playStopVideo:(id)sender {
+	playPauseButtonTapped = YES;
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
 	} else {
@@ -1049,9 +1050,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
 #endif
 	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
-		if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f ) {
-			[self playCurrentVideo];
+		if ( playPauseButtonTapped ) {
+			playPauseButtonTapped = NO;
+		} else {
+			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
+			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f ) {
+				[self playCurrentVideo];
+			}
 		}
 //		NSLog(@"%@ buffer status - keep up: %d full: %d", theItem.nmVideo.title, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull);
 	} else if ( c == NM_PLAYER_ITEM_STATUS_CONTEXT ) {
