@@ -9,6 +9,7 @@
 #import "PanelVideoCell.h"
 #import "NMStyleUtility.h"
 #import "VideoRowController.h"
+#import "ToolTipController.h"
 
 #define NM_VIDEO_CELL_PADDING 10.0
 
@@ -284,7 +285,10 @@
         if (videoRowDelegate) {
             [self changeViewToHighlighted:YES];
             [videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:self.tag inSection:0]];
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventVideoTap sender:self];            
         }
+    } else {
+        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventBadVideoTap sender:self];
     }
 }
 

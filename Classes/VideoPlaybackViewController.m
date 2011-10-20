@@ -212,6 +212,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
 
+    [[ToolTipController sharedToolTipController] setDelegate:self];
+    
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -1393,6 +1395,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMVideo * vdo = playbackModelController.currentVideo;
 	[nowmovTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	[self animateFavoriteButtonsToInactive];
+    
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1473,6 +1477,35 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Gesture delegate methods
 
+#pragma mark - ToolTipControllerDelegate
+
+- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
+    return loadedControlView.playbackMode == NMHalfScreenMode;
+}
+
+- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender {
+    
+    if ([tooltip.name isEqualToString:@"BadVideoTip"]) {
+        // We want to position this one relative to the cell
+        UITableView *channelTable = channelController.tableView;
+        
+        tooltip.center = CGPointMake([sender frame].size.height / 2, -25);
+        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
+        
+        // Keep tooltip within screen bounds
+        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 195),
+                                     MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
+        
+    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
+        tooltip.target = channelController;
+        tooltip.action = @selector(showChannelManagementView:);
+    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
+        tooltip.target = channelController;
+        tooltip.action = @selector(showSettingsView:);        
+    }
+    
+    return self.view;
+}
 
 #pragma mark Debug
 

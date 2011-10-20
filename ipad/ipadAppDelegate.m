@@ -10,6 +10,7 @@
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
+#import "ToolTipController.h"
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
 
@@ -121,6 +122,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
 
+    [[ToolTipController sharedToolTipController] startTimer];
+    
     return YES;
 }
 

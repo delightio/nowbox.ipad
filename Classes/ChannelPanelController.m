@@ -15,6 +15,7 @@
 #import "SettingsViewController.h"
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
+#import "ToolTipController.h"
 
 #define VIDEO_ROW_LEFT_PADDING			181.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -159,6 +160,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	
 	[navCtrl release];
 	[chnMngCtrl release];
+    
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelManagementTap sender:sender];
 }
 
 //- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
@@ -194,11 +197,10 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	CGRect theFrame = aContentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-    
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
     [videoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    
+
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
