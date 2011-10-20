@@ -12,8 +12,8 @@
 
 @interface LaunchController : NSObject {
 	UIView * view;
-	UIView * progressContainerView;
-	UIView * separatorView;
+//	UIView * progressContainerView;
+//	UIView * separatorView;
     IBOutlet UIButton * progressLabel;
 	IBOutlet UIImageView * logoImageView;
 	BOOL appFirstLaunch;
@@ -25,13 +25,13 @@
 
 @property (nonatomic, assign) VideoPlaybackViewController * viewController;
 @property (nonatomic, retain) IBOutlet UIView * view;
-@property (nonatomic, retain) IBOutlet UIView * progressContainerView;
+//@property (nonatomic, retain) IBOutlet UIView * progressContainerView;
 @property (nonatomic, retain) NMChannel * channel;
 
 - (void)checkUpdateChannels;
 - (void)loadView;
-- (void)showSwipeInstruction;
-- (void)dimProgressLabel;
-- (void)restoreProgressLabel;
+//- (void)showSwipeInstruction;
+//- (void)dimProgressLabel;
+//- (void)restoreProgressLabel;
 
 @end
