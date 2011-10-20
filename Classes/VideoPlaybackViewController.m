@@ -268,51 +268,59 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Launch / onboard process
-- (void)setLaunchModeActive:(BOOL)flag {
-	if ( flag ) {
-		// set to full screen
-		[self toggleChannelPanel:nil];
-	}
-	launchModeActive = flag;
-}
+//- (void)setLaunchModeActive:(BOOL)flag {
+//	if ( flag ) {
+//		// set to full screen
+//		[self toggleChannelPanel:nil];
+//	}
+//	launchModeActive = flag;
+//}
 
 - (void)showLaunchView {
 	[launchController loadView];
-	UIView * theView = launchController.progressContainerView;
-	[theView removeFromSuperview];
+//	UIView * theView = launchController.progressContainerView;
+//	[theView removeFromSuperview];
 	[self.view addSubview:launchController.view];
-	CGRect winRect = self.view.bounds;
-	CGRect theRect = theView.frame;
-	theRect.origin.x = winRect.size.width - theRect.size.width;
-	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
-	theView.frame = theRect;
-	[self.view addSubview:launchController.progressContainerView];
+//	CGRect winRect = self.view.bounds;
+//	CGRect theRect = theView.frame;
+//	theRect.origin.x = winRect.size.width - theRect.size.width;
+//	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
+//	theView.frame = theRect;
+//	[self.view addSubview:launchController.progressContainerView];
 }
 
-- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
-	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
-		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
+//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
+- (void)showPlaybackView {
+	if ( launchModeActive ) {
+//		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		controlScrollView.scrollEnabled = NO;
-//		NSLog(@"onboard - first thumbnail alpha: %f, movie view alpha: %f", playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha, movieView.alpha);
 		// reset the alpha value
 		playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha = 1.0f;
-		movieView.alpha = 0.0f;
-		// delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
-		[self.view bringSubviewToFront:topLevelContainerView];
-		[self.view bringSubviewToFront:launchController.progressContainerView];
-		// slide in the view
-		[UIView animateWithDuration:0.5f animations:^{
-			topLevelContainerView.center = launchController.view.center;
-		} completion:^(BOOL finished) {
+		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
+		// bring the playback view to the front
+//		[self.view bringSubviewToFront:topLevelContainerView];
+		// cross fade the view
+		shouldFadeOutVideoThumbnail = YES;
+		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
+			// remove launch view
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+			launchModeActive = NO;
 			playFirstVideoOnLaunchWhenReady = YES;
-			[launchController showSwipeInstruction];
-//			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 		}];
+		// slide in the view
+//		[UIView animateWithDuration:0.5f animations:^{
+//			topLevelContainerView.center = launchController.view.center;
+//			shouldFadeOutVideoThumbnail = YES;
+//		} completion:^(BOOL finished) {
+//			playFirstVideoOnLaunchWhenReady = YES;
+//			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
+//		}];
 	} else {
 		// cross fade
 #if __IPHONE_4_3 < __IPHONE_OS_VERSION_MAX_ALLOWED
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:UIViewAnimationOptionTransitionCrossDissolve completion:^(BOOL finished) {
+		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
 			// remove launch view
 			[launchController.view removeFromSuperview];
 			[launchController release];
@@ -327,10 +335,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}];
 #endif
 	}
-	if ( !launchModeActive ) {
+//	if ( !launchModeActive ) {
 //		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-	}
+//	}
 }
 
 #pragma mark Playback data structure
@@ -460,7 +468,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
 	[player addObserver:self forKeyPath:@"airPlayVideoActive" options:0 context:(void *)NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT];
-	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
+//	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
 	// all control view should observe to player changes
 	[player addObserver:self forKeyPath:@"rate" options:0 context:(void *)NM_PLAYER_RATE_CONTEXT];
 	timeObserver = [player addPeriodicTimeObserverForInterval:CMTimeMake(600, 600) queue:NULL usingBlock:^(CMTime aTime){
@@ -559,7 +567,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			break;
 			
 		case NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT:
-//			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
 			// animation done. Rest flag.
 			NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
             [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
@@ -568,19 +575,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
             [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-            if ( launchModeActive ) {
-				// remove the view
-				[launchController.progressContainerView removeFromSuperview];
-				[launchController.view removeFromSuperview];
-				[launchController release];
-				launchController = nil;
-				launchModeActive = NO;
-			}
-//            if (shouldResumePlayingVideoAfterTransition) {
-//                [self playCurrentVideo];
-//            }
-            
-//			[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
+//            if ( launchModeActive ) {
+//				// remove the view
+//				[launchController.progressContainerView removeFromSuperview];
+//				[launchController.view removeFromSuperview];
+//				[launchController release];
+//				launchController = nil;
+//				launchModeActive = NO;
+//			}
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
@@ -1044,12 +1046,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
-	else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {
-#ifdef DEBUG_PLAYER_NAVIGATION
-//		AVPlayerLayer * theLayer = (AVPlayerLayer *)object;
-//		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
-#endif
-	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
+	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
 		if ( playPauseButtonTapped ) {
 			playPauseButtonTapped = NO;
 		} else {
@@ -1085,13 +1082,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				}
 			}
 		}
-	}
-	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
-		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
-	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
-	}*/
-	else {
+	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
@@ -1142,9 +1133,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		ribbonView.alpha = 0.15;
 	}
-	if ( launchModeActive ) {
-		[launchController dimProgressLabel];
-	}
+//	if ( launchModeActive ) {
+//		[launchController dimProgressLabel];
+//	}
 	[self hideControlView];
 }
 
@@ -1188,19 +1179,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		else
 			NSLog(@"can't move to next video. no video!!");
 #endif
-		if ( launchModeActive ) {
-			// hide the progress label
-			[UIView animateWithDuration:0.25f animations:^{
-				launchController.progressContainerView.alpha = 0.0f;
-			} completion:^(BOOL finished) {
-				// remove the view
-				[launchController.progressContainerView removeFromSuperview];
-				[launchController.view removeFromSuperview];
-				[launchController release];
-				launchController = nil;
-				launchModeActive = NO;
-			}];
-		}
+//		if ( launchModeActive ) {
+//			// hide the progress label
+//			[launchController.view removeFromSuperview];
+//			[launchController release];
+//			launchController = nil;
+//			launchModeActive = NO;
+//		}
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 //		[movieView setActivityIndicationHidden:NO animated:NO];
 		didSkippedVideo = YES;
@@ -1222,9 +1207,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// this method pairs with "stopVideo" in scrollViewDidEndDragging
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 		
-		if ( launchModeActive ) {
-			[launchController restoreProgressLabel];
-		}
+//		if ( launchModeActive ) {
+//			[launchController restoreProgressLabel];
+//		}
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
@@ -1276,10 +1261,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in
 		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
-		if ( launchModeActive ) {
-			// hide the progress label
-			launchController.progressContainerView.alpha = 0.0f;
-		}
+//		if ( launchModeActive ) {
+//			// hide the progress label
+//			launchController.progressContainerView.alpha = 0.0f;
+//		}
 
 	} else {
 		// slide out the channel view
