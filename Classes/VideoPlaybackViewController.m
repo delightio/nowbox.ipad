@@ -1502,6 +1502,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         tooltip.center = CGPointMake([sender frame].size.height / 2, -25);
         tooltip.center = [sender convertPoint:tooltip.center toView:channelTable];
         
+        // Keep tooltip within screen bounds
+        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 120), 195),
+                                     tooltip.center.y);
+        
         return channelTable;
     }
     
