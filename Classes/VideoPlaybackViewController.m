@@ -456,7 +456,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
 	[player addObserver:self forKeyPath:@"airPlayVideoActive" options:0 context:(void *)NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT];
-	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
+//	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
 	// all control view should observe to player changes
 	[player addObserver:self forKeyPath:@"rate" options:0 context:(void *)NM_PLAYER_RATE_CONTEXT];
 	timeObserver = [player addPeriodicTimeObserverForInterval:CMTimeMake(600, 600) queue:NULL usingBlock:^(CMTime aTime){
@@ -1034,12 +1034,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
-	else if ( c == NM_VIDEO_READY_FOR_DISPLAY_CONTEXT) {
-#ifdef DEBUG_PLAYER_NAVIGATION
-//		AVPlayerLayer * theLayer = (AVPlayerLayer *)object;
-//		NSLog(@"ready for display? %d", theLayer.readyForDisplay);
-#endif
-	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
+	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
 		if ( playPauseButtonTapped ) {
 			playPauseButtonTapped = NO;
 		} else {
@@ -1075,13 +1070,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				}
 			}
 		}
-	}
-	/*else if ( c == NM_PLAYBACK_BUFFER_EMPTY_CONTEXT) {
-		bufferEmpty = [[object valueForKeyPath:keyPath] boolValue];
-	} else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		NSLog(@"%@ %@", keyPath, [object valueForKeyPath:keyPath]);
-	}*/
-	else {
+	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
