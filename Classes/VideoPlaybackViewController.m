@@ -301,6 +301,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in the view
 		[UIView animateWithDuration:0.5f animations:^{
 			topLevelContainerView.center = launchController.view.center;
+			shouldFadeOutVideoThumbnail = YES;
 		} completion:^(BOOL finished) {
 			playFirstVideoOnLaunchWhenReady = YES;
 			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
