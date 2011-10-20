@@ -8,12 +8,13 @@
 
 #import "ToolTipController.h"
 #import "ipadAppDelegate.h"
+#import "TouchForwardingView.h"
 
 #pragma mark - ToolTipController
 
 @implementation ToolTipController
 
-@synthesize dismissButton;
+@synthesize dismissTouchArea;
 @synthesize tooltipButton;
 @synthesize delegate;
 
@@ -125,7 +126,7 @@ static ToolTipController *toolTipController = nil;
     [autoHideTimer invalidate];
     
     [monitoredToolTips release];
-    [dismissButton release];
+    [dismissTouchArea release];
     [tooltipButton release];
     
     [super dealloc];
@@ -170,7 +171,6 @@ static ToolTipController *toolTipController = nil;
                 }
                 break;
             default:
-                NSLog(@"*** elapsed: %@, required: %@", criteria.elapsedCount, criteria.count);
                 if ([criteria.elapsedCount compare:criteria.count] == NSOrderedAscending) {
                     return NO;
                 }
@@ -185,9 +185,7 @@ static ToolTipController *toolTipController = nil;
 {
     NSMutableSet *toolTipsToRemove = [NSMutableSet set];
     for (ToolTip *tooltip in monitoredToolTips) {
-        NSLog(@"*** checking %@", tooltip.name);
         if ([self validateCriteriaSet:tooltip.invalidationCriteria]) {
-            NSLog(@"    removing tooltip: %@", tooltip.name);
             [toolTipsToRemove addObject:tooltip];
         }
     }
@@ -206,8 +204,6 @@ static ToolTipController *toolTipController = nil;
             for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
                 if (criteria.eventType == eventType) {
                     // Tooltip should be shown
-                    NSLog(@"*** tooltip should be shown: %@", tooltip.name);
-                    
                     if (!tooltipButton && [delegate toolTipController:self shouldPresentToolTip:tooltip sender:sender]) {
                         [self presentToolTip:tooltip
                                       inView:[delegate toolTipController:self viewForPresentingToolTip:tooltip sender:sender]];
@@ -232,8 +228,6 @@ static ToolTipController *toolTipController = nil;
 
 - (void)notifyEvent:(ToolTipEventType)eventType sender:(id)sender
 {
-    NSLog(@"*** notified event");
-    
     // Update the elapsed count for each tooltip's criteria
     for (ToolTip *tooltip in monitoredToolTips) {
         NSMutableSet *allCriteria = [NSMutableSet setWithSet:tooltip.validationCriteria];
@@ -241,9 +235,7 @@ static ToolTipController *toolTipController = nil;
         
         for (ToolTipCriteria *criteria in allCriteria) {
             if (criteria.eventType == eventType) {
-                criteria.elapsedCount = [NSNumber numberWithInt:[criteria.elapsedCount intValue] + 1];
-                
-                NSLog(@"*** count %@", criteria.elapsedCount);
+                criteria.elapsedCount = [NSNumber numberWithInt:[criteria.elapsedCount intValue] + 1];                
             }
         }
     }
@@ -269,7 +261,7 @@ static ToolTipController *toolTipController = nil;
 }
 
 - (void)presentToolTip:(ToolTip *)tooltip inView:(UIView *)view
-{    
+{
     if (tooltip.autoHideInSeconds > 0) {
         // Dismiss automatically after a time interval
         if (autoHideTimer) [autoHideTimer invalidate];
@@ -281,10 +273,9 @@ static ToolTipController *toolTipController = nil;
     }
     
     // Dismiss by tapping outside tooltip
-    self.dismissButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [dismissButton setFrame:view.bounds];
-    [dismissButton addTarget:self action:@selector(dismissTooltip) forControlEvents:UIControlEventTouchDown];
-    [view addSubview:dismissButton];
+    self.dismissTouchArea = [[TouchForwardingView alloc] initWithFrame:view.bounds];
+    [(TouchForwardingView *)dismissTouchArea addTarget:self action:@selector(dismissTooltip)];
+    [view addSubview:dismissTouchArea];
     
     // Create the tooltip button
     UIImage *tooltipImage = [UIImage imageNamed:tooltip.imageFile];
@@ -296,7 +287,10 @@ static ToolTipController *toolTipController = nil;
     [view addSubview:tooltipButton];
 
     [tooltipButton setAlpha:0.0f];
+    
     [UIView animateWithDuration:0.3
+                          delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          tooltipButton.alpha = 1.0f; 
                      }
@@ -310,14 +304,16 @@ static ToolTipController *toolTipController = nil;
     [autoHideTimer invalidate]; autoHideTimer = nil;
     
     [UIView animateWithDuration:0.3
+                          delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          tooltipButton.alpha = 0.0f;
                      }
                      completion:^(BOOL finished){
                          [tooltipButton removeFromSuperview];
-                         [dismissButton removeFromSuperview];
+                         [dismissTouchArea removeFromSuperview];
                          self.tooltipButton = nil;
-                         self.dismissButton = nil;
+                         self.dismissTouchArea = nil;                         
                      }];
 }
 

@@ -59,6 +59,7 @@
 		83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04673144F79EC00C91525 /* tooltip-share-videos.png */; };
 		83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */; };
 		83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C48C14509EF400AD8880 /* ToolTip.m */; };
+		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
 		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
 		A90F21FF143F63CA006B298D /* TwitterLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F21FE143F63CA006B298D /* TwitterLoading.html */; };
@@ -273,6 +274,8 @@
 		83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-swipe-next-video.png"; sourceTree = "<group>"; };
 		83F7C48B14509EF400AD8880 /* ToolTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTip.h; sourceTree = "<group>"; };
 		83F7C48C14509EF400AD8880 /* ToolTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTip.m; sourceTree = "<group>"; };
+		83F7C48F1450B22700AD8880 /* TouchForwardingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchForwardingView.h; sourceTree = "<group>"; };
+		83F7C4901450B22700AD8880 /* TouchForwardingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchForwardingView.m; sourceTree = "<group>"; };
 		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
 		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
 		A90425FE140E2EEC0028B972 /* NMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel.h; sourceTree = "<group>"; };
@@ -833,6 +836,8 @@
 				A9E8E3AF1427BBBD00ECD077 /* NMSeekBarLayoutLayer.m */,
 				83844040144DE51E007C99A2 /* PanelVideoCell.h */,
 				83844041144DE51E007C99A2 /* PanelVideoCell.m */,
+				83F7C48F1450B22700AD8880 /* TouchForwardingView.h */,
+				83F7C4901450B22700AD8880 /* TouchForwardingView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1133,6 +1138,7 @@
 				83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */,
 				83E0466B144F468300C91525 /* ToolTipController.m in Sources */,
 				83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */,
+				83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

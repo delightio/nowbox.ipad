@@ -27,7 +27,7 @@
     NSTimer *autoHideTimer;
 }
 
-@property (nonatomic, retain) UIButton *dismissButton;
+@property (nonatomic, retain) UIView *dismissTouchArea;
 @property (nonatomic, retain) UIButton *tooltipButton;
 @property (nonatomic, assign) id<ToolTipControllerDelegate> delegate;
 
