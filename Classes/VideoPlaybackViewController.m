@@ -1500,13 +1500,19 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         UITableView *channelTable = channelController.tableView;
 
         tooltip.center = CGPointMake([sender frame].size.height / 2, -25);
-        tooltip.center = [sender convertPoint:tooltip.center toView:channelTable];
+        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
         
         // Keep tooltip within screen bounds
-        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 120), 195),
+        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 195),
                                      tooltip.center.y);
         
-        return channelTable;
+//        return channelTable;
+    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
+        tooltip.target = channelController;
+        tooltip.action = @selector(showChannelManagementView:);
+    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
+        tooltip.target = channelController;
+        tooltip.action = @selector(showSettingsView:);        
     }
     
     return self.view;

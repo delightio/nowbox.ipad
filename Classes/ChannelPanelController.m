@@ -209,7 +209,6 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     [videoTableView setAlwaysBounceVertical:YES];
     
     videoTableView.allowsSelection = NO;
-    videoTableView.clipsToBounds = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
 	

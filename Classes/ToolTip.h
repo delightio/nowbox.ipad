@@ -31,6 +31,8 @@ typedef enum {
 @property (nonatomic, copy) NSString *imageFile;
 @property (nonatomic, copy) NSString *displayText;
 @property (nonatomic, assign) NSTimeInterval autoHideInSeconds;
+@property (nonatomic, assign) id target;
+@property (nonatomic, assign) SEL action;
 
 @end
 

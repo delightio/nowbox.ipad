@@ -35,7 +35,6 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.userInteractionEnabled = YES;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.clipsToBounds = NO;
         
         UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleDoubleTap:)];

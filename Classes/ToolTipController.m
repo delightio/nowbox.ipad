@@ -284,6 +284,11 @@ static ToolTipController *toolTipController = nil;
     [tooltipButton setFrame:CGRectMake(0, 0, tooltipImage.size.width, tooltipImage.size.height)];
     [tooltipButton setCenter:tooltip.center];
     [tooltipButton addTarget:self action:@selector(dismissTooltip) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (tooltip.target && tooltip.action) {
+        [tooltipButton addTarget:tooltip.target action:tooltip.action forControlEvents:UIControlEventTouchUpInside];
+    }
+    
     [view addSubview:tooltipButton];
 
     [tooltipButton setAlpha:0.0f];

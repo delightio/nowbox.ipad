@@ -21,6 +21,8 @@
 @synthesize imageFile;
 @synthesize displayText;
 @synthesize autoHideInSeconds;
+@synthesize target;
+@synthesize action;
 
 - (void)dealloc
 {
