@@ -283,10 +283,12 @@ static ToolTipController *toolTipController = nil;
     [tooltipButton setImage:tooltipImage forState:UIControlStateNormal];
     [tooltipButton setFrame:CGRectMake(0, 0, tooltipImage.size.width, tooltipImage.size.height)];
     [tooltipButton setCenter:tooltip.center];
-    [tooltipButton addTarget:self action:@selector(dismissTooltip) forControlEvents:UIControlEventTouchUpInside];
     
     if (tooltip.target && tooltip.action) {
+        tooltipButton.userInteractionEnabled = YES;
         [tooltipButton addTarget:tooltip.target action:tooltip.action forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        tooltipButton.userInteractionEnabled = NO;
     }
     
     [view addSubview:tooltipButton];

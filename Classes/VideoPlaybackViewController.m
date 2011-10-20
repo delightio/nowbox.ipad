@@ -1506,7 +1506,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 195),
                                      tooltip.center.y);
         
-//        return channelTable;
     } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
         tooltip.target = channelController;
         tooltip.action = @selector(showChannelManagementView:);
