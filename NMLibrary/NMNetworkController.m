@@ -396,6 +396,8 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 		[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
 		self.errorWindowStartDate = [NSDate date];
 	}
+	// check if we should retry for these errors: NSURLErrorNotConnectedToInternet, NSURLErrorNetworkConnectionLost, NSURLErrorTimedOut
+	// if the app is experiencing "NSURLErrorNotConnectedToInternet" error for multiple times within a 10 sec window, stop retrying
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
