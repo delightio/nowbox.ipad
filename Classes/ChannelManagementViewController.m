@@ -14,6 +14,7 @@
 #import "NMCachedImageView.h"
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
+#import "NMStyleUtility.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -29,7 +30,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize managedObjectContext;
 @synthesize containerView;
 @synthesize channelCell;
-
+@synthesize sectionTitleBackgroundImage;
+@synthesize sectionTitleColor;
+@synthesize sectionTitleFont;
 
 - (void)dealloc {
 	[channelDetailViewController release];
@@ -40,6 +43,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[categoryFetchedResultsController release];
 	[managedObjectContext release];
 	[selectedIndexPath release];
+	[sectionTitleBackgroundImage release];
+	[sectionTitleColor release];
+	[sectionTitleFont release];
     [super dealloc];
 }
 
@@ -65,6 +71,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 {
     [super viewDidLoad];
     
+	styleUtility = [NMStyleUtility sharedStyleUtility];
+	
 	self.title = @"Find Channels";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
@@ -85,12 +93,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
-
+	self.sectionTitleBackgroundImage = [UIImage imageNamed:@"channel-title-background"];
+	self.sectionTitleColor = [UIColor colorWithRed:190.0f / 255.0f green:148.0f / 255.0f blue:39.0f / 255.0f alpha:1.0f];
+	self.sectionTitleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f];
     
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
-    
 }
 
 - (void)viewDidUnload
@@ -198,30 +207,76 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+	if ( tableView == categoriesTableView ) return 1;
+    return 2;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	NSUInteger c = 0;
+	id <NSFetchedResultsSectionInfo> sectionInfo;
 	if ( tableView == categoriesTableView ) {
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:section];
-		return (([sectionInfo numberOfObjects]+1)*2)-1;
+		sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:section];
+		c = (([sectionInfo numberOfObjects]+1)*2)-1;
 	} else {
-        if (selectedIndex==0) {
-            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.myChannelsFetchedResultsController sections] objectAtIndex:section];
-            return [sectionInfo numberOfObjects];
-        } else {
-            return [selectedChannelArray count];
-        }
+		// the real list of subscribed channels
+		if ( selectedIndex == 0 ) {
+			switch (section) {
+				case 0:
+					// social login
+					c = 2;
+					break;
+					
+				case 1:
+					sectionInfo = [[self.myChannelsFetchedResultsController sections] objectAtIndex:0];
+					c = [sectionInfo numberOfObjects];
+					break;
+					
+				default:
+					break;
+			}
+		} else {
+			c = [selectedChannelArray count];
+		}
 	}
+	return c;
 }
 
--(float)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 0;
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	if ( tableView == categoriesTableView || selectedIndex ) return 0.0f;
+    return 29.0f;
 }
 
--(float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0;
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	if ( tableView == categoriesTableView || selectedIndex ) return nil;
+	UIView * ctnView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 10.0f, 29.0f)];
+	ctnView.layer.contents = (id)sectionTitleBackgroundImage.CGImage;
+	ctnView.backgroundColor = styleUtility.clearColor;
+	
+	UILabel * lbl = [[UILabel alloc] initWithFrame:CGRectMake(18.0f, 0.0f, 10.0f, 29.0f)];
+	[ctnView addSubview:lbl];
+	lbl.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+	lbl.backgroundColor = styleUtility.clearColor;
+	lbl.font = sectionTitleFont;
+	lbl.textColor = sectionTitleColor;
+	lbl.shadowColor = [UIColor whiteColor];
+	lbl.shadowOffset = CGSizeMake(0.0f, 1.0f);
+	
+	switch (section) {
+		case 0:
+			lbl.text = @"FRIENDS";
+			break;
+			
+		case 1:
+			lbl.text = @"SUBSCRIBED CHANNELS";
+			break;
+			
+		default:
+			break;
+	}
+	[lbl release];
+	return [ctnView autorelease];
+//	return  [lbl autorelease];
 }
 
 
@@ -258,6 +313,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         return categtoryCell;
         
 	} else {
+		
         static NSString *CellIdentifier = @"FindChannelCell";
         
         UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -266,7 +322,31 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             cell = channelCell;
             self.channelCell = nil;
         }
-        NMChannel * chn;
+ 		if ( indexPath.section == 0 ) {
+			// the social login
+			UILabel *label;
+			label = (UILabel *)[cell viewWithTag:12];
+			switch (indexPath.row) {
+				case 0:
+					label.text = @"Twitter";
+					label = (UILabel *)[cell viewWithTag:13];
+					label.text = @"Login Twitter";
+					break;
+					
+				case 1:
+					label.text = @"Facebook";
+					label = (UILabel *)[cell viewWithTag:13];
+					label.text = @"Login Facebook";
+					break;
+					
+				default:
+					break;
+			}
+			
+			return cell;
+		}
+		NMChannel * chn;
+		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
         if (selectedIndex == 0) {
             chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
         } else {
@@ -372,7 +452,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
         
 	} else {
-        
+        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
         NMChannel * chn;
 
         if (selectedIndex == 0) {
