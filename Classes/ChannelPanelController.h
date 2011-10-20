@@ -57,7 +57,6 @@ typedef enum {
 - (IBAction)showSettingsView:(id)sender;
 - (IBAction)showChannelManagementView:(id)sender;
 
-- (CGRect)currentVideoCellFrameInView:(UIView *)view;
 -(void)customPanning:(UIPanGestureRecognizer *)sender;
 -(NSInteger)highlightedChannelIndex;
 - (void)postAnimationChangeForDisplayMode:(NMPlaybackViewModeType)aMode;

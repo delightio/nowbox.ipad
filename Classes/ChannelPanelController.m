@@ -161,7 +161,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[navCtrl release];
 	[chnMngCtrl release];
     
-    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelManagementTap];
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelManagementTap sender:sender];
 }
 
 //- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
@@ -197,11 +197,10 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	CGRect theFrame = aContentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-    
 	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
 	videoTableView.frame = theFrame;
     [videoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    
+
     videoTableView.orientedTableViewDataSource = vdoCtrl;
     [videoTableView setTableViewOrientation:kAGTableViewOrientationHorizontal];
     [videoTableView setShowsVerticalScrollIndicator:NO];
@@ -210,6 +209,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     [videoTableView setAlwaysBounceVertical:YES];
     
     videoTableView.allowsSelection = NO;
+    videoTableView.clipsToBounds = NO;
     videoTableView.delegate	= vdoCtrl;
 	videoTableView.tableController = vdoCtrl;
 	
@@ -331,22 +331,6 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     }
 
 
-}
-
-- (CGRect)currentVideoCellFrameInView:(UIView *)view {
-    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
-    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
-    AGOrientedTableView *htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
-    
-    NSIndexPath *rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
-    
-    if ([htView numberOfRowsInSection:0] > 1) {
-        UITableViewCell *cell = [htView cellForRowAtIndexPath:rowToReload];
-        CGRect frame = [cell convertRect:cell.frame toView:view];
-        return frame;
-    }
-    
-    return CGRectZero;
 }
 
 #pragma mark -

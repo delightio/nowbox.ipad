@@ -35,6 +35,7 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.userInteractionEnabled = YES;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.clipsToBounds = NO;
         
         UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleDoubleTap:)];
@@ -285,10 +286,10 @@
         if (videoRowDelegate) {
             [self changeViewToHighlighted:YES];
             [videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:self.tag inSection:0]];
-            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventVideoTap];            
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventVideoTap sender:self];            
         }
     } else {
-        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventBadVideoTap];
+        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventBadVideoTap sender:self];
     }
 }
 

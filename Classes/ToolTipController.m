@@ -99,7 +99,8 @@ static ToolTipController *toolTipController = nil;
             toolTip.resetCountsOnDisplay = [[propertyDict objectForKey:@"ResetCountsOnDisplay"] boolValue];            
             toolTip.displayText = [propertyDict objectForKey:@"DisplayText"];
             toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
-
+            toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
+            
             NSDictionary *validationDict = [propertyDict objectForKey:@"ValidationCriteria"];
             toolTip.validationCriteria = [ToolTipController parseCriteriaFromDictionary:validationDict 
                                                                          useSavedCounts:toolTip.keepCountsOnRestart];
@@ -121,6 +122,7 @@ static ToolTipController *toolTipController = nil;
 - (void)dealloc
 {
     [refreshTimer invalidate];
+    [autoHideTimer invalidate];
     
     [monitoredToolTips release];
     [dismissButton release];
@@ -140,8 +142,8 @@ static ToolTipController *toolTipController = nil;
 
 - (void)timerFired
 {
-    [self performToolTipCheckForEventType:ToolTipEventMinimumTime];
-    [self performToolTipCheckForEventType:ToolTipEventMaximumTime];
+    [self performToolTipCheckForEventType:ToolTipEventMinimumTime sender:nil];
+    [self performToolTipCheckForEventType:ToolTipEventMaximumTime sender:nil];
 }
 
 - (BOOL)validateCriteriaSet:(NSSet *)criteriaSet
@@ -193,7 +195,7 @@ static ToolTipController *toolTipController = nil;
     [monitoredToolTips minusSet:toolTipsToRemove];
 }
 
-- (void)performToolTipCheckForEventType:(ToolTipEventType)eventType
+- (void)performToolTipCheckForEventType:(ToolTipEventType)eventType sender:(id)sender
 {
     [self removeInvalidatedToolTips];
 
@@ -206,9 +208,9 @@ static ToolTipController *toolTipController = nil;
                     // Tooltip should be shown
                     NSLog(@"*** tooltip should be shown: %@", tooltip.name);
                     
-                    if (!tooltipButton && [delegate toolTipController:self shouldPresentToolTip:tooltip]) {
+                    if (!tooltipButton && [delegate toolTipController:self shouldPresentToolTip:tooltip sender:sender]) {
                         [self presentToolTip:tooltip
-                                      inView:[delegate toolTipController:self viewForPresentingToolTip:tooltip]];
+                                      inView:[delegate toolTipController:self viewForPresentingToolTip:tooltip sender:sender]];
                         
                         if (tooltip.resetCountsOnDisplay) {
                             for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
@@ -228,7 +230,7 @@ static ToolTipController *toolTipController = nil;
     [monitoredToolTips minusSet:tooltipsToRemove];
 }
 
-- (void)notifyEvent:(ToolTipEventType)eventType
+- (void)notifyEvent:(ToolTipEventType)eventType sender:(id)sender
 {
     NSLog(@"*** notified event");
     
@@ -263,15 +265,25 @@ static ToolTipController *toolTipController = nil;
     }
     
     // Check if any tooltips can be shown
-    [self performToolTipCheckForEventType:eventType];
+    [self performToolTipCheckForEventType:eventType sender:sender];
 }
 
 - (void)presentToolTip:(ToolTip *)tooltip inView:(UIView *)view
 {    
-    // Create button to detect taps outside the tooltip
+    if (tooltip.autoHideInSeconds > 0) {
+        // Dismiss automatically after a time interval
+        if (autoHideTimer) [autoHideTimer invalidate];
+        autoHideTimer = [NSTimer scheduledTimerWithTimeInterval:tooltip.autoHideInSeconds
+                                                         target:self 
+                                                       selector:@selector(dismissTooltip) 
+                                                       userInfo:nil 
+                                                        repeats:NO];
+    }
+    
+    // Dismiss by tapping outside tooltip
     self.dismissButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [dismissButton setFrame:view.bounds];
-    [dismissButton addTarget:self action:@selector(dismissTooltip:) forControlEvents:UIControlEventTouchUpInside];
+    [dismissButton addTarget:self action:@selector(dismissTooltip) forControlEvents:UIControlEventTouchDown];
     [view addSubview:dismissButton];
     
     // Create the tooltip button
@@ -280,7 +292,7 @@ static ToolTipController *toolTipController = nil;
     [tooltipButton setImage:tooltipImage forState:UIControlStateNormal];
     [tooltipButton setFrame:CGRectMake(0, 0, tooltipImage.size.width, tooltipImage.size.height)];
     [tooltipButton setCenter:tooltip.center];
-    [tooltipButton addTarget:self action:@selector(dismissTooltip:) forControlEvents:UIControlEventTouchUpInside];
+    [tooltipButton addTarget:self action:@selector(dismissTooltip) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:tooltipButton];
 
     [tooltipButton setAlpha:0.0f];
@@ -293,8 +305,10 @@ static ToolTipController *toolTipController = nil;
                      }];
 }
 
-- (void)dismissTooltip:(id)sender
+- (void)dismissTooltip
 {
+    [autoHideTimer invalidate]; autoHideTimer = nil;
+    
     [UIView animateWithDuration:0.3
                      animations:^{
                          tooltipButton.alpha = 0.0f;
@@ -305,50 +319,6 @@ static ToolTipController *toolTipController = nil;
                          self.tooltipButton = nil;
                          self.dismissButton = nil;
                      }];
-}
-
-@end
-
-#pragma mark - ToolTip
-
-@implementation ToolTip
-
-@synthesize name;
-@synthesize validationCriteria;
-@synthesize invalidationCriteria;
-@synthesize center;
-@synthesize keepCountsOnRestart;
-@synthesize resetCountsOnDisplay;
-@synthesize imageFile;
-@synthesize displayText;
-
-- (void)dealloc
-{
-    [name release];
-    [validationCriteria release];
-    [invalidationCriteria release];
-    [imageFile release];
-    [displayText release];
-    
-    [super dealloc];
-}
-
-@end
-
-#pragma mark - ToolTipCriteria
-
-@implementation ToolTipCriteria
-
-@synthesize eventType;
-@synthesize count;
-@synthesize elapsedCount;
-
-- (void)dealloc
-{
-    [count release];
-    [elapsedCount release];
-    
-    [super dealloc];
 }
 
 @end

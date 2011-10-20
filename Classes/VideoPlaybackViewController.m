@@ -1406,7 +1406,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[nowmovTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	[self animateFavoriteButtonsToInactive];
     
-    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap];
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1489,16 +1489,20 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark - ToolTipControllerDelegate
 
-- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip {
+- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
     return loadedControlView.playbackMode == NMHalfScreenMode;
 }
 
-- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip {
+- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender {
+    
     if ([tooltip.name isEqualToString:@"BadVideoTip"]) {
         // We want to position this one relative to the cell
-        CGRect frame = [channelController currentVideoCellFrameInView:self.view];
-        tooltip.center = CGPointMake(CGRectGetMidX(frame), frame.origin.y - 300);
-        NSLog(@"center: %f, %f", tooltip.center.x, tooltip.center.y);
+        UITableView *channelTable = channelController.tableView;
+
+        tooltip.center = CGPointMake([sender frame].size.height / 2, -25);
+        tooltip.center = [sender convertPoint:tooltip.center toView:channelTable];
+        
+        return channelTable;
     }
     
     return self.view;

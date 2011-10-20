@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ToolTip.h"
 
 #define kToolTipDefinitionFile @"Tooltips"
 
@@ -16,25 +17,14 @@
 #define kChannelManagementTapCountKey @"NMChannelManagementTapCount"
 #define kFavoriteTapCountKey @"NMFavoriteTapCount"
 
-@class ToolTip;
 @protocol ToolTipControllerDelegate;
-
-// These are the events used to define when a tooltip will be shown
-typedef enum {
-    ToolTipEventMinimumTime,
-    ToolTipEventMaximumTime,
-    ToolTipEventFirstLaunch,
-    ToolTipEventVideoTap,
-    ToolTipEventBadVideoTap,
-    ToolTipEventChannelManagementTap,
-    ToolTipEventFavoriteTap
-} ToolTipEventType;
 
 @interface ToolTipController : NSObject {
     NSMutableSet *monitoredToolTips;
     NSTimeInterval startedTime;
     NSInteger firstLaunch;
     NSTimer *refreshTimer;
+    NSTimer *autoHideTimer;
 }
 
 @property (nonatomic, retain) UIButton *dismissButton;
@@ -46,14 +36,14 @@ typedef enum {
 // Starts recording time elapsed
 - (void)startTimer;
 
-// View controllers are responsible for notifying the tooltip controller of any events (except time and session count)
-- (void)notifyEvent:(ToolTipEventType)eventType;
+// View controllers are responsible for notifying the tooltip controller of any events (except time and session count). An optional sender object can be passed, which will be returned to the delegate if this event triggers a tooltip.
+- (void)notifyEvent:(ToolTipEventType)eventType sender:(id)sender;
 
 // Removes any tooltips that are no longer valid from being monitored
 - (void)removeInvalidatedToolTips;
 
 // Checks if any tooltips should be shown. If so, a notification will be sent.
-- (void)performToolTipCheckForEventType:(ToolTipEventType)eventType;
+- (void)performToolTipCheckForEventType:(ToolTipEventType)eventType sender:(id)sender;
 
 // Creates the tooltip view and presents it
 - (void)presentToolTip:(ToolTip *)tooltip inView:(UIView *)view;
@@ -61,29 +51,7 @@ typedef enum {
 @end
 
 @protocol ToolTipControllerDelegate <NSObject>
-- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip;
-- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip;
+- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender;
+- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender;
 @end
 
-// Contains information about each type of tooltip
-@interface ToolTip : NSObject 
-
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, retain) NSSet *validationCriteria;
-@property (nonatomic, retain) NSSet *invalidationCriteria;
-@property (nonatomic, assign) CGPoint center;
-@property (nonatomic, assign) BOOL keepCountsOnRestart;
-@property (nonatomic, assign) BOOL resetCountsOnDisplay;
-@property (nonatomic, copy) NSString *imageFile;
-@property (nonatomic, copy) NSString *displayText;
-
-@end
-
-// Defines a criteria for when a tooltip should be shown / not shown
-@interface ToolTipCriteria : NSObject
-
-@property (nonatomic, assign) ToolTipEventType eventType;
-@property (nonatomic, retain) NSNumber *count;
-@property (nonatomic, retain) NSNumber *elapsedCount;
-
-@end

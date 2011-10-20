@@ -16,6 +16,8 @@
 		<string>tooltip-swipe-next-video.png</string>
 		<key>DisplayText</key>
 		<string>Swipe to go to next video</string>
+		<key>AutoHideInSeconds</key>
+		<integer>0</integer>
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>VideoTap</key>
@@ -43,6 +45,8 @@
 		<string>tooltip-channel-management.png</string>
 		<key>DisplayText</key>
 		<string>Search and manage your channels here.</string>
+		<key>AutoHideInSeconds</key>
+		<integer>0</integer>
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>MinimumTime</key>
@@ -70,6 +74,8 @@
 		<string>tooltip-share-videos.png</string>
 		<key>DisplayText</key>
 		<string>Share your favorite videos with your friends</string>
+		<key>AutoHideInSeconds</key>
+		<integer>0</integer>
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>FavoriteTap</key>
@@ -84,13 +90,15 @@
 	<key>BadVideoTip</key>
 	<dict>
 		<key>CenterX</key>
-		<integer>512</integer>
+		<integer>10</integer>
 		<key>CenterY</key>
-		<integer>200</integer>
+		<integer>10</integer>
 		<key>KeepCountsOnRestart</key>
 		<false/>
 		<key>ResetCountsOnDisplay</key>
 		<true/>
+		<key>AutoHideInSeconds</key>
+		<integer>2</integer>
 		<key>ImageFile</key>
 		<string>tooltip-bad-video.png</string>
 		<key>DisplayText</key>
