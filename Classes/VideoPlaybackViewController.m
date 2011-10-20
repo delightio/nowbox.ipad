@@ -300,6 +300,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// bring the playback view to the front
 //		[self.view bringSubviewToFront:topLevelContainerView];
 		// cross fade the view
+		shouldFadeOutVideoThumbnail = YES;
 		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
 			// remove launch view
 			[launchController.view removeFromSuperview];
