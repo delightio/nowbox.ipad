@@ -68,7 +68,8 @@
 - (void)showVideoViewAnimated {
 //	viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 //	[self presentModalViewController:viewController animated:YES];
-	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFade];
+//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFade];
+	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
 	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
@@ -79,7 +80,8 @@
 
 - (void)slideInVideoViewAnimated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFromRight];
+//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFromRight];
+	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
 //	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
