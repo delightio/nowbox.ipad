@@ -73,6 +73,19 @@ NSInteger NM_LAST_CHANNEL_ID;
 	viewController.managedObjectContext = self.managedObjectContext;
 }
 
+- (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
+	NSError * error = [[aNotification userInfo] objectForKey:@"error"];
+	NSString * title = nil;
+	if ( [[error domain] isEqualToString:NSURLErrorDomain] ) {
+		title = @"Connection Error";
+	}
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[alert show];
+	[alert release];
+}
+
+#pragma mark Application Lifecycle
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	// detect version
@@ -181,31 +194,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[self saveContext];
 }
 
-- (void)saveContext {
-    
-    NSError *error = nil;
-	NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    if (managedObjectContext != nil) {
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-             */
-//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-//            abort();
-			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-			[alert show];
-			[alert release];
-			
-			// we should relaunch the app if there's error saving the context
-			// reset the context
-			//[managedObjectContext reset];
-			// fetch stuff as if it's a new channel
-			
-        } 
-    }
-}
+#pragma mark User Defaults
 
 - (void)saveChannelID:(NSNumber *)chnNum {
 	NM_LAST_CHANNEL_ID = [chnNum integerValue];
@@ -229,6 +218,32 @@ NSInteger NM_LAST_CHANNEL_ID;
 }
 
 #pragma mark Core Data stack
+- (void)saveContext {
+    
+    NSError *error = nil;
+	NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    if (managedObjectContext != nil) {
+        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+             */
+			//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+			//            abort();
+			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+			[alert show];
+			[alert release];
+			
+			// we should relaunch the app if there's error saving the context
+			// reset the context
+			//[managedObjectContext reset];
+			// fetch stuff as if it's a new channel
+			
+        } 
+    }
+}
+
 
 - (NSURL *)applicationDocumentsDirectory {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
