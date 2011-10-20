@@ -278,35 +278,31 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)showLaunchView {
 	[launchController loadView];
-	UIView * theView = launchController.progressContainerView;
-	[theView removeFromSuperview];
+//	UIView * theView = launchController.progressContainerView;
+//	[theView removeFromSuperview];
 	[self.view addSubview:launchController.view];
-	CGRect winRect = self.view.bounds;
-	CGRect theRect = theView.frame;
-	theRect.origin.x = winRect.size.width - theRect.size.width;
-	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
-	theView.frame = theRect;
-	[self.view addSubview:launchController.progressContainerView];
+//	CGRect winRect = self.view.bounds;
+//	CGRect theRect = theView.frame;
+//	theRect.origin.x = winRect.size.width - theRect.size.width;
+//	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
+//	theView.frame = theRect;
+//	[self.view addSubview:launchController.progressContainerView];
 }
 
 - (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
 	if ( [aniStyle isEqualToString:kCATransitionFromRight] ) {
 		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		controlScrollView.scrollEnabled = NO;
-//		NSLog(@"onboard - first thumbnail alpha: %f, movie view alpha: %f", playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha, movieView.alpha);
 		// reset the alpha value
 		playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha = 1.0f;
-		movieView.alpha = 0.0f;
-		// delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
+		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
+		// bring the playback view to the front
 		[self.view bringSubviewToFront:topLevelContainerView];
-		[self.view bringSubviewToFront:launchController.progressContainerView];
 		// slide in the view
 		[UIView animateWithDuration:0.5f animations:^{
 			topLevelContainerView.center = launchController.view.center;
 		} completion:^(BOOL finished) {
 			playFirstVideoOnLaunchWhenReady = YES;
-			[launchController showSwipeInstruction];
-//			[playbackModelController.currentVideo.nm_movie_detail_view slowFadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 		}];
 	} else {
@@ -559,7 +555,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			break;
 			
 		case NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT:
-//			[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
 			// animation done. Rest flag.
 			NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
             [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
@@ -568,19 +563,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
             [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-            if ( launchModeActive ) {
-				// remove the view
-				[launchController.progressContainerView removeFromSuperview];
-				[launchController.view removeFromSuperview];
-				[launchController release];
-				launchController = nil;
-				launchModeActive = NO;
-			}
-//            if (shouldResumePlayingVideoAfterTransition) {
-//                [self playCurrentVideo];
-//            }
-            
-//			[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
+//            if ( launchModeActive ) {
+//				// remove the view
+//				[launchController.progressContainerView removeFromSuperview];
+//				[launchController.view removeFromSuperview];
+//				[launchController release];
+//				launchController = nil;
+//				launchModeActive = NO;
+//			}
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
@@ -1142,9 +1132,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		ribbonView.alpha = 0.15;
 	}
-	if ( launchModeActive ) {
-		[launchController dimProgressLabel];
-	}
+//	if ( launchModeActive ) {
+//		[launchController dimProgressLabel];
+//	}
 	[self hideControlView];
 }
 
@@ -1190,16 +1180,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 		if ( launchModeActive ) {
 			// hide the progress label
-			[UIView animateWithDuration:0.25f animations:^{
-				launchController.progressContainerView.alpha = 0.0f;
-			} completion:^(BOOL finished) {
-				// remove the view
-				[launchController.progressContainerView removeFromSuperview];
-				[launchController.view removeFromSuperview];
-				[launchController release];
-				launchController = nil;
-				launchModeActive = NO;
-			}];
+			[launchController.view removeFromSuperview];
+			[launchController release];
+			launchController = nil;
+			launchModeActive = NO;
 		}
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 //		[movieView setActivityIndicationHidden:NO animated:NO];
@@ -1222,9 +1206,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// this method pairs with "stopVideo" in scrollViewDidEndDragging
 		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
 		
-		if ( launchModeActive ) {
-			[launchController restoreProgressLabel];
-		}
+//		if ( launchModeActive ) {
+//			[launchController restoreProgressLabel];
+//		}
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
@@ -1276,10 +1260,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in
 		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
-		if ( launchModeActive ) {
-			// hide the progress label
-			launchController.progressContainerView.alpha = 0.0f;
-		}
+//		if ( launchModeActive ) {
+//			// hide the progress label
+//			launchController.progressContainerView.alpha = 0.0f;
+//		}
 
 	} else {
 		// slide out the channel view

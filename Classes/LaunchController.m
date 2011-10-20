@@ -20,15 +20,12 @@
 
 @implementation LaunchController
 @synthesize view;
-@synthesize progressContainerView;
 @synthesize viewController;
 @synthesize channel;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[view release];
-	[progressContainerView release];
-	[separatorView release];
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
@@ -38,15 +35,8 @@
 - (void)loadView {
 	// background pattern of the whole launch view
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-	// background image of progress container view
-	CALayer * theLayer = progressContainerView.layer;
-	theLayer.contents = (id)[UIImage imageNamed:@"onboard-right-label-background"].CGImage;
-	theLayer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
-	// the separator
-	separatorView = [[UIView alloc] initWithFrame:CGRectMake(190.0f, 10.0f, 2.0f, 30.0f)];
-	separatorView.backgroundColor = [NMStyleUtility sharedStyleUtility].clearColor;
-	separatorView.layer.contents = (id)[UIImage imageNamed:@"onboard-label-separator"].CGImage;
-	[progressContainerView addSubview:separatorView];
+	UIImage * lblBgImg = [UIImage imageNamed:@"launch-status-background"];
+	[progressLabel setBackgroundImage:[lblBgImg stretchableImageWithLeftCapWidth:16 topCapHeight:0] forState:UIControlStateNormal];
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
@@ -116,39 +106,39 @@
 	}
 }
 
-- (void)showSwipeInstruction {
-	[progressLabel setTitle:@"Swipe to show next" forState:UIControlStateNormal];
-	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
-	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
-	[UIView animateWithDuration:0.25f animations:^{
-		CGRect theFrame = progressContainerView.frame;
-		theFrame.origin.x -= 190.0f;
-		theFrame.size.width += 190.0f;
-		progressContainerView.frame = theFrame;
-		progressLabel.alpha = 1.0f;
-		separatorView.alpha = 1.0f;
-	} completion:^(BOOL finished) {
-		viewController.controlScrollView.scrollEnabled = YES;
-	}];
-}
+//- (void)showSwipeInstruction {
+//	[progressLabel setTitle:@"Swipe to show next" forState:UIControlStateNormal];
+//	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
+//	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
+//	[UIView animateWithDuration:0.25f animations:^{
+//		CGRect theFrame = progressContainerView.frame;
+//		theFrame.origin.x -= 190.0f;
+//		theFrame.size.width += 190.0f;
+//		progressContainerView.frame = theFrame;
+//		progressLabel.alpha = 1.0f;
+//		separatorView.alpha = 1.0f;
+//	} completion:^(BOOL finished) {
+//		viewController.controlScrollView.scrollEnabled = YES;
+//	}];
+//}
 
-- (void)dimProgressLabel {
-	if ( progressContainerView.alpha < 1.0f ) return;
-	if ( NM_RUNNING_IOS_5 ) {
-		[UIView animateWithDuration:0.25f animations:^{
-			progressContainerView.alpha = 0.5f;
-		} completion:nil];
-	} else {
-		progressContainerView.alpha = 0.5f;
-	}
-}
+//- (void)dimProgressLabel {
+//	if ( progressContainerView.alpha < 1.0f ) return;
+//	if ( NM_RUNNING_IOS_5 ) {
+//		[UIView animateWithDuration:0.25f animations:^{
+//			progressContainerView.alpha = 0.5f;
+//		} completion:nil];
+//	} else {
+//		progressContainerView.alpha = 0.5f;
+//	}
+//}
 
-- (void)restoreProgressLabel {
-	if ( progressContainerView.alpha == 1.0f ) return;
-	[UIView animateWithDuration:0.25f animations:^{
-		progressContainerView.alpha = 1.0f;
-	} completion:nil];
-}
+//- (void)restoreProgressLabel {
+//	if ( progressContainerView.alpha == 1.0f ) return;
+//	[UIView animateWithDuration:0.25f animations:^{
+//		progressContainerView.alpha = 1.0f;
+//	} completion:nil];
+//}
 
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
@@ -169,8 +159,6 @@
 	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
-//		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-//		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
 		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
@@ -198,15 +186,16 @@
 			// ready to show the launch view
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
 			// hide progress label
-			[UIView animateWithDuration:0.25f animations:^{
-				CGRect theFrame = progressContainerView.frame;
-				theFrame.origin.x += theFrame.size.width - 135.0f;
-				theFrame.size.width = 135.0f;
-				progressContainerView.frame = theFrame;
-				progressLabel.alpha = 0.0f;
-				separatorView.alpha = 0.0f;
-				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-			}];
+//			[UIView animateWithDuration:0.25f animations:^{
+//				CGRect theFrame = progressContainerView.frame;
+//				theFrame.origin.x += theFrame.size.width - 135.0f;
+//				theFrame.size.width = 135.0f;
+//				progressContainerView.frame = theFrame;
+//				progressLabel.alpha = 0.0f;
+//				separatorView.alpha = 0.0f;
+//				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+//			}];
+			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 		}
 	}
 }
@@ -224,15 +213,16 @@
 				// ready to show launch view
 				[NSObject cancelPreviousPerformRequestsWithTarget:self];
 				// hide progress label
-				[UIView animateWithDuration:0.25f animations:^{
-					CGRect theFrame = progressContainerView.frame;
-					theFrame.origin.x += theFrame.size.width - 135.0f;
-					theFrame.size.width = 135.0f;
-					progressContainerView.frame = theFrame;
-					progressLabel.alpha = 0.0f;
-					separatorView.alpha = 0.0f;
-					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-				}];
+//				[UIView animateWithDuration:0.25f animations:^{
+//					CGRect theFrame = progressContainerView.frame;
+//					theFrame.origin.x += theFrame.size.width - 135.0f;
+//					theFrame.size.width = 135.0f;
+//					progressContainerView.frame = theFrame;
+//					progressLabel.alpha = 0.0f;
+//					separatorView.alpha = 0.0f;
+//					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+//				}];
+				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 			}
 		}
 	}
