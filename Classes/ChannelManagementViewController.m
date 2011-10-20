@@ -207,7 +207,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	if ( tableView == categoriesTableView ) return 1;
+	if ( tableView == categoriesTableView || selectedIndex ) return 1;
     return 2;
 }
 
@@ -264,7 +264,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	
 	switch (section) {
 		case 0:
-			lbl.text = @"FRIENDS";
+			lbl.text = @"SOCIAL CHANNELS";
+			
 			break;
 			
 		case 1:
@@ -322,21 +323,27 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             cell = channelCell;
             self.channelCell = nil;
         }
- 		if ( indexPath.section == 0 ) {
+		
+		NMCachedImageView *thumbnailView;
+		
+		if ( selectedIndex == 0 && indexPath.section == 0 ) {
 			// the social login
 			UILabel *label;
 			label = (UILabel *)[cell viewWithTag:12];
+			thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
 			switch (indexPath.row) {
 				case 0:
 					label.text = @"Twitter";
 					label = (UILabel *)[cell viewWithTag:13];
 					label.text = @"Login Twitter";
+					thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 					break;
 					
 				case 1:
 					label.text = @"Facebook";
 					label = (UILabel *)[cell viewWithTag:13];
 					label.text = @"Login Facebook";
+					thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 					break;
 					
 				default:
@@ -355,7 +362,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
         UIImageView *backgroundView;
         UIButton *buttonView;
-        NMCachedImageView *thumbnailView;
         
         thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
         [thumbnailView setImageForChannel:chn];
@@ -537,7 +543,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND type != %@", [NSNumber numberWithInteger:NMChannelUserType]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], nil]]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];

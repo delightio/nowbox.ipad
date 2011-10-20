@@ -59,6 +59,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		[pDict setObject:[NSDate dateWithTimeIntervalSince1970:0.0f] forKey:@"populated_at"];
 #endif
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserTwitterType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"trending"] ) {
+		[pDict setObject:[NSNumber numberWithInt:NMChannelTrendingType] forKey:@"type"];
 	} else {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 	}
