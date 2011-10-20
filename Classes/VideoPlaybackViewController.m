@@ -212,6 +212,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
 
+    [[ToolTipController sharedToolTipController] setDelegate:self];
+    
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -1403,6 +1405,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMVideo * vdo = playbackModelController.currentVideo;
 	[nowmovTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	[self animateFavoriteButtonsToInactive];
+    
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1483,6 +1487,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Gesture delegate methods
 
+#pragma mark - ToolTipControllerDelegate
+
+- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip {
+    return loadedControlView.playbackMode == NMHalfScreenMode;
+}
+
+- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip {
+    if ([tooltip.name isEqualToString:@"BadVideoTip"]) {
+        // We want to position this one relative to the cell
+        CGRect frame = [channelController currentVideoCellFrameInView:self.view];
+        tooltip.center = CGPointMake(CGRectGetMidX(frame), frame.origin.y - 300);
+        NSLog(@"center: %f, %f", tooltip.center.x, tooltip.center.y);
+    }
+    
+    return self.view;
+}
 
 #pragma mark Debug
 

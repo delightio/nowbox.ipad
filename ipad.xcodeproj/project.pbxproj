@@ -52,6 +52,12 @@
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
+		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
+		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
+		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
+		83E04678144F79EC00C91525 /* tooltip-channel-management.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04671144F79EC00C91525 /* tooltip-channel-management.png */; };
+		83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04673144F79EC00C91525 /* tooltip-share-videos.png */; };
+		83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */; };
 		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
 		A90F21FF143F63CA006B298D /* TwitterLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F21FE143F63CA006B298D /* TwitterLoading.html */; };
@@ -257,6 +263,13 @@
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
 		83844041144DE51E007C99A2 /* PanelVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCell.m; sourceTree = "<group>"; };
+		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
+		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
+		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
+		83E0466F144F79EC00C91525 /* tooltip-bad-video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-bad-video.png"; sourceTree = "<group>"; };
+		83E04671144F79EC00C91525 /* tooltip-channel-management.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-channel-management.png"; sourceTree = "<group>"; };
+		83E04673144F79EC00C91525 /* tooltip-share-videos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-videos.png"; sourceTree = "<group>"; };
+		83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-swipe-next-video.png"; sourceTree = "<group>"; };
 		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
 		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
 		A90425FE140E2EEC0028B972 /* NMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel.h; sourceTree = "<group>"; };
@@ -557,6 +570,7 @@
 				A925014C134385BF001759F5 /* ipad-Prefix.pch */,
 				A925014D134385BF001759F5 /* main.m */,
 				A93350B21417A15C00F47CDD /* KeychainAccessGroups.plist */,
+				83E0466D144F4EA900C91525 /* Tooltips.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -596,6 +610,8 @@
 				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
 				A9389B83143109CE00959946 /* LaunchController.h */,
 				A9389B84143109CE00959946 /* LaunchController.m */,
+				83E04669144F468300C91525 /* ToolTipController.h */,
+				83E0466A144F468300C91525 /* ToolTipController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -674,6 +690,10 @@
 				A9FEF58813D413CC0094514C /* toolbar-vertical-separator.png */,
 				A9FEF58A13D416C40094514C /* toolbar-expand.png */,
 				A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */,
+				83E0466F144F79EC00C91525 /* tooltip-bad-video.png */,
+				83E04671144F79EC00C91525 /* tooltip-channel-management.png */,
+				83E04673144F79EC00C91525 /* tooltip-share-videos.png */,
+				83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */,
 				A92CE47013E56B4C00007B04 /* top-bar-author-background.png */,
 				A92CE47113E56B4C00007B04 /* top-bar-channel-background.png */,
 				A92CE47513E56BCB00007B04 /* top-bar-title-background.png */,
@@ -1048,6 +1068,11 @@
 				A90F2201143F63E1006B298D /* loading.gif in Resources */,
 				A90F2203143F643F006B298D /* style.css in Resources */,
 				A90F2205143F6CAF006B298D /* FacebookLoading.html in Resources */,
+				83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */,
+				83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */,
+				83E04678144F79EC00C91525 /* tooltip-channel-management.png in Resources */,
+				83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */,
+				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1101,6 +1126,7 @@
 				A93EF2FF144BEDF2004F72C5 /* NMSignOutUserTask.m in Sources */,
 				A989C593144D197B00CBC94D /* NMPollChannelTask.m in Sources */,
 				83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */,
+				83E0466B144F468300C91525 /* ToolTipController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

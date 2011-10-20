@@ -15,6 +15,7 @@
 #import "SettingsViewController.h"
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
+#import "ToolTipController.h"
 
 #define VIDEO_ROW_LEFT_PADDING			181.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -159,6 +160,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	
 	[navCtrl release];
 	[chnMngCtrl release];
+    
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelManagementTap];
 }
 
 //- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
@@ -328,6 +331,22 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     }
 
 
+}
+
+- (CGRect)currentVideoCellFrameInView:(UIView *)view {
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
+    UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
+    AGOrientedTableView *htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
+    
+    NSIndexPath *rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
+    
+    if ([htView numberOfRowsInSection:0] > 1) {
+        UITableViewCell *cell = [htView cellForRowAtIndexPath:rowToReload];
+        CGRect frame = [cell convertRect:cell.frame toView:view];
+        return frame;
+    }
+    
+    return CGRectZero;
 }
 
 #pragma mark -
