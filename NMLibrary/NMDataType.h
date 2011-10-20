@@ -83,6 +83,8 @@ typedef enum {
 
 
 // Notifications
+// error
+extern NSString * const NMShowErrorAlertNotification;
 // user
 extern NSString * const NMWillCreateUserNotification;
 extern NSString * const NMDidCreateUserNotification;

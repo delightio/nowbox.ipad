@@ -67,6 +67,7 @@
 	LaunchController * launchController;
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;
+	BOOL playPauseButtonTapped;
     int rowIndexToCenterOn;
     
 	id timeObserver;
@@ -125,7 +126,8 @@
 - (void)launchPlayVideo:(NMVideo *)aVideo;
 
 // launch view / onboard process
-- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;
+//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;
+- (void)showPlaybackView;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer;

@@ -34,6 +34,8 @@
 	
 	NSMutableIndexSet * commandIndexPool;
 	
+	NSDate * errorWindowStartDate;
+	
 	// channel thumbnail_uri cache
 //	NSMutableSet * activeChannelThumbnailDownloadSet;
 }
@@ -42,6 +44,8 @@
 //@property (nonatomic, assign) NMTaskQueueScheduler *scheduler;
 @property (nonatomic, retain) NMDataController * dataController;
 @property (nonatomic, assign) NSThread *controlThread;
+
+@property (nonatomic, retain) NSDate * errorWindowStartDate;
 
 //- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 

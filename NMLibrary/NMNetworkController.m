@@ -27,6 +27,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 @synthesize connectionExecutionTimer;
 @synthesize dataController;
 @synthesize controlThread;
+@synthesize errorWindowStartDate;
 
 - (id)init {
 	self = [super init];
@@ -42,6 +43,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	maxNumberOfConnection = NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION;
 	defaultCenter = [[NSNotificationCenter defaultCenter] retain];
 	[NSThread detachNewThreadSelector:@selector(controlThreadMain:) toTarget:self withObject:nil];
+	self.errorWindowStartDate = [NSDate distantPast];
 	return self;
 }
 
@@ -57,6 +59,7 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[pendingTaskBufferLock release];
 	[connectionDateLog release];
 	[dataController release];
+	[errorWindowStartDate release];
 	[super dealloc];
 }
 
@@ -307,6 +310,11 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
 	[pendingTaskBufferLock unlock];
 }
 
+- (void)showAlertForError:(NSError *)error {
+	// this method runs in main thread
+	[[NSNotificationCenter defaultCenter] postNotificationName:NMShowErrorAlertNotification object:self userInfo:[NSDictionary dictionaryWithObject:error forKey:@"error"]];
+}
+
 #pragma mark NSURLConnection delegate methods
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	// network call rate control (5 calls/s)
@@ -382,6 +390,14 @@ NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotifi
           [error localizedDescription],
           [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 #endif
+	// prompt user for any error
+	if ( [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
+		// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
+		[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
+		self.errorWindowStartDate = [NSDate date];
+	}
+	// check if we should retry for these errors: NSURLErrorNotConnectedToInternet, NSURLErrorNetworkConnectionLost, NSURLErrorTimedOut
+	// if the app is experiencing "NSURLErrorNotConnectedToInternet" error for multiple times within a 10 sec window, stop retrying
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {

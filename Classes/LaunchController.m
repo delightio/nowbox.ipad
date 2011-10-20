@@ -20,15 +20,12 @@
 
 @implementation LaunchController
 @synthesize view;
-@synthesize progressContainerView;
 @synthesize viewController;
 @synthesize channel;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[view release];
-	[progressContainerView release];
-	[separatorView release];
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
@@ -38,15 +35,8 @@
 - (void)loadView {
 	// background pattern of the whole launch view
 	self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-	// background image of progress container view
-	CALayer * theLayer = progressContainerView.layer;
-	theLayer.contents = (id)[UIImage imageNamed:@"onboard-right-label-background"].CGImage;
-	theLayer.contentsCenter = CGRectMake(0.3f, 0.0f, 0.4f, 1.0f);
-	// the separator
-	separatorView = [[UIView alloc] initWithFrame:CGRectMake(190.0f, 10.0f, 2.0f, 30.0f)];
-	separatorView.backgroundColor = [NMStyleUtility sharedStyleUtility].clearColor;
-	separatorView.layer.contents = (id)[UIImage imageNamed:@"onboard-label-separator"].CGImage;
-	[progressContainerView addSubview:separatorView];
+	UIImage * lblBgImg = [UIImage imageNamed:@"launch-status-background"];
+	[progressLabel setBackgroundImage:[lblBgImg stretchableImageWithLeftCapWidth:16 topCapHeight:0] forState:UIControlStateNormal];
 	
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
@@ -78,7 +68,8 @@
 - (void)showVideoViewAnimated {
 //	viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 //	[self presentModalViewController:viewController animated:YES];
-	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFade];
+//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFade];
+	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
 	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
@@ -89,7 +80,8 @@
 
 - (void)slideInVideoViewAnimated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFromRight];
+//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFromRight];
+	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
 //	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
@@ -116,39 +108,39 @@
 	}
 }
 
-- (void)showSwipeInstruction {
-	[progressLabel setTitle:@"Swipe to show next" forState:UIControlStateNormal];
-	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
-	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
-	[UIView animateWithDuration:0.25f animations:^{
-		CGRect theFrame = progressContainerView.frame;
-		theFrame.origin.x -= 190.0f;
-		theFrame.size.width += 190.0f;
-		progressContainerView.frame = theFrame;
-		progressLabel.alpha = 1.0f;
-		separatorView.alpha = 1.0f;
-	} completion:^(BOOL finished) {
-		viewController.controlScrollView.scrollEnabled = YES;
-	}];
-}
+//- (void)showSwipeInstruction {
+//	[progressLabel setTitle:@"Swipe to show next" forState:UIControlStateNormal];
+//	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
+//	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
+//	[UIView animateWithDuration:0.25f animations:^{
+//		CGRect theFrame = progressContainerView.frame;
+//		theFrame.origin.x -= 190.0f;
+//		theFrame.size.width += 190.0f;
+//		progressContainerView.frame = theFrame;
+//		progressLabel.alpha = 1.0f;
+//		separatorView.alpha = 1.0f;
+//	} completion:^(BOOL finished) {
+//		viewController.controlScrollView.scrollEnabled = YES;
+//	}];
+//}
 
-- (void)dimProgressLabel {
-	if ( progressContainerView.alpha < 1.0f ) return;
-	if ( NM_RUNNING_IOS_5 ) {
-		[UIView animateWithDuration:0.25f animations:^{
-			progressContainerView.alpha = 0.5f;
-		} completion:nil];
-	} else {
-		progressContainerView.alpha = 0.5f;
-	}
-}
+//- (void)dimProgressLabel {
+//	if ( progressContainerView.alpha < 1.0f ) return;
+//	if ( NM_RUNNING_IOS_5 ) {
+//		[UIView animateWithDuration:0.25f animations:^{
+//			progressContainerView.alpha = 0.5f;
+//		} completion:nil];
+//	} else {
+//		progressContainerView.alpha = 0.5f;
+//	}
+//}
 
-- (void)restoreProgressLabel {
-	if ( progressContainerView.alpha == 1.0f ) return;
-	[UIView animateWithDuration:0.25f animations:^{
-		progressContainerView.alpha = 1.0f;
-	} completion:nil];
-}
+//- (void)restoreProgressLabel {
+//	if ( progressContainerView.alpha == 1.0f ) return;
+//	[UIView animateWithDuration:0.25f animations:^{
+//		progressContainerView.alpha = 1.0f;
+//	} completion:nil];
+//}
 
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
@@ -169,34 +161,21 @@
 	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
-//		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-//		[dn addObserver:self selector:@selector(handleGetVideosNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
 		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
 		resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
 		// assign the channel to playback view controller
 		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+		// no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
 		[viewController setCurrentChannel:channel startPlaying:NO];
-		// wait for notification of video list
+		// wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
 	} else {
 		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:1.0f];
 	}
 }
-
-//- (void)handleGetVideosNotification:(NSNotification *)aNotification {
-//	if ( [[aNotification name] isEqualToString:NMDidGetChannelVideoListNotification] ) {
-//		// download video thumbnail
-//		NSDictionary * info = [aNotification userInfo];
-//		NMChannel * chnObj = [info objectForKey:@"channel"];
-//		if ( [chnObj isEqual:channel] && [[info objectForKey:@"num_video_received"] integerValue]) {
-//			// assign the channel to the playback view controller
-//			[viewController setCurrentChannel:chnObj startPlaying:NO];
-//		}
-//	}
-//}
 
 - (void)handleDidResolveURLNotification:(NSNotification *)aNotification {
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
@@ -209,15 +188,16 @@
 			// ready to show the launch view
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
 			// hide progress label
-			[UIView animateWithDuration:0.25f animations:^{
-				CGRect theFrame = progressContainerView.frame;
-				theFrame.origin.x += theFrame.size.width - 135.0f;
-				theFrame.size.width = 135.0f;
-				progressContainerView.frame = theFrame;
-				progressLabel.alpha = 0.0f;
-				separatorView.alpha = 0.0f;
-				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-			}];
+//			[UIView animateWithDuration:0.25f animations:^{
+//				CGRect theFrame = progressContainerView.frame;
+//				theFrame.origin.x += theFrame.size.width - 135.0f;
+//				theFrame.size.width = 135.0f;
+//				progressContainerView.frame = theFrame;
+//				progressLabel.alpha = 0.0f;
+//				separatorView.alpha = 0.0f;
+//				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+//			}];
+			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 		}
 	}
 }
@@ -235,15 +215,16 @@
 				// ready to show launch view
 				[NSObject cancelPreviousPerformRequestsWithTarget:self];
 				// hide progress label
-				[UIView animateWithDuration:0.25f animations:^{
-					CGRect theFrame = progressContainerView.frame;
-					theFrame.origin.x += theFrame.size.width - 135.0f;
-					theFrame.size.width = 135.0f;
-					progressContainerView.frame = theFrame;
-					progressLabel.alpha = 0.0f;
-					separatorView.alpha = 0.0f;
-					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-				}];
+//				[UIView animateWithDuration:0.25f animations:^{
+//					CGRect theFrame = progressContainerView.frame;
+//					theFrame.origin.x += theFrame.size.width - 135.0f;
+//					theFrame.size.width = 135.0f;
+//					progressContainerView.frame = theFrame;
+//					progressLabel.alpha = 0.0f;
+//					separatorView.alpha = 0.0f;
+//					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+//				}];
+				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 			}
 		}
 	}

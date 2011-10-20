@@ -63,9 +63,9 @@
 	<key>ShareButtonTip</key>
 	<dict>
 		<key>CenterX</key>
-		<integer>840</integer>
+		<integer>843</integer>
 		<key>CenterY</key>
-		<integer>205</integer>
+		<integer>202</integer>
 		<key>KeepCountsOnRestart</key>
 		<true/>
 		<key>ResetCountsOnDisplay</key>
