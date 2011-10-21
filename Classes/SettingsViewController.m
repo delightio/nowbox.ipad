@@ -170,7 +170,7 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 5;
+	return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -178,8 +178,7 @@
 	NSInteger numRow = 1;
 	switch (section) {
 		case 0:
-		case 2:
-		case 4:
+		case 3:
 			numRow = 2;
 			break;
 			
@@ -236,25 +235,6 @@
 			cell.textLabel.text = @"Email (User ID for now)";
 			userIDField.text = [userDefaults stringForKey:NM_USER_ACCOUNT_ID_KEY];
 			break;
-		case 2:
-			cell = [tableView dequeueReusableCellWithIdentifier:SocialCellIdentifier];
-			if (cell == nil) {
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:SocialCellIdentifier] autorelease];
-				cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			}
-			switch (indexPath.row) {
-				case 0:
-					cell.textLabel.text = @"Twitter";
-					cell.detailTextLabel.text = NM_USER_TWITTER_CHANNEL_ID ? @"Logout" : @"Login";
-					break;
-				case 1:
-					cell.textLabel.text = @"Facebook";
-					cell.detailTextLabel.text = NM_USER_FACEBOOK_CHANNEL_ID ? @"Logout" : @"Login";
-					break;
-				default:
-					break;
-			}
-			break;
 			
 		default:
 			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -263,11 +243,11 @@
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			}
 			switch (indexPath.section) {
-				case 3:
+				case 2:
 					lblStr = @"Show Favorites Channel";
 					cell.accessoryView = favoriteChannelSwitch;
 					break;
-				case 4:
+				case 3:
 				{
 					switch (indexPath.row) {
 						case 0:
@@ -296,10 +276,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	switch (section) {
-		case 2:
-			return @"Social";
-			
-		case 4:
+		case 3:
 			return @"Notifications";
 			
 		default:
@@ -325,30 +302,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ( indexPath.section == 2 ) {
-		SocialLoginViewController * socialCtrl;
-		if ( indexPath.row == 0 ) {
-			if ( NM_USER_TWITTER_CHANNEL_ID ) {
-				// logout twitter
-				[[NMTaskQueueController sharedTaskQueueController] issueSignOutTwitterAccount];
-			} else {
-				// login twitter
-				socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-				socialCtrl.loginType = LoginTwitterType;
-				[self.navigationController pushViewController:socialCtrl animated:YES];
-				[socialCtrl release];
-			}
-		} else if ( indexPath.row == 1 && NM_USER_FACEBOOK_CHANNEL_ID ) {
-			if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-				[[NMTaskQueueController sharedTaskQueueController] issueSignOutFacebookAccout];
-			} else {
-				socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-				socialCtrl.loginType = LoginFacebookType;
-				[self.navigationController pushViewController:socialCtrl animated:YES];
-				[socialCtrl release];
-			}
-		}
-	}
 }
 
 
