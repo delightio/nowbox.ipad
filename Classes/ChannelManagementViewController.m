@@ -27,6 +27,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize categoryFetchedResultsController;
 @synthesize myChannelsFetchedResultsController;
 @synthesize selectedIndexPath;
+@synthesize selectedIndexPathForTable;
 @synthesize selectedChannelArray;
 @synthesize managedObjectContext;
 @synthesize containerView;
@@ -44,6 +45,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[categoryFetchedResultsController release];
 	[managedObjectContext release];
 	[selectedIndexPath release];
+    [selectedIndexPathForTable release];
 	[sectionTitleBackgroundImage release];
 	[sectionTitleColor release];
 	[sectionTitleFont release];
@@ -316,6 +318,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             }
             [categtoryCell setUserInteractionEnabled:NO];
         }
+        
+        [categtoryCell setHighlighted:NO];
+        [categtoryCell setSelected:NO];
+        
         return categtoryCell;
         
 	} else {
@@ -442,6 +448,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         if (indexPath.row + 1 < [tableView numberOfRowsInSection:0]) {
             [(CategoryTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]] setCategoryTitle:@""];
         }
+        
+        // Handle selection manually to keep previous selection on highlight
+        [(CategoryTableCell *)[tableView cellForRowAtIndexPath:selectedIndexPathForTable] setSelected:NO];
+        [(CategoryTableCell *)[tableView cellForRowAtIndexPath:indexPath] setSelected:YES];
+        self.selectedIndexPathForTable = indexPath;
         
         selectedIndex = indexPath.row;
 

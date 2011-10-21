@@ -23,6 +23,7 @@
 	NSManagedObjectContext * managedObjectContext;
 	
 	NSIndexPath * selectedIndexPath;
+    NSIndexPath * selectedIndexPathForTable;
 	NSArray * selectedChannelArray;
 	
 	BOOL viewPushedByNavigationController;
@@ -48,6 +49,7 @@
 @property (nonatomic, retain) NSFetchedResultsController * myChannelsFetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSIndexPath * selectedIndexPath;
+@property (nonatomic, retain) NSIndexPath * selectedIndexPathForTable;
 @property (nonatomic, retain) NSArray * selectedChannelArray;
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 @property (nonatomic, retain) UIImage * sectionTitleBackgroundImage;

@@ -30,10 +30,9 @@
     [super setHighlighted:highlighted];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-    [self setHighlighted:selected];
+- (void)setSelected:(BOOL)selected {
+    [categoryView setSelected:selected];
+    [super setSelected:selected];    
 }
 
 -(void)setCategoryTitle:(NSString *)newTitle {

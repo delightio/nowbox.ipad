@@ -10,10 +10,12 @@
 
 @interface CategoryCellView : UIView {
     BOOL highlighted;
+    BOOL selected;
     NSString *categoryTitle;
 }
 
 @property (nonatomic, getter=isHighlighted) BOOL highlighted;
+@property (nonatomic, getter=isSelected) BOOL selected;
 
 -(void)setCategoryText:(NSString *)newText;
 @end
