@@ -130,27 +130,27 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 		case NMCommandVerifyFacebookUser:
 			NM_USER_FACEBOOK_CHANNEL_ID = [[userDictionary objectForKey:@"facebook_channel_id"] integerValue];
 			//TODO: code below is not needed when user login is fully implemented on the server side
-			NM_USER_ACCOUNT_ID = uid;
-			NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
-			NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
-			NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
-			[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
-			[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
-			[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
-			[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+//			NM_USER_ACCOUNT_ID = uid;
+//			NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
+//			NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
+//			NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
+//			[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+//			[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+//			[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+//			[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 			break;
 			
 		case NMCommandVerifyTwitterUser:
 			NM_USER_TWITTER_CHANNEL_ID = [[userDictionary objectForKey:@"twitter_channel_id"] integerValue];
 			//TODO: code below is not needed when user login is fully implemented on the server side
-			NM_USER_ACCOUNT_ID = uid;
-			NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
-			NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
-			NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
-			[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
-			[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
-			[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
-			[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+//			NM_USER_ACCOUNT_ID = uid;
+//			NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
+//			NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
+//			NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
+//			[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+//			[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+//			[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+//			[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 			break;
 			
 		default:
@@ -166,19 +166,19 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	 When this task is done, the backend should queue the "Get Channels" task to merge changes in channels.
 	 In this task, there's NO need to merge the channels. Just create the Facebook or Twitter stream channel
 	*/
-	NSNumber * idNum = nil;
-	switch (command) {
-		case NMCommandVerifyFacebookUser:
-			idNum = [userDictionary objectForKey:@"facebook_channel_id"];
-			break;
-			
-		case NMCommandVerifyTwitterUser:
-			idNum = [userDictionary objectForKey:@"twitter_channel_id"];
-			break;
-			
-		default:
-			break;
-	}
+//	NSNumber * idNum = nil;
+//	switch (command) {
+//		case NMCommandVerifyFacebookUser:
+//			idNum = [userDictionary objectForKey:@"facebook_channel_id"];
+//			break;
+//			
+//		case NMCommandVerifyTwitterUser:
+//			idNum = [userDictionary objectForKey:@"twitter_channel_id"];
+//			break;
+//			
+//		default:
+//			break;
+//	}
 //	NMChannel * chnObj = [ctrl channelForID:idNum];
 //	if ( chnObj == nil ) {
 //		// create the new object

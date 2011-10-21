@@ -19,6 +19,7 @@
     UITableViewCell *channelCell;
 
     ChannelDetailViewController * channelDetailViewController;
+	NSNumberFormatter * countFormatter;
 }
 
 @property (nonatomic, retain) IBOutlet UISearchBar * searchBar;
@@ -27,7 +28,7 @@
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 
--(void)clearSearchResults;
+- (void)clearSearchResults;
 - (void)performSearchWithText:(NSString *)searchText;
 
 @end

@@ -59,6 +59,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		[pDict setObject:[NSDate dateWithTimeIntervalSince1970:0.0f] forKey:@"populated_at"];
 #endif
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserTwitterType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"trending"] ) {
+		[pDict setObject:[NSNumber numberWithInt:NMChannelTrendingType] forKey:@"type"];
 	} else {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 	}
@@ -257,7 +259,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		if ( [channelIndexSet containsIndex:cid] ) {
 			chnDict = [parsedObjectDictionary objectForKey:chnObj.nm_id];
 			// the channel exists, update its sort order
-			chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
+			chnObj.nm_subscribed = [chnDict objectForKey:@"nm_subscribed"];
 			[channelIndexSet removeIndex:cid];
 		} else {
 			if ( objectsToDelete == nil ) objectsToDelete = [NSMutableArray arrayWithCapacity:4];
@@ -284,11 +286,11 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 				}
 			} else {
 				// the channel already exists, just update the sort order.
-				chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
-				if ( [chnObj.nm_hidden boolValue] ) {
-					// update the channel info if the channel is hidden
-					[chn setValuesForKeysWithDictionary:chnDict];
-				}
+				[chn setValuesForKeysWithDictionary:chnDict];
+//				if ( [chnObj.nm_hidden boolValue] ) {
+//					// update the channel info if the channel is hidden
+//					[chn setValuesForKeysWithDictionary:chnDict];
+//				}
 				//TODO: to be more correct, sort order should be stored in the relationship object cos the order of a channel can be different in different category
 			}
 			// add the channel to the relationship.

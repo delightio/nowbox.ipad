@@ -150,6 +150,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_LAST_SESSION_DATE];
 	// cancel tasks
 //	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
+	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -172,6 +173,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	if ( ![userDefaults boolForKey:NM_FIRST_LAUNCH_KEY] ) {
 		// poll the server to see if those hidden has got content now.
 		[tqc issueRefreshHiddenSubscribedChannels];
+		[tqc pollServerForChannelReadiness];
 	}
 	// init core data
 	
