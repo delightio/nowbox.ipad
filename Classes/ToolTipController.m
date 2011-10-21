@@ -65,6 +65,11 @@ static ToolTipController *toolTipController = nil;
             if (useSavedCounts) {
                 savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kFavoriteTapCountKey];
             }
+        } else if ([criteriaName isEqualToString:@"ChannelListScroll"]) {
+            criteria.eventType = ToolTipEventChannelListScroll;
+            if (useSavedCounts) {
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kChannelListScrollCountKey];
+            }
         }
         
         if (savedElapsedCount) {
@@ -78,6 +83,43 @@ static ToolTipController *toolTipController = nil;
     return criteriaSet;
 }
 
+- (void)setup
+{
+    [monitoredToolTips removeAllObjects];
+    
+    // Load the tooltip definitions from a plist
+    NSString *definitionFile = [[NSBundle mainBundle] pathForResource:kToolTipDefinitionFile ofType:@"plist"];
+    NSDictionary *definitionDict = [NSDictionary dictionaryWithContentsOfFile:definitionFile];
+    
+    for (NSString *key in [definitionDict allKeys]) {
+        NSDictionary *propertyDict = [definitionDict objectForKey:key];
+        
+        ToolTip *toolTip = [[ToolTip alloc] init];
+        toolTip.name = key;
+        toolTip.center = CGPointMake([[propertyDict objectForKey:@"CenterX"] floatValue],
+                                     [[propertyDict objectForKey:@"CenterY"] floatValue]);
+        toolTip.keepCountsOnRestart = [[propertyDict objectForKey:@"KeepCountsOnRestart"] boolValue];
+        toolTip.resetCountsOnDisplay = [[propertyDict objectForKey:@"ResetCountsOnDisplay"] boolValue];            
+        toolTip.displayText = [propertyDict objectForKey:@"DisplayText"];
+        toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
+        toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
+        toolTip.invalidatesToolTip = [propertyDict objectForKey:@"InvalidatesToolTip"];
+        
+        NSDictionary *validationDict = [propertyDict objectForKey:@"ValidationCriteria"];
+        toolTip.validationCriteria = [ToolTipController parseCriteriaFromDictionary:validationDict 
+                                                                     useSavedCounts:toolTip.keepCountsOnRestart];
+        
+        NSDictionary *invalidationDict = [propertyDict objectForKey:@"InvalidationCriteria"];
+        toolTip.invalidationCriteria = [ToolTipController parseCriteriaFromDictionary:invalidationDict
+                                                                       useSavedCounts:toolTip.keepCountsOnRestart];
+        
+        [monitoredToolTips addObject:toolTip];
+        [toolTip release];
+    }
+    
+    [self startTimer];
+}
+
 - (id)init
 {
     self = [super init];
@@ -85,36 +127,7 @@ static ToolTipController *toolTipController = nil;
         monitoredToolTips = [[NSMutableSet alloc] init];        
         firstLaunch = [[[NSUserDefaults standardUserDefaults] objectForKey:NM_FIRST_LAUNCH_KEY] boolValue];
         
-        // Load the tooltip definitions from a plist
-        NSString *definitionFile = [[NSBundle mainBundle] pathForResource:kToolTipDefinitionFile ofType:@"plist"];
-        NSDictionary *definitionDict = [NSDictionary dictionaryWithContentsOfFile:definitionFile];
-        
-        for (NSString *key in [definitionDict allKeys]) {
-            NSDictionary *propertyDict = [definitionDict objectForKey:key];
-            
-            ToolTip *toolTip = [[ToolTip alloc] init];
-            toolTip.name = key;
-            toolTip.center = CGPointMake([[propertyDict objectForKey:@"CenterX"] floatValue],
-                                         [[propertyDict objectForKey:@"CenterY"] floatValue]);
-            toolTip.keepCountsOnRestart = [[propertyDict objectForKey:@"KeepCountsOnRestart"] boolValue];
-            toolTip.resetCountsOnDisplay = [[propertyDict objectForKey:@"ResetCountsOnDisplay"] boolValue];            
-            toolTip.displayText = [propertyDict objectForKey:@"DisplayText"];
-            toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
-            toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
-            
-            NSDictionary *validationDict = [propertyDict objectForKey:@"ValidationCriteria"];
-            toolTip.validationCriteria = [ToolTipController parseCriteriaFromDictionary:validationDict 
-                                                                         useSavedCounts:toolTip.keepCountsOnRestart];
-
-            NSDictionary *invalidationDict = [propertyDict objectForKey:@"InvalidationCriteria"];
-            toolTip.invalidationCriteria = [ToolTipController parseCriteriaFromDictionary:invalidationDict
-                                                                         useSavedCounts:toolTip.keepCountsOnRestart];
-            
-            [monitoredToolTips addObject:toolTip];
-            [toolTip release];
-        }
-        
-        [self startTimer];
+        [self setup];
     }
     
     return self;
@@ -196,8 +209,9 @@ static ToolTipController *toolTipController = nil;
 - (void)performToolTipCheckForEventType:(ToolTipEventType)eventType sender:(id)sender
 {
     [self removeInvalidatedToolTips];
-
-    NSMutableSet *tooltipsToRemove = [NSMutableSet set];
+    
+    ToolTip *tooltipToShow = nil;
+    
     for (ToolTip *tooltip in monitoredToolTips) {
         if ([self validateCriteriaSet:tooltip.validationCriteria]) {
             // Check that validation criteria contains an event of this type
@@ -205,25 +219,22 @@ static ToolTipController *toolTipController = nil;
                 if (criteria.eventType == eventType) {
                     // Tooltip should be shown
                     if (!tooltipButton && [delegate toolTipController:self shouldPresentToolTip:tooltip sender:sender]) {
-                        [self presentToolTip:tooltip
-                                      inView:[delegate toolTipController:self viewForPresentingToolTip:tooltip sender:sender]];
-                        
-                        if (tooltip.resetCountsOnDisplay) {
-                            for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
-                                criteria.elapsedCount = [NSNumber numberWithInt:0];
-                            }
-                        } else {
-                            [tooltipsToRemove addObject:tooltip];                        
-                        }
+                        tooltipToShow = tooltip;
+                        break;
                     }            
-            
-                    break;
                 }
             }
         }
+        
+        if (tooltipToShow) {
+            break;
+        }
     }
     
-    [monitoredToolTips minusSet:tooltipsToRemove];
+    if (tooltipToShow) {
+        [self presentToolTip:tooltipToShow
+                      inView:[delegate toolTipController:self viewForPresentingToolTip:tooltipToShow sender:sender]];
+    }    
 }
 
 - (void)notifyEvent:(ToolTipEventType)eventType sender:(id)sender
@@ -247,6 +258,7 @@ static ToolTipController *toolTipController = nil;
         case ToolTipEventBadVideoTap:           key = kBadVideoTapCountKey; break;
         case ToolTipEventChannelManagementTap:  key = kChannelManagementTapCountKey; break;
         case ToolTipEventFavoriteTap:           key = kFavoriteTapCountKey; break;
+        case ToolTipEventChannelListScroll:     key = kChannelListScrollCountKey; break;
         default: break;
     }
     if (key) {
@@ -287,6 +299,7 @@ static ToolTipController *toolTipController = nil;
     if (tooltip.target && tooltip.action) {
         tooltipButton.userInteractionEnabled = YES;
         [tooltipButton addTarget:tooltip.target action:tooltip.action forControlEvents:UIControlEventTouchUpInside];
+        [tooltipButton addTarget:self action:@selector(dismissTooltip) forControlEvents:UIControlEventTouchUpInside];
     } else {
         tooltipButton.userInteractionEnabled = NO;
     }
@@ -304,6 +317,27 @@ static ToolTipController *toolTipController = nil;
                      completion:^(BOOL finished){
                          
                      }];
+    
+    if (tooltip.resetCountsOnDisplay) {
+        // Tooltip can be shown again, reset all the criteria
+        for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
+            criteria.elapsedCount = [NSNumber numberWithInt:0];
+        }
+    } else {
+        // Tooltip cannot be shown again, remove it
+        [monitoredToolTips removeObject:tooltip];                        
+    }
+    
+    // Does this tooltip invalidate any other tooltips?
+    NSMutableSet *tooltipsToRemove = [NSMutableSet set];
+    if (tooltip.invalidatesToolTip) {
+        for (ToolTip *tt in monitoredToolTips) {
+            if ([[tt name] isEqualToString:[tooltip invalidatesToolTip]]) {
+                [tooltipsToRemove addObject:tt];
+            }
+        }
+    }
+    [monitoredToolTips minusSet:tooltipsToRemove];
 }
 
 - (void)dismissTooltip
@@ -322,6 +356,21 @@ static ToolTipController *toolTipController = nil;
                          self.tooltipButton = nil;
                          self.dismissTouchArea = nil;                         
                      }];
+}
+
+- (void)resetTooltips
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:[NSNumber numberWithBool:YES] forKey:NM_FIRST_LAUNCH_KEY];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kVideoTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kBadVideoTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelManagementTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kFavoriteTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelListScrollCountKey];
+    [userDefaults synchronize];
+    
+    firstLaunch = YES;
+    [self setup];
 }
 
 @end

@@ -16,6 +16,7 @@
 #define kBadVideoTapCountKey @"NMToolTipBadVideoTapCount"
 #define kChannelManagementTapCountKey @"NMChannelManagementTapCount"
 #define kFavoriteTapCountKey @"NMFavoriteTapCount"
+#define kChannelListScrollCountKey @"NMChannelListScrollCount"
 
 @protocol ToolTipControllerDelegate;
 
@@ -47,6 +48,9 @@
 
 // Creates the tooltip view and presents it
 - (void)presentToolTip:(ToolTip *)tooltip inView:(UIView *)view;
+
+// Resets all tooltips, as if the app was started for the very first time
+- (void)resetTooltips;
 
 @end
 
