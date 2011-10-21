@@ -49,6 +49,9 @@
 // Creates the tooltip view and presents it
 - (void)presentToolTip:(ToolTip *)tooltip inView:(UIView *)view;
 
+// Resets all tooltips, as if the app was started for the very first time
+- (void)resetTooltips;
+
 @end
 
 @protocol ToolTipControllerDelegate <NSObject>

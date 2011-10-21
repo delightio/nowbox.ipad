@@ -9,6 +9,7 @@
 #import "SettingsViewController.h"
 #import "ipadAppDelegate.h"
 #import "SocialLoginViewController.h"
+#import "ToolTipController.h"
 #import "NMLibrary.h"
 
 #define NM_SETTING_HD_SWITCH_TAG					1001
@@ -170,7 +171,7 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 5;
+	return 6;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -195,7 +196,8 @@
     static NSString * CellIdentifier = @"Cell";
 	static NSString * SocialCellIdentifier = @"SocialCell";
 	static NSString * EmailCellIdentifier = @"EmailCell";
-    
+    static NSString * TooltipCellIdentifier = @"TooltipCell";
+
     UITableViewCell * cell;
 	NSString * lblStr = nil;
 	switch (indexPath.section) {
@@ -255,7 +257,16 @@
 					break;
 			}
 			break;
-			
+            
+        case 5:
+            cell = [tableView dequeueReusableCellWithIdentifier:TooltipCellIdentifier];
+			if (cell == nil) {
+				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			}
+            cell.textLabel.text = @"Reset Tooltips";
+            break;
+            
 		default:
 			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 			if (cell == nil) {
@@ -283,7 +294,6 @@
 					}
 					break;
 				}	
-					
 				default:
 					break;
 			}
@@ -302,6 +312,9 @@
 		case 4:
 			return @"Notifications";
 			
+        case 5:
+            return @"Tooltips";
+            
 		default:
 			break;
 	}
@@ -348,7 +361,16 @@
 				[socialCtrl release];
 			}
 		}
-	}
+	} else if (indexPath.section == 5) {
+        // Reset tooltips
+        [[ToolTipController sharedToolTipController] resetTooltips];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Tooltips have been reset." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
 }
 
 

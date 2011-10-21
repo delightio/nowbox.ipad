@@ -83,6 +83,43 @@ static ToolTipController *toolTipController = nil;
     return criteriaSet;
 }
 
+- (void)setup
+{
+    [monitoredToolTips removeAllObjects];
+    
+    // Load the tooltip definitions from a plist
+    NSString *definitionFile = [[NSBundle mainBundle] pathForResource:kToolTipDefinitionFile ofType:@"plist"];
+    NSDictionary *definitionDict = [NSDictionary dictionaryWithContentsOfFile:definitionFile];
+    
+    for (NSString *key in [definitionDict allKeys]) {
+        NSDictionary *propertyDict = [definitionDict objectForKey:key];
+        
+        ToolTip *toolTip = [[ToolTip alloc] init];
+        toolTip.name = key;
+        toolTip.center = CGPointMake([[propertyDict objectForKey:@"CenterX"] floatValue],
+                                     [[propertyDict objectForKey:@"CenterY"] floatValue]);
+        toolTip.keepCountsOnRestart = [[propertyDict objectForKey:@"KeepCountsOnRestart"] boolValue];
+        toolTip.resetCountsOnDisplay = [[propertyDict objectForKey:@"ResetCountsOnDisplay"] boolValue];            
+        toolTip.displayText = [propertyDict objectForKey:@"DisplayText"];
+        toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
+        toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
+        toolTip.invalidatesToolTip = [propertyDict objectForKey:@"InvalidatesToolTip"];
+        
+        NSDictionary *validationDict = [propertyDict objectForKey:@"ValidationCriteria"];
+        toolTip.validationCriteria = [ToolTipController parseCriteriaFromDictionary:validationDict 
+                                                                     useSavedCounts:toolTip.keepCountsOnRestart];
+        
+        NSDictionary *invalidationDict = [propertyDict objectForKey:@"InvalidationCriteria"];
+        toolTip.invalidationCriteria = [ToolTipController parseCriteriaFromDictionary:invalidationDict
+                                                                       useSavedCounts:toolTip.keepCountsOnRestart];
+        
+        [monitoredToolTips addObject:toolTip];
+        [toolTip release];
+    }
+    
+    [self startTimer];
+}
+
 - (id)init
 {
     self = [super init];
@@ -90,37 +127,7 @@ static ToolTipController *toolTipController = nil;
         monitoredToolTips = [[NSMutableSet alloc] init];        
         firstLaunch = [[[NSUserDefaults standardUserDefaults] objectForKey:NM_FIRST_LAUNCH_KEY] boolValue];
         
-        // Load the tooltip definitions from a plist
-        NSString *definitionFile = [[NSBundle mainBundle] pathForResource:kToolTipDefinitionFile ofType:@"plist"];
-        NSDictionary *definitionDict = [NSDictionary dictionaryWithContentsOfFile:definitionFile];
-        
-        for (NSString *key in [definitionDict allKeys]) {
-            NSDictionary *propertyDict = [definitionDict objectForKey:key];
-            
-            ToolTip *toolTip = [[ToolTip alloc] init];
-            toolTip.name = key;
-            toolTip.center = CGPointMake([[propertyDict objectForKey:@"CenterX"] floatValue],
-                                         [[propertyDict objectForKey:@"CenterY"] floatValue]);
-            toolTip.keepCountsOnRestart = [[propertyDict objectForKey:@"KeepCountsOnRestart"] boolValue];
-            toolTip.resetCountsOnDisplay = [[propertyDict objectForKey:@"ResetCountsOnDisplay"] boolValue];            
-            toolTip.displayText = [propertyDict objectForKey:@"DisplayText"];
-            toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
-            toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
-            toolTip.invalidatesToolTip = [propertyDict objectForKey:@"InvalidatesToolTip"];
-            
-            NSDictionary *validationDict = [propertyDict objectForKey:@"ValidationCriteria"];
-            toolTip.validationCriteria = [ToolTipController parseCriteriaFromDictionary:validationDict 
-                                                                         useSavedCounts:toolTip.keepCountsOnRestart];
-
-            NSDictionary *invalidationDict = [propertyDict objectForKey:@"InvalidationCriteria"];
-            toolTip.invalidationCriteria = [ToolTipController parseCriteriaFromDictionary:invalidationDict
-                                                                         useSavedCounts:toolTip.keepCountsOnRestart];
-            
-            [monitoredToolTips addObject:toolTip];
-            [toolTip release];
-        }
-        
-        [self startTimer];
+        [self setup];
     }
     
     return self;
@@ -340,6 +347,21 @@ static ToolTipController *toolTipController = nil;
                          self.tooltipButton = nil;
                          self.dismissTouchArea = nil;                         
                      }];
+}
+
+- (void)resetTooltips
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:[NSNumber numberWithBool:YES] forKey:NM_FIRST_LAUNCH_KEY];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kVideoTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kBadVideoTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelManagementTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kFavoriteTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelListScrollCountKey];
+    [userDefaults synchronize];
+    
+    firstLaunch = YES;
+    [self setup];
 }
 
 @end
