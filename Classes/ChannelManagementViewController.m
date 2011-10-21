@@ -105,6 +105,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
+	
+	// listen to social channel login/out notifications
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -137,8 +141,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
     
-    [nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSubscribeChannelNotification object:nil];
-	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
+//    [nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSubscribeChannelNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
     
@@ -175,10 +179,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	}
 }
 
-
-- (void)handleWillLoadNotification:(NSNotification *)aNotification {
-//	NSLog(@"notification: %@", [aNotification name]);
-}
+//- (void)handleWillLoadNotification:(NSNotification *)aNotification {
+////	NSLog(@"notification: %@", [aNotification name]);
+//}
 
 - (void)handleSubscriptionNotification:(NSNotification *)aNotification {
 	NSDictionary * userInfo = [aNotification userInfo];
@@ -190,6 +193,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     }
 }
 
+- (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotification {
+	// reload table contents
+	[channelsTableView reloadData];
+}
 
 #pragma mark Target-action methods
 
@@ -333,22 +340,34 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		
 		if ( selectedIndex == 0 && indexPath.section == 0 ) {
 			// the social login
-			UILabel *label;
-			label = (UILabel *)[cell viewWithTag:12];
+			UILabel * titleLbl, * detailLbl;
+			titleLbl = (UILabel *)[cell viewWithTag:12];
+			detailLbl = (UILabel *)[cell viewWithTag:13];
 			thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
 			switch (indexPath.row) {
 				case 0:
-					label.text = @"Twitter";
-					label = (UILabel *)[cell viewWithTag:13];
-					label.text = @"Login Twitter";
-					thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
+					if ( NM_USER_TWITTER_CHANNEL_ID ) {
+						titleLbl.text = @"Hello";
+						detailLbl.text = @"Logged in Twitter";
+						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+					} else {
+						titleLbl.text = @"Twitter";
+						detailLbl.text = @"Login Twitter";
+						thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
+					}
 					break;
 					
 				case 1:
-					label.text = @"Facebook";
-					label = (UILabel *)[cell viewWithTag:13];
-					label.text = @"Login Facebook";
-					thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+						// TODO: facebook channel MO may not be ready yet. Listen to KVO on facebook channel??
+						titleLbl.text = @"Hey there";
+						detailLbl.text = @"Logged Facebook";
+						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+					} else {
+						titleLbl.text = @"Facebook";
+						detailLbl.text = @"Login Facebook";
+						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+					}
 					break;
 					
 				default:
