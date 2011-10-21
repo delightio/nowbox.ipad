@@ -26,8 +26,6 @@
 			<integer>3</integer>
 			<key>FirstLaunch</key>
 			<true/>
-			<key>ChannelListScroll</key>
-			<integer>1</integer>
 		</dict>
 		<key>InvalidationCriteria</key>
 		<dict>
@@ -88,6 +86,8 @@
 			<integer>300</integer>
 			<key>FirstLaunch</key>
 			<true/>
+			<key>ChannelListScroll</key>
+			<integer>1</integer>
 		</dict>
 		<key>InvalidationCriteria</key>
 		<dict>
