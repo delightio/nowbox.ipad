@@ -1003,6 +1003,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		shouldFadeOutVideoThumbnail = YES;
+		forceStopByUser = NO;	// reset force stop variable when video switches
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
