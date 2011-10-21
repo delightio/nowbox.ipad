@@ -65,6 +65,11 @@ static ToolTipController *toolTipController = nil;
             if (useSavedCounts) {
                 savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kFavoriteTapCountKey];
             }
+        } else if ([criteriaName isEqualToString:@"ChannelListScroll"]) {
+            criteria.eventType = ToolTipEventChannelListScroll;
+            if (useSavedCounts) {
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kChannelListScrollCountKey];
+            }
         }
         
         if (savedElapsedCount) {
@@ -101,6 +106,7 @@ static ToolTipController *toolTipController = nil;
             toolTip.displayText = [propertyDict objectForKey:@"DisplayText"];
             toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
             toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
+            toolTip.invalidatesToolTip = [propertyDict objectForKey:@"InvalidatesToolTip"];
             
             NSDictionary *validationDict = [propertyDict objectForKey:@"ValidationCriteria"];
             toolTip.validationCriteria = [ToolTipController parseCriteriaFromDictionary:validationDict 
@@ -209,11 +215,22 @@ static ToolTipController *toolTipController = nil;
                                       inView:[delegate toolTipController:self viewForPresentingToolTip:tooltip sender:sender]];
                         
                         if (tooltip.resetCountsOnDisplay) {
+                            // Tooltip can be shown again, reset all the criteria
                             for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
                                 criteria.elapsedCount = [NSNumber numberWithInt:0];
                             }
                         } else {
+                            // Tooltip cannot be shown again, remove it
                             [tooltipsToRemove addObject:tooltip];                        
+                        }
+                        
+                        // Does this tooltip invalidate any other tooltips?
+                        if (tooltip.invalidatesToolTip) {
+                            for (ToolTip *tt in monitoredToolTips) {
+                                if ([[tt name] isEqualToString:[tooltip invalidatesToolTip]]) {
+                                    [tooltipsToRemove addObject:tt];
+                                }
+                            }
                         }
                     }            
             
@@ -247,6 +264,7 @@ static ToolTipController *toolTipController = nil;
         case ToolTipEventBadVideoTap:           key = kBadVideoTapCountKey; break;
         case ToolTipEventChannelManagementTap:  key = kChannelManagementTapCountKey; break;
         case ToolTipEventFavoriteTap:           key = kFavoriteTapCountKey; break;
+        case ToolTipEventChannelListScroll:     key = kChannelListScrollCountKey; break;
         default: break;
     }
     if (key) {

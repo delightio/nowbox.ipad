@@ -369,6 +369,9 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	return UITableViewCellEditingStyleNone;
 }
 
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelListScroll sender:nil];
+}
 
 /*
  // Override to support conditional editing of the table view.

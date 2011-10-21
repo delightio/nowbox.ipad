@@ -18,17 +18,52 @@
 		<string>Swipe to go to next video</string>
 		<key>AutoHideInSeconds</key>
 		<integer>0</integer>
+		<key>InvalidatesToolTip</key>
+		<string>SwipeTip2</string>
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>VideoTap</key>
 			<integer>3</integer>
 			<key>FirstLaunch</key>
 			<true/>
+			<key>ChannelListScroll</key>
+			<integer>1</integer>
 		</dict>
 		<key>InvalidationCriteria</key>
 		<dict>
 			<key>MinimumTime</key>
-			<integer>300</integer>
+			<integer>240</integer>
+		</dict>
+	</dict>
+	<key>SwipeTip2</key>
+	<dict>
+		<key>CenterX</key>
+		<integer>755</integer>
+		<key>CenterY</key>
+		<integer>200</integer>
+		<key>KeepCountsOnRestart</key>
+		<false/>
+		<key>ResetCountsOnDisplay</key>
+		<false/>
+		<key>ImageFile</key>
+		<string>tooltip-swipe-next-video.png</string>
+		<key>DisplayText</key>
+		<string>Swipe to go to next video</string>
+		<key>AutoHideInSeconds</key>
+		<integer>0</integer>
+		<key>InvalidatesToolTip</key>
+		<string>SwipeTip</string>
+		<key>ValidationCriteria</key>
+		<dict>
+			<key>FirstLaunch</key>
+			<true/>
+			<key>MinimumTime</key>
+			<integer>240</integer>
+		</dict>
+		<key>InvalidationCriteria</key>
+		<dict>
+			<key>VideoTap</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>ChannelManagementTip</key>

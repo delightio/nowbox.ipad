@@ -21,6 +21,7 @@
 @synthesize imageFile;
 @synthesize displayText;
 @synthesize autoHideInSeconds;
+@synthesize invalidatesToolTip;
 @synthesize target;
 @synthesize action;
 
@@ -31,6 +32,7 @@
     [invalidationCriteria release];
     [imageFile release];
     [displayText release];
+    [invalidatesToolTip release];
     
     [super dealloc];
 }
