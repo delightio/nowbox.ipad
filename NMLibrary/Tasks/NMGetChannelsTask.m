@@ -286,11 +286,12 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 				}
 			} else {
 				// the channel already exists, just update the sort order.
+				[chn setValuesForKeysWithDictionary:chnDict];
 				chnObj.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
-				if ( [chnObj.nm_hidden boolValue] ) {
-					// update the channel info if the channel is hidden
-					[chn setValuesForKeysWithDictionary:chnDict];
-				}
+//				if ( [chnObj.nm_hidden boolValue] ) {
+//					// update the channel info if the channel is hidden
+//					[chn setValuesForKeysWithDictionary:chnDict];
+//				}
 				//TODO: to be more correct, sort order should be stored in the relationship object cos the order of a channel can be different in different category
 			}
 			// add the channel to the relationship.

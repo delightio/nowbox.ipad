@@ -14,6 +14,7 @@
 #import "NMCachedImageView.h"
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
+#import "SocialLoginViewController.h"
 #import "NMStyleUtility.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
@@ -458,7 +459,36 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
         
 	} else {
-        indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+		if ( selectedIndex == 0 && indexPath.section == 0 ) {
+			// reveal the social login view
+			SocialLoginViewController * socialCtrl;
+			if ( indexPath.row == 0 ) {
+				if ( NM_USER_TWITTER_CHANNEL_ID ) {
+					// logout twitter
+					[[NMTaskQueueController sharedTaskQueueController] issueSignOutTwitterAccount];
+				} else {
+					// login twitter
+					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+					socialCtrl.loginType = LoginTwitterType;
+					[self.navigationController pushViewController:socialCtrl animated:YES];
+					[socialCtrl release];
+				}
+			} else if ( indexPath.row == 1 ) {
+				if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+					[[NMTaskQueueController sharedTaskQueueController] issueSignOutFacebookAccout];
+				} else {
+					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+					socialCtrl.loginType = LoginFacebookType;
+					[self.navigationController pushViewController:socialCtrl animated:YES];
+					[socialCtrl release];
+				}
+			}
+			return;
+		}
+		
+		if ( selectedIndex ) {
+			indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+		}
         NMChannel * chn;
 
         if (selectedIndex == 0) {
