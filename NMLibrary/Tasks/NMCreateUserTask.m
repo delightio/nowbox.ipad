@@ -10,6 +10,8 @@
 #import "NMChannel.h"
 #import "NMDataController.h"
 
+#define DEBUG_USER_ID 0
+
 NSString * const NMWillCreateUserNotification = @"NMWillCreateUserNotification";
 NSString * const NMDidCreateUserNotification = @"NMDidCreateUserNotification";
 NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotification";
@@ -65,9 +67,14 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 		case NMCommandCreateUser:
 		{
 //			urlStr = [NSString stringWithFormat:@"http://%@/users?locale=%@&language=%@&time_zone=%@", NM_BASE_URL, [[NSLocale currentLocale] localeIdentifier], [[NSLocale preferredLanguages] objectAtIndex:0], [[[NSTimeZone systemTimeZone] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+#if DEBUG_USER_ID > 0
+			urlStr = [NSString stringWithFormat:@"http://%@/users/%d", NM_BASE_URL, DEBUG_USER_ID];
+			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+#else
 			urlStr = [NSString stringWithFormat:@"http://%@/users?locale=%@&language=%@", NM_BASE_URL, [[NSLocale currentLocale] localeIdentifier], [[NSLocale preferredLanguages] objectAtIndex:0]];
 			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 			[request setHTTPMethod:@"POST"];
+#endif
 			break;
 		}
 		case NMCommandEditUser:
