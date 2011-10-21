@@ -66,7 +66,7 @@
 	LaunchController * launchController;
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;
-	BOOL playPauseButtonTapped;
+	BOOL forceStopByUser;
     int rowIndexToCenterOn;
     
 	id timeObserver;

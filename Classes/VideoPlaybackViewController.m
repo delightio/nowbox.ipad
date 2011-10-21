@@ -433,11 +433,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)playCurrentVideo {
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
+		forceStopByUser = NO;
 	}
 }
 
 - (IBAction)playStopVideo:(id)sender {
-	playPauseButtonTapped = YES;
+	forceStopByUser = YES;
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
 	} else {
@@ -942,7 +943,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
 			// stop video from playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-			if ( !movieView.player.airPlayVideoActive ) [self stopVideo];
+			if ( !movieView.player.airPlayVideoActive ) {
+				forceStopByUser = YES;
+				[self stopVideo];	
+			}
 #endif
 		} else {
 			// resume video playing
@@ -1047,9 +1051,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		if ( playPauseButtonTapped ) {
-			playPauseButtonTapped = NO;
-		} else {
+		if ( !forceStopByUser ) {
 			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f ) {
 				[self playCurrentVideo];
