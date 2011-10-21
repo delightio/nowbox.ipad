@@ -312,6 +312,7 @@ static ToolTipController *toolTipController = nil;
     if (tooltip.target && tooltip.action) {
         tooltipButton.userInteractionEnabled = YES;
         [tooltipButton addTarget:tooltip.target action:tooltip.action forControlEvents:UIControlEventTouchUpInside];
+        [tooltipButton addTarget:self action:@selector(dismissTooltip) forControlEvents:UIControlEventTouchUpInside];
     } else {
         tooltipButton.userInteractionEnabled = NO;
     }
