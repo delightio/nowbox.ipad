@@ -209,8 +209,9 @@ static ToolTipController *toolTipController = nil;
 - (void)performToolTipCheckForEventType:(ToolTipEventType)eventType sender:(id)sender
 {
     [self removeInvalidatedToolTips];
-
-    NSMutableSet *tooltipsToRemove = [NSMutableSet set];
+    
+    ToolTip *tooltipToShow = nil;
+    
     for (ToolTip *tooltip in monitoredToolTips) {
         if ([self validateCriteriaSet:tooltip.validationCriteria]) {
             // Check that validation criteria contains an event of this type
@@ -218,36 +219,22 @@ static ToolTipController *toolTipController = nil;
                 if (criteria.eventType == eventType) {
                     // Tooltip should be shown
                     if (!tooltipButton && [delegate toolTipController:self shouldPresentToolTip:tooltip sender:sender]) {
-                        [self presentToolTip:tooltip
-                                      inView:[delegate toolTipController:self viewForPresentingToolTip:tooltip sender:sender]];
-                        
-                        if (tooltip.resetCountsOnDisplay) {
-                            // Tooltip can be shown again, reset all the criteria
-                            for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
-                                criteria.elapsedCount = [NSNumber numberWithInt:0];
-                            }
-                        } else {
-                            // Tooltip cannot be shown again, remove it
-                            [tooltipsToRemove addObject:tooltip];                        
-                        }
-                        
-                        // Does this tooltip invalidate any other tooltips?
-                        if (tooltip.invalidatesToolTip) {
-                            for (ToolTip *tt in monitoredToolTips) {
-                                if ([[tt name] isEqualToString:[tooltip invalidatesToolTip]]) {
-                                    [tooltipsToRemove addObject:tt];
-                                }
-                            }
-                        }
+                        tooltipToShow = tooltip;
+                        break;
                     }            
-            
-                    break;
                 }
             }
         }
+        
+        if (tooltipToShow) {
+            break;
+        }
     }
     
-    [monitoredToolTips minusSet:tooltipsToRemove];
+    if (tooltipToShow) {
+        [self presentToolTip:tooltipToShow
+                      inView:[delegate toolTipController:self viewForPresentingToolTip:tooltipToShow sender:sender]];
+    }    
 }
 
 - (void)notifyEvent:(ToolTipEventType)eventType sender:(id)sender
@@ -330,6 +317,27 @@ static ToolTipController *toolTipController = nil;
                      completion:^(BOOL finished){
                          
                      }];
+    
+    if (tooltip.resetCountsOnDisplay) {
+        // Tooltip can be shown again, reset all the criteria
+        for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
+            criteria.elapsedCount = [NSNumber numberWithInt:0];
+        }
+    } else {
+        // Tooltip cannot be shown again, remove it
+        [monitoredToolTips removeObject:tooltip];                        
+    }
+    
+    // Does this tooltip invalidate any other tooltips?
+    NSMutableSet *tooltipsToRemove = [NSMutableSet set];
+    if (tooltip.invalidatesToolTip) {
+        for (ToolTip *tt in monitoredToolTips) {
+            if ([[tt name] isEqualToString:[tooltip invalidatesToolTip]]) {
+                [tooltipsToRemove addObject:tt];
+            }
+        }
+    }
+    [monitoredToolTips minusSet:tooltipsToRemove];
 }
 
 - (void)dismissTooltip

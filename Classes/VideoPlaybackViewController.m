@@ -899,7 +899,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //}
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
-	
+    if (pendingToolTip) {
+        [[ToolTipController sharedToolTipController] presentToolTip:pendingToolTip inView:self.view];
+        pendingToolTip = nil;
+    }
 }
 
 - (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
@@ -1480,16 +1483,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark - ToolTipControllerDelegate
 
 - (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
-    BOOL show = YES;
     if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
         // Don't show share tip if user is already logged in
-        NSLog(@"twitter channel id: %i", NM_USER_TWITTER_CHANNEL_ID);
         if (NM_USER_TWITTER_CHANNEL_ID || NM_USER_FACEBOOK_CHANNEL_ID) {
-            show = NO;
+            return NO;
         }
+    } else if ([tooltip.name hasPrefix:@"SwipeTip"] && sender) {
+        // Don't show swipe tip until next video is ready to play
+        pendingToolTip = tooltip;
+        return NO;
     }
     
-    return show && loadedControlView.playbackMode == NMHalfScreenMode;
+    return loadedControlView.playbackMode == NMHalfScreenMode;
 }
 
 - (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender {

@@ -84,6 +84,8 @@
 //    BOOL pinchTemporarilyDisabled;
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
+    
+    ToolTip *pendingToolTip;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
