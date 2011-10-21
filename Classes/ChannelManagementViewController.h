@@ -38,6 +38,7 @@
 	UIFont * sectionTitleFont;
 	
 	NMStyleUtility * styleUtility;
+	NSNumberFormatter * countFormatter;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;

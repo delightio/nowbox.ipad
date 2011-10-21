@@ -47,6 +47,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[sectionTitleBackgroundImage release];
 	[sectionTitleColor release];
 	[sectionTitleFont release];
+	[countFormatter release];
     [super dealloc];
 }
 
@@ -73,6 +74,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [super viewDidLoad];
     
 	styleUtility = [NMStyleUtility sharedStyleUtility];
+	countFormatter = [[NSNumberFormatter alloc] init];
+	[countFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+	[countFormatter setRoundingIncrement:[NSNumber numberWithInteger:1000]];
 	
 	self.title = @"Find Channels";
 	
@@ -382,7 +386,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         label.text = chn.title;
         
         label = (UILabel *)[cell viewWithTag:13];
-        label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+		// round the subscribers count to nearest thousand, don't if not subscribers
+		NSInteger subCount = [chn.subscriber_count integerValue];
+		if ( subCount > 1000 ) {
+			label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, [countFormatter stringFromNumber:chn.subscriber_count]];
+		} else if ( subCount == 0 ) {
+			label.text = [NSString stringWithFormat:@"Posted %@ videos", chn.video_count];
+		} else {
+			label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+		}
         
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
