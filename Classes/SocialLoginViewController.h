@@ -6,7 +6,6 @@
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 
 typedef enum {
 	LoginTwitterType,

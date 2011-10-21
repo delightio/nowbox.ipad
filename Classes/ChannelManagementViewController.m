@@ -14,6 +14,8 @@
 #import "NMCachedImageView.h"
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
+#import "SocialLoginViewController.h"
+#import "NMStyleUtility.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -29,7 +31,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize managedObjectContext;
 @synthesize containerView;
 @synthesize channelCell;
-
+@synthesize sectionTitleBackgroundImage;
+@synthesize sectionTitleColor;
+@synthesize sectionTitleFont;
 
 - (void)dealloc {
 	[channelDetailViewController release];
@@ -40,6 +44,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[categoryFetchedResultsController release];
 	[managedObjectContext release];
 	[selectedIndexPath release];
+	[sectionTitleBackgroundImage release];
+	[sectionTitleColor release];
+	[sectionTitleFont release];
+	[countFormatter release];
     [super dealloc];
 }
 
@@ -65,6 +73,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 {
     [super viewDidLoad];
     
+	styleUtility = [NMStyleUtility sharedStyleUtility];
+	countFormatter = [[NSNumberFormatter alloc] init];
+	[countFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+	[countFormatter setRoundingIncrement:[NSNumber numberWithInteger:1000]];
+	
 	self.title = @"Find Channels";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
@@ -85,12 +98,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
-
+	self.sectionTitleBackgroundImage = [UIImage imageNamed:@"channel-title-background"];
+	self.sectionTitleColor = [UIColor colorWithRed:190.0f / 255.0f green:148.0f / 255.0f blue:39.0f / 255.0f alpha:1.0f];
+	self.sectionTitleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f];
     
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
-    
 }
 
 - (void)viewDidUnload
@@ -198,30 +212,77 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+	if ( tableView == categoriesTableView || selectedIndex ) return 1;
+    return 2;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	NSUInteger c = 0;
+	id <NSFetchedResultsSectionInfo> sectionInfo;
 	if ( tableView == categoriesTableView ) {
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:section];
-		return (([sectionInfo numberOfObjects]+1)*2)-1;
+		sectionInfo = [[self.categoryFetchedResultsController sections] objectAtIndex:section];
+		c = (([sectionInfo numberOfObjects]+1)*2)-1;
 	} else {
-        if (selectedIndex==0) {
-            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.myChannelsFetchedResultsController sections] objectAtIndex:section];
-            return [sectionInfo numberOfObjects];
-        } else {
-            return [selectedChannelArray count];
-        }
+		// the real list of subscribed channels
+		if ( selectedIndex == 0 ) {
+			switch (section) {
+				case 0:
+					// social login
+					c = 2;
+					break;
+					
+				case 1:
+					sectionInfo = [[self.myChannelsFetchedResultsController sections] objectAtIndex:0];
+					c = [sectionInfo numberOfObjects];
+					break;
+					
+				default:
+					break;
+			}
+		} else {
+			c = [selectedChannelArray count];
+		}
 	}
+	return c;
 }
 
--(float)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 0;
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	if ( tableView == categoriesTableView || selectedIndex ) return 0.0f;
+    return 29.0f;
 }
 
--(float)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0;
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+	if ( tableView == categoriesTableView || selectedIndex ) return nil;
+	UIView * ctnView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 10.0f, 29.0f)];
+	ctnView.layer.contents = (id)sectionTitleBackgroundImage.CGImage;
+	ctnView.backgroundColor = styleUtility.clearColor;
+	
+	UILabel * lbl = [[UILabel alloc] initWithFrame:CGRectMake(18.0f, 0.0f, 10.0f, 29.0f)];
+	[ctnView addSubview:lbl];
+	lbl.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+	lbl.backgroundColor = styleUtility.clearColor;
+	lbl.font = sectionTitleFont;
+	lbl.textColor = sectionTitleColor;
+	lbl.shadowColor = [UIColor whiteColor];
+	lbl.shadowOffset = CGSizeMake(0.0f, 1.0f);
+	
+	switch (section) {
+		case 0:
+			lbl.text = @"SOCIAL CHANNELS";
+			
+			break;
+			
+		case 1:
+			lbl.text = @"SUBSCRIBED CHANNELS";
+			break;
+			
+		default:
+			break;
+	}
+	[lbl release];
+	return [ctnView autorelease];
+//	return  [lbl autorelease];
 }
 
 
@@ -258,6 +319,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         return categtoryCell;
         
 	} else {
+		
         static NSString *CellIdentifier = @"FindChannelCell";
         
         UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -266,7 +328,37 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             cell = channelCell;
             self.channelCell = nil;
         }
-        NMChannel * chn;
+		
+		NMCachedImageView *thumbnailView;
+		
+		if ( selectedIndex == 0 && indexPath.section == 0 ) {
+			// the social login
+			UILabel *label;
+			label = (UILabel *)[cell viewWithTag:12];
+			thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
+			switch (indexPath.row) {
+				case 0:
+					label.text = @"Twitter";
+					label = (UILabel *)[cell viewWithTag:13];
+					label.text = @"Login Twitter";
+					thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
+					break;
+					
+				case 1:
+					label.text = @"Facebook";
+					label = (UILabel *)[cell viewWithTag:13];
+					label.text = @"Login Facebook";
+					thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+					break;
+					
+				default:
+					break;
+			}
+			
+			return cell;
+		}
+		NMChannel * chn;
+		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
         if (selectedIndex == 0) {
             chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
         } else {
@@ -275,7 +367,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
         UIImageView *backgroundView;
         UIButton *buttonView;
-        NMCachedImageView *thumbnailView;
         
         thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
         [thumbnailView setImageForChannel:chn];
@@ -295,7 +386,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         label.text = chn.title;
         
         label = (UILabel *)[cell viewWithTag:13];
-        label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+		// round the subscribers count to nearest thousand, don't if not subscribers
+		NSInteger subCount = [chn.subscriber_count integerValue];
+		if ( subCount > 1000 ) {
+			label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, [countFormatter stringFromNumber:chn.subscriber_count]];
+		} else if ( subCount == 0 ) {
+			label.text = [NSString stringWithFormat:@"Posted %@ videos", chn.video_count];
+		} else {
+			label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+		}
         
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
@@ -372,7 +471,36 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
         
 	} else {
-        
+		if ( selectedIndex == 0 && indexPath.section == 0 ) {
+			// reveal the social login view
+			SocialLoginViewController * socialCtrl;
+			if ( indexPath.row == 0 ) {
+				if ( NM_USER_TWITTER_CHANNEL_ID ) {
+					// logout twitter
+					[[NMTaskQueueController sharedTaskQueueController] issueSignOutTwitterAccount];
+				} else {
+					// login twitter
+					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+					socialCtrl.loginType = LoginTwitterType;
+					[self.navigationController pushViewController:socialCtrl animated:YES];
+					[socialCtrl release];
+				}
+			} else if ( indexPath.row == 1 ) {
+				if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+					[[NMTaskQueueController sharedTaskQueueController] issueSignOutFacebookAccout];
+				} else {
+					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+					socialCtrl.loginType = LoginFacebookType;
+					[self.navigationController pushViewController:socialCtrl animated:YES];
+					[socialCtrl release];
+				}
+			}
+			return;
+		}
+		
+		if ( selectedIndex ) {
+			indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+		}
         NMChannel * chn;
 
         if (selectedIndex == 0) {
@@ -457,7 +585,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND type != %@", [NSNumber numberWithInteger:NMChannelUserType]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], nil]]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
