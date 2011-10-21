@@ -318,16 +318,6 @@ static ToolTipController *toolTipController = nil;
                          
                      }];
     
-    if (tooltip.resetCountsOnDisplay) {
-        // Tooltip can be shown again, reset all the criteria
-        for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
-            criteria.elapsedCount = [NSNumber numberWithInt:0];
-        }
-    } else {
-        // Tooltip cannot be shown again, remove it
-        [monitoredToolTips removeObject:tooltip];                        
-    }
-    
     // Does this tooltip invalidate any other tooltips?
     NSMutableSet *tooltipsToRemove = [NSMutableSet set];
     if (tooltip.invalidatesToolTip) {
@@ -338,6 +328,16 @@ static ToolTipController *toolTipController = nil;
         }
     }
     [monitoredToolTips minusSet:tooltipsToRemove];
+    
+    if (tooltip.resetCountsOnDisplay) {
+        // Tooltip can be shown again, reset all the criteria
+        for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
+            criteria.elapsedCount = [NSNumber numberWithInt:0];
+        }
+    } else {
+        // Tooltip cannot be shown again, remove it
+        [monitoredToolTips removeObject:tooltip];                        
+    }
 }
 
 - (void)dismissTooltip
