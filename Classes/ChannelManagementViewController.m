@@ -395,11 +395,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		// round the subscribers count to nearest thousand, don't if not subscribers
 		NSInteger subCount = [chn.subscriber_count integerValue];
 		if ( subCount > 1000 ) {
-			label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, [countFormatter stringFromNumber:chn.subscriber_count]];
+			label.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", chn.video_count, [countFormatter stringFromNumber:chn.subscriber_count]];
 		} else if ( subCount == 0 ) {
-			label.text = [NSString stringWithFormat:@"Posted %@ videos", chn.video_count];
+			label.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
 		} else {
-			label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+			label.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
 		}
         
         UIActivityIndicatorView *actView;
