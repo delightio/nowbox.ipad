@@ -11,6 +11,7 @@
 @class CategoriesOrientedTableView;
 @class NMChannel;
 @class ChannelDetailViewController;
+@class CategoryTableCell;
 
 @interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
 	ChannelDetailViewController * channelDetailViewController;
@@ -23,6 +24,7 @@
 	NSManagedObjectContext * managedObjectContext;
 	
 	NSIndexPath * selectedIndexPath;
+    NSIndexPath * selectedIndexPathForTable;
 	NSArray * selectedChannelArray;
 	
 	BOOL viewPushedByNavigationController;
@@ -39,6 +41,9 @@
 	
 	NMStyleUtility * styleUtility;
 	NSNumberFormatter * countFormatter;
+    
+    CategoryTableCell *lockToEdgeCell;
+    BOOL enableLockToEdge;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
@@ -48,6 +53,7 @@
 @property (nonatomic, retain) NSFetchedResultsController * myChannelsFetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSIndexPath * selectedIndexPath;
+@property (nonatomic, retain) NSIndexPath * selectedIndexPathForTable;
 @property (nonatomic, retain) NSArray * selectedChannelArray;
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 @property (nonatomic, retain) UIImage * sectionTitleBackgroundImage;

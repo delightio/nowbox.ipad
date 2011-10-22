@@ -27,6 +27,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize categoryFetchedResultsController;
 @synthesize myChannelsFetchedResultsController;
 @synthesize selectedIndexPath;
+@synthesize selectedIndexPathForTable;
 @synthesize selectedChannelArray;
 @synthesize managedObjectContext;
 @synthesize containerView;
@@ -44,6 +45,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[categoryFetchedResultsController release];
 	[managedObjectContext release];
 	[selectedIndexPath release];
+    [selectedIndexPathForTable release];
 	[sectionTitleBackgroundImage release];
 	[sectionTitleColor release];
 	[sectionTitleFont release];
@@ -101,7 +103,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	self.sectionTitleBackgroundImage = [UIImage imageNamed:@"channel-title-background"];
 	self.sectionTitleColor = [UIColor colorWithRed:190.0f / 255.0f green:148.0f / 255.0f blue:39.0f / 255.0f alpha:1.0f];
 	self.sectionTitleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f];
-    
+
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
@@ -299,6 +301,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             categtoryCell = [[[CategoryTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
         }
         
+        [categtoryCell setHighlighted:NO];
+        [categtoryCell setSelected:(selectedIndexPathForTable.row == indexPath.row)];
+        
         if (indexPath.row == 0) { // my channels
             [categtoryCell setCategoryTitle:nil];
             [categtoryCell setUserInteractionEnabled:YES];
@@ -316,6 +321,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             }
             [categtoryCell setUserInteractionEnabled:NO];
         }
+        
         return categtoryCell;
         
 	} else {
@@ -443,6 +449,25 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [(CategoryTableCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row+1 inSection:0]] setCategoryTitle:@""];
         }
         
+        // Handle selection manually to keep previous selection on highlight
+        CategoryTableCell *selectedCell = (CategoryTableCell *)[tableView cellForRowAtIndexPath:indexPath];
+        CategoryTableCell *previousSelectedCell = (CategoryTableCell *)[tableView cellForRowAtIndexPath:selectedIndexPathForTable];
+
+        [previousSelectedCell setSelected:NO];
+        [selectedCell setSelected:YES];
+        self.selectedIndexPathForTable = indexPath;
+
+        [lockToEdgeCell removeFromSuperview]; lockToEdgeCell = nil; 
+
+        // Scroll the cell to be visible
+        if (selectedCell.frame.origin.y - tableView.contentOffset.y < 0) {
+            enableLockToEdge = NO;
+            [tableView setContentOffset:CGPointMake(0, selectedCell.frame.origin.y) animated:YES];
+        } else if (selectedCell.frame.origin.y + selectedCell.frame.size.height - tableView.contentOffset.y > tableView.frame.size.width) {
+            enableLockToEdge = NO;
+            [tableView setContentOffset:CGPointMake(0, (selectedCell.frame.origin.y + selectedCell.frame.size.height) - tableView.frame.size.width) animated:YES];            
+        }
+        
         selectedIndex = indexPath.row;
 
         if (indexPath.row == 0) { // my channels
@@ -511,6 +536,61 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		channelDetailViewController.channel = chn;
 		[self.navigationController pushViewController:channelDetailViewController animated:YES];
     }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView == categoriesTableView && enableLockToEdge) {
+        /* Keeps selected category on left or right edge */
+        CategoryTableCell *selectedCell = (CategoryTableCell *)[categoriesTableView cellForRowAtIndexPath:selectedIndexPathForTable];
+        BOOL lockToEdge = NO;
+        CGFloat edgePosition;
+        
+        if (![selectedCell superview]) {
+            // Cell has been removed when offscreen, its superview is nil. Its frame is no longer valid, but find the locked position based on the previous locked position.
+            lockToEdge = YES;
+            if (lockToEdgeCell.frame.origin.y - categoriesTableView.contentOffset.y < categoriesTableView.frame.size.width / 2) {
+                edgePosition = 0;
+            } else {
+                edgePosition = categoriesTableView.frame.size.width - lockToEdgeCell.frame.size.height;
+            }
+            
+        } else if (selectedCell.frame.origin.y - categoriesTableView.contentOffset.y < 0) {
+            // Lock to left edge
+            lockToEdge = YES;
+            edgePosition = 0;
+        } else if (selectedCell.frame.origin.y + selectedCell.frame.size.height - categoriesTableView.contentOffset.y > categoriesTableView.frame.size.width) {
+            // Lock to right edge
+            lockToEdge = YES;
+            edgePosition = categoriesTableView.frame.size.width - selectedCell.frame.size.height;            
+        } else {  
+            // Don't lock to edge
+            [lockToEdgeCell removeFromSuperview]; lockToEdgeCell = nil;  
+        }
+
+        if (lockToEdge) {            
+            if (!lockToEdgeCell) {
+                // Clone the cell and add it to the tableview
+                lockToEdgeCell = [selectedCell copy];
+                lockToEdgeCell.tag = selectedIndexPathForTable.row;
+                lockToEdgeCell.transform = CGAffineTransformMakeRotation(M_PI/2.0);
+                lockToEdgeCell.frame = selectedCell.frame;
+                lockToEdgeCell.selectedBackgroundView.hidden = YES;
+                
+                [lockToEdgeCell setSelected:YES];
+                [categoriesTableView insertSubview:lockToEdgeCell atIndex:[[categoriesTableView subviews] count] - 1];
+                [lockToEdgeCell release];                 
+            }
+            
+            // Keep the cloned cell from moving
+            CGRect frame = lockToEdgeCell.frame;
+            frame.origin.y = edgePosition + categoriesTableView.contentOffset.y;
+            lockToEdgeCell.frame = frame;
+        }
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    enableLockToEdge = YES;
 }
 
 #pragma mark Fetched results controller
