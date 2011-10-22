@@ -47,8 +47,8 @@
 - (void)issueCreateUser;
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
-- (void)issueSignOutTwitterAccount;
-- (void)issueSignOutFacebookAccout;
+//- (void)issueSignOutTwitterAccount;
+//- (void)issueSignOutFacebookAccout;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;

@@ -58,7 +58,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
-	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidSignOutUserNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidSignOutUserNotification object:nil];
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
@@ -172,28 +172,28 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-- (void)handleSocialMediaLogoutNotification:(NSNotification *)aNotification {
-	NMSignOutUserTask * task = (NMSignOutUserTask *)aNotification.object;
-	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
-	switch (task.command) {
-		case NMCommandDeauthoriseTwitterAccount:
-			// remove twitter stream channel
-			[dataController markChannelDeleteStatusForID:NM_USER_TWITTER_CHANNEL_ID];
-			NM_USER_TWITTER_CHANNEL_ID = 0;
-			[defs setInteger:0 forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
-			break;
-			
-		case NMCommandDeauthoriseFaceBookAccount:
-			// remove facebook stream channel
-			[dataController markChannelDeleteStatusForID:NM_USER_FACEBOOK_CHANNEL_ID];
-			NM_USER_FACEBOOK_CHANNEL_ID = 0;
-			[defs setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
-			break;
-			
-		default:
-			break;
-	}
-}
+//- (void)handleSocialMediaLogoutNotification:(NSNotification *)aNotification {
+//	NMSignOutUserTask * task = (NMSignOutUserTask *)aNotification.object;
+//	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+//	switch (task.command) {
+//		case NMCommandDeauthoriseTwitterAccount:
+//			// remove twitter stream channel
+//			[dataController markChannelDeleteStatusForID:NM_USER_TWITTER_CHANNEL_ID];
+//			NM_USER_TWITTER_CHANNEL_ID = 0;
+//			[defs setInteger:0 forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+//			break;
+//			
+//		case NMCommandDeauthoriseFaceBookAccount:
+//			// remove facebook stream channel
+//			[dataController markChannelDeleteStatusForID:NM_USER_FACEBOOK_CHANNEL_ID];
+//			NM_USER_FACEBOOK_CHANNEL_ID = 0;
+//			[defs setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+//			break;
+//			
+//		default:
+//			break;
+//	}
+//}
 
 #pragma mark Queue tasks to network controller
 - (void)issueCreateUser; {
@@ -214,17 +214,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueSignOutTwitterAccount {
-	NMSignOutUserTask * task = [[NMSignOutUserTask alloc] initWithCommand:NMCommandDeauthoriseTwitterAccount];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
-
-- (void)issueSignOutFacebookAccout {
-	NMSignOutUserTask * task = [[NMSignOutUserTask alloc] initWithCommand:NMCommandDeauthoriseFaceBookAccount];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueSignOutTwitterAccount {
+//	NMSignOutUserTask * task = [[NMSignOutUserTask alloc] initWithCommand:NMCommandDeauthoriseTwitterAccount];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
+//
+//- (void)issueSignOutFacebookAccout {
+//	NMSignOutUserTask * task = [[NMSignOutUserTask alloc] initWithCommand:NMCommandDeauthoriseFaceBookAccount];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (void)issueGetFeaturedCategories {
 	NMGetCategoriesTask * task = [[NMGetCategoriesTask alloc] init];

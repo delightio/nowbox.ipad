@@ -344,6 +344,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		
 		NMCachedImageView *thumbnailView;
 		NMChannel * chn;
+        UIImageView *backgroundView;
+        UIButton *buttonView;
+        
 		
 		if ( selectedIndex == 0 && indexPath.section == 0 ) {
 			// the social login
@@ -358,6 +361,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						titleLbl.text = chn.title;
 						detailLbl.text = chn.detail.nm_description;
 						[thumbnailView setChannel:chn];
+						buttonView = (UIButton *)[cell viewWithTag:11];
+						backgroundView = (UIImageView *)[cell viewWithTag:14];
+						if ([chn.nm_subscribed boolValue]) {
+							[buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
+							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
+						} else {
+							[buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
+							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
+						}
 					} else {
 						titleLbl.text = @"Twitter";
 						detailLbl.text = @"Sign in to watch videos in your Twitter network";
@@ -367,10 +379,18 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					
 				case 1:
 					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-						// TODO: facebook channel MO may not be ready yet. Listen to KVO on facebook channel??
 						titleLbl.text = chn.title;
 						detailLbl.text = chn.detail.nm_description;
 						[thumbnailView setChannel:chn];
+						buttonView = (UIButton *)[cell viewWithTag:11];
+						backgroundView = (UIImageView *)[cell viewWithTag:14];
+						if ([chn.nm_subscribed boolValue]) {
+							[buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
+							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
+						} else {
+							[buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
+							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
+						}
 					} else {
 						titleLbl.text = @"Facebook";
 						detailLbl.text = @"Sign in to watch videos in your Facebook network";
@@ -391,9 +411,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
         }
 
-        UIImageView *backgroundView;
-        UIButton *buttonView;
-        
         thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
         [thumbnailView setImageForChannel:chn];
         
@@ -509,12 +526,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 [nowboxTaskController issueGetChannelsForCategory:cat];
             }
             return;
-        }
-        else { // separator
+        } else { // separator
             return;
         }
-
-        
 	} else {
 		if ( selectedIndex == 0 && indexPath.section == 0 ) {
 			// reveal the social login view
@@ -522,7 +536,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			if ( indexPath.row == 0 ) {
 				if ( NM_USER_TWITTER_CHANNEL_ID ) {
 					// logout twitter
-					[nowboxTaskController issueSignOutTwitterAccount];
+					[nowboxTaskController issueSubscribe:NO channel:nowboxTaskController.dataController.userTwitterStreamChannel];
 				} else {
 					// login twitter
 					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
@@ -532,7 +546,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				}
 			} else if ( indexPath.row == 1 ) {
 				if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-					[nowboxTaskController issueSignOutFacebookAccout];
+					[nowboxTaskController issueSubscribe:NO channel:nowboxTaskController.dataController.userFacebookStreamChannel];
 				} else {
 					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 					socialCtrl.loginType = LoginFacebookType;
