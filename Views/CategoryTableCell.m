@@ -56,5 +56,18 @@
     [super dealloc];
 }
 
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    CategoryTableCell *clonedCell = [[CategoryTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:self.reuseIdentifier];
+    [clonedCell setCategoryTitle:categoryView.categoryText];
+    [clonedCell setHighlighted:self.highlighted];
+    [clonedCell setSelected:self.selected];
+    [clonedCell setFrame:self.frame];    
+    [clonedCell redisplay];
+    
+    return clonedCell;
+}
 
 @end

@@ -11,6 +11,7 @@
 @class CategoriesOrientedTableView;
 @class NMChannel;
 @class ChannelDetailViewController;
+@class CategoryTableCell;
 
 @interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
 	ChannelDetailViewController * channelDetailViewController;
@@ -40,6 +41,9 @@
 	
 	NMStyleUtility * styleUtility;
 	NSNumberFormatter * countFormatter;
+    
+    CategoryTableCell *lockToEdgeCell;
+    BOOL enableLockToEdge;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
