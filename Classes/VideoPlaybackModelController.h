@@ -49,7 +49,7 @@
 	UITextView * debugMessageView;
 	
 	// task related
-	NMTaskQueueController * nowmovTaskController;
+	NMTaskQueueController * nowboxTaskController;
 	
 	@private
 	NSManagedObjectContext * managedObjectContext;

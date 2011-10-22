@@ -54,7 +54,7 @@
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
 	NMChannel * currentChannel;
-	NMTaskQueueController * nowmovTaskController;
+	NMTaskQueueController * nowboxTaskController;
 	VideoPlaybackModelController * playbackModelController;
 	
 	BOOL didSkippedVideo;

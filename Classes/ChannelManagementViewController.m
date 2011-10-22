@@ -15,7 +15,6 @@
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
 #import "SocialLoginViewController.h"
-#import "NMStyleUtility.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -73,6 +72,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 {
     [super viewDidLoad];
     
+	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	countFormatter = [[NSNumberFormatter alloc] init];
 	[countFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
@@ -337,6 +337,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         }
 		
 		NMCachedImageView *thumbnailView;
+		NMChannel * chn;
 		
 		if ( selectedIndex == 0 && indexPath.section == 0 ) {
 			// the social login
@@ -347,12 +348,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			switch (indexPath.row) {
 				case 0:
 					if ( NM_USER_TWITTER_CHANNEL_ID ) {
-						titleLbl.text = @"Hello";
-						detailLbl.text = @"Logged in Twitter";
-						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+						chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+						titleLbl.text = chn.title;
+						detailLbl.text = chn.detail.nm_description;
+						[thumbnailView setChannel:chn];
 					} else {
 						titleLbl.text = @"Twitter";
-						detailLbl.text = @"Login Twitter";
+						detailLbl.text = @"Sign in to watch videos in your Twitter network";
 						thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 					}
 					break;
@@ -360,12 +362,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				case 1:
 					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 						// TODO: facebook channel MO may not be ready yet. Listen to KVO on facebook channel??
-						titleLbl.text = @"Hey there";
-						detailLbl.text = @"Logged Facebook";
-						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+						titleLbl.text = chn.title;
+						detailLbl.text = chn.detail.nm_description;
+						[thumbnailView setChannel:chn];
 					} else {
 						titleLbl.text = @"Facebook";
-						detailLbl.text = @"Login Facebook";
+						detailLbl.text = @"Sign in to watch videos in your Facebook network";
 						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 					}
 					break;
@@ -376,7 +378,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			
 			return cell;
 		}
-		NMChannel * chn;
 		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
         if (selectedIndex == 0) {
             chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
@@ -480,7 +481,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             
             if ( [chnSet count] == 0 ) {
                 // try fetching the channels from server
-                [[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForCategory:cat];
+                [nowboxTaskController issueGetChannelsForCategory:cat];
             }
             return;
         }
@@ -496,7 +497,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			if ( indexPath.row == 0 ) {
 				if ( NM_USER_TWITTER_CHANNEL_ID ) {
 					// logout twitter
-					[[NMTaskQueueController sharedTaskQueueController] issueSignOutTwitterAccount];
+					[nowboxTaskController issueSignOutTwitterAccount];
 				} else {
 					// login twitter
 					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
@@ -506,7 +507,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				}
 			} else if ( indexPath.row == 1 ) {
 				if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-					[[NMTaskQueueController sharedTaskQueueController] issueSignOutFacebookAccout];
+					[nowboxTaskController issueSignOutFacebookAccout];
 				} else {
 					socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 					socialCtrl.loginType = LoginFacebookType;
@@ -786,7 +787,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                          completion:^(BOOL finished) {
                          }];
         
-        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
+        [nowboxTaskController issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
     }
 }
  
@@ -811,7 +812,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         chn = [selectedChannelArray objectAtIndex:[channelsTableView indexPathForCell:cell].row];
     }
     
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+    [nowboxTaskController issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
     
 }
 

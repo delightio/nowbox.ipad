@@ -41,7 +41,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (id)init {
 	self = [super init];
-	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
+	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
 	
 	// listen to notification
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
@@ -101,7 +101,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	// check if there's video to play
 	if ( numberOfVideos ) {
 		// check if we need to go back to the last video
-		NMVideo * lastSessVid = [nowmovTaskController.dataController lastSessionVideoForChannel:aChn];
+		NMVideo * lastSessVid = [nowboxTaskController.dataController lastSessionVideoForChannel:aChn];
 		if ( lastSessVid ) {
 			// we can find the last watched video.
 			self.currentIndexPath = [self.fetchedResultsController indexPathForObject:lastSessVid];
@@ -150,7 +150,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	// check if we need to download more. Or, in the case where there's no video, download
 	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
 		// download more video from Nowmov
-		[nowmovTaskController issueGetMoreVideoForChannel:channel];
+		[nowboxTaskController issueGetMoreVideoForChannel:channel];
 	}
 	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 }
@@ -233,7 +233,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	// check if we need to download more. Or, in the case where there's no video, download
 	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
 		// download more video from Nowmov
-		[nowmovTaskController issueGetMoreVideoForChannel:channel];
+		[nowboxTaskController issueGetMoreVideoForChannel:channel];
 	}
 	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 }
@@ -296,7 +296,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		self.nextNextIndexPath = nil;
 		self.nextNextVideo = nil;
 		// fetch more video
-		[nowmovTaskController issueGetMoreVideoForChannel:channel];
+		[nowboxTaskController issueGetMoreVideoForChannel:channel];
 	}
 	return YES;
 }
@@ -366,7 +366,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		NSLog(@"received resolution error notificaiton - %@", [aNotification userInfo]);
 #endif
 		NSDictionary * info = [aNotification userInfo];
-		[nowmovTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorInfo:info];
+		[nowboxTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorInfo:info];
 	} else if ( [theName isEqualToString:NMURLConnectionErrorNotification] ) {
 		// general network error. 
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
@@ -398,7 +398,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		// we can't get any new video from the server. try getting by doubling the count
 		NSUInteger vidReq = [[userInfo objectForKey:@"num_video_requested"] unsignedIntegerValue];
 		if ( vidReq < 41 ) {
-			[nowmovTaskController issueGetVideoListForChannel:channel];
+			[nowboxTaskController issueGetVideoListForChannel:channel];
 		} else {
 			// we have finish up this channel
 		}
@@ -625,7 +625,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		//TODO: do we need to update the caching variables - currentIndexPath, currentVideo, etc
 		if ( numberOfVideos < 5 ) {
 			// fetch more video
-			[nowmovTaskController issueGetMoreVideoForChannel:channel];
+			[nowboxTaskController issueGetMoreVideoForChannel:channel];
 		}
 	}
 	changeSessionUpdateCount = NO;

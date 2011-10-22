@@ -30,7 +30,7 @@
  */
 
 @interface NMAVQueuePlayer : AVQueuePlayer {
-	NMTaskQueueController * nowmovTaskController;
+	NMTaskQueueController * nowboxTaskController;
 	id<NMAVQueuePlayerPlaybackDelegate> playbackDelegate;
 }
 
