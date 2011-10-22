@@ -26,7 +26,7 @@
 	
 	NSMutableDictionary * targetObjectImageViewMap;
 	NSMutableDictionary * commandIndexTaskMap;
-	NMTaskQueueController * nowmovTaskController;
+	NMTaskQueueController * nowboxTaskController;
 	NSNotificationCenter * notificationCenter;
 	
 	NMStyleUtility * styleUtility;

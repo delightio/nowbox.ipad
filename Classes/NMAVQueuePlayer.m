@@ -29,7 +29,7 @@
 - (id)init {
 	self = [super init];
 	
-	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
+	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetDirectURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
 	
@@ -167,7 +167,7 @@
 	// request to resolve the direct URL of this video
 	if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
 		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
-		[nowmovTaskController issueGetDirectURLForVideo:vid];
+		[nowboxTaskController issueGetDirectURLForVideo:vid];
 	} else if ( vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 		[self queueVideo:vid];
 		if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {

@@ -46,12 +46,15 @@
 	
 	// internal channels
 	NMChannel * myQueueChannel, * favoriteVideoChannel;
+	NMChannel * userTwitterStreamChannel, * userFacebookStreamChannel;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSEntityDescription * channelEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
+@property (nonatomic, retain) NMChannel * userTwitterStreamChannel;
+@property (nonatomic, retain) NMChannel * userFacebookStreamChannel;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
 @property (nonatomic, retain) NMCategory * internalSubscribedChannelsCategory;

@@ -6,6 +6,7 @@
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 
+#import "NMLibrary.h"
 #import "NMStyleUtility.h"
 
 @class CategoriesOrientedTableView;
@@ -14,6 +15,8 @@
 @class CategoryTableCell;
 
 @interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
+	NMTaskQueueController * nowboxTaskController;
+	
 	ChannelDetailViewController * channelDetailViewController;
 	CategoriesOrientedTableView *categoriesTableView;
 	UITableView *channelsTableView;

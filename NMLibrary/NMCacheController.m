@@ -40,7 +40,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	self = [super init];
 	
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
+	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:nil];
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:nil];
@@ -407,7 +407,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForChannel:chn]];
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
-		task = [nowmovTaskController issueGetThumbnailForChannel:chn];
+		task = [nowboxTaskController issueGetThumbnailForChannel:chn];
 		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
@@ -420,7 +420,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForAuthor:dtl]];
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
-		task = [nowmovTaskController issueGetThumbnailForAuthor:dtl];
+		task = [nowboxTaskController issueGetThumbnailForAuthor:dtl];
 		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
@@ -433,7 +433,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForVideo:vdo]];
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
-		task = [nowmovTaskController issueGetThumbnailForVideo:vdo];
+		task = [nowboxTaskController issueGetThumbnailForVideo:vdo];
 		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
@@ -449,7 +449,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 #endif
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
-		task = [nowmovTaskController issueGetPreviewThumbnail:pv];
+		task = [nowboxTaskController issueGetPreviewThumbnail:pv];
 		if ( task ) {
 			[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
 #ifdef DEBUG_IMAGE_CACHE
