@@ -80,7 +80,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[countFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 	[countFormatter setRoundingIncrement:[NSNumber numberWithInteger:1000]];
 	
-	self.title = @"Find Channels";
+	self.title = @"Channel Management";
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissView:)];
