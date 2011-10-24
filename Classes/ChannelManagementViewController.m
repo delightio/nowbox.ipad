@@ -379,6 +379,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					
 				case 1:
 					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+						chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 						titleLbl.text = chn.title;
 						detailLbl.text = chn.detail.nm_description;
 						[thumbnailView setChannel:chn];
@@ -557,12 +558,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			return;
 		}
 		
-		if ( selectedIndex ) {
-			indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
-		}
         NMChannel * chn;
-
-        if (selectedIndex == 0) {
+		if ( selectedIndex == 0 ) {
+			indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
             chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
         } else {
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
