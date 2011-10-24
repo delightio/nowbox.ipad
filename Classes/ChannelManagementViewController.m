@@ -609,7 +609,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 lockToEdgeCell.selectedBackgroundView.hidden = YES;
                 
                 [lockToEdgeCell setSelected:YES];
-                [categoriesTableView insertSubview:lockToEdgeCell atIndex:[[categoriesTableView subviews] count] - 1];
+                [categoriesTableView addSubview:lockToEdgeCell];
                 [lockToEdgeCell release];                 
             }
             
