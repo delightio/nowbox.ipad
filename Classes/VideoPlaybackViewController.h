@@ -14,6 +14,7 @@
 #import "VideoPlaybackModelController.h"
 #import "NMAVQueuePlayer.h"
 #import "NMAVPlayerItem.h"
+#import "ToolTipController.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "NMStyleUtility.h"
 
@@ -30,7 +31,7 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIView * ribbonView;
@@ -54,7 +55,7 @@
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
 	NMChannel * currentChannel;
-	NMTaskQueueController * nowmovTaskController;
+	NMTaskQueueController * nowboxTaskController;
 	VideoPlaybackModelController * playbackModelController;
 	
 	BOOL didSkippedVideo;
@@ -66,7 +67,8 @@
 	LaunchController * launchController;
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;
-	BOOL playPauseButtonTapped;
+	BOOL forceStopByUser;
+	NSInteger detectedPinchAction;
     int rowIndexToCenterOn;
     
 	id timeObserver;
@@ -83,6 +85,8 @@
 //    BOOL pinchTemporarilyDisabled;
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
+    
+    ToolTip *pendingToolTip;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;

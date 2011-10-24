@@ -171,6 +171,18 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		}
 		case NMEventUnsubscribeChannel:
 		{
+			if ( [channel isEqual:ctrl.userTwitterStreamChannel] ) {
+				// the unsubscribed channel is a user stream channel
+				// remove twitter stream channel
+				[ctrl markChannelDeleteStatusForID:NM_USER_TWITTER_CHANNEL_ID];
+				NM_USER_TWITTER_CHANNEL_ID = 0;
+				[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+			} else if ( [channel isEqual:ctrl.userFacebookStreamChannel] ) {
+				// remove facebook stream channel
+				[ctrl markChannelDeleteStatusForID:NM_USER_FACEBOOK_CHANNEL_ID];
+				NM_USER_FACEBOOK_CHANNEL_ID = 0;
+				[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+			}
 			channel.nm_subscribed = [NSNumber numberWithInteger:0];
 			[ctrl.internalSubscribedChannelsCategory removeChannelsObject:channel];
 			return YES;

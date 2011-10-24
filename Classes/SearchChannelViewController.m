@@ -41,7 +41,10 @@
 {
     [super viewDidLoad];
     
-    // Do any additional setup after loading the view from its nib.
+ 	countFormatter = [[NSNumberFormatter alloc] init];
+	[countFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+	[countFormatter setRoundingIncrement:[NSNumber numberWithInteger:1000]];
+	// Do any additional setup after loading the view from its nib.
     [[searchBar.subviews objectAtIndex:0] removeFromSuperview];
     searchBar.backgroundColor = [UIColor clearColor];
     searchBar.opaque = NO;
@@ -80,7 +83,8 @@
 
 - (void)dealloc {
 	[fetchedResultsController_ release];
-    [super dealloc];
+ 	[countFormatter release];
+	[super dealloc];
 }
 
 #pragma mark -
@@ -125,7 +129,14 @@
     label.text = chn.title;
     
     label = (UILabel *)[cell viewWithTag:13];
-    label.text = [NSString stringWithFormat:@"Posted %@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+	NSInteger subCount = [chn.subscriber_count integerValue];
+	if ( subCount > 1000 ) {
+		label.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", chn.video_count, [countFormatter stringFromNumber:chn.subscriber_count]];
+	} else if ( subCount == 0 ) {
+		label.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
+	} else {
+		label.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+	}
     
     UIImageView *backgroundView;
     UIButton *buttonView;

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @class CategoryCellView;
 
-@interface CategoryTableCell : UITableViewCell {
+@interface CategoryTableCell : UITableViewCell <NSCopying> {
     CategoryCellView *categoryView;
 }
 

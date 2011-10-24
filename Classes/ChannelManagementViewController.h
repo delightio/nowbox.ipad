@@ -6,13 +6,17 @@
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "NMLibrary.h"
+#import "NMStyleUtility.h"
 
 @class CategoriesOrientedTableView;
 @class NMChannel;
 @class ChannelDetailViewController;
+@class CategoryTableCell;
 
 @interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
+	NMTaskQueueController * nowboxTaskController;
+	
 	ChannelDetailViewController * channelDetailViewController;
 	CategoriesOrientedTableView *categoriesTableView;
 	UITableView *channelsTableView;
@@ -23,6 +27,7 @@
 	NSManagedObjectContext * managedObjectContext;
 	
 	NSIndexPath * selectedIndexPath;
+    NSIndexPath * selectedIndexPathForTable;
 	NSArray * selectedChannelArray;
 	
 	BOOL viewPushedByNavigationController;
@@ -33,7 +38,15 @@
     
     NMChannel *channelToUnsubscribeFrom;
     UITableViewCell *cellToUnsubscribeFrom;
+    UIImage * sectionTitleBackgroundImage;
+	UIColor * sectionTitleColor;
+	UIFont * sectionTitleFont;
+	
+	NMStyleUtility * styleUtility;
+	NSNumberFormatter * countFormatter;
     
+    CategoryTableCell *lockToEdgeCell;
+    BOOL enableLockToEdge;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
@@ -43,8 +56,12 @@
 @property (nonatomic, retain) NSFetchedResultsController * myChannelsFetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSIndexPath * selectedIndexPath;
+@property (nonatomic, retain) NSIndexPath * selectedIndexPathForTable;
 @property (nonatomic, retain) NSArray * selectedChannelArray;
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
+@property (nonatomic, retain) UIImage * sectionTitleBackgroundImage;
+@property (nonatomic, retain) UIColor * sectionTitleColor;
+@property (nonatomic, retain) UIFont * sectionTitleFont;
 
 -(float)categoryCellWidthFromString:(NSString *)text;
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender;

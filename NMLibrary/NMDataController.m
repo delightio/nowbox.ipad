@@ -32,6 +32,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize internalSearchCategory;
 @synthesize internalSubscribedChannelsCategory;
 @synthesize myQueueChannel, favoriteVideoChannel;
+@synthesize userFacebookStreamChannel, userTwitterStreamChannel;
 @synthesize lastSessionVideoIDs;
 
 - (id)init {
@@ -56,6 +57,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (void)dealloc {
 	[myQueueChannel release], [favoriteVideoChannel release];
+	[userFacebookStreamChannel release], [userTwitterStreamChannel release];
 	[lastSessionVideoIDs release];
 //	[trendingChannel release];
 	[categoryCacheDictionary release];
@@ -435,6 +437,26 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[request release];
 	}
 	return favoriteVideoChannel;
+}
+
+- (NMChannel *)userFacebookStreamChannel {
+	if ( NM_USER_FACEBOOK_CHANNEL_ID == 0 ) {
+		return nil;
+	}
+	if ( userFacebookStreamChannel ) return userFacebookStreamChannel;
+	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
+	self.userFacebookStreamChannel = chnObj;
+	return chnObj;
+}
+
+- (NMChannel *)userTwitterStreamChannel {
+	if ( NM_USER_TWITTER_CHANNEL_ID == 0 ) {
+		return nil;
+	}
+	if ( userTwitterStreamChannel ) return userTwitterStreamChannel;
+	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
+	self.userTwitterStreamChannel = chnObj;
+	return chnObj;
 }
 
 - (void)batchDeleteChannels:(NSArray *)chnAy {

@@ -30,10 +30,9 @@
     [super setHighlighted:highlighted];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-    [self setHighlighted:selected];
+- (void)setSelected:(BOOL)selected {
+    [categoryView setSelected:selected];
+    [super setSelected:selected];    
 }
 
 -(void)setCategoryTitle:(NSString *)newTitle {
@@ -57,5 +56,18 @@
     [super dealloc];
 }
 
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    CategoryTableCell *clonedCell = [[CategoryTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:self.reuseIdentifier];
+    [clonedCell setCategoryTitle:categoryView.categoryText];
+    [clonedCell setHighlighted:self.highlighted];
+    [clonedCell setSelected:self.selected];
+    [clonedCell setFrame:self.frame];    
+    [clonedCell redisplay];
+    
+    return clonedCell;
+}
 
 @end

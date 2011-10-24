@@ -74,6 +74,7 @@ typedef enum {
 typedef enum {
 	NMChannelUnknownType,
 	NMChannelUserType,
+	NMChannelTrendingType,
 	NMChannelYoutubeType,
 	NMChannelKeywordType,
 	NMChannelVimeoType,

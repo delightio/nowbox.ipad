@@ -39,6 +39,9 @@
 #define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
 #define NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT		10009
 
+#define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
+#define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
+
 BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 @interface VideoPlaybackViewController (PrivateMethods)
@@ -104,7 +107,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	ribbonView.layer.shouldRasterize = YES;
 	
 	// playback data model controller
-	nowmovTaskController = [NMTaskQueueController sharedTaskQueueController];
+	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
 	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
@@ -178,7 +181,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self setupPlayer];
 	
 	// ======
-	[nowmovTaskController issueGetFeaturedCategories];
+	[nowboxTaskController issueGetFeaturedCategories];
 	
 	// load channel view
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
@@ -212,6 +215,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
 
+    [[ToolTipController sharedToolTipController] setDelegate:self];
+    
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -369,7 +374,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[vdoAy addObject:theVideo.nm_id];
 	}
 	// send event back to nowmov server
-	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	return vdoAy;
 }
 
@@ -382,7 +387,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( currentChannel ) {
 		if ( currentChannel != chnObj ) {
 			// clear all task related to the previous channel
-			[nowmovTaskController cancelAllPlaybackTasksForChannel:currentChannel];
+			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
 			currentChannel = [chnObj retain];
 		}
@@ -433,11 +438,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)playCurrentVideo {
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
+		forceStopByUser = NO;
 	}
 }
 
 - (IBAction)playStopVideo:(id)sender {
-	playPauseButtonTapped = YES;
+	forceStopByUser = YES;
 	if ( movieView.player.rate == 0.0 ) {
 		[movieView.player play];
 	} else {
@@ -716,7 +722,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// send tracking event
 	NMVideo * theVideo = [self playerCurrentVideo];
-	[nowmovTaskController issueSendViewEventForVideo:theVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:aEndOfVideo];
+	[nowboxTaskController issueSendViewEventForVideo:theVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:aEndOfVideo];
 	// visually transit to next video just like the user has tapped next button
 	//if ( aEndOfVideo ) {
 	// disable interface scrolling
@@ -897,7 +903,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //}
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
-	
+    if (pendingToolTip) {
+        [[ToolTipController sharedToolTipController] presentToolTip:pendingToolTip inView:self.view];
+        pendingToolTip = nil;
+    }
 }
 
 - (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
@@ -933,7 +942,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
 	// send event back to server
 	if ( item ) {
-		[nowmovTaskController issueSendViewEventForVideo:item.nmVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+		[nowboxTaskController issueSendViewEventForVideo:item.nmVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	}
 }
 
@@ -942,7 +951,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
 			// stop video from playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-			if ( !movieView.player.airPlayVideoActive ) [self stopVideo];
+			if ( !movieView.player.airPlayVideoActive ) {
+				forceStopByUser = YES;
+				[self stopVideo];	
+			}
 #endif
 		} else {
 			// resume video playing
@@ -999,6 +1011,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		shouldFadeOutVideoThumbnail = YES;
+		forceStopByUser = NO;	// reset force stop variable when video switches
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
@@ -1047,9 +1060,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		if ( playPauseButtonTapped ) {
-			playPauseButtonTapped = NO;
-		} else {
+		if ( !forceStopByUser ) {
 			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f ) {
 				[self playCurrentVideo];
@@ -1391,13 +1402,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (IBAction)addVideoToFavorite:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
-	[nowmovTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[nowboxTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	[self animateFavoriteButtonsToInactive];
+    
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
-	[nowmovTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
+	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
 }
 
@@ -1431,19 +1444,27 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	loadedControlView.seekBubbleButton.alpha = 0.0f;
 	[UIView commitAnimations];
 	// send the event
-	[nowmovTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed];
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed];
 	lastTimeElapsed = showMovieControlTimestamp;
 }
 
-# pragma mark gestures
+# pragma mark Gestures
 - (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateCancelled:
-		case UIGestureRecognizerStateEnded:
 			controlScrollView.scrollEnabled = YES;
 			break;
 			
 		case UIGestureRecognizerStateChanged:
+		{
+			if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
+				detectedPinchAction = NM_SHOULD_TRANSIT_SPLIT_VIEW;
+			} else if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
+				detectedPinchAction = NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW;
+			}
+			break;
+		}
+		case UIGestureRecognizerStateRecognized:
 		{
 			CGRect theFrame = channelController.panelView.frame;
 			BOOL panelHidden = YES;
@@ -1452,17 +1473,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				panelHidden = NO;
 			}
 			
-			if ( panelHidden ) {
-				// check if it's a pinch in gesture
-				if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
-					[self toggleChannelPanel:sender.view];
-				}
-			} else {
-				// check if it's a pinch out gesture
-				if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
-					[self toggleChannelPanel:sender.view];
-				}
+			if ( ( panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_SPLIT_VIEW ) || ( !panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW ) ) {
+				[self toggleChannelPanel:sender.view];
 			}
+			controlScrollView.scrollEnabled = YES;
 			break;
 		}
 			
@@ -1471,8 +1485,46 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 }
 
-#pragma mark Gesture delegate methods
+#pragma mark - ToolTipControllerDelegate
 
+- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
+    if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
+        // Don't show share tip if user is already logged in
+        if (NM_USER_TWITTER_CHANNEL_ID || NM_USER_FACEBOOK_CHANNEL_ID) {
+            return NO;
+        }
+    } else if ([tooltip.name hasPrefix:@"SwipeTip"] && sender) {
+        // Don't show swipe tip until next video is ready to play
+        pendingToolTip = tooltip;
+        return NO;
+    }
+    
+    return loadedControlView.playbackMode == NMHalfScreenMode;
+}
+
+- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender {
+    
+    if ([tooltip.name isEqualToString:@"BadVideoTip"]) {
+        // We want to position this one relative to the cell
+        UITableView *channelTable = channelController.tableView;
+        
+        tooltip.center = CGPointMake([sender frame].size.height / 2, -25);
+        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
+        
+        // Keep tooltip within screen bounds
+        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 195),
+                                     MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
+        
+    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
+        tooltip.target = channelController;
+        tooltip.action = @selector(showChannelManagementView:);
+    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
+        tooltip.target = channelController;
+        tooltip.action = @selector(showChannelManagementView:);        
+    }
+    
+    return self.view;
+}
 
 #pragma mark Debug
 
