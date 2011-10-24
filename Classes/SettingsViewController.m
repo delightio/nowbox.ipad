@@ -149,6 +149,7 @@
 }
 
 - (void)dismissView:(id)sender {
+	viewPushedByNavigationController = NO;
 	[self dismissModalViewControllerAnimated:YES];
 }
 
