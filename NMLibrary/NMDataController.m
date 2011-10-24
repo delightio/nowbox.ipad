@@ -394,17 +394,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_WATCH_LATER_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-//		if ( result == nil || [result count] == 0 ) {
-//			// we need to create the category
-//			NMChannel * chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
-//			chnObj.title = @"MY QUEUE";
-//			chnObj.nm_id = myChannelID;
-//			chnObj.nm_sort_order = myChannelID;
-//			chnObj.nm_subscribed = [NSNumber numberWithBool:YES];
-//			chnObj.thumbnail_uri = [[NSBundle mainBundle] pathForResource:@"internal-channel-queue" ofType:@"png"];
-//			chnObj.nm_thumbnail_file_name = @"internal-channel-queue.png";
-//			self.myQueueChannel = chnObj;
-//		} else {
 		if ( [result count] ) {
 			self.myQueueChannel = [result objectAtIndex:0];
 		}
@@ -420,17 +409,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_FAVORITES_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-//		if ( result == nil || [result count] == 0 ) {
-//			// we need to create the category
-//			NMChannel * chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
-//			chnObj.title = @"MY FAVORITES";
-//			chnObj.nm_id = myChannelID;
-//			chnObj.nm_sort_order = myChannelID;
-//			chnObj.nm_subscribed = [NSNumber numberWithBool:YES];
-//			chnObj.thumbnail_uri = [[NSBundle mainBundle] pathForResource:@"internal-channel-favorites" ofType:@"png"];
-//			chnObj.nm_thumbnail_file_name = @"internal-channel-favorites.png";
-//			self.favoriteVideoChannel = chnObj;
-//		} else {
 		if ( [result count] ) {
 			self.favoriteVideoChannel = [result objectAtIndex:0];
 		}

@@ -360,7 +360,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						chn = nowboxTaskController.dataController.userTwitterStreamChannel;
 						titleLbl.text = chn.title;
 						detailLbl.text = chn.detail.nm_description;
-						[thumbnailView setChannel:chn];
+						[thumbnailView setImageForChannel:chn];
 						buttonView = (UIButton *)[cell viewWithTag:11];
 						backgroundView = (UIImageView *)[cell viewWithTag:14];
 						if ([chn.nm_subscribed boolValue]) {
@@ -382,7 +382,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 						titleLbl.text = chn.title;
 						detailLbl.text = chn.detail.nm_description;
-						[thumbnailView setChannel:chn];
+						[thumbnailView setImageForChannel:chn];
 						buttonView = (UIButton *)[cell viewWithTag:11];
 						backgroundView = (UIImageView *)[cell viewWithTag:14];
 						if ([chn.nm_subscribed boolValue]) {
