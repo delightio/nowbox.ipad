@@ -68,6 +68,7 @@
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;
 	BOOL forceStopByUser;
+	NSInteger detectedPinchAction;
     int rowIndexToCenterOn;
     
 	id timeObserver;

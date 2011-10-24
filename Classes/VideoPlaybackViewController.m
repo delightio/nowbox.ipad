@@ -39,6 +39,9 @@
 #define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
 #define NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT		10009
 
+#define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
+#define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
+
 BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 @interface VideoPlaybackViewController (PrivateMethods)
@@ -1445,15 +1448,23 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	lastTimeElapsed = showMovieControlTimestamp;
 }
 
-# pragma mark gestures
+# pragma mark Gestures
 - (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateCancelled:
-		case UIGestureRecognizerStateEnded:
 			controlScrollView.scrollEnabled = YES;
 			break;
 			
 		case UIGestureRecognizerStateChanged:
+		{
+			if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
+				detectedPinchAction = NM_SHOULD_TRANSIT_SPLIT_VIEW;
+			} else if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
+				detectedPinchAction = NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW;
+			}
+			break;
+		}
+		case UIGestureRecognizerStateRecognized:
 		{
 			CGRect theFrame = channelController.panelView.frame;
 			BOOL panelHidden = YES;
@@ -1462,17 +1473,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				panelHidden = NO;
 			}
 			
-			if ( panelHidden ) {
-				// check if it's a pinch in gesture
-				if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
-					[self toggleChannelPanel:sender.view];
-				}
-			} else {
-				// check if it's a pinch out gesture
-				if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
-					[self toggleChannelPanel:sender.view];
-				}
+			if ( ( panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_SPLIT_VIEW ) || ( !panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW ) ) {
+				[self toggleChannelPanel:sender.view];
 			}
+			controlScrollView.scrollEnabled = YES;
 			break;
 		}
 			
@@ -1480,8 +1484,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			break;
 	}
 }
-
-#pragma mark Gesture delegate methods
 
 #pragma mark - ToolTipControllerDelegate
 
