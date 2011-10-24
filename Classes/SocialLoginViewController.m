@@ -121,6 +121,13 @@
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 	// channel refresh command is issued in TaskQueueScheduler
 	
+	// listen to channel refresh notification 
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+	[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+}
+
+- (void)handleChannelRefreshNotification:(NSNotification *)aNotification {
 	progressLabel.text = @"Verified Successfully";
 	[loadingIndicator stopAnimating];
 	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];

@@ -108,9 +108,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
 	
-	// listen to social channel login/out notifications
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -141,7 +138,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [super viewDidAppear:animated];
     // listen to notification
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidGetChannelsForCategoryNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
     
 //    [nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSubscribeChannelNotification object:nil];
 //	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
@@ -168,7 +165,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 #pragma mark Notification handlers
 
-- (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
+- (void)handleDidGetChannelsForCategoryNotification:(NSNotification *)aNotification {
 	if ( selectedIndexPath ) {
 		NMCategory * cat = [[aNotification userInfo] objectForKey:@"category"];
 		NMCategory * selCat = [categoryFetchedResultsController objectAtIndexPath:selectedIndexPath];
@@ -193,11 +190,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:i inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
         }
     }
-}
-
-- (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotification {
-	// reload table contents
-	[channelsTableView reloadData];
 }
 
 #pragma mark Target-action methods
@@ -509,7 +501,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         selectedIndex = indexPath.row;
 
         if (indexPath.row == 0) { // my channels
-            self.selectedIndexPath = 0;
+            self.selectedIndexPath = nil;
             self.selectedChannelArray = nil;
             [channelsTableView reloadData];
             return;
