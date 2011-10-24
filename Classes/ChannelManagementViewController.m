@@ -802,6 +802,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     }
     else {
         if (selectedIndex == 0) {
+            // Map section 0 in core data to section 1 in table
+            newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:1];
+            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:1];
+            
             switch(type) {
                 case NSFetchedResultsChangeInsert:
                     [channelsTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -877,7 +881,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
  
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
     UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
-    
+    NSIndexPath *tableIndexPath = [channelsTableView indexPathForCell:cell];
+    if (selectedIndex == 0 && tableIndexPath.section == 0) {
+        return;
+    }
+
     UIActivityIndicatorView *actView;
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView startAnimating];
@@ -891,7 +899,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                      }];
     NMChannel * chn;
     if (selectedIndex == 0) {
-        chn = [myChannelsFetchedResultsController objectAtIndexPath:[channelsTableView indexPathForCell:cell]];
+        NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row 
+                                                           inSection:0];
+        chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
     } else {
         chn = [selectedChannelArray objectAtIndex:[channelsTableView indexPathForCell:cell].row];
     }
