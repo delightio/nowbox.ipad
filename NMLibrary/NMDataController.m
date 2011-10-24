@@ -453,9 +453,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	if ( NM_USER_TWITTER_CHANNEL_ID == 0 ) {
 		return nil;
 	}
-	if ( userTwitterStreamChannel ) return userFacebookStreamChannel;
-	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
-	self.userFacebookStreamChannel = chnObj;
+	if ( userTwitterStreamChannel ) return userTwitterStreamChannel;
+	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
+	self.userTwitterStreamChannel = chnObj;
 	return chnObj;
 }
 
