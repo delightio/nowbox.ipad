@@ -50,7 +50,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 	
 	// check if the cache directory is here or not. If not, create it.
-	NSString * docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+	NSString * docDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]];
 	NSString * cacheBaseDir = [docDir stringByAppendingPathComponent:@"image_cache"];
 	channelThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"channel_thumbnail"] retain];
 	authorThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"author_thumbnail"] retain];
