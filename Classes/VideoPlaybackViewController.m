@@ -1153,52 +1153,35 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
-	
-//	if ( !scrollBeyondThreshold && dx > 8.0f ) {
-//		scrollBeyondThreshold = YES;
-//		NSLog(@"scrolled beyond threshold");
-//	}
-	
+	// reduce alpha of the playback view
 	movieView.alpha = (1024.0 - dx) / 1024.0;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-	// this delegate method is called when user has lifted their thumb out of the screen
-//	if ( scrollBeyondThreshold ) [self stopVideo];
-	[self stopVideo];
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 	scrollView.scrollEnabled = NO;
-//	scrollBeyondThreshold = NO;
-//	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 //	scrollView.scrollEnabled = YES; move to animation handler
 	if ( scrollView.contentOffset.x > currentXOffset ) {
-//		[movieView setActivityIndicationHidden:NO animated:NO];
+		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
+		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
 			NSLog(@"can't move to next video. no video!!");
 #endif
-//		if ( launchModeActive ) {
-//			// hide the progress label
-//			[launchController.view removeFromSuperview];
-//			[launchController release];
-//			launchController = nil;
-//			launchModeActive = NO;
-//		}
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
-//		[movieView setActivityIndicationHidden:NO animated:NO];
+		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
@@ -1208,19 +1191,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 	} else {
-		// play the video again
-		[self playCurrentVideo];
 		scrollView.scrollEnabled = YES;
-		// this method pairs with "stopVideo" in scrollViewDidEndDragging
-		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
-		
-//		if ( launchModeActive ) {
-//			[launchController restoreProgressLabel];
-//		}
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
