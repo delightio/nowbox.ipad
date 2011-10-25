@@ -145,7 +145,7 @@
 										<int key="IBUIContentMode">7</int>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-										<string key="IBUIText">00:00</string>
+										<string key="IBUIText">--:--</string>
 										<reference key="IBUITextColor" ref="513829447"/>
 										<nil key="IBUIHighlightedColor"/>
 										<object class="NSColor" key="IBUIShadowColor" id="592406915">
@@ -180,7 +180,7 @@
 										<int key="IBUIContentMode">7</int>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-										<string key="IBUIText">Label</string>
+										<string key="IBUIText">--:--</string>
 										<reference key="IBUITextColor" ref="513829447"/>
 										<nil key="IBUIHighlightedColor"/>
 										<reference key="IBUIShadowColor" ref="592406915"/>
@@ -195,7 +195,7 @@
 									<object class="IBUIView" id="468801470">
 										<reference key="NSNextResponder" ref="587854499"/>
 										<int key="NSvFlags">274</int>
-										<string key="NSFrame">{{64, 8}, {776, 24}}</string>
+										<string key="NSFrame">{{64, 9}, {776, 24}}</string>
 										<reference key="NSSuperview" ref="587854499"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="1009657548"/>

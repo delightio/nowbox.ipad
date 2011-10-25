@@ -188,7 +188,7 @@
     ChannelPreviewView *cpv;
 	NSUInteger i = 0;
 	// load the video preview thumbnail
-	NSSet * vdoThumbnails = channel.previewThumbnails;
+	NSArray * vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
 	// order NMPreviewThumbnail objects is not important. No need to get sorted array of the items
 	for (NMPreviewThumbnail * thePreview in vdoThumbnails) {
 		// issue request to get preview thumbnail

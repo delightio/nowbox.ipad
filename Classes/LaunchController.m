@@ -143,24 +143,38 @@
 	if ( !launchProcessStuck ) {
 		launchProcessStuck = YES;
 		// listen to application lifecycle notification
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
+		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+		[nc addObserver:self selector:@selector(handleApplicationNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
+		[nc addObserver:self selector:@selector(handleApplicationNotification:) name:UIApplicationWillTerminateNotification object:nil];
 	}
 }
 
 - (void)handleApplicationNotification:(NSNotification *)aNotification {
-	// fire the launch process again
-	if ( [lastFailNotificationName isEqualToString:NMDidFailCreateUserNotification] ) {
-		// begin with creating new user
-		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
-		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
-	} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelsNotification] ) {
-		// begin with getting channels
-		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
-	} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
-		// begin with fetching video list
-		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
-		[viewController setCurrentChannel:channel startPlaying:NO];
+	NSString * notName = [aNotification name];
+	if ( [notName isEqualToString:UIApplicationWillEnterForegroundNotification] ) {
+		// fire the launch process again
+		if ( [lastFailNotificationName isEqualToString:NMDidFailCreateUserNotification] ) {
+			// begin with creating new user
+			[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+			[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
+		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelsNotification] ) {
+			// begin with getting channels
+			[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+			[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
+		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
+			// begin with fetching video list
+			self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+			[viewController setCurrentChannel:channel startPlaying:NO];
+		}
+	} else if ( [notName isEqualToString:UIApplicationWillTerminateNotification] ) {
+		// clean up the database
+		[[NMTaskQueueController sharedTaskQueueController].dataController resetDatabase];
+		NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+		[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+		[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+		[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+		[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+		[defs setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
 	}
 }
 

@@ -100,6 +100,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[self internalSearchCategory];
 }
 
+- (void)resetDatabase {
+	// delete channels
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"videos", @"videos.detail", nil]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	for (NMChannel * chnObj in result) {
+		[managedObjectContext deleteObject:chnObj];
+	}
+	[managedObjectContext save:nil];
+}
+
 #pragma mark Session management
 - (void)deleteVideosWithSessionID:(NSInteger)sid {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
@@ -594,6 +606,20 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"type IN %@ AND populated_at == %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelKeywordType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserFacebookType], nil], [NSDate dateWithTimeIntervalSince1970:0.0f]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	return [result count] ? result : nil;
+}
+
+#pragma mark Channel Preview
+- (NSArray *)previewsForChannel:(NMChannel *)chnObj {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMPreviewThumbnailEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chnObj]];
+	NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+	[request setSortDescriptors:[NSArray arrayWithObject:descriptor]];
+	[descriptor release];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
