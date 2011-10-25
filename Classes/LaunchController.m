@@ -68,9 +68,6 @@
 }
 
 - (void)showVideoViewAnimated {
-//	viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-//	[self presentModalViewController:viewController animated:YES];
-//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFade];
 	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
@@ -82,7 +79,6 @@
 
 - (void)slideInVideoViewAnimated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFromRight];
 	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
@@ -110,40 +106,6 @@
 	}
 }
 
-//- (void)showSwipeInstruction {
-//	[progressLabel setTitle:@"Swipe to show next" forState:UIControlStateNormal];
-//	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
-//	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
-//	[UIView animateWithDuration:0.25f animations:^{
-//		CGRect theFrame = progressContainerView.frame;
-//		theFrame.origin.x -= 190.0f;
-//		theFrame.size.width += 190.0f;
-//		progressContainerView.frame = theFrame;
-//		progressLabel.alpha = 1.0f;
-//		separatorView.alpha = 1.0f;
-//	} completion:^(BOOL finished) {
-//		viewController.controlScrollView.scrollEnabled = YES;
-//	}];
-//}
-
-//- (void)dimProgressLabel {
-//	if ( progressContainerView.alpha < 1.0f ) return;
-//	if ( NM_RUNNING_IOS_5 ) {
-//		[UIView animateWithDuration:0.25f animations:^{
-//			progressContainerView.alpha = 0.5f;
-//		} completion:nil];
-//	} else {
-//		progressContainerView.alpha = 0.5f;
-//	}
-//}
-
-//- (void)restoreProgressLabel {
-//	if ( progressContainerView.alpha == 1.0f ) return;
-//	[UIView animateWithDuration:0.25f animations:^{
-//		progressContainerView.alpha = 1.0f;
-//	} completion:nil];
-//}
-
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
 	// new user created, get channel
@@ -165,6 +127,8 @@
 		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
 		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
 		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+		// listen to notification of getting videos. check if the channel is empty. if so, move to the next channel. this avoids first launch from hanging in there because the first channel has no video
+		[dn addObserver:self selector:@selector(handleDidGetVideoNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
 		resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
 		// assign the channel to playback view controller
@@ -189,16 +153,6 @@
 			[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 			// ready to show the launch view
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-			// hide progress label
-//			[UIView animateWithDuration:0.25f animations:^{
-//				CGRect theFrame = progressContainerView.frame;
-//				theFrame.origin.x += theFrame.size.width - 135.0f;
-//				theFrame.size.width = 135.0f;
-//				progressContainerView.frame = theFrame;
-//				progressLabel.alpha = 0.0f;
-//				separatorView.alpha = 0.0f;
-//				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-//			}];
 			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 		}
 	}
@@ -216,19 +170,17 @@
 				[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 				// ready to show launch view
 				[NSObject cancelPreviousPerformRequestsWithTarget:self];
-				// hide progress label
-//				[UIView animateWithDuration:0.25f animations:^{
-//					CGRect theFrame = progressContainerView.frame;
-//					theFrame.origin.x += theFrame.size.width - 135.0f;
-//					theFrame.size.width = 135.0f;
-//					progressContainerView.frame = theFrame;
-//					progressLabel.alpha = 0.0f;
-//					separatorView.alpha = 0.0f;
-//					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-//				}];
 				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 			}
 		}
+	}
+}
+
+- (void)handleDidGetVideoNotification:(NSNotification *)aNotification {
+	NSDictionary * info = [aNotification userInfo];
+	if ( [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
+		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController channelNextTo:channel];
+		[viewController setCurrentChannel:channel startPlaying:NO];
 	}
 }
 
