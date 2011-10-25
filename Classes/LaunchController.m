@@ -21,6 +21,7 @@
 @implementation LaunchController
 @synthesize view;
 @synthesize viewController;
+@synthesize lastFailNotificationName;
 @synthesize channel;
 
 - (void)dealloc {
@@ -29,6 +30,7 @@
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
+	[lastFailNotificationName release];
 	[super dealloc];
 }
 
@@ -58,7 +60,10 @@
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
 		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
-		[nc addObserver:self selector:@selector(handleDidFailCreateUserNotification:) name:NMDidFailCreateUserNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
 		// create new user
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 		viewController.launchModeActive = YES;
@@ -68,9 +73,6 @@
 }
 
 - (void)showVideoViewAnimated {
-//	viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-//	[self presentModalViewController:viewController animated:YES];
-//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFade];
 	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
@@ -82,7 +84,6 @@
 
 - (void)slideInVideoViewAnimated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-//	[viewController showPlaybackViewWithTransitionStyle:kCATransitionFromRight];
 	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
@@ -110,48 +111,57 @@
 	}
 }
 
-//- (void)showSwipeInstruction {
-//	[progressLabel setTitle:@"Swipe to show next" forState:UIControlStateNormal];
-//	[progressLabel setImage:[UIImage imageNamed:@"onboard-label-arrow"] forState:UIControlStateNormal];
-//	progressLabel.titleEdgeInsets = UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f);
-//	[UIView animateWithDuration:0.25f animations:^{
-//		CGRect theFrame = progressContainerView.frame;
-//		theFrame.origin.x -= 190.0f;
-//		theFrame.size.width += 190.0f;
-//		progressContainerView.frame = theFrame;
-//		progressLabel.alpha = 1.0f;
-//		separatorView.alpha = 1.0f;
-//	} completion:^(BOOL finished) {
-//		viewController.controlScrollView.scrollEnabled = YES;
-//	}];
-//}
-
-//- (void)dimProgressLabel {
-//	if ( progressContainerView.alpha < 1.0f ) return;
-//	if ( NM_RUNNING_IOS_5 ) {
-//		[UIView animateWithDuration:0.25f animations:^{
-//			progressContainerView.alpha = 0.5f;
-//		} completion:nil];
-//	} else {
-//		progressContainerView.alpha = 0.5f;
-//	}
-//}
-
-//- (void)restoreProgressLabel {
-//	if ( progressContainerView.alpha == 1.0f ) return;
-//	[UIView animateWithDuration:0.25f animations:^{
-//		progressContainerView.alpha = 1.0f;
-//	} completion:nil];
-//}
-
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
 	// new user created, get channel
 	[self checkUpdateChannels];
 }
 
-- (void)handleDidFailCreateUserNotification:(NSNotification *)aNotification {
-	NSLog(@"fail to create new user");
+- (void)handleLaunchFailNotification:(NSNotification *)aNotification {
+	// show service is down page.
+	NSString * notName = [aNotification name];
+	self.lastFailNotificationName = notName;
+	NSError * errObj = [[aNotification userInfo] objectForKey:@"error"];
+	NSString * lblStr = nil;
+	if ( [[errObj domain] isEqualToString:NSURLErrorDomain] && [errObj code] == NSURLErrorNotConnectedToInternet ) {
+		lblStr = @"Please connect to Wi-Fi";
+	} else {
+		lblStr = @"Service is down";
+	}
+	if ( [notName isEqualToString:NMDidFailCreateUserNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+	} else if ( [notName isEqualToString:NMDidFailGetChannelsNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+	} else if ( [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+	} else if ( [notName isEqualToString:NMDidFailDownloadImageNotification] ) {
+		// can't download the video thumbnail. that's not important. just make sure the launch service will continue
+		ignoreThumbnailDownloadIndex = YES;
+	}
+	CGSize theSize = [lblStr sizeWithFont:progressLabel.titleLabel.font];
+	progressLabel.bounds = CGRectMake(0.0f, 0.0f, theSize.width + 32.0f, progressLabel.bounds.size.height);
+	if ( !launchProcessStuck ) {
+		launchProcessStuck = YES;
+		// listen to application lifecycle notification
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
+	}
+}
+
+- (void)handleApplicationNotification:(NSNotification *)aNotification {
+	// fire the launch process again
+	if ( [lastFailNotificationName isEqualToString:NMDidFailCreateUserNotification] ) {
+		// begin with creating new user
+		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
+	} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelsNotification] ) {
+		// begin with getting channels
+		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
+	} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
+		// begin with fetching video list
+		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+		[viewController setCurrentChannel:channel startPlaying:NO];
+	}
 }
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
@@ -165,6 +175,8 @@
 		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
 		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
 		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+		// listen to notification of getting videos. check if the channel is empty. if so, move to the next channel. this avoids first launch from hanging in there because the first channel has no video
+		[dn addObserver:self selector:@selector(handleDidGetVideoNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
 		resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
 		// assign the channel to playback view controller
@@ -185,20 +197,10 @@
 	NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
-		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
+		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
 			[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 			// ready to show the launch view
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-			// hide progress label
-//			[UIView animateWithDuration:0.25f animations:^{
-//				CGRect theFrame = progressContainerView.frame;
-//				theFrame.origin.x += theFrame.size.width - 135.0f;
-//				theFrame.size.width = 135.0f;
-//				progressContainerView.frame = theFrame;
-//				progressLabel.alpha = 0.0f;
-//				separatorView.alpha = 0.0f;
-//				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-//			}];
 			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 		}
 	}
@@ -216,19 +218,17 @@
 				[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 				// ready to show launch view
 				[NSObject cancelPreviousPerformRequestsWithTarget:self];
-				// hide progress label
-//				[UIView animateWithDuration:0.25f animations:^{
-//					CGRect theFrame = progressContainerView.frame;
-//					theFrame.origin.x += theFrame.size.width - 135.0f;
-//					theFrame.size.width = 135.0f;
-//					progressContainerView.frame = theFrame;
-//					progressLabel.alpha = 0.0f;
-//					separatorView.alpha = 0.0f;
-//					[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-//				}];
 				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
 			}
 		}
+	}
+}
+
+- (void)handleDidGetVideoNotification:(NSNotification *)aNotification {
+	NSDictionary * info = [aNotification userInfo];
+	if ( [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
+		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController channelNextTo:channel];
+		[viewController setCurrentChannel:channel startPlaying:NO];
 	}
 }
 

@@ -48,7 +48,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 //	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
-	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
 
 	return self;
 }
@@ -367,12 +366,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 #endif
 		NSDictionary * info = [aNotification userInfo];
 		[nowboxTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorInfo:info];
-	} else if ( [theName isEqualToString:NMURLConnectionErrorNotification] ) {
-		// general network error. 
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [[aNotification userInfo] objectForKey:@"message"]];
-		NSLog(@"general connection error: %@", [[aNotification userInfo] objectForKey:@"message"]);
-#endif
 	} else if ( [theName isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 		NSError * theErr = [[aNotification userInfo] objectForKey:AVPlayerItemFailedToPlayToEndTimeErrorKey];

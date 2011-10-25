@@ -387,6 +387,25 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return chnObj;
 }
 
+- (NMChannel *)channelNextTo:(NMChannel *)anotherChannel {
+	if ( anotherChannel == nil ) return nil;
+	NMChannel * chnObj;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > %@", anotherChannel.nm_subscribed]];
+	NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
+	[request setSortDescriptors:[NSArray arrayWithObject:sortDsptr]];
+	[sortDsptr release];
+	[request setFetchLimit:1];
+	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [results count] ) {
+		chnObj = [results objectAtIndex:0];
+	} else {
+		chnObj = nil;
+	}
+	return chnObj;
+}
+
 - (NMChannel *)myQueueChannel {
 	if ( myQueueChannel == nil ) {
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];

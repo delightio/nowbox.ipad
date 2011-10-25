@@ -96,8 +96,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 		NM_RUNNING_IOS_5 = NO;
 	}
 
+	// listen to notification showing alert
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleShowErrorAlertNotification:) name:NMShowErrorAlertNotification object:nil];
+	
 	[NMStyleUtility sharedStyleUtility];
-//	self.viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	self.viewController.appDelegate = self;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
@@ -151,10 +153,13 @@ NSInteger NM_LAST_CHANNEL_ID;
 	// cancel tasks
 //	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
 	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+	// listen to notification showing alert
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleShowErrorAlertNotification:) name:NMShowErrorAlertNotification object:nil];
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 //	[[NMTaskQueueController sharedTaskQueueController] issueGetLiveChannel];
 	// start a new session

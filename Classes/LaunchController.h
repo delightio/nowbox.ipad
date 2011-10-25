@@ -17,6 +17,9 @@
     IBOutlet UIButton * progressLabel;
 	IBOutlet UIImageView * logoImageView;
 	BOOL appFirstLaunch;
+	BOOL launchProcessStuck;
+	BOOL ignoreThumbnailDownloadIndex;
+	NSString * lastFailNotificationName;
 	VideoPlaybackViewController * viewController;
 	
 	NSMutableIndexSet * thumbnailVideoIndex, * resolutionVideoIndex;
@@ -25,6 +28,7 @@
 
 @property (nonatomic, assign) VideoPlaybackViewController * viewController;
 @property (nonatomic, retain) IBOutlet UIView * view;
+@property (nonatomic, retain) NSString * lastFailNotificationName;
 //@property (nonatomic, retain) IBOutlet UIView * progressContainerView;
 @property (nonatomic, retain) NMChannel * channel;
 

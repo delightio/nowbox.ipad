@@ -160,8 +160,6 @@ extern NSString * const NMDidFailDownloadImageNotification;
 extern NSString * const NMTaskFailNotification;
 extern NSString * const NMDidFailSendEventNotification;
 
-extern NSString * const NMURLConnectionErrorNotification;
-
 // Entity names
 extern NSString * const NMCategoryEntityName;
 extern NSString * const NMChannelEntityName;
