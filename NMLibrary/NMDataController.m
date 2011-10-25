@@ -100,6 +100,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[self internalSearchCategory];
 }
 
+- (void)resetDatabase {
+	// delete channels
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"videos", @"videos.detail", nil]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	for (NMChannel * chnObj in result) {
+		[managedObjectContext deleteObject:chnObj];
+	}
+	[managedObjectContext save:nil];
+}
+
 #pragma mark Session management
 - (void)deleteVideosWithSessionID:(NSInteger)sid {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];

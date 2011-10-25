@@ -69,6 +69,7 @@
 
 // first launch
 - (void)setUpDatabaseForFirstLaunch;
+- (void)resetDatabase;
 // session management
 - (void)deleteVideosWithSessionID:(NSInteger)sid;
 - (void)resetAllChannelsPageNumber;
