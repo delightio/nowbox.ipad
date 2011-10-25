@@ -97,6 +97,8 @@
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NMChannel *)channelNextTo:(NMChannel *)anotherChannel;
+// channel detail
+- (NSArray *)previewsForChannel:(NMChannel *)chnObj;
 // video
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;

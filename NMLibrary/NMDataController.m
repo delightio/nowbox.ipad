@@ -612,6 +612,20 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return [result count] ? result : nil;
 }
 
+#pragma mark Channel Preview
+- (NSArray *)previewsForChannel:(NMChannel *)chnObj {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMPreviewThumbnailEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chnObj]];
+	NSSortDescriptor * descriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+	[request setSortDescriptors:[NSArray arrayWithObject:descriptor]];
+	[descriptor release];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	return [result count] ? result : nil;
+}
+
 #pragma mark Video 
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
 	NMVideo * dupVideo = [self insertNewVideo];
