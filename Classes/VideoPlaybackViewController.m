@@ -214,8 +214,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
-
-    [[ToolTipController sharedToolTipController] setDelegate:self];
     
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -322,6 +320,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			playFirstVideoOnLaunchWhenReady = YES;
 //			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 //		}];
+        
+        // Start monitoring for tooltips
+        [[ToolTipController sharedToolTipController] startTimer];
+        [[ToolTipController sharedToolTipController] setDelegate:self];
+
 	} else {
 		// cross fade
 #if __IPHONE_4_3 < __IPHONE_OS_VERSION_MAX_ALLOWED
