@@ -21,6 +21,7 @@
 @implementation LaunchController
 @synthesize view;
 @synthesize viewController;
+@synthesize lastFailNotificationName;
 @synthesize channel;
 
 - (void)dealloc {
@@ -29,6 +30,7 @@
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
+	[lastFailNotificationName release];
 	[super dealloc];
 }
 
@@ -58,7 +60,10 @@
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
 		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
-		[nc addObserver:self selector:@selector(handleDidFailCreateUserNotification:) name:NMDidFailCreateUserNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
 		// create new user
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 		viewController.launchModeActive = YES;
@@ -112,8 +117,51 @@
 	[self checkUpdateChannels];
 }
 
-- (void)handleDidFailCreateUserNotification:(NSNotification *)aNotification {
-	NSLog(@"fail to create new user");
+- (void)handleLaunchFailNotification:(NSNotification *)aNotification {
+	// show service is down page.
+	NSString * notName = [aNotification name];
+	self.lastFailNotificationName = notName;
+	NSError * errObj = [[aNotification userInfo] objectForKey:@"error"];
+	NSString * lblStr = nil;
+	if ( [[errObj domain] isEqualToString:NSURLErrorDomain] && [errObj code] == NSURLErrorNotConnectedToInternet ) {
+		lblStr = @"Please connect to Wi-Fi";
+	} else {
+		lblStr = @"Service is down";
+	}
+	if ( [notName isEqualToString:NMDidFailCreateUserNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+	} else if ( [notName isEqualToString:NMDidFailGetChannelsNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+	} else if ( [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+	} else if ( [notName isEqualToString:NMDidFailDownloadImageNotification] ) {
+		// can't download the video thumbnail. that's not important. just make sure the launch service will continue
+		ignoreThumbnailDownloadIndex = YES;
+	}
+	CGSize theSize = [lblStr sizeWithFont:progressLabel.titleLabel.font];
+	progressLabel.bounds = CGRectMake(0.0f, 0.0f, theSize.width + 32.0f, progressLabel.bounds.size.height);
+	if ( !launchProcessStuck ) {
+		launchProcessStuck = YES;
+		// listen to application lifecycle notification
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
+	}
+}
+
+- (void)handleApplicationNotification:(NSNotification *)aNotification {
+	// fire the launch process again
+	if ( [lastFailNotificationName isEqualToString:NMDidFailCreateUserNotification] ) {
+		// begin with creating new user
+		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
+	} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelsNotification] ) {
+		// begin with getting channels
+		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
+	} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
+		// begin with fetching video list
+		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+		[viewController setCurrentChannel:channel startPlaying:NO];
+	}
 }
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
@@ -149,7 +197,7 @@
 	NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
-		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
+		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
 			[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 			// ready to show the launch view
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
