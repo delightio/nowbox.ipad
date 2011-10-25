@@ -116,6 +116,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 		// first time launching the app
 		// create internal channels
 		[ctrl.dataController setUpDatabaseForFirstLaunch];
+		[[NMCacheController sharedCacheController] removeAllFiles];
 	}
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
 	

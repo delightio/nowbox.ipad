@@ -922,11 +922,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Notification handling
-
-- (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
-#ifdef DEBUG_PLAYBACK_QUEUE
-	NSLog(@"did play notification");
-#endif
+- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
 	if ( playbackModelController.nextVideo == nil ) {
 		// finish up playing the whole channel
 		[self dismissModalViewControllerAnimated:YES];
@@ -934,6 +930,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		didPlayToEnd = YES;
 		[self showNextVideo:YES];
 	}
+}
+
+- (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
+	// For unknown reason, AVPlayerItemDidPlayToEndTimeNotification is sent twice sometimes. Don't know why. This delay execution mechanism tries to solve this problem
+#ifdef DEBUG_PLAYBACK_QUEUE
+	NSLog(@"did play notification: %@", [aNotification name]);
+#endif
+	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayHandleDidPlayItem:) object:[aNotification object]];
+		[self performSelector:@selector(delayHandleDidPlayItem:) withObject:[aNotification object] afterDelay:0.1];
+	});
 }
 
 - (void)handleApplicationDidBecomeActiveNotification:(NSNotification *)aNotification {
