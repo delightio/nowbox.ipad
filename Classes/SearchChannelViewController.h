@@ -27,6 +27,7 @@
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
+@property (nonatomic, retain) IBOutlet UIView *progressView;
 
 - (void)clearSearchResults;
 - (void)performSearchWithText:(NSString *)searchText;

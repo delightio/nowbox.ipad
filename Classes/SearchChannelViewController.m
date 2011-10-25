@@ -16,6 +16,7 @@
 
 @synthesize searchBar, tableView, channelCell;
 @synthesize fetchedResultsController=fetchedResultsController_;
+@synthesize progressView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -52,6 +53,7 @@
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSearchChannelsNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidSearchNotification:) name:NMDidSearchChannelsNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidFailNotification:) name:NMDidFailSearchChannelsNotification object:nil];
 
     [tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
@@ -64,9 +66,9 @@
 - (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    self.progressView = nil;
+    
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -84,6 +86,7 @@
 - (void)dealloc {
 	[fetchedResultsController_ release];
  	[countFormatter release];
+    [progressView release];
 	[super dealloc];
 }
 
@@ -190,6 +193,7 @@
 - (void)handleDidSearchNotification:(NSNotification *)aNotification {
 //    self.searchFetchedResultsController = nil;
 	NSLog(@"notification: %@", [aNotification name]);
+    progressView.hidden = YES;
 //	// test out search predicate
 //	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 //	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
@@ -198,6 +202,18 @@
 //	NSArray * result = [dataCtrl.managedObjectContext executeFetchRequest:request error:nil];
 //	NSLog(@"search result %@", result);
 //	[request release];
+}
+
+- (void)handleDidFailNotification:(NSNotification *)aNotification {
+    progressView.hidden = YES;
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
+                                                        message:@"The search could not be completed. Please try again later." 
+                                                       delegate:nil 
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
 }
 
 #pragma mark Fetched results controller
@@ -361,6 +377,7 @@
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
     [ctrl.dataController clearSearchResultCache];
     if ([searchText length] > 0) {
+        progressView.hidden = NO;
         [ctrl issueChannelSearchForKeyword:searchText];
     }
 }
