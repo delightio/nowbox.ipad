@@ -535,10 +535,26 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             break;
             
         }
-        case NSFetchedResultsChangeDelete:
+        case NSFetchedResultsChangeDelete: {
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
             
+            // Go to next channel, or first channel if we're at the end of the list
+            NSInteger numberOfRows = [[[controller sections] objectAtIndex:0] numberOfObjects];
+            
+            NSIndexPath *nextChannelIndexPath = nil;
+            if (indexPath.row < numberOfRows) {
+                nextChannelIndexPath = indexPath;
+            } else if (numberOfRows > 0) {
+                nextChannelIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            }
+                       
+            if (nextChannelIndexPath) {
+                NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
+                [videoViewController setCurrentChannel:channel startPlaying:NO];
+            }
+            
+            break;
+        } 
         case NSFetchedResultsChangeUpdate: {
             // the entire channel row shouldn't have to be reconfigured, this should be done in the video row controller
             UITableViewCell *cell = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
