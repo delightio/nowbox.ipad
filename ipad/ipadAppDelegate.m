@@ -123,8 +123,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[self.window makeKeyAndVisible];
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
-
-    [[ToolTipController sharedToolTipController] startTimer];
     
     return YES;
 }
