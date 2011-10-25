@@ -11,7 +11,7 @@
 #import "NMLibrary.h"
 #import "ipadAppDelegate.h"
 
-#define GP_CHANNEL_UPDATE_INTERVAL	-12.0 * 3600.0
+#define GP_CHANNEL_UPDATE_INTERVAL	-600.0f //-12.0 * 3600.0
 #ifdef DEBUG_ONBOARD_PROCESS
 #define NM_ALWAYS_SHOW_ONBOARD_PROCESS	YES
 #else
@@ -57,6 +57,7 @@
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
+		progressLabel.hidden = NO;
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
 		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
@@ -98,8 +99,9 @@
 	
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch || 
-		[lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL // 12 hours
+		[lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL
 		) { 
+		progressLabel.hidden = NO;
 		// get channel
 		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
