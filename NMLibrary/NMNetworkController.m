@@ -12,7 +12,6 @@
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
 
-NSString * const NMURLConnectionErrorNotification = @"NMURLConnectionErrorNotification";
 
 @interface NMNetworkController (PrivateMethods)
 
