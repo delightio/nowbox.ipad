@@ -27,6 +27,7 @@
 	
 	NMChannel * channel;
 	NSMutableArray * previewViewsArray;
+	NSNumberFormatter * countFormatter;    
 }
 
 @property (nonatomic, retain) NMChannel * channel;

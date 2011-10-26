@@ -16,14 +16,16 @@
 @implementation ChannelDetailViewController
 @synthesize channel;
 
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        countFormatter = [[NSNumberFormatter alloc] init];
+        [countFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [countFormatter setRoundingIncrement:[NSNumber numberWithInteger:1000]];
+    }
+    return self;
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -37,6 +39,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [previewViewsArray removeAllObjects];
     [previewViewsArray release];
+    [countFormatter release];
 	[super dealloc];
 }
 
@@ -98,8 +101,17 @@
 	} else {
 		descriptionLabel.text = @"";
 	}
-	metricLabel.text = [NSString stringWithFormat:@"Posted %@ videos", channel.video_count];
 
+    // round the subscribers count to nearest thousand, don't if not subscribers
+    NSInteger subCount = [channel.subscriber_count integerValue];
+    if ( subCount > 1000 ) {
+        metricLabel.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", channel.video_count, [countFormatter stringFromNumber:channel.subscriber_count]];
+    } else if ( subCount == 0 ) {
+        metricLabel.text = [NSString stringWithFormat:@"%@ videos", channel.video_count];
+    } else {
+        metricLabel.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", channel.video_count, channel.subscriber_count];
+    }
+    
     unsubscribeButton.enabled = YES;
     subscribeButton.enabled = YES;
     subscribeAndWatchButton.enabled = YES;
