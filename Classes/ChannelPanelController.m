@@ -429,11 +429,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         return;
     }
     
-    for (int i=0; i<[[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]; i++) {
+	NSInteger c = [[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    for (NSInteger i = 0; i < c; i++) {
         NMVideo * theVideo = [htView.tableController.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
+//        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
 		// only play video in that channel which has not been played before
-        if (theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue])) {
+        if ( theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue]) ) {
             [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             break;
         }

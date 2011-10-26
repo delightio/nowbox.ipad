@@ -574,6 +574,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
+- (void)markChannelDeleteStatus:(NMChannel *)chnObj {
+	chnObj.nm_hidden = [NSNumber numberWithBool:YES];
+	[managedObjectContext save:nil];
+}
+
 - (void)markChannelDeleteStatusForID:(NSInteger)chnID {
 	//TODO: set those channels as hidden for now. Gotta make a special status for "marked as delete"
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];

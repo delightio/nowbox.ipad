@@ -93,6 +93,7 @@
 - (NSInteger)maxChannelSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
 - (void)updateFavoriteChannelHideStatus;
+- (void)markChannelDeleteStatus:(NMChannel *)chnObj;
 - (void)markChannelDeleteStatusForID:(NSInteger)chnID;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
