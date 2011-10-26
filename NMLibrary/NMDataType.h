@@ -82,7 +82,7 @@ typedef enum {
 	NMChannelUserTwitterType,
 } NMChannelType;
 
-
+extern NSString * NMServiceErrorDomain;
 // Notifications
 // error
 extern NSString * const NMShowErrorAlertNotification;

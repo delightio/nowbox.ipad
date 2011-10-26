@@ -414,6 +414,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
 	playFirstVideoOnLaunchWhenReady = aPlayFlag;
+	forceStopByUser = NO;	// reset the flag
 	currentXOffset = 0.0f;
 	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
 	ribbonView.userInteractionEnabled = NO;
@@ -772,7 +773,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// play the specified video
 	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
 	ribbonView.userInteractionEnabled = NO;
+	NMChannel * chnObj = aVideo.channel;
+	if ( ![currentChannel isEqual:chnObj] ) {
+		if ( currentChannel ) [currentChannel release];
+		currentChannel = [chnObj retain];
+	}
 	[playbackModelController setVideo:aVideo];
+	forceStopByUser = NO;
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {

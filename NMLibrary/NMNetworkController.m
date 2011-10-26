@@ -11,7 +11,7 @@
 #import "NMDataType.h"
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
-
+NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 
 @interface NMNetworkController (PrivateMethods)
 
@@ -438,11 +438,21 @@
 //	if ( theTask.command > NMCommandImageDownloadCommandBoundary ) {
 //		[dataController storeImageForTask:(NMImageDownloadTask *)theTask];
 //	} else {
-	if ( theTask.httpStatusCode >= 400 && !theTask.executeSaveActionOnError ) {
+	NSInteger scode = theTask.httpStatusCode;
+	if ( scode >= 400 && !theTask.executeSaveActionOnError ) {
 		// fire error notification right here
 		NSDictionary * errorInfo = [theTask failUserInfo];
 		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:(errorInfo == nil ? [NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil] : errorInfo)];
 		[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
+		if ( scode < 500 ) {
+			// this is authorization related error. post a pop up box to user
+			if ( [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
+				// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
+				NSError * error = [NSError errorWithDomain:NMServiceErrorDomain code:scode userInfo:nil];
+				[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
+				self.errorWindowStartDate = [NSDate date];
+			}
+		}
 	} else {
 		[dataController createDataParsingOperationForTask:theTask];
 	}

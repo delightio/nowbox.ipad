@@ -77,10 +77,25 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
 	NSError * error = [[aNotification userInfo] objectForKey:@"error"];
 	NSString * title = nil;
-	if ( [[error domain] isEqualToString:NSURLErrorDomain] ) {
+	NSString * message = nil;
+	NSString * errDmn = [error domain];
+	if ( [errDmn isEqualToString:NSURLErrorDomain] ) {
 		title = @"Connection Error";
+		message = [error localizedDescription];
+	} else if ( [errDmn isEqualToString:NMServiceErrorDomain] ) {
+		switch ([error code]) {
+			case 404:
+				title = @"Authorization Error";
+				message = @"Please contact us for assistance";
+				break;
+				
+			default:
+				title = @"Access Denied";
+				message = @"Please contact us for assistance";
+				break;
+		}
 	}
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 	[alert release];
 }
