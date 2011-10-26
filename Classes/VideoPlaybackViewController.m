@@ -452,10 +452,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)playStopVideo:(id)sender {
-	forceStopByUser = YES;
 	if ( movieView.player.rate == 0.0 ) {
+		forceStopByUser = NO;
 		[movieView.player play];
 	} else {
+		forceStopByUser = YES;
 		[movieView.player pause];
 	}
 }
@@ -1418,26 +1419,36 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)touchDownProgressBar:(id)sender {
+	forceStopByUser = YES;
 	[self stopVideo];
 	showMovieControlTimestamp = -1;
 	loadedControlView.isSeeking = YES;
 	// get current control nub position
 	[loadedControlView updateSeekBubbleLocation];
 	// show seek bubble
-	[UIView beginAnimations:nil context:nil];
-	loadedControlView.seekBubbleButton.alpha = 1.0f;
-	[UIView commitAnimations];
+	[UIView animateWithDuration:0.25 animations:^{
+		loadedControlView.seekBubbleButton.alpha = 1.0f;
+		if ( NM_AIRPLAY_ACTIVE ) {
+			// hide the airplay indicator
+			movieView.airPlayIndicatorView.alpha = 0.0f;
+		}
+	}];
 	lastStartTime = lastTimeElapsed;
 	lastTimeElapsed = loadedControlView.timeElapsed;
 }
 
 - (IBAction)touchUpProgressBar:(id)sender {
+	forceStopByUser = NO;
 	[self playCurrentVideo];
 	loadedControlView.isSeeking = NO;
 	showMovieControlTimestamp = loadedControlView.timeElapsed;
-	[UIView beginAnimations:nil context:nil];
-	loadedControlView.seekBubbleButton.alpha = 0.0f;
-	[UIView commitAnimations];
+	[UIView animateWithDuration:0.25 animations:^{
+		loadedControlView.seekBubbleButton.alpha = 0.0f;
+		if ( NM_AIRPLAY_ACTIVE ) {
+			// show the airplay indicator
+			movieView.airPlayIndicatorView.alpha = 1.0f;
+		}
+	}];
 	// send the event
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed];
 	lastTimeElapsed = showMovieControlTimestamp;
