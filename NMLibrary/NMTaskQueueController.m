@@ -63,6 +63,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
 //	[nc addObserver:self selector:@selector(handleFailChannelPollingNotification:) name:NMDidFailEditUserNotification object:nil];
+	// listen to subscription as well
+	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
 	return self;
 }
@@ -129,6 +131,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	didFinishLogin = YES;
 	// get that particular channel
 	[self issueGetSubscribedChannels];
+}
+
+- (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+	if ( [chnObj.type integerValue] == NMChannelKeywordType ) {
+		// this is a keyword channel. we need to check if if has been populated or not
+		if ( [chnObj.populated_at compare:[NSDate dateWithTimeIntervalSince1970:0.0f]] != NSOrderedDescending ) {
+			// fire the polling logic
+			[self pollServerForChannelReadiness];
+		}
+	}
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
@@ -437,7 +450,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
 		// run the timer method
 		if ( !pollingTimer ) {
-			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:30.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
+			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
 		} else {
 			[pollingTimer fire];
 		}

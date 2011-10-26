@@ -173,7 +173,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 					
 				case NMCommandSearchChannels:
 					// check if keyword channel exists
-					if ( [[pDict objectForKey:@"title"] isEqualToString:searchWord] ) {
+					if ( [[pDict objectForKey:@"title"] caseInsensitiveCompare:searchWord] == NSOrderedSame ) {
 						containsKeywordChannel = YES;
 					}
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
