@@ -57,7 +57,8 @@
 	NMChannel * currentChannel;
 	NMTaskQueueController * nowboxTaskController;
 	VideoPlaybackModelController * playbackModelController;
-	
+	UIPopoverController *authorPopoverController;
+    
 	BOOL didSkippedVideo;
 //	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
@@ -103,6 +104,7 @@
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;
 - (IBAction)toggleChannelPanelFullScreen:(id)sender;
+- (IBAction)showAuthorPopover:(id)sender;
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
 // movie detail view actions
 - (IBAction)addVideoToFavorite:(id)sender;

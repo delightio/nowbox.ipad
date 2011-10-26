@@ -43,13 +43,14 @@
 	MPVolumeView * volumeView;
 	// top bar
 //	IBOutlet UILabel * channelNameLabel;
-	IBOutlet UILabel * authorNameLabel;
+//	IBOutlet UILabel * authorNameLabel;
 	IBOutlet NMCachedImageView * channelImageView;
 	IBOutlet NMCachedImageView * authorImageView;
 //	IBOutlet UIView * channelBackgroundView;
 	IBOutlet UIView * authorBackgroundView;
 	IBOutlet UIView * topbarContainerView;
 	IBOutlet UIButton * segmentChannelButton;
+	IBOutlet UIButton * segmentAuthorButton;    
 	UIButton * favoriteButton;
 	UIButton * watchLaterButton;
 	// segment width

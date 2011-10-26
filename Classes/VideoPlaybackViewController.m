@@ -11,6 +11,7 @@
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
+#import "AuthorPopoverViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -494,7 +495,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 		if ( showMovieControlTimestamp > 0 ) {
 			// check if it's time to auto hide control
-			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
+			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec && !authorPopoverController ) {
 				// we should hide
 				showMovieControlTimestamp = -1;
 				[self hideControlView];
@@ -547,6 +548,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			loadedControlView.alpha = 0.0f;
 		}];
 	}
+    [authorPopoverController dismissPopoverAnimated:YES];
 }
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
@@ -1147,7 +1149,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-	[self playCurrentVideo];
+    if (popoverController == authorPopoverController) {
+        [authorPopoverController release];
+        authorPopoverController = nil;
+    } else {
+        [self playCurrentVideo];
+    }
 }
 
 #pragma mark Scroll View Delegate
@@ -1389,6 +1396,24 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			loadedControlView.hidden = YES;
 		}
 	}];
+}
+
+- (IBAction)showAuthorPopover:(id)sender {
+    if (authorPopoverController) return;
+    
+    AuthorPopoverViewController *popoverViewController = [[AuthorPopoverViewController alloc] initWithVideo:playbackModelController.currentVideo];
+    
+    authorPopoverController = [[UIPopoverController alloc] initWithContentViewController:popoverViewController];
+    [authorPopoverController setPopoverContentSize:popoverViewController.view.frame.size];
+    [authorPopoverController setDelegate:self];
+    [authorPopoverController presentPopoverFromRect:[sender convertRect:[sender frame] toView:self.view] 
+                                             inView:self.view 
+                           permittedArrowDirections:UIPopoverArrowDirectionUp 
+                                           animated:YES];
+    [popoverViewController release];
+    
+    // Keep controls from hiding
+    [self movieViewTouchUp:nil];
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {

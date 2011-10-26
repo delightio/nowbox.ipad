@@ -37,9 +37,9 @@
 - (void)awakeFromNib {
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	channelDefaultWidth = segmentChannelButton.bounds.size.width;
-	authorDefaultWidth = authorBackgroundView.bounds.size.width;
+	authorDefaultWidth = segmentAuthorButton.bounds.size.width;
 	channelTitleDefaultWidth = [[segmentChannelButton titleForState:UIControlStateNormal] sizeWithFont:segmentChannelButton.titleLabel.font].width;
-	authorTitleDefaultWidth = authorNameLabel.bounds.size.width;
+	authorTitleDefaultWidth = [[segmentAuthorButton titleForState:UIControlStateNormal] sizeWithFont:segmentAuthorButton.titleLabel.font].width;
 	maximumTitleSize = CGSizeMake(256.0f, 40.0f);
 
 	playbackMode_ = NMFullScreenPlaybackMode;
@@ -69,7 +69,7 @@
 	imgLayer2.contents = imgLayer.contents;
 	[authorBackgroundView.layer insertSublayer:imgLayer2 below:authorImageView.layer];
 	
-	authorBackgroundView.layer.contents = (id)[UIImage imageNamed:@"top-bar-author-background"].CGImage;
+    [segmentAuthorButton setBackgroundImage:[[UIImage imageNamed:@"top-bar-author-background"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateNormal];
 	authorBackgroundView.layer.contentsCenter = theRect;
 	//topbarContainerView.alpha = 0.0f;
 	
@@ -257,8 +257,9 @@
 
 #pragma mark properties
 - (void)resetView {
-	authorNameLabel.text = @"";
+//	authorNameLabel.text = @"";
 //	channelNameLabel.text = @"";
+    [segmentAuthorButton setTitle:@"" forState:UIControlStateNormal];
 	[segmentChannelButton setTitle:@"" forState:UIControlStateNormal];
 	videoTitleLabel.text = @"";
 	durationLabel.text = @"--:--";
@@ -299,9 +300,10 @@
 		theRect = authorBackgroundView.frame;
 		theRect.origin.x = segmentChannelButton.frame.size.width - 10.0f;
 		// author label
-		authorNameLabel.text = aVideo.detail.author_username;	
+        [segmentAuthorButton setTitle:aVideo.detail.author_username forState:UIControlStateNormal];
+        
 		// author size
-		theSize = [authorNameLabel.text sizeWithFont:authorNameLabel.font constrainedToSize:maximumTitleSize];
+		theSize = [[segmentAuthorButton titleForState:UIControlStateNormal] sizeWithFont:segmentAuthorButton.titleLabel.font constrainedToSize:maximumTitleSize];
 		titleDiff = theSize.width - authorTitleDefaultWidth;
 		theRect.size.width = authorDefaultWidth + titleDiff;
 		authorBackgroundView.frame = theRect;

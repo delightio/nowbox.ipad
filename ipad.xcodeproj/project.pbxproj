@@ -52,6 +52,8 @@
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
+		8385F5C914577B1100E00B46 /* AuthorPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8385F5C814577B1000E00B46 /* AuthorPopoverViewController.m */; };
+		8385F5CC14577BEC00E00B46 /* popover-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 8385F5CB14577BEC00E00B46 /* popover-button.png */; };
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
@@ -262,6 +264,9 @@
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
 		83844041144DE51E007C99A2 /* PanelVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCell.m; sourceTree = "<group>"; };
+		8385F5C714577B1000E00B46 /* AuthorPopoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthorPopoverViewController.h; sourceTree = "<group>"; };
+		8385F5C814577B1000E00B46 /* AuthorPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthorPopoverViewController.m; sourceTree = "<group>"; };
+		8385F5CB14577BEC00E00B46 /* popover-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popover-button.png"; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -614,6 +619,8 @@
 				83F7C48C14509EF400AD8880 /* ToolTip.m */,
 				83E04669144F468300C91525 /* ToolTipController.h */,
 				83E0466A144F468300C91525 /* ToolTipController.m */,
+				8385F5C714577B1000E00B46 /* AuthorPopoverViewController.h */,
+				8385F5C814577B1000E00B46 /* AuthorPopoverViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -669,6 +676,7 @@
 				A931613213E0902B009694C3 /* playback-play-active.png */,
 				A931613313E0902B009694C3 /* playback-play.png */,
 				A911B94F13E15E6800B7BFFF /* playback-progress-background.png */,
+				8385F5CB14577BEC00E00B46 /* popover-button.png */,
 				A99C0B4813E017BA0006FAA5 /* progress-bright-side.png */,
 				A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */,
 				A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */,
@@ -1063,6 +1071,7 @@
 				83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */,
 				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
+				8385F5CC14577BEC00E00B46 /* popover-button.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1119,6 +1128,7 @@
 				83E0466B144F468300C91525 /* ToolTipController.m in Sources */,
 				83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */,
 				83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */,
+				8385F5C914577B1100E00B46 /* AuthorPopoverViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
