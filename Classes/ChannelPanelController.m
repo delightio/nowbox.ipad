@@ -552,7 +552,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
                        
             if (nextChannelIndexPath) {
                 NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
-                [videoViewController setCurrentChannel:channel startPlaying:NO];
+				// do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
+                [videoViewController setCurrentChannel:channel];
             }
             
             break;

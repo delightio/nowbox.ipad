@@ -393,6 +393,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
 			currentChannel = [chnObj retain];
+		} else {
+			return;
 		}
 	} else {
 		currentChannel = [chnObj retain];
@@ -406,21 +408,26 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		return;	// return if the channel object is nil
 	}
 	
+	// flush video player
+	[movieView.player removeAllItems];
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
 	playFirstVideoOnLaunchWhenReady = aPlayFlag;
 	currentXOffset = 0.0f;
+	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
+	ribbonView.userInteractionEnabled = NO;
+
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
-	NSArray * vidAy = [playbackModelController videosForBuffering];
-	if ( vidAy ) {
-		[movieView.player resolveAndQueueVideos:vidAy];
-	}
+//	NSArray * vidAy = [playbackModelController videosForBuffering];
+//	if ( vidAy ) {
+//		[movieView.player resolveAndQueueVideos:vidAy];
+//	}
 	
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
-	[self updateRibbonButtons];
+//	[self updateRibbonButtons];
 }
 
 - (NMVideo *)currentVideo {
@@ -439,9 +446,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)playCurrentVideo {
-	if ( movieView.player.rate == 0.0 ) {
+	if ( !forceStopByUser && movieView.player.rate == 0.0 ) {
 		[movieView.player play];
-		forceStopByUser = NO;
 	}
 }
 
@@ -960,8 +966,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)handleChannelManagementNotification:(NSNotification *)aNotification {
 	if ( NM_RUNNING_IOS_5 ) {
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
-            videoWasPaused = (movieView.player.rate == 0.0);
-
 			// stop video from playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 			if ( !movieView.player.airPlayVideoActive ) {
@@ -972,20 +976,20 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			// resume video playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-			if ( !movieView.player.airPlayVideoActive && !videoWasPaused ) [self playCurrentVideo];
+			if ( !movieView.player.airPlayVideoActive ) {
+				forceStopByUser = NO;
+				[self playCurrentVideo];
+			}
 #endif
 		}
 	} else {
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {            
-            videoWasPaused = (movieView.player.rate == 0.0);
-
 			// stop video from playing
 			[self stopVideo];
 		} else {
-            if (!videoWasPaused) {
-                // resume video playing
-                [self playCurrentVideo];
-            }
+			forceStopByUser = NO;
+			// resume video playing
+			[self playCurrentVideo];
 		}
 	}
 }
@@ -1028,7 +1032,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		shouldFadeOutVideoThumbnail = YES;
-		forceStopByUser = NO;	// reset force stop variable when video switches
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
@@ -1091,7 +1094,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// NOTE:
 		// AVQueuePlayer may not post any KVO notification to us on "rate" change.
 		CGFloat theRate = movieView.player.rate;
-		if ( !playFirstVideoOnLaunchWhenReady && theRate > 0.0 ) {
+		if ( (!playFirstVideoOnLaunchWhenReady || forceStopByUser) && theRate > 0.0 ) {
 			[self stopVideo];
 			[loadedControlView setPlayButtonStateForRate:0.0f];
 		} else {
@@ -1152,6 +1155,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
 	if ( NM_RUNNING_IOS_5 ) {
 		[UIView animateWithDuration:0.25f animations:^{
