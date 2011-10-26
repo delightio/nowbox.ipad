@@ -214,8 +214,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
-
-    [[ToolTipController sharedToolTipController] setDelegate:self];
     
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -322,6 +320,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			playFirstVideoOnLaunchWhenReady = YES;
 //			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 //		}];
+        
+        // Start monitoring for tooltips
+        [[ToolTipController sharedToolTipController] startTimer];
+        [[ToolTipController sharedToolTipController] setDelegate:self];
+
 	} else {
 		// cross fade
 #if __IPHONE_4_3 < __IPHONE_OS_VERSION_MAX_ALLOWED
@@ -390,6 +393,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
 			currentChannel = [chnObj retain];
+		} else {
+			return;
 		}
 	} else {
 		currentChannel = [chnObj retain];
@@ -403,21 +408,26 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		return;	// return if the channel object is nil
 	}
 	
+	// flush video player
+	[movieView.player removeAllItems];
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
 	playFirstVideoOnLaunchWhenReady = aPlayFlag;
 	currentXOffset = 0.0f;
+	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
+	ribbonView.userInteractionEnabled = NO;
+
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
-	NSArray * vidAy = [playbackModelController videosForBuffering];
-	if ( vidAy ) {
-		[movieView.player resolveAndQueueVideos:vidAy];
-	}
+//	NSArray * vidAy = [playbackModelController videosForBuffering];
+//	if ( vidAy ) {
+//		[movieView.player resolveAndQueueVideos:vidAy];
+//	}
 	
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
-	[self updateRibbonButtons];
+//	[self updateRibbonButtons];
 }
 
 - (NMVideo *)currentVideo {
@@ -436,9 +446,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)playCurrentVideo {
-	if ( movieView.player.rate == 0.0 ) {
+	if ( !forceStopByUser && movieView.player.rate == 0.0 ) {
 		[movieView.player play];
-		forceStopByUser = NO;
 	}
 }
 
@@ -922,11 +931,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Notification handling
-
-- (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
-#ifdef DEBUG_PLAYBACK_QUEUE
-	NSLog(@"did play notification");
-#endif
+- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
 	if ( playbackModelController.nextVideo == nil ) {
 		// finish up playing the whole channel
 		[self dismissModalViewControllerAnimated:YES];
@@ -934,6 +939,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		didPlayToEnd = YES;
 		[self showNextVideo:YES];
 	}
+}
+
+- (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
+	// For unknown reason, AVPlayerItemDidPlayToEndTimeNotification is sent twice sometimes. Don't know why. This delay execution mechanism tries to solve this problem
+#ifdef DEBUG_PLAYBACK_QUEUE
+	NSLog(@"did play notification: %@", [aNotification name]);
+#endif
+	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayHandleDidPlayItem:) object:[aNotification object]];
+		[self performSelector:@selector(delayHandleDidPlayItem:) withObject:[aNotification object] afterDelay:0.1];
+	});
 }
 
 - (void)handleApplicationDidBecomeActiveNotification:(NSNotification *)aNotification {
@@ -959,14 +976,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			// resume video playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-			if ( !movieView.player.airPlayVideoActive ) [self playCurrentVideo];
+			if ( !movieView.player.airPlayVideoActive ) {
+				forceStopByUser = NO;
+				[self playCurrentVideo];
+			}
 #endif
 		}
 	} else {
-		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
+		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {            
 			// stop video from playing
 			[self stopVideo];
 		} else {
+			forceStopByUser = NO;
 			// resume video playing
 			[self playCurrentVideo];
 		}
@@ -1011,7 +1032,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		shouldFadeOutVideoThumbnail = YES;
-		forceStopByUser = NO;	// reset force stop variable when video switches
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
@@ -1062,7 +1082,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
 		if ( !forceStopByUser ) {
 			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
-			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f ) {
+			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f && !self.modalViewController ) {
 				[self playCurrentVideo];
 			}
 		}
@@ -1074,7 +1094,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// NOTE:
 		// AVQueuePlayer may not post any KVO notification to us on "rate" change.
 		CGFloat theRate = movieView.player.rate;
-		if ( !playFirstVideoOnLaunchWhenReady && theRate > 0.0 ) {
+		if ( (!playFirstVideoOnLaunchWhenReady || forceStopByUser) && theRate > 0.0 ) {
 			[self stopVideo];
 			[loadedControlView setPlayButtonStateForRate:0.0f];
 		} else {
@@ -1135,6 +1155,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
 	if ( NM_RUNNING_IOS_5 ) {
 		[UIView animateWithDuration:0.25f animations:^{
@@ -1153,52 +1174,35 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
-	
-//	if ( !scrollBeyondThreshold && dx > 8.0f ) {
-//		scrollBeyondThreshold = YES;
-//		NSLog(@"scrolled beyond threshold");
-//	}
-	
+	// reduce alpha of the playback view
 	movieView.alpha = (1024.0 - dx) / 1024.0;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-	// this delegate method is called when user has lifted their thumb out of the screen
-//	if ( scrollBeyondThreshold ) [self stopVideo];
-	[self stopVideo];
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 	scrollView.scrollEnabled = NO;
-//	scrollBeyondThreshold = NO;
-//	NMControlsView * ctrlView = [controlViewArray objectAtIndex:RRIndex(currentIndex)];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 //	scrollView.scrollEnabled = YES; move to animation handler
 	if ( scrollView.contentOffset.x > currentXOffset ) {
-//		[movieView setActivityIndicationHidden:NO animated:NO];
+		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
+		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset += 1024.0f;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
 			NSLog(@"can't move to next video. no video!!");
 #endif
-//		if ( launchModeActive ) {
-//			// hide the progress label
-//			[launchController.view removeFromSuperview];
-//			[launchController release];
-//			launchController = nil;
-//			launchModeActive = NO;
-//		}
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
-//		[movieView setActivityIndicationHidden:NO animated:NO];
+		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset -= 1024.0f;
 		if ( playbackModelController.previousVideo ) {
@@ -1208,19 +1212,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-//			[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 	} else {
-		// play the video again
-		[self playCurrentVideo];
 		scrollView.scrollEnabled = YES;
-		// this method pairs with "stopVideo" in scrollViewDidEndDragging
-		// prefer to stop video when user has lifted their thumb. This usually means scrolling is likely to continue. I.e. the prev/next page will be shown. If the video keeps playing when we are showing the next screen, it will be weird. (background sound still playing)
-		
-//		if ( launchModeActive ) {
-//			[launchController restoreProgressLabel];
-//		}
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition

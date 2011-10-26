@@ -48,7 +48,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 //	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
-	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMURLConnectionErrorNotification object:nil];
 
 	return self;
 }
@@ -67,13 +66,17 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	[managedObjectContext release];
 	[super dealloc];
 }
+
 #pragma mark Getter-setter
 - (void)setChannel:(NMChannel *)aChn {
 	if ( aChn ) {
 		// aChn is not null
 		if ( channel != aChn ) {
 			[channel release];
+			if ( channel != nil ) self.fetchedResultsController = nil;
 			channel = [aChn retain];
+		} else {
+			return;
 		}
 	} else {
 		// aChn is null
@@ -90,6 +93,30 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		return;
 		// return
 	}
+	
+	// untether NMVideo object from movie detail view object
+	if ( previousVideo ) {
+		previousVideo.nm_movie_detail_view.video = nil;
+		previousVideo.nm_movie_detail_view = nil;
+	}
+	if ( currentVideo ) {
+		// mark the current video as "played"
+		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
+		currentVideo.nm_movie_detail_view.video = nil;
+		currentVideo.nm_movie_detail_view = nil;
+	}
+	if ( nextVideo ) {
+		nextVideo.nm_movie_detail_view.video = nil;
+		nextVideo.nm_movie_detail_view = nil;
+	}
+	self.previousVideo = nil;
+	self.previousIndexPath = nil;
+	self.currentIndexPath = nil;
+	self.currentVideo = nil;
+	self.nextIndexPath = nil;
+	self.nextVideo = nil;
+	self.nextNextIndexPath = nil;
+	self.nextNextVideo = nil;
 	
 	// 3 possible cases:
 	// check if videos exists
@@ -137,7 +164,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			// we can't find the video from the vid stored. Start playing from the first video in the channel
 			[self initializePlayHead];
 		}
-	} else {
+	}/* else {
 		self.previousVideo = nil;
 		self.previousIndexPath = nil;
 		self.currentIndexPath = nil;
@@ -146,7 +173,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		self.nextVideo = nil;
 		self.nextNextIndexPath = nil;
 		self.nextNextVideo = nil;
-	}
+	}*/
 	// check if we need to download more. Or, in the case where there's no video, download
 	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
 		// download more video from Nowmov
@@ -367,12 +394,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 #endif
 		NSDictionary * info = [aNotification userInfo];
 		[nowboxTaskController issueExamineVideo:[info objectForKey:@"target_object"] errorInfo:info];
-	} else if ( [theName isEqualToString:NMURLConnectionErrorNotification] ) {
-		// general network error. 
-#ifdef DEBUG_PLAYER_DEBUG_MESSAGE
-		debugMessageView.text = [debugMessageView.text stringByAppendingFormat:@"\n%@", [[aNotification userInfo] objectForKey:@"message"]];
-		NSLog(@"general connection error: %@", [[aNotification userInfo] objectForKey:@"message"]);
-#endif
 	} else if ( [theName isEqualToString:AVPlayerItemFailedToPlayToEndTimeNotification] ) {
 #ifdef DEBUG_PLAYER_DEBUG_MESSAGE
 		NSError * theErr = [[aNotification userInfo] objectForKey:AVPlayerItemFailedToPlayToEndTimeErrorKey];

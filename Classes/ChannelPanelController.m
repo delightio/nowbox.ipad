@@ -423,15 +423,18 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     AGOrientedTableView * htView = (AGOrientedTableView *)[(UITableViewCell *)[aTableView cellForRowAtIndexPath:indexPath] viewWithTag:1009];
     
-    if (highlightedChannel == htView.tableController.channel) {
+	// check if user has tapped the currently selected channel
+	if ( [highlightedChannel isEqual:htView.tableController.channel] ) {
         [htView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
         return;
     }
     
-    for (int i=0; i<[[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]; i++) {
+	NSInteger c = [[[htView.tableController.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    for (NSInteger i = 0; i < c; i++) {
         NMVideo * theVideo = [htView.tableController.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
-        if (theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue])) {
+//        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
+		// only play video in that channel which has not been played before
+        if ( theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue]) ) {
             [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             break;
         }
@@ -535,10 +538,27 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             break;
             
         }
-        case NSFetchedResultsChangeDelete:
+        case NSFetchedResultsChangeDelete: {
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
             
+            // Go to next channel, or first channel if we're at the end of the list
+            NSInteger numberOfRows = [[[controller sections] objectAtIndex:0] numberOfObjects];
+            
+            NSIndexPath *nextChannelIndexPath = nil;
+            if (indexPath.row < numberOfRows) {
+                nextChannelIndexPath = indexPath;
+            } else if (numberOfRows > 0) {
+                nextChannelIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            }
+                       
+            if (nextChannelIndexPath) {
+                NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
+				// do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
+                [videoViewController setCurrentChannel:channel];
+            }
+            
+            break;
+        } 
         case NSFetchedResultsChangeUpdate: {
             // the entire channel row shouldn't have to be reconfigured, this should be done in the video row controller
             UITableViewCell *cell = (UITableViewCell *)[tableView cellForRowAtIndexPath:indexPath];

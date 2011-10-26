@@ -153,6 +153,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			// never populated before
 			shouldFirePollingLogic = YES;
 		} else {
+			if ( [chnObj.nm_hidden boolValue] ) {
+				chnObj.nm_hidden = [NSNumber numberWithBool:NO];
+			}
 			// fetch the list of video in this twitter stream channel
 			[self issueGetMoreVideoForChannel:chnObj];
 		}
@@ -163,11 +166,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			// never populated before
 			shouldFirePollingLogic = YES;
 		} else {
+			if ( [chnObj.nm_hidden boolValue] ) {
+				chnObj.nm_hidden = [NSNumber numberWithBool:NO];
+			}
 			// fetch the list of video in this twitter stream channel
 			[self issueGetMoreVideoForChannel:chnObj];
 		}
 	}
 	if ( shouldFirePollingLogic ) {
+		NSLog(@"Should schedule polling timer");
 		[self pollServerForChannelReadiness];
 	}
 }
@@ -440,6 +447,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)stopPollingServer {
 	if ( pollingTimer ) {
+		NSLog(@"stop timer method");
 		[pollingTimer invalidate];
 		self.pollingTimer = nil;
 	}
