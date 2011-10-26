@@ -418,7 +418,7 @@
 	}
 	
 #ifdef DEBUG_CONNECTION_CONTROLLER
-    NSLog(@"Succeeded! Received %d bytes of data, response code %d",[theTask.buffer length], theTask.httpStatusCode);
+    NSLog(@"Succeeded! Received %d bytes of data, response code %d, cmd %d",[theTask.buffer length], theTask.httpStatusCode, theTask.command);
 	if ( [theTask.buffer length] < 200 ) {
 		NSString *str = [[NSString alloc] initWithData:theTask.buffer encoding:NSUTF8StringEncoding];
 		NSLog(@"%@", str);

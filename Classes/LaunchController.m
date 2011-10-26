@@ -59,7 +59,6 @@
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		progressLabel.hidden = NO;
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
-		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
@@ -69,6 +68,8 @@
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 		viewController.launchModeActive = YES;
 	} else {
+		// listen to fail notification
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[self checkUpdateChannels];
 	}
 }
