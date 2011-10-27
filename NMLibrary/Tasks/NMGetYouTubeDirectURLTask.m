@@ -75,7 +75,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		self.errorInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NMErrorNoData] forKey:@"error_code"];
 		return;
 	}
-	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
+//	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
 		NSString * resultString = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 		// remove odd begin pattern in the JSON source from Youtube
 		NSString * cleanResultStr =[resultString stringByReplacingOccurrencesOfString:@")]}'" withString:@"" options:0 range:NSMakeRange(0, 5)];
@@ -111,7 +111,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		} else if ( directURLString == nil && directSDURLString ) {
 			self.directURLString = directSDURLString;
 		}
-	} else {
+	} /*else {
 		if ( httpStatusCode >= 400 && httpStatusCode < 500 ) {
 			// error in the youtube call
 			// parse the XML document <code></code>, <internalReason></internalReason>
@@ -180,7 +180,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		if ( directURLString == nil ) {
 			self.directURLString = directSDURLString;
 		}
-	}
+	}*/
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"resolved URL for %@: %@", self.targetID, [directURLString length] ? @"Y" : @"N");
