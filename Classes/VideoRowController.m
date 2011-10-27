@@ -32,7 +32,6 @@
 - (id)init {
 	self = [super init];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-    recycledCells = [[NSMutableSet alloc] init];
     
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
@@ -51,7 +50,11 @@
 	[channel release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
-    [recycledCells release];
+    
+    for (PanelVideoCell *cell in videoTableView.visibleCells) {
+        // Otherwise we get a bad access when the cell tries to recycle itself to the row delegate (this object)
+        [cell setVideoRowDelegate:nil];
+    }
     
 	[super dealloc];
 }
@@ -79,7 +82,7 @@
 
 - (void)recycleCell:(PanelVideoCell *)cell
 {
-    [recycledCells addObject:cell];
+    [panelController.recycledVideoCells addObject:cell];
 }
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
@@ -98,12 +101,11 @@
         return (UITableViewCell *)cell;
     }
     
-    // TODO: Share cells between rows
     static NSString *CellIdentifier = @"VideoCell";
 //    PanelVideoCell *cell = (PanelVideoCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    PanelVideoCell *cell = [[[recycledCells anyObject] retain] autorelease];
+    PanelVideoCell *cell = [[[panelController.recycledVideoCells anyObject] retain] autorelease];
     if (cell) {
-        [recycledCells removeObject:cell];
+        [panelController.recycledVideoCells removeObject:cell];
     } else {
         cell = [[PanelVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }

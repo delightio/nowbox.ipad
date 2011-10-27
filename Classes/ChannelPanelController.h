@@ -25,6 +25,8 @@ typedef enum {
     IBOutlet UIButton * fullScreenButton;
 	
 	UIView *panelView;
+    NSMutableSet *recycledVideoCells;
+
 @private
 	NMStyleUtility * styleUtility;
 	NSUInteger numberOfChannels;
@@ -47,6 +49,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger highlightedVideoIndex;
 @property (nonatomic, assign) NMChannel *highlightedChannel;
 @property (nonatomic, assign) NMPlaybackViewModeType displayMode;
+@property (nonatomic, retain) NSMutableSet *recycledVideoCells;
 
 - (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex;
 

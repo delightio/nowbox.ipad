@@ -35,6 +35,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 @synthesize selectedIndex;
 @synthesize highlightedChannel, highlightedVideoIndex;
 @synthesize displayMode;
+@synthesize recycledVideoCells;
 
 - (void)awakeFromNib {
 	displayMode = NMHalfScreenMode;
@@ -63,6 +64,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     
     [nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
 
+    recycledVideoCells = [[NSMutableSet alloc] init];
 }
 
 - (void)dealloc {
@@ -70,6 +72,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[panelView release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
+    [recycledVideoCells release];
+    
 	[super dealloc];
 }
 
