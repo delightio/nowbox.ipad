@@ -16,6 +16,7 @@
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
 #import "ToolTipController.h"
+#import "NMNavigationController.h"
 
 #define VIDEO_ROW_LEFT_PADDING			181.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -157,7 +158,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 - (IBAction)showChannelManagementView:(id)sender {	
 	ChannelManagementViewController * chnMngCtrl = [[ChannelManagementViewController alloc] init];
 	chnMngCtrl.managedObjectContext = videoViewController.managedObjectContext;
-	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:chnMngCtrl];
+	NMNavigationController * navCtrl = [[NMNavigationController alloc] initWithRootViewController:chnMngCtrl];
 	navCtrl.navigationBar.barStyle = UIBarStyleBlack;
 	navCtrl.modalPresentationStyle = UIModalPresentationFormSheet;
 	[videoViewController presentModalViewController:navCtrl animated:YES];
