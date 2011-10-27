@@ -36,7 +36,7 @@
 //}
 
 - (void)dealloc {
-//	[notificationCenter removeObserver:self];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[downloadTask release];
 	[channel release];
 	[videoDetail release];

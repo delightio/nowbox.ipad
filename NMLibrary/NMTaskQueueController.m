@@ -240,6 +240,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initSearchChannelWithKeyword:aKeyword];
+	[networkController cancelSearchTasks];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

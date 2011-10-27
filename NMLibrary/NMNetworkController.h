@@ -66,6 +66,7 @@
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
 
 - (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj;
+- (void)cancelSearchTasks;
 - (void)forceCancelAllTasks;
 
 @end

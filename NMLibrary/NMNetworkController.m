@@ -287,6 +287,23 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[pendingTaskBufferLock unlock];
 }
 
+- (void)cancelSearchTasks {
+	[pendingTaskBufferLock lock];
+	for (NMTask * task in pendingTaskBuffer) {
+		switch (task.command) {
+			case NMCommandSearchChannels:
+				// cancel the task
+				if ( task.state == NMTaskExecutionStateConnectionActive ) {
+					task.state = NMTaskExecutionStateCanceled;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	[pendingTaskBufferLock unlock];
+}
+
 - (void)forceCancelAllTasks {
 	// cancel the connection
 	NSURLConnection * conn;
