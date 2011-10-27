@@ -1389,6 +1389,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)movieViewDoubleTap:(id)sender {
+	if ( loadedControlView.hidden ) {
+		[self movieViewTouchUp:sender];
+	}
 	[self playStopVideo:sender];
 }
 
