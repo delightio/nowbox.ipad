@@ -12,7 +12,6 @@
 @implementation FeatureDebugViewController
 @synthesize targetChannel, selectedChannel;
 @synthesize playbackViewController;
-@synthesize fetchedResultsController=fetchedResultsController_;
 
 //- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 //{
@@ -27,7 +26,6 @@
 	[selectedChannel release];
 	[targetChannel release];
 	[playbackViewController release];
-	[fetchedResultsController_ release];
 	[super dealloc];
 }
 
@@ -107,191 +105,33 @@
 	}
 }
 
+- (void)handleGetChannelNotification:(NSNotification *)aNotification {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetChannelWithIDNotification object:nil];
+	
+}
+
 #pragma mark Target action methods
 
-- (IBAction)submitSearch:(id)sender {
-	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
-	[ctrl.dataController clearSearchResultCache];
-	[ctrl issueChannelSearchForKeyword:@"comedy"];
-}
-
-- (IBAction)submitSubscribeChannel:(id)sender {
-	if ( targetChannel ) {
-		[[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:targetChannel];
-	}
-}
-
-- (IBAction)submitUnsubscribeChannel:(id)sender {
-	// unsubscribe a channel
-	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
-	NSArray * results = queueCtrl.dataController.subscribedChannels;
-	if ( [results count] ) {
-		NMChannel * chnObj = [results objectAtIndex:0];
-		[queueCtrl issueSubscribe:NO channel:chnObj];
-	}
-}
-
-- (IBAction)getCurrentSubscription:(id)sender {
-	NMTaskQueueController * queueCtrl = [NMTaskQueueController sharedTaskQueueController];
-	NSArray * results = queueCtrl.dataController.subscribedChannels;
-	NSLog(@"Subscription List:");
-	for (NMChannel * chnObj in results) {
-		NSLog(@"%@", chnObj.title);
-	}
-}
-
-- (IBAction)fetchMoreVideoForCurrentChannel:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:selectedChannel];
-}
-
-- (IBAction)debugPlaybackQueue:(id)sender {
-//	NMAVQueuePlayer * qPlayer = [playbackViewController getQueuePlayer];
-//	NSArray * itemsAy = qPlayer.items;
-//	NSLog(@"num video in queue: %d", [itemsAy count]);
-//	for (NMAVPlayerItem * item in itemsAy) {
-//		NSLog(@"\t%@", item.nmVideo.title);
-//	}
-}
-
-#pragma mark Table View
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath retainPosition:(BOOL)pos {
-	NMChannel * chn = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = chn.title;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
-    return [sectionInfo numberOfObjects];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static NSString *CellIdentifier = @"MyRow";
-    
-	UITableViewCell *cell = (UITableViewCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
-    
-    // Configure the cell.
-	[self configureCell:cell atIndexPath:indexPath retainPosition:NO];
-    
-    return cell;
-}
-
-#pragma mark Fetched results controller
-
-- (NSFetchedResultsController *)fetchedResultsController {
-    
-    if (fetchedResultsController_ != nil) {
-        return fetchedResultsController_;
-    }
+- (IBAction)resetTooltip:(id)sender {
+	[[ToolTipController sharedToolTipController] resetTooltips];
 	
-	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	NSManagedObjectContext * managedObjectContext = dataCtrl.managedObjectContext;
-    
-    /*
-     Set up the fetched results controller.
-	 */
-    // Create the fetch request for the entity.
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
-    [fetchRequest setEntity:entity];
-	[fetchRequest setReturnsObjectsAsFaults:NO];
-	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
-	
-	[fetchRequest setPredicate:dataCtrl.searchResultsPredicate];
-	
-    // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:20];
-    
-    // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
-    
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    // Edit the section name key path and cache name if appropriate.
-    // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
-    
-    [aFetchedResultsController release];
-    [fetchRequest release];
-    [sortDescriptor release];
-    [sortDescriptors release];
-    
-    NSError *error = nil;
-    if (![fetchedResultsController_ performFetch:&error]) {
-        /*
-         Replace this implementation with code to handle the error appropriately.
-         
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-         */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    
-    return fetchedResultsController_;
-}    
-
-#pragma mark Fetched results controller delegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [tableView beginUpdates];
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Tooltips have been reset." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	[alert show];
+	[alert release];
 }
 
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
+- (IBAction)getDebugChannel:(id)sender {
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelWithIDNotification object:nil];
+	// get debug channel
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:1844];
 }
 
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    switch(type) {
-            
-        case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
-}
-
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-	[tableView endUpdates];
+- (IBAction)subscribeDebugChannel:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	NMChannel * chnObj = [tqc.dataController channelForID:[NSNumber numberWithInteger:1844]];
+	if ( chnObj ) {
+		[tqc issueSubscribe:YES channel:chnObj];
+	}
 }
 
 @end

@@ -232,6 +232,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueGetChannelWithID:(NSInteger)chnID {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelWithID:chnID];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initSearchChannelWithKeyword:aKeyword];
 	[networkController addNewConnectionForTask:task];

@@ -56,6 +56,7 @@
 // Channel
 - (void)issueGetSubscribedChannels;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
+- (void)issueGetChannelWithID:(NSInteger)chnID;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;

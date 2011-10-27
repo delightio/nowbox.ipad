@@ -19,6 +19,10 @@ NSString * const NMWillGetChannelsNotification = @"NMWillGetChannelsNotification
 NSString * const NMDidGetChannelsNotification = @"NMDidGetChannelsNotification";
 NSString * const NMDidFailGetChannelsNotification = @"NMDidFailGetChannelsNotification";
 
+NSString * const NMWillGetChannelWithIDNotification = @"NMWillGetChannelWithIDNotification";
+NSString * const NMDidGetChannelWithIDNotification = @"NMDidGetChannelWithIDNotification";
+NSString * const NMDidFailGetChannelWithIDNotification = @"NMDidFailGetChannelWithIDNotification";
+
 NSString * const NMWillGetChannelsForCategoryNotification = @"NMWillGetChannelsForCategoryNotification";
 NSString * const NMDidGetChannelsForCategoryNotification = @"NMDidGetChannelsForCategoryNotification";
 NSString * const NMDidFailGetChannelsForCategoryNotification = @"NMDidFailGetChannelsForCategoryNotification";
@@ -105,6 +109,13 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	return self;
 }
 
+- (id)initGetChannelWithID:(NSInteger)chnID {
+	self = [self init];
+	command = NMCommandGetChannelWithID;
+	self.targetID = [NSNumber numberWithInteger:chnID];
+	return self;
+}
+
 - (void)dealloc {
 	[channelJSONKeys release];
 //	[trendingChannel release];
@@ -128,6 +139,9 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		case NMCommandSearchChannels:
 			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@", NM_BASE_URL, NM_USER_ACCOUNT_ID, [searchWord stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			break;
+		case NMCommandGetChannelWithID:
+			urlStr = [NSString stringWithFormat:@"http://%@/channels/%@?user_id=%d", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
+			break;
 		default:
 			break;
 	}
@@ -144,9 +158,13 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	if ( [buffer length] == 0 ) {
 		return;
 	}
-	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-	NSArray * theChs = [str objectFromJSONString];
-	[str release];
+	id parsedJSONObj = [buffer objectFromJSONData];
+	NSArray * theChs;
+	if ( command == NMCommandGetChannelWithID ) {
+		theChs = [NSArray arrayWithObject:[NSDictionary dictionaryWithObject:parsedJSONObj forKey:@"account"]];
+	} else {
+		theChs = parsedJSONObj;
+	}
 	
 	parsedObjectDictionary = [[NSMutableDictionary alloc] initWithCapacity:[theChs count]];
 	NSDictionary * cDict, * chnCtnDict;
@@ -154,10 +172,9 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	channelIndexSet = [[NSMutableIndexSet alloc] init];
 	NSNumber * idNum;
 	NSInteger i = 0;
-	NSNumber * subscribedNum = nil;
 	BOOL containsKeywordChannel = NO;
-	if ( command == NMCommandGetSubscribedChannels ) {
-		subscribedNum = [NSNumber numberWithBool:YES];
+	if ( command == NMCommandGetChannelWithID ) {
+		
 	}
 	for (cDict in theChs) {
 		for (NSString * rKey in cDict) {				// attribute key cleanser
@@ -166,6 +183,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			pDict = [NMGetChannelsTask normalizeChannelDictionary:chnCtnDict];
 			switch (command) {
 				case NMCommandGetSubscribedChannels:
+				case NMCommandGetChannelWithID:
 #ifdef DEBUG_CHANNEL
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
 #else
@@ -319,6 +337,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			return NMWillSearchChannelsNotification;
 		case NMCommandGetChannelsForCategory:
 			return NMWillGetChannelsForCategoryNotification;
+		case NMCommandGetChannelWithID:
+			return NMWillGetChannelWithIDNotification;
 		default:
 			return NMWillGetChannelsNotification;
 	}
@@ -330,6 +350,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			return NMDidSearchChannelsNotification;
 		case NMCommandGetChannelsForCategory:
 			return NMDidGetChannelsForCategoryNotification;
+		case NMCommandGetChannelWithID:
+			return NMDidGetChannelWithIDNotification;
 		default:
 			return NMDidGetChannelsNotification;
 	}
@@ -341,6 +363,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			return NMDidFailSearchChannelsNotification;
 		case NMCommandGetChannelsForCategory:
 			return NMDidFailGetChannelsForCategoryNotification;
+		case NMCommandGetChannelWithID:
+			return NMDidFailGetChannelWithIDNotification;
 		default:
 			return NMDidFailGetChannelsNotification;
 	}
@@ -364,13 +388,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			return [NSDictionary dictionaryWithObjectsAndKeys:category, @"category", nil];
 		}
 		default:
-		{
-//			if ( trendingChannel ) {
-//				return [NSDictionary dictionaryWithObjectsAndKeys:trendingChannel, @"live_channel", [NSNumber numberWithInteger:command], @"type", nil];
-//			} else {
-				return [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:command] forKey:@"type"];
-//			}
-		}
+			break;
 	}
 	return nil;
 }

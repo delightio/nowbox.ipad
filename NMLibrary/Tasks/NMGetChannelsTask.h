@@ -29,5 +29,6 @@
 - (id)initGetDefaultChannels;
 - (id)initGetChannelForCategory:(NMCategory *)aCat;
 - (id)initSearchChannelWithKeyword:(NSString *)str;
+- (id)initGetChannelWithID:(NSInteger)chnID;
 
 @end

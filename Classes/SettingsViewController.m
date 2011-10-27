@@ -71,10 +71,10 @@
 	hdSwitch.on = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
 	[hdSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
-	mobileBrowserSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-	mobileBrowserSwitch.tag = NM_SETTING_MOBILE_BROWSER_SWITCH_TAG;
-	mobileBrowserSwitch.on = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
-	[mobileBrowserSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+//	mobileBrowserSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+//	mobileBrowserSwitch.tag = NM_SETTING_MOBILE_BROWSER_SWITCH_TAG;
+//	mobileBrowserSwitch.on = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
+//	[mobileBrowserSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 
 	favoriteChannelSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 	favoriteChannelSwitch.tag = NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG;
@@ -127,10 +127,10 @@
 			NM_USE_HIGH_QUALITY_VIDEO = theSwitch.on;
 			[userDefaults setBool:theSwitch.on forKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
 			break;
-		case NM_SETTING_MOBILE_BROWSER_SWITCH_TAG:
-			NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = theSwitch.tag;
-			[userDefaults setBool:theSwitch.on forKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
-			break;
+//		case NM_SETTING_MOBILE_BROWSER_SWITCH_TAG:
+//			NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = theSwitch.tag;
+//			[userDefaults setBool:theSwitch.on forKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
+//			break;
 		case NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG:
 			NM_USER_SHOW_FAVORITE_CHANNEL = theSwitch.on;
 			[[NMTaskQueueController sharedTaskQueueController].dataController updateFavoriteChannelHideStatus];
@@ -172,14 +172,13 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 5;
+	return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	NSInteger numRow = 1;
 	switch (section) {
-		case 0:
 		case 3:
 			numRow = 2;
 			break;
@@ -196,7 +195,6 @@
     static NSString * CellIdentifier = @"Cell";
 	static NSString * SocialCellIdentifier = @"SocialCell";
 	static NSString * EmailCellIdentifier = @"EmailCell";
-    static NSString * TooltipCellIdentifier = @"TooltipCell";
 
     UITableViewCell * cell;
 	NSString * lblStr = nil;
@@ -239,15 +237,6 @@
 			userIDField.text = [userDefaults stringForKey:NM_USER_ACCOUNT_ID_KEY];
 			break;
 			
-        case 4:
-            cell = [tableView dequeueReusableCellWithIdentifier:TooltipCellIdentifier];
-			if (cell == nil) {
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			}
-            cell.textLabel.text = @"Reset Tooltips";
-            break;
-
 		default:
 			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 			if (cell == nil) {
@@ -290,9 +279,6 @@
 		case 3:
 			return @"Notifications";
 			
-        case 5:
-            return @"Tooltips";
-            
 		default:
 			break;
 	}
@@ -318,11 +304,6 @@
 {
 	if (indexPath.section == 4) {
         // Reset tooltips
-        [[ToolTipController sharedToolTipController] resetTooltips];
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Tooltips have been reset." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        [alert release];
         
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
