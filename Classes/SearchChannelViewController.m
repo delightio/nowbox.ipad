@@ -10,7 +10,7 @@
 #import "CategoryTableCell.h"
 #import "NMCachedImageView.h"
 #import "ChannelDetailViewController.h"
-
+#import "MixpanelAPI.h"
 
 @implementation SearchChannelViewController
 
@@ -180,6 +180,10 @@
     channelDetailViewController.channel = chn;
     [self.navigationController pushViewController:channelDetailViewController animated:YES];
     [searchBar resignFirstResponder];
+    
+    [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name", 
+                                                                       [NSNumber numberWithBool:NO], @"social_channel", 
+                                                                       @"search", @"source", nil]];
 }
 
 
@@ -379,6 +383,8 @@
     if ([searchText length] > 0) {
         progressView.hidden = NO;
         [ctrl issueChannelSearchForKeyword:searchText];
+        
+        [[MixpanelAPI sharedAPI] track:@"Perform Search" properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
     }
 }
 

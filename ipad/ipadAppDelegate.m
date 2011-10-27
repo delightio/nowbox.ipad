@@ -13,6 +13,7 @@
 #import "ToolTipController.h"
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
+#define NM_MIXPANEL_TOKEN @"ccbb47ab132e0f86791bbf2e5277c3ed"
 
 // user data
 NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
@@ -28,6 +29,7 @@ NSString * const NM_LAST_SESSION_DATE		= @"NM_LAST_SESSION_DATE";
 NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
 NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
+NSString * const NM_SESSION_COUNT_KEY		= @"NM_SESSION_COUNT_KEY";
 // setting view
 NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
 NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
@@ -59,6 +61,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
+      [NSNumber numberWithInteger:0], NM_SESSION_COUNT_KEY,
 	  [NSNumber numberWithBool:YES], NM_SHOW_FAVORITE_CHANNEL_KEY,
 	  [NSNumber numberWithBool:NO], NM_ENABLE_PUSH_NOTIFICATION_KEY,
 	  [NSNumber numberWithBool:NO], NM_ENABLE_EMAIL_NOTIFICATION_KEY,
@@ -83,6 +86,22 @@ NSInteger NM_LAST_CHANNEL_ID;
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 	[alert release];
+}
+
+- (void)updateMixpanelProperties {
+    // Get the time elapsed rounded to the nearest 10 minutes
+    NSDate *now = [NSDate date];
+    NSTimeInterval timeOnApp = [now timeIntervalSince1970] - applicationStartTime;
+    NSNumber *roundedTime = [NSNumber numberWithInteger:((NSInteger) timeOnApp / 600) * 10];
+    
+    [dateFormatter setDateFormat:@"HH00"];
+    NSString *timeString = [dateFormatter stringFromDate:now];
+    [dateFormatter setDateFormat:@"EEEE"];
+    NSString *dayOfWeekString = [dateFormatter stringFromDate:now];
+    
+    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:roundedTime, @"time_on_app",
+                                       timeString, @"time_of_day",
+                                       dayOfWeekString, @"day", nil]];
 }
 
 #pragma mark Application Lifecycle
@@ -119,11 +138,25 @@ NSInteger NM_LAST_CHANNEL_ID;
 		[[NMCacheController sharedCacheController] removeAllFiles];
 	}
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
-	
+    NSNumber *sessionCount = [NSNumber numberWithInteger:[userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1];
+	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
+    [userDefaults synchronize];
+    
 	self.window.rootViewController = viewController;
 	[self.window makeKeyAndVisible];
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
+    
+    // Set up analytics
+    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_MIXPANEL_TOKEN];
+    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", @"device",
+                                       sessionCount, @"visit_number", nil]];
+    
+    applicationStartTime = [[NSDate date] timeIntervalSince1970];
+    dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
+    [self updateMixpanelProperties];
+    [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(updateMixpanelProperties) userInfo:nil repeats:YES];
     
     return YES;
 }
@@ -223,6 +256,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 //	[navigationViewController release];
 //	[launchViewController release];
 	[viewController release];
+    [dateFormatter release];
+
     [super dealloc];
 }
 

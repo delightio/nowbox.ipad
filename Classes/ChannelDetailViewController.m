@@ -10,6 +10,7 @@
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ChannelPreviewView.h"
+#import "MixpanelAPI.h"
 
 #define NM_THUMBNAIL_PADDING		20.0f
 
@@ -137,6 +138,9 @@
 	[channelThumbnailView setImageForChannel:channel];
 	// load channel detail
 	[[NMTaskQueueController sharedTaskQueueController] issueGetDetailForChannel:channel];
+    
+    [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name", nil]];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -237,6 +241,9 @@
                      completion:^(BOOL finished) {
                      }];
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+    
+    [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
+                                                                    @"channeldetails_subscribe", @"source", nil]];
 }
 
 -(IBAction)subscribeAndWatchChannel:(id)sender {
@@ -249,6 +256,9 @@
                      }];
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
     shouldDismiss = YES;
+    
+    [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
+                                                                    @"channeldetails_watchnow", @"source", nil]];
 }
 
 -(IBAction)unsubscribeChannel:(id)sender {
@@ -259,6 +269,10 @@
                      completion:^(BOOL finished) {
                      }];
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channel];
+    
+    [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
+                                                                      @"channeldetails_unsubscribe", @"source", nil]];
+
 }
 
 #pragma mark Notification handlers

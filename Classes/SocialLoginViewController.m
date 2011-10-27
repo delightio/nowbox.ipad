@@ -119,6 +119,19 @@
 	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+    
+    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
+                                                      [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
+    switch (loginType) {
+        case LoginTwitterType:
+            [[MixpanelAPI sharedAPI] track:@"Twitter Login Succeeded"];
+            break;
+        case LoginFacebookType:
+            [[MixpanelAPI sharedAPI] track:@"Facebook Login Succeeded"];
+            break;
+        default:
+            break;
+    }
 	// channel refresh command is issued in TaskQueueScheduler
 	
 	// listen to channel refresh notification 
@@ -137,6 +150,17 @@
 	progressLabel.text = @"Verification Process Failed";
 	[loadingIndicator stopAnimating];
 	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0f];
+    
+    switch (loginType) {
+        case LoginTwitterType:
+            [[MixpanelAPI sharedAPI] track:@"Twitter Login Failed"];
+            break;
+        case LoginFacebookType:
+            [[MixpanelAPI sharedAPI] track:@"Facebook Login Failed"];
+            break;
+        default:
+            break;
+    }
 }
 
 #pragma mark Webview delegate methods

@@ -125,7 +125,7 @@ static ToolTipController *toolTipController = nil;
     self = [super init];
     if (self) {
         monitoredToolTips = [[NSMutableSet alloc] init];        
-        firstLaunch = [[[NSUserDefaults standardUserDefaults] objectForKey:NM_FIRST_LAUNCH_KEY] boolValue];
+        firstLaunch = ([[[NSUserDefaults standardUserDefaults] objectForKey:NM_SESSION_COUNT_KEY] integerValue] == 1);
         
         [self setup];
     }
@@ -361,7 +361,7 @@ static ToolTipController *toolTipController = nil;
 - (void)resetTooltips
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:[NSNumber numberWithBool:YES] forKey:NM_FIRST_LAUNCH_KEY];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:NM_SESSION_COUNT_KEY];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kBadVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelManagementTapCountKey];

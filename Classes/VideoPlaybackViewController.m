@@ -1271,6 +1271,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			// hide the progress label
 //			launchController.progressContainerView.alpha = 0.0f;
 //		}
+        
+        [[MixpanelAPI sharedAPI] track:@"Exit Full Screen Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
+                                                                             playbackModelController.currentVideo.title, @"video_name", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
 
 	} else {
 		// slide out the channel view
@@ -1286,6 +1290,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
+        
+        [[MixpanelAPI sharedAPI] track:@"Enter Full Screen Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
+                                                                             playbackModelController.currentVideo.title, @"video_name", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
@@ -1356,6 +1364,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		rvPosition.y -= splitViewRect.size.height;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
+        
+        [[MixpanelAPI sharedAPI] track:@"Enter Full Screen Channel Panel" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
+                                                                                      playbackModelController.currentVideo.title, @"video_name",
+                                                                                      nil]];                                                                                                                                                                                                                                                                                                                                                                        
+
 	} else if ( !shouldToggleToFullScreen && channelController.displayMode != NMHalfScreenMode ) {
 		// move the panel down
 		theFrame.origin.y = splitViewRect.size.height;
@@ -1364,6 +1377,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		rvPosition.y += splitViewRect.size.height;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
+        
+        [[MixpanelAPI sharedAPI] track:@"Exit Full Screen Channel Panel" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
+                                                                                    playbackModelController.currentVideo.title, @"video_name", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
 	}
 	channelController.panelView.frame = theFrame;
 	controlScrollView.frame = scrollFrame;
