@@ -99,6 +99,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 - (id)initSearchChannelWithKeyword:(NSString *)str {
 	self = [self init];
 	command = NMCommandSearchChannels;
+	self.targetID = [NSNumber numberWithInteger:(NSUInteger)str];
 	self.searchWord = str;
 	return self;
 }
