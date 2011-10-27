@@ -376,6 +376,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 		[pendingTaskBufferLock lock];
 		[pendingTaskBuffer removeObject:task];
 		[pendingTaskBufferLock unlock];
+		[self returnNetworkResource];
 	} else {
 		[task.buffer appendData:data];
 	}
