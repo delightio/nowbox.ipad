@@ -610,7 +610,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// get all stream and keyword channels that have never been populated before. The backend needs to poll the server to see if videos are available in those channels
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"type IN %@ AND populated_at == %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelKeywordType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserFacebookType], nil], [NSDate dateWithTimeIntervalSince1970:0.0f]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"type != %@ AND nm_subscribed > 0 AND populated_at < %@", [NSNumber numberWithInteger:NMChannelUserType], [NSDate dateWithTimeIntervalSince1970:10.0f]]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];

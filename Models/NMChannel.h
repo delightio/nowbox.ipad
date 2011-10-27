@@ -11,12 +11,16 @@
 
 @class NMCategory, NMChannelDetail, NMPreviewThumbnail, NMVideo;
 
-@interface NMChannel : NSManagedObject
+@interface NMChannel : NSManagedObject {
+	NSNumber * nm_populated;
+	BOOL didFirstPopulateStatusCheck;
+}
 
 @property (nonatomic, retain) NSNumber * nm_current_page;
 @property (nonatomic, retain) NSNumber * nm_hidden;
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_last_vid;
+@property (nonatomic, retain) NSNumber * nm_populated;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSNumber * nm_subscribed;
 @property (nonatomic, retain) NSString * nm_thumbnail_file_name;
@@ -34,6 +38,7 @@
 @property (nonatomic, retain) NMChannelDetail *detail;
 @property (nonatomic, retain) NSSet *previewThumbnails;
 @property (nonatomic, retain) NSSet *videos;
+
 @end
 
 @interface NMChannel (CoreDataGeneratedAccessors)
@@ -52,5 +57,10 @@
 - (void)removeVideosObject:(NMVideo *)value;
 - (void)addVideos:(NSSet *)values;
 - (void)removeVideos:(NSSet *)values;
+
+- (NSDate *)primitivePopulated_at;
+- (void)setPrimitivePopulated_at:(NSDate *)aDate;
+- (NSNumber *)primitiveNm_populated;
+- (void)setPrimitiveNm_populated:(NSNumber *)aVal;
 
 @end
