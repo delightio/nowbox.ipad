@@ -23,7 +23,7 @@ NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
-BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= NO;
+//BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
 NSNumber * NM_SESSION_ID					= nil;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
@@ -228,6 +228,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelForCategory:aCat];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueGetChannelWithID:(NSInteger)chnID {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelWithID:chnID];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

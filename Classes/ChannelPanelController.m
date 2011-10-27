@@ -41,14 +41,14 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 - (void)awakeFromNib {
 	displayMode = NMHalfScreenMode;
     highlightedVideoIndex = -1;
+	
+#ifndef DEBUG_PLAYER_NAVIGATION
+	filterButton.hidden = YES;
+#endif
     
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//	tableView.separatorColor = [UIColor clearColor];
-//	tableView.separatorColor = styleUtility.channelBorderColor;
-//	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-///	tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nowbox_background"]];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
