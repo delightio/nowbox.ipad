@@ -25,14 +25,14 @@
 	NSPredicate * videoInChannelPredicateTemplate;
 	NSPredicate * channelPredicateTemplate;
 	NSPredicate * channelAndSessionPredicateTemplate;
+	NSPredicate * cachedChannelsPredicate;
 	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription;
 	
-	// Core data query cache. Cache recent core data search result.
+	// Core data query cache. Cache recent core data search result. The cache is for reducing number of database access round trips. Simple cache policy - first in first out.
 	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
 	
-//	NMChannel * trendingChannel;
 	NSArray * lastSessionVideoIDs;
 	
 	// for channel search
@@ -58,7 +58,6 @@
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
 @property (nonatomic, retain) NMCategory * internalSubscribedChannelsCategory;
-//@property (nonatomic, readonly) NMChannel * trendingChannel;
 @property (nonatomic, readonly) NSArray * subscribedChannels;	// for debug purpose
 @property (nonatomic, readonly) NSArray * categories;
 @property (nonatomic, retain) NSArray * lastSessionVideoIDs;
@@ -98,6 +97,7 @@
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NMChannel *)channelNextTo:(NMChannel *)anotherChannel;
+- (void)clearChannelCache;
 // channel detail
 - (NSArray *)previewsForChannel:(NMChannel *)chnObj;
 // video
