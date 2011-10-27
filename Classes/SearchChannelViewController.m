@@ -182,11 +182,19 @@
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
     channelDetailViewController.channel = chn;
-    [self.navigationController pushViewController:channelDetailViewController animated:YES];
-    [searchBar resignFirstResponder];
+    
+    if ([searchBar isFirstResponder]) {
+        // Hide keyboard first
+        [searchBar resignFirstResponder];
+        [self performSelector:@selector(keyboardDidHide) withObject:nil afterDelay:0.3];
+    } else {
+        [self.navigationController pushViewController:channelDetailViewController animated:YES];
+    }
 }
 
-
+- (void)keyboardDidHide {
+    [self.navigationController pushViewController:channelDetailViewController animated:YES];
+}
 
 #pragma mark Notification handlers
 
