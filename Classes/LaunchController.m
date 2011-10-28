@@ -52,14 +52,13 @@
 	NM_USER_TWITTER_CHANNEL_ID = [userDefaults integerForKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 	NM_USER_FACEBOOK_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	NM_USE_HIGH_QUALITY_VIDEO = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
-	NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
+//	NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		progressLabel.hidden = NO;
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
-		NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
@@ -69,6 +68,8 @@
 		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 		viewController.launchModeActive = YES;
 	} else {
+		// listen to fail notification
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[self checkUpdateChannels];
 	}
 }

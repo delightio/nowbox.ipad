@@ -25,7 +25,6 @@
     CGPoint tempOffset;
     
     IBOutlet UITableViewCell *loadingCell;
-    NSMutableSet *recycledCells;
 }
 
 @property (nonatomic, assign) AGOrientedTableView * videoTableView;

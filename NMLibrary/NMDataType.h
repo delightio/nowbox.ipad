@@ -20,6 +20,7 @@ typedef enum {
 	NMCommandGetSubscribedChannels,
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
+	NMCommandGetChannelWithID,			// this is for subscribing to debug channels
 	NMCommandPollChannel,
 	NMCommandGetChannelDetail,
 	NMCommandCreateKeywordChannel,
@@ -82,7 +83,7 @@ typedef enum {
 	NMChannelUserTwitterType,
 } NMChannelType;
 
-
+extern NSString * NMServiceErrorDomain;
 // Notifications
 // error
 extern NSString * const NMShowErrorAlertNotification;
@@ -103,6 +104,9 @@ extern NSString * const NMDidFailSignOutUserNotification;
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;
 extern NSString * const NMDidFailGetChannelsNotification;
+extern NSString * const NMWillGetChannelWithIDNotification;
+extern NSString * const NMDidGetChannelWithIDNotification;
+extern NSString * const NMDidFailGetChannelWithIDNotification;
 extern NSString * const NMWillGetChannelsForCategoryNotification;
 extern NSString * const NMDidGetChannelsForCategoryNotification;
 extern NSString * const NMDidFailGetChannelsForCategoryNotification;

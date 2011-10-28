@@ -11,7 +11,7 @@
 #import "NMDataType.h"
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
-
+NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 
 @interface NMNetworkController (PrivateMethods)
 
@@ -287,6 +287,23 @@
 	[pendingTaskBufferLock unlock];
 }
 
+- (void)cancelSearchTasks {
+	[pendingTaskBufferLock lock];
+	for (NMTask * task in pendingTaskBuffer) {
+		switch (task.command) {
+			case NMCommandSearchChannels:
+				// cancel the task
+				if ( task.state == NMTaskExecutionStateConnectionActive ) {
+					task.state = NMTaskExecutionStateCanceled;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	[pendingTaskBufferLock unlock];
+}
+
 - (void)forceCancelAllTasks {
 	// cancel the connection
 	NSURLConnection * conn;
@@ -359,6 +376,7 @@
 		[pendingTaskBufferLock lock];
 		[pendingTaskBuffer removeObject:task];
 		[pendingTaskBufferLock unlock];
+		[self returnNetworkResource];
 	} else {
 		[task.buffer appendData:data];
 	}
@@ -418,7 +436,7 @@
 	}
 	
 #ifdef DEBUG_CONNECTION_CONTROLLER
-    NSLog(@"Succeeded! Received %d bytes of data, response code %d",[theTask.buffer length], theTask.httpStatusCode);
+    NSLog(@"Succeeded! Received %d bytes of data, response code %d, cmd %d",[theTask.buffer length], theTask.httpStatusCode, theTask.command);
 	if ( [theTask.buffer length] < 200 ) {
 		NSString *str = [[NSString alloc] initWithData:theTask.buffer encoding:NSUTF8StringEncoding];
 		NSLog(@"%@", str);
@@ -438,11 +456,22 @@
 //	if ( theTask.command > NMCommandImageDownloadCommandBoundary ) {
 //		[dataController storeImageForTask:(NMImageDownloadTask *)theTask];
 //	} else {
-	if ( theTask.httpStatusCode >= 400 && !theTask.executeSaveActionOnError ) {
+	NSInteger scode = theTask.httpStatusCode;
+	if ( scode >= 400 && !theTask.executeSaveActionOnError ) {
 		// fire error notification right here
 		NSDictionary * errorInfo = [theTask failUserInfo];
 		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:(errorInfo == nil ? [NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil] : errorInfo)];
 		[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
+		NMCommand cmd = theTask.command;
+		if ( scode < 500 && cmd != NMCommandSendEvent && cmd != NMCommandGetYouTubeDirectURL ) {
+			// this is authorization related error. post a pop up box to user
+			if ( [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
+				// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
+				NSError * error = [NSError errorWithDomain:NMServiceErrorDomain code:scode userInfo:nil];
+				[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
+				self.errorWindowStartDate = [NSDate date];
+			}
+		}
 	} else {
 		[dataController createDataParsingOperationForTask:theTask];
 	}

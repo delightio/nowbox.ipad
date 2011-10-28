@@ -16,6 +16,7 @@
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
 #import "ToolTipController.h"
+#import "NMNavigationController.h"
 
 #define VIDEO_ROW_LEFT_PADDING			181.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -35,18 +36,19 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 @synthesize selectedIndex;
 @synthesize highlightedChannel, highlightedVideoIndex;
 @synthesize displayMode;
+@synthesize recycledVideoCells;
 
 - (void)awakeFromNib {
 	displayMode = NMHalfScreenMode;
     highlightedVideoIndex = -1;
+	
+#ifndef DEBUG_PLAYER_NAVIGATION
+	filterButton.hidden = YES;
+#endif
     
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	tableView.rowHeight = NM_VIDEO_CELL_HEIGHT;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//	tableView.separatorColor = [UIColor clearColor];
-//	tableView.separatorColor = styleUtility.channelBorderColor;
-//	tableView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-///	tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"nowbox_background"]];
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
@@ -63,6 +65,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     
     [nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
 
+    recycledVideoCells = [[NSMutableSet alloc] init];
 }
 
 - (void)dealloc {
@@ -70,6 +73,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[panelView release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
+    [recycledVideoCells release];
+    
 	[super dealloc];
 }
 
@@ -153,7 +158,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 - (IBAction)showChannelManagementView:(id)sender {	
 	ChannelManagementViewController * chnMngCtrl = [[ChannelManagementViewController alloc] init];
 	chnMngCtrl.managedObjectContext = videoViewController.managedObjectContext;
-	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:chnMngCtrl];
+	NMNavigationController * navCtrl = [[NMNavigationController alloc] initWithRootViewController:chnMngCtrl];
 	navCtrl.navigationBar.barStyle = UIBarStyleBlack;
 	navCtrl.modalPresentationStyle = UIModalPresentationFormSheet;
 	[videoViewController presentModalViewController:navCtrl animated:YES];

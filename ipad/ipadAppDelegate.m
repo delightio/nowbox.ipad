@@ -11,6 +11,7 @@
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
 #import "ToolTipController.h"
+#import <BugSense-iOS/BugSenseCrashController.h>
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
 #define NM_MIXPANEL_TOKEN @"ccbb47ab132e0f86791bbf2e5277c3ed"
@@ -32,7 +33,7 @@ NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
 NSString * const NM_SESSION_COUNT_KEY		= @"NM_SESSION_COUNT_KEY";
 // setting view
 NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
-NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
+//NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
 NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
 NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
 NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY	= @"NM_ENABLE_EMAIL_NOTIFICATION_KEY";
@@ -57,7 +58,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  [NSDate distantPast], NM_LAST_SESSION_DATE,
 	  [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, 
-	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
+//	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
 	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
@@ -80,10 +81,25 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
 	NSError * error = [[aNotification userInfo] objectForKey:@"error"];
 	NSString * title = nil;
-	if ( [[error domain] isEqualToString:NSURLErrorDomain] ) {
+	NSString * message = nil;
+	NSString * errDmn = [error domain];
+	if ( [errDmn isEqualToString:NSURLErrorDomain] ) {
 		title = @"Connection Error";
+		message = [error localizedDescription];
+	} else if ( [errDmn isEqualToString:NMServiceErrorDomain] ) {
+		switch ([error code]) {
+			case 404:
+				title = @"Authorization Error";
+				message = @"Please contact us for assistance";
+				break;
+				
+			default:
+				title = @"Access Denied";
+				message = @"Please contact us for assistance";
+				break;
+		}
 	}
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 	[alert release];
 }
@@ -108,6 +124,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Enable crash reporting
+    [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:@"775bf5eb" 
+                                               userDictionary:nil 
+                                              sendImmediately:NO];
+    
 	// detect version
 	if ( kCFCoreFoundationVersionNumber > 550.58f ) {
 		NM_RUNNING_IOS_5 = YES;

@@ -23,7 +23,7 @@ NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
-BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= NO;
+//BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
 NSNumber * NM_SESSION_ID					= nil;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
@@ -63,6 +63,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
 //	[nc addObserver:self selector:@selector(handleFailChannelPollingNotification:) name:NMDidFailEditUserNotification object:nil];
+	// listen to subscription as well
+	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
 	return self;
 }
@@ -131,17 +133,25 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueGetSubscribedChannels];
 }
 
+- (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
+	// when user has subscribed a channel, we need to check if the channel has contents populated.
+	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+	if ( [chnObj.type integerValue] == NMChannelKeywordType && ![chnObj.nm_populated boolValue] ) {
+		// this is a keyword channel. we need to check if if has been populated or not
+		// fire the polling logic
+		[self pollServerForChannelReadiness];
+	}
+}
+
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
 	if ( !didFinishLogin ) return;
 	
 	didFinishLogin = NO;
-	// user channels
-	NSDate * unixDateZero = [NSDate dateWithTimeIntervalSince1970:0.0f];
-	if ( [dataController.myQueueChannel.populated_at compare:unixDateZero] == NSOrderedDescending ) {
-		// my queue channel has been populated before, need to fetch the videos in it.
+	// check user channels
+	if ( ![dataController.myQueueChannel.nm_populated boolValue] ) {
 		[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
 	}
-	if ( [dataController.favoriteVideoChannel.populated_at compare:unixDateZero] == NSOrderedDescending ) {
+	if ( ![dataController.favoriteVideoChannel.nm_populated boolValue] ) {
 		[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
 	}
 	// stream channel (twitter/facebook), we don't distinguish here whether the user has just logged in twitter or facebook. no harm fetching video list for 
@@ -149,28 +159,28 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	BOOL shouldFirePollingLogic = NO;
 	if ( NM_USER_TWITTER_CHANNEL_ID ) {
 		chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
-		if ( [chnObj.populated_at compare:unixDateZero] != NSOrderedDescending ) {
-			// never populated before
-			shouldFirePollingLogic = YES;
-		} else {
+		if ( [chnObj.nm_populated boolValue] ) {
 			if ( [chnObj.nm_hidden boolValue] ) {
 				chnObj.nm_hidden = [NSNumber numberWithBool:NO];
 			}
 			// fetch the list of video in this twitter stream channel
 			[self issueGetMoreVideoForChannel:chnObj];
+		} else {
+			// never populated before
+			shouldFirePollingLogic = YES;
 		}
 	}
 	if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 		chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
-		if ( [chnObj.populated_at compare:unixDateZero] != NSOrderedDescending ) {
-			// never populated before
-			shouldFirePollingLogic = YES;
-		} else {
+		if ( [chnObj.nm_populated boolValue] ) {
 			if ( [chnObj.nm_hidden boolValue] ) {
 				chnObj.nm_hidden = [NSNumber numberWithBool:NO];
 			}
 			// fetch the list of video in this twitter stream channel
 			[self issueGetMoreVideoForChannel:chnObj];
+		} else {
+			// never populated before
+			shouldFirePollingLogic = YES;
 		}
 	}
 	if ( shouldFirePollingLogic ) {
@@ -178,29 +188,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		[self pollServerForChannelReadiness];
 	}
 }
-
-//- (void)handleSocialMediaLogoutNotification:(NSNotification *)aNotification {
-//	NMSignOutUserTask * task = (NMSignOutUserTask *)aNotification.object;
-//	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
-//	switch (task.command) {
-//		case NMCommandDeauthoriseTwitterAccount:
-//			// remove twitter stream channel
-//			[dataController markChannelDeleteStatusForID:NM_USER_TWITTER_CHANNEL_ID];
-//			NM_USER_TWITTER_CHANNEL_ID = 0;
-//			[defs setInteger:0 forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
-//			break;
-//			
-//		case NMCommandDeauthoriseFaceBookAccount:
-//			// remove facebook stream channel
-//			[dataController markChannelDeleteStatusForID:NM_USER_FACEBOOK_CHANNEL_ID];
-//			NM_USER_FACEBOOK_CHANNEL_ID = 0;
-//			[defs setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
-//			break;
-//			
-//		default:
-//			break;
-//	}
-//}
 
 #pragma mark Queue tasks to network controller
 - (void)issueCreateUser; {
@@ -245,8 +232,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueGetChannelWithID:(NSInteger)chnID {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelWithID:chnID];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initSearchChannelWithKeyword:aKeyword];
+	[networkController cancelSearchTasks];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -437,7 +431,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
 		// run the timer method
 		if ( !pollingTimer ) {
-			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:30.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
+			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
 		} else {
 			[pollingTimer fire];
 		}

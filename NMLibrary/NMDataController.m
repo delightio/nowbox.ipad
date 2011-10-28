@@ -28,7 +28,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize managedObjectContext;
 @synthesize channelEntityDescription, videoEntityDescription;
 @synthesize categories, categoryCacheDictionary;
-@synthesize subscribedChannels;//, trendingChannel;
+@synthesize subscribedChannels;
 @synthesize internalSearchCategory;
 @synthesize internalSubscribedChannelsCategory;
 @synthesize myQueueChannel, favoriteVideoChannel;
@@ -41,9 +41,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	
-//	channelNamePredicateTemplate = [[NSPredicate predicateWithFormat:@"title like $NM_CHANNEL_NAME"] retain];
-//	channelNamesPredicateTemplate = [[NSPredicate predicateWithFormat:@"title IN $NM_CHANNEL_NAMES"] retain];
 	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0"] retain];
+	cachedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed <= 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID AND channel == $CHANNEL"] retain];
 	channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
@@ -59,11 +58,10 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[myQueueChannel release], [favoriteVideoChannel release];
 	[userFacebookStreamChannel release], [userTwitterStreamChannel release];
 	[lastSessionVideoIDs release];
-//	[trendingChannel release];
 	[categoryCacheDictionary release];
 	[channelCacheDictionary release];
-//	[channelNamePredicateTemplate release];
 	[subscribedChannelsPredicate release];
+	[cachedChannelsPredicate release];
 	[objectForIDPredicateTemplate release];
 	[videoInChannelPredicateTemplate release];
 	[channelPredicateTemplate release];
@@ -610,11 +608,32 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// get all stream and keyword channels that have never been populated before. The backend needs to poll the server to see if videos are available in those channels
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"type IN %@ AND populated_at == %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelKeywordType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserFacebookType], nil], [NSDate dateWithTimeIntervalSince1970:0.0f]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"type != %@ AND nm_subscribed > 0 AND populated_at < %@", [NSNumber numberWithInteger:NMChannelUserType], [NSDate dateWithTimeIntervalSince1970:10.0f]]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	return [result count] ? result : nil;
+}
+
+- (void)clearChannelCache {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:cachedChannelsPredicate];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", @"previewThumbnails", @"detail", nil]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		NSManagedObject * mobj;
+		for (mobj in result) {
+			[managedObjectContext deleteObject:mobj];
+		}
+	}
+	[request release];
+	// clean up cache
+	[channelCacheDictionary removeAllObjects];
+	
+	[pool release];
 }
 
 #pragma mark Channel Preview

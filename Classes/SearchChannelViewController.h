@@ -20,6 +20,8 @@
 
     ChannelDetailViewController * channelDetailViewController;
 	NSNumberFormatter * countFormatter;
+    NSString * lastSearchQuery;
+    BOOL resigningFirstResponder;
 }
 
 @property (nonatomic, retain) IBOutlet UISearchBar * searchBar;
@@ -28,6 +30,7 @@
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 @property (nonatomic, retain) IBOutlet UIView *progressView;
+@property (nonatomic, retain) NSString * lastSearchQuery;
 
 - (void)clearSearchResults;
 - (void)performSearchWithText:(NSString *)searchText;

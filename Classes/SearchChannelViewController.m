@@ -17,6 +17,7 @@
 @synthesize searchBar, tableView, channelCell;
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize progressView;
+@synthesize lastSearchQuery;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -41,7 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+        
  	countFormatter = [[NSNumberFormatter alloc] init];
 	[countFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 	[countFormatter setRoundingIncrement:[NSNumber numberWithInteger:1000]];
@@ -60,7 +61,8 @@
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
     
-
+    [self fetchedResultsController];
+    [self clearSearchResults];
 }
 
 - (void)viewDidUnload
@@ -87,6 +89,8 @@
 	[fetchedResultsController_ release];
  	[countFormatter release];
     [progressView release];
+    [lastSearchQuery release];
+    
 	[super dealloc];
 }
 
@@ -178,15 +182,23 @@
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
     channelDetailViewController.channel = chn;
-    [self.navigationController pushViewController:channelDetailViewController animated:YES];
-    [searchBar resignFirstResponder];
     
     [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name", 
                                                                        [NSNumber numberWithBool:NO], @"social_channel", 
                                                                        @"search", @"source", nil]];
+    
+    if ([searchBar isFirstResponder]) {
+        // Hide keyboard first
+        [searchBar resignFirstResponder];
+        [self performSelector:@selector(keyboardDidHide) withObject:nil afterDelay:0.3];
+    } else {
+        [self.navigationController pushViewController:channelDetailViewController animated:YES];
+    }
 }
 
-
+- (void)keyboardDidHide {
+    [self.navigationController pushViewController:channelDetailViewController animated:YES];
+}
 
 #pragma mark Notification handlers
 
@@ -197,7 +209,6 @@
 - (void)handleDidSearchNotification:(NSNotification *)aNotification {
 //    self.searchFetchedResultsController = nil;
 	NSLog(@"notification: %@", [aNotification name]);
-    progressView.hidden = YES;
 //	// test out search predicate
 //	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 //	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
@@ -206,6 +217,24 @@
 //	NSArray * result = [dataCtrl.managedObjectContext executeFetchRequest:request error:nil];
 //	NSLog(@"search result %@", result);
 //	[request release];
+    
+    NSString *searchText = searchBar.text;
+    NSString *keyword = [[aNotification userInfo] objectForKey:@"keyword"];
+    NSLog(@"got results for keyword: %@", keyword);
+
+    if ([keyword isEqualToString:searchText]) {
+        // These are the search results we're looking for
+        progressView.hidden = YES;
+                
+        // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
+        resigningFirstResponder = YES;
+        [searchBar resignFirstResponder];
+        resigningFirstResponder = NO;                
+        searchBar.text = searchText;
+    } else {
+        // These are not the search results we're looking for
+        [self clearSearchResults];
+    }    
 }
 
 - (void)handleDidFailNotification:(NSNotification *)aNotification {
@@ -332,6 +361,7 @@
 -(void)clearSearchResults {
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	[ctrl.dataController clearSearchResultCache];
+    self.lastSearchQuery = nil;
 }
 
 #pragma mark UIScrollViewDelegate methods
@@ -349,9 +379,16 @@
     [self performSelector:@selector(performSearchWithText:) withObject:searchBar.text];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+- (void)searchBar:(UISearchBar *)aSearchBar textDidChange:(NSString *)searchText {
+    if (resigningFirstResponder) return;  // Avoid autocorrect triggering new searches
+    
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0f];
+    [self clearSearchResults];
+    progressView.hidden = YES;
+    
+    if ([searchText length] > 0) {
+        [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0f];        
+    }
 }
 
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
@@ -378,15 +415,19 @@
 
 #pragma mark delayed search
 - (void)performSearchWithText:(NSString *)searchText {
+    // Don't search for the same thing twice in a row (can happen if user presses Search button)
+    if ([self.lastSearchQuery isEqualToString:searchText]) return;
+    
     NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
     [ctrl.dataController clearSearchResultCache];
     if ([searchText length] > 0) {
+        NSLog(@"issuing search for text %@", searchText);
         progressView.hidden = NO;
         [ctrl issueChannelSearchForKeyword:searchText];
         
         [[MixpanelAPI sharedAPI] track:@"Perform Search" properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
+        self.lastSearchQuery = searchText;
     }
 }
-
 
 @end

@@ -162,6 +162,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	if ( !viewPushedByNavigationController ) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
 	}
+    
+    [nowboxTaskController.dataController clearChannelCache];
 }
 
 #pragma mark Notification handlers
