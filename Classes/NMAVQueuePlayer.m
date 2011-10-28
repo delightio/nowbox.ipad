@@ -68,7 +68,7 @@
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"advanceToVideo: %@ %d %d - will delay call", aVideo.title, aVideo.nm_playback_status, self.currentItem == nil);
 #endif
-	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+//	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	NMAVPlayerItem * curItem = (NMAVPlayerItem *)self.currentItem;
 	if ( curItem == nil ) {
 		// queue this item
@@ -98,7 +98,7 @@
 }
 
 - (void)revertToVideo:(NMVideo *)aVideo {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+//	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	if ( aVideo.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
 		NSLog(@"revertToVideo: %@ - cancel and delay call", aVideo.title);
