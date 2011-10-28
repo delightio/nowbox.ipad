@@ -455,6 +455,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (IBAction)playStopVideo:(id)sender {
 	if ( movieView.player.rate == 0.0 ) {
 		forceStopByUser = NO;
+		showMovieControlTimestamp = loadedControlView.timeElapsed;
 		[movieView.player play];
 	} else {
 		forceStopByUser = YES;
