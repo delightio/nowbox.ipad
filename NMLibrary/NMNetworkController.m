@@ -9,6 +9,9 @@
 #import "NMNetworkController.h"
 #import "NMDataController.h"
 #import "NMDataType.h"
+#ifdef DEBUG_CONNECTION_CONTROLLER
+#import "NMVideo.h"
+#endif
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
 NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
@@ -437,6 +440,10 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	
 #ifdef DEBUG_CONNECTION_CONTROLLER
     NSLog(@"Succeeded! Received %d bytes of data, response code %d, cmd %d",[theTask.buffer length], theTask.httpStatusCode, theTask.command);
+	if ( theTask.command == NMCommandGetYouTubeDirectURL ) {
+		NMGetYouTubeDirectURLTask * uTask = (NMGetYouTubeDirectURLTask *)theTask;
+		NSLog(@"video: %@ %@", uTask.video.title, uTask.video.nm_id);
+	}
 	if ( [theTask.buffer length] < 200 ) {
 		NSString *str = [[NSString alloc] initWithData:theTask.buffer encoding:NSUTF8StringEncoding];
 		NSLog(@"%@", str);

@@ -123,12 +123,12 @@
 - (IBAction)getDebugChannel:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelWithIDNotification object:nil];
 	// get debug channel
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:1844];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:2413];
 }
 
 - (IBAction)subscribeDebugChannel:(id)sender {
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
-	NMChannel * chnObj = [tqc.dataController channelForID:[NSNumber numberWithInteger:1844]];
+	NMChannel * chnObj = [tqc.dataController channelForID:[NSNumber numberWithInteger:2413]];
 	if ( chnObj ) {
 		[tqc issueSubscribe:YES channel:chnObj];
 	}

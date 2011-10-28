@@ -76,41 +76,41 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		return;
 	}
 //	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
-		NSString * resultString = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-		// remove odd begin pattern in the JSON source from Youtube
-		NSString * cleanResultStr =[resultString stringByReplacingOccurrencesOfString:@")]}'" withString:@"" options:0 range:NSMakeRange(0, 5)];
-		[resultString release];
-		
-		// get the JSON object
-		NSDictionary * dict = [cleanResultStr objectFromJSONString];
-		// check if there's error
-		if ( ![dict isKindOfClass:[NSDictionary class]] ) {
-			encountersErrorDuringProcessing = YES;
-			return;
+	NSString * resultString = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+	// remove odd begin pattern in the JSON source from Youtube
+	NSString * cleanResultStr =[resultString stringByReplacingOccurrencesOfString:@")]}'" withString:@"" options:0 range:NSMakeRange(0, 5)];
+	[resultString release];
+	
+	// get the JSON object
+	NSDictionary * dict = [cleanResultStr objectFromJSONString];
+	// check if there's error
+	if ( ![dict isKindOfClass:[NSDictionary class]] ) {
+		encountersErrorDuringProcessing = YES;
+		return;
+	}
+	if ( [[dict objectForKey:@"result"] isEqualToString:@"error"] ) {
+		encountersErrorDuringProcessing = YES;
+		NSArray * ay = [dict objectForKey:@"errors"];
+		if ( [ay count] ) {
+			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:[ay objectAtIndex:0], @"reason", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", video, @"target_object", nil];
 		}
-		if ( [[dict objectForKey:@"result"] isEqualToString:@"error"] ) {
-			encountersErrorDuringProcessing = YES;
-			NSArray * ay = [dict objectForKey:@"errors"];
-			if ( [ay count] ) {
-				self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:[ay objectAtIndex:0], @"reason", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", video, @"target_object", nil];
-			}
-			return;
-		}
-		NSDictionary * contentDict = [dict objectForKey:@"content"];
-		if ( contentDict == nil || [contentDict count] == 0) {
-			encountersErrorDuringProcessing = YES;
-			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"reason", [NSNumber numberWithInteger:NMErrorNoData], @"error_code", video, @"target_object", nil];
-			return;
-		}
-		self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
-		self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
-		if ( directURLString == nil && directSDURLString == nil ) {
-			// error - we can't find the direct URL to video
-			encountersErrorDuringProcessing = YES;
-			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate any video stream", @"reason", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", video, @"target_object", nil];
-		} else if ( directURLString == nil && directSDURLString ) {
-			self.directURLString = directSDURLString;
-		}
+		return;
+	}
+	NSDictionary * contentDict = [dict objectForKey:@"content"];
+	if ( contentDict == nil || [contentDict count] == 0) {
+		encountersErrorDuringProcessing = YES;
+		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"reason", [NSNumber numberWithInteger:NMErrorNoData], @"error_code", video, @"target_object", nil];
+		return;
+	}
+	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
+	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
+	if ( directURLString == nil && directSDURLString == nil ) {
+		// error - we can't find the direct URL to video
+		encountersErrorDuringProcessing = YES;
+		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate any video stream", @"reason", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", video, @"target_object", nil];
+	} else if ( directURLString == nil && directSDURLString ) {
+		self.directURLString = directSDURLString;
+	}
 	/*} else {
 		if ( httpStatusCode >= 400 && httpStatusCode < 500 ) {
 			// error in the youtube call
@@ -183,7 +183,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}*/
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"resolved URL for %@: %@", self.targetID, [directURLString length] ? @"Y" : @"N");
+	NSLog(@"resolved URL for %@: %@", self.targetID, [directURLString length] ? @"Y" : [NSString stringWithFormat:@"N - %d", encountersErrorDuringProcessing]);
 #endif
 }
 

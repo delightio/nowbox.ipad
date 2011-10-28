@@ -66,7 +66,7 @@
 #pragma mark Public interface
 - (void)advanceToVideo:(NMVideo *)aVideo {
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"advanceToVideo: %@ - will delay call", aVideo.title);
+	NSLog(@"advanceToVideo: %@ %d %d - will delay call", aVideo.title, aVideo.nm_playback_status, self.currentItem == nil);
 #endif
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	NMAVPlayerItem * curItem = (NMAVPlayerItem *)self.currentItem;
@@ -78,11 +78,20 @@
 			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 		}
 	} else {
-		[playbackDelegate player:self stopObservingPlayerItem:curItem];
-		curItem.nmVideo.nm_player_item = nil;
-		curItem.nmVideo = nil;
-		[self advanceToNextItem];
-		[self play];
+		if ( aVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+			[playbackDelegate player:self stopObservingPlayerItem:curItem];
+			curItem.nmVideo.nm_player_item = nil;
+			curItem.nmVideo = nil;
+			[self advanceToNextItem];
+			[self play];
+		} else {
+			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+		}
+//		[playbackDelegate player:self stopObservingPlayerItem:curItem];
+//		curItem.nmVideo.nm_player_item = nil;
+//		curItem.nmVideo = nil;
+//		[self advanceToNextItem];
+//		[self play];
 	}
 	if ( [playbackDelegate nextVideoForPlayer:self] ) [self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 	if ( [playbackDelegate nextNextVideoForPlayer:self] ) [self performSelector:@selector(requestResolveVideo:) withObject:[playbackDelegate nextNextVideoForPlayer:self] afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
@@ -165,14 +174,19 @@
 #endif
 	if ( vid == nil ) return;
 	// request to resolve the direct URL of this video
-	if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
-		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
-		[nowboxTaskController issueGetDirectURLForVideo:vid];
-	} else if ( vid.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+//	if ( vid.nm_playback_status == NMVideoQueueStatusNone ) {
+//		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
+//		[nowboxTaskController issueGetDirectURLForVideo:vid];
+//	} 
+	NMVideoQueueStatusType vidType = vid.nm_playback_status;
+	if ( vidType > NMVideoQueueStatusResolvingDirectURL ) {
 		[self queueVideo:vid];
 		if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 			[playbackDelegate player:self willBeginPlayingVideo:vid];
 		}
+	} else if ( vidType >= 0 ) {
+		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
+		[nowboxTaskController issueGetDirectURLForVideo:vid];
 	}
 	// task queue controller will check if there's an existing task for this
 	
