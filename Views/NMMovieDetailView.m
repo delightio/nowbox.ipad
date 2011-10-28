@@ -14,7 +14,7 @@
 
 @implementation NMMovieDetailView
 @synthesize video=video_;
-@synthesize movieThumbnailView;
+@synthesize thumbnailContainerView;
 
 //- (id)initWithFrame:(CGRect)frame
 //{
@@ -59,7 +59,7 @@
 	blackLayer.shouldRasterize = YES;
 	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
 	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
-	[self.layer insertSublayer:blackLayer below:movieThumbnailView.layer];
+	[self.layer insertSublayer:blackLayer below:thumbnailContainerView.layer];
 	// update the font
 	if ( !NM_RUNNING_IOS_5 ) {
 		UIFont * theFont = [NMStyleUtility sharedStyleUtility].channelNameFont;
@@ -67,6 +67,10 @@
 		otherInfoLabel.font = theFont;
 		authorLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
 	}
+	
+	CALayer * theLayer = activityView.layer;
+	theLayer.backgroundColor = [[NMStyleUtility sharedStyleUtility].blackColor colorWithAlphaComponent:0.5f].CGColor;
+	theLayer.cornerRadius = 0.25f;
 }
 
 - (void)setVideo:(NMVideo *)aVideo {
@@ -116,7 +120,8 @@
 	authorLabel.text = dtlObj.author_username;
 	
 	// movie thumbnail
-	movieThumbnailView.alpha = 1.0f;
+	thumbnailContainerView.alpha = 1.0f;
+	[self setActivityViewHidden:YES];
 	[movieThumbnailView setImageForVideoThumbnail:aVideo];
 	
 	// set position of the description
@@ -141,22 +146,22 @@
 	[UIView setAnimationDelay:0.5f];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:sender];
-	movieThumbnailView.alpha = 0.0f;
+	thumbnailContainerView.alpha = 0.0f;
 	[UIView commitAnimations];
 }
 
 - (void)slowFadeOutThumbnailView:(id)sender context:(void *)ctx {
 	[UIView beginAnimations:nil context:ctx];
 	[UIView setAnimationDuration:0.25f];
-	[UIView setAnimationDelay:1.25f];
+	[UIView setAnimationDelay:0.75f];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView setAnimationDelegate:sender];
-	movieThumbnailView.alpha = 0.0f;
+	thumbnailContainerView.alpha = 0.0f;
 	[UIView commitAnimations];
 }
 
 - (void)restoreThumbnailView {
-	if ( movieThumbnailView.alpha == 0.0f ) movieThumbnailView.alpha = 1.0f;
+	if ( thumbnailContainerView.alpha == 0.0f ) thumbnailContainerView.alpha = 1.0f;
 }
 
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
@@ -164,13 +169,22 @@
 		infoContainerView.hidden = YES;
 		bitmapShadow.hidden = YES;
 		// resize view
-		movieThumbnailView.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
+		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
 	} else {
 		infoContainerView.hidden = NO;
 		bitmapShadow.hidden = NO;
-		movieThumbnailView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
+		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
 	}
-	blackLayer.frame = movieThumbnailView.frame;
+	blackLayer.frame = thumbnailContainerView.frame;
+}
+
+- (void)setActivityViewHidden:(BOOL)aflag {
+	activityView.hidden = aflag;
+	if ( aflag ) {
+		[loaderView stopAnimating];
+	} else {
+		[loaderView startAnimating];
+	}
 }
 
 @end
