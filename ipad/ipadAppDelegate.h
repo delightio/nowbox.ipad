@@ -43,7 +43,7 @@ extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
     
     // Analytics
     MixpanelAPI *mixpanel;
-    NSTimeInterval applicationStartTime;
+    NSTimeInterval sessionStartTime;
     NSDateFormatter *dateFormatter;
 }
 

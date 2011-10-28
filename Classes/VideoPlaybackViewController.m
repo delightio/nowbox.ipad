@@ -326,6 +326,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         [[ToolTipController sharedToolTipController] startTimer];
         [[ToolTipController sharedToolTipController] setDelegate:self];
 
+        [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+        [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+        [[MixpanelAPI sharedAPI] track:@"Login"];    
+
 	} else {
 		// cross fade
 #if __IPHONE_4_3 < __IPHONE_OS_VERSION_MAX_ALLOWED
@@ -1454,12 +1458,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self animateFavoriteButtonsToInactive];
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
+    
+    [[MixpanelAPI sharedAPI] track:@"Favorite Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
+                                                                 playbackModelController.currentVideo.title, @"video_name", 
+                                                                 playbackModelController.currentVideo.nm_id, @"video_id",
+                                                                 nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
+    
+    [[MixpanelAPI sharedAPI] track:@"Enqueue Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
+                                                                playbackModelController.currentVideo.title, @"video_name", 
+                                                                playbackModelController.currentVideo.nm_id, @"video_id",
+                                                                nil]];
 }
 
 // seek bar

@@ -82,7 +82,6 @@
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
-    [[MixpanelAPI sharedAPI] track:@"Login"];
 }
 
 - (void)slideInVideoViewAnimated {
@@ -94,7 +93,6 @@
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
-    [[MixpanelAPI sharedAPI] track:@"Login"];    
 }
 
 - (void)checkUpdateChannels {

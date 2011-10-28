@@ -107,7 +107,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (void)updateMixpanelProperties {
     // Get the time elapsed rounded to the nearest 10 minutes
     NSDate *now = [NSDate date];
-    NSTimeInterval timeOnApp = [now timeIntervalSince1970] - applicationStartTime;
+    NSTimeInterval timeOnApp = [now timeIntervalSince1970] - sessionStartTime;
     NSNumber *roundedTime = [NSNumber numberWithInteger:((NSInteger) timeOnApp / 600) * 10];
     
     [dateFormatter setDateFormat:@"HH00"];
@@ -173,7 +173,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", @"device",
                                        sessionCount, @"visit_number", nil]];
     
-    applicationStartTime = [[NSDate date] timeIntervalSince1970];
+    sessionStartTime = [[NSDate date] timeIntervalSince1970];
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
     [self updateMixpanelProperties];
@@ -207,6 +207,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 //	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
 	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
+    [[MixpanelAPI sharedAPI] track:@"App Enter Background" properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], @"elapsed_time", nil]];    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -237,6 +240,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	// show the UI
 	
+    
+    // Reset the session timer - this is considered a new session
+    sessionStartTime = [[NSDate date] timeIntervalSince1970];
+    [self updateMixpanelProperties];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

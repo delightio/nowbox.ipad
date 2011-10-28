@@ -943,13 +943,19 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                      }
                      completion:^(BOOL finished) {
                      }];
+    
+    BOOL social = NO;
+    NSString *channelName;
     NMChannel * chn;
     if (selectedIndex == 0) {
         if (tableIndexPath.section == 0) {
             // Social channels
+            social = YES;
+            
             if (tableIndexPath.row == 0) {
                 if ( NM_USER_TWITTER_CHANNEL_ID ) {
                     chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+                    channelName = @"Twitter";
                 } else {
                     [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
                     return;
@@ -957,6 +963,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             } else {
                 if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
                     chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+                    channelName = @"Facebook";
                 } else {
                     [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
                     return;
@@ -966,19 +973,20 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row 
                                                                inSection:0];
             chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
+            channelName = chn.title;
         }
     } else {
         chn = [selectedChannelArray objectAtIndex:[channelsTableView indexPathForCell:cell].row];
+        channelName = chn.title;        
     }
 
     BOOL subscribed = [chn.nm_subscribed boolValue];
-    BOOL social = (selectedIndex == 0 && tableIndexPath.section == 0);
     if (subscribed) {
-        [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
+        [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, @"channel_name",
                                                                           @"channelmanagement_toggle", @"sender", 
                                                                           [NSNumber numberWithBool:social], @"social_channel", nil]];    
     } else {
-        [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
+        [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, @"channel_name",
                                                                         @"channelmanagement_toggle", @"sender", 
                                                                         [NSNumber numberWithBool:social], @"social_channel", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }

@@ -125,9 +125,17 @@
     switch (loginType) {
         case LoginTwitterType:
             [[MixpanelAPI sharedAPI] track:@"Complete Twitter Login"];
+            [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", @"channel_name",
+                                                                            @"channelmanagement_login", @"sender", 
+                                                                            [NSNumber numberWithBool:YES], @"social_channel", nil]];
+
             break;
         case LoginFacebookType:
             [[MixpanelAPI sharedAPI] track:@"Complete Facebook Login"];
+            [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", @"channel_name",
+                                                                            @"channelmanagement_login", @"sender", 
+                                                                            [NSNumber numberWithBool:YES], @"social_channel", nil]];
+
             break;
         default:
             break;
