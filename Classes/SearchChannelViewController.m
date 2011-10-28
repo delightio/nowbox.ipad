@@ -185,7 +185,7 @@
     
     [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name", 
                                                                        [NSNumber numberWithBool:NO], @"social_channel", 
-                                                                       @"search", @"source", nil]];
+                                                                       @"search", @"sender", nil]];
     
     if ([searchBar isFirstResponder]) {
         // Hide keyboard first
@@ -408,9 +408,21 @@
                      }];
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:[tableView indexPathForCell:cell]];
+        
+    BOOL subscribed = [chn.nm_subscribed boolValue];
+    if (subscribed) {
+        [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
+                                                                          @"search_toggle", @"sender", 
+                                                                          lastSearchQuery, @"search_query", 
+                                                                          [NSNumber numberWithBool:NO], @"social_channel", nil]];    
+    } else {
+        [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
+                                                                        @"search_toggle", @"sender", 
+                                                                        lastSearchQuery, @"search_query", 
+                                                                        [NSNumber numberWithBool:NO], @"social_channel", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    }
     
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
-    
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:!subscribed channel:chn];
 }
 
 #pragma mark delayed search

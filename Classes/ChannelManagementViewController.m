@@ -567,7 +567,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                         chn = nowboxTaskController.dataController.userTwitterStreamChannel;
                         [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", @"channel_name", 
                                                                                            [NSNumber numberWithBool:YES], @"social_channel", 
-                                                                                           @"channelmanagement", @"source", nil]];
+                                                                                           @"channelmanagement", @"sender", nil]];
                     } else {
                         // login twitter
                         socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
@@ -584,7 +584,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                         chn = nowboxTaskController.dataController.userFacebookStreamChannel;
                         [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", @"channel_name", 
                                                                                            [NSNumber numberWithBool:YES], @"social_channel", 
-                                                                                           @"channelmanagement", @"source", nil]];
+                                                                                           @"channelmanagement", @"sender", nil]];
                     } else {
                         socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
                         socialCtrl.loginType = LoginFacebookType;
@@ -601,7 +601,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
                 [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name", 
                                                                                    [NSNumber numberWithBool:NO], @"social_channel", 
-                                                                                   @"channelmanagement", @"source", nil]];
+                                                                                   @"channelmanagement", @"sender", nil]];
             }
         } else {
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
@@ -972,12 +972,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     }
 
     BOOL subscribed = [chn.nm_subscribed boolValue];
+    BOOL social = (selectedIndex == 0 && tableIndexPath.section == 0);
     if (subscribed) {
         [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
-                                                                          @"channelmanagement_toggle", @"source", nil]];    
+                                                                          @"channelmanagement_toggle", @"sender", 
+                                                                          [NSNumber numberWithBool:social], @"social_channel", nil]];    
     } else {
         [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
-                                                                        @"channelmanagement_toggle", @"source", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                        @"channelmanagement_toggle", @"sender", 
+                                                                        [NSNumber numberWithBool:social], @"social_channel", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }
     
     [nowboxTaskController issueSubscribe:!subscribed channel:chn];

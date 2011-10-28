@@ -136,10 +136,14 @@
 //	[self setPreviewImages];
 	// set channel thumbnail
 	[channelThumbnailView setImageForChannel:channel];
-	// load channel detail
-	[[NMTaskQueueController sharedTaskQueueController] issueGetDetailForChannel:channel];
-    
-    [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name", nil]];
+	// load channel detail    
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueGetDetailForChannel:channel];
+
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                   || channel == taskQueueController.dataController.userTwitterStreamChannel); 
+    [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name", 
+                                                                       [NSNumber numberWithBool:social], @"social_channel", nil]];
 
 }
 
@@ -240,10 +244,15 @@
                      }
                      completion:^(BOOL finished) {
                      }];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
     
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueSubscribe:YES channel:channel];
+    
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                   || channel == taskQueueController.dataController.userTwitterStreamChannel); 
     [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
-                                                                    @"channeldetails_subscribe", @"source", nil]];
+                                                                    @"channeldetails_subscribe", @"sender", 
+                                                                    [NSNumber numberWithBool:social], @"social_channel", nil]];
 }
 
 -(IBAction)subscribeAndWatchChannel:(id)sender {
@@ -254,11 +263,16 @@
                      }
                      completion:^(BOOL finished) {
                      }];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+    
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueSubscribe:YES channel:channel];
     shouldDismiss = YES;
     
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                   || channel == taskQueueController.dataController.userTwitterStreamChannel); 
     [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
-                                                                    @"channeldetails_watchnow", @"source", nil]];
+                                                                    @"channeldetails_watchnow", @"sender", 
+                                                                    [NSNumber numberWithBool:social], @"social_channel", nil]];
 }
 
 -(IBAction)unsubscribeChannel:(id)sender {
@@ -268,10 +282,15 @@
                      }
                      completion:^(BOOL finished) {
                      }];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channel];
     
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueSubscribe:NO channel:channel];
+    
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                || channel == taskQueueController.dataController.userTwitterStreamChannel); 
     [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
-                                                                      @"channeldetails_unsubscribe", @"source", nil]];
+                                                                      @"channeldetails_unsubscribe", @"sender", 
+                                                                      [NSNumber numberWithBool:social], @"social_channel", nil]];
 
 }
 

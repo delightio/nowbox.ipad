@@ -10,6 +10,7 @@
 #import "ChannelContainerView.h"
 #import "VideoPlaybackViewController.h"
 #import "PanelVideoCell.h"
+#import "MixpanelAPI.h"
 
 @implementation VideoRowController
 @synthesize managedObjectContext=managedObjectContext_;
@@ -78,6 +79,11 @@
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
     [panelController.videoViewController playVideo:theVideo];
     
+    [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name", 
+                                                             theVideo.title, @"video_name", 
+                                                             theVideo.nm_id, @"video_id",
+                                                             @"channelpanel", @"sender", 
+                                                             @"tap", @"action", nil]];
 }
 
 - (void)recycleCell:(PanelVideoCell *)cell

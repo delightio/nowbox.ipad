@@ -11,6 +11,7 @@
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
+#import "MixpanelAPI.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -429,6 +430,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 //	[self updateRibbonButtons];
+    
+    [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
+                                                             playbackModelController.currentVideo.title, @"video_name", 
+                                                             playbackModelController.currentVideo.nm_id, @"video_id",
+                                                             @"player", @"sender", 
+                                                             @"auto", @"action", nil]];
 }
 
 - (NMVideo *)currentVideo {
@@ -752,6 +759,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
+            
+            [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
+                                                                     playbackModelController.currentVideo.title, @"video_name", 
+                                                                     playbackModelController.currentVideo.nm_id, @"video_id",
+                                                                     @"player", @"sender", 
+                                                                     @"auto", @"action", nil]];
 		}
 //		[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 //		controlScrollView.scrollEnabled = YES;
@@ -1204,6 +1217,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
+            
+            [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
+                                                                     playbackModelController.currentVideo.title, @"video_name", 
+                                                                     playbackModelController.currentVideo.nm_id, @"video_id",
+                                                                     @"player", @"sender", 
+                                                                     @"swipe", @"action", nil]];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1221,6 +1240,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
+            
+            [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
+                                                                     playbackModelController.currentVideo.title, @"video_name", 
+                                                                     playbackModelController.currentVideo.nm_id, @"video_id",
+                                                                     @"player", @"sender", 
+                                                                     @"swipe", @"action", nil]];
 		}
 	} else {
 		scrollView.scrollEnabled = YES;

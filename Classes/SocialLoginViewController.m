@@ -124,10 +124,10 @@
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
     switch (loginType) {
         case LoginTwitterType:
-            [[MixpanelAPI sharedAPI] track:@"Twitter Login Succeeded"];
+            [[MixpanelAPI sharedAPI] track:@"Complete Twitter Login"];
             break;
         case LoginFacebookType:
-            [[MixpanelAPI sharedAPI] track:@"Facebook Login Succeeded"];
+            [[MixpanelAPI sharedAPI] track:@"Complete Facebook Login"];
             break;
         default:
             break;

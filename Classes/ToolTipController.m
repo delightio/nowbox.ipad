@@ -338,6 +338,8 @@ static ToolTipController *toolTipController = nil;
         // Tooltip cannot be shown again, remove it
         [monitoredToolTips removeObject:tooltip];                        
     }
+    
+    [[MixpanelAPI sharedAPI] track:@"Present Tooltip" properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, @"tooltip_name", nil]];
 }
 
 - (void)dismissTooltip
