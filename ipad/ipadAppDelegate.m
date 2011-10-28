@@ -11,6 +11,7 @@
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
 #import "ToolTipController.h"
+#import <BugSense-iOS/BugSenseCrashController.h>
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
 
@@ -104,6 +105,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Enable crash reporting
+    [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:@"775bf5eb" 
+                                               userDictionary:nil 
+                                              sendImmediately:NO];
+    
 	// detect version
 	if ( kCFCoreFoundationVersionNumber > 550.58f ) {
 		NM_RUNNING_IOS_5 = YES;

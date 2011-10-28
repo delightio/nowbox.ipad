@@ -24,8 +24,8 @@
         SearchChannelViewController *searchController = (SearchChannelViewController *)visibleController;
         
         if ([searchController.searchBar isFirstResponder]) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
             [searchController.searchBar resignFirstResponder];
+            [self performSelector:@selector(keyboardDidHide) withObject:nil afterDelay:0.3];
             return NO;
         }
     }
@@ -37,9 +37,8 @@
     return YES;
 }
 
-- (void)keyboardDidHide:(NSNotification *)notification {
+- (void)keyboardDidHide {
     // Now that the keyboard's gone, try popping again
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self popViewControllerAnimated:YES];
 }
 
