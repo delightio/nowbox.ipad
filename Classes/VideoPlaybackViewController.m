@@ -55,7 +55,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)playCurrentVideo;
 - (void)stopVideo;
 - (void)setupPlayer;
-- (void)hideControlView;
+//- (void)hideControlView;
 
 - (NMVideo *)playerCurrentVideo;
 - (void)showLaunchView;
@@ -298,7 +298,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
-		playbackModelController.currentVideo.nm_movie_detail_view.movieThumbnailView.alpha = 1.0f;
+		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
 		// bring the playback view to the front
 //		[self.view bringSubviewToFront:topLevelContainerView];
@@ -463,6 +463,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 }
 
+- (void)showActivityLoader {
+	NSLog(@"######## showing activity loader #########");
+	[self.currentVideo.nm_movie_detail_view setActivityViewHidden:NO];
+}
+
 #pragma mark NMControlsView delegate methods
 
 - (void)didTapAirPlayContainerView:(NMAirPlayContainerView *)ctnView {
@@ -506,7 +511,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
 				// we should hide
 				showMovieControlTimestamp = -1;
-				[self hideControlView];
+//				[self hideControlView];
+				[loadedControlView setControlsHidden:YES animated:YES];
 			}
 		}
 	}];
@@ -550,13 +556,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	return detailView;
 }
 
-- (void)hideControlView {
-	if ( loadedControlView.alpha > 0.0f ) {
-		[UIView animateWithDuration:0.25f animations:^{
-			loadedControlView.alpha = 0.0f;
-		}];
-	}
-}
+//- (void)hideControlView {
+//	if ( loadedControlView.alpha > 0.0f ) {
+//		[UIView animateWithDuration:0.25f animations:^{
+//			loadedControlView.alpha = 0.0f;
+//		}];
+//	}
+//}
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger ctxInt = (NSInteger)context;
@@ -754,8 +760,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 		}
-//		[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-//		controlScrollView.scrollEnabled = YES;
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
 	// this method does not handle the layout (position) of the movie control. that should be handled in scroll view delegate method
@@ -891,7 +895,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"loadedTimeRanges" options:0 context:(void *)NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT];
-	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
+//	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
 	// no need to update status of NMVideo. "Queued" status is updated in "queueVideo" method
 }
 
@@ -913,7 +917,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-	[anItem removeObserver:self forKeyPath:@"status"];
+//	[anItem removeObserver:self forKeyPath:@"status"];
 }
 
 //- (void)player:(NMAVQueuePlayer *)aPlayer directURLResolutionErrorForVideo:(NMVideo *)aVideo {
@@ -1031,9 +1035,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			case AVPlayerStatusReadyToPlay:
 			{
 				shouldFadeOutVideoThumbnail = YES;
-//				if ( playFirstVideoOnLaunchWhenReady ) {
-//					[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
-//				}
 				break;
 			}
 			default:
@@ -1053,8 +1054,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// show the control view
 		// fix ticket https://pipely.lighthouseapp.com/projects/77614/tickets/468
 //		[loadedControlView setControlsHidden:NO animated:YES];
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showActivityLoader) object:nil];
 		
 		showMovieControlTimestamp = 1;
+		
+		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25f];
 		
 		if ( didPlayToEnd ) {
 			controlScrollView.scrollEnabled = YES;
@@ -1096,7 +1100,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			}
 		}
 //		NSLog(@"%@ buffer status - keep up: %d full: %d", theItem.nmVideo.title, theItem.playbackLikelyToKeepUp, theItem.playbackBufferFull);
-	} else if ( c == NM_PLAYER_ITEM_STATUS_CONTEXT ) {
+//	} else if ( c == NM_PLAYER_ITEM_STATUS_CONTEXT ) {
 //		NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 //		NSLog(@"%@ status: %d", theItem.nmVideo.title, theItem.status);
 	} else if ( c == NM_PLAYER_RATE_CONTEXT ) {
@@ -1131,7 +1135,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)delayRestoreDetailView {
 	// update which video the buttons hook up to
 	[self updateRibbonButtons];
-//	[playbackModelController.currentVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 	[UIView animateWithDuration:0.25f animations:^{
 		ribbonView.alpha = 1.0f;
 	}];
@@ -1177,7 +1180,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //	if ( launchModeActive ) {
 //		[launchController dimProgressLabel];
 //	}
-	[self hideControlView];
+//	[self hideControlView];
+	[loadedControlView setControlsHidden:YES animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
