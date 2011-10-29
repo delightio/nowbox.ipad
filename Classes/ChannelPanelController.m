@@ -316,6 +316,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:theChannel];
 
+	selectedIndex = indexPath.row;
     highlightedChannel = theChannel;
     highlightedVideoIndex = newVideoIndex;
 
