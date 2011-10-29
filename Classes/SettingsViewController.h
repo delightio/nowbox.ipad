@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 
-@interface SettingsViewController : UITableViewController <UITextFieldDelegate> {
+@interface SettingsViewController : UITableViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate> {
 	IBOutlet UITextField * userIDField;
 	IBOutlet UILabel * reloadNote;
 	BOOL userSettingsChanged;

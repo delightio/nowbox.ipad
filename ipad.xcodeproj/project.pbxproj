@@ -481,12 +481,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */,
 				83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */,
 				A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */,
 				A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */,
 				A9976F2313BB38BE00B06DFF /* libNMLibrary.a in Frameworks */,
-				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */,
 				A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */,
 				A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */,

@@ -126,9 +126,6 @@
     // e.g. self.myOutlet = nil;
     
     [hdSwitch release]; hdSwitch = nil;
-    [favoriteChannelSwitch release]; favoriteChannelSwitch = nil;
-    [pushNotificationSwitch release]; pushNotificationSwitch = nil;
-    [emailNotificationSwitch release]; emailNotificationSwitch = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -231,6 +228,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * CellIdentifier = @"Cell";
+	static NSString * EmailIdentifier = @"EmailCell";
 
     UITableViewCell * cell;
 	NSString * lblStr = nil;
@@ -258,7 +256,7 @@
 			break;
 		case 1:
 		case 2:
-			if ( [autoPostSettings count] ) {
+			if ( [autoPostSettings count] && indexPath.section == 1 ) {
 				cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 				if (cell == nil) {
 					cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
@@ -270,10 +268,8 @@
 			} else {
 				cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 				if (cell == nil) {
-					cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-					cell.selectionStyle = UITableViewCellSelectionStyleNone;
+					cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EmailIdentifier] autorelease];
 				}
-				cell.accessoryView = nil;
 				cell.textLabel.text = @"Feedback? Email us at feedback@nowbox.com";
 			}
 			break;
@@ -311,14 +307,24 @@
     return NO;
 }
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//	if (indexPath.section == 4) {
-//        // Reset tooltips
-//        
-//        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    }
-//}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (indexPath.section == 2 || ([autoPostSettings count] == 0 && indexPath.section == 1)) {
+		[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+		
+		MFMailComposeViewController * mvc = [[MFMailComposeViewController alloc] init];
+		mvc.mailComposeDelegate = self;
+		[mvc setSubject:@"Nowbox iPad app user feedback"];
+		[mvc setToRecipients:[NSArray arrayWithObject:@"feedback@nowbox.com"]];
+		[mvc setMessageBody:[NSString stringWithFormat:@"\n\nVersion: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID] isHTML:NO];
+		[self presentModalViewController:mvc animated:YES];
+		[mvc release];
+    }
+}
 
+#pragma mark Mail Composer View
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+	[self dismissModalViewControllerAnimated:YES];
+}
 
 @end
