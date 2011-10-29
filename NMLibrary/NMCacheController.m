@@ -555,7 +555,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			}
 		}
 		// sort the items
-		NSSortDescriptor * dateSortDesc = [[NSSortDescriptor alloc] initWithKey:NSFileModificationDate ascending:YES];
+		NSSortDescriptor * dateSortDesc = [[[NSSortDescriptor alloc] initWithKey:NSFileModificationDate ascending:YES] autorelease];
 		[fileDictAy sortUsingDescriptors:[NSArray arrayWithObject:dateSortDesc]];
 		numFiles = [fileDictAy count];
 		// get the items to delete

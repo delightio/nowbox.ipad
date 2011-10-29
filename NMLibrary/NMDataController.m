@@ -108,6 +108,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[managedObjectContext deleteObject:chnObj];
 	}
 	[managedObjectContext save:nil];
+    [request release];    
 }
 
 #pragma mark Session management
@@ -339,6 +340,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == 0 AND nm_video_last_refreshed < %@", [NSDate dateWithTimeIntervalSinceNow:-600]]]; // 10 min
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+    [request release];    
 	return [result count] == 0 ? nil : result;
 }
 
@@ -393,6 +395,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		} else {
 			chnObj = nil;
 		}
+        [request release];
 	}
 	return chnObj;
 }
@@ -413,6 +416,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	} else {
 		chnObj = nil;
 	}
+    [request release];
 	return chnObj;
 }
 
@@ -591,6 +595,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	// save changes
 	[managedObjectContext save:nil];
+    [request release];
 }
 
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj {
@@ -612,6 +617,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+    [request release];
+    
 	return [result count] ? result : nil;
 }
 
@@ -647,6 +654,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+    [request release];
+    
 	return [result count] ? result : nil;
 }
 
@@ -767,6 +776,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 			[managedObjectContext deleteObject:vdo];
 		}
 	}
+    
+    [request release];
 }
 
 - (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey {

@@ -96,6 +96,11 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    
+    [hdSwitch release]; hdSwitch = nil;
+    [favoriteChannelSwitch release]; favoriteChannelSwitch = nil;
+    [pushNotificationSwitch release]; pushNotificationSwitch = nil;
+    [emailNotificationSwitch release]; emailNotificationSwitch = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
