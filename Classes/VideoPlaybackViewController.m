@@ -322,10 +322,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 //		}];
 
-        [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-        [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
-        [[MixpanelAPI sharedAPI] track:@"Login"];    
-
 	} else {
 		// cross fade
 #if __IPHONE_4_3 < __IPHONE_OS_VERSION_MAX_ALLOWED

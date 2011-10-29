@@ -15,6 +15,7 @@
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
 #define NM_MIXPANEL_TOKEN @"ccbb47ab132e0f86791bbf2e5277c3ed"
+#define NM_BUGSENSE_TOKEN @"775bf5eb"
 
 // user data
 NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
@@ -120,12 +121,29 @@ NSInteger NM_LAST_CHANNEL_ID;
                                        dayOfWeekString, @"day", nil]];
 }
 
+- (void)setupMixpanel {
+    NSNumber *sessionCount = [NSNumber numberWithInteger:[userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1];
+	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
+    [userDefaults synchronize];
+    
+    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_MIXPANEL_TOKEN];
+    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", @"device",
+                                       sessionCount, @"visit_number", nil]];
+    
+    sessionStartTime = [[NSDate date] timeIntervalSince1970];
+    dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
+    [self updateMixpanelProperties];
+    [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(updateMixpanelProperties) userInfo:nil repeats:YES];
+}
+
 #pragma mark Application Lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Enable crash reporting
-    [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:@"775bf5eb" 
+    // Enable analytics and crash reporting
+    [self setupMixpanel];
+    [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
                                                userDictionary:nil 
                                               sendImmediately:NO];
     
@@ -159,25 +177,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 		[[NMCacheController sharedCacheController] removeAllFiles];
 	}
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
-    NSNumber *sessionCount = [NSNumber numberWithInteger:[userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1];
-	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
-    [userDefaults synchronize];
     
 	self.window.rootViewController = viewController;
 	[self.window makeKeyAndVisible];
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
-    
-    // Set up analytics
-    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_MIXPANEL_TOKEN];
-    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", @"device",
-                                       sessionCount, @"visit_number", nil]];
-    
-    sessionStartTime = [[NSDate date] timeIntervalSince1970];
-    dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
-    [self updateMixpanelProperties];
-    [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(updateMixpanelProperties) userInfo:nil repeats:YES];
     
     return YES;
 }

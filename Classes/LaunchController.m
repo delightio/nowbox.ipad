@@ -112,6 +112,10 @@
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	}
+    
+    [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] track:@"Login"];    
 }
 
 #pragma mark Notification
