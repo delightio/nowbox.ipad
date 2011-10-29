@@ -15,7 +15,8 @@
 	
 	NSUserDefaults * userDefaults;
 	
-	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
+//	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
+	UISwitch * hdSwitch, * facebookPostSwitch, * twitterPostSwitch;
 	BOOL viewPushedByNavigationController;
 }
 

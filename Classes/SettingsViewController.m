@@ -11,12 +11,15 @@
 #import "SocialLoginViewController.h"
 #import "ToolTipController.h"
 #import "NMLibrary.h"
+#import "NMStyleUtility.h"
 
 #define NM_SETTING_HD_SWITCH_TAG					1001
-#define NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG		1002
-#define NM_SETTING_PUSH_NOTIFICATION_SWITCH_TAG		1003
-#define NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG	1004
-#define	NM_SETTING_MOBILE_BROWSER_SWITCH_TAG		1005
+//#define NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG		1002
+//#define NM_SETTING_PUSH_NOTIFICATION_SWITCH_TAG		1003
+//#define NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG	1004
+//#define	NM_SETTING_MOBILE_BROWSER_SWITCH_TAG		1005
+#define NM_SETTING_FACEBOOK_SWITCH_TAG				1006
+#define NM_SETTING_TWITTER_SWITCH_TAG				1007
 
 @implementation SettingsViewController
 
@@ -38,10 +41,10 @@
 }
 
 - (void)dealloc {
-	[favoriteChannelSwitch release];
+//	[favoriteChannelSwitch release];
 	[hdSwitch release];
-	[pushNotificationSwitch release];
-	[emailNotificationSwitch release];
+//	[pushNotificationSwitch release];
+//	[emailNotificationSwitch release];
     [super dealloc];
 }
 
@@ -61,6 +64,14 @@
 	userDefaults = [NSUserDefaults standardUserDefaults];
 	self.title = @"Settings";
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)];
+	
+	UILabel * footerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 100.0f)];
+	;
+	footerLabel.backgroundColor = [NMStyleUtility sharedStyleUtility].clearColor;
+	footerLabel.numberOfLines = 0;
+	footerLabel.textAlignment = UITextAlignmentCenter;
+	footerLabel.text = [NSString stringWithFormat:@"Version: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID];
+	self.tableView.tableFooterView = footerLabel;
 	// set the current User ID
 //	userIDField.text = [userDefaults stringForKey:NM_USER_ACCOUNT_ID_KEY];
 	// set current HQ setting
@@ -70,24 +81,25 @@
 	hdSwitch.tag = NM_SETTING_HD_SWITCH_TAG;
 	hdSwitch.on = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
 	[hdSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+	facebookPostSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+	facebookPostSwitch.tag = NM_SETTING_FACEBOOK_SWITCH_TAG;
+	facebookPostSwitch.on = [userDefaults boolForKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY];
+	[facebookPostSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
+	twitterPostSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+	twitterPostSwitch.tag = NM_SETTING_TWITTER_SWITCH_TAG;
+	twitterPostSwitch.on = [userDefaults boolForKey:NM_SETTING_TWITTER_AUTO_POST_KEY];
+	[twitterPostSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 //	mobileBrowserSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 //	mobileBrowserSwitch.tag = NM_SETTING_MOBILE_BROWSER_SWITCH_TAG;
 //	mobileBrowserSwitch.on = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
 //	[mobileBrowserSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 
-	favoriteChannelSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-	favoriteChannelSwitch.tag = NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG;
-	favoriteChannelSwitch.on = NM_USER_SHOW_FAVORITE_CHANNEL;
-	[favoriteChannelSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+//	favoriteChannelSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+//	favoriteChannelSwitch.tag = NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG;
+//	favoriteChannelSwitch.on = NM_USER_SHOW_FAVORITE_CHANNEL;
+//	[favoriteChannelSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
-	pushNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-	pushNotificationSwitch.tag = NM_SETTING_PUSH_NOTIFICATION_SWITCH_TAG;
-	[pushNotificationSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
-	
-	emailNotificationSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-	emailNotificationSwitch.tag = NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG;
-	[emailNotificationSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
 }
 
@@ -131,16 +143,20 @@
 //			NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = theSwitch.tag;
 //			[userDefaults setBool:theSwitch.on forKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
 //			break;
-		case NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG:
-			NM_USER_SHOW_FAVORITE_CHANNEL = theSwitch.on;
-			[[NMTaskQueueController sharedTaskQueueController].dataController updateFavoriteChannelHideStatus];
-			[userDefaults setBool:theSwitch.on forKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
+//		case NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG:
+//			NM_USER_SHOW_FAVORITE_CHANNEL = theSwitch.on;
+//			[[NMTaskQueueController sharedTaskQueueController].dataController updateFavoriteChannelHideStatus];
+//			[userDefaults setBool:theSwitch.on forKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
+//			break;
+//		case NM_SETTING_PUSH_NOTIFICATION_SWITCH_TAG:
+//			[userDefaults setBool:theSwitch.on forKey:NM_ENABLE_PUSH_NOTIFICATION_KEY];
+//			break;
+//		case NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG:
+//			[userDefaults setBool:theSwitch.on forKey:NM_ENABLE_EMAIL_NOTIFICATION_KEY];
+//			break;
+		case NM_SETTING_FACEBOOK_SWITCH_TAG:
 			break;
-		case NM_SETTING_PUSH_NOTIFICATION_SWITCH_TAG:
-			[userDefaults setBool:theSwitch.on forKey:NM_ENABLE_PUSH_NOTIFICATION_KEY];
-			break;
-		case NM_SETTING_EMAIL_NOTIFICATION_SWITCH_TAG:
-			[userDefaults setBool:theSwitch.on forKey:NM_ENABLE_EMAIL_NOTIFICATION_KEY];
+		case NM_SETTING_TWITTER_SWITCH_TAG:
 			break;
 			
 		default:
@@ -172,14 +188,14 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 4;
+	return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	NSInteger numRow = 1;
 	switch (section) {
-		case 3:
+		case 1:
 			numRow = 2;
 			break;
 			
@@ -193,8 +209,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * CellIdentifier = @"Cell";
-	static NSString * SocialCellIdentifier = @"SocialCell";
-	static NSString * EmailCellIdentifier = @"EmailCell";
 
     UITableViewCell * cell;
 	NSString * lblStr = nil;
@@ -208,7 +222,7 @@
 			switch (indexPath.row) {
 				case 0:
 					// HD
-					lblStr = @"HD";
+					lblStr = @"High Definition Videos";
 					cell.accessoryView = hdSwitch;
 					break;
 				case 1:
@@ -221,53 +235,28 @@
 			cell.textLabel.text = lblStr;
 			break;
 		case 1:
-			cell = [tableView dequeueReusableCellWithIdentifier:EmailCellIdentifier];
-			if ( cell == nil ) {
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SocialCellIdentifier] autorelease];
-				cell.selectionStyle = UITableViewCellSelectionStyleNone;
-				// create text field
-				userIDField = [[UITextField alloc] initWithFrame:CGRectMake(0.0, 14.0, 200.0, 24.0)];
-				userIDField.borderStyle = UITextBorderStyleNone;
-				userIDField.placeholder = @"Your Email Address";
-				userIDField.delegate = self;
-				userIDField.textAlignment = UITextAlignmentRight;
-				cell.accessoryView = userIDField;
-			}
-			cell.textLabel.text = @"Email (User ID for now)";
-			userIDField.text = [userDefaults stringForKey:NM_USER_ACCOUNT_ID_KEY];
-			break;
-			
-		default:
 			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 			if (cell == nil) {
 				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
 				cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			}
-			switch (indexPath.section) {
-				case 2:
-					lblStr = @"Show Favorites Channel";
-					cell.accessoryView = favoriteChannelSwitch;
+			switch (indexPath.row) {
+				case 0:
+					lblStr = @"Twitter";
 					break;
-				case 3:
-				{
-					switch (indexPath.row) {
-						case 0:
-							lblStr = @"Push Notification";
-							cell.accessoryView = pushNotificationSwitch;
-							break;
-						case 1:
-							lblStr = @"Email";
-							cell.accessoryView = emailNotificationSwitch;
-							break;
-						default:
-							break;
-					}
+					
+				case 1:
+					lblStr = @"Facebook";
 					break;
-				}	
+					
 				default:
 					break;
 			}
 			cell.textLabel.text = lblStr;
+			
+			break;
+			
+		default:
 			break;
 	}
 	
@@ -276,8 +265,8 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	switch (section) {
-		case 3:
-			return @"Notifications";
+		case 1:
+			return @"Auto Post Favorites to";
 			
 		default:
 			break;
@@ -300,14 +289,14 @@
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	if (indexPath.section == 4) {
-        // Reset tooltips
-        
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    }
-}
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//	if (indexPath.section == 4) {
+//        // Reset tooltips
+//        
+//        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    }
+//}
 
 
 @end
