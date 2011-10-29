@@ -47,7 +47,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	
 	// listen to channel management view notification
 	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
-	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:UIApplicationWillTerminateNotification object:nil];
 	
 	// check if the cache directory is here or not. If not, create it.
 	NSString * docDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]];
@@ -575,7 +575,6 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 - (void)handleCleanUpCacheNotification:(NSNotification *)aNotification {
 	// clean up channel thumbnail and video thumbnail files cache. Make sure they do not exceed the cap respectively.
-	
 }
 
 - (void)removeAllFiles {
