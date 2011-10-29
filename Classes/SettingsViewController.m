@@ -43,6 +43,8 @@
 - (void)dealloc {
 //	[favoriteChannelSwitch release];
 	[hdSwitch release];
+	[autoPostSettings release];
+	[uiTagIndexMap release];
 //	[pushNotificationSwitch release];
 //	[emailNotificationSwitch release];
     [super dealloc];
@@ -65,12 +67,11 @@
 	self.title = @"Settings";
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)];
 	
-	UILabel * footerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 100.0f)];
-	;
+	UILabel * footerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 68.0f)];
 	footerLabel.backgroundColor = [NMStyleUtility sharedStyleUtility].clearColor;
 	footerLabel.numberOfLines = 0;
 	footerLabel.textAlignment = UITextAlignmentCenter;
-	footerLabel.text = [NSString stringWithFormat:@"Version: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID];
+	footerLabel.text = [NSString stringWithFormat:@"© 2011 Pipely Inc.\nVersion: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID];
 	self.tableView.tableFooterView = footerLabel;
 	// set the current User ID
 //	userIDField.text = [userDefaults stringForKey:NM_USER_ACCOUNT_ID_KEY];
@@ -81,15 +82,30 @@
 	hdSwitch.tag = NM_SETTING_HD_SWITCH_TAG;
 	hdSwitch.on = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
 	[hdSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
-	facebookPostSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-	facebookPostSwitch.tag = NM_SETTING_FACEBOOK_SWITCH_TAG;
-	facebookPostSwitch.on = [userDefaults boolForKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY];
-	[facebookPostSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
-	twitterPostSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-	twitterPostSwitch.tag = NM_SETTING_TWITTER_SWITCH_TAG;
-	twitterPostSwitch.on = [userDefaults boolForKey:NM_SETTING_TWITTER_AUTO_POST_KEY];
-	[twitterPostSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+	// check if we need to show setting
+	autoPostSettings = [[NSMutableArray alloc] initWithCapacity:2];
+	uiTagIndexMap = [[NSMutableDictionary alloc] initWithCapacity:2];
+	UISwitch * theSwitch = nil;
+	if ( NM_USER_TWITTER_CHANNEL_ID ) {
+		theSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+		theSwitch.tag = NM_SETTING_TWITTER_SWITCH_TAG;
+		theSwitch.on = [userDefaults boolForKey:NM_SETTING_TWITTER_AUTO_POST_KEY];
+		[theSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+		[autoPostSettings addObject:[NSDictionary dictionaryWithObjectsAndKeys:theSwitch, @"switch", NM_SETTING_TWITTER_AUTO_POST_KEY, @"defaultKey", @"Twitter", @"title", nil]];
+		[theSwitch release];
+		[uiTagIndexMap setObject:[NSNumber numberWithInteger:[autoPostSettings count] - 1] forKey:[NSNumber numberWithInteger:NM_SETTING_TWITTER_SWITCH_TAG]];
+	}
+	if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+		theSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+		theSwitch.tag = NM_SETTING_FACEBOOK_SWITCH_TAG;
+		theSwitch.on = [userDefaults boolForKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY];
+		[theSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
+		[autoPostSettings addObject:[NSDictionary dictionaryWithObjectsAndKeys:theSwitch, @"switch", NM_SETTING_FACEBOOK_AUTO_POST_KEY, @"defaultKey", @"Facebook", @"title", nil]];
+		[theSwitch release];
+		[uiTagIndexMap setObject:[NSNumber numberWithInteger:[autoPostSettings count] - 1] forKey:[NSNumber numberWithInteger:NM_SETTING_FACEBOOK_SWITCH_TAG]];
+	}
+	
 //	mobileBrowserSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 //	mobileBrowserSwitch.tag = NM_SETTING_MOBILE_BROWSER_SWITCH_TAG;
 //	mobileBrowserSwitch.on = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
@@ -155,8 +171,10 @@
 //			[userDefaults setBool:theSwitch.on forKey:NM_ENABLE_EMAIL_NOTIFICATION_KEY];
 //			break;
 		case NM_SETTING_FACEBOOK_SWITCH_TAG:
-			break;
 		case NM_SETTING_TWITTER_SWITCH_TAG:
+			userSettingsChanged = YES;
+			NSDictionary * theDict = [autoPostSettings objectAtIndex:[[uiTagIndexMap objectForKey:[NSNumber numberWithInteger:theSwitch.tag]] unsignedIntegerValue]];
+			[userDefaults setBool:theSwitch.on forKey:[theDict objectForKey:@"defaultKey"]];
 			break;
 			
 		default:
@@ -165,6 +183,10 @@
 }
 
 - (void)dismissView:(id)sender {
+	if ( userSettingsChanged ) {
+		// save changes
+		[[NMTaskQueueController sharedTaskQueueController] issueEditUserSettings];
+	}
 	viewPushedByNavigationController = NO;
 	[self dismissModalViewControllerAnimated:YES];
 }
@@ -188,19 +210,14 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 2;
+	return [autoPostSettings count] > 0 ? 3 : 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	NSInteger numRow = 1;
-	switch (section) {
-		case 1:
-			numRow = 2;
-			break;
-			
-		default:
-			break;
+	if ( [autoPostSettings count] && section == 1 ) {
+		numRow = [autoPostSettings count];
 	}
 	return numRow;
 }
@@ -225,35 +242,35 @@
 					lblStr = @"High Definition Videos";
 					cell.accessoryView = hdSwitch;
 					break;
-				case 1:
-					// Mobile browser resolution
-					lblStr = @"Mobile Browser Resolution";
-					cell.accessoryView = mobileBrowserSwitch;
+//				case 1:
+//					// Mobile browser resolution
+//					lblStr = @"Mobile Browser Resolution";
+//					cell.accessoryView = mobileBrowserSwitch;
 				default:
 					break;
 			}
 			cell.textLabel.text = lblStr;
 			break;
 		case 1:
-			cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-			if (cell == nil) {
-				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-				cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		case 2:
+			if ( [autoPostSettings count] ) {
+				cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+				if (cell == nil) {
+					cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+					cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				}
+				NSDictionary * theDict = [autoPostSettings objectAtIndex:indexPath.row];
+				cell.accessoryView = [theDict objectForKey:@"switch"];
+				cell.textLabel.text = [theDict objectForKey:@"title"];
+			} else {
+				cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+				if (cell == nil) {
+					cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+					cell.selectionStyle = UITableViewCellSelectionStyleNone;
+				}
+				cell.accessoryView = nil;
+				cell.textLabel.text = @"Feedback? Email us at feedback@nowbox.com";
 			}
-			switch (indexPath.row) {
-				case 0:
-					lblStr = @"Twitter";
-					break;
-					
-				case 1:
-					lblStr = @"Facebook";
-					break;
-					
-				default:
-					break;
-			}
-			cell.textLabel.text = lblStr;
-			
 			break;
 			
 		default:
@@ -266,7 +283,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	switch (section) {
 		case 1:
-			return @"Auto Post Favorites to";
+			return [autoPostSettings count] ? @"Auto Post Favorites to" : nil;
 			
 		default:
 			break;

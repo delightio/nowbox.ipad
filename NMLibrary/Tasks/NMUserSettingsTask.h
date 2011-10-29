@@ -8,6 +8,10 @@
 
 #import "NMTask.h"
 
-@interface NMUserSettingsTask : NMTask
+@interface NMUserSettingsTask : NMTask {
+	NSDictionary * settingsDictionary;
+}
+
+@property (nonatomic, retain) NSDictionary * settingsDictionary;
 
 @end

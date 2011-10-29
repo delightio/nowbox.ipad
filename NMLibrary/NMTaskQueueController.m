@@ -62,7 +62,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
-//	[nc addObserver:self selector:@selector(handleFailChannelPollingNotification:) name:NMDidFailEditUserNotification object:nil];
+	[nc addObserver:self selector:@selector(handleFailEditUserSettingsNotification:) name:NMDidFailEditUserSettingsNotification object:nil];
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
@@ -189,6 +189,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
+- (void)handleFailEditUserSettingsNotification:(NSNotification *)aNotification {
+	// fail saving settings. need to retry
+	[self issueEditUserSettings];
+}
+
 #pragma mark Queue tasks to network controller
 - (void)issueCreateUser; {
 	NMCreateUserTask * task = [[NMCreateUserTask alloc] init];
@@ -204,6 +209,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL {
 	NMCreateUserTask * task = [[NMCreateUserTask alloc] initFacebookVerificationWithURL:aURL];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueEditUserSettings {
+	// user settings should be readily saved in NSUserDefaults
+	NMUserSettingsTask * task = [[NMUserSettingsTask alloc] init];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

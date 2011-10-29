@@ -27,8 +27,9 @@ typedef enum {
 	NMCommandCreateUser,
 	NMCommandVerifyFacebookUser,
 	NMCommandVerifyTwitterUser,
-	NMCommandDeauthoriseFaceBookAccount,
-	NMCommandDeauthoriseTwitterAccount,
+	NMCommandEditUserSettings,
+//	NMCommandDeauthoriseFaceBookAccount,
+//	NMCommandDeauthoriseTwitterAccount,
 	NMCommandEditUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
@@ -100,6 +101,10 @@ extern NSString * const NMDidFailVerifyUserNotification;
 extern NSString * const NMWillSignOutUserNotification;
 extern NSString * const NMDidSignOutUserNotification;
 extern NSString * const NMDidFailSignOutUserNotification;
+extern NSString * const NMWillEditUserSettingsNotification;
+extern NSString * const NMDidEditUserSettingsNotification;
+extern NSString * const NMDidFailEditUserSettingsNotification;
+
 // channel
 extern NSString * const NMWillGetChannelsNotification;
 extern NSString * const NMDidGetChannelsNotification;

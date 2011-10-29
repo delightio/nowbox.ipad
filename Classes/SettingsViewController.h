@@ -10,13 +10,15 @@
 
 @interface SettingsViewController : UITableViewController <UITextFieldDelegate> {
 	IBOutlet UITextField * userIDField;
-	IBOutlet UISwitch * hqSwitch, * mobileBrowserSwitch;
 	IBOutlet UILabel * reloadNote;
+	BOOL userSettingsChanged;
+	NSMutableArray * autoPostSettings;
+	NSMutableDictionary * uiTagIndexMap;
 	
 	NSUserDefaults * userDefaults;
 	
 //	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
-	UISwitch * hdSwitch, * facebookPostSwitch, * twitterPostSwitch;
+	UISwitch * hdSwitch;
 	BOOL viewPushedByNavigationController;
 }
 
