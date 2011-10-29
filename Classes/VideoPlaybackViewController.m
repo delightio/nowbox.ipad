@@ -320,10 +320,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			playFirstVideoOnLaunchWhenReady = YES;
 //			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
 //		}];
-        
-        // Start monitoring for tooltips
-        [[ToolTipController sharedToolTipController] startTimer];
-        [[ToolTipController sharedToolTipController] setDelegate:self];
 
 	} else {
 		// cross fade
@@ -347,6 +343,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 		[[UIApplication sharedApplication] setStatusBarHidden:NO];
 //	}
+    
+    // Start monitoring for tooltips
+    [[ToolTipController sharedToolTipController] startTimer];
+    [[ToolTipController sharedToolTipController] setDelegate:self];
 }
 
 #pragma mark Playback data structure
