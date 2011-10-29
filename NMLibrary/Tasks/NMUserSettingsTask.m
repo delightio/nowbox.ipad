@@ -34,7 +34,7 @@ NSString * const NMDidFailEditUserSettingsNotification = @"NMDidFailEditUserSett
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users/%d/settings", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"PUT"];
-	[request setHTTPBody:[[NSDictionary dictionaryWithObject:settingsDictionary forKey:@""] JSONData]];
+	[request setHTTPBody:[[NSDictionary dictionaryWithObject:settingsDictionary forKey:@"settings"] JSONData]];
 	
 	return request;
 }

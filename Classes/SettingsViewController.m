@@ -174,21 +174,18 @@
 //			break;
 		case NM_SETTING_FACEBOOK_SWITCH_TAG:
 		case NM_SETTING_TWITTER_SWITCH_TAG:
-			userSettingsChanged = YES;
+		{
 			NSDictionary * theDict = [autoPostSettings objectAtIndex:[[uiTagIndexMap objectForKey:[NSNumber numberWithInteger:theSwitch.tag]] unsignedIntegerValue]];
 			[userDefaults setBool:theSwitch.on forKey:[theDict objectForKey:@"defaultKey"]];
+			[[NMTaskQueueController sharedTaskQueueController] issueEditUserSettings];
 			break;
-			
+		}
 		default:
 			break;
 	}
 }
 
 - (void)dismissView:(id)sender {
-	if ( userSettingsChanged ) {
-		// save changes
-		[[NMTaskQueueController sharedTaskQueueController] issueEditUserSettings];
-	}
 	viewPushedByNavigationController = NO;
 	[self dismissModalViewControllerAnimated:YES];
 }

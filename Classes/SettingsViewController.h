@@ -12,7 +12,6 @@
 @interface SettingsViewController : UITableViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate> {
 	IBOutlet UITextField * userIDField;
 	IBOutlet UILabel * reloadNote;
-	BOOL userSettingsChanged;
 	NSMutableArray * autoPostSettings;
 	NSMutableDictionary * uiTagIndexMap;
 	
