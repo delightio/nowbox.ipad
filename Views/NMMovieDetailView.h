@@ -19,8 +19,14 @@
 	IBOutlet UILabel * titleLabel;
 	IBOutlet UILabel * otherInfoLabel;
 	IBOutlet UILabel * descriptionLabel;
-	IBOutlet NMCachedImageView * movieThumbnailView;
 	IBOutlet UIView * infoContainerView;
+	// movie thumbnail
+	IBOutlet NMCachedImageView * movieThumbnailView;
+	// loading view
+	IBOutlet UIView * activityView;
+	IBOutlet UIActivityIndicatorView * loaderView;
+	// container view of both movie thumbnail and loading view
+	IBOutlet UIView * thumbnailContainerView;
 	
 @private
 	NMStyleUtility * style;
@@ -34,11 +40,13 @@
 }
 
 @property (nonatomic, assign) NMVideo * video;
-@property (nonatomic, readonly) NMCachedImageView * movieThumbnailView;
+@property (nonatomic, readonly) UIView * thumbnailContainerView;
 
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx;
 - (void)slowFadeOutThumbnailView:(id)sender context:(void *)ctx;
 - (void)restoreThumbnailView;
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;
+
+- (void)setActivityViewHidden:(BOOL)aflag;
 
 @end
