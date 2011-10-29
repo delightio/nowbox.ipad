@@ -45,7 +45,7 @@ NSString * const NMDidFailSignOutUserNotification = @"NMDidFailSignOutUserNotifi
 	if ( [buffer length] == 0 ) {
 		return;
 	}
-	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+	NSString * str = [[[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding] autorelease];
 	NSLog(@"%@", str);
 }
 
