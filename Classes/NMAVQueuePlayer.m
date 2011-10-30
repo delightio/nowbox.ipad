@@ -50,7 +50,6 @@
 		[self insertItem:item afterItem:nil];
 		vid.nm_playback_status = NMVideoQueueStatusQueued;
 	}
-	[item release];
 }
 
 - (void)removeAllItems {

@@ -72,7 +72,7 @@
 			NMAVPlayerItem * item = [[NMAVPlayerItem alloc] initWithURL:[NSURL URLWithString:urlStr]];
 			item.nmVideo = self;
 			self.nm_player_item = item;
-			return item;
+			return [item autorelease];
 		}
 	}
 	return nil;

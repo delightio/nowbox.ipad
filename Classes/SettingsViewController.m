@@ -65,7 +65,7 @@
     [super viewDidLoad];
 	userDefaults = [NSUserDefaults standardUserDefaults];
 	self.title = @"Settings";
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)];
+	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)] autorelease];
 	
 	UILabel * footerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 68.0f)];
 	footerLabel.backgroundColor = [NMStyleUtility sharedStyleUtility].clearColor;
@@ -73,6 +73,7 @@
 	footerLabel.textAlignment = UITextAlignmentCenter;
 	footerLabel.text = [NSString stringWithFormat:@"© 2011 Pipely Inc.\nVersion: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID];
 	self.tableView.tableFooterView = footerLabel;
+	[footerLabel release];
 	// set the current User ID
 //	userIDField.text = [userDefaults stringForKey:NM_USER_ACCOUNT_ID_KEY];
 	// set current HQ setting
@@ -227,7 +228,7 @@
     static NSString * CellIdentifier = @"Cell";
 	static NSString * EmailIdentifier = @"EmailCell";
 
-    UITableViewCell * cell;
+    UITableViewCell * cell = nil;
 	NSString * lblStr = nil;
 	switch (indexPath.section) {
 		case 0:

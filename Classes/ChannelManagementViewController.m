@@ -542,7 +542,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             return;
         }
 	} else {
-        NMChannel * chn;
+        NMChannel * chn = nil;
 
         if ( selectedIndex == 0 ) {
             if ( indexPath.section == 0 ) {

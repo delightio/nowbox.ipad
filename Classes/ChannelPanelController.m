@@ -195,6 +195,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	ctnView.tag = 1001;
     [ctnView setNeedsDisplay];
 	[aContentView addSubview:ctnView];
+	[ctnView release];
 	// create horizontal table controller
 	VideoRowController * vdoCtrl = [[VideoRowController alloc] init];
 	vdoCtrl.panelController = self;

@@ -127,7 +127,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr;
+	NSString * urlStr = nil;
 	NSTimeInterval t = NM_URL_REQUEST_TIMEOUT;
 	switch (command) {
 		case NMCommandGetSubscribedChannels:

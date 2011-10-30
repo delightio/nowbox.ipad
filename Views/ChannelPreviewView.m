@@ -17,9 +17,6 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
     
     UIImageView *videoShadowImageView = [[UIImageView alloc]initWithFrame:CGRectMake( -3, -2, frame.size.width+8, frame.size.height+8)];
     [videoShadowImageView setImage:[[UIImage imageNamed:@"channel-detail-video-shadow"] stretchableImageWithLeftCapWidth:3 topCapHeight:2]];
