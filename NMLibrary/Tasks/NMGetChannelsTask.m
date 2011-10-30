@@ -236,6 +236,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		case NMCommandGetChannelsForCategory:
 			// if getting channel for a category, check if the category contains the channel
 			theChannelPool = category.channels;
+			category.nm_last_refresh = [NSDate date];
 			break;
 		case NMCommandGetSubscribedChannels:
 			// if getting subscribed channel, compare with all existing subscribed channels

@@ -229,7 +229,7 @@
 }
 
 -(IBAction)subscribeChannel:(id)sender {
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.25f
                      animations:^{
                          subscribeButton.enabled = NO;
                          subscribeAndWatchButton.enabled = NO;
@@ -240,7 +240,7 @@
 }
 
 -(IBAction)subscribeAndWatchChannel:(id)sender {
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.25f
                      animations:^{
                          subscribeButton.enabled = NO;
                          subscribeAndWatchButton.enabled = NO;
@@ -252,7 +252,7 @@
 }
 
 -(IBAction)unsubscribeChannel:(id)sender {
-    [UIView animateWithDuration:0.3
+    [UIView animateWithDuration:0.25f
                      animations:^{
                          unsubscribeButton.enabled = NO;
                      }

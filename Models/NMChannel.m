@@ -25,7 +25,7 @@
 @dynamic nm_thumbnail_file_name;
 @dynamic nm_time_elapsed_timescale;
 @dynamic nm_time_elapsed_value;
-@dynamic nm_video_last_refreshed;
+@dynamic nm_video_last_refresh;
 @dynamic subscriber_count;
 @dynamic populated_at;
 @dynamic resource_uri;

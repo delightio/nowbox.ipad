@@ -337,7 +337,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (NSArray *)hiddenSubscribedChannels {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == 0 AND nm_video_last_refreshed < %@", [NSDate dateWithTimeIntervalSinceNow:-600]]]; // 10 min
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == 0 AND nm_video_last_refresh < %@", [NSDate dateWithTimeIntervalSinceNow:-600]]]; // 10 min
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
     [request release];    
@@ -631,12 +631,26 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", @"previewThumbnails", @"detail", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
-		NSManagedObject * mobj;
+		NMChannel * mobj;
 		for (mobj in result) {
 			[managedObjectContext deleteObject:mobj];
 		}
 	}
 	[request release];
+	// reset category
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+	[request setReturnsObjectsAsFaults:NO];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		NMCategory * mobj;
+		NSDate * unixDate = [NSDate dateWithTimeIntervalSince1970:0.0f];
+		for (mobj in result) {
+			mobj.nm_last_refresh = unixDate;
+		}
+	}
+	[request release];
+	
 	// clean up cache
 	[channelCacheDictionary removeAllObjects];
 	

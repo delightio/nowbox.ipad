@@ -534,10 +534,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [channelsTableView reloadData];
             
 			// use this count check as criteria to fetch channel list from server
-            if ( [chnSet count] < 4 ) {
-                // try fetching the channels from server
+			if ( [cat.nm_last_refresh timeIntervalSinceNow] < 60.0f ) {
+				// fetch if last fetch happens 1 min ago. The "last refresh" value will get reset when  channel management view is dismissed.
                 [nowboxTaskController issueGetChannelsForCategory:cat];
-            }
+			}
             return;
         } else { // separator
             return;
