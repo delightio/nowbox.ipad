@@ -279,7 +279,9 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		if ( [channelIndexSet containsIndex:cid] ) {
 			chnDict = [parsedObjectDictionary objectForKey:chnObj.nm_id];
 			// the channel exists, update its sort order
-			chnObj.nm_subscribed = [chnDict objectForKey:@"nm_subscribed"];
+			if ( command == NMCommandGetSubscribedChannels ) {
+				chnObj.nm_subscribed = [chnDict objectForKey:@"nm_subscribed"];
+			}
 			[channelIndexSet removeIndex:cid];
 		} else {
 			if ( objectsToDelete == nil ) objectsToDelete = [NSMutableArray arrayWithCapacity:4];

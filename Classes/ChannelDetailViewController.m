@@ -271,9 +271,9 @@
 - (void)handleSubscriptionNotification:(NSNotification *)aNotification {
 	NSDictionary * userInfo = [aNotification userInfo];
     if (channel == [userInfo objectForKey:@"channel"]) {
-        [UIView animateWithDuration:0.3
-                         animations:^{
-                             if ([channel.nm_subscribed intValue] > 0) {
+        [UIView animateWithDuration:0.25f 
+						 animations:^{
+							 if ([channel.nm_subscribed intValue] > 0) {
                                  unsubscribeButton.enabled = YES;
                                  subscribeView.alpha = 0;
                                  unsubscribeView.alpha = 1;
@@ -286,8 +286,9 @@
                              }
                          }
                          completion:^(BOOL finished) {
-                             if (shouldDismiss) {
-                                 // TODO: play the first video of the channel here
+                             if ( shouldDismiss && [[NMTaskQueueController sharedTaskQueueController].dataController channelContainsVideo:channel] ) {
+								 [[NSNotificationCenter defaultCenter] postNotificationName:NMShouldPlayNewlySubscribedChannelNotification object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", nil]];
+								 [self dismissModalViewControllerAnimated:YES];
                              }
                          }];
     }
