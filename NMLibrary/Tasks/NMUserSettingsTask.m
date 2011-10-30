@@ -20,8 +20,8 @@ NSString * const NMDidFailEditUserSettingsNotification = @"NMDidFailEditUserSett
 	command = NMCommandEditUserSettings;
 	// get the setting from NSUserDefaults
 	NSUserDefaults * def = [NSUserDefaults standardUserDefaults];
-	self.settingsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[[def objectForKey:NM_SETTING_TWITTER_AUTO_POST_KEY] boolValue] ? (id)kCFBooleanTrue : (id)kCFBooleanFalse, @"post_to_twitter", 
-							   [[def objectForKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY] boolValue] ? (id)kCFBooleanTrue : (id)kCFBooleanFalse, @"post_to_facebook", nil];
+	self.settingsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[def objectForKey:NM_SETTING_TWITTER_AUTO_POST_KEY], @"post_to_twitter", 
+							   [def objectForKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY], @"post_to_facebook", nil];
 	return self;
 }
 
@@ -31,10 +31,9 @@ NSString * const NMDidFailEditUserSettingsNotification = @"NMDidFailEditUserSett
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users/%d/settings", NM_BASE_URL, NM_USER_ACCOUNT_ID];
+	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users/%d/settings?settings[post_to_twitter]=%@&settings[post_to_facebook]=%@", NM_BASE_URL, NM_USER_ACCOUNT_ID, [[settingsDictionary objectForKey:@"post_to_twitter"] boolValue] ? @"true" : @"false", [[settingsDictionary objectForKey:@"post_to_facebook"] boolValue] ? @"true" : @"false"];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"PUT"];
-	[request setHTTPBody:[[NSDictionary dictionaryWithObject:settingsDictionary forKey:@"settings"] JSONData]];
 	
 	return request;
 }
