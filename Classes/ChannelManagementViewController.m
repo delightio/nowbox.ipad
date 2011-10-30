@@ -533,7 +533,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             self.selectedChannelArray = [chnSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
             [channelsTableView reloadData];
             
-            if ( [chnSet count] == 0 ) {
+			// use this count check as criteria to fetch channel list from server
+            if ( [chnSet count] < 4 ) {
                 // try fetching the channels from server
                 [nowboxTaskController issueGetChannelsForCategory:cat];
             }
