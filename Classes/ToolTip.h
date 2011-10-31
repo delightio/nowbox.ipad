@@ -46,8 +46,11 @@ typedef enum {
 // The tooltip image filename in the resource bundle
 @property (nonatomic, copy) NSString *imageFile;
 
-// The display text for the tooltip (currently not used)
+// The display text for the tooltip
 @property (nonatomic, copy) NSString *displayText;
+
+// Define how the display text should be positioned
+@property (nonatomic, assign) UIEdgeInsets displayTextEdgeInsets;
 
 // The time interval after which the tooltip should automatically hide. If 0, never auto-hide.
 @property (nonatomic, assign) NSTimeInterval autoHideInSeconds;

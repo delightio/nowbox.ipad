@@ -20,6 +20,7 @@
 @synthesize resetCountsOnDisplay;
 @synthesize imageFile;
 @synthesize displayText;
+@synthesize displayTextEdgeInsets;
 @synthesize autoHideInSeconds;
 @synthesize invalidatesToolTip;
 @synthesize target;

@@ -14,8 +14,6 @@
 		<false/>
 		<key>ImageFile</key>
 		<string>tooltip-swipe-next-video.png</string>
-		<key>DisplayText</key>
-		<string>Swipe to go to next video</string>
 		<key>AutoHideInSeconds</key>
 		<integer>0</integer>
 		<key>InvalidatesToolTip</key>
@@ -45,8 +43,6 @@
 		<false/>
 		<key>ImageFile</key>
 		<string>tooltip-swipe-next-video.png</string>
-		<key>DisplayText</key>
-		<string>Swipe to go to next video</string>
 		<key>AutoHideInSeconds</key>
 		<integer>0</integer>
 		<key>InvalidatesToolTip</key>
@@ -76,8 +72,6 @@
 		<false/>
 		<key>ImageFile</key>
 		<string>tooltip-channel-management.png</string>
-		<key>DisplayText</key>
-		<string>Search and manage your channels here.</string>
 		<key>AutoHideInSeconds</key>
 		<integer>0</integer>
 		<key>ValidationCriteria</key>
@@ -105,8 +99,6 @@
 		<false/>
 		<key>ImageFile</key>
 		<string>tooltip-share-videos.png</string>
-		<key>DisplayText</key>
-		<string>Share your favorite videos with your friends</string>
 		<key>AutoHideInSeconds</key>
 		<integer>0</integer>
 		<key>ValidationCriteria</key>
@@ -136,6 +128,10 @@
 		<string>tooltip-bad-video.png</string>
 		<key>DisplayText</key>
 		<string>The video is not available</string>
+		<key>DisplayTextEdgeInsetsLeft</key>
+		<integer>28</integer>
+		<key>DisplayTextEdgeInsetsBottom</key>
+		<integer>10</integer>
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>BadVideoTap</key>
