@@ -24,6 +24,8 @@ NSString * const NM_USER_WATCH_LATER_CHANNEL_ID_KEY = @"NM_USER_WATCH_LATER_CHAN
 NSString * const NM_USER_HISTORY_CHANNEL_ID_KEY = @"NM_USER_HISTORY_CHANNEL_ID_KEY";
 NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY = @"NM_USER_FACEBOOK_CHANNEL_ID_KEY";
 NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY = @"NM_USER_TWITTER_CHANNEL_ID_KEY";
+NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY = @"NM_SETTING_FACEBOOK_AUTO_POST_KEY"; // just need the key. no need for the bool variable
+NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
 // app session
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 NSString * const NM_LAST_VIDEO_LIST_KEY		= @"NM_LAST_VIDEO_LIST_KEY";
@@ -52,24 +54,28 @@ NSInteger NM_LAST_CHANNEL_ID;
 @synthesize managedObjectContext=managedObjectContext_;
 
 + (void)initialize {
+	NSNumber * yesNum = [NSNumber numberWithBool:YES];
+	NSNumber * noNum = [NSNumber numberWithBool:NO];
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:
 	 [NSDictionary dictionaryWithObjectsAndKeys:
 	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE,
 	  [NSDate distantPast], NM_LAST_SESSION_DATE,
 	  [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, 
-	  [NSNumber numberWithBool:YES], NM_USE_HIGH_QUALITY_VIDEO_KEY, 
+	  yesNum, NM_USE_HIGH_QUALITY_VIDEO_KEY, 
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
-	  [NSNumber numberWithInteger:0],  NM_SESSION_ID_KEY, 
-	  [NSNumber numberWithBool:YES], NM_FIRST_LAUNCH_KEY, 
+	  noNum,  NM_SESSION_ID_KEY, 
+	  yesNum, NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
-      [NSNumber numberWithInteger:0], NM_SESSION_COUNT_KEY,
-	  [NSNumber numberWithBool:YES], NM_SHOW_FAVORITE_CHANNEL_KEY,
-	  [NSNumber numberWithBool:NO], NM_ENABLE_PUSH_NOTIFICATION_KEY,
-	  [NSNumber numberWithBool:NO], NM_ENABLE_EMAIL_NOTIFICATION_KEY,
-	  [NSNumber numberWithInteger:0], NM_USER_FAVORITES_CHANNEL_ID_KEY,
-	  [NSNumber numberWithInteger:0], NM_USER_WATCH_LATER_CHANNEL_ID_KEY,
-	  [NSNumber numberWithInteger:0], NM_USER_HISTORY_CHANNEL_ID_KEY,
+          [NSNumber numberWithInteger:0], NM_SESSION_COUNT_KEY,
+	  yesNum, NM_SHOW_FAVORITE_CHANNEL_KEY,
+	  noNum, NM_ENABLE_PUSH_NOTIFICATION_KEY,
+	  noNum, NM_ENABLE_EMAIL_NOTIFICATION_KEY,
+	  noNum, NM_USER_FAVORITES_CHANNEL_ID_KEY,
+	  noNum, NM_USER_WATCH_LATER_CHANNEL_ID_KEY,
+	  noNum, NM_USER_HISTORY_CHANNEL_ID_KEY,
+	  yesNum, NM_SETTING_FACEBOOK_AUTO_POST_KEY,
+	  yesNum, NM_SETTING_TWITTER_AUTO_POST_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
 	  nil]];
 }

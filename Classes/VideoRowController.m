@@ -80,8 +80,8 @@
     [panelController.videoViewController playVideo:theVideo];
     
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
-                                                                       theVideo.title, @"video_name", 
-                                                                       theVideo.nm_id, @"video_id",
+                                                                       theVideo.title, AnalyticsPropertyVideoName, 
+                                                                       theVideo.nm_id, AnalyticsPropertyVideoId,
                                                                        @"channelpanel", AnalyticsPropertySender, 
                                                                        @"tap", @"action", nil]];
 }

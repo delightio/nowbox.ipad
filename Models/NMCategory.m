@@ -13,8 +13,13 @@
 @implementation NMCategory
 
 @dynamic nm_id;
+@dynamic nm_last_refresh;
 @dynamic nm_sort_order;
 @dynamic title;
 @dynamic channels;
+
+- (void)awakeFromInsert {
+	self.nm_last_refresh = [NSDate dateWithTimeIntervalSince1970:0.0f];
+}
 
 @end

@@ -29,7 +29,6 @@ typedef enum {
 
 @private
 	NMStyleUtility * styleUtility;
-	NSUInteger numberOfChannels;
     NSFetchedResultsController *fetchedResultsController_;
     NSManagedObjectContext *managedObjectContext_;
 	NSMutableArray *containerViewPool;

@@ -47,6 +47,7 @@
 - (void)issueCreateUser;
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
+- (void)issueEditUserSettings;
 //- (void)issueSignOutTwitterAccount;
 //- (void)issueSignOutFacebookAccout;
 // Category

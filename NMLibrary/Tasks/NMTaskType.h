@@ -18,3 +18,4 @@
 #import "NMCreateUserTask.h"
 #import "NMSignOutUserTask.h"
 #import "NMPollChannelTask.h"
+#import "NMUserSettingsTask.h"

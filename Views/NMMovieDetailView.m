@@ -70,7 +70,7 @@
 	
 	CALayer * theLayer = activityView.layer;
 	theLayer.backgroundColor = [[NMStyleUtility sharedStyleUtility].blackColor colorWithAlphaComponent:0.5f].CGColor;
-	theLayer.cornerRadius = 0.25f;
+	theLayer.cornerRadius = 10.0f;
 }
 
 - (void)setVideo:(NMVideo *)aVideo {

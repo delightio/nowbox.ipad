@@ -23,18 +23,18 @@ NSString * const NMDidFailSignOutUserNotification = @"NMDidFailSignOutUserNotifi
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * srv = nil;
-	switch (command) {
-		case NMCommandDeauthoriseFaceBookAccount:
-			srv = @"facebook";
-			break;
-			
-		case NMCommandDeauthoriseTwitterAccount:
-			srv = @"twitter";
-			break;
-			
-		default:
-			break;
-	}
+//	switch (command) {
+//		case NMCommandDeauthoriseFaceBookAccount:
+//			srv = @"facebook";
+//			break;
+//			
+//		case NMCommandDeauthoriseTwitterAccount:
+//			srv = @"twitter";
+//			break;
+//			
+//		default:
+//			break;
+//	}
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/auth/%@/deauthorize?user_id=%d", NM_BASE_URL, srv, NM_USER_ACCOUNT_ID];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];
@@ -45,7 +45,7 @@ NSString * const NMDidFailSignOutUserNotification = @"NMDidFailSignOutUserNotifi
 	if ( [buffer length] == 0 ) {
 		return;
 	}
-	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+	NSString * str = [[[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding] autorelease];
 	NSLog(@"%@", str);
 }
 

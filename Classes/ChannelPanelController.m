@@ -200,6 +200,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	ctnView.tag = 1001;
     [ctnView setNeedsDisplay];
 	[aContentView addSubview:ctnView];
+	[ctnView release];
 	// create horizontal table controller
 	VideoRowController * vdoCtrl = [[VideoRowController alloc] init];
 	vdoCtrl.panelController = self;
@@ -321,6 +322,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:theChannel];
 
+	selectedIndex = indexPath.row;
     highlightedChannel = theChannel;
     highlightedVideoIndex = newVideoIndex;
 
@@ -551,21 +553,23 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         case NSFetchedResultsChangeDelete: {
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             
-            // Go to next channel, or first channel if we're at the end of the list
-            NSInteger numberOfRows = [[[controller sections] objectAtIndex:0] numberOfObjects];
-            
-            NSIndexPath *nextChannelIndexPath = nil;
-            if (indexPath.row < numberOfRows) {
-                nextChannelIndexPath = indexPath;
-            } else if (numberOfRows > 0) {
-                nextChannelIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            }
-                       
-            if (nextChannelIndexPath) {
-                NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
-				// do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
-                [videoViewController setCurrentChannel:channel];
-            }
+			if ( selectedIndex == indexPath.row ) {
+				// Go to next channel, or first channel if we're at the end of the list
+				NSInteger numberOfRows = [[[controller sections] objectAtIndex:0] numberOfObjects];
+				
+				NSIndexPath *nextChannelIndexPath = nil;
+				if (indexPath.row < numberOfRows) {
+					nextChannelIndexPath = indexPath;
+				} else if (numberOfRows > 0) {
+					nextChannelIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+				}
+						   
+				if (nextChannelIndexPath) {
+					NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
+					// do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
+					[videoViewController setCurrentChannel:channel];
+				}
+			}
             
             break;
         } 

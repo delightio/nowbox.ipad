@@ -26,6 +26,8 @@ extern NSString * const NM_SESSION_COUNT_KEY;
 extern NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY;	
 extern NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY;
 extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
+extern NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY;
+extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 
 @class VideoPlaybackViewController;
 @class LaunchViewController;

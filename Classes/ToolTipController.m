@@ -285,7 +285,7 @@ static ToolTipController *toolTipController = nil;
     }
     
     // Dismiss by tapping outside tooltip
-    self.dismissTouchArea = [[TouchForwardingView alloc] initWithFrame:view.bounds];
+    self.dismissTouchArea = [[[TouchForwardingView alloc] initWithFrame:view.bounds] autorelease];
     [(TouchForwardingView *)dismissTouchArea addTarget:self action:@selector(dismissTooltip)];
     [view addSubview:dismissTouchArea];
     

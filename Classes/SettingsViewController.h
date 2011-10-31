@@ -7,15 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 
-@interface SettingsViewController : UITableViewController <UITextFieldDelegate> {
+@interface SettingsViewController : UITableViewController <UITextFieldDelegate, MFMailComposeViewControllerDelegate> {
 	IBOutlet UITextField * userIDField;
-	IBOutlet UISwitch * hqSwitch, * mobileBrowserSwitch;
 	IBOutlet UILabel * reloadNote;
+	NSMutableArray * autoPostSettings;
+	NSMutableDictionary * uiTagIndexMap;
 	
 	NSUserDefaults * userDefaults;
 	
-	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
+//	UISwitch * hdSwitch, * pushNotificationSwitch, * emailNotificationSwitch, * favoriteChannelSwitch;
+	UISwitch * hdSwitch;
 	BOOL viewPushedByNavigationController;
 }
 

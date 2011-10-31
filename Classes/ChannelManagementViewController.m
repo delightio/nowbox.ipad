@@ -83,8 +83,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	
 	self.title = @"Channel Management";
 	
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)];
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissView:)];
+	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(showSearchView:)] autorelease];
+	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleBordered target:self action:@selector(dismissView:)] autorelease]; 
 	
     containerView.layer.cornerRadius = 4;
 
@@ -161,9 +161,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[super viewDidDisappear:animated];
 	if ( !viewPushedByNavigationController ) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
+		[nowboxTaskController.dataController clearChannelCache];
 	}
-    
-    [nowboxTaskController.dataController clearChannelCache];
 }
 
 #pragma mark Notification handlers
@@ -544,8 +543,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             self.selectedChannelArray = [chnSet sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
             [channelsTableView reloadData];
             
-            if ( [chnSet count] == 0 ) {
-                // try fetching the channels from server
+			// use this count check as criteria to fetch channel list from server
+			if ( [cat.nm_last_refresh timeIntervalSinceNow] < 60.0f ) {
+				// fetch if last fetch happens 1 min ago. The "last refresh" value will get reset when  channel management view is dismissed.
                 [nowboxTaskController issueGetChannelsForCategory:cat];
             }
             
@@ -556,7 +556,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             return;
         }
 	} else {
-        NMChannel * chn;
+        NMChannel * chn = nil;
 
         if ( selectedIndex == 0 ) {
             if ( indexPath.section == 0 ) {
