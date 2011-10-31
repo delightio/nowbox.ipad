@@ -23,6 +23,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @implementation ChannelManagementViewController
 @synthesize categoriesTableView;
 @synthesize channelsTableView;
+@synthesize activityIndicator;
 @synthesize categoryFetchedResultsController;
 @synthesize myChannelsFetchedResultsController;
 @synthesize selectedIndexPath;
@@ -40,6 +41,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [myChannelsFetchedResultsController release];
     [categoriesTableView release];
     [channelsTableView release];
+    [activityIndicator release];
 	[selectedChannelArray release];
 	[categoryFetchedResultsController release];
 	[managedObjectContext release];
@@ -114,6 +116,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 {
     [self setCategoriesTableView:nil];
     [self setChannelsTableView:nil];
+    self.activityIndicator = nil;
+    
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -177,6 +181,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			[channelsTableView reloadData];
 		}
 	}
+    
+    [activityIndicator stopAnimating];
 }
 
 //- (void)handleWillLoadNotification:(NSNotification *)aNotification {
@@ -482,6 +488,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [activityIndicator stopAnimating];
+    
 	if ( tableView == categoriesTableView ) {
         // deselect first
         
@@ -537,6 +545,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			if ( [cat.nm_last_refresh timeIntervalSinceNow] < 60.0f ) {
 				// fetch if last fetch happens 1 min ago. The "last refresh" value will get reset when  channel management view is dismissed.
                 [nowboxTaskController issueGetChannelsForCategory:cat];
+                
+                if ([selectedChannelArray count] == 0) {
+                    [activityIndicator startAnimating];
+                }
 			}
             return;
         } else { // separator

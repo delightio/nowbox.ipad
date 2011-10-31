@@ -21,7 +21,8 @@
 	CategoriesOrientedTableView *categoriesTableView;
 	UITableView *channelsTableView;
 	UIView *containerView;
-	
+	UIActivityIndicatorView *activityIndicator;
+    
 	NSFetchedResultsController * categoryFetchedResultsController;
 	NSFetchedResultsController * myChannelsFetchedResultsController;
 	NSManagedObjectContext * managedObjectContext;
@@ -52,6 +53,7 @@
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
 @property (retain, nonatomic) IBOutlet UITableView *channelsTableView;
 @property (retain, nonatomic) IBOutlet UIView *containerView;
+@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) NSFetchedResultsController * categoryFetchedResultsController;
 @property (nonatomic, retain) NSFetchedResultsController * myChannelsFetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
