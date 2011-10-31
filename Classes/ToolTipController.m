@@ -301,7 +301,9 @@ static ToolTipController *toolTipController = nil;
     [tooltipButton setCenter:tooltip.center];
 
     if (tooltip.displayText) {
-        [tooltipButton.titleLabel setFont:[UIFont boldSystemFontOfSize:15]];
+        [tooltipButton.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
+        [tooltipButton.titleLabel setShadowColor:[UIColor darkGrayColor]];
+        [tooltipButton.titleLabel setShadowOffset:CGSizeMake(0, 1)];
         [tooltipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [tooltipButton setTitle:tooltip.displayText forState:UIControlStateNormal];
         [tooltipButton setTitleEdgeInsets:tooltip.displayTextEdgeInsets];

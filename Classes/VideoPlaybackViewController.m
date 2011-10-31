@@ -1529,13 +1529,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         // We want to position this one relative to the cell
         UITableView *channelTable = channelController.tableView;
         
-        tooltip.center = CGPointMake([sender frame].size.height / 2, -25);
+        tooltip.center = CGPointMake(floor([sender frame].size.height / 2), -24);
         tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
         
-        // Keep tooltip within screen bounds
-        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 195),
+        // Keep tooltip within screen bounds, and avoid subpixel text rendering (blurrier)
+        CGPoint center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
                                      MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
-        
+        center.x = floor(center.x);
+        center.y = floor(center.y);
+        if ((NSInteger) center.x % 2 == 1) {
+            center.x++;
+        }
+        if ((NSInteger) center.y % 2 == 1) {
+            center.y++;
+        }
+        tooltip.center = center;
     } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
         tooltip.target = channelController;
         tooltip.action = @selector(showChannelManagementView:);
