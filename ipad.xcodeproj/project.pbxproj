@@ -185,6 +185,8 @@
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
 		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
+		A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */; };
+		A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */; };
 		A9E8E3B01427BBBD00ECD077 /* NMSeekBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8E3AD1427BBBD00ECD077 /* NMSeekBar.m */; };
 		A9E8E3B11427BBBD00ECD077 /* NMSeekBarLayoutLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8E3AF1427BBBD00ECD077 /* NMSeekBarLayoutLayer.m */; };
 		A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F1BE6E13FB83CE0006B569 /* NMAirPlayContainerView.m */; };
@@ -451,6 +453,8 @@
 		A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelManagementView.xib; sourceTree = "<group>"; };
 		A9E4B01513F3EA6F00DAE368 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
 		A9E4B01613F3EA6F00DAE368 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
+		A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCheckUpdateTask.h; sourceTree = "<group>"; };
+		A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCheckUpdateTask.m; sourceTree = "<group>"; };
 		A9E8E3AC1427BBBD00ECD077 /* NMSeekBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSeekBar.h; sourceTree = "<group>"; };
 		A9E8E3AD1427BBBD00ECD077 /* NMSeekBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSeekBar.m; sourceTree = "<group>"; };
 		A9E8E3AE1427BBBD00ECD077 /* NMSeekBarLayoutLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSeekBarLayoutLayer.h; sourceTree = "<group>"; };
@@ -808,6 +812,8 @@
 				A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */,
 				A96AD052145B8F29000A8ECC /* NMUserSettingsTask.h */,
 				A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */,
+				A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */,
+				A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -888,6 +894,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1163,6 +1170,7 @@
 				A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */,
 				A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */,
 				A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */,
+				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
