@@ -129,7 +129,7 @@
 		<key>DisplayText</key>
 		<string>The video is not available</string>
 		<key>DisplayTextEdgeInsetsLeft</key>
-		<integer>28</integer>
+		<integer>26</integer>
 		<key>DisplayTextEdgeInsetsBottom</key>
 		<integer>10</integer>
 		<key>ValidationCriteria</key>
