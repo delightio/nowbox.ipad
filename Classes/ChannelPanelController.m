@@ -655,6 +655,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 #pragma mark new video begin playing
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
+    highlightedChannel = [newVideo channel];
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:[newVideo channel]];
     [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
