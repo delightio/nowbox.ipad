@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MixpanelAPI.h"
+#import "Analytics.h"
 
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
 extern NSString * const NM_LAST_SESSION_DATE;

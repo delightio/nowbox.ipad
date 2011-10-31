@@ -17,7 +17,7 @@
 #import "FeatureDebugViewController.h"
 #import "ToolTipController.h"
 #import "NMNavigationController.h"
-#import "MixpanelAPI.h"
+#import "Analytics.h"
 
 #define VIDEO_ROW_LEFT_PADDING			181.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
@@ -155,7 +155,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 //	[popover presentPopoverFromRect:settingButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
 //	popover.delegate = self;
     
-    [[MixpanelAPI sharedAPI] track:@"Show Settings" properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, @"channel_name", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowSettings properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
 }
 
 - (IBAction)showChannelManagementView:(id)sender {	
@@ -171,7 +171,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelManagementTap sender:sender];
     
-    [[MixpanelAPI sharedAPI] track:@"Show Channel Management" properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, @"channel_name", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelManagement properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
 }
 
 //- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {

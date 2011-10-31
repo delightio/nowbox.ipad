@@ -10,7 +10,7 @@
 #import "CategoryTableCell.h"
 #import "NMCachedImageView.h"
 #import "ChannelDetailViewController.h"
-#import "MixpanelAPI.h"
+#import "Analytics.h"
 
 @implementation SearchChannelViewController
 
@@ -183,9 +183,9 @@
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
     channelDetailViewController.channel = chn;
     
-    [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name", 
-                                                                       [NSNumber numberWithBool:NO], @"social_channel", 
-                                                                       @"search", @"sender", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
+                                                                                [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
+                                                                                @"search", AnalyticsPropertySender, nil]];
     
     if ([searchBar isFirstResponder]) {
         // Hide keyboard first
@@ -411,15 +411,15 @@
         
     BOOL subscribed = [chn.nm_subscribed boolValue];
     if (subscribed) {
-        [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
-                                                                          @"search_toggle", @"sender", 
-                                                                          lastSearchQuery, @"search_query", 
-                                                                          [NSNumber numberWithBool:NO], @"social_channel", nil]];    
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
+                                                                                    @"search_toggle", AnalyticsPropertySender, 
+                                                                                    lastSearchQuery, AnalyticsPropertySearchQuery, 
+                                                                                    [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, nil]];    
     } else {
-        [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, @"channel_name",
-                                                                        @"search_toggle", @"sender", 
-                                                                        lastSearchQuery, @"search_query", 
-                                                                        [NSNumber numberWithBool:NO], @"social_channel", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
+                                                                                  @"search_toggle", AnalyticsPropertySender, 
+                                                                                  lastSearchQuery, AnalyticsPropertySearchQuery, 
+                                                                                  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }
     
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:!subscribed channel:chn];
@@ -437,7 +437,7 @@
         progressView.hidden = NO;
         [ctrl issueChannelSearchForKeyword:searchText];
         
-        [[MixpanelAPI sharedAPI] track:@"Perform Search" properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
         self.lastSearchQuery = searchText;
     }
 }

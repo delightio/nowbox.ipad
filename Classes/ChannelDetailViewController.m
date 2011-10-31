@@ -10,7 +10,7 @@
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ChannelPreviewView.h"
-#import "MixpanelAPI.h"
+#import "Analytics.h"
 
 #define NM_THUMBNAIL_PADDING		20.0f
 
@@ -142,8 +142,8 @@
 
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                    || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:@"Show Channel Details" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name", 
-                                                                       [NSNumber numberWithBool:social], @"social_channel", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
+                                                                                [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 
 }
 
@@ -250,9 +250,9 @@
     
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                    || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
-                                                                    @"channeldetails_subscribe", @"sender", 
-                                                                    [NSNumber numberWithBool:social], @"social_channel", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+                                                                              @"channeldetails_subscribe", AnalyticsPropertySender, 
+                                                                              [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 }
 
 -(IBAction)subscribeAndWatchChannel:(id)sender {
@@ -270,9 +270,9 @@
     
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                    || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
-                                                                    @"channeldetails_watchnow", @"sender", 
-                                                                    [NSNumber numberWithBool:social], @"social_channel", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+                                                                              @"channeldetails_watchnow", AnalyticsPropertySender, 
+                                                                              [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 }
 
 -(IBAction)unsubscribeChannel:(id)sender {
@@ -288,9 +288,9 @@
     
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                 || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:@"Unsubscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, @"channel_name",
-                                                                      @"channeldetails_unsubscribe", @"sender", 
-                                                                      [NSNumber numberWithBool:social], @"social_channel", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+                                                                                @"channeldetails_unsubscribe", AnalyticsPropertySender, 
+                                                                                [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 
 }
 

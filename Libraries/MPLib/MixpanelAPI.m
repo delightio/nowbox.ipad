@@ -5,7 +5,7 @@
 //
 #import <UIKit/UIKit.h>
 #import <CommonCrypto/CommonHMAC.h>
-#import "MixpanelAPI.h"
+#import "Analytics.h"
 #import "MixpanelEvent.h"
 #import "MPCJSONDataSerializer.h"
 #import "NSData+MPBase64.h"

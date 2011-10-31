@@ -127,8 +127,8 @@ NSInteger NM_LAST_CHANNEL_ID;
     [userDefaults synchronize];
     
     mixpanel = [MixpanelAPI sharedAPIWithToken:NM_MIXPANEL_TOKEN];
-    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", @"device",
-                                       sessionCount, @"visit_number", nil]];
+    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
+                                       sessionCount, AnalyticsPropertyVisitNumber, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     dateFormatter = [[NSDateFormatter alloc] init];
@@ -192,6 +192,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 	 Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 	 */
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppWillResignActive];    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -213,7 +214,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
     NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[MixpanelAPI sharedAPI] track:@"App Enter Background" properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], @"elapsed_time", nil]];    
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], @"elapsed_time", nil]];    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -245,9 +246,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 	// show the UI
 	
     
-    // Reset the session timer - this is considered a new session
+    // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground];    
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -255,6 +257,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	/*
 	 Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 	 */
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppDidBecomeActive];    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

@@ -124,17 +124,17 @@
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
     switch (loginType) {
         case LoginTwitterType:
-            [[MixpanelAPI sharedAPI] track:@"Complete Twitter Login"];
-            [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", @"channel_name",
-                                                                            @"channelmanagement_login", @"sender", 
-                                                                            [NSNumber numberWithBool:YES], @"social_channel", nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
+                                                                                      @"channelmanagement_login", AnalyticsPropertySender, 
+                                                                                      [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
 
             break;
         case LoginFacebookType:
-            [[MixpanelAPI sharedAPI] track:@"Complete Facebook Login"];
-            [[MixpanelAPI sharedAPI] track:@"Subscribe Channel" properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", @"channel_name",
-                                                                            @"channelmanagement_login", @"sender", 
-                                                                            [NSNumber numberWithBool:YES], @"social_channel", nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
+                                                                                      @"channelmanagement_login", AnalyticsPropertySender, 
+                                                                                      [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
 
             break;
         default:
@@ -161,10 +161,10 @@
     
     switch (loginType) {
         case LoginTwitterType:
-            [[MixpanelAPI sharedAPI] track:@"Twitter Login Failed"];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventTwitterLoginFailed];
             break;
         case LoginFacebookType:
-            [[MixpanelAPI sharedAPI] track:@"Facebook Login Failed"];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventFacebookLoginFailed];
             break;
         default:
             break;

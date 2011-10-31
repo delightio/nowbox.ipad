@@ -5,7 +5,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MixpanelAPI.h"
+#import "Analytics.h"
 @interface MixpanelEvent : NSObject<NSCoding> {
 	NSString *name;
 	NSMutableDictionary *properties;

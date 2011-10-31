@@ -11,7 +11,7 @@
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
-#import "MixpanelAPI.h"
+#import "Analytics.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -431,11 +431,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 //	[self updateRibbonButtons];
     
-    [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
-                                                             playbackModelController.currentVideo.title, @"video_name", 
-                                                             playbackModelController.currentVideo.nm_id, @"video_id",
-                                                             @"player", @"sender", 
-                                                             @"auto", @"action", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                       playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                       playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                       @"player", AnalyticsPropertySender, 
+                                                                       @"auto", AnalyticsPropertyAction, nil]];
 }
 
 - (NMVideo *)currentVideo {
@@ -767,11 +767,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
             
-            [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
-                                                                     playbackModelController.currentVideo.title, @"video_name", 
-                                                                     playbackModelController.currentVideo.nm_id, @"video_id",
-                                                                     @"player", @"sender", 
-                                                                     @"auto", @"action", nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               @"player", AnalyticsPropertySender, 
+                                                                               @"auto", AnalyticsPropertyAction, nil]];
 		}
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -1223,11 +1223,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
             
-            [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
-                                                                     playbackModelController.currentVideo.title, @"video_name", 
-                                                                     playbackModelController.currentVideo.nm_id, @"video_id",
-                                                                     @"player", @"sender", 
-                                                                     @"swipe", @"action", nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               @"player", AnalyticsPropertySender, 
+                                                                               @"swipe", AnalyticsPropertyAction, nil]];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1246,11 +1246,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[self updateRibbonButtons];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
             
-            [[MixpanelAPI sharedAPI] track:@"Play Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
-                                                                     playbackModelController.currentVideo.title, @"video_name", 
-                                                                     playbackModelController.currentVideo.nm_id, @"video_id",
-                                                                     @"player", @"sender", 
-                                                                     @"swipe", @"action", nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               @"player", AnalyticsPropertySender, 
+                                                                               @"swipe", AnalyticsPropertyAction, nil]];
 		}
 	} else {
 		scrollView.scrollEnabled = YES;
@@ -1310,8 +1310,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			launchController.progressContainerView.alpha = 0.0f;
 //		}
         
-        [[MixpanelAPI sharedAPI] track:@"Exit Full Screen Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
-                                                                             playbackModelController.currentVideo.title, @"video_name", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 
 	} else {
@@ -1329,8 +1329,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
         
-        [[MixpanelAPI sharedAPI] track:@"Enter Full Screen Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
-                                                                             playbackModelController.currentVideo.title, @"video_name", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
 	[UIView commitAnimations];
@@ -1403,9 +1403,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
         
-        [[MixpanelAPI sharedAPI] track:@"Enter Full Screen Channel Panel" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
-                                                                                      playbackModelController.currentVideo.title, @"video_name",
-                                                                                      nil]];                                                                                                                                                                                                                                                                                                                                                                        
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                             playbackModelController.currentVideo.title, AnalyticsPropertyVideoName,
+                                                                                             nil]];                                                                                                                                                                                                                                                                                                                                                                        
 
 	} else if ( !shouldToggleToFullScreen && channelController.displayMode != NMHalfScreenMode ) {
 		// move the panel down
@@ -1416,8 +1416,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
         
-        [[MixpanelAPI sharedAPI] track:@"Exit Full Screen Channel Panel" properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, @"channel_name",
-                                                                                    playbackModelController.currentVideo.title, @"video_name", nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                            playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
 	channelController.panelView.frame = theFrame;
@@ -1460,10 +1460,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
     
-    [[MixpanelAPI sharedAPI] track:@"Favorite Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
-                                                                 playbackModelController.currentVideo.title, @"video_name", 
-                                                                 playbackModelController.currentVideo.nm_id, @"video_id",
-                                                                 nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                           playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                           playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                           nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1471,10 +1471,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
     
-    [[MixpanelAPI sharedAPI] track:@"Enqueue Video" properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, @"channel_name", 
-                                                                playbackModelController.currentVideo.title, @"video_name", 
-                                                                playbackModelController.currentVideo.nm_id, @"video_id",
-                                                                nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                          playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                          playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                          nil]];
 }
 
 // seek bar

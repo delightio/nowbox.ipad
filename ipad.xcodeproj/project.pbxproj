@@ -287,7 +287,7 @@
 		83852140145A03F60047B7E0 /* NMNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMNavigationController.m; sourceTree = "<group>"; };
 		83852143145A34000047B7E0 /* BugSense-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "BugSense-iOS.framework"; path = "Libraries/BugSense-iOS.framework"; sourceTree = "<group>"; };
 		83852145145A34100047B7E0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		83857ACD145B7F87002FFB0B /* AnalyticsEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsEvents.h; sourceTree = "<group>"; };
+		83857ACD145B7F87002FFB0B /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -637,7 +637,7 @@
 			children = (
 				A925014F134385BF001759F5 /* ipadAppDelegate.h */,
 				A9250150134385BF001759F5 /* ipadAppDelegate.m */,
-				83857ACD145B7F87002FFB0B /* AnalyticsEvents.h */,
+				83857ACD145B7F87002FFB0B /* Analytics.h */,
 				A9250152134385BF001759F5 /* MainWindow.xib */,
 				A9250147134385BF001759F5 /* Supporting Files */,
 			);
