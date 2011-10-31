@@ -45,6 +45,7 @@ extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
     
     // Analytics
     MixpanelAPI *mixpanel;
+    NSTimeInterval appStartTime;
     NSTimeInterval sessionStartTime;
     NSDateFormatter *dateFormatter;
 }
