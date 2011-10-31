@@ -16,6 +16,7 @@
 @class NMVideoDetail;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
+@class Reachability;
 
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
@@ -28,6 +29,8 @@
 	NSTimer * pollingTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
+	
+	Reachability * wifiReachability;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;

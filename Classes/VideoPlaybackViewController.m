@@ -464,7 +464,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)showActivityLoader {
-	NSLog(@"######## showing activity loader #########");
 	[self.currentVideo.nm_movie_detail_view setActivityViewHidden:NO];
 }
 

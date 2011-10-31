@@ -14,6 +14,7 @@
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "Reachability.h"
 
 NSInteger NM_USER_ACCOUNT_ID				= 0;
 NSInteger NM_USER_FAVORITES_CHANNEL_ID		= 0;
@@ -66,6 +67,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
+    wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
+	[wifiReachability startNotifier];
+    [nc addObserver: self selector: @selector(reachabilityChanged:) name:kReachabilityChangedNotification object: nil];
+
 	return self;
 }
 
@@ -91,6 +96,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController release];
 	[NM_SESSION_ID release];
 	[pollingTimer release];
+	[wifiReachability stopNotifier];
+	[wifiReachability release];
 	[super dealloc];
 }
 
@@ -192,6 +199,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)handleFailEditUserSettingsNotification:(NSNotification *)aNotification {
 	// fail saving settings. need to retry
 	[self issueEditUserSettings];
+}
+
+- (void)reachabilityChanged:(NSNotification *)aNotification {
+    NetworkStatus netStatus = [wifiReachability currentReachabilityStatus];
+    BOOL connectionRequired = [wifiReachability connectionRequired];
+	NSLog(@"connection required %d", connectionRequired);
+	if ( !connectionRequired ) {
+		if ( netStatus == ReachableViaWiFi ) {
+			// switch to HD
+			NSLog(@"############# use HD ############");
+		} else {
+			// switch to SD
+			NSLog(@"############# use SD ############");
+		}
+	}
 }
 
 #pragma mark Queue tasks to network controller
