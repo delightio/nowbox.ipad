@@ -50,11 +50,12 @@
 	[channel release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
-    
+
     for (PanelVideoCell *cell in videoTableView.visibleCells) {
         // Otherwise we get a bad access when the cell tries to recycle itself to the row delegate (this object)
         [cell setVideoRowDelegate:nil];
     }
+    [videoTableView release];
     
 	[super dealloc];
 }

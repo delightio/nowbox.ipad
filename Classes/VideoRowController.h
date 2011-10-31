@@ -27,7 +27,7 @@
     IBOutlet UITableViewCell *loadingCell;
 }
 
-@property (nonatomic, assign) AGOrientedTableView * videoTableView;
+@property (nonatomic, retain) AGOrientedTableView * videoTableView;
 @property (nonatomic, assign) ChannelPanelController * panelController;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, assign) NSInteger indexInTable;
