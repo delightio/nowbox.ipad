@@ -103,7 +103,7 @@
         if ([channel.populated_at timeIntervalSince1970] > 0 || [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] > 0) {
             cell.loadingText.text = @"Loading videos...";
         } else {
-            cell.loadingText.text = @"We are processing the channel right now...";
+            cell.loadingText.text = @"Processing channel...";
         }
         
         CGRect frame = cell.activityIndicator.frame;
