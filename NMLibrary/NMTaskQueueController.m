@@ -23,9 +23,10 @@ NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
-BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
+NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
 NSNumber * NM_SESSION_ID					= nil;
+BOOL NM_WIFI_REACHABLE						= YES;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
 NSString * const NMShowErrorAlertNotification = @"NMShowErrorAlertNotification";
@@ -204,16 +205,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)reachabilityChanged:(NSNotification *)aNotification {
     NetworkStatus netStatus = [wifiReachability currentReachabilityStatus];
     BOOL connectionRequired = [wifiReachability connectionRequired];
-	NSLog(@"connection required %d", connectionRequired);
 	if ( !connectionRequired ) {
 		if ( netStatus == ReachableViaWiFi ) {
 			// switch to HD
-			NSLog(@"############# use HD ############");
+			NM_WIFI_REACHABLE = YES;
 		} else {
 			// switch to SD
-			NSLog(@"############# use SD ############");
+			NM_WIFI_REACHABLE = NO;
 		}
 	}
+	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
 }
 
 #pragma mark Queue tasks to network controller

@@ -53,6 +53,12 @@ typedef enum {
 } NMVideoQueueStatusType;
 
 typedef enum {
+	NMVideoQualityAutoSelect,
+	NMVideoQualityAlwaysHD,
+	NMVideoQualityAlwaysSD,
+} NMVideoQualityType;
+
+typedef enum {
 	NMEventSubscribeChannel,
 	NMEventUnsubscribeChannel,
 	NMEventEnqueue,
@@ -84,6 +90,7 @@ typedef enum {
 	NMChannelUserTwitterType,
 } NMChannelType;
 
+extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
 // Notifications
 // error

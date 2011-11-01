@@ -32,7 +32,7 @@ NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
 NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
 // setting view
-NSString * const NM_USE_HIGH_QUALITY_VIDEO_KEY		= @"NM_VIDEO_QUALITY_KEY";
+NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
 NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
 NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
@@ -53,13 +53,14 @@ NSInteger NM_LAST_CHANNEL_ID;
 + (void)initialize {
 	NSNumber * yesNum = [NSNumber numberWithBool:YES];
 	NSNumber * noNum = [NSNumber numberWithBool:NO];
+	NSNumber * zeroNum = [NSNumber numberWithInteger:0];
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:
 	 [NSDictionary dictionaryWithObjectsAndKeys:
 	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE,
 	  [NSDate distantPast], NM_LAST_SESSION_DATE,
-	  [NSNumber numberWithInteger:0], NM_USER_ACCOUNT_ID_KEY, 
-	  yesNum, NM_USE_HIGH_QUALITY_VIDEO_KEY, 
+	  zeroNum, NM_USER_ACCOUNT_ID_KEY, 
+	  zeroNum, NM_VIDEO_QUALITY_KEY,
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
 	  yesNum, NM_FIRST_LAUNCH_KEY, 

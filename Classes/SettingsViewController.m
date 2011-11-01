@@ -81,7 +81,7 @@
 	
 	hdSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 	hdSwitch.tag = NM_SETTING_HD_SWITCH_TAG;
-	hdSwitch.on = [userDefaults boolForKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
+	hdSwitch.on = NM_VIDEO_QUALITY == NMVideoQualityAutoSelect;
 	[hdSwitch addTarget:self action:@selector(saveSwitchSetting:) forControlEvents:UIControlEventValueChanged];
 	
 	// check if we need to show setting
@@ -155,8 +155,8 @@
 	UISwitch * theSwitch = (UISwitch *)sender;
 	switch (theSwitch.tag) {
 		case NM_SETTING_HD_SWITCH_TAG:
-			NM_USE_HIGH_QUALITY_VIDEO = theSwitch.on;
-			[userDefaults setBool:theSwitch.on forKey:NM_USE_HIGH_QUALITY_VIDEO_KEY];
+			NM_VIDEO_QUALITY = theSwitch.on ? NMVideoQualityAutoSelect : NMVideoQualityAlwaysSD;
+			[userDefaults setInteger:NM_VIDEO_QUALITY forKey:NM_VIDEO_QUALITY_KEY];
 			break;
 //		case NM_SETTING_MOBILE_BROWSER_SWITCH_TAG:
 //			NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = theSwitch.tag;
