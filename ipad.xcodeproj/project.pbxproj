@@ -51,6 +51,8 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
+		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
+		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
 		83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852143145A34000047B7E0 /* BugSense-iOS.framework */; };
@@ -264,6 +266,9 @@
 		22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchChannelViewController.xib; path = Classes/SearchChannelViewController.xib; sourceTree = "<group>"; };
 		22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+KeyboardDismiss.h"; sourceTree = "<group>"; };
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
+		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
+		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
+		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
 		83844041144DE51E007C99A2 /* PanelVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCell.m; sourceTree = "<group>"; };
 		8385213F145A03F60047B7E0 /* NMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMNavigationController.h; sourceTree = "<group>"; };
@@ -726,6 +731,7 @@
 				22ADF9BA13FAF40C003CF27E /* category-list-selected-mid.png */,
 				22333F4C1401A6D4002FA3FE /* category-list-separator.png */,
 				22ADF9DD13FBC3E2003CF27E /* find-channel-list-normal.png */,
+				8381B646145F6B0600696110 /* find-channel-list-highlighted.png */,
 				22ADF9DE13FBC3E3003CF27E /* find-channel-list-subscribed.png */,
 				22ADF9DF13FBC3E5003CF27E /* find-channel-not-subscribed-icon.png */,
 				22ADF9E013FBC3E7003CF27E /* find-channel-subscribed-icon.png */,
@@ -849,6 +855,8 @@
 				83844041144DE51E007C99A2 /* PanelVideoCell.m */,
 				83F7C48F1450B22700AD8880 /* TouchForwardingView.h */,
 				83F7C4901450B22700AD8880 /* TouchForwardingView.m */,
+				8381B648145F728A00696110 /* FindChannelTableCell.h */,
+				8381B649145F728A00696110 /* FindChannelTableCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1081,6 +1089,7 @@
 				83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */,
 				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
+				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1136,6 +1145,7 @@
 				83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */,
 				83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */,
 				83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */,
+				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

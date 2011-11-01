@@ -556,7 +556,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         }
 	} else {
         NMChannel * chn = nil;
-
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
         if ( selectedIndex == 0 ) {
             if ( indexPath.section == 0 ) {
                 // reveal the social login view
