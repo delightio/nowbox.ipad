@@ -51,6 +51,7 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
+		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
@@ -266,6 +267,8 @@
 		22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchChannelViewController.xib; path = Classes/SearchChannelViewController.xib; sourceTree = "<group>"; };
 		22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+KeyboardDismiss.h"; sourceTree = "<group>"; };
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
+		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
+		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
@@ -825,6 +828,8 @@
 				2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */,
 				227F2DF213CEB99400E2805E /* AGOrientedTableView.h */,
 				227F2DF313CEB99400E2805E /* AGOrientedTableView.m */,
+				835C747B146084CE00702643 /* VideoRowTableView.h */,
+				835C747C146084CE00702643 /* VideoRowTableView.m */,
 				22ADF9CA13FB0023003CF27E /* CategoriesOrientedTableView.h */,
 				22ADF9CB13FB0024003CF27E /* CategoriesOrientedTableView.m */,
 				A970506113438F860022BF2C /* NMControlsView.h */,
@@ -1146,6 +1151,7 @@
 				83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */,
 				83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */,
 				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
+				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

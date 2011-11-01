@@ -11,7 +11,7 @@
 #import "VideoPlaybackViewController.h"
 #import "VideoRowController.h"
 #import "ChannelContainerView.h"
-#import "AGOrientedTableView.h"
+#import "VideoRowTableView.h"
 #import "SettingsViewController.h"
 #import "ChannelManagementViewController.h"
 #import "FeatureDebugViewController.h"
@@ -203,7 +203,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	CGRect theFrame = aContentView.bounds;
 	theFrame.size.width -= VIDEO_ROW_LEFT_PADDING;
 	theFrame.origin.x += VIDEO_ROW_LEFT_PADDING;
-	AGOrientedTableView * videoTableView = [[AGOrientedTableView alloc] init];
+	VideoRowTableView * videoTableView = [[VideoRowTableView alloc] init];
 	videoTableView.frame = theFrame;
     [videoTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 
