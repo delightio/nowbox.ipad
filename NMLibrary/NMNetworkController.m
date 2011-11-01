@@ -46,6 +46,18 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	defaultCenter = [[NSNotificationCenter defaultCenter] retain];
 	[NSThread detachNewThreadSelector:@selector(controlThreadMain:) toTarget:self withObject:nil];
 	self.errorWindowStartDate = [NSDate distantPast];
+	
+	/* By default, the Cocoa URL loading system uses a small shared memory cache.
+	 We don't need this cache, so we set it to zero when the application launches. */
+	
+    /* turn off the NSURLCache shared cache */
+	
+    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0
+                                                            diskCapacity:0
+                                                                diskPath:nil];
+    [NSURLCache setSharedURLCache:sharedCache];
+    [sharedCache release];
+	
 	return self;
 }
 
@@ -335,6 +347,10 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 }
 
 #pragma mark NSURLConnection delegate methods
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+	return nil;
+}
+
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	// network call rate control (5 calls/s)
 	[connectionDateLog addObject:[NSDate date]];

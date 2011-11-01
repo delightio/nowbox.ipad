@@ -861,7 +861,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		// parse the JSON string
 		[task processDownloadedDataInBuffer];
 		// remove data buffer to save memory
-		if ( task.command != NMCommandGetChannelThumbnail ) [task clearDataBuffer];
+		/*if ( task.command != NMCommandGetChannelThumbnail )*/ [task clearDataBuffer];
 	}
 	
 	if ( task.executeSaveActionOnError || !task.encountersErrorDuringProcessing ) {

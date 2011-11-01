@@ -129,6 +129,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// movie detail view doesn't need to respond to autoresize
 	}
 	
+#ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
@@ -181,16 +182,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self setupPlayer];
 	
 	// ======
+#endif
 	[nowboxTaskController issueGetFeaturedCategories];
 	
 	// load channel view
+#ifndef DEBUG_NO_CHANNEL_VIEW
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
 	theFrame = channelController.panelView.frame;
 	theFrame.origin.y = splitViewRect.size.height;
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
 	[topLevelContainerView addSubview:channelController.panelView];
-    
+#endif
     [channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
     
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
@@ -765,6 +768,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)playVideo:(NMVideo *)aVideo {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	// Channel View calls this method when user taps a video from the table
 	// stop video
 	[self stopVideo];
@@ -784,6 +788,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
+	[pool release];
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {

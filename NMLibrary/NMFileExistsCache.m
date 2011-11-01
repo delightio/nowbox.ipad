@@ -36,8 +36,10 @@
 		cacheSize = [cacheDictionary count];
 		if ( cacheSize > cacheMaxSize ) {
 			// remove a few older items from the cache. older items are in the head of the list
-			NSArray * oldStuff = [orderList subarrayWithRange:NSMakeRange(0, cleanSize)];
+			NSRange rmRng = NSMakeRange(0, cleanSize);
+			NSArray * oldStuff = [orderList subarrayWithRange:rmRng];
 			[cacheDictionary removeObjectsForKeys:oldStuff];
+			[orderList removeObjectsInRange:rmRng];
 			cacheSize -= cleanSize;
 		}
 	}
