@@ -92,13 +92,24 @@
 	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
         static NSString *CellIdentifier = @"LoadMoreView";
         
-        UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        PanelVideoCell *cell = (PanelVideoCell *) [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
             [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
             cell = loadingCell;
             self.loadingCell = nil;
         }
         [cell setHidden:!isLoadingNewContent];
+        
+        if ([channel.populated_at timeIntervalSince1970] > 0 || [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] > 0) {
+            cell.loadingText.text = @"Loading videos...";
+        } else {
+            cell.loadingText.text = @"We are processing the channel right now...";
+        }
+        
+        CGRect frame = cell.activityIndicator.frame;
+        frame.origin.x = [cell.loadingText.text sizeWithFont:cell.loadingText.font constrainedToSize:cell.loadingText.frame.size lineBreakMode:cell.loadingText.lineBreakMode].width + 22;
+        cell.activityIndicator.frame = frame;
+        
         return (UITableViewCell *)cell;
     }
     
@@ -163,7 +174,7 @@
         if (!isLoadingNewContent) {
             return 0;
         }
-        return 150;
+        return 300;
     }
     
 

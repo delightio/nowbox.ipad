@@ -31,6 +31,8 @@ typedef enum {
 @property (nonatomic, assign, getter=isSessionStartCell) BOOL sessionStartCell;
 @property (nonatomic, assign) BOOL isPlayingVideo;
 @property (nonatomic, retain) UIImage *statusImage;
+@property (nonatomic, retain) IBOutlet UILabel *loadingText;
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, assign) VideoRowController *videoRowDelegate;
 
 - (void)changeViewToHighlighted:(BOOL)isHighlighted;
