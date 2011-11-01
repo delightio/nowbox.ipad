@@ -193,3 +193,4 @@ extern NSString * const NMWillBeginPlayingVideoNotification;
 
 // channel management subscribe and play notification
 extern NSString * const NMShouldPlayNewlySubscribedChannelNotification;
+extern NSString * const NMShouldFlushPlaybackQueueNotification;

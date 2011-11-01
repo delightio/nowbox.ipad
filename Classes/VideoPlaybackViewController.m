@@ -43,6 +43,7 @@
 #define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
 
 BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
+NSString * const NMShouldFlushPlaybackQueueNotification = @"NMShouldFlushPlaybackQueueNotification";
 
 @interface VideoPlaybackViewController (PrivateMethods)
 
