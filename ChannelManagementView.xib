@@ -84,6 +84,7 @@
 								<string key="NSFrame">{{0, 70}, {758, 924}}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="750945697"/>
 								<string key="NSReuseIdentifierKey">_NS:165</string>
 								<reference key="IBUIBackgroundColor" ref="321368810"/>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -99,13 +100,14 @@
 							<object class="IBUIActivityIndicatorView" id="750945697">
 								<reference key="NSNextResponder" ref="465591970"/>
 								<int key="NSvFlags">-2147483347</int>
-								<string key="NSFrame">{{360, 479}, {37, 37}}</string>
+								<string key="NSFrame">{{369, 487}, {20, 20}}</string>
 								<reference key="NSSuperview" ref="465591970"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:1062</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<int key="IBUIStyle">0</int>
+								<int key="IBUIStyle">2</int>
 							</object>
 						</object>
 						<string key="NSFrame">{{5, 5}, {758, 994}}</string>
