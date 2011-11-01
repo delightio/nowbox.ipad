@@ -110,6 +110,11 @@
 	
 }
 
+- (void)handleCheckUpdateNotification:(NSNotification *)aNotification {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidCheckUpdateNotification object:nil];
+	NSLog(@"version dict: %@", [aNotification userInfo]);
+}
+
 #pragma mark Target action methods
 
 - (IBAction)resetTooltip:(id)sender {
@@ -132,6 +137,11 @@
 	if ( chnObj ) {
 		[tqc issueSubscribe:YES channel:chnObj];
 	}
+}
+
+- (IBAction)checkUpdate:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];
 }
 
 @end

@@ -70,6 +70,8 @@
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
 - (void)pollServerForChannelReadiness;
 - (void)stopPollingServer;
+// Get update info
+- (void)issueCheckUpdateForDevice:(NSString *)devType;
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;

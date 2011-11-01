@@ -8,6 +8,13 @@
 
 #import "NMTask.h"
 
-@interface NMCheckUpdateTask : NMTask
+@interface NMCheckUpdateTask : NMTask {
+	NSString * deviceType;
+	NSDictionary * versionDictionary;
+}
+
+@property (nonatomic, retain) NSDictionary * versionDictionary;
+
+- (id)initWithDeviceType:(NSString *)devType;
 
 @end

@@ -40,6 +40,7 @@ typedef enum {
 	NMCommandGetAuthorThumbnail,
 	NMCommandGetVideoThumbnail,
 	NMCommandGetPreviewThumbnail,
+	NMCommandCheckUpdate,
 } NMCommand;
 
 typedef enum {

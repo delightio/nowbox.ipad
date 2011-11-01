@@ -13,9 +13,35 @@ NSString * const NMDidCheckUpdateNotification = @"NMDidCheckUpdateNotification";
 NSString * const NMDidFailCheckUpdateNotification = @"NMDidFailCheckUpdateNotification";
 
 @implementation NMCheckUpdateTask
+@synthesize versionDictionary;
+
+- (id)initWithDeviceType:(NSString *)devType {
+	self = [super init];
+	
+	command = NMCommandCheckUpdate;
+	deviceType = [devType retain];
+	
+	return self;
+}
+
+- (void)dealloc {
+	[deviceType release];
+	[versionDictionary release];
+	[super dealloc];
+}
 
 - (NSMutableURLRequest *)URLRequest {
-	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@/", NM_BASE_URL]] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+	NSString * urlStr = [NSString stringWithFormat:@"http://%@/info?device=%@", NM_BASE_URL, deviceType];
+	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+}
+
+- (void)processDownloadedDataInBuffer {
+	if ( [buffer length] == 0 ) return;
+	self.versionDictionary = [buffer objectFromJSONData];
+}
+
+- (NSDictionary *)userInfo {
+	return versionDictionary;
 }
 
 - (NSString *)willLoadNotificationName {

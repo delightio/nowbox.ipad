@@ -451,6 +451,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }
 
+- (void)issueCheckUpdateForDevice:(NSString *)devType {
+	NMCheckUpdateTask * task = [[NMCheckUpdateTask alloc] initWithDeviceType:devType];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 #pragma mark Channel Polling
 - (void)issuePollServerForChannel:(NMChannel *)chnObj {
 	NMPollChannelTask * task = [[NMPollChannelTask alloc] initWithChannel:chnObj];
