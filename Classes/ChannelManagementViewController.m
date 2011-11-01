@@ -220,8 +220,16 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 }
 
 - (void)dismissView:(id)sender {
-	viewPushedByNavigationController = NO;
-	[self dismissModalViewControllerAnimated:YES];
+    NSInteger subscribedCount = [[[self.myChannelsFetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    if (subscribedCount == 0) {
+        // Don't allow user to dismiss view if not subscribed to any channels
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have unsubscribed all your channels." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];
+    } else {    
+        viewPushedByNavigationController = NO;
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 #pragma mark -
