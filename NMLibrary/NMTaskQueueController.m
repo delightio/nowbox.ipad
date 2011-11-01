@@ -14,6 +14,7 @@
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "Reachability.h"
 
 NSInteger NM_USER_ACCOUNT_ID				= 0;
 NSInteger NM_USER_FAVORITES_CHANNEL_ID		= 0;
@@ -22,9 +23,10 @@ NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
-BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
+NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
 NSNumber * NM_SESSION_ID					= nil;
+BOOL NM_WIFI_REACHABLE						= YES;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
 NSString * const NMShowErrorAlertNotification = @"NMShowErrorAlertNotification";
@@ -66,6 +68,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
+    wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
+	[wifiReachability startNotifier];
+    [nc addObserver: self selector: @selector(reachabilityChanged:) name:kReachabilityChangedNotification object: nil];
+
 	return self;
 }
 
@@ -91,6 +97,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController release];
 	[NM_SESSION_ID release];
 	[pollingTimer release];
+	[wifiReachability stopNotifier];
+	[wifiReachability release];
 	[super dealloc];
 }
 
@@ -192,6 +200,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)handleFailEditUserSettingsNotification:(NSNotification *)aNotification {
 	// fail saving settings. need to retry
 	[self issueEditUserSettings];
+}
+
+- (void)reachabilityChanged:(NSNotification *)aNotification {
+    NetworkStatus netStatus = [wifiReachability currentReachabilityStatus];
+    BOOL connectionRequired = [wifiReachability connectionRequired];
+	if ( !connectionRequired ) {
+		if ( netStatus == ReachableViaWiFi ) {
+			// switch to HD
+			NM_WIFI_REACHABLE = YES;
+		} else {
+			// switch to SD
+			NM_WIFI_REACHABLE = NO;
+		}
+	}
+	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
 }
 
 #pragma mark Queue tasks to network controller
