@@ -24,6 +24,8 @@
 @synthesize sessionStartCell;
 @synthesize isPlayingVideo;
 @synthesize statusImage;
+@synthesize loadingText;
+@synthesize activityIndicator;
 @synthesize videoRowDelegate;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -51,6 +53,8 @@
     [duration release];
     [dateString release];
     [statusImage release];
+    [loadingText release];
+    [activityIndicator release];
     
     [super dealloc];
 }
