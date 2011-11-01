@@ -174,7 +174,7 @@
         if (!isLoadingNewContent) {
             return 0;
         }
-        return 300;
+        return 170;
     }
     
 
