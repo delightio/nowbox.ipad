@@ -31,6 +31,7 @@
 @property (nonatomic, retain) NSString * lastFailNotificationName;
 //@property (nonatomic, retain) IBOutlet UIView * progressContainerView;
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NSURL * updateURL;
 
 - (void)checkUpdateChannels;
 - (void)loadView;

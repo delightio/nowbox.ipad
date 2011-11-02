@@ -18,11 +18,15 @@
 #define NM_ALWAYS_SHOW_ONBOARD_PROCESS	NO
 #endif
 
+#define ALERT_TAG_OPTIONAL_UPDATE 1
+#define ALERT_TAG_MANDATORY_UPDATE 2
+
 @implementation LaunchController
 @synthesize view;
 @synthesize viewController;
 @synthesize lastFailNotificationName;
 @synthesize channel;
+@synthesize updateURL;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -31,6 +35,7 @@
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
 	[lastFailNotificationName release];
+    [updateURL release];
 	[super dealloc];
 }
 
@@ -56,7 +61,14 @@
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
-	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
+    [[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
+    [nc addObserver:self selector:@selector(handleDidCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];
+}
+
+- (void)launchApp {
+    NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+
+    if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		progressLabel.hidden = NO;
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
 		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
@@ -247,6 +259,90 @@
 		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController channelNextTo:channel];
 		[viewController setCurrentChannel:channel startPlaying:NO];
 	}
+}
+
+NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion) {
+	// Break version into fields (separated by '.')
+	NSMutableArray *leftFields = [NSMutableArray arrayWithArray:[leftVersion  componentsSeparatedByString:@"."]];
+	NSMutableArray *rightFields = [NSMutableArray arrayWithArray:[rightVersion componentsSeparatedByString:@"."]];
+    
+	// Implict ".0" in case version doesn't have the same number of '.'
+	if ([leftFields count] < [rightFields count]) {
+		while ([leftFields count] != [rightFields count]) {
+			[leftFields addObject:@"0"];
+		}
+	} else if ([leftFields count] > [rightFields count]) {
+		while ([leftFields count] != [rightFields count]) {
+			[rightFields addObject:@"0"];
+		}
+	}
+    
+	// Do a numeric comparison on each field
+	for (NSUInteger i = 0; i < [leftFields count]; i++) {
+		NSComparisonResult result = [[leftFields objectAtIndex:i] compare:[rightFields objectAtIndex:i] options:NSNumericSearch];
+		if (result != NSOrderedSame) {
+			return result;
+		}
+	}
+    
+	return NSOrderedSame;
+}
+
+- (void)handleDidCheckUpdateNotification:(NSNotification *)aNotification {
+    NSDictionary *userInfo = [aNotification userInfo];
+    self.updateURL = [NSURL URLWithString:[[userInfo objectForKey:@"link"] objectForKey:@"url"]];
+    NSString *currentVersion = [userInfo objectForKey:@"current_version"];
+    NSString *minimumVersion = [userInfo objectForKey:@"minimum_version"];
+    NSString *localVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    
+    NSComparisonResult minLocalComparison = compareVersions(minimumVersion, localVersion);
+    if ((minLocalComparison == NSOrderedAscending || minLocalComparison == NSOrderedSame)
+         && compareVersions(localVersion, currentVersion) == NSOrderedAscending) {
+        // Optional update
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Update Available" 
+                                                            message:@"Hey! We've released a new version of NOWBOX for you." 
+                                                           delegate:self 
+                                                  cancelButtonTitle:@"Later"
+                                                  otherButtonTitles:@"Download", nil];
+        [alertView setTag:ALERT_TAG_OPTIONAL_UPDATE];
+        [alertView show];
+        [alertView release];
+        [self retain];  // So that the alert view delegate doesn't get deallocated
+        [self launchApp];
+    } else if (compareVersions(localVersion, minimumVersion) == NSOrderedAscending) {
+        // Mandatory update
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Update Required" 
+                                                            message:@"Hey! We've updated NOWBOX and need you to upgrade." 
+                                                           delegate:self 
+                                                  cancelButtonTitle:@"Leave"
+                                                  otherButtonTitles:@"Download", nil];        
+        [alertView setTag:ALERT_TAG_MANDATORY_UPDATE];
+        [alertView show];
+        [alertView release];
+    } else {
+        // No update
+        [self launchApp];
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == ALERT_TAG_OPTIONAL_UPDATE) {
+        if (buttonIndex == 1) {
+            // Download now
+            [[UIApplication sharedApplication] openURL:self.updateURL];
+        }
+        [self release];
+    } else if (alertView.tag == ALERT_TAG_MANDATORY_UPDATE) {
+        if (buttonIndex == 0) {
+            // Leave
+            exit(0);
+        } else {
+            // Download now
+            [[UIApplication sharedApplication] openURL:self.updateURL];
+        }
+    }
 }
 
 @end
