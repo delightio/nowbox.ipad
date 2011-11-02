@@ -330,18 +330,14 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_TAG_OPTIONAL_UPDATE) {
         if (buttonIndex == 1) {
-            // Download now
             [[UIApplication sharedApplication] openURL:self.updateURL];
         }
         [self release];
     } else if (alertView.tag == ALERT_TAG_MANDATORY_UPDATE) {
-        if (buttonIndex == 0) {
-            // Leave
-            exit(0);
-        } else {
-            // Download now
+        if (buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:self.updateURL];
         }
+        exit(0);
     }
 }
 
