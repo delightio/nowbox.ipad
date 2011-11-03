@@ -47,7 +47,7 @@
 //	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
 	CGFloat screenWidth;
-	CGRect fullScreenRect, splitViewRect;
+	CGRect fullScreenRect;//, splitViewRect;
 //	CGRect topLeftRect;
 	
 	CGFloat currentXOffset;

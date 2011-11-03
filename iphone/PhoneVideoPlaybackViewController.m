@@ -38,6 +38,8 @@
 #define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
 #define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
 
+#define NM_MOVIE_VIEW_GAP								20
+#define NM_MOVIE_VIEW_GAP_FLOAT							20.0f
 
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
 
@@ -91,7 +93,6 @@
 	showMovieControlTimestamp = -1;
 	screenWidth = 480.0f;
 	fullScreenRect = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
-	splitViewRect = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 
 	// ribbon view
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
@@ -112,7 +113,7 @@
 		[movieDetailViewArray addObject:self.loadedMovieDetailView];
 		theFrame = loadedMovieDetailView.frame;
 		theFrame.origin.y = 0.0f;
-		theFrame.origin.x = -screenWidth;
+		theFrame.origin.x = -(screenWidth + NM_MOVIE_VIEW_GAP_FLOAT);
 		theFrame.size.width = screenWidth;
 		theFrame.size.height = 320.0f;
 		loadedMovieDetailView.frame = theFrame;
@@ -140,7 +141,7 @@
 	[dblTapRcgr release];
 	
 	[controlScrollView addSubview:movieView];
-	controlScrollView.frame = splitViewRect;
+	controlScrollView.frame = CGRectMake(0.0f, 0.0f, 480.0f + NM_MOVIE_VIEW_GAP_FLOAT, 320.0f);
 	
 	// pre-load control view
 	// load the nib
@@ -591,7 +592,7 @@
 	[UIView animateWithDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
-		currentXOffset += screenWidth;
+		currentXOffset += screenWidth + NM_MOVIE_VIEW_GAP_FLOAT;
 		// scroll to next video
 		// translate the movie view
 		[UIView animateWithDuration:0.5f animations:^{
@@ -656,7 +657,7 @@
 	}
 	theDetailView.video = ctrl.nextVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 480);
+	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
@@ -675,7 +676,7 @@
 	}
 	theDetailView.video = ctrl.previousVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 480);
+	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
@@ -694,7 +695,7 @@
 	}
 	theDetailView.video = ctrl.currentVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 480);
+	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
 #endif
@@ -710,8 +711,8 @@
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
 
-	controlScrollView.contentSize = CGSizeMake((CGFloat)(480 * totalNum), 380.0f);
-	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 480);
+	controlScrollView.contentSize = CGSizeMake((CGFloat)( (480 + NM_MOVIE_VIEW_GAP) * totalNum), 320.0f);
+	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
 			// update offset
@@ -1031,7 +1032,7 @@
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
 	// reduce alpha of the playback view
-	movieView.alpha = (1024.0 - dx) / 1024.0;
+	movieView.alpha = (screenWidth - dx) / screenWidth;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -1048,7 +1049,7 @@
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset += screenWidth;
+		currentXOffset += screenWidth + NM_MOVIE_VIEW_GAP_FLOAT;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
@@ -1061,7 +1062,7 @@
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset -= screenWidth;
+		currentXOffset -= screenWidth + NM_MOVIE_VIEW_GAP_FLOAT;
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
 			[playbackModelController moveToPreviousVideo];
