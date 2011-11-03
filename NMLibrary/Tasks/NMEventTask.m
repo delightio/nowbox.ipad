@@ -142,7 +142,11 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
 			break;
 		case NMEventShare:
-			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d&message=%@", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID, [message stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			if ( message ) {
+				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d&message=%@", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID, [message stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			} else {
+				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
+			}
 			break;
 		default:
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
