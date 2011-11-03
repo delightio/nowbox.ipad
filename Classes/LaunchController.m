@@ -10,7 +10,6 @@
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
 #import "ipadAppDelegate.h"
-#import "OnBoardProcessViewController.h"
 
 #define GP_CHANNEL_UPDATE_INTERVAL	-600.0f //-12.0 * 3600.0
 #ifdef DEBUG_ONBOARD_PROCESS
@@ -128,9 +127,10 @@
 
 - (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
 {
-    OnBoardProcessViewController *onBoardController = [[OnBoardProcessViewController alloc] init];
-    [viewController presentModalViewController:onBoardController animated:NO];
-    [onBoardController release];
+    onBoardProcessController = [[OnBoardProcessViewController alloc] init];
+    onBoardProcessController.delegate = self;
+    [viewController presentModalViewController:onBoardProcessController animated:NO];
+    [onBoardProcessController release];
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification {
@@ -231,7 +231,8 @@
 			[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 			// ready to show the launch view
 			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+//			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+            [onBoardProcessController performSelector:@selector(thumbnailsDidDownload) withObject:nil afterDelay:1.5f];
 		}
 	}
 }
@@ -248,7 +249,8 @@
 				[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 				// ready to show launch view
 				[NSObject cancelPreviousPerformRequestsWithTarget:self];
-				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+//				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+                [onBoardProcessController performSelector:@selector(thumbnailsDidDownload) withObject:nil afterDelay:1.5f];                
 			}
 		}
 	}
@@ -328,7 +330,8 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
 
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
     if (alertView.tag == ALERT_TAG_OPTIONAL_UPDATE) {
         if (buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:self.updateURL];
@@ -340,6 +343,15 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
         }
         exit(0);
     }
+}
+
+#pragma mark - OnBoardProcessViewControllerDelegate
+
+- (void)onBoardProcessViewControllerDidFinish:(OnBoardProcessViewController *)controller
+{
+    [viewController dismissModalViewControllerAnimated:NO];
+    onBoardProcessController = nil;
+    [self slideInVideoViewAnimated];
 }
 
 @end

@@ -17,10 +17,16 @@
 @synthesize title;
 @synthesize reason;
 
-- (void)setup
+- (void)setupWithExistingFrame:(BOOL)useExistingFrame
 {
     [[NSBundle mainBundle] loadNibNamed:@"OnBoardProcessChannelView" owner:self options:nil];
-    contentView.frame = self.bounds;
+    
+    if (useExistingFrame) {
+        contentView.frame = self.bounds;
+    } else {
+        self.frame = contentView.bounds;
+    }
+    
     contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:contentView];
     
@@ -33,7 +39,7 @@
 {
     self = [super init];
     if (self) {
-        [self setup];
+        [self setupWithExistingFrame:NO];
     }
     return self;
 }
@@ -42,7 +48,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setup];
+        [self setupWithExistingFrame:YES];
     }
     return self;
 }
@@ -51,7 +57,7 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self setup];
+        [self setupWithExistingFrame:NO];
     }
     return self;
 }

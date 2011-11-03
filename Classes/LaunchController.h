@@ -7,13 +7,12 @@
 //
 
 #import "NMLibrary.h"
+#import "OnBoardProcessViewController.h"
 
 @class VideoPlaybackViewController;
 
-@interface LaunchController : NSObject {
+@interface LaunchController : NSObject <OnBoardProcessViewControllerDelegate> {
 	UIView * view;
-//	UIView * progressContainerView;
-//	UIView * separatorView;
     IBOutlet UIButton * progressLabel;
 	IBOutlet UIImageView * logoImageView;
 	BOOL appFirstLaunch;
@@ -21,7 +20,8 @@
 	BOOL ignoreThumbnailDownloadIndex;
 	NSString * lastFailNotificationName;
 	VideoPlaybackViewController * viewController;
-	
+    OnBoardProcessViewController * onBoardProcessController;
+    
 	NSMutableIndexSet * thumbnailVideoIndex, * resolutionVideoIndex;
 	NMChannel * channel;
 }
@@ -29,14 +29,10 @@
 @property (nonatomic, assign) VideoPlaybackViewController * viewController;
 @property (nonatomic, retain) IBOutlet UIView * view;
 @property (nonatomic, retain) NSString * lastFailNotificationName;
-//@property (nonatomic, retain) IBOutlet UIView * progressContainerView;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSURL * updateURL;
 
 - (void)checkUpdateChannels;
 - (void)loadView;
-//- (void)showSwipeInstruction;
-//- (void)dimProgressLabel;
-//- (void)restoreProgressLabel;
 
 @end
