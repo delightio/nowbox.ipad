@@ -34,7 +34,12 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 }
 
 - (NSMutableURLRequest *)URLRequest {
-	NSString * urlStr = [NSString stringWithFormat:@"http://%@/categories?type=featured&user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
+	NSString * urlStr = nil;
+	if ( NM_USER_ACCOUNT_ID ) {
+		urlStr = [NSString stringWithFormat:@"http://%@/categories?type=featured&user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
+	} else {
+		urlStr = [NSString stringWithFormat:@"http://%@/categories?type=featured", NM_BASE_URL];
+	}
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	return request;
 }

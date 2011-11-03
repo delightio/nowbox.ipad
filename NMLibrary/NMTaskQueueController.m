@@ -273,6 +273,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFeaturedChannelsForCategories:catArray];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueChannelSearchForKeyword:(NSString *)aKeyword {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initSearchChannelWithKeyword:aKeyword];
 	[networkController cancelSearchTasks];
@@ -403,6 +409,18 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	[networkController addNewConnectionForTask:task];
 	[task release];
+}
+
+- (void)issueSubscribeChannels:(NSArray *)chnArray {
+	NMEventTask * task = nil;
+	NSMutableArray * taskAy = [NSMutableArray arrayWithCapacity:[chnArray count]];
+	for (NMChannel * chnObj in chnArray) {
+		task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:YES];
+		task.bulkSubscribe = YES;
+		[taskAy addObject:task];
+		[task release];
+	}
+	[networkController addNewConnectionForTasks:taskAy];
 }
 
 - (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {

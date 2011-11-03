@@ -44,6 +44,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 @synthesize resultDictionary;
 @synthesize elapsedSeconds, startSecond;
 @synthesize playedToEnd;
+@synthesize bulkSubscribe;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v {
 	self = [super init];
@@ -165,7 +166,11 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{
-			channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+			if ( bulkSubscribe ) {
+				channel.nm_subscribed = channel.nm_sort_order;
+			} else {
+				channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+			}
 			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			return YES;
 		}

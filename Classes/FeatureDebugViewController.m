@@ -115,6 +115,12 @@
 	NSLog(@"version dict: %@", [aNotification userInfo]);
 }
 
+- (void)handleDidGetFeaturedChannels:(NSNotification *)aNotification {
+	NSArray * ay = [[aNotification userInfo] objectForKey:@"channels"];
+	[[NMTaskQueueController sharedTaskQueueController] issueSubscribeChannels:ay];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetFeaturedChannelsForCategories object:nil];
+}
+
 #pragma mark Target action methods
 
 - (IBAction)resetTooltip:(id)sender {
@@ -142,6 +148,14 @@
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];
+}
+
+- (IBAction)bulkSubscibe:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	NSArray * cat = tqc.dataController.categories;
+	// subscribe to a few channels
+	[tqc issueGetFeaturedChannelsForCategories:[NSArray arrayWithObjects:[cat objectAtIndex:8], [cat objectAtIndex:9], nil]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetFeaturedChannels:) name:NMDidGetFeaturedChannelsForCategories object:nil];
 }
 
 @end
