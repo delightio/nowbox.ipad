@@ -1,8 +1,8 @@
 //
-//  VideoPlaybackViewController.h
+//  PhoneVideoPlaybackViewController.h
 //  Nowmov
 //
-//  Created by Bill So on 03/03/2011.
+//  Created by Bill So on 11/02/2011.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
@@ -20,9 +20,7 @@
 #import "VideoPlaybackBaseViewController.h"
 
 @class NMVideo;
-@class NMChannel;
 @class NMTaskQueueController;
-@class ChannelPanelController;
 @class ipadAppDelegate;
 @class LaunchController;
 
@@ -32,7 +30,7 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIView * ribbonView;
@@ -40,18 +38,15 @@
 	IBOutlet UIButton * watchLaterButton;
 	NMMovieView * movieView;
 	
-	NMMovieDetailView * loadedMovieDetailView;
-	NSMutableArray * movieDetailViewArray;
-	
 	NMControlsView * loadedControlView;
-	ChannelPanelController * channelController;
 	
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
 //	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
+	CGFloat screenWidth;
 	CGRect fullScreenRect, splitViewRect;
-	CGRect topLeftRect;
+//	CGRect topLeftRect;
 	
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
@@ -80,26 +75,21 @@
     NSManagedObjectContext *managedObjectContext_;
 	NSNotificationCenter * defaultNotificationCenter;
 
-//    NSMutableArray *temporaryDisabledGestures;
-//    BOOL pinchTemporarilyDisabled;
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
     
     ToolTip *pendingToolTip;
 }
 
-@property (nonatomic, readonly) NMVideo * currentVideo;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, retain) IBOutlet NMMovieDetailView * loadedMovieDetailView;
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
-@property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 
 - (IBAction)playStopVideo:(id)sender;
-- (IBAction)toggleChannelPanel:(id)sender;
-- (IBAction)toggleChannelPanelFullScreen:(id)sender;
-- (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
+//- (IBAction)toggleChannelPanel:(id)sender;
+//- (IBAction)toggleChannelPanelFullScreen:(id)sender;
+//- (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
 // movie detail view actions
 - (IBAction)addVideoToFavorite:(id)sender;
 - (IBAction)addVideoToQueue:(id)sender;
@@ -108,21 +98,13 @@
 - (IBAction)touchDownProgressBar:(id)sender;
 - (IBAction)touchUpProgressBar:(id)sender;
 
-// setting channel
-- (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag;
-// buttons management
-- (void)updateRibbonButtons;
-- (void)updateFavoriteButton;
-- (void)updateWatchLaterButton;
-- (void)animateFavoriteButtonsToInactive;			// buttons deliberately has "s" because there are 2 favorite buttons
-- (void)animateWatchLaterButtonsToInactive;
-- (void)animateFavoriteButtonsToActive;
-- (void)animateWatchLaterButtonsToActive;
-
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
 - (void)launchPlayVideo:(NMVideo *)aVideo;
 
+// launch view / onboard process
+//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;
+- (void)showPlaybackView;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer;

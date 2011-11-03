@@ -1,12 +1,12 @@
 //
-//  VideoPlaybackViewController.m
+//  PhoneVideoPlaybackViewController.m
 //  Nowmov
 //
-//  Created by Bill So on 03/03/2011.
+//  Created by Bill So on 11/02/2011.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "VideoPlaybackViewController.h"
+#import "PhoneVideoPlaybackViewController.h"
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
@@ -32,19 +32,14 @@
 //#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER			10001
 #define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT			10002
 #define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT				10003
-#define NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT		10004
-#define NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT	10005
 #define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
-#define NM_ANIMATION_SPLIT_VIEW_CONTEXT					10007
 #define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
-#define NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT		10009
 
 #define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
 #define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
 
-BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
-@interface VideoPlaybackViewController (PrivateMethods)
+@interface PhoneVideoPlaybackViewController (PrivateMethods)
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx;
 //- (void)queueVideoToPlayer:(NMVideo *)vid;
@@ -66,13 +61,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @end
 
 
-@implementation VideoPlaybackViewController
+@implementation PhoneVideoPlaybackViewController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize currentVideo;
-@synthesize channelController;
 @synthesize loadedControlView;
 @synthesize controlScrollView;
-@synthesize loadedMovieDetailView;
 @synthesize appDelegate;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -96,10 +89,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
-	fullScreenRect = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
-	splitViewRect = CGRectMake(0.0f, 0.0f, 1024.0f, 380.0f);
-	topLeftRect = CGRectMake(0.0f, 0.0f, 200.0f, 200.0f);
-	
+	screenWidth = 480.0f;
+	fullScreenRect = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
+	splitViewRect = CGRectMake(0.0f, 0.0f, 640.0f, 480.0f);
+
 	// ribbon view
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
 	ribbonView.layer.shouldRasterize = YES;
@@ -110,27 +103,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
 
-	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
-	NSBundle * mb = [NSBundle mainBundle];
-	CGRect theFrame;
-	movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
-	for (NSInteger i = 0; i < 3; i++) {
-		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
-		[movieDetailViewArray addObject:self.loadedMovieDetailView];
-		theFrame = loadedMovieDetailView.frame;
-		theFrame.origin.y = 0.0f;
-		theFrame.origin.x = -1024.0f;
-		loadedMovieDetailView.frame = theFrame;
-		loadedMovieDetailView.alpha = 0.0f;
-		[controlScrollView addSubview:loadedMovieDetailView];
-		self.loadedMovieDetailView = nil;
-		// movie detail view doesn't need to respond to autoresize
-	}
-	
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, screenWidth, 480.0f)];
 	movieView.alpha = 0.0f;
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
@@ -149,6 +125,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	// pre-load control view
 	// load the nib
+	NSBundle * mb = [NSBundle mainBundle];
 	[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
 //	// top left corner gesture recognizer
 //	UITapGestureRecognizer * topLeftRcgr = [[UITapGestureRecognizer alloc] initWithTarget:@selector() action:self];
@@ -183,17 +160,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 	[nowboxTaskController issueGetFeaturedCategories];
 	
-	// load channel view
-#ifndef DEBUG_NO_CHANNEL_VIEW
-	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
-	theFrame = channelController.panelView.frame;
-	theFrame.origin.y = splitViewRect.size.height;
-	channelController.panelView.frame = theFrame;
-	channelController.videoViewController = self;
-	[topLevelContainerView addSubview:channelController.panelView];
-#endif
-    [channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
-    
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
@@ -256,12 +222,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)dealloc {
 	[launchController release];
-	[managedObjectContext_ release];
 	
 	[loadedControlView release];
-	[movieDetailViewArray release];
 	[currentChannel release];
-	[channelController release];
 	// get rid of time observer of video player
  	[movieView.player removeTimeObserver:timeObserver];
 	[timeObserver release];
@@ -340,14 +303,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}];
 #endif
 	}
-//	if ( !launchModeActive ) {
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-//	}
+	[[UIApplication sharedApplication] setStatusBarHidden:NM_RUNNING_ON_IPAD ? NO : YES];
+	
     
     // Start monitoring for tooltips
-    [[ToolTipController sharedToolTipController] startTimer];
-    [[ToolTipController sharedToolTipController] setDelegate:self];
+//    [[ToolTipController sharedToolTipController] startTimer];
+//    [[ToolTipController sharedToolTipController] setDelegate:self];
 }
 
 #pragma mark Playback data structure
@@ -401,9 +362,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		currentChannel = [chnObj retain];
 	}
 	if ( chnObj == nil ) {
-		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-			theDetailView.video = nil;
-		}
 		
 		[loadedControlView resetView];
 		return;	// return if the channel object is nil
@@ -546,16 +504,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}];
 }
 
-- (NMMovieDetailView *)getFreeMovieDetailView {
-	NMMovieDetailView * detailView = nil;
-	for (detailView in movieDetailViewArray) {
-		if ( detailView.video == nil ) {
-			break;
-		}
-	}
-	return detailView;
-}
-
 //- (void)hideControlView {
 //	if ( loadedControlView.alpha > 0.0f ) {
 //		[UIView animateWithDuration:0.25f animations:^{
@@ -571,14 +519,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		case NM_ANIMATION_RIBBON_FADE_IN_CONTEXT:
 			break;
 			
-		case NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT:
-			[self updateFavoriteButton];
-			break;
-			
-		case NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT:
-			[self updateWatchLaterButton];
-			break;
-			
 		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
 			// show the top bar with animation
 			[loadedControlView setTopBarHidden:NO animated:NO];
@@ -590,24 +530,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			ribbonView.hidden = YES;
 			break;
 			
-		case NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT:
-			// animation done. Rest flag.
-			NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
-            [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-			break;
-			
-		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
-			controlScrollView.frame = splitViewRect;
-            [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-//            if ( launchModeActive ) {
-//				// remove the view
-//				[launchController.progressContainerView removeFromSuperview];
-//				[launchController.view removeFromSuperview];
-//				[launchController release];
-//				launchController = nil;
-//				launchModeActive = NO;
-//			}
-			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
 			controlScrollView.scrollEnabled = YES;
 			[self configureControlViewForVideo:[self playerCurrentVideo]];
@@ -616,117 +538,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		default:
 			break;
 	}
-}
-
-#pragma mark Ribbon management
-
-- (void)updateRibbonButtons {
-	[self updateFavoriteButton];
-	[self updateWatchLaterButton];
-}
-
-- (void)updateFavoriteButton {
-	// configure ribbon views in Full Screen control view and the ribbon view
-	NMVideo * vdo = playbackModelController.currentVideo;
-	
-	// make the buttons respond to tapping
-	favoriteButton.userInteractionEnabled = YES;
-	loadedControlView.favoriteButton.userInteractionEnabled = YES;
-	
-	if ( [vdo.nm_favorite boolValue] ) {
-		// update image
-		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateNormal];
-		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateHighlighted];
-		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateSelected];
-		[loadedControlView.favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateNormal];
-		[loadedControlView.favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateHighlighted];
-		[loadedControlView.favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateSelected];
-	} else {
-		// update image
-		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateNormal];
-		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateHighlighted];
-		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateSelected];
-		[loadedControlView.favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateNormal];
-		[loadedControlView.favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateHighlighted];
-		[loadedControlView.favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateSelected];
-	}
-	if ( favoriteButton.selected ) {
-		favoriteButton.selected = NO;
-		loadedControlView.favoriteButton.selected = NO;
-	}
-}
-
-- (void)updateWatchLaterButton {
-	// configure ribbon views in Full Screen control view and the ribbon view
-	NMVideo * vdo = playbackModelController.currentVideo;
-	
-	// make the buttons respond to tapping
-	watchLaterButton.userInteractionEnabled = YES;
-	loadedControlView.watchLaterButton.userInteractionEnabled = YES;
-	
-	if ( [vdo.nm_watch_later boolValue] ) {
-		// update image
-		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateNormal];
-		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateHighlighted];
-		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateSelected];
-		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateNormal];
-		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateHighlighted];
-		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateSelected];
-	} else {
-		// update image
-		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateNormal];
-		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateHighlighted];
-		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateSelected];
-		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateNormal];
-		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateHighlighted];
-		[loadedControlView.watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateSelected];
-	}
-	if ( watchLaterButton.selected ) {
-		watchLaterButton.selected = NO;
-		loadedControlView.watchLaterButton.selected = NO;
-	}
-}
-
-- (void)animateFavoriteButtonsToInactive {
-	favoriteButton.selected = YES;
-	favoriteButton.userInteractionEnabled = NO;
-	loadedControlView.favoriteButton.selected = YES;
-	loadedControlView.favoriteButton.userInteractionEnabled = NO;
-	
-	[UIView beginAnimations:nil context:nil];
-	favoriteButton.alpha = 0.25f;
-	loadedControlView.favoriteButton.alpha = 0.25f;
-	[UIView commitAnimations];
-}
-
-- (void)animateWatchLaterButtonsToInactive {
-	watchLaterButton.selected = YES;
-	watchLaterButton.userInteractionEnabled = NO;
-	loadedControlView.watchLaterButton.selected = YES;
-	loadedControlView.watchLaterButton.userInteractionEnabled = NO;
-	
-	[UIView beginAnimations:nil context:nil];
-	watchLaterButton.alpha = 0.25f;
-	loadedControlView.watchLaterButton.alpha = 0.25f;
-	[UIView commitAnimations];
-}
-
-- (void)animateFavoriteButtonsToActive {
-	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_FAVORITE_BUTTON_ACTIVE_CONTEXT];
-	favoriteButton.alpha = 1.0f;
-	loadedControlView.favoriteButton.alpha = 1.0f;
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView commitAnimations];
-}
-
-- (void)animateWatchLaterButtonsToActive {
-	[UIView beginAnimations:nil context:(void *)NM_ANIMATION_WATCH_LATER_BUTTON_ACTIVE_CONTEXT];
-	watchLaterButton.alpha = 1.0f;
-	loadedControlView.watchLaterButton.alpha = 1.0f;
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView commitAnimations];
 }
 
 #pragma mark Video queuing
@@ -750,7 +561,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView animateWithDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
-		currentXOffset += 1024.0f;
+		currentXOffset += screenWidth;
 		// scroll to next video
 		// translate the movie view
 		[UIView animateWithDuration:0.5f animations:^{
@@ -807,59 +618,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
-	// update the movie detail view frame
-	NMMovieDetailView * theDetailView = ctrl.nextVideo.nm_movie_detail_view;
-	if ( theDetailView == nil ) {
-		theDetailView = [self getFreeMovieDetailView];
-		ctrl.nextVideo.nm_movie_detail_view = theDetailView;
-	}
-	theDetailView.video = ctrl.nextVideo;
-	
-	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
-#ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
-#endif
-	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
 
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
-	NMMovieDetailView * theDetailView = ctrl.previousVideo.nm_movie_detail_view;
-	if ( theDetailView == nil ) {
-		theDetailView = [self getFreeMovieDetailView];
-		ctrl.previousVideo.nm_movie_detail_view = theDetailView;
-	}
-	theDetailView.video = ctrl.previousVideo;
-	
-	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
-#ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
-#endif
-	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
 
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
-	NMMovieDetailView * theDetailView = ctrl.currentVideo.nm_movie_detail_view;
-	if ( theDetailView == nil ) {
-		theDetailView = [self getFreeMovieDetailView];
-		ctrl.currentVideo.nm_movie_detail_view = theDetailView;
-	}
-	theDetailView.video = ctrl.currentVideo;
-	
-	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
-#ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
-#endif
-	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
 	// when scrolling is inflight, do not issue the URL resolution request. Playback View Controller will call "advanceToNextVideo" later on which will trigger sending of resolution request.
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }
@@ -879,10 +647,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[UIView animateWithDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 			} completion:^(BOOL finished) {
-				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+//				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
 			}];
 		} else {
-			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+//			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
 		}
 	}
 }
@@ -927,10 +695,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //}
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
-    if (pendingToolTip) {
-        [[ToolTipController sharedToolTipController] presentToolTip:pendingToolTip inView:self.view];
-        pendingToolTip = nil;
-    }
+//    if (pendingToolTip) {
+//        [[ToolTipController sharedToolTipController] presentToolTip:pendingToolTip inView:self.view];
+//        pendingToolTip = nil;
+//    }
 }
 
 - (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
@@ -1017,15 +785,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	NSString * name = [aNotification name];
 	if ( [name isEqualToString:NMDidShareVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		[self animateFavoriteButtonsToActive];
+//		[self animateFavoriteButtonsToActive];
 	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		[self animateFavoriteButtonsToActive];
+//		[self animateFavoriteButtonsToActive];
 	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// queued a video successfully, animate the icon to appropriate state
-		[self animateWatchLaterButtonsToActive];
+//		[self animateWatchLaterButtonsToActive];
 	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// dequeued a video successfully
-		[self animateWatchLaterButtonsToActive];
+//		[self animateWatchLaterButtonsToActive];
 	}
 }
 
@@ -1133,35 +901,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 }
 
-#pragma mark Playback view UI update
-- (void)delayRestoreDetailView {
-	// update which video the buttons hook up to
-	[self updateRibbonButtons];
-	[UIView animateWithDuration:0.25f animations:^{
-		ribbonView.alpha = 1.0f;
-	}];
-	ribbonView.userInteractionEnabled = YES;
-}
-
-- (void)configureDetailViewForContext:(NSInteger)ctx {
-	switch (ctx) {
-		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
-			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
-				// hide everything except the thumbnail view
-				[dtlView configureMovieThumbnailForFullScreen:NO];
-			}
-			break;
-			
-		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
-			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
-				[dtlView configureMovieThumbnailForFullScreen:YES];
-			}
-			break;
-			
-		default:
-			break;
-	}
-}
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	[self playCurrentVideo];
@@ -1207,11 +946,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset += 1024.0f;
+		currentXOffset += screenWidth;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
-			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
@@ -1221,14 +959,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset -= 1024.0f;
+		currentXOffset -= screenWidth;
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
 			[playbackModelController moveToPreviousVideo];
 			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
-			[self updateRibbonButtons];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
 		}
 	} else {
@@ -1254,140 +991,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Target-action methods
-
-- (IBAction)toggleChannelPanel:(id)sender {
-	CGRect theFrame;
-	theFrame = channelController.panelView.frame;
-	BOOL panelHidden = YES;
-	if ( theFrame.origin.y < 768.0 ) {
-		// assume the panel is visible
-		panelHidden = NO;
-	}
-
-	CGRect viewRect;
-	
-	[UIView beginAnimations:nil context:(panelHidden ? (void *)NM_ANIMATION_SPLIT_VIEW_CONTEXT : (void *)NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT)];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:0.5f];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView setAnimationDelegate:self];
-	if ( panelHidden ) {
-		// slide in the channel view with animation
-		movieXOffset = 0.0f;
-		//MARK: not sure if we still need to show/hide status bar
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
-		movieView.frame = viewRect;
-		// fade in detail view
-		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
-		// slide in
-		theFrame.origin.y = splitViewRect.size.height;
-		channelController.panelView.frame = theFrame;
-//		if ( launchModeActive ) {
-//			// hide the progress label
-//			launchController.progressContainerView.alpha = 0.0f;
-//		}
-
-	} else {
-		// slide out the channel view
-//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-		[[UIApplication sharedApplication] setStatusBarHidden:YES];
-		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
-		movieView.frame = viewRect;
-		// fade out detail view
-		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 0.0f;
-		// reset offset value
-		movieXOffset = 0.0f;
-		ribbonView.alpha = 0.0f;
-		// slide out
-		theFrame.origin.y = 768.0;
-		channelController.panelView.frame = theFrame;
-	}
-	[UIView commitAnimations];
-	if ( panelHidden ) {
-		[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
-		// unhide the ribbon view
-		ribbonView.hidden = NO;
-		// hide the top bar (no animation is needed)
-		[loadedControlView setTopBarHidden:YES animated:NO];
-		// animate showing of the ribbon
-		[UIView beginAnimations:nil context:nil];
-		[UIView setAnimationDelay:0.2f];
-		[UIView setAnimationDuration:0.3f];
-		ribbonView.alpha = 1.0f;
-		[UIView commitAnimations];
-		// unhide all movie detail view
-//		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-//			theDetailView.hidden = NO;
-//			theDetailView.alpha = 1.0f;
-//		}
-		[self configureDetailViewForContext:NM_ANIMATION_SPLIT_VIEW_CONTEXT];
-	} else {
-		[loadedControlView setPlaybackMode:NMFullScreenPlaybackMode animated:NO];
-		// panel is showing. i.e. we animate to Full Screen Playback Mode. We need to make sure the scrollview is occupying the full screen before animation begins.
-		controlScrollView.frame = fullScreenRect;
-	}
-	// for the case of hiding the Channel View, we take the movie detail view away after the animation has finished.
-//    pinchTemporarilyDisabled = NO;
-}
-
-- (IBAction)toggleChannelPanelFullScreen:(id)sender {
-    CGRect theFrame;
-	theFrame = channelController.panelView.frame;
-    
-	BOOL panelIsFullScreen = NO;
-	if ( theFrame.origin.y < 380.0 ) {
-		// assume the panel is full screen
-		panelIsFullScreen = YES;
-	}
-    
-    [self channelPanelToggleToFullScreen:!panelIsFullScreen resumePlaying:panelIsFullScreen centerToRow:[channelController highlightedChannelIndex]];
-}
-
-- (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable {
-    
-    
-    shouldResumePlayingVideoAfterTransition = shouldResume;
-    rowIndexToCenterOn = indexInTable;
-    
-//    if (shouldToggleToFullScreen) {
-//        [self stopVideo];
-//    }
-    
-	CGRect theFrame = channelController.panelView.frame;
-	CGRect scrollFrame = controlScrollView.frame;
-	CGPoint rvPosition = ribbonView.center;
-	
-	[UIView beginAnimations:nil context:(void*)(shouldToggleToFullScreen ? NM_ANIMATION_FULL_SCREEN_CHANNEL_CONTEXT : NM_ANIMATION_SPLIT_VIEW_CONTEXT)];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-	[UIView setAnimationDuration:0.5f];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView setAnimationDelegate:self];
-	if ( shouldToggleToFullScreen && channelController.displayMode != NMFullScreenChannelMode ) {
-		NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = YES;
-		// move the channel panel up
-		theFrame.origin.y = 20.0f;
-		[channelController setDisplayMode:NMFullScreenChannelMode];
-		scrollFrame.origin.y -= scrollFrame.size.height;
-		rvPosition.y -= splitViewRect.size.height;
-		ribbonView.center = rvPosition;
-		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
-	} else if ( !shouldToggleToFullScreen && channelController.displayMode != NMHalfScreenMode ) {
-		// move the panel down
-		theFrame.origin.y = splitViewRect.size.height;
-		[channelController setDisplayMode:NMHalfScreenMode];
-		scrollFrame.origin.y = splitViewRect.origin.y;
-		rvPosition.y += splitViewRect.size.height;
-		ribbonView.center = rvPosition;
-		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
-	}
-	channelController.panelView.frame = theFrame;
-	controlScrollView.frame = scrollFrame;
-    
-	[UIView commitAnimations];
-}
-
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
 	loadedControlView.hidden = NO;
 	[UIView animateWithDuration:0.25f animations:^{
@@ -1418,15 +1021,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (IBAction)addVideoToFavorite:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
 	[nowboxTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-	[self animateFavoriteButtonsToInactive];
     
-    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
+//    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
-	[self animateWatchLaterButtonsToInactive];
 }
 
 // seek bar
@@ -1474,90 +1075,90 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 # pragma mark Gestures
-- (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
-	switch (sender.state) {
-		case UIGestureRecognizerStateCancelled:
-			controlScrollView.scrollEnabled = YES;
-			break;
-			
-		case UIGestureRecognizerStateChanged:
-		{
-			if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
-				detectedPinchAction = NM_SHOULD_TRANSIT_SPLIT_VIEW;
-			} else if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
-				detectedPinchAction = NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW;
-			}
-			break;
-		}
-		case UIGestureRecognizerStateRecognized:
-		{
-			CGRect theFrame = channelController.panelView.frame;
-			BOOL panelHidden = YES;
-			if ( theFrame.origin.y < 768.0 ) {
-				// assume the panel is visible
-				panelHidden = NO;
-			}
-			
-			if ( ( panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_SPLIT_VIEW ) || ( !panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW ) ) {
-				[self toggleChannelPanel:sender.view];
-			}
-			controlScrollView.scrollEnabled = YES;
-			break;
-		}
-			
-		default:
-			break;
-	}
-}
+//- (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
+//	switch (sender.state) {
+//		case UIGestureRecognizerStateCancelled:
+//			controlScrollView.scrollEnabled = YES;
+//			break;
+//			
+//		case UIGestureRecognizerStateChanged:
+//		{
+//			if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
+//				detectedPinchAction = NM_SHOULD_TRANSIT_SPLIT_VIEW;
+//			} else if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
+//				detectedPinchAction = NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW;
+//			}
+//			break;
+//		}
+//		case UIGestureRecognizerStateRecognized:
+//		{
+//			CGRect theFrame = channelController.panelView.frame;
+//			BOOL panelHidden = YES;
+//			if ( theFrame.origin.y < 768.0 ) {
+//				// assume the panel is visible
+//				panelHidden = NO;
+//			}
+//			
+//			if ( ( panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_SPLIT_VIEW ) || ( !panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW ) ) {
+//				[self toggleChannelPanel:sender.view];
+//			}
+//			controlScrollView.scrollEnabled = YES;
+//			break;
+//		}
+//			
+//		default:
+//			break;
+//	}
+//}
 
 #pragma mark - ToolTipControllerDelegate
 
-- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
-    if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-        // Don't show share tip if user is already logged in
-        if (NM_USER_TWITTER_CHANNEL_ID || NM_USER_FACEBOOK_CHANNEL_ID) {
-            return NO;
-        }
-    } else if ([tooltip.name hasPrefix:@"SwipeTip"] && sender) {
-        // Don't show swipe tip until next video is ready to play
-        pendingToolTip = tooltip;
-        return NO;
-    }
-    
-    return loadedControlView.playbackMode == NMHalfScreenMode;
-}
-
-- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender {
-    
-    if ([tooltip.name isEqualToString:@"BadVideoTip"]) {
-        // We want to position this one relative to the cell
-        UITableView *channelTable = channelController.tableView;
-        
-        tooltip.center = CGPointMake(floor([sender frame].size.height / 2), -24);
-        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
-        
-        // Keep tooltip within screen bounds, and avoid subpixel text rendering (blurrier)
-        CGPoint center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
-                                     MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
-        center.x = floor(center.x);
-        center.y = floor(center.y);
-        if ((NSInteger) center.x % 2 == 1) {
-            center.x++;
-        }
-        if ((NSInteger) center.y % 2 == 1) {
-            center.y++;
-        }
-        tooltip.center = center;
-    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
-        tooltip.target = channelController;
-        tooltip.action = @selector(showChannelManagementView:);
-    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-        tooltip.target = channelController;
-        tooltip.action = @selector(showChannelManagementView:);        
-    }
-    
-    return self.view;
-}
+//- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
+//    if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
+//        // Don't show share tip if user is already logged in
+//        if (NM_USER_TWITTER_CHANNEL_ID || NM_USER_FACEBOOK_CHANNEL_ID) {
+//            return NO;
+//        }
+//    } else if ([tooltip.name hasPrefix:@"SwipeTip"] && sender) {
+//        // Don't show swipe tip until next video is ready to play
+//        pendingToolTip = tooltip;
+//        return NO;
+//    }
+//    
+//    return loadedControlView.playbackMode == NMHalfScreenMode;
+//}
+//
+//- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender {
+//    
+//    if ([tooltip.name isEqualToString:@"BadVideoTip"]) {
+//        // We want to position this one relative to the cell
+//        UITableView *channelTable = channelController.tableView;
+//        
+//        tooltip.center = CGPointMake(floor([sender frame].size.height / 2), -24);
+//        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
+//        
+//        // Keep tooltip within screen bounds, and avoid subpixel text rendering (blurrier)
+//        CGPoint center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
+//                                     MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
+//        center.x = floor(center.x);
+//        center.y = floor(center.y);
+//        if ((NSInteger) center.x % 2 == 1) {
+//            center.x++;
+//        }
+//        if ((NSInteger) center.y % 2 == 1) {
+//            center.y++;
+//        }
+//        tooltip.center = center;
+//    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
+//        tooltip.target = channelController;
+//        tooltip.action = @selector(showChannelManagementView:);
+//    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
+//        tooltip.target = channelController;
+//        tooltip.action = @selector(showChannelManagementView:);        
+//    }
+//    
+//    return self.view;
+//}
 
 #pragma mark Debug
 

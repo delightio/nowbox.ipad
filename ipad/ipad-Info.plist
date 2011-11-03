@@ -31,6 +31,8 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
+	<string>MainWindow-iphone</string>
+	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow</string>
 	<key>UIBackgroundModes</key>
 	<array>

@@ -7,7 +7,7 @@
 //
 
 #import "LaunchController.h"
-#import "VideoPlaybackViewController.h"
+#import "VideoPlaybackBaseViewController.h"
 #import "NMLibrary.h"
 #import "ipadAppDelegate.h"
 

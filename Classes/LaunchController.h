@@ -8,7 +8,7 @@
 
 #import "NMLibrary.h"
 
-@class VideoPlaybackViewController;
+@class VideoPlaybackBaseViewController;
 
 @interface LaunchController : NSObject {
 	UIView * view;
@@ -20,13 +20,13 @@
 	BOOL launchProcessStuck;
 	BOOL ignoreThumbnailDownloadIndex;
 	NSString * lastFailNotificationName;
-	VideoPlaybackViewController * viewController;
+	VideoPlaybackBaseViewController * viewController;
 	
 	NSMutableIndexSet * thumbnailVideoIndex, * resolutionVideoIndex;
 	NMChannel * channel;
 }
 
-@property (nonatomic, assign) VideoPlaybackViewController * viewController;
+@property (nonatomic, assign) VideoPlaybackBaseViewController * viewController;
 @property (nonatomic, retain) IBOutlet UIView * view;
 @property (nonatomic, retain) NSString * lastFailNotificationName;
 //@property (nonatomic, retain) IBOutlet UIView * progressContainerView;

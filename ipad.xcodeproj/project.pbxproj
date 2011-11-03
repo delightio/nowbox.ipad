@@ -68,6 +68,7 @@
 		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
 		A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A903D8551450ABA900FC7B28 /* channel-title-background.png */; };
 		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
+		A90BC4161461F7D9006AD644 /* MainWindow-iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
 		A90F21FF143F63CA006B298D /* TwitterLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F21FE143F63CA006B298D /* TwitterLoading.html */; };
 		A90F2201143F63E1006B298D /* loading.gif in Resources */ = {isa = PBXBuildFile; fileRef = A90F2200143F63E1006B298D /* loading.gif */; };
@@ -115,6 +116,7 @@
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A962DD5E13A82552004CC111 /* MovieDetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */; };
 		A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */; };
+		A9699A281462163C00ED0C6F /* VideoPlaybackBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9699A271462163C00ED0C6F /* VideoPlaybackBaseViewController.m */; };
 		A96AD056145B8F70000A8ECC /* NMUserSettingsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */; };
 		A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */; };
 		A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A989C592144D197B00CBC94D /* NMPollChannelTask.m */; };
@@ -162,6 +164,8 @@
 		A99FB6D3140EE30700689040 /* NMPreviewThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = A99FB6D2140EE30700689040 /* NMPreviewThumbnail.m */; };
 		A9A4810D13FD181500850536 /* FeatureDebugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A4810C13FD181500850536 /* FeatureDebugViewController.m */; };
 		A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A4810F13FD189F00850536 /* FeatureDebugView.xib */; };
+		A9A641DC146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A641DB146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m */; };
+		A9A641DE1462065F0032EFE1 /* PhoneVideoPlaybackView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A641DD1462065F0032EFE1 /* PhoneVideoPlaybackView.xib */; };
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
@@ -298,6 +302,7 @@
 		A903D8551450ABA900FC7B28 /* channel-title-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-title-background.png"; sourceTree = "<group>"; };
 		A90425FE140E2EEC0028B972 /* NMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel.h; sourceTree = "<group>"; };
 		A90425FF140E2EEC0028B972 /* NMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel.m; sourceTree = "<group>"; };
+		A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "MainWindow-iphone.xib"; sourceTree = "<group>"; };
 		A90DE57A13A1B62F0005FE6A /* NMAVQueuePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVQueuePlayer.h; sourceTree = "<group>"; };
 		A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVQueuePlayer.m; sourceTree = "<group>"; };
 		A90F21FE143F63CA006B298D /* TwitterLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = TwitterLoading.html; sourceTree = "<group>"; };
@@ -359,6 +364,8 @@
 		A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MovieDetailInfoView.xib; sourceTree = "<group>"; };
 		A962DD7013A82D3A004CC111 /* NMMovieDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMovieDetailView.h; sourceTree = "<group>"; };
 		A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMovieDetailView.m; sourceTree = "<group>"; };
+		A9699A261462163C00ED0C6F /* VideoPlaybackBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackBaseViewController.h; sourceTree = "<group>"; };
+		A9699A271462163C00ED0C6F /* VideoPlaybackBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackBaseViewController.m; sourceTree = "<group>"; };
 		A96AD052145B8F29000A8ECC /* NMUserSettingsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMUserSettingsTask.h; sourceTree = "<group>"; };
 		A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMUserSettingsTask.m; sourceTree = "<group>"; };
 		A970501613438F860022BF2C /* VideoPlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackViewController.h; sourceTree = "<group>"; };
@@ -439,6 +446,9 @@
 		A9A4810B13FD181500850536 /* FeatureDebugViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugViewController.h; sourceTree = "<group>"; };
 		A9A4810C13FD181500850536 /* FeatureDebugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugViewController.m; sourceTree = "<group>"; };
 		A9A4810F13FD189F00850536 /* FeatureDebugView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeatureDebugView.xib; sourceTree = "<group>"; };
+		A9A641DA146205CC0032EFE1 /* PhoneVideoPlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneVideoPlaybackViewController.h; sourceTree = "<group>"; };
+		A9A641DB146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneVideoPlaybackViewController.m; sourceTree = "<group>"; };
+		A9A641DD1462065F0032EFE1 /* PhoneVideoPlaybackView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhoneVideoPlaybackView.xib; sourceTree = "<group>"; };
 		A9A73FA413A73A3D005D9013 /* LaunchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchView.xib; sourceTree = "<group>"; };
 		A9A8E7BD13E4B96300552E6E /* NMCachedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCachedImageView.h; sourceTree = "<group>"; };
 		A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCachedImageView.m; sourceTree = "<group>"; };
@@ -525,6 +535,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A90BC4141461F7AC006AD644 /* iphone */ = {
+			isa = PBXGroup;
+			children = (
+				A9A641DA146205CC0032EFE1 /* PhoneVideoPlaybackViewController.h */,
+				A9A641DB146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m */,
+				A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */,
+			);
+			path = iphone;
+			sourceTree = "<group>";
+		};
 		A90F21FD143F63CA006B298D /* HTML */ = {
 			isa = PBXGroup;
 			children = (
@@ -546,6 +566,7 @@
 				A970503F13438F860022BF2C /* NMLibrary */,
 				A970505E13438F860022BF2C /* Views */,
 				A9250146134385BF001759F5 /* ipad */,
+				A90BC4141461F7AC006AD644 /* iphone */,
 				A925013F134385BF001759F5 /* Frameworks */,
 				A925013D134385BF001759F5 /* Products */,
 			);
@@ -646,6 +667,8 @@
 				83E0466A144F468300C91525 /* ToolTipController.m */,
 				8385213F145A03F60047B7E0 /* NMNavigationController.h */,
 				83852140145A03F60047B7E0 /* NMNavigationController.m */,
+				A9699A261462163C00ED0C6F /* VideoPlaybackBaseViewController.h */,
+				A9699A271462163C00ED0C6F /* VideoPlaybackBaseViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -894,6 +917,7 @@
 				A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */,
 				A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */,
 				221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */,
+				A9A641DD1462065F0032EFE1 /* PhoneVideoPlaybackView.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -1109,6 +1133,8 @@
 				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
+				A90BC4161461F7D9006AD644 /* MainWindow-iphone.xib in Resources */,
+				A9A641DE1462065F0032EFE1 /* PhoneVideoPlaybackView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1166,6 +1192,8 @@
 				83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */,
 				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
 				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
+				A9A641DC146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m in Sources */,
+				A9699A281462163C00ED0C6F /* VideoPlaybackBaseViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1261,7 +1289,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1269,6 +1297,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1319,6 +1348,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1328,14 +1358,16 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1352,13 +1384,14 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

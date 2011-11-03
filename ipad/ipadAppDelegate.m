@@ -39,6 +39,7 @@ NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION
 NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY	= @"NM_ENABLE_EMAIL_NOTIFICATION_KEY";
 
 BOOL NM_RUNNING_IOS_5;
+BOOL NM_RUNNING_ON_IPAD;
 NSInteger NM_LAST_CHANNEL_ID;
 
 @implementation ipadAppDelegate
@@ -112,6 +113,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	NM_RUNNING_ON_IPAD = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
     // Enable crash reporting
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:@"775bf5eb" 
                                                userDictionary:nil 
