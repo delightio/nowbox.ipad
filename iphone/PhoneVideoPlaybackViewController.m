@@ -91,7 +91,7 @@
 	showMovieControlTimestamp = -1;
 	screenWidth = 480.0f;
 	fullScreenRect = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
-	splitViewRect = CGRectMake(0.0f, 0.0f, 640.0f, 480.0f);
+	splitViewRect = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 
 	// ribbon view
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
@@ -103,10 +103,29 @@
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
 
+	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
+	NSBundle * mb = [NSBundle mainBundle];
+	CGRect theFrame;
+	movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
+	for (NSInteger i = 0; i < 3; i++) {
+		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
+		[movieDetailViewArray addObject:self.loadedMovieDetailView];
+		theFrame = loadedMovieDetailView.frame;
+		theFrame.origin.y = 0.0f;
+		theFrame.origin.x = -screenWidth;
+		theFrame.size.width = screenWidth;
+		theFrame.size.height = 320.0f;
+		loadedMovieDetailView.frame = theFrame;
+		loadedMovieDetailView.alpha = 0.0f;
+		[controlScrollView addSubview:loadedMovieDetailView];
+		self.loadedMovieDetailView = nil;
+		// movie detail view doesn't need to respond to autoresize
+	}
+
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, screenWidth, 480.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, screenWidth, 320.0f)];
 	movieView.alpha = 0.0f;
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
@@ -125,7 +144,6 @@
 	
 	// pre-load control view
 	// load the nib
-	NSBundle * mb = [NSBundle mainBundle];
 	[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
 //	// top left corner gesture recognizer
 //	UITapGestureRecognizer * topLeftRcgr = [[UITapGestureRecognizer alloc] initWithTarget:@selector() action:self];
@@ -224,6 +242,7 @@
 	[launchController release];
 	
 	[loadedControlView release];
+	[movieDetailViewArray release];
 	[currentChannel release];
 	// get rid of time observer of video player
  	[movieView.player removeTimeObserver:timeObserver];
@@ -303,8 +322,6 @@
 		}];
 #endif
 	}
-	[[UIApplication sharedApplication] setStatusBarHidden:NM_RUNNING_ON_IPAD ? NO : YES];
-	
     
     // Start monitoring for tooltips
 //    [[ToolTipController sharedToolTipController] startTimer];
@@ -362,6 +379,9 @@
 		currentChannel = [chnObj retain];
 	}
 	if ( chnObj == nil ) {
+		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
+			theDetailView.video = nil;
+		}
 		
 		[loadedControlView resetView];
 		return;	// return if the channel object is nil
@@ -504,6 +524,16 @@
 	}];
 }
 
+- (NMMovieDetailView *)getFreeMovieDetailView {
+	NMMovieDetailView * detailView = nil;
+	for (detailView in movieDetailViewArray) {
+		if ( detailView.video == nil ) {
+			break;
+		}
+	}
+	return detailView;
+}
+
 //- (void)hideControlView {
 //	if ( loadedControlView.alpha > 0.0f ) {
 //		[UIView animateWithDuration:0.25f animations:^{
@@ -618,16 +648,59 @@
 }
 
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
+	// update the movie detail view frame
+	NMMovieDetailView * theDetailView = ctrl.nextVideo.nm_movie_detail_view;
+	if ( theDetailView == nil ) {
+		theDetailView = [self getFreeMovieDetailView];
+		ctrl.nextVideo.nm_movie_detail_view = theDetailView;
+	}
+	theDetailView.video = ctrl.nextVideo;
+	
+	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 480);
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
+#endif
+	CGRect theFrame = theDetailView.frame;
+	theFrame.origin.x = xOffset;
+	theDetailView.frame = theFrame;
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
 
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
+	NMMovieDetailView * theDetailView = ctrl.previousVideo.nm_movie_detail_view;
+	if ( theDetailView == nil ) {
+		theDetailView = [self getFreeMovieDetailView];
+		ctrl.previousVideo.nm_movie_detail_view = theDetailView;
+	}
+	theDetailView.video = ctrl.previousVideo;
+	
+	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 480);
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
+#endif
+	CGRect theFrame = theDetailView.frame;
+	theFrame.origin.x = xOffset;
+	theDetailView.frame = theFrame;
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
 
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
+	NMMovieDetailView * theDetailView = ctrl.currentVideo.nm_movie_detail_view;
+	if ( theDetailView == nil ) {
+		theDetailView = [self getFreeMovieDetailView];
+		ctrl.currentVideo.nm_movie_detail_view = theDetailView;
+	}
+	theDetailView.video = ctrl.currentVideo;
+	
+	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 480);
+#ifdef DEBUG_PLAYER_NAVIGATION
+	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
+#endif
+	CGRect theFrame = theDetailView.frame;
+	theFrame.origin.x = xOffset;
+	theDetailView.frame = theFrame;
 	// when scrolling is inflight, do not issue the URL resolution request. Playback View Controller will call "advanceToNextVideo" later on which will trigger sending of resolution request.
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }
@@ -637,8 +710,8 @@
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
 
-	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+	controlScrollView.contentSize = CGSizeMake((CGFloat)(480 * totalNum), 380.0f);
+	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 480);
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
 			// update offset
@@ -647,10 +720,10 @@
 			[UIView animateWithDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 			} completion:^(BOOL finished) {
-//				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
 			}];
 		} else {
-//			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
 		}
 	}
 }
@@ -901,6 +974,35 @@
 	}
 }
 
+#pragma mark Playback view UI update
+- (void)delayRestoreDetailView {
+	// update which video the buttons hook up to
+//	[self updateRibbonButtons];
+//	[UIView animateWithDuration:0.25f animations:^{
+//		ribbonView.alpha = 1.0f;
+//	}];
+//	ribbonView.userInteractionEnabled = YES;
+}
+
+- (void)configureDetailViewForContext:(NSInteger)ctx {
+//	switch (ctx) {
+//		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
+//			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
+//				// hide everything except the thumbnail view
+//				[dtlView configureMovieThumbnailForFullScreen:NO];
+//			}
+//			break;
+//			
+//		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
+//			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
+//				[dtlView configureMovieThumbnailForFullScreen:YES];
+//			}
+//			break;
+//			
+//		default:
+//			break;
+//	}
+}
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
 	[self playCurrentVideo];

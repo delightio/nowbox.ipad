@@ -38,6 +38,8 @@
 	IBOutlet UIButton * watchLaterButton;
 	NMMovieView * movieView;
 	
+	NSMutableArray * movieDetailViewArray;
+	
 	NMControlsView * loadedControlView;
 	
 	UILabel * currentTimeLabel, * totalDurationLabel;

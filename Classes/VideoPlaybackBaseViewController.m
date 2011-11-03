@@ -12,6 +12,7 @@
 @synthesize currentChannel;
 @synthesize currentVideo;
 @synthesize launchModeActive;
+@synthesize loadedMovieDetailView;
 
 - (NSArray *)markPlaybackCheckpoint {
 	return nil;

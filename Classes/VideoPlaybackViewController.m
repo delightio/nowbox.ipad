@@ -72,7 +72,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize controlScrollView;
-@synthesize loadedMovieDetailView;
 @synthesize appDelegate;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.

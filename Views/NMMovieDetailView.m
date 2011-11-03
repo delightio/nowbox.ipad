@@ -42,30 +42,45 @@
 - (void)awakeFromNib {
 	style = [NMStyleUtility sharedStyleUtility];
 	
-	descriptionDefaultFrame  = descriptionLabel.frame;
-	titleDefaultFrame = titleLabel.frame;
-	titleMaxSize = titleDefaultFrame.size;
-	titleMaxSize.height *= 3.0f;
-	otherInfoDefaultPosition = otherInfoLabel.center;
-	
-	bitmapShadow = [CALayer layer];
-	bitmapShadow.frame = CGRectMake(640.0f, 0.0f, 20.0f, 380.0f);
-	bitmapShadow.contents = (id)[NMStyleUtility sharedStyleUtility].videoShadowImage.CGImage;
-	[self.layer addSublayer:bitmapShadow];
-	// the background image
-	self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
+	if ( NM_RUNNING_ON_IPAD ) {
+		
+		descriptionDefaultFrame  = descriptionLabel.frame;
+		titleDefaultFrame = titleLabel.frame;
+		titleMaxSize = titleDefaultFrame.size;
+		titleMaxSize.height *= 3.0f;
+		otherInfoDefaultPosition = otherInfoLabel.center;
+		
+		bitmapShadow = [CALayer layer];
+		bitmapShadow.frame = CGRectMake(640.0f, 0.0f, 20.0f, 380.0f);
+		bitmapShadow.contents = (id)[NMStyleUtility sharedStyleUtility].videoShadowImage.CGImage;
+		[self.layer addSublayer:bitmapShadow];
+		// the background image
+		self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
 	// the fake movie view box
 //	blackLayer = [CALayer layer];
 //	blackLayer.shouldRasterize = YES;
 //	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
 //	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
 //	[self.layer insertSublayer:blackLayer below:thumbnailContainerView.layer];
-	// update the font
-	if ( !NM_RUNNING_IOS_5 ) {
-		UIFont * theFont = [NMStyleUtility sharedStyleUtility].channelNameFont;
-		descriptionLabel.font = theFont;
-		otherInfoLabel.font = theFont;
-		authorLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
+		// update the font
+		if ( !NM_RUNNING_IOS_5 ) {
+			UIFont * theFont = [NMStyleUtility sharedStyleUtility].channelNameFont;
+			descriptionLabel.font = theFont;
+			otherInfoLabel.font = theFont;
+			authorLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
+		}
+	} else {
+		// dump the whole thing
+		[infoContainerView removeFromSuperview];
+		infoContainerView = nil;
+		authorLabel = nil;
+		titleLabel = nil;
+		otherInfoLabel = nil;
+		descriptionLabel = nil;
+		authorThumbnailView = nil;
+		// resize the view
+		thumbnailContainerView.frame = self.bounds;
+		thumbnailContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	}
 	
 	CALayer * theLayer = activityView.layer;
