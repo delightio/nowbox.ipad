@@ -70,17 +70,12 @@
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 
     if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
-		progressLabel.hidden = NO;
-		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
-		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
-		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidGetFeaturedCategoriesNotification:) name:NMDidGetFeaturedCategoriesNotification object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedCategoriesNotification object:nil];
-		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
-		// create new user
-		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+        
+        [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
 		viewController.launchModeActive = YES;
 	} else {
 		// listen to fail notification
@@ -130,9 +125,6 @@
 }
 
 #pragma mark Notification
-- (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
-    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
-}
 
 - (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
 {

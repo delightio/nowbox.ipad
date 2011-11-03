@@ -54,6 +54,8 @@
 		83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83407B851461F55A009E707A /* OnBoardProcessViewController.xib */; };
 		83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
+		837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C741414631012009F3C2A /* OnBoardProcessChannelView.m */; };
+		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
@@ -278,6 +280,9 @@
 		83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessViewController.m; sourceTree = "<group>"; };
 		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
 		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
+		837C741314631012009F3C2A /* OnBoardProcessChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessChannelView.h; sourceTree = "<group>"; };
+		837C741414631012009F3C2A /* OnBoardProcessChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessChannelView.m; sourceTree = "<group>"; };
+		837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessChannelView.xib; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
@@ -881,6 +886,8 @@
 				83F7C4901450B22700AD8880 /* TouchForwardingView.m */,
 				8381B648145F728A00696110 /* FindChannelTableCell.h */,
 				8381B649145F728A00696110 /* FindChannelTableCell.m */,
+				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
+				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -890,6 +897,7 @@
 			children = (
 				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
 				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
+				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
@@ -1118,6 +1126,7 @@
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
 				83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */,
+				837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1176,6 +1185,7 @@
 				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
 				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
 				83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */,
+				837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

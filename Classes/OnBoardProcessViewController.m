@@ -11,6 +11,7 @@
 #import "NMDataController.h"
 #import "NMDataType.h"
 #import "NMCategory.h"
+#import "NMChannel.h"
 
 #define kCategoryListNumberOfColumns 2
 #define kCategoryListItemHeight 50
@@ -19,22 +20,28 @@
 @implementation OnBoardProcessViewController
 
 @synthesize loginView;
+@synthesize categoriesView;
 @synthesize infoView;
+@synthesize proceedToChannelsButton;
 @synthesize channelsView;
 @synthesize featuredCategories;
-@synthesize categoriesView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         subscribingCategories = [[NSMutableIndexSet alloc] init];
+        subscribingChannels = [[NSMutableSet alloc] init];
         
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidSubscribeNotification:) name:NMDidSubscribeChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailSubscribeChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
+
+        [[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
     }
     
     return self;
@@ -45,11 +52,13 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [subscribingCategories release];
+    [subscribingChannels release];
     [loginView release];
+    [categoriesView release];
     [infoView release];
+    [proceedToChannelsButton release];    
     [channelsView release];
     [featuredCategories release];
-    [categoriesView release];
     
     [super dealloc];
 }
@@ -88,24 +97,37 @@
                      }];    
 }
 
-- (IBAction)switchToInfoView:(id)sender
+- (void)subscribeToSelectedCategories
 {
-    [self transitionFromView:loginView toView:infoView];
-    
     // Start subscribing to channels based on user's category choices
     // for (...)
     //        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
     //        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];        
+    
+    // For now
+    [self handleDidSubscribeNotification:nil];
+}
+
+- (IBAction)switchToInfoView:(id)sender
+{
+    [self transitionFromView:loginView toView:infoView];
+    currentView = infoView;
+    
+    if (userCreated) {
+        [self subscribeToSelectedCategories];
+    }
 }
 
 - (IBAction)switchToChannelsView:(id)sender
 {
     [self transitionFromView:infoView toView:channelsView];
+    currentView = channelsView;
 }
 
 - (IBAction)switchToPlaybackView:(id)sender
 {
     [self dismissModalViewControllerAnimated:NO];
+    currentView = nil;
 }
 
 #pragma mark - View lifecycle
@@ -150,6 +172,7 @@
     // Show the login page to start
     [loginView setFrame:self.view.bounds];
     [self.view addSubview:loginView];    
+    currentView = loginView;
 }
 
 - (void)viewDidUnload
@@ -168,17 +191,52 @@
 
 #pragma mark - Notifications
 
+- (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
+{
+    userCreated = YES;
+    
+    if (currentView == infoView) {
+        // We were waiting on this call to finish before subscribing
+        [self subscribeToSelectedCategories];
+    }
+}
+
 - (void)handleDidSubscribeNotification:(NSNotification *)aNotification 
 {
-    NSLog(@"Did subscribe:\n%@", [aNotification userInfo]);
-    NMCategory *category = [[aNotification userInfo] objectForKey:@"category"];
-    NSInteger subscribedIndex = [featuredCategories indexOfObject:category];
-    [subscribingCategories removeIndex:subscribedIndex];
+    NMChannel *channel = [[aNotification userInfo] objectForKey:@"channel"];
+///    [subscribingChannels removeObject:channel];
+    
+    if ([subscribingChannels count] == 0) {
+        // All channels have been subscribed to - ready to get the channel list
+        [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+    }
+}
+
+- (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
+{
+    // Set up channels view
+    NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    for (NMChannel *channel in channels) {
+
+    }
+    
+    // Allow the user to proceed past the info step
+    [proceedToChannelsButton setTitle:@"Next" forState:UIControlStateNormal];
+    proceedToChannelsButton.enabled = YES;
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
 {
-    // TODO
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, it looks like the service is currently down. Please try again in a little while." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    exit(0);
 }
 
 @end

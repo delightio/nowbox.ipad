@@ -8,17 +8,26 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OnBoardProcessViewController : UIViewController {
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate> {
+    BOOL userCreated;
     NSMutableIndexSet *subscribingCategories;
+    NSMutableSet *subscribingChannels;    
+    
+    UIView *currentView;
 }
 
-@property (nonatomic, retain) IBOutlet UIView *loginView;
-@property (nonatomic, retain) IBOutlet UIView *infoView;
-@property (nonatomic, retain) IBOutlet UIView *channelsView;
 @property (nonatomic, retain) NSArray *featuredCategories;
 
 // Step 1: YouTube login / category selection
+@property (nonatomic, retain) IBOutlet UIView *loginView;
 @property (nonatomic, retain) IBOutlet UIView *categoriesView;
+
+// Step 2: NOWMOV info
+@property (nonatomic, retain) IBOutlet UIView *infoView;
+@property (nonatomic, retain) IBOutlet UIButton *proceedToChannelsButton;
+
+// Step 3: Auto-selected channels
+@property (nonatomic, retain) IBOutlet UIView *channelsView;
 
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
