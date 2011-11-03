@@ -61,11 +61,13 @@
 - (void)issueGetSubscribedChannels;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (void)issueGetChannelWithID:(NSInteger)chnID;
+- (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
 // Channel subscription
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
+- (void)issueSubscribeChannels:(NSArray *)chnArray;
 // Polling channel
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
 - (void)pollServerForChannelReadiness;

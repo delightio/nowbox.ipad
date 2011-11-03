@@ -18,6 +18,7 @@
 	NSString * searchWord;
 	NSMutableIndexSet * channelIndexSet;
 	NSMutableDictionary * parsedObjectDictionary;
+	NSMutableArray * categoryIDs;
 }
 
 //@property (nonatomic, retain) NMChannel * trendingChannel;
@@ -30,5 +31,6 @@
 - (id)initGetChannelForCategory:(NMCategory *)aCat;
 - (id)initSearchChannelWithKeyword:(NSString *)str;
 - (id)initGetChannelWithID:(NSInteger)chnID;
+- (id)initGetFeaturedChannelsForCategories:(NSArray *)catArray;
 
 @end

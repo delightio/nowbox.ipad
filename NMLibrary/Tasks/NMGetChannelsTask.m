@@ -31,6 +31,10 @@ NSString * const NMWillSearchChannelsNotification = @"NMWillSearchChannelsNotifi
 NSString * const NMDidSearchChannelsNotification = @"NMDidSearchChannelsNotification";
 NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannelsNotification";
 
+NSString * const NMWillGetFeaturedChannelsForCategories = @"NMWillGetFeaturedChannelsForCategories";
+NSString * const NMDidGetFeaturedChannelsForCategories = @"NMDidGetFeaturedChannelsForCategories";
+NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeaturedChannelsForCategories";
+
 @implementation NMGetChannelsTask
 
 //@synthesize trendingChannel;
@@ -109,6 +113,16 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	return self;
 }
 
+- (id)initGetFeaturedChannelsForCategories:(NSArray *)catArray {
+	self = [self init];
+	command = NMCommandGetFeaturedChannelsForCategories;
+	categoryIDs = [[NSMutableArray alloc] initWithCapacity:[catArray count]];
+	for ( NMCategory * catObj in catArray) {
+		[categoryIDs addObject:catObj.nm_id];
+	}
+	return self;
+}
+
 - (id)initGetChannelWithID:(NSInteger)chnID {
 	self = [self init];
 	command = NMCommandGetChannelWithID;
@@ -123,6 +137,7 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 	[searchWord release];
 	[channelIndexSet release];
 	[parsedObjectDictionary release];
+	[categoryIDs release];
 	[super dealloc];
 }
 
@@ -141,6 +156,9 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			break;
 		case NMCommandGetChannelWithID:
 			urlStr = [NSString stringWithFormat:@"http://%@/channels/%@?user_id=%d", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
+			break;
+		case NMCommandGetFeaturedChannelsForCategories:
+			urlStr = [NSString stringWithFormat:@"http://%@/channels?category_ids=%@&type=featured", NM_BASE_URL, [categoryIDs componentsJoinedByString:@","], NM_USER_ACCOUNT_ID];
 			break;
 		default:
 			break;
@@ -242,6 +260,31 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			// if getting subscribed channel, compare with all existing subscribed channels
 			theChannelPool = ctrl.subscribedChannels;
 			break;
+		case NMCommandGetFeaturedChannelsForCategories:
+		{
+			// different handling from other case. Search result is managed by view controller. Always append info
+			NSMutableDictionary * chnDict;
+			NMChannel * chnObj;
+			// reuse the var for storing downloaded channels
+			[categoryIDs removeAllObjects];
+			for (NSNumber * theKey in parsedObjectDictionary) {
+				chnDict = [parsedObjectDictionary objectForKey:theKey];
+				// check if the channel exist
+				chnObj = [ctrl channelForID:theKey];
+				if ( chnObj == nil ) {
+					// create the channel
+					chnObj = [ctrl insertNewChannelForID:theKey];
+					[chnObj setValuesForKeysWithDictionary:chnDict];
+					// there's no need to set relationship with the existing channel objects.
+				} else if ( [chnObj.nm_id integerValue] == 0 ) {
+					// this is a placeholder channel, update it's content
+					[chnObj setValuesForKeysWithDictionary:chnDict];
+				}
+				// add the search category
+				[categoryIDs addObject:chnObj];
+			}
+			return NO;		// return this function
+		}
 		case NMCommandSearchChannels:
 		{
 			// different handling from other case. Search result is managed by view controller. Always append info
@@ -342,6 +385,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			return NMWillGetChannelsForCategoryNotification;
 		case NMCommandGetChannelWithID:
 			return NMWillGetChannelWithIDNotification;
+		case NMCommandGetFeaturedChannelsForCategories:
+			return NMWillGetFeaturedCategoriesNotification;
 		default:
 			return NMWillGetChannelsNotification;
 	}
@@ -355,6 +400,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			return NMDidGetChannelsForCategoryNotification;
 		case NMCommandGetChannelWithID:
 			return NMDidGetChannelWithIDNotification;
+		case NMCommandGetFeaturedChannelsForCategories:
+			return NMDidGetFeaturedChannelsForCategories;
 		default:
 			return NMDidGetChannelsNotification;
 	}
@@ -368,6 +415,8 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 			return NMDidFailGetChannelsForCategoryNotification;
 		case NMCommandGetChannelWithID:
 			return NMDidFailGetChannelWithIDNotification;
+		case NMCommandGetFeaturedChannelsForCategories:
+			return NMDidFailGetFeaturedCategoriesNotification;
 		default:
 			return NMDidFailGetChannelsNotification;
 	}
@@ -389,6 +438,10 @@ NSString * const NMDidFailSearchChannelsNotification = @"NMDidFailSearchChannels
 		case NMCommandGetChannelsForCategory:
 		{
 			return [NSDictionary dictionaryWithObjectsAndKeys:category, @"category", nil];
+		}
+		case NMCommandGetFeaturedChannelsForCategories:
+		{
+			return [NSDictionary dictionaryWithObject:categoryIDs forKey:@"channels"];
 		}
 		default:
 			break;

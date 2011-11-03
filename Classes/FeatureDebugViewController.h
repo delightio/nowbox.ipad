@@ -25,5 +25,6 @@
 - (IBAction)resetTooltip:(id)sender;
 - (IBAction)getDebugChannel:(id)sender;
 - (IBAction)checkUpdate:(id)sender;
+- (IBAction)bulkSubscibe:(id)sender;
 
 @end
