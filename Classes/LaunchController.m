@@ -10,6 +10,7 @@
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
 #import "ipadAppDelegate.h"
+#import "OnBoardProcessViewController.h"
 
 #define GP_CHANNEL_UPDATE_INTERVAL	-600.0f //-12.0 * 3600.0
 #ifdef DEBUG_ONBOARD_PROCESS
@@ -73,6 +74,8 @@
 		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
 		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetFeaturedCategoriesNotification:) name:NMDidGetFeaturedCategoriesNotification object:nil];
+        [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedCategoriesNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
@@ -128,8 +131,14 @@
 
 #pragma mark Notification
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
-	// new user created, get channel
-	[self checkUpdateChannels];
+    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
+}
+
+- (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
+{
+    OnBoardProcessViewController *onBoardController = [[OnBoardProcessViewController alloc] init];
+    [viewController presentModalViewController:onBoardController animated:NO];
+    [onBoardController release];
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification {

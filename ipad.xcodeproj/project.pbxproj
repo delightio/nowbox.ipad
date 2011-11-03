@@ -51,6 +51,8 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
+		83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83407B851461F55A009E707A /* OnBoardProcessViewController.xib */; };
+		83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
@@ -271,6 +273,9 @@
 		22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchChannelViewController.xib; path = Classes/SearchChannelViewController.xib; sourceTree = "<group>"; };
 		22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+KeyboardDismiss.h"; sourceTree = "<group>"; };
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
+		83407B851461F55A009E707A /* OnBoardProcessViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessViewController.xib; sourceTree = "<group>"; };
+		83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessViewController.h; sourceTree = "<group>"; };
+		83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessViewController.m; sourceTree = "<group>"; };
 		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
 		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
@@ -640,6 +645,8 @@
 				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
 				A9389B83143109CE00959946 /* LaunchController.h */,
 				A9389B84143109CE00959946 /* LaunchController.m */,
+				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
+				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
 				83F7C48B14509EF400AD8880 /* ToolTip.h */,
 				83F7C48C14509EF400AD8880 /* ToolTip.m */,
 				83E04669144F468300C91525 /* ToolTipController.h */,
@@ -882,6 +889,7 @@
 			isa = PBXGroup;
 			children = (
 				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
+				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
@@ -1109,6 +1117,7 @@
 				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
+				83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1166,6 +1175,7 @@
 				83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */,
 				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
 				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
+				83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1261,7 +1271,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_ONBOARD_PROCESS;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1328,7 +1338,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_ONBOARD_PROCESS;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1352,7 +1362,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_ONBOARD_PROCESS;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
