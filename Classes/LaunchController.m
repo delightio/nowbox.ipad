@@ -36,6 +36,8 @@
 	[resolutionVideoIndex release];
 	[lastFailNotificationName release];
     [updateURL release];
+    [onBoardProcessController release];
+    
 	[super dealloc];
 }
 
@@ -73,7 +75,7 @@
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedCategoriesNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
-        
+
         [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
 		viewController.launchModeActive = YES;
 	} else {
@@ -127,10 +129,11 @@
 
 - (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
 {
-    onBoardProcessController = [[OnBoardProcessViewController alloc] init];
-    onBoardProcessController.delegate = self;
-    [viewController presentModalViewController:onBoardProcessController animated:NO];
-    [onBoardProcessController release];
+    if (!onBoardProcessController) {
+        onBoardProcessController = [[OnBoardProcessViewController alloc] init];
+        onBoardProcessController.delegate = self;
+        [viewController presentModalViewController:onBoardProcessController animated:NO];
+    }
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification {
@@ -228,11 +231,7 @@
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
 		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
-			[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
-			// ready to show the launch view
-			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-//			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-            [onBoardProcessController performSelector:@selector(thumbnailsDidDownload) withObject:nil afterDelay:1.5f];
+            [onBoardProcessController notifyVideosReady];
 		}
 	}
 }
@@ -246,11 +245,7 @@
 		NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
 			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
-				[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
-				// ready to show launch view
-				[NSObject cancelPreviousPerformRequestsWithTarget:self];
-//				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
-                [onBoardProcessController performSelector:@selector(thumbnailsDidDownload) withObject:nil afterDelay:1.5f];                
+                [onBoardProcessController notifyVideosReady];
 			}
 		}
 	}
@@ -350,7 +345,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
 - (void)onBoardProcessViewControllerDidFinish:(OnBoardProcessViewController *)controller
 {
     [viewController dismissModalViewControllerAnimated:NO];
-    onBoardProcessController = nil;
+    [onBoardProcessController release]; onBoardProcessController = nil;
     [self slideInVideoViewAnimated];
 }
 

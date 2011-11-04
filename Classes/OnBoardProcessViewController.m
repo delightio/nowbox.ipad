@@ -17,8 +17,9 @@
 #define kCategoryGridNumberOfColumns 2
 #define kCategoryGridItemHeight 50
 #define kCategoryGridItemPadding 10
-#define kChannelGridNumberOfRows 3
+#define kChannelGridNumberOfRows 4
 #define kChannelGridNumberOfColumns 3
+#define kChannelGridItemHorizontalSpacing 300
 #define kChannelGridItemPadding 10
 
 @implementation OnBoardProcessViewController
@@ -92,7 +93,7 @@
     [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:selectedCategoryIndexes]];
 }
 
-- (void)thumbnailsDidDownload
+- (void)notifyVideosReady
 {
     // Allow the user to proceed past the info step
     [proceedToChannelsButton setTitle:@"Next" forState:UIControlStateNormal];
@@ -197,6 +198,7 @@
     self.channelsView = nil;
     self.channelsScrollView = nil;
     self.featuredCategories = nil;
+    self.proceedToChannelsButton = nil;
     
     [super viewDidUnload];
 }
@@ -253,6 +255,8 @@
     // Set up channels view
     NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
     NSUInteger row = 0, col = 0, page = 0;
+    CGFloat leftPos = (channelsScrollView.frame.size.width - (kChannelGridItemHorizontalSpacing * kChannelGridNumberOfColumns)) / 2;
+    
     for (NMChannel *channel in channels) {
         OnBoardProcessChannelView *channelView = [[OnBoardProcessChannelView alloc] init];
         [channelView setTitle:channel.title];
@@ -260,7 +264,7 @@
         [channelView.thumbnailImage setImageForChannel:channel];
         
         CGRect frame = channelView.frame;
-        frame.origin.x = (page * channelsScrollView.frame.size.width) + col * (channelsScrollView.frame.size.width / kChannelGridNumberOfColumns);
+        frame.origin.x = (page * channelsScrollView.frame.size.width) + col * kChannelGridItemHorizontalSpacing + leftPos;
         frame.origin.y = row * (channelView.frame.size.height + kChannelGridItemPadding);
         channelView.frame = frame;
         

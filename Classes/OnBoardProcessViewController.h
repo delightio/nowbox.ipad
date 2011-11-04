@@ -35,7 +35,7 @@
 
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
-- (void)thumbnailsDidDownload;
+- (void)notifyVideosReady;
 
 @end
 
