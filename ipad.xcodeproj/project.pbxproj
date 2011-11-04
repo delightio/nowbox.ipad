@@ -58,6 +58,7 @@
 		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
 		837C742714637557009F3C2A /* CategorySelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742614637557009F3C2A /* CategorySelectionViewController.m */; };
 		837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742A14637998009F3C2A /* CategorySelectionGrid.m */; };
+		83810AD91464655F003D3F76 /* CategorySelectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83810AD81464655F003D3F76 /* CategorySelectionView.xib */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
@@ -289,6 +290,7 @@
 		837C742614637557009F3C2A /* CategorySelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionViewController.m; sourceTree = "<group>"; };
 		837C742914637998009F3C2A /* CategorySelectionGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySelectionGrid.h; sourceTree = "<group>"; };
 		837C742A14637998009F3C2A /* CategorySelectionGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionGrid.m; sourceTree = "<group>"; };
+		83810AD81464655F003D3F76 /* CategorySelectionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategorySelectionView.xib; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
@@ -541,6 +543,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		83810ADA14646569003D3F76 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
+				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
+				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
+				83810AD81464655F003D3F76 /* CategorySelectionView.xib */,
+			);
+			name = Launch;
+			sourceTree = "<group>";
+		};
+		83810ADB14646578003D3F76 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				A9389B83143109CE00959946 /* LaunchController.h */,
+				A9389B84143109CE00959946 /* LaunchController.m */,
+				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
+				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
+				837C742514637557009F3C2A /* CategorySelectionViewController.h */,
+				837C742614637557009F3C2A /* CategorySelectionViewController.m */,
+			);
+			name = Launch;
+			sourceTree = "<group>";
+		};
+		83810ADC14646589003D3F76 /* Tooltips */ = {
+			isa = PBXGroup;
+			children = (
+				83F7C48B14509EF400AD8880 /* ToolTip.h */,
+				83F7C48C14509EF400AD8880 /* ToolTip.m */,
+				83E04669144F468300C91525 /* ToolTipController.h */,
+				83E0466A144F468300C91525 /* ToolTipController.m */,
+			);
+			name = Tooltips;
+			sourceTree = "<group>";
+		};
+		83810ADD1464659E003D3F76 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
+				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
+				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
+				837C742A14637998009F3C2A /* CategorySelectionGrid.m */,
+			);
+			name = Launch;
+			sourceTree = "<group>";
+		};
 		A90F21FD143F63CA006B298D /* HTML */ = {
 			isa = PBXGroup;
 			children = (
@@ -654,16 +702,8 @@
 				A98555DF141758CD00079453 /* KeychainItemWrapper.m */,
 				22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */,
 				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
-				A9389B83143109CE00959946 /* LaunchController.h */,
-				A9389B84143109CE00959946 /* LaunchController.m */,
-				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
-				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
-				837C742514637557009F3C2A /* CategorySelectionViewController.h */,
-				837C742614637557009F3C2A /* CategorySelectionViewController.m */,
-				83F7C48B14509EF400AD8880 /* ToolTip.h */,
-				83F7C48C14509EF400AD8880 /* ToolTip.m */,
-				83E04669144F468300C91525 /* ToolTipController.h */,
-				83E0466A144F468300C91525 /* ToolTipController.m */,
+				83810ADB14646578003D3F76 /* Launch */,
+				83810ADC14646589003D3F76 /* Tooltips */,
 				8385213F145A03F60047B7E0 /* NMNavigationController.h */,
 				83852140145A03F60047B7E0 /* NMNavigationController.m */,
 			);
@@ -894,10 +934,7 @@
 				83F7C4901450B22700AD8880 /* TouchForwardingView.m */,
 				8381B648145F728A00696110 /* FindChannelTableCell.h */,
 				8381B649145F728A00696110 /* FindChannelTableCell.m */,
-				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
-				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
-				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
-				837C742A14637998009F3C2A /* CategorySelectionGrid.m */,
+				83810ADD1464659E003D3F76 /* Launch */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -905,9 +942,7 @@
 		A97050A213438F980022BF2C /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
-				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
-				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
-				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
+				83810ADA14646569003D3F76 /* Launch */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
@@ -1137,6 +1172,7 @@
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
 				83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */,
 				837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */,
+				83810AD91464655F003D3F76 /* CategorySelectionView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

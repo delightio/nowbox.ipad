@@ -29,6 +29,7 @@
 @synthesize channelsView;
 @synthesize channelsScrollView;
 @synthesize featuredCategories;
+@synthesize featuredChannels;
 @synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -54,6 +55,7 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    [featuredChannels release];
     [subscribingChannels release];
     [loginView release];
     [categoryGrid release];
@@ -93,48 +95,6 @@
     // Allow the user to proceed past the info step
     [proceedToChannelsButton setTitle:@"Next" forState:UIControlStateNormal];
     proceedToChannelsButton.enabled = YES;
-}
-
-#pragma mark - Actions
-
-- (IBAction)switchToInfoView:(id)sender
-{
-    [self transitionFromView:loginView toView:infoView];
-    currentView = infoView;
-    
-    if (userCreated) {
-        if ([categoryGrid.selectedButtonIndexes count] == 0) {
-            // Didn't select any categories, skip the subscribe step
-            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-        } else {
-            [self subscribeToSelectedCategories];
-        }
-    }
-}
-
-- (IBAction)switchToChannelsView:(id)sender
-{
-    [self transitionFromView:infoView toView:channelsView];
-    currentView = channelsView;
-}
-
-- (IBAction)switchToPlaybackView:(id)sender
-{
-    [delegate onBoardProcessViewControllerDidFinish:self];
-}
-
-- (IBAction)addInterests:(id)sender
-{
-    CategorySelectionViewController *categorySelectionController = [[CategorySelectionViewController alloc] initWithCategories:featuredCategories];
-
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:categorySelectionController];
-	navController.navigationBar.barStyle = UIBarStyleBlack;
-
-    [navController setModalPresentationStyle:UIModalPresentationFormSheet];
-    [self presentModalViewController:navController animated:YES];
-
-    [categorySelectionController release];
-    [navController release];
 }
 
 #pragma mark - View lifecycle
@@ -193,6 +153,54 @@
 	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
+#pragma mark - Actions
+
+- (IBAction)switchToInfoView:(id)sender
+{
+    [self transitionFromView:loginView toView:infoView];
+    currentView = infoView;
+    
+    if (userCreated) {
+        if ([categoryGrid.selectedButtonIndexes count] == 0) {
+            // Didn't select any categories, skip the subscribe step
+            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+        } else {
+            [self subscribeToSelectedCategories];
+        }
+    }
+}
+
+- (IBAction)switchToChannelsView:(id)sender
+{
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc removeObserver:self name:NMDidSubscribeChannelNotification object:nil];
+    
+    [self transitionFromView:infoView toView:channelsView];
+    currentView = channelsView;
+}
+
+- (IBAction)switchToPlaybackView:(id)sender
+{
+    [delegate onBoardProcessViewControllerDidFinish:self];
+}
+
+- (IBAction)addInterests:(id)sender
+{
+    CategorySelectionViewController *categorySelectionController = [[CategorySelectionViewController alloc] initWithCategories:featuredCategories 
+                                                                                                       selectedCategoryIndexes:categoryGrid.selectedButtonIndexes
+                                                                                                            subscribedChannels:featuredChannels];
+    categorySelectionController.delegate = self;
+    
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:categorySelectionController];
+	navController.navigationBar.barStyle = UIBarStyleBlack;
+    
+    [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+    [self presentModalViewController:navController animated:YES];
+    
+    [categorySelectionController release];
+    [navController release];
+}
+
 #pragma mark - Notifications
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
@@ -211,10 +219,13 @@
 
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
 {
-    subscribingChannels = [[NSMutableSet alloc] initWithArray:[[aNotification userInfo] objectForKey:@"channels"]];
-    
-    for (NMChannel *channel in subscribingChannels) {
-        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+    self.featuredChannels = [NSSet setWithArray:[[aNotification userInfo] objectForKey:@"channels"]];
+
+    if (currentView != channelsView) {
+        subscribingChannels = [[NSMutableSet alloc] initWithSet:featuredChannels];
+        for (NMChannel *channel in subscribingChannels) {
+            [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+        }
     }
 }
 
@@ -248,6 +259,12 @@
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
 {
     // TODO: Recycle the views instead of loading them all at the beginning
+    
+    for (UIView *view in channelsScrollView.subviews) {
+        if ([view isKindOfClass:[OnBoardProcessChannelView class]]) {
+            [view removeFromSuperview];
+        }
+    }
     
     // Set up channels view
     NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
@@ -295,6 +312,13 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     exit(0);
+}
+
+#pragma mark CategorySelectionViewControllerDelegate;
+
+- (void)categorySelectionViewControllerWillDismiss:(CategorySelectionViewController *)controller
+{
+    categoryGrid.selectedButtonIndexes = controller.categoryGrid.selectedButtonIndexes;
 }
 
 @end

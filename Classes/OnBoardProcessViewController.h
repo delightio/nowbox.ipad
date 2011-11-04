@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "CategorySelectionGrid.h"
+#import "CategorySelectionViewController.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate> {
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, CategorySelectionViewControllerDelegate> {
     BOOL userCreated;
     NSMutableSet *subscribingChannels;    
     
@@ -19,6 +20,7 @@
 }
 
 @property (nonatomic, retain) NSArray *featuredCategories;
+@property (nonatomic, retain) NSSet *featuredChannels;
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
 // Step 1: YouTube login / category selection

@@ -19,6 +19,7 @@
 
 - (void)setup
 {
+    self.backgroundColor = [UIColor clearColor];
     categoryButtons = [[NSMutableArray alloc] init];
     selectedButtonIndexes = [[NSMutableIndexSet alloc] init];
     numberOfColumns = 2;
@@ -120,12 +121,6 @@
     [delegate categorySelectionGrid:self didSelectCategoryAtIndex:categoryIndex];
 }
 
-- (void)setFrame:(CGRect)frame
-{
-    [super setFrame:frame];
-    [self setNeedsLayout];
-}
-
 - (void)setCategoryTitles:(NSArray *)aCategoryTitles
 {
     if (categoryTitles != aCategoryTitles) {
@@ -152,6 +147,14 @@
 {
     verticalSpacing = aVerticalSpacing;
     [self setNeedsLayout];
+}
+
+- (void)setSelectedButtonIndexes:(NSMutableIndexSet *)aSelectedButtonIndexes
+{
+    [selectedButtonIndexes release];
+    selectedButtonIndexes = [[NSMutableIndexSet alloc] initWithIndexSet:aSelectedButtonIndexes];
+
+    [self setNeedsLayout];    
 }
 
 @end
