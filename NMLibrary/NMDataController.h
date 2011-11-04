@@ -85,6 +85,8 @@
 - (NMChannelDetail *)insertNewChannelDetail;
 - (NMPreviewThumbnail *)insertNewPreviewThumbnail;
 - (NMChannel *)channelForID:(NSNumber *)chnID;
+- (NMChannel *)previousChannel:(NMChannel *)srcChn;
+- (NMChannel *)nextChannel:(NMChannel *)srcChn;
 - (NSArray *)hiddenSubscribedChannels;
 - (NMChannel *)lastSessionChannel;
 - (void)batchDeleteChannels:(NSArray *)chnAy;

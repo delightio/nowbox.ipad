@@ -41,6 +41,8 @@
 #define NM_MOVIE_VIEW_GAP								20
 #define NM_MOVIE_VIEW_GAP_FLOAT							20.0f
 
+#define REFRESH_HEADER_HEIGHT 80.0f
+
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx;
@@ -57,6 +59,11 @@
 - (NMVideo *)playerCurrentVideo;
 - (void)showLaunchView;
 
+// channel switching method
+- (void)resetChannelHeaderView:(BOOL)isPrev;
+- (void)startLoadingChannel:(BOOL)isPrev;
+- (void)stopLoadingChannel:(BOOL)isPrev;
+
 // debug message
 - (void)printDebugMessage:(NSString *)str;
 
@@ -69,6 +76,8 @@
 @synthesize loadedControlView;
 @synthesize controlScrollView;
 @synthesize appDelegate;
+@synthesize previousChannelHeaderView;
+@synthesize nextChannelHeaderView;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -93,10 +102,24 @@
 	showMovieControlTimestamp = -1;
 	screenWidth = 480.0f;
 	fullScreenRect = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
+	
+	// channel switching header
+	CGRect theFrame;
+	theFrame = previousChannelHeaderView.frame;
+	theFrame.origin.y = -theFrame.size.height;
+	previousChannelHeaderView.frame = theFrame;
+	[channelSwitchingScrollView addSubview:previousChannelHeaderView];
+	[self resetChannelHeaderView:YES];
+	
+	theFrame = nextChannelHeaderView.frame;
+	theFrame.origin.y = theFrame.size.height + fullScreenRect.size.height;
+	nextChannelHeaderView.frame = theFrame;
+	[channelSwitchingScrollView addSubview:nextChannelHeaderView];
+	[self resetChannelHeaderView:NO];
 
 	// ribbon view
-	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
-	ribbonView.layer.shouldRasterize = YES;
+//	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
+//	ribbonView.layer.shouldRasterize = YES;
 	
 	// playback data model controller
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
@@ -106,7 +129,6 @@
 
 	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
 	NSBundle * mb = [NSBundle mainBundle];
-	CGRect theFrame;
 	movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
 	for (NSInteger i = 0; i < 3; i++) {
 		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
@@ -142,6 +164,11 @@
 	
 	[controlScrollView addSubview:movieView];
 	controlScrollView.frame = CGRectMake(0.0f, 0.0f, 480.0f + NM_MOVIE_VIEW_GAP_FLOAT, 320.0f);
+	channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
+	[channelSwitchingScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
+
+	// for unknown reason, setting "directional lock" in interface builder does NOT work. So, set programmatically.
+//	controlScrollView.directionalLockEnabled = YES;
 	
 	// pre-load control view
 	// load the nib
@@ -233,6 +260,8 @@
 
 
 - (void)viewDidUnload {
+    [self setPreviousChannelHeaderView:nil];
+    [self setNextChannelHeaderView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -251,6 +280,8 @@
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
 //    [temporaryDisabledGestures release];
+    [previousChannelHeaderView release];
+    [nextChannelHeaderView release];
 	[super dealloc];
 }
 
@@ -445,6 +476,32 @@
 
 - (void)showActivityLoader {
 	[self.currentVideo.nm_movie_detail_view setActivityViewHidden:NO];
+}
+
+#pragma mark Channel Switching
+- (void)resetChannelHeaderView:(BOOL)isPrev {
+	if ( isPrev ) {
+		previousChannelSwitchingLabel.text = @"Pull to switch channel";
+		[previousChannelActivityView stopAnimating];
+	} else {
+		nextChannelSwitchingLabel.text = @"Pull to switch channel";
+		[nextChannelActivityView stopAnimating];
+	}
+}
+
+- (void)startLoadingChannel:(BOOL)isPrev {
+	if ( isPrev ) {
+		[previousChannelActivityView startAnimating];
+		previousChannelSwitchingLabel.text = @"Switch to previous channel...";
+	} else {
+		[nextChannelActivityView startAnimating];
+		nextChannelSwitchingLabel.text = @"Switching to next channel...";
+	}
+}
+
+- (void)stopLoadingChannel:(BOOL)isPrev {
+	// reset the view
+	[self resetChannelHeaderView:isPrev];
 }
 
 #pragma mark NMControlsView delegate methods
@@ -769,10 +826,13 @@
 //}
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
-//    if (pendingToolTip) {
-//        [[ToolTipController sharedToolTipController] presentToolTip:pendingToolTip inView:self.view];
-//        pendingToolTip = nil;
-//    }
+	if ( channelSwitchStatus ) {
+		[self resetChannelHeaderView:channelSwitchStatus == ChannelSwitchPrevious];
+		channelSwitchingScrollView.contentOffset = CGPointZero;
+		channelSwitchingScrollView.contentInset = UIEdgeInsetsZero;
+		channelSwitchStatus = ChannelSwitchNone;
+		channelSwitchingScrollView.scrollEnabled = YES;
+	}
 }
 
 - (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
@@ -1010,7 +1070,12 @@
 }
 
 #pragma mark Scroll View Delegate
+
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+	if ( scrollView == channelSwitchingScrollView ) {
+		return;
+	}
+	
 	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
 	if ( NM_RUNNING_IOS_5 ) {
@@ -1029,13 +1094,88 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	if ( scrollView == channelSwitchingScrollView ) {
+		CGFloat yOff = scrollView.contentOffset.y;
+		if (yOff < -REFRESH_HEADER_HEIGHT ) {
+			previousChannelSwitchingLabel.text = @"Release to switch channel";
+		} else if ( yOff > REFRESH_HEADER_HEIGHT ) {
+			nextChannelSwitchingLabel.text = @"Release to switch channel";
+		} else if ( yOff < 0.0f && yOff >= -REFRESH_HEADER_HEIGHT ) {
+			[self resetChannelHeaderView:YES];
+		} else if ( yOff > 0.0f && yOff <= REFRESH_HEADER_HEIGHT ) {
+			[self resetChannelHeaderView:NO];
+		}
+//		if ( isSwitchingChannel ) {
+//			if (scrollView.contentOffset.y > 0)
+//				scrollView.contentInset = UIEdgeInsetsZero;
+//			else if (scrollView.contentOffset.y >= -REFRESH_HEADER_HEIGHT)
+//				scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
+//		} else if (scrollView.contentOffset.y <= -REFRESH_HEADER_HEIGHT) {
+//			// Released above the header
+//			isSwitchingChannel = YES;
+//			NSLog(@"start switching channel");
+//		}
+
+		return;
+	}
+
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
 	// reduce alpha of the playback view
 	movieView.alpha = (screenWidth - dx) / screenWidth;
 }
 
+- (void)delayedChangeChannelSwitchingScrollViewOffset {
+	CGFloat yOff;
+	NMChannel * chnObj = nil;
+	switch (channelSwitchStatus) {
+		case ChannelSwitchNext:
+			chnObj = [nowboxTaskController.dataController nextChannel:currentChannel];
+			yOff = fullScreenRect.size.height;
+			break;
+		case ChannelSwitchPrevious:
+			chnObj = [nowboxTaskController.dataController previousChannel:currentChannel];
+			yOff = -fullScreenRect.size.height;
+			break;
+			
+		default:
+			break;
+	}
+	if ( chnObj ) {
+		[self setCurrentChannel:chnObj];
+		[channelSwitchingScrollView setContentOffset:CGPointMake(0.0f, yOff) animated:YES];
+	} else {
+		[self resetChannelHeaderView:channelSwitchStatus == ChannelSwitchPrevious];
+		channelSwitchingScrollView.contentOffset = CGPointZero;
+		channelSwitchingScrollView.contentInset = UIEdgeInsetsZero;
+		channelSwitchStatus = ChannelSwitchNone;
+		channelSwitchingScrollView.scrollEnabled = YES;
+	}
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+	if ( scrollView == channelSwitchingScrollView ) {
+		CGFloat yOff = scrollView.contentOffset.y;
+		if ( yOff <= -REFRESH_HEADER_HEIGHT ) {
+			// Released above the header
+			channelSwitchStatus = ChannelSwitchPrevious;
+			// push the view down
+			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(320.0f, 0.0f, 0.0f, 0.0f);
+			scrollView.scrollEnabled = NO;
+			[self stopVideo];
+			[self performSelector:@selector(delayedChangeChannelSwitchingScrollViewOffset) withObject:nil afterDelay:0.0f];
+			[self startLoadingChannel:YES];
+		} else if ( yOff >= REFRESH_HEADER_HEIGHT ) {
+			channelSwitchStatus = ChannelSwitchNext;
+			// push the view down
+			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 320.0f, 0.0f);
+			scrollView.scrollEnabled = NO;
+			[self stopVideo];
+			[self performSelector:@selector(delayedChangeChannelSwitchingScrollViewOffset) withObject:nil afterDelay:0.0f];
+			[self startLoadingChannel:NO];
+		}
+		return;
+	}
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	scrollView.scrollEnabled = NO;
@@ -1043,6 +1183,9 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	if ( scrollView == channelSwitchingScrollView ) {
+		return;
+	}
 	// switch to the next/prev video
 //	scrollView.scrollEnabled = YES; move to animation handler
 	if ( scrollView.contentOffset.x > currentXOffset ) {

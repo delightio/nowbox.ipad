@@ -24,6 +24,11 @@
 @class ipadAppDelegate;
 @class LaunchController;
 
+enum {
+	ChannelSwitchNone,
+	ChannelSwitchNext,
+	ChannelSwitchPrevious,
+};
 
 /*!
  Things begin with "setCurrentChannel". This is where the app initialize the data structure for playback.
@@ -33,9 +38,14 @@
 @interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
+	IBOutlet UIScrollView * channelSwitchingScrollView;
 	IBOutlet UIView * ribbonView;
 	IBOutlet UIButton * favoriteButton;
 	IBOutlet UIButton * watchLaterButton;
+	IBOutlet UILabel * previousChannelSwitchingLabel;
+	IBOutlet UILabel * nextChannelSwitchingLabel;
+	IBOutlet UIActivityIndicatorView * previousChannelActivityView;
+	IBOutlet UIActivityIndicatorView * nextChannelActivityView;
 	NMMovieView * movieView;
 	
 	NSMutableArray * movieDetailViewArray;
@@ -66,6 +76,7 @@
 	BOOL forceStopByUser;
 	NSInteger detectedPinchAction;
     int rowIndexToCenterOn;
+	NSInteger channelSwitchStatus;
     
 	id timeObserver;
 	
@@ -87,6 +98,8 @@
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
+@property (retain, nonatomic) IBOutlet UIView *previousChannelHeaderView;
+@property (retain, nonatomic) IBOutlet UIView *nextChannelHeaderView;
 
 - (IBAction)playStopVideo:(id)sender;
 //- (IBAction)toggleChannelPanel:(id)sender;

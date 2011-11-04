@@ -334,6 +334,34 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return chnObj;
 }
 
+- (NMChannel *)previousChannel:(NMChannel *)srcChn {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == 0 AND nm_subscribed < %@", srcChn.nm_subscribed]];
+	NSSortDescriptor * dsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:NO];
+	[request setSortDescriptors:[NSArray arrayWithObject:dsptr]];
+	[dsptr release];
+	[request setFetchLimit:1];
+	[request setReturnsObjectsAsFaults:NO];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+    [request release];    
+	return [result count] == 0 ? nil : [result objectAtIndex:0];
+}
+
+- (NMChannel *)nextChannel:(NMChannel *)srcChn {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == 0 AND nm_subscribed > %@", srcChn.nm_subscribed]];
+	NSSortDescriptor * dsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
+	[request setSortDescriptors:[NSArray arrayWithObject:dsptr]];
+	[dsptr release];
+	[request setFetchLimit:1];
+	[request setReturnsObjectsAsFaults:NO];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+    [request release];    
+	return [result count] == 0 ? nil : [result objectAtIndex:0];
+}
+
 - (NSArray *)hiddenSubscribedChannels {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
