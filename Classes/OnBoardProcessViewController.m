@@ -28,6 +28,7 @@
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
 @synthesize channelsScrollView;
+@synthesize channelsPageControl;
 @synthesize featuredCategories;
 @synthesize featuredChannels;
 @synthesize delegate;
@@ -63,6 +64,7 @@
     [proceedToChannelsButton release];    
     [channelsView release];
     [channelsScrollView release];
+    [channelsPageControl release];
     [featuredCategories release];
     
     [super dealloc];
@@ -136,6 +138,7 @@
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
+    self.channelsPageControl = nil;
     self.featuredCategories = nil;
     self.proceedToChannelsButton = nil;
     
@@ -199,6 +202,12 @@
     
     [categorySelectionController release];
     [navController release];
+}
+
+- (IBAction)pageControlValueChanged:(id)sender
+{
+    [channelsScrollView setContentOffset:CGPointMake(channelsPageControl.currentPage * channelsScrollView.frame.size.width, 0) animated:YES];
+    scrollingFromPageControl = YES;
 }
 
 #pragma mark - Notifications
@@ -286,6 +295,7 @@
         [channelView release];
         
         channelsScrollView.contentSize = CGSizeMake((page + 1) * channelsScrollView.frame.size.width, channelsScrollView.frame.size.height);
+        channelsPageControl.numberOfPages = (page + 1);
         
         col++;
         if (col >= kChannelGridNumberOfColumns) {
@@ -312,6 +322,24 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     exit(0);
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (!scrollingFromPageControl) {
+        NSInteger page = round(scrollView.contentOffset.x / scrollView.frame.size.width);
+        page = MAX(page, 0);
+        page = MIN(page, channelsPageControl.numberOfPages - 1);
+        
+        channelsPageControl.currentPage = page;
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    scrollingFromPageControl = NO;
 }
 
 #pragma mark CategorySelectionViewControllerDelegate;

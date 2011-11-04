@@ -12,9 +12,10 @@
 
 @protocol OnBoardProcessViewControllerDelegate;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, CategorySelectionViewControllerDelegate> {
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, UIScrollViewDelegate, CategorySelectionViewControllerDelegate> {
     BOOL userCreated;
     NSMutableSet *subscribingChannels;    
+    BOOL scrollingFromPageControl;
     
     UIView *currentView;    
 }
@@ -34,10 +35,12 @@
 // Step 3: Auto-selected channels
 @property (nonatomic, retain) IBOutlet UIView *channelsView;
 @property (nonatomic, retain) IBOutlet UIScrollView *channelsScrollView;
+@property (nonatomic, retain) IBOutlet UIPageControl *channelsPageControl;
 
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
 - (IBAction)addInterests:(id)sender;
+- (IBAction)pageControlValueChanged:(id)sender;
 - (void)notifyVideosReady;
 
 @end
