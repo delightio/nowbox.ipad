@@ -125,8 +125,16 @@
 
 - (IBAction)addInterests:(id)sender
 {
-    CategorySelectionViewController *categorySelectionController = [[CategorySelectionViewController alloc] init];
-    
+    CategorySelectionViewController *categorySelectionController = [[CategorySelectionViewController alloc] initWithCategories:featuredCategories];
+
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:categorySelectionController];
+	navController.navigationBar.barStyle = UIBarStyleBlack;
+
+    [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+    [self presentModalViewController:navController animated:YES];
+
+    [categorySelectionController release];
+    [navController release];
 }
 
 #pragma mark - View lifecycle

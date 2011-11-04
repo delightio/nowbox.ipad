@@ -93,6 +93,7 @@
         }
 
         [self addSubview:categoryButton];
+        [categoryButtons addObject:categoryButton];
         
         col++;
         if (col >= numberOfColumns) {

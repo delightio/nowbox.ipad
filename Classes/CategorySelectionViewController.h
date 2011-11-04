@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CategorySelectionGrid.h"
 
-@interface CategorySelectionViewController : UIViewController
+@interface CategorySelectionViewController : UIViewController {
+    NSArray *categories;
+}
 
-@property (nonatomic, retain) NSArray *categories;
+@property (nonatomic, retain) CategorySelectionGrid *categoryGrid;
+
+- (id)initWithCategories:(NSArray *)aCategories;
 
 @end
