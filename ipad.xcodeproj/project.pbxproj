@@ -56,6 +56,8 @@
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
 		837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C741414631012009F3C2A /* OnBoardProcessChannelView.m */; };
 		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
+		837C742714637557009F3C2A /* CategorySelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742614637557009F3C2A /* CategorySelectionViewController.m */; };
+		837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742A14637998009F3C2A /* CategorySelectionGrid.m */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
@@ -283,6 +285,10 @@
 		837C741314631012009F3C2A /* OnBoardProcessChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessChannelView.h; sourceTree = "<group>"; };
 		837C741414631012009F3C2A /* OnBoardProcessChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessChannelView.m; sourceTree = "<group>"; };
 		837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessChannelView.xib; sourceTree = "<group>"; };
+		837C742514637557009F3C2A /* CategorySelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySelectionViewController.h; sourceTree = "<group>"; };
+		837C742614637557009F3C2A /* CategorySelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionViewController.m; sourceTree = "<group>"; };
+		837C742914637998009F3C2A /* CategorySelectionGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySelectionGrid.h; sourceTree = "<group>"; };
+		837C742A14637998009F3C2A /* CategorySelectionGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionGrid.m; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
@@ -652,6 +658,8 @@
 				A9389B84143109CE00959946 /* LaunchController.m */,
 				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
 				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
+				837C742514637557009F3C2A /* CategorySelectionViewController.h */,
+				837C742614637557009F3C2A /* CategorySelectionViewController.m */,
 				83F7C48B14509EF400AD8880 /* ToolTip.h */,
 				83F7C48C14509EF400AD8880 /* ToolTip.m */,
 				83E04669144F468300C91525 /* ToolTipController.h */,
@@ -888,6 +896,8 @@
 				8381B649145F728A00696110 /* FindChannelTableCell.m */,
 				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
 				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
+				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
+				837C742A14637998009F3C2A /* CategorySelectionGrid.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1186,6 +1196,8 @@
 				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
 				83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */,
 				837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */,
+				837C742714637557009F3C2A /* CategorySelectionViewController.m in Sources */,
+				837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

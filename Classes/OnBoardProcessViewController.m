@@ -8,15 +8,13 @@
 
 #import "OnBoardProcessViewController.h"
 #import "OnBoardProcessChannelView.h"
+#import "CategorySelectionViewController.h"
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
 #import "NMDataType.h"
 #import "NMCategory.h"
 #import "NMChannel.h"
 
-#define kCategoryGridNumberOfColumns 2
-#define kCategoryGridItemHeight 50
-#define kCategoryGridItemPadding 10
 #define kChannelGridNumberOfRows 4
 #define kChannelGridNumberOfColumns 3
 #define kChannelGridItemHorizontalSpacing 300
@@ -25,7 +23,7 @@
 @implementation OnBoardProcessViewController
 
 @synthesize loginView;
-@synthesize categoriesView;
+@synthesize categoryGrid;
 @synthesize infoView;
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
@@ -36,9 +34,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        selectedCategoryIndexes = [[NSMutableIndexSet alloc] init];
-        
+    if (self) {        
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
@@ -58,10 +54,9 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    [selectedCategoryIndexes release];
     [subscribingChannels release];
     [loginView release];
-    [categoriesView release];
+    [categoryGrid release];
     [infoView release];
     [proceedToChannelsButton release];    
     [channelsView release];
@@ -90,7 +85,7 @@
 
 - (void)subscribeToSelectedCategories
 {
-    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:selectedCategoryIndexes]];
+    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:categoryGrid.selectedButtonIndexes]];
 }
 
 - (void)notifyVideosReady
@@ -102,28 +97,13 @@
 
 #pragma mark - Actions
 
-- (void)categoryButtonPressed:(id)sender
-{
-    UIButton *categoryButton = (UIButton *)sender;
-    NSInteger categoryIndex = [categoryButton tag];
-    if ([selectedCategoryIndexes containsIndex:categoryIndex]) {
-        [categoryButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-        [categoryButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];        
-        [selectedCategoryIndexes removeIndex:categoryIndex];
-    } else {
-        [categoryButton setBackgroundImage:[[UIImage imageNamed:@"button-red-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-        [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [selectedCategoryIndexes addIndex:categoryIndex];
-    }
-}
-
 - (IBAction)switchToInfoView:(id)sender
 {
     [self transitionFromView:loginView toView:infoView];
     currentView = infoView;
     
     if (userCreated) {
-        if ([selectedCategoryIndexes count] == 0) {
+        if ([categoryGrid.selectedButtonIndexes count] == 0) {
             // Didn't select any categories, skip the subscribe step
             [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
         } else {
@@ -141,6 +121,12 @@
 - (IBAction)switchToPlaybackView:(id)sender
 {
     [delegate onBoardProcessViewControllerDidFinish:self];
+}
+
+- (IBAction)addInterests:(id)sender
+{
+    CategorySelectionViewController *categorySelectionController = [[CategorySelectionViewController alloc] init];
+    
 }
 
 #pragma mark - View lifecycle
@@ -161,26 +147,11 @@
     [sorter release];
     
     // Now we can populate the featured category list
-    CGFloat itemWidth = (categoriesView.frame.size.width - (kCategoryGridNumberOfColumns - 1) * kCategoryGridItemPadding) / kCategoryGridNumberOfColumns;
-    
-    NSUInteger row = 0, col = 0;
+    NSMutableArray *categoryTitles = [NSMutableArray array];
     for (NMCategory *category in featuredCategories) {
-        UIButton *categoryButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        categoryButton.frame = CGRectMake(col * (itemWidth + kCategoryGridItemPadding), row * (kCategoryGridItemHeight + kCategoryGridItemPadding),
-                                          itemWidth, kCategoryGridItemHeight);
-        [categoryButton setTitle:category.title forState:UIControlStateNormal];
-        [categoryButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [categoryButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-        [categoryButton setTag:row*kCategoryGridNumberOfColumns + col];
-        [categoryButton addTarget:self action:@selector(categoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [categoriesView addSubview:categoryButton];
-        
-        col++;
-        if (col >= kCategoryGridNumberOfColumns) {
-            row++;            
-            col = 0;
-        }
+        [categoryTitles addObject:category.title];
     }
+    [categoryGrid setCategoryTitles:categoryTitles];
     
     // Show the login page to start
     [loginView setFrame:self.view.bounds];
@@ -193,7 +164,7 @@
 - (void)viewDidUnload
 {
     self.loginView = nil;
-    self.categoriesView = nil;
+    self.categoryGrid = nil;
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
@@ -221,7 +192,7 @@
     userCreated = YES;
     if (currentView == infoView) {
         // We were waiting on this call to finish
-        if ([selectedCategoryIndexes count] == 0) {
+        if ([categoryGrid.selectedButtonIndexes count] == 0) {
             // Didn't select any categories, skip the subscribe step
             [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
         } else {
@@ -250,8 +221,26 @@
     }
 }
 
+- (NSString *)reasonForChannel:(NMChannel *)channel
+{
+    // Is the channel one of the user's YouTube channels?
+    // TODO
+    
+    // Is the channel part of a category the user selected?
+    NSArray *selectedCategories = [featuredCategories objectsAtIndexes:categoryGrid.selectedButtonIndexes];    
+    for (NMCategory *category in selectedCategories) {
+        if ([channel.categories containsObject:category]) {
+            return [NSString stringWithFormat:@"from %@", category.title];
+        }
+    }
+    
+    return @"No reason...";
+}
+
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
 {
+    // TODO: Recycle the views instead of loading them all at the beginning
+    
     // Set up channels view
     NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
     NSUInteger row = 0, col = 0, page = 0;
@@ -260,7 +249,7 @@
     for (NMChannel *channel in channels) {
         OnBoardProcessChannelView *channelView = [[OnBoardProcessChannelView alloc] init];
         [channelView setTitle:channel.title];
-        [channelView setReason:@"No reason..."];
+        [channelView setReason:[self reasonForChannel:channel]];
         [channelView.thumbnailImage setImageForChannel:channel];
         
         CGRect frame = channelView.frame;

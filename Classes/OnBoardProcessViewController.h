@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CategorySelectionGrid.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
 
 @interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate> {
     BOOL userCreated;
-    NSMutableIndexSet *selectedCategoryIndexes;
     NSMutableSet *subscribingChannels;    
     
     UIView *currentView;    
@@ -23,7 +23,7 @@
 
 // Step 1: YouTube login / category selection
 @property (nonatomic, retain) IBOutlet UIView *loginView;
-@property (nonatomic, retain) IBOutlet UIView *categoriesView;
+@property (nonatomic, retain) IBOutlet CategorySelectionGrid *categoryGrid;
 
 // Step 2: NOWMOV info
 @property (nonatomic, retain) IBOutlet UIView *infoView;
@@ -35,6 +35,7 @@
 
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
+- (IBAction)addInterests:(id)sender;
 - (void)notifyVideosReady;
 
 @end
