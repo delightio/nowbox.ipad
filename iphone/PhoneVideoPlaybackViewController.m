@@ -1105,17 +1105,6 @@
 		} else if ( yOff > 0.0f && yOff <= REFRESH_HEADER_HEIGHT ) {
 			[self resetChannelHeaderView:NO];
 		}
-//		if ( isSwitchingChannel ) {
-//			if (scrollView.contentOffset.y > 0)
-//				scrollView.contentInset = UIEdgeInsetsZero;
-//			else if (scrollView.contentOffset.y >= -REFRESH_HEADER_HEIGHT)
-//				scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-//		} else if (scrollView.contentOffset.y <= -REFRESH_HEADER_HEIGHT) {
-//			// Released above the header
-//			isSwitchingChannel = YES;
-//			NSLog(@"start switching channel");
-//		}
-
 		return;
 	}
 
