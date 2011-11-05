@@ -46,6 +46,8 @@
 - (void)slowFadeOutThumbnailView:(id)sender context:(void *)ctx;
 - (void)restoreThumbnailView;
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;
+- (void)setLayoutWhenPinchedForFullScreen:(BOOL)isFullScreen;
+- (void)resetLayoutAfterPinchedForFullScreen:(BOOL)isFullScreen;
 
 - (void)setActivityViewHidden:(BOOL)aflag;
 
