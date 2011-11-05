@@ -56,11 +56,11 @@
 	// the background image
 	self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
 	// the fake movie view box
-//	blackLayer = [CALayer layer];
-//	blackLayer.shouldRasterize = YES;
-//	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
-//	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
-//	[self.layer insertSublayer:blackLayer below:thumbnailContainerView.layer];
+	blackLayer = [CALayer layer];
+	blackLayer.shouldRasterize = YES;
+	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
+	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
+	[self.layer insertSublayer:blackLayer below:thumbnailContainerView.layer];
 	// update the font
 	if ( !NM_RUNNING_IOS_5 ) {
 		UIFont * theFont = [NMStyleUtility sharedStyleUtility].channelNameFont;
@@ -205,7 +205,7 @@
 //		bitmapShadow.position = CGPointMake(650.0f, 190.0f);
 		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
 	}
-//	blackLayer.frame = thumbnailContainerView.frame;
+	blackLayer.frame = thumbnailContainerView.frame;
 }
 
 - (void)setActivityViewHidden:(BOOL)aflag {

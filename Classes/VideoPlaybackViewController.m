@@ -1188,10 +1188,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		ribbonView.alpha = 0.15;
 	}
-//	if ( launchModeActive ) {
-//		[launchController dimProgressLabel];
-//	}
-//	[self hideControlView];
 	[loadedControlView setControlsHidden:YES animated:YES];
 }
 
@@ -1284,30 +1280,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in the channel view with animation
 		movieXOffset = 0.0f;
 		//MARK: not sure if we still need to show/hide status bar
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 		[[UIApplication sharedApplication] setStatusBarHidden:NO];
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		// fade in detail view
 		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:NO];
-//		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
 		// slide in
 		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
-//		if ( launchModeActive ) {
-//			// hide the progress label
-//			launchController.progressContainerView.alpha = 0.0f;
-//		}
 
 	} else {
 		// slide out the channel view
-//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		[[UIApplication sharedApplication] setStatusBarHidden:YES];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		// fade out detail view
 		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:YES];
-//		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 0.0f;
 		// reset offset value
 		movieXOffset = 0.0f;
 		ribbonView.alpha = 0.0f;

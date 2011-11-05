@@ -36,8 +36,7 @@
 	CGPoint otherInfoDefaultPosition;
 	CGSize titleMaxSize;
 	
-//	CALayer * blackLayer, * bitmapShadow;
-	CALayer * bitmapShadow;
+	CALayer * blackLayer, * bitmapShadow;
 }
 
 @property (nonatomic, assign) NMVideo * video;
