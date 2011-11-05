@@ -209,9 +209,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( netStatus == ReachableViaWiFi ) {
 			// switch to HD
 			NM_WIFI_REACHABLE = YES;
+			NM_URL_REQUEST_TIMEOUT = 30.0f;
 		} else {
 			// switch to SD
 			NM_WIFI_REACHABLE = NO;
+			// longer timeout value
+			NM_URL_REQUEST_TIMEOUT = 60.0f;
 		}
 	}
 	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
