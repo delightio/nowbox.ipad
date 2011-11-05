@@ -209,9 +209,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( netStatus == ReachableViaWiFi ) {
 			// switch to HD
 			NM_WIFI_REACHABLE = YES;
+			NM_URL_REQUEST_TIMEOUT = 30.0f;
 		} else {
 			// switch to SD
 			NM_WIFI_REACHABLE = NO;
+			// longer timeout value
+			NM_URL_REQUEST_TIMEOUT = 60.0f;
 		}
 	}
 	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
@@ -427,6 +430,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
 //	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString {
+	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+	task.message = aString;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];

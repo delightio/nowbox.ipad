@@ -36,8 +36,7 @@
 	CGPoint otherInfoDefaultPosition;
 	CGSize titleMaxSize;
 	
-//	CALayer * blackLayer, * bitmapShadow;
-	CALayer * bitmapShadow;
+	CALayer * blackLayer, * bitmapShadow;
 }
 
 @property (nonatomic, assign) NMVideo * video;
@@ -47,6 +46,8 @@
 - (void)slowFadeOutThumbnailView:(id)sender context:(void *)ctx;
 - (void)restoreThumbnailView;
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen;
+- (void)setLayoutWhenPinchedForFullScreen:(BOOL)isFullScreen;
+- (void)resetLayoutAfterPinchedForFullScreen:(BOOL)isFullScreen;
 
 - (void)setActivityViewHidden:(BOOL)aflag;
 
