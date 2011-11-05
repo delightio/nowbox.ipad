@@ -14,6 +14,7 @@
 #import "NMDataType.h"
 #import "NMCategory.h"
 #import "NMChannel.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define kChannelGridNumberOfRows 4
 #define kChannelGridNumberOfColumns 3
@@ -270,7 +271,14 @@
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
 {
-    [channelsScrollView reloadData];
+    [CATransaction begin];
+	CATransition *animation = [CATransition animation];
+	animation.type = kCATransitionFade;
+	animation.duration = 0.4;
+	[[channelsScrollView layer] addAnimation:animation forKey:@"Fade"];
+    [channelsScrollView reloadData];      
+	[CATransaction commit];
+    
     channelsPageControl.numberOfPages = channelsScrollView.contentSize.width / channelsScrollView.frame.size.width;
 }
 

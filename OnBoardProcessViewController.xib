@@ -429,7 +429,7 @@
 						<string key="NSFrame">{{0, 130}, {1024, 446}}</string>
 						<reference key="NSSuperview" ref="486635400"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="505260464"/>
+						<reference key="NSNextKeyView" ref="197996679"/>
 						<string key="NSReuseIdentifierKey">_NS:206</string>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
@@ -483,11 +483,11 @@
 							<string key="NSResourceName">toolbar-channel-management.png</string>
 						</object>
 					</object>
-					<object class="IBUIPageControl" id="505260464">
+					<object class="IBUIPageControl" id="197996679">
 						<reference key="NSNextResponder" ref="486635400"/>
 						<int key="NSvFlags">1293</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
-						<string key="NSFrame">{{20, 584}, {984, 36}}</string>
+						<string key="NSFrame">{{342, 584}, {340, 36}}</string>
 						<reference key="NSSuperview" ref="486635400"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="402969252"/>
@@ -578,7 +578,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">channelsPageControl</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="505260464"/>
+						<reference key="destination" ref="197996679"/>
 					</object>
 					<int key="connectionID">70</int>
 				</object>
@@ -629,7 +629,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">pageControlValueChanged:</string>
-						<reference key="source" ref="505260464"/>
+						<reference key="source" ref="197996679"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">13</int>
 					</object>
@@ -766,7 +766,7 @@
 							<reference ref="1632346"/>
 							<reference ref="84228757"/>
 							<reference ref="887901316"/>
-							<reference ref="505260464"/>
+							<reference ref="197996679"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Step 3 - Channels</string>
@@ -807,7 +807,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">69</int>
-						<reference key="object" ref="505260464"/>
+						<reference key="object" ref="197996679"/>
 						<reference key="parent" ref="486635400"/>
 					</object>
 				</array>

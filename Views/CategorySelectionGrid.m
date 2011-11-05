@@ -21,6 +21,7 @@
 {
     self.backgroundColor = [UIColor clearColor];
     categoryButtons = [[NSMutableArray alloc] init];
+    recycledButtons = [[NSMutableSet alloc] init];
     selectedButtonIndexes = [[NSMutableIndexSet alloc] init];
     numberOfColumns = 2;
     horizontalSpacing = 10.0f;
@@ -58,6 +59,7 @@
 {
     [categoryTitles release];
     [categoryButtons release];
+    [recycledButtons release];
     [selectedButtonIndexes release];
     
     [super dealloc];
@@ -68,7 +70,9 @@
     // Remove old buttons
     for (UIButton *button in categoryButtons) {
         [button removeFromSuperview];
+        [recycledButtons addObject:button];
     }
+    [categoryButtons removeAllObjects];
     
     // Add new buttons
     NSUInteger row = 0, col = 0;
@@ -78,7 +82,13 @@
     CGFloat itemHeight = (self.frame.size.height - (numberOfRows - 1) * verticalSpacing) / numberOfRows;
     
     for (NSString *title in categoryTitles) {
-        UIButton *categoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIButton *categoryButton = [[[recycledButtons anyObject] retain] autorelease];
+        if (categoryButton) {
+            [recycledButtons removeObject:categoryButton];
+        } else {
+            categoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        }
+        
         categoryButton.frame = CGRectMake(col * (itemWidth + horizontalSpacing), row * (itemHeight + verticalSpacing),
                                           itemWidth, itemHeight);
         [categoryButton setTitle:title forState:UIControlStateNormal];

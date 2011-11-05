@@ -12,6 +12,7 @@
 
 @interface CategorySelectionGrid : UIView {
     NSMutableArray *categoryButtons;
+    NSMutableSet *recycledButtons;
 }
 
 @property (nonatomic, retain) NSArray *categoryTitles;

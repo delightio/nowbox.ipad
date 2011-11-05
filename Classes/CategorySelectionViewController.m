@@ -35,6 +35,10 @@
         [nc addObserver:self selector:@selector(handleDidSubscribeNotification:) name:NMDidSubscribeChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidUnsubscribeNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
+        
+        self.title = @"Interests";
+        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissView:)] autorelease];
+        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(updateCategories:)] autorelease];
     }
     
     return self;
@@ -60,11 +64,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.title = @"Interests";
-    self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissView:)] autorelease];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(updateCategories:)] autorelease];
 
+    [progressView.layer setCornerRadius:25.0f];
+    [progressView.layer setMasksToBounds:YES];
+    
     NSMutableArray *categoryTitles = [NSMutableArray array];
     for (NMCategory *category in categories) {
         [categoryTitles addObject:category.title];
@@ -72,9 +75,6 @@
     
     [categoryGrid setCategoryTitles:categoryTitles];
     [categoryGrid setSelectedButtonIndexes:selectedCategoryIndexes];
-    
-    [progressView.layer setCornerRadius:25.0f];
-    [progressView.layer setMasksToBounds:YES];
 }
 
 - (void)viewDidUnload
@@ -133,7 +133,6 @@
         if (!found) {
             [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:oldChannel];
             [unsubscribingChannels addObject:oldChannel];
-            NSLog(@"--> unsubscribing to %@", oldChannel.title);
         }
     }
 
@@ -150,7 +149,6 @@
         if (!found) {
             [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:newChannel];
             [subscribingChannels addObject:newChannel];
-            NSLog(@"--> subscribing to %@", newChannel.title);  
         }
     }
     
