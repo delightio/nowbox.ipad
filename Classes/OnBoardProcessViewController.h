@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "CategorySelectionGrid.h"
 #import "CategorySelectionViewController.h"
+#import "GridScrollView.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, UIScrollViewDelegate, CategorySelectionViewControllerDelegate> {
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate, CategorySelectionViewControllerDelegate> {
     BOOL userCreated;
     NSMutableSet *subscribingChannels;    
     BOOL scrollingFromPageControl;
@@ -34,7 +35,7 @@
 
 // Step 3: Auto-selected channels
 @property (nonatomic, retain) IBOutlet UIView *channelsView;
-@property (nonatomic, retain) IBOutlet UIScrollView *channelsScrollView;
+@property (nonatomic, retain) IBOutlet GridScrollView *channelsScrollView;
 @property (nonatomic, retain) IBOutlet UIPageControl *channelsPageControl;
 
 - (IBAction)switchToInfoView:(id)sender;

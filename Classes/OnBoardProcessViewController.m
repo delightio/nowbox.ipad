@@ -123,6 +123,9 @@
     }
     [categoryGrid setCategoryTitles:categoryTitles];
     
+    channelsScrollView.pageMarginLeft = 50;
+    channelsScrollView.pageMarginRight = 50;
+    
     // Show the login page to start
     [loginView setFrame:self.view.bounds];
     [self.view addSubview:loginView];    
@@ -267,52 +270,13 @@
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
 {
-    // TODO: Recycle the views instead of loading them all at the beginning
-    
-    for (UIView *view in channelsScrollView.subviews) {
-        if ([view isKindOfClass:[OnBoardProcessChannelView class]]) {
-            [view removeFromSuperview];
-        }
-    }
-    
-    // Set up channels view
-    NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
-    NSUInteger row = 0, col = 0, page = 0;
-    CGFloat leftPos = (channelsScrollView.frame.size.width - (kChannelGridItemHorizontalSpacing * kChannelGridNumberOfColumns)) / 2;
-    
-    for (NMChannel *channel in channels) {
-        OnBoardProcessChannelView *channelView = [[OnBoardProcessChannelView alloc] init];
-        [channelView setTitle:channel.title];
-        [channelView setReason:[self reasonForChannel:channel]];
-        [channelView.thumbnailImage setImageForChannel:channel];
-        
-        CGRect frame = channelView.frame;
-        frame.origin.x = (page * channelsScrollView.frame.size.width) + col * kChannelGridItemHorizontalSpacing + leftPos;
-        frame.origin.y = row * (channelView.frame.size.height + kChannelGridItemPadding);
-        channelView.frame = frame;
-        
-        [channelsScrollView addSubview:channelView];
-        [channelView release];
-        
-        channelsScrollView.contentSize = CGSizeMake((page + 1) * channelsScrollView.frame.size.width, channelsScrollView.frame.size.height);
-        channelsPageControl.numberOfPages = (page + 1);
-        
-        col++;
-        if (col >= kChannelGridNumberOfColumns) {
-            row++;            
-            col = 0;
-
-            if (row >= kChannelGridNumberOfRows) {
-                page++;
-                row = 0;
-            }
-        }
-    }
+    [channelsScrollView reloadData];
+    channelsPageControl.numberOfPages = channelsScrollView.contentSize.width / channelsScrollView.frame.size.width;
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, it looks like the service is currently down. Please try again in a little while." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, it looks like the service is down. Please try again in a little while." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alertView show];
     [alertView release];
 }
@@ -324,7 +288,7 @@
     exit(0);
 }
 
-#pragma mark - UIScrollViewDelegate
+#pragma mark - GridScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -340,6 +304,29 @@
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     scrollingFromPageControl = NO;
+}
+
+- (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
+{
+    NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    return [channels count];
+}
+
+- (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
+{
+    NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    NMChannel *channel = [channels objectAtIndex:index];
+    
+    OnBoardProcessChannelView *channelView = (OnBoardProcessChannelView *) [gridScrollView dequeueReusableSubview];
+    if (!channelView) {
+        channelView = [[[OnBoardProcessChannelView alloc] init] autorelease];
+    }
+    
+    [channelView setTitle:channel.title];
+    [channelView setReason:[self reasonForChannel:channel]];
+    [channelView.thumbnailImage setImageForChannel:channel];
+    
+    return channelView;
 }
 
 #pragma mark CategorySelectionViewControllerDelegate;

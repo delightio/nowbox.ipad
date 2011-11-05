@@ -59,6 +59,7 @@
 		837C742714637557009F3C2A /* CategorySelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742614637557009F3C2A /* CategorySelectionViewController.m */; };
 		837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742A14637998009F3C2A /* CategorySelectionGrid.m */; };
 		83810AD91464655F003D3F76 /* CategorySelectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83810AD81464655F003D3F76 /* CategorySelectionView.xib */; };
+		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
@@ -291,6 +292,8 @@
 		837C742914637998009F3C2A /* CategorySelectionGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySelectionGrid.h; sourceTree = "<group>"; };
 		837C742A14637998009F3C2A /* CategorySelectionGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionGrid.m; sourceTree = "<group>"; };
 		83810AD81464655F003D3F76 /* CategorySelectionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategorySelectionView.xib; sourceTree = "<group>"; };
+		83810ADE1464A633003D3F76 /* GridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridScrollView.h; sourceTree = "<group>"; };
+		83810ADF1464A633003D3F76 /* GridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridScrollView.m; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
@@ -585,6 +588,8 @@
 				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
 				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
 				837C742A14637998009F3C2A /* CategorySelectionGrid.m */,
+				83810ADE1464A633003D3F76 /* GridScrollView.h */,
+				83810ADF1464A633003D3F76 /* GridScrollView.m */,
 			);
 			name = Launch;
 			sourceTree = "<group>";
@@ -1234,6 +1239,7 @@
 				837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */,
 				837C742714637557009F3C2A /* CategorySelectionViewController.m in Sources */,
 				837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */,
+				83810AE01464A633003D3F76 /* GridScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
