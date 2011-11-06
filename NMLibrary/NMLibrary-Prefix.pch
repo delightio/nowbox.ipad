@@ -8,6 +8,8 @@
 #import <CoreData/CoreData.h>
 
 extern NSInteger NM_USER_ACCOUNT_ID;
+extern NSDate * NM_USER_TOKEN_EXPIRY_DATE;
+extern NSString * NM_USER_TOKEN;
 extern NSInteger NM_USER_FAVORITES_CHANNEL_ID;
 extern NSInteger NM_USER_WATCH_LATER_CHANNEL_ID;
 extern NSInteger NM_USER_HISTORY_CHANNEL_ID;

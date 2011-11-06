@@ -35,17 +35,18 @@
 	NSMutableIndexSet * commandIndexPool;
 	
 	NSDate * errorWindowStartDate;
+	BOOL tokenRenewMode;
 	
 	// channel thumbnail_uri cache
 //	NSMutableSet * activeChannelThumbnailDownloadSet;
 }
 
 @property (nonatomic, retain) NSTimer *connectionExecutionTimer;
-//@property (nonatomic, assign) NMTaskQueueScheduler *scheduler;
 @property (nonatomic, retain) NMDataController * dataController;
 @property (nonatomic, assign) NSThread *controlThread;
 
 @property (nonatomic, retain) NSDate * errorWindowStartDate;
+@property (assign) BOOL tokenRenewMode;
 
 //- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 
@@ -54,6 +55,7 @@
  add a connection to the connection queue
  */
 - (void)addNewConnectionForTask:(NMTask *)aTask;
+- (void)addNewConnectionForImmediateTask:(NMTask *)aTask;
 /*!
  Network connection resources management. All operations should call getNetworkResource to get a permission to create network connection. This gives control to JPDataController the control over how many network connections the system can have at the same time.
  */

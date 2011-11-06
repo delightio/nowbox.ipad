@@ -194,6 +194,8 @@
 		A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8C79D145F26BC005694D1 /* Reachability.m */; };
 		A9E8E3B01427BBBD00ECD077 /* NMSeekBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8E3AD1427BBBD00ECD077 /* NMSeekBar.m */; };
 		A9E8E3B11427BBBD00ECD077 /* NMSeekBarLayoutLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8E3AF1427BBBD00ECD077 /* NMSeekBarLayoutLayer.m */; };
+		A9E9E0461465B41200EA8F81 /* NMTokenTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E9E0441465B41200EA8F81 /* NMTokenTask.h */; };
+		A9E9E0471465B41200EA8F81 /* NMTokenTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E9E0451465B41200EA8F81 /* NMTokenTask.m */; };
 		A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F1BE6E13FB83CE0006B569 /* NMAirPlayContainerView.m */; };
 		A9F4966113D2E83400A56F50 /* playback_background_pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966013D2E83400A56F50 /* playback_background_pattern.png */; };
 		A9F4966313D2EE5900A56F50 /* playback_video_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */; };
@@ -473,6 +475,8 @@
 		A9E8E3AF1427BBBD00ECD077 /* NMSeekBarLayoutLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSeekBarLayoutLayer.m; sourceTree = "<group>"; };
 		A9E90A8B14173AE700EB38DC /* NMCreateUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCreateUserTask.h; sourceTree = "<group>"; };
 		A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCreateUserTask.m; sourceTree = "<group>"; };
+		A9E9E0441465B41200EA8F81 /* NMTokenTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMTokenTask.h; sourceTree = "<group>"; };
+		A9E9E0451465B41200EA8F81 /* NMTokenTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMTokenTask.m; sourceTree = "<group>"; };
 		A9ECD60E135E9611004B7F78 /* NMCacheController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCacheController.h; sourceTree = "<group>"; };
 		A9ECD60F135E9611004B7F78 /* NMCacheController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCacheController.m; sourceTree = "<group>"; };
 		A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMImageDownloadTask.h; sourceTree = "<group>"; };
@@ -829,6 +833,8 @@
 				A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */,
 				A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */,
 				A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */,
+				A9E9E0441465B41200EA8F81 /* NMTokenTask.h */,
+				A9E9E0451465B41200EA8F81 /* NMTokenTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -915,6 +921,7 @@
 			files = (
 				A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */,
 				A9E8C79E145F26BC005694D1 /* Reachability.h in Headers */,
+				A9E9E0461465B41200EA8F81 /* NMTokenTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1195,6 +1202,7 @@
 				A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */,
 				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
 				A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */,
+				A9E9E0471465B41200EA8F81 /* NMTokenTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -27,6 +27,7 @@
 	
 	// polling channel population status
 	NSTimer * pollingTimer;
+	NSTimer * tokenRenewTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
 	
@@ -37,6 +38,7 @@
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
 @property (nonatomic, retain) NSTimer * pollingTimer;
+@property (nonatomic, retain) NSTimer * tokenRenewTimer;
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
@@ -51,6 +53,14 @@
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
 - (void)issueEditUserSettings;
+// Token
+- (void)issueRenewToken;
+- (void)issueTokenTest;
+- (void)checkAndRenewToken;
+/*!
+ In token renew mode, the backend will stop executing other tasks except for the "renew token task". It will also stop popping alert pop up.
+ */
+- (void)setTokenRenewMode:(BOOL)on;
 //- (void)issueSignOutTwitterAccount;
 //- (void)issueSignOutFacebookAccout;
 // Category

@@ -23,6 +23,8 @@ NSString * const NM_USER_HISTORY_CHANNEL_ID_KEY = @"NM_USER_HISTORY_CHANNEL_ID_K
 NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY = @"NM_USER_FACEBOOK_CHANNEL_ID_KEY";
 NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY = @"NM_USER_TWITTER_CHANNEL_ID_KEY";
 NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY = @"NM_SETTING_FACEBOOK_AUTO_POST_KEY"; // just need the key. no need for the bool variable
+NSString * const NM_USER_TOKEN_KEY = @"NM_USER_TOKEN_KEY";
+NSString * const NM_USER_TOKEN_EXPIRY_DATE_KEY = @"NM_USER_TOKEN_EXPIRY_DATE_KEY";
 NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
 // app session
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
@@ -54,12 +56,15 @@ NSInteger NM_LAST_CHANNEL_ID;
 	NSNumber * yesNum = [NSNumber numberWithBool:YES];
 	NSNumber * noNum = [NSNumber numberWithBool:NO];
 	NSNumber * zeroNum = [NSNumber numberWithInteger:0];
+	NSDate * dDate = [NSDate distantPast];
 	NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 	[defaults registerDefaults:
 	 [NSDictionary dictionaryWithObjectsAndKeys:
-	  [NSDate distantPast], NM_CHANNEL_LAST_UPDATE,
-	  [NSDate distantPast], NM_LAST_SESSION_DATE,
+	  dDate, NM_CHANNEL_LAST_UPDATE,
+	  dDate, NM_LAST_SESSION_DATE,
 	  zeroNum, NM_USER_ACCOUNT_ID_KEY, 
+	  @"", NM_USER_TOKEN_KEY,
+	  dDate, NM_USER_TOKEN_EXPIRY_DATE_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
