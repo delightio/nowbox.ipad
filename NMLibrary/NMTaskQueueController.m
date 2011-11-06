@@ -518,6 +518,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)setTokenRenewMode:(BOOL)on {
 	networkController.tokenRenewMode = on;
+	[self issueRenewToken];
 }
 
 - (void)handleTokenNotification:(NSNotification *)aNotification {

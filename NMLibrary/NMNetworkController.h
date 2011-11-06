@@ -46,7 +46,7 @@
 @property (nonatomic, assign) NSThread *controlThread;
 
 @property (nonatomic, retain) NSDate * errorWindowStartDate;
-@property (assign) BOOL tokenRenewMode;
+@property (nonatomic, assign) BOOL tokenRenewMode;
 
 //- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 
@@ -61,9 +61,6 @@
  */
 - (BOOL)tryGetNetworkResource;
 - (void)returnNetworkResource;
-
-//- (void)tryCancelImageDownloadWithURLStringsNotIn:(NSArray *)urlAy;
-//- (void)tryCancelDownloadWithCaller:(id)aCaller;
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
 
