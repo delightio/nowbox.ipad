@@ -101,6 +101,10 @@ static ToolTipController *toolTipController = nil;
         toolTip.keepCountsOnRestart = [[propertyDict objectForKey:@"KeepCountsOnRestart"] boolValue];
         toolTip.resetCountsOnDisplay = [[propertyDict objectForKey:@"ResetCountsOnDisplay"] boolValue];            
         toolTip.displayText = [propertyDict objectForKey:@"DisplayText"];
+        toolTip.displayTextEdgeInsets = UIEdgeInsetsMake([[propertyDict objectForKey:@"DisplayTextEdgeInsetsTop"] floatValue], 
+                                                         [[propertyDict objectForKey:@"DisplayTextEdgeInsetsLeft"] floatValue], 
+                                                         [[propertyDict objectForKey:@"DisplayTextEdgeInsetsBottom"] floatValue], 
+                                                         [[propertyDict objectForKey:@"DisplayTextEdgeInsetsRight"] floatValue]);
         toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
         toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
         toolTip.invalidatesToolTip = [propertyDict objectForKey:@"InvalidatesToolTip"];
@@ -292,9 +296,18 @@ static ToolTipController *toolTipController = nil;
     // Create the tooltip button
     UIImage *tooltipImage = [UIImage imageNamed:tooltip.imageFile];
     self.tooltipButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [tooltipButton setImage:tooltipImage forState:UIControlStateNormal];
+    [tooltipButton setBackgroundImage:tooltipImage forState:UIControlStateNormal];
     [tooltipButton setFrame:CGRectMake(0, 0, tooltipImage.size.width, tooltipImage.size.height)];
     [tooltipButton setCenter:tooltip.center];
+
+    if (tooltip.displayText) {
+        [tooltipButton.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
+        [tooltipButton.titleLabel setShadowColor:[UIColor darkGrayColor]];
+        [tooltipButton.titleLabel setShadowOffset:CGSizeMake(0, 1)];
+        [tooltipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [tooltipButton setTitle:tooltip.displayText forState:UIControlStateNormal];
+        [tooltipButton setTitleEdgeInsets:tooltip.displayTextEdgeInsets];
+    }
     
     if (tooltip.target && tooltip.action) {
         tooltipButton.userInteractionEnabled = YES;

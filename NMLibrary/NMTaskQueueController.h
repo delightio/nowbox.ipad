@@ -16,6 +16,7 @@
 @class NMVideoDetail;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
+@class Reachability;
 
 @interface NMTaskQueueController : NSObject {
 	NSManagedObjectContext * managedObjectContext;
@@ -28,6 +29,8 @@
 	NSTimer * pollingTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
+	
+	Reachability * wifiReachability;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
@@ -58,15 +61,19 @@
 - (void)issueGetSubscribedChannels;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (void)issueGetChannelWithID:(NSInteger)chnID;
+- (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
 // Channel subscription
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
+- (void)issueSubscribeChannels:(NSArray *)chnArray;
 // Polling channel
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
 - (void)pollServerForChannelReadiness;
 - (void)stopPollingServer;
+// Get update info
+- (void)issueCheckUpdateForDevice:(NSString *)devType;
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
@@ -80,6 +87,7 @@
 // Event tracking
 // Share video
 - (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
+- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec;
 - (void)issueExamineVideo:(NMVideo *)aVideo errorInfo:(NSDictionary *)errDict;

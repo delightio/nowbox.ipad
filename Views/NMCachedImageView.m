@@ -39,6 +39,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[downloadTask release];
 	[channel release];
+	[video release];
 	[videoDetail release];
 	[previewThumbnail release];
 	[super dealloc];

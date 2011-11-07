@@ -57,6 +57,9 @@
 		837E904E14587FA3009F32DD /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904614587FA3009F32DD /* NSData+MPBase64.m */; };
 		837E904F14587FA3009F32DD /* MixpanelAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904814587FA3009F32DD /* MixpanelAPI.m */; };
 		837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904A14587FA3009F32DD /* MixpanelEvent.m */; };
+		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
+		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
+		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
 		83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852143145A34000047B7E0 /* BugSense-iOS.framework */; };
@@ -191,6 +194,10 @@
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
 		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
+		A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */; };
+		A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */; };
+		A9E8C79E145F26BC005694D1 /* Reachability.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E8C79C145F26BC005694D1 /* Reachability.h */; };
+		A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8C79D145F26BC005694D1 /* Reachability.m */; };
 		A9E8E3B01427BBBD00ECD077 /* NMSeekBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8E3AD1427BBBD00ECD077 /* NMSeekBar.m */; };
 		A9E8E3B11427BBBD00ECD077 /* NMSeekBarLayoutLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8E3AF1427BBBD00ECD077 /* NMSeekBarLayoutLayer.m */; };
 		A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F1BE6E13FB83CE0006B569 /* NMAirPlayContainerView.m */; };
@@ -282,6 +289,11 @@
 		837E904814587FA3009F32DD /* MixpanelAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelAPI.m; sourceTree = "<group>"; };
 		837E904914587FA3009F32DD /* MixpanelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelEvent.h; sourceTree = "<group>"; };
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
+		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
+		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
+		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
+		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
+		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
 		83844041144DE51E007C99A2 /* PanelVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCell.m; sourceTree = "<group>"; };
 		8385213F145A03F60047B7E0 /* NMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMNavigationController.h; sourceTree = "<group>"; };
@@ -470,6 +482,10 @@
 		A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelManagementView.xib; sourceTree = "<group>"; };
 		A9E4B01513F3EA6F00DAE368 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
 		A9E4B01613F3EA6F00DAE368 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
+		A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCheckUpdateTask.h; sourceTree = "<group>"; };
+		A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCheckUpdateTask.m; sourceTree = "<group>"; };
+		A9E8C79C145F26BC005694D1 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		A9E8C79D145F26BC005694D1 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		A9E8E3AC1427BBBD00ECD077 /* NMSeekBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSeekBar.h; sourceTree = "<group>"; };
 		A9E8E3AD1427BBBD00ECD077 /* NMSeekBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSeekBar.m; sourceTree = "<group>"; };
 		A9E8E3AE1427BBBD00ECD077 /* NMSeekBarLayoutLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSeekBarLayoutLayer.h; sourceTree = "<group>"; };
@@ -798,6 +814,7 @@
 				22ADF9BA13FAF40C003CF27E /* category-list-selected-mid.png */,
 				22333F4C1401A6D4002FA3FE /* category-list-separator.png */,
 				22ADF9DD13FBC3E2003CF27E /* find-channel-list-normal.png */,
+				8381B646145F6B0600696110 /* find-channel-list-highlighted.png */,
 				22ADF9DE13FBC3E3003CF27E /* find-channel-list-subscribed.png */,
 				22ADF9DF13FBC3E5003CF27E /* find-channel-not-subscribed-icon.png */,
 				22ADF9E013FBC3E7003CF27E /* find-channel-subscribed-icon.png */,
@@ -828,6 +845,8 @@
 		A970503F13438F860022BF2C /* NMLibrary */ = {
 			isa = PBXGroup;
 			children = (
+				A9E8C79C145F26BC005694D1 /* Reachability.h */,
+				A9E8C79D145F26BC005694D1 /* Reachability.m */,
 				A970504013438F860022BF2C /* JSONKit.h */,
 				A970504113438F860022BF2C /* JSONKit.m */,
 				A970504213438F860022BF2C /* NMDataController.h */,
@@ -880,6 +899,8 @@
 				A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */,
 				A96AD052145B8F29000A8ECC /* NMUserSettingsTask.h */,
 				A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */,
+				A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */,
+				A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -891,6 +912,8 @@
 				2252786A1412CDDE00E48227 /* PreviewViewContainerView.m */,
 				227F2DF213CEB99400E2805E /* AGOrientedTableView.h */,
 				227F2DF313CEB99400E2805E /* AGOrientedTableView.m */,
+				835C747B146084CE00702643 /* VideoRowTableView.h */,
+				835C747C146084CE00702643 /* VideoRowTableView.m */,
 				22ADF9CA13FB0023003CF27E /* CategoriesOrientedTableView.h */,
 				22ADF9CB13FB0024003CF27E /* CategoriesOrientedTableView.m */,
 				A970506113438F860022BF2C /* NMControlsView.h */,
@@ -921,6 +944,8 @@
 				83844041144DE51E007C99A2 /* PanelVideoCell.m */,
 				83F7C48F1450B22700AD8880 /* TouchForwardingView.h */,
 				83F7C4901450B22700AD8880 /* TouchForwardingView.m */,
+				8381B648145F728A00696110 /* FindChannelTableCell.h */,
+				8381B649145F728A00696110 /* FindChannelTableCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -960,6 +985,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */,
+				A9E8C79E145F26BC005694D1 /* Reachability.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1153,6 +1180,7 @@
 				83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */,
 				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
+				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1214,6 +1242,8 @@
 				837E904F14587FA3009F32DD /* MixpanelAPI.m in Sources */,
 				837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */,
 				83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */,
+				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
+				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1241,6 +1271,8 @@
 				A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */,
 				A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */,
 				A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */,
+				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
+				A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1307,7 +1339,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1374,7 +1406,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1398,7 +1430,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",

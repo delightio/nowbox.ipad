@@ -21,6 +21,7 @@ typedef enum {
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
 	NMCommandGetChannelWithID,			// this is for subscribing to debug channels
+	NMCommandGetFeaturedChannelsForCategories,
 	NMCommandPollChannel,
 	NMCommandGetChannelDetail,
 	NMCommandCreateKeywordChannel,
@@ -40,6 +41,7 @@ typedef enum {
 	NMCommandGetAuthorThumbnail,
 	NMCommandGetVideoThumbnail,
 	NMCommandGetPreviewThumbnail,
+	NMCommandCheckUpdate,
 } NMCommand;
 
 typedef enum {
@@ -51,6 +53,12 @@ typedef enum {
 	NMVideoQueueStatusCurrentVideo,
 	NMVideoQueueStatusPlayed,
 } NMVideoQueueStatusType;
+
+typedef enum {
+	NMVideoQualityAutoSelect,
+	NMVideoQualityAlwaysHD,
+	NMVideoQualityAlwaysSD,
+} NMVideoQualityType;
 
 typedef enum {
 	NMEventSubscribeChannel,
@@ -84,10 +92,17 @@ typedef enum {
 	NMChannelUserTwitterType,
 } NMChannelType;
 
+extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
 // Notifications
 // error
 extern NSString * const NMShowErrorAlertNotification;
+
+// update check
+extern NSString * const NMWillCheckUpdateNotification;
+extern NSString * const NMDidCheckUpdateNotification;
+extern NSString * const NMDidFailCheckUpdateNotification;
+
 // user
 extern NSString * const NMWillCreateUserNotification;
 extern NSString * const NMDidCreateUserNotification;
@@ -118,6 +133,10 @@ extern NSString * const NMDidFailGetChannelsForCategoryNotification;
 extern NSString * const NMWillSearchChannelsNotification;
 extern NSString * const NMDidSearchChannelsNotification;
 extern NSString * const NMDidFailSearchChannelsNotification;
+extern NSString * const NMWillGetFeaturedChannelsForCategories;
+extern NSString * const NMDidGetFeaturedChannelsForCategories;
+extern NSString * const NMDidFailGetFeaturedChannelsForCategories;
+
 extern NSString * const NMWillGetChannelDetailNotification;
 extern NSString * const NMDidGetChannelDetailNotification;
 extern NSString * const NMDidFailGetChannelDetailNotification;

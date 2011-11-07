@@ -23,6 +23,8 @@
 	NSNumber * channelID;
 	NSDictionary * resultDictionary;
 	BOOL playedToEnd;
+	BOOL bulkSubscribe;
+	NSString * message;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
@@ -33,6 +35,8 @@
 @property (nonatomic) NSInteger startSecond;
 //@property (nonatomic) CGFloat duration;
 @property (nonatomic) BOOL playedToEnd;
+@property (nonatomic) BOOL bulkSubscribe;
+@property (nonatomic, retain) NSString * message;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v;
 - (id)initWithChannel:(NMChannel *)aChn subscribe:(BOOL)abool;

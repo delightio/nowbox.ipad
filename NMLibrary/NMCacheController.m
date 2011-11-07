@@ -46,7 +46,6 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[notificationCenter addObserver:self selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:nil];
 	
 	// listen to channel management view notification
-	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	[notificationCenter addObserver:self selector:@selector(handleCleanUpCacheNotification:) name:UIApplicationWillTerminateNotification object:nil];
 	
 	// check if the cache directory is here or not. If not, create it.
@@ -102,6 +101,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[authorThumbnailCacheDir release];
 	[videoThumbnailCacheDir release];
 	[fileManager release];
+	[notificationCenter removeObserver:self];
 	[super dealloc];
 }
 
@@ -575,6 +575,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 - (void)handleCleanUpCacheNotification:(NSNotification *)aNotification {
 	// clean up channel thumbnail and video thumbnail files cache. Make sure they do not exceed the cap respectively.
+	[self cleanUpCache];
 }
 
 - (void)removeAllFiles {

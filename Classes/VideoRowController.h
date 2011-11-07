@@ -24,17 +24,17 @@
     BOOL isLoadingNewContent, isAnimatingNewContentCell;
     CGPoint tempOffset;
     
-    IBOutlet UITableViewCell *loadingCell;
+    IBOutlet PanelVideoCell *loadingCell;
 }
 
-@property (nonatomic, assign) AGOrientedTableView * videoTableView;
+@property (nonatomic, retain) AGOrientedTableView * videoTableView;
 @property (nonatomic, assign) ChannelPanelController * panelController;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, assign) NSInteger indexInTable;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, assign) BOOL isLoadingNewContent;
-@property (nonatomic, assign) UITableViewCell *loadingCell;
+@property (nonatomic, assign) PanelVideoCell *loadingCell;
 
 - (id)init;
 -(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;

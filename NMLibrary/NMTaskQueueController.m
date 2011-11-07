@@ -14,6 +14,7 @@
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "Reachability.h"
 
 NSInteger NM_USER_ACCOUNT_ID				= 0;
 NSInteger NM_USER_FAVORITES_CHANNEL_ID		= 0;
@@ -22,9 +23,10 @@ NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
-BOOL NM_USE_HIGH_QUALITY_VIDEO				= YES;
+NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
 NSNumber * NM_SESSION_ID					= nil;
+BOOL NM_WIFI_REACHABLE						= YES;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
 NSString * const NMShowErrorAlertNotification = @"NMShowErrorAlertNotification";
@@ -66,6 +68,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
+    wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
+	[wifiReachability startNotifier];
+    [nc addObserver: self selector: @selector(reachabilityChanged:) name:kReachabilityChangedNotification object: nil];
+
 	return self;
 }
 
@@ -91,6 +97,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController release];
 	[NM_SESSION_ID release];
 	[pollingTimer release];
+	[wifiReachability stopNotifier];
+	[wifiReachability release];
 	[super dealloc];
 }
 
@@ -194,6 +202,24 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueEditUserSettings];
 }
 
+- (void)reachabilityChanged:(NSNotification *)aNotification {
+    NetworkStatus netStatus = [wifiReachability currentReachabilityStatus];
+    BOOL connectionRequired = [wifiReachability connectionRequired];
+	if ( !connectionRequired ) {
+		if ( netStatus == ReachableViaWiFi ) {
+			// switch to HD
+			NM_WIFI_REACHABLE = YES;
+			NM_URL_REQUEST_TIMEOUT = 30.0f;
+		} else {
+			// switch to SD
+			NM_WIFI_REACHABLE = NO;
+			// longer timeout value
+			NM_URL_REQUEST_TIMEOUT = 60.0f;
+		}
+	}
+	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
+}
+
 #pragma mark Queue tasks to network controller
 - (void)issueCreateUser; {
 	NMCreateUserTask * task = [[NMCreateUserTask alloc] init];
@@ -246,6 +272,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetChannelWithID:(NSInteger)chnID {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelWithID:chnID];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFeaturedChannelsForCategories:catArray];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -382,10 +414,31 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueSubscribeChannels:(NSArray *)chnArray {
+	NMEventTask * task = nil;
+	NSMutableArray * taskAy = [NSMutableArray arrayWithCapacity:[chnArray count]];
+	for (NMChannel * chnObj in chnArray) {
+		task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:YES];
+		task.bulkSubscribe = YES;
+		[taskAy addObject:task];
+		[task release];
+	}
+	[networkController addNewConnectionForTasks:taskAy];
+}
+
 - (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
 	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
 //	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString {
+	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+	task.message = aString;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -426,6 +479,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
+}
+
+- (void)issueCheckUpdateForDevice:(NSString *)devType {
+	NMCheckUpdateTask * task = [[NMCheckUpdateTask alloc] initWithDeviceType:devType];
+	[networkController addNewConnectionForTask:task];
+	[task release];
 }
 
 #pragma mark Channel Polling

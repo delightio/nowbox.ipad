@@ -44,6 +44,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 @synthesize resultDictionary;
 @synthesize elapsedSeconds, startSecond;
 @synthesize playedToEnd;
+@synthesize bulkSubscribe;
+@synthesize message;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v {
 	self = [super init];
@@ -79,6 +81,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	[channelID release];
 	[channel release];
 	[video release];
+	[message release];
 	[super dealloc];
 }
 
@@ -138,7 +141,13 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventUnsubscribeChannel:
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
 			break;
-			
+		case NMEventShare:
+			if ( message ) {
+				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d&message=%@", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID, [message stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+			} else {
+				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
+			}
+			break;
 		default:
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
 			break;
@@ -165,7 +174,12 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{
-			channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+			if ( bulkSubscribe ) {
+				// in case of bulk subscribe (right now, only supported in onboard process), we preserve the order of subscription to be the same as sorting order
+				channel.nm_subscribed = channel.nm_sort_order;
+			} else {
+				channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+			}
 			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			return YES;
 		}

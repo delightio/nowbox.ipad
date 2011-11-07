@@ -194,6 +194,8 @@
     } else {
         [self.navigationController pushViewController:channelDetailViewController animated:YES];
     }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)keyboardDidHide {

@@ -130,6 +130,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// movie detail view doesn't need to respond to autoresize
 	}
 	
+#ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
@@ -182,16 +183,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self setupPlayer];
 	
 	// ======
+#endif
 	[nowboxTaskController issueGetFeaturedCategories];
 	
 	// load channel view
+#ifndef DEBUG_NO_CHANNEL_VIEW
 	[[NSBundle mainBundle] loadNibNamed:@"ChannelPanelView" owner:self options:nil];
 	theFrame = channelController.panelView.frame;
 	theFrame.origin.y = splitViewRect.size.height;
 	channelController.panelView.frame = theFrame;
 	channelController.videoViewController = self;
 	[topLevelContainerView addSubview:channelController.panelView];
-    
+#endif
     [channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
     
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
@@ -471,7 +474,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)showActivityLoader {
-	NSLog(@"######## showing activity loader #########");
 	[self.currentVideo.nm_movie_detail_view setActivityViewHidden:NO];
 }
 
@@ -779,6 +781,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)playVideo:(NMVideo *)aVideo {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	// Channel View calls this method when user taps a video from the table
 	// stop video
 	[self stopVideo];
@@ -798,6 +801,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
+	[pool release];
 }
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {
@@ -1155,18 +1159,25 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)configureDetailViewForContext:(NSInteger)ctx {
+	NMMovieDetailView * curDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
 	switch (ctx) {
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
 				// hide everything except the thumbnail view
-				[dtlView configureMovieThumbnailForFullScreen:NO];
+				if ( dtlView != curDetailView ) {
+					[dtlView configureMovieThumbnailForFullScreen:NO];
+				}
 			}
+			[curDetailView resetLayoutAfterPinchedForFullScreen:NO];
 			break;
 			
 		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
 			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
-				[dtlView configureMovieThumbnailForFullScreen:YES];
+				if ( dtlView != curDetailView ) {
+					[dtlView configureMovieThumbnailForFullScreen:YES];
+				}
 			}
+			[curDetailView resetLayoutAfterPinchedForFullScreen:YES];
 			break;
 			
 		default:
@@ -1190,10 +1201,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		ribbonView.alpha = 0.15;
 	}
-//	if ( launchModeActive ) {
-//		[launchController dimProgressLabel];
-//	}
-//	[self hideControlView];
 	[loadedControlView setControlsHidden:YES animated:YES];
 }
 
@@ -1206,7 +1213,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
+#ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	scrollView.scrollEnabled = NO;
+#endif
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -1296,12 +1305,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in the channel view with animation
 		movieXOffset = 0.0f;
 		//MARK: not sure if we still need to show/hide status bar
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 		[[UIApplication sharedApplication] setStatusBarHidden:NO];
 		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		// fade in detail view
-		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 1.0f;
+		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:NO];
 		// slide in
 		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
@@ -1316,12 +1324,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 	} else {
 		// slide out the channel view
-//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 		[[UIApplication sharedApplication] setStatusBarHidden:YES];
 		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		// fade out detail view
-		playbackModelController.currentVideo.nm_movie_detail_view.alpha = 0.0f;
+		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:YES];
 		// reset offset value
 		movieXOffset = 0.0f;
 		ribbonView.alpha = 0.0f;
@@ -1581,13 +1588,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         // We want to position this one relative to the cell
         UITableView *channelTable = channelController.tableView;
         
-        tooltip.center = CGPointMake([sender frame].size.height / 2, -25);
+        tooltip.center = CGPointMake(floor([sender frame].size.height / 2), -24);
         tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
         
-        // Keep tooltip within screen bounds
-        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 195),
+        // Keep tooltip within screen bounds, and avoid subpixel text rendering (blurrier)
+        CGPoint center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
                                      MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
-        
+        center.x = floor(center.x);
+        center.y = floor(center.y);
+        if ((NSInteger) center.x % 2 == 1) {
+            center.x++;
+        }
+        if ((NSInteger) center.y % 2 == 1) {
+            center.y++;
+        }
+        tooltip.center = center;
     } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
         tooltip.target = channelController;
         tooltip.action = @selector(showChannelManagementView:);
