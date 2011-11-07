@@ -211,6 +211,7 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 #else
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_subscribed"];
 #endif
+					[pDict removeObjectForKey:@"category_ids"];
 					break;
 					
 				case NMCommandSearchChannels:
@@ -218,6 +219,7 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 					if ( [[pDict objectForKey:@"title"] caseInsensitiveCompare:searchWord] == NSOrderedSame ) {
 						containsKeywordChannel = YES;
 					}
+					[pDict removeObjectForKey:@"category_ids"];
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
 					break;
 					
