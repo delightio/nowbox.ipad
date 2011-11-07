@@ -14,7 +14,7 @@
 #import <BugSense-iOS/BugSenseCrashController.h>
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
-#define NM_MIXPANEL_TOKEN @"ccbb47ab132e0f86791bbf2e5277c3ed"
+#define NM_MIXPANEL_TOKEN @"e447bed162e427230f5356bc987a5e16"
 #define NM_BUGSENSE_TOKEN @"775bf5eb"
 
 // user data
