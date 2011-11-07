@@ -58,6 +58,10 @@
 	UIImage * favoriteImage, * favoriteActiveImage;
 	UIImage * watchLaterImage, * watchLaterActiveImage;
 	
+	// channel management view
+	UIImage * channelSubscribedIcon, * channelSubscribedBackgroundImage;
+	UIImage * channelNotSubscribedIcon, * channelNotSubscribedBackgroundImage;
+	
 	UIColor * blackColor;
 }
 
@@ -128,6 +132,11 @@
 @property (nonatomic, readonly) UIImage * favoriteActiveImage;
 @property (nonatomic, readonly) UIImage * watchLaterImage;
 @property (nonatomic, readonly) UIImage * watchLaterActiveImage;
+
+@property (nonatomic, readonly) UIImage * channelSubscribedIcon;
+@property (nonatomic, readonly) UIImage * channelSubscribedBackgroundImage;
+@property (nonatomic, readonly) UIImage * channelNotSubscribedIcon;
+@property (nonatomic, readonly) UIImage * channelNotSubscribedBackgroundImage;
 
 @property (nonatomic, readonly) UIColor * blackColor;
 
