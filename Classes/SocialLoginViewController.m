@@ -57,6 +57,11 @@
 			filename = @"FacebookLoading";
 			break;
 			
+		case LoginYoutubeType:
+			self.title = @"Youtube";
+			filename = @"YoutubeLoading";
+			break;
+			
 		default:
 			break;
 	}
@@ -86,6 +91,10 @@
 			
 		case LoginFacebookType:
 			urlStr = @"http://api.nowbox.com/auth/facebook";
+			break;
+			
+		case LoginYoutubeType:
+			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
 			break;
 			
 		default:
@@ -119,6 +128,7 @@
 	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
     
     [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
@@ -128,15 +138,22 @@
             [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-
             break;
+
         case LoginFacebookType:
             [[Analytics sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
             [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-
             break;
+			
+		case LoginYoutubeType:
+            [[Analytics sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
+            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
+																					@"channelmanagement_login", AnalyticsPropertySender, 
+																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
+			break;
+			
         default:
             break;
     }
@@ -166,6 +183,9 @@
         case LoginFacebookType:
             [[Analytics sharedAPI] track:AnalyticsEventFacebookLoginFailed];
             break;
+		case LoginYoutubeType:
+            [[Analytics sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
+			break;
         default:
             break;
     }
@@ -217,6 +237,30 @@
 				
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyFacebookAccountWithURL:[NSURL URLWithString:urlStr]];
+				
+				[UIView animateWithDuration:0.25f animations:^{
+					progressContainerView.alpha = 1.0f;
+				} completion:^(BOOL finished) {
+					[loadingIndicator startAnimating];
+				}];
+				
+				return NO;
+			}
+			break;
+		}
+			
+		case LoginYoutubeType:
+		{
+			NSLog(@"Youtube URL: %@", [theURL absoluteString]);
+			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/youtube/callback"] ) {
+				self.navigationItem.hidesBackButton = YES;
+				// we should intercept this call. Use task queue scheduler.
+				// pass the interface control back the the channel management view controller
+				progressContainerView.alpha = 0.0f;
+				progressContainerView.frame = self.view.bounds;
+				[self.view addSubview:progressContainerView];
+				// show a dark gray screen for now.
+				[[NMTaskQueueController sharedTaskQueueController] issueVerifyTwitterAccountWithURL:theURL];
 				
 				[UIView animateWithDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;

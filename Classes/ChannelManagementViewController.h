@@ -48,6 +48,10 @@
     
     CategoryTableCell *lockToEdgeCell;
     BOOL enableLockToEdge;
+	
+	// subscription related image
+	UIImage * channelSubscribedIcon, * channelSubscribedBackgroundImage;
+	UIImage * channelNotSubscribedIcon, * channelNotSubscribedBackgroundImage;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
@@ -64,6 +68,10 @@
 @property (nonatomic, retain) UIImage * sectionTitleBackgroundImage;
 @property (nonatomic, retain) UIColor * sectionTitleColor;
 @property (nonatomic, retain) UIFont * sectionTitleFont;
+@property (nonatomic, retain) UIImage * channelSubscribedIcon;
+@property (nonatomic, retain) UIImage * channelSubscribedBackgroundImage;
+@property (nonatomic, retain) UIImage * channelNotSubscribedIcon;
+@property (nonatomic, retain) UIImage * channelNotSubscribedBackgroundImage;
 
 -(float)categoryCellWidthFromString:(NSString *)text;
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender;

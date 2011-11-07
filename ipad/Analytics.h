@@ -46,6 +46,9 @@
 #define AnalyticsEventStartFacebookLogin @"Start Facebook Login"
 #define AnalyticsEventCompleteFacebookLogin @"Complete Facebook Login"
 #define AnalyticsEventFacebookLoginFailed @"Facebook Login Failed"
+#define AnalyticsEventStartYoutubeLogin @"Start Youtube Login"
+#define AnalyticsEventCompleteYoutubeLogin @"Complete Youtube Login"
+#define AnalyticsEventYoutubeLoginFailed @"Youtube Login Failed"
 
 /*********************************************
  *                PROPERTIES                 *

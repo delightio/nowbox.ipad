@@ -10,6 +10,7 @@
 typedef enum {
 	LoginTwitterType,
 	LoginFacebookType,
+	LoginYoutubeType,
 } SocialLoginType;
 
 @interface SocialLoginViewController : UIViewController <UIWebViewDelegate> {

@@ -36,6 +36,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize sectionTitleBackgroundImage;
 @synthesize sectionTitleColor;
 @synthesize sectionTitleFont;
+@synthesize channelSubscribedIcon, channelSubscribedBackgroundImage;
+@synthesize channelNotSubscribedIcon, channelNotSubscribedBackgroundImage;
+
 
 - (void)dealloc {
 	[channelDetailViewController release];
@@ -52,6 +55,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[sectionTitleColor release];
 	[sectionTitleFont release];
 	[countFormatter release];
+	[channelSubscribedIcon release], [channelSubscribedBackgroundImage release];
+	[channelNotSubscribedIcon release], [channelNotSubscribedBackgroundImage release];
     [super dealloc];
 }
 
@@ -107,6 +112,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	self.sectionTitleColor = [UIColor colorWithRed:190.0f / 255.0f green:148.0f / 255.0f blue:39.0f / 255.0f alpha:1.0f];
 	self.sectionTitleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f];
 
+	self.channelSubscribedIcon = [UIImage imageNamed:@"find-channel-subscribed-icon"];
+	self.channelSubscribedBackgroundImage = [UIImage imageNamed:@"find-channel-list-subscribed"];
+	self.channelNotSubscribedIcon = [UIImage imageNamed:@"find-channel-not-subscribed-icon"];
+	self.channelNotSubscribedBackgroundImage = [UIImage imageNamed:@"find-channel-list-normal"];
+	
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
@@ -244,7 +254,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if ( tableView == categoriesTableView || selectedIndex ) return 1;
-    return 2;
+    return 3;
 }
 
 
@@ -259,11 +269,14 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		if ( selectedIndex == 0 ) {
 			switch (section) {
 				case 0:
+					c = 1;
+					break;
+				case 1:
 					// social login
 					c = 2;
 					break;
 					
-				case 1:
+				case 2:
 					sectionInfo = [[self.myChannelsFetchedResultsController sections] objectAtIndex:0];
 					c = [sectionInfo numberOfObjects];
 					break;
@@ -300,11 +313,14 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	
 	switch (section) {
 		case 0:
-			lbl.text = @"SOCIAL CHANNELS";
-			
+			lbl.text = @"SYNCHRONIZATION";
 			break;
 			
 		case 1:
+			lbl.text = @"SOCIAL CHANNELS";
+			break;
+			
+		case 2:
 			lbl.text = @"SUBSCRIBED CHANNELS";
 			break;
 			
@@ -369,7 +385,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         UIImageView *backgroundView;
         UIButton *buttonView;
 		
-		if ( selectedIndex == 0 && indexPath.section == 0 ) {
+		if ( selectedIndex == 0 && (indexPath.section == 1 || indexPath.section == 0 ) ) {
 			// the social login
 			UILabel * titleLbl, * detailLbl;
 			titleLbl = (UILabel *)[cell viewWithTag:12];
@@ -378,56 +394,70 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             buttonView = (UIButton *)[cell viewWithTag:11];
             backgroundView = (UIImageView *)[cell viewWithTag:14];        
 
-			switch (indexPath.row) {
-				case 0:
-					if ( NM_USER_TWITTER_CHANNEL_ID ) {
-						chn = nowboxTaskController.dataController.userTwitterStreamChannel;
-						titleLbl.text = chn.title;
-						detailLbl.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
-
-						[thumbnailView setImageForChannel:chn];
-						if ([chn.nm_subscribed boolValue]) {
-							[buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
-							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
-						} else {
-							[buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
-							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
-						}
-					} else {
-						titleLbl.text = @"Twitter";
-						detailLbl.text = @"Sign in to watch videos in your Twitter network";
-						thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
-                        [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
-                        [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];                        
-					}
-					break;
+			if ( indexPath.section == 0 ) {
+				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+					titleLbl.text = @"<User name>";
+					detailLbl.text = @"Youtube sync is currently active";
+				} else {
+					titleLbl.text = @"Youtube";
+					detailLbl.text = @"Sign in to synchronize your channel subscription, Watch Later and favorite videos.";
+					thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
+					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 					
-				case 1:
-					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-						chn = nowboxTaskController.dataController.userFacebookStreamChannel;
-						titleLbl.text = chn.title;
-						detailLbl.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
-						[thumbnailView setImageForChannel:chn];
-						buttonView = (UIButton *)[cell viewWithTag:11];
-						backgroundView = (UIImageView *)[cell viewWithTag:14];
-						if ([chn.nm_subscribed boolValue]) {
-							[buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
-							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
+				}
+			} else {
+				switch (indexPath.row) {
+					case 0:
+						if ( NM_USER_TWITTER_CHANNEL_ID ) {
+							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+							titleLbl.text = chn.title;
+							detailLbl.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
+							
+							[thumbnailView setImageForChannel:chn];
+							if ([chn.nm_subscribed boolValue]) {
+								[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+								[backgroundView setImage:channelSubscribedBackgroundImage];
+							} else {
+								[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+								[backgroundView setImage:channelNotSubscribedBackgroundImage];
+							}
 						} else {
-							[buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
-							[backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
+							titleLbl.text = @"Twitter";
+							detailLbl.text = @"Sign in to watch videos in your Twitter network";
+							thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
+							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 						}
-					} else {
-						titleLbl.text = @"Facebook";
-						detailLbl.text = @"Sign in to watch videos in your Facebook network";
-						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
-                        [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
-                        [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];                                                
-					}
-					break;
-					
-				default:
-					break;
+						break;
+						
+					case 1:
+						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+							titleLbl.text = chn.title;
+							detailLbl.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
+							[thumbnailView setImageForChannel:chn];
+							buttonView = (UIButton *)[cell viewWithTag:11];
+							backgroundView = (UIImageView *)[cell viewWithTag:14];
+							if ([chn.nm_subscribed boolValue]) {
+								[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+								[backgroundView setImage:channelSubscribedBackgroundImage];
+							} else {
+								[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+								[backgroundView setImage:channelNotSubscribedBackgroundImage];
+							}
+						} else {
+							titleLbl.text = @"Facebook";
+							detailLbl.text = @"Sign in to watch videos in your Facebook network";
+							thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
+							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
+						}
+						break;
+						
+					default:
+						break;
+				}
 			}
             
             UIActivityIndicatorView *actView;
@@ -450,11 +480,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         buttonView = (UIButton *)[cell viewWithTag:11];
         backgroundView = (UIImageView *)[cell viewWithTag:14];
         if ([chn.nm_subscribed boolValue]) {
-            [buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
-            [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
+            [buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+            [backgroundView setImage:channelSubscribedBackgroundImage];
         } else {
-            [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
-            [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
+            [buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+            [backgroundView setImage:channelNotSubscribedBackgroundImage];
         }
         
         UILabel *label;
@@ -580,50 +610,72 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
         if ( selectedIndex == 0 ) {
-            if ( indexPath.section == 0 ) {
-                // reveal the social login view
-                SocialLoginViewController * socialCtrl;
-                if ( indexPath.row == 0 ) {
-                    if ( NM_USER_TWITTER_CHANNEL_ID ) {
-                        chn = nowboxTaskController.dataController.userTwitterStreamChannel;
-                        [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
-                                                                                                    [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
-                                                                                                    @"channelmanagement", AnalyticsPropertySender, nil]];
-                    } else {
-                        // login twitter
-                        socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-                        socialCtrl.loginType = LoginTwitterType;
-                        [self.navigationController pushViewController:socialCtrl animated:YES];
-                        [socialCtrl release];
-
-                        [[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin];
-
-                        return;
-                    }
-                } else if ( indexPath.row == 1 ) {
-                    if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-                        chn = nowboxTaskController.dataController.userFacebookStreamChannel;
-                        [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
-                                                                                                    [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
-                                                                                                    @"channelmanagement", AnalyticsPropertySender, nil]];
-                    } else {
-                        socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-                        socialCtrl.loginType = LoginFacebookType;
-                        [self.navigationController pushViewController:socialCtrl animated:YES];
-                        [socialCtrl release];
-                        
-                        [[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin];
-                        
-                        return;
-                    }
-                }
-            } else {
-                indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
-                chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
-                [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
-                                                                                            [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
-                                                                                            @"channelmanagement", AnalyticsPropertySender, nil]];
-            }
+			switch ( indexPath.section ) {
+				case 0:
+				{
+					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+						// show channel detail? any detail to show?
+						[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName, 
+																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+																								  @"channelmanagement", AnalyticsPropertySender, nil]];
+					} else {
+						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+						socialCtrl.loginType = LoginYoutubeType;
+						[self.navigationController pushViewController:socialCtrl animated:YES];
+						[socialCtrl release];
+						[[Analytics sharedAPI] track:AnalyticsEventStartYoutubeLogin];
+						return;
+					}
+					break;
+				}	
+				case 1:
+				{
+					// reveal the social login view
+					SocialLoginViewController * socialCtrl;
+					if ( indexPath.row == 0 ) {
+						if ( NM_USER_TWITTER_CHANNEL_ID ) {
+							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+							[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
+																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+																									  @"channelmanagement", AnalyticsPropertySender, nil]];
+						} else {
+							// login twitter
+							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+							socialCtrl.loginType = LoginTwitterType;
+							[self.navigationController pushViewController:socialCtrl animated:YES];
+							[socialCtrl release];
+							
+							[[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin];
+							
+							return;
+						}
+					} else if ( indexPath.row == 1 ) {
+						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+							[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
+																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+																									  @"channelmanagement", AnalyticsPropertySender, nil]];
+						} else {
+							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+							socialCtrl.loginType = LoginFacebookType;
+							[self.navigationController pushViewController:socialCtrl animated:YES];
+							[socialCtrl release];
+							
+							[[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin];
+							
+							return;
+						}
+					}
+					break;
+				}	
+				default:
+					indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+					chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+					[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
+																							  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
+																							  @"channelmanagement", AnalyticsPropertySender, nil]];
+					break;
+			}
         } else {
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
         }

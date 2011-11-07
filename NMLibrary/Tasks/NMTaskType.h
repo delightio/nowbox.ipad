@@ -20,3 +20,4 @@
 #import "NMPollChannelTask.h"
 #import "NMUserSettingsTask.h"
 #import "NMCheckUpdateTask.h"
+#import "NMTokenTask.h"
