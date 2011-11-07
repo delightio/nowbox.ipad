@@ -11,6 +11,7 @@
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
+#import "Analytics.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -432,6 +433,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 //	[self updateRibbonButtons];
+    
+    [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                       playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                       playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                       @"player", AnalyticsPropertySender, 
+                                                                       @"auto", AnalyticsPropertyAction, nil]];
 }
 
 - (NMVideo *)currentVideo {
@@ -761,6 +768,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
+            
+            [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               @"player", AnalyticsPropertySender, 
+                                                                               @"auto", AnalyticsPropertyAction, nil]];
 		}
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -1218,6 +1231,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
+            
+            [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               @"player", AnalyticsPropertySender, 
+                                                                               @"swipe", AnalyticsPropertyAction, nil]];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1235,6 +1254,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
+            
+            [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               @"player", AnalyticsPropertySender, 
+                                                                               @"swipe", AnalyticsPropertyAction, nil]];
 		}
 	} else {
 		scrollView.scrollEnabled = YES;
@@ -1288,6 +1313,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide in
 		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
+//		if ( launchModeActive ) {
+//			// hide the progress label
+//			launchController.progressContainerView.alpha = 0.0f;
+//		}
+        
+        [[Analytics sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
 
 	} else {
 		// slide out the channel view
@@ -1302,6 +1335,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// slide out
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
+        
+        [[Analytics sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
 	}
 	[UIView commitAnimations];
 	if ( panelHidden ) {
@@ -1372,6 +1409,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		rvPosition.y -= splitViewRect.size.height;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
+        
+        [[Analytics sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                             playbackModelController.currentVideo.title, AnalyticsPropertyVideoName,
+                                                                                             nil]];                                                                                                                                                                                                                                                                                                                                                                        
+
 	} else if ( !shouldToggleToFullScreen && channelController.displayMode != NMHalfScreenMode ) {
 		// move the panel down
 		theFrame.origin.y = splitViewRect.size.height;
@@ -1380,6 +1422,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		rvPosition.y += splitViewRect.size.height;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
+        
+        [[Analytics sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+                                                                                            playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+
 	}
 	channelController.panelView.frame = theFrame;
 	controlScrollView.frame = scrollFrame;
@@ -1420,12 +1466,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self animateFavoriteButtonsToInactive];
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
+    
+    [[Analytics sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                           playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                           playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                           nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
+    
+    [[Analytics sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                          playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                          playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                          nil]];
 }
 
 // seek bar

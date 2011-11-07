@@ -72,6 +72,10 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 	} else {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 	}
+	NSArray * catIDAy = [chnCtnDict objectForKey:@"category_ids"];
+	if ( catIDAy ) {
+		[pDict setObject:catIDAy forKey:@"category_ids"];
+	}
 	NSString * thumbURL = [chnCtnDict objectForKey:@"thumbnail_uri"];
 	if ( thumbURL == nil || [thumbURL isEqual:@""] ) {
 		[pDict setObject:[NSNull null] forKey:@"thumbnail_uri"];
@@ -207,6 +211,7 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 #else
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_subscribed"];
 #endif
+					[pDict removeObjectForKey:@"category_ids"];
 					break;
 					
 				case NMCommandSearchChannels:
@@ -214,6 +219,7 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 					if ( [[pDict objectForKey:@"title"] caseInsensitiveCompare:searchWord] == NSOrderedSame ) {
 						containsKeywordChannel = YES;
 					}
+					[pDict removeObjectForKey:@"category_ids"];
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
 					break;
 					
@@ -265,21 +271,30 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 			// different handling from other case. Search result is managed by view controller. Always append info
 			NSMutableDictionary * chnDict;
 			NMChannel * chnObj;
+			NSArray * catIDAy;
+			NMCategory * catObj;
 			// reuse the var for storing downloaded channels
 			[categoryIDs removeAllObjects];
 			for (NSNumber * theKey in parsedObjectDictionary) {
 				chnDict = [parsedObjectDictionary objectForKey:theKey];
 				// check if the channel exist
 				chnObj = [ctrl channelForID:theKey];
+				catIDAy = [[chnDict objectForKey:@"category_ids"] retain];
+				[chnDict removeObjectForKey:@"category_ids"];
 				if ( chnObj == nil ) {
 					// create the channel
 					chnObj = [ctrl insertNewChannelForID:theKey];
 					[chnObj setValuesForKeysWithDictionary:chnDict];
+					if ( [catIDAy count] ) {
+						catObj = [ctrl categoryForID:[catIDAy objectAtIndex:0]];
+						[catObj addChannelsObject:chnObj];
+					}
 					// there's no need to set relationship with the existing channel objects.
 				} else if ( [chnObj.nm_id integerValue] == 0 ) {
 					// this is a placeholder channel, update it's content
 					[chnObj setValuesForKeysWithDictionary:chnDict];
 				}
+				[catIDAy release];
 				// add the search category
 				[categoryIDs addObject:chnObj];
 			}

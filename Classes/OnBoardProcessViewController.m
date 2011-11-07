@@ -288,7 +288,7 @@
         }
     }
     
-    return @"No reason...";
+    return @"Featured channel";
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification

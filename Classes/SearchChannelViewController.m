@@ -10,7 +10,7 @@
 #import "CategoryTableCell.h"
 #import "NMCachedImageView.h"
 #import "ChannelDetailViewController.h"
-
+#import "Analytics.h"
 
 @implementation SearchChannelViewController
 
@@ -182,6 +182,10 @@
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
     channelDetailViewController.channel = chn;
+    
+    [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
+                                                                                [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
+                                                                                @"search", AnalyticsPropertySender, nil]];
     
     if ([searchBar isFirstResponder]) {
         // Hide keyboard first
@@ -406,9 +410,21 @@
                      }];
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:[tableView indexPathForCell:cell]];
+        
+    BOOL subscribed = [chn.nm_subscribed boolValue];
+    if (subscribed) {
+        [[Analytics sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
+                                                                                    @"search_toggle", AnalyticsPropertySender, 
+                                                                                    lastSearchQuery, AnalyticsPropertySearchQuery, 
+                                                                                    [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, nil]];    
+    } else {
+        [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
+                                                                                  @"search_toggle", AnalyticsPropertySender, 
+                                                                                  lastSearchQuery, AnalyticsPropertySearchQuery, 
+                                                                                  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    }
     
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
-    
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:!subscribed channel:chn];
 }
 
 #pragma mark delayed search
@@ -422,6 +438,8 @@
         NSLog(@"issuing search for text %@", searchText);
         progressView.hidden = NO;
         [ctrl issueChannelSearchForKeyword:searchText];
+        
+        [[Analytics sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
         self.lastSearchQuery = searchText;
     }
 }

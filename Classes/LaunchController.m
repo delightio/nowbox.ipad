@@ -123,6 +123,10 @@
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	}
+    
+    [[Analytics sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+    [[Analytics sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[Analytics sharedAPI] track:AnalyticsEventLogin];    
 }
 
 #pragma mark Notification

@@ -15,6 +15,7 @@
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
 #import "SocialLoginViewController.h"
+#import "Analytics.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -197,6 +198,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         // Reload social channels in case we unsubscribed from one of them
         [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
         [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
+
+        [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                                          [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, nil]];
     }
     
     for (int i=0; i<[selectedChannelArray count]; i++) {
@@ -217,6 +221,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 //	TwitterLoginViewController * twitCtrl = [[TwitterLoginViewController alloc] initWithNibName:@"TwitterLoginView" bundle:nil];
 //	[self.navigationController pushViewController:twitCtrl animated:YES];
 //	[twitCtrl release];
+    
+    [[Analytics sharedAPI] track:AnalyticsEventShowSearch];
+
 }
 
 - (void)dismissView:(id)sender {
@@ -539,6 +546,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             self.selectedIndexPath = nil;
             self.selectedChannelArray = nil;
             [channelsTableView reloadData];
+            
+            [[Analytics sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:@"My Channels", AnalyticsPropertyCategoryName, nil]];
+
             return;
         } else if (indexPath.row % 2 == 0) { // other categories
             // refresh the right table data
@@ -558,6 +568,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                     [activityIndicator startAnimating];
                 }
 			}
+            
+            [[Analytics sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:cat.title, AnalyticsPropertyCategoryName, nil]];
+
             return;
         } else { // separator
             return;
@@ -573,23 +586,33 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 if ( indexPath.row == 0 ) {
                     if ( NM_USER_TWITTER_CHANNEL_ID ) {
                         chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+                        [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
+                                                                                                    [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+                                                                                                    @"channelmanagement", AnalyticsPropertySender, nil]];
                     } else {
                         // login twitter
                         socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
                         socialCtrl.loginType = LoginTwitterType;
                         [self.navigationController pushViewController:socialCtrl animated:YES];
                         [socialCtrl release];
-                        
+
+                        [[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin];
+
                         return;
                     }
                 } else if ( indexPath.row == 1 ) {
                     if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
                         chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+                        [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
+                                                                                                    [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+                                                                                                    @"channelmanagement", AnalyticsPropertySender, nil]];
                     } else {
                         socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
                         socialCtrl.loginType = LoginFacebookType;
                         [self.navigationController pushViewController:socialCtrl animated:YES];
                         [socialCtrl release];
+                        
+                        [[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin];
                         
                         return;
                     }
@@ -597,6 +620,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             } else {
                 indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
                 chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+                [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
+                                                                                            [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
+                                                                                            @"channelmanagement", AnalyticsPropertySender, nil]];
             }
         } else {
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
@@ -938,13 +964,19 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                      }
                      completion:^(BOOL finished) {
                      }];
+    
+    BOOL social = NO;
+    NSString *channelName;
     NMChannel * chn;
     if (selectedIndex == 0) {
         if (tableIndexPath.section == 0) {
             // Social channels
+            social = YES;
+            
             if (tableIndexPath.row == 0) {
                 if ( NM_USER_TWITTER_CHANNEL_ID ) {
                     chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+                    channelName = @"Twitter";
                 } else {
                     [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
                     return;
@@ -952,6 +984,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             } else {
                 if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
                     chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+                    channelName = @"Facebook";
                 } else {
                     [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
                     return;
@@ -961,12 +994,25 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row 
                                                                inSection:0];
             chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
+            channelName = chn.title;
         }
     } else {
         chn = [selectedChannelArray objectAtIndex:[channelsTableView indexPathForCell:cell].row];
+        channelName = chn.title;        
+    }
+
+    BOOL subscribed = [chn.nm_subscribed boolValue];
+    if (subscribed) {
+        [[Analytics sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
+                                                                                    @"channelmanagement_toggle", AnalyticsPropertySender, 
+                                                                                    [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];    
+    } else {
+        [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
+                                                                                  @"channelmanagement_toggle", AnalyticsPropertySender, 
+                                                                                  [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }
     
-    [nowboxTaskController issueSubscribe:![chn.nm_subscribed boolValue] channel:chn];
+    [nowboxTaskController issueSubscribe:!subscribed channel:chn];
     
 }
 

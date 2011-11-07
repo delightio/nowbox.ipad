@@ -119,6 +119,27 @@
 	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+    
+    [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
+                                                      [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
+    switch (loginType) {
+        case LoginTwitterType:
+            [[Analytics sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
+            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
+                                                                                      @"channelmanagement_login", AnalyticsPropertySender, 
+                                                                                      [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
+
+            break;
+        case LoginFacebookType:
+            [[Analytics sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
+            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
+                                                                                      @"channelmanagement_login", AnalyticsPropertySender, 
+                                                                                      [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
+
+            break;
+        default:
+            break;
+    }
 	// channel refresh command is issued in TaskQueueScheduler
 	
 	// listen to channel refresh notification 
@@ -137,6 +158,17 @@
 	progressLabel.text = @"Verification Process Failed";
 	[loadingIndicator stopAnimating];
 	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0f];
+    
+    switch (loginType) {
+        case LoginTwitterType:
+            [[Analytics sharedAPI] track:AnalyticsEventTwitterLoginFailed];
+            break;
+        case LoginFacebookType:
+            [[Analytics sharedAPI] track:AnalyticsEventFacebookLoginFailed];
+            break;
+        default:
+            break;
+    }
 }
 
 #pragma mark Webview delegate methods
