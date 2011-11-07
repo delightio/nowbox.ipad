@@ -17,8 +17,6 @@
 #define AnalyticsEventPlayVideo @"Play Video"
 #define AnalyticsEventAppEnterForeground @"App Enter Foreground"
 #define AnalyticsEventAppEnterBackground @"App Enter Background"
-#define AnalyticsEventAppWillResignActive @"App Will Resign Active"
-#define AnalyticsEventAppDidBecomeActive @"App Did Become Active"
 #define AnalyticsEventPresentTooltip @"Present Tooltip"
 
 // Channel panel events
