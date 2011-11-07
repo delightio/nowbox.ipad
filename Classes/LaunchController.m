@@ -125,9 +125,9 @@
 		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	}
     
-    [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];    
+    [[Analytics sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+    [[Analytics sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[Analytics sharedAPI] track:AnalyticsEventLogin];    
 }
 
 #pragma mark Notification

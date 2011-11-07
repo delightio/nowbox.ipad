@@ -151,7 +151,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Enable analytics and crash reporting
+#ifdef MIXPANEL
     [self setupMixpanel];
+#endif
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
                                                userDictionary:nil 
                                               sendImmediately:NO];
@@ -202,7 +204,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 	 */
     NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppWillResignActive properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
+    [[Analytics sharedAPI] track:AnalyticsEventAppWillResignActive properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
                                                                                  [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
 }
 
@@ -225,7 +227,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
     NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
+    [[Analytics sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
                                                                                 [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
 }
 
@@ -261,7 +263,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
+    [[Analytics sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
                                                                                 [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
 }
 
@@ -271,7 +273,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 	 */
     NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppDidBecomeActive properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
+    [[Analytics sharedAPI] track:AnalyticsEventAppDidBecomeActive properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
                                                                                 [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
 }
 

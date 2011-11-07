@@ -71,4 +71,8 @@
 #define AnalyticsPropertyTimeOfDay @"Time Of Day"
 #define AnalyticsPropertyDayOfWeek @"Day Of Week"
 
+@interface Analytics : NSObject
 
++ (id)sharedAPI;
+
+@end

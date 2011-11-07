@@ -352,7 +352,7 @@ static ToolTipController *toolTipController = nil;
         [monitoredToolTips removeObject:tooltip];                        
     }
     
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, @"tooltip_name", nil]];
+    [[Analytics sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, @"tooltip_name", nil]];
 }
 
 - (void)dismissTooltip

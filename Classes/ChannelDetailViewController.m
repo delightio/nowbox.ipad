@@ -142,7 +142,7 @@
 
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                    || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
+    [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
                                                                                 [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 
 }
@@ -250,7 +250,7 @@
     
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                    || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+    [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
                                                                               @"channeldetails_subscribe", AnalyticsPropertySender, 
                                                                               [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 }
@@ -270,7 +270,7 @@
     
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                    || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+    [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
                                                                               @"channeldetails_watchnow", AnalyticsPropertySender, 
                                                                               [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 }
@@ -288,7 +288,7 @@
     
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                 || channel == taskQueueController.dataController.userTwitterStreamChannel); 
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+    [[Analytics sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
                                                                                 @"channeldetails_unsubscribe", AnalyticsPropertySender, 
                                                                                 [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 
