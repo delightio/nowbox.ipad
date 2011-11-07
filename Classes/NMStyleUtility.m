@@ -19,7 +19,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize videoTitleFont;
 @synthesize videoDetailFont;
 @synthesize videoShadowImage;
-@synthesize videoHighlightedBackgroundImage, videoNormalBackgroundImage, videoDimmedBackgroundImage;
+//@synthesize videoHighlightedBackgroundImage, videoNormalBackgroundImage, videoDimmedBackgroundImage;
 @synthesize videoTitleFontColor;
 @synthesize videoTitleHighlightedFontColor;
 @synthesize videoTitlePlayedFontColor;
@@ -96,9 +96,9 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
 	videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
 	videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
-    videoHighlightedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-highlight"] retain];
-    videoNormalBackgroundImage = [[UIImage imageNamed:@"channel-video-background-normal"] retain];
-    videoDimmedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-dimmed"] retain];
+//    videoHighlightedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-highlight"] retain];
+//    videoNormalBackgroundImage = [[UIImage imageNamed:@"channel-video-background-normal"] retain];
+//    videoDimmedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-dimmed"] retain];
 	videoDetailFontColor = [[UIColor colorWithRed:90.0f / 255.0f green:90.0f / 255.0f blue:90.0f / 255.0f alpha:1.0f] retain];
 	videoDetailHighlightedFontColor = [[UIColor colorWithRed:162.0f / 255.0f green:162.0f / 255.0f blue:162.0f / 255.0f alpha:1.0f] retain];
 	videoDetailPlayedFontColor = [[UIColor colorWithRed:159 / 255.0f green:159 / 255.0f blue:159 / 255.0f alpha:1.0f] retain];
@@ -305,34 +305,6 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	return watchLaterActiveImage;
 }
 
-- (UIImage *)channelSubscribedIcon {
-	if ( channelSubscribedIcon == nil ) {
-		channelSubscribedIcon = [[UIImage imageNamed:@"find-channel-subscribed-icon"] retain];
-	}
-	return channelSubscribedIcon;
-}
-
-- (UIImage *)channelSubscribedBackgroundImage {
-	if ( channelSubscribedBackgroundImage == nil ) {
-		channelSubscribedBackgroundImage = [[UIImage imageNamed:@"find-channel-list-subscribed"] retain];
-	}
-	return channelSubscribedBackgroundImage;
-}
-
-- (UIImage *)channelNotSubscribedIcon {
-	if ( channelNotSubscribedIcon == nil ) {
-		channelNotSubscribedIcon = [[UIImage imageNamed:@"find-channel-not-subscribed-icon"] retain];
-	}
-	return channelNotSubscribedIcon;
-}
-
-- (UIImage *)channelNotSubscribedBackgroundImage {
-	if ( channelNotSubscribedBackgroundImage == nil ) {
-		channelNotSubscribedBackgroundImage = [[UIImage imageNamed:@"find-channel-list-normal"] retain];
-	}
-	return channelNotSubscribedBackgroundImage;
-}
-
 - (void)dealloc {
 	[channelContainerBackgroundNormalImage release];
 	[channelContainerBackgroundHighlightImage release];
@@ -342,9 +314,9 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[videoDetailFont release];
 	[videoTitleFont release];
 	[videoShadowImage release];
-    [videoHighlightedBackgroundImage release];
-    [videoNormalBackgroundImage release];
-    [videoDimmedBackgroundImage release];
+//    [videoHighlightedBackgroundImage release];
+//    [videoNormalBackgroundImage release];
+//    [videoDimmedBackgroundImage release];
 	[videoTitleFontColor release];
 	[videoTitleHighlightedFontColor release];
 	[videoDetailFontColor release];
@@ -390,10 +362,6 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	
 	[favoriteImage release], [favoriteActiveImage release];
 	[watchLaterImage release], [watchLaterActiveImage release];
-	
-	[channelSubscribedIcon release], [channelSubscribedBackgroundImage release];
-	[channelNotSubscribedIcon release], [channelNotSubscribedBackgroundImage release];
-
 	
 	[blackColor release];
 	[super dealloc];

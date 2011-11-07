@@ -20,7 +20,7 @@
     UIColor * videoDetailPlayedFontColor;
 	UIColor * clearColor, * channelPanelFontColor;
 	UIImage * videoShadowImage;
-	UIImage * videoHighlightedBackgroundImage, * videoNormalBackgroundImage, * videoDimmedBackgroundImage;
+//	UIImage * videoHighlightedBackgroundImage, * videoNormalBackgroundImage, * videoDimmedBackgroundImage;
     UIImage * videoStatusBadImage, * videoStatusHotImage, * videoStatusFavImage, * videoStatusQueuedImage;
     UIImage * videoNewSessionIndicatorImage;
 	// channel panel
@@ -58,10 +58,6 @@
 	UIImage * favoriteImage, * favoriteActiveImage;
 	UIImage * watchLaterImage, * watchLaterActiveImage;
 	
-	// channel management view
-	UIImage * channelSubscribedIcon, * channelSubscribedBackgroundImage;
-	UIImage * channelNotSubscribedIcon, * channelNotSubscribedBackgroundImage;
-	
 	UIColor * blackColor;
 }
 
@@ -71,9 +67,9 @@
 @property (nonatomic, readonly) UIFont * videoTitleFont;
 @property (nonatomic, readonly) UIFont * videoDetailFont;
 @property (nonatomic, readonly) UIImage * videoShadowImage;
-@property (nonatomic, readonly) UIImage * videoHighlightedBackgroundImage;
-@property (nonatomic, readonly) UIImage * videoNormalBackgroundImage;
-@property (nonatomic, readonly) UIImage * videoDimmedBackgroundImage;
+//@property (nonatomic, readonly) UIImage * videoHighlightedBackgroundImage;
+//@property (nonatomic, readonly) UIImage * videoNormalBackgroundImage;
+//@property (nonatomic, readonly) UIImage * videoDimmedBackgroundImage;
 @property (nonatomic, readonly) UIColor * videoTitleFontColor;
 @property (nonatomic, readonly) UIColor * videoTitleHighlightedFontColor;
 @property (nonatomic, readonly) UIColor * videoTitlePlayedFontColor;
@@ -132,11 +128,6 @@
 @property (nonatomic, readonly) UIImage * favoriteActiveImage;
 @property (nonatomic, readonly) UIImage * watchLaterImage;
 @property (nonatomic, readonly) UIImage * watchLaterActiveImage;
-
-@property (nonatomic, readonly) UIImage * channelSubscribedIcon;
-@property (nonatomic, readonly) UIImage * channelSubscribedBackgroundImage;
-@property (nonatomic, readonly) UIImage * channelNotSubscribedIcon;
-@property (nonatomic, readonly) UIImage * channelNotSubscribedBackgroundImage;
 
 @property (nonatomic, readonly) UIColor * blackColor;
 
