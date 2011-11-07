@@ -52,6 +52,7 @@
 - (void)issueCreateUser;
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
+- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL;
 - (void)issueEditUserSettings;
 // Token
 - (void)issueRenewToken;

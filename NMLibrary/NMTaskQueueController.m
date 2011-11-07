@@ -24,6 +24,7 @@ NSInteger NM_USER_WATCH_LATER_CHANNEL_ID	= 0;
 NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
+BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -240,6 +241,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL {
 	NMCreateUserTask * task = [[NMCreateUserTask alloc] initFacebookVerificationWithURL:aURL];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] initYoutubeVerificationWithURL:aURL];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

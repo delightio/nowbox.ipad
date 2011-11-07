@@ -134,6 +134,7 @@
 		A97F5292144FA22E00D1B2F6 /* launch-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = A97F5290144FA22E00D1B2F6 /* launch-logo.png */; };
 		A97F5293144FA22E00D1B2F6 /* launch-status-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A97F5291144FA22E00D1B2F6 /* launch-status-background.png */; };
 		A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A98555DF141758CD00079453 /* KeychainItemWrapper.m */; };
+		A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A98866FA14686B67002CFF0E /* YoutubeLoading.html */; };
 		A98C241513D38C040061A594 /* button-like-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241113D38C030061A594 /* button-like-active.png */; };
 		A98C241613D38C040061A594 /* button-like.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241213D38C030061A594 /* button-like.png */; };
 		A98C241713D38C040061A594 /* button-watch-later-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241313D38C030061A594 /* button-watch-later-active.png */; };
@@ -413,6 +414,7 @@
 		A97F5291144FA22E00D1B2F6 /* launch-status-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-status-background.png"; sourceTree = "<group>"; };
 		A98555DE141758CD00079453 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		A98555DF141758CD00079453 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
+		A98866FA14686B67002CFF0E /* YoutubeLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = YoutubeLoading.html; sourceTree = "<group>"; };
 		A989C591144D197B00CBC94D /* NMPollChannelTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPollChannelTask.h; sourceTree = "<group>"; };
 		A989C592144D197B00CBC94D /* NMPollChannelTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPollChannelTask.m; sourceTree = "<group>"; };
 		A98C241113D38C030061A594 /* button-like-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-like-active.png"; sourceTree = "<group>"; };
@@ -535,6 +537,7 @@
 				A90F2200143F63E1006B298D /* loading.gif */,
 				A90F21FE143F63CA006B298D /* TwitterLoading.html */,
 				A90F2204143F6CAF006B298D /* FacebookLoading.html */,
+				A98866FA14686B67002CFF0E /* YoutubeLoading.html */,
 				A90F2202143F643F006B298D /* style.css */,
 			);
 			path = HTML;
@@ -1116,6 +1119,7 @@
 				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
+				A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
