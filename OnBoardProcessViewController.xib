@@ -41,7 +41,6 @@
 				<string key="NSFrame">{{0, 20}, {1024, 748}}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:212</string>
 				<object class="NSColor" key="IBUIBackgroundColor" id="1065437238">
 					<int key="NSColorSpace">1</int>
@@ -262,7 +261,6 @@
 						<string key="NSFrame">{{892, 674}, {112, 54}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:241</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -325,7 +323,6 @@
 						<string key="NSFrame">{{886, 674}, {118, 54}}</string>
 						<reference key="NSSuperview" ref="93123308"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:241</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -409,7 +406,6 @@
 						<string key="NSFrame">{{892, 674}, {112, 54}}</string>
 						<reference key="NSSuperview" ref="486635400"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:241</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -581,6 +577,15 @@
 						<reference key="destination" ref="197996679"/>
 					</object>
 					<int key="connectionID">70</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">loginToYouTube:</string>
+						<reference key="source" ref="886491473"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">75</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -846,7 +851,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">73</int>
+			<int key="maxID">75</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -882,6 +887,7 @@
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="addInterests:">id</string>
+						<string key="loginToYouTube:">id</string>
 						<string key="pageControlValueChanged:">id</string>
 						<string key="switchToChannelsView:">id</string>
 						<string key="switchToInfoView:">id</string>
@@ -889,6 +895,10 @@
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="addInterests:">
 							<string key="name">addInterests:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="loginToYouTube:">
+							<string key="name">loginToYouTube:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="pageControlValueChanged:">

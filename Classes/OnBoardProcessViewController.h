@@ -38,6 +38,7 @@
 @property (nonatomic, retain) IBOutlet GridScrollView *channelsScrollView;
 @property (nonatomic, retain) IBOutlet UIPageControl *channelsPageControl;
 
+- (IBAction)loginToYouTube:(id)sender;
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
 - (IBAction)addInterests:(id)sender;

@@ -9,6 +9,7 @@
 #import "OnBoardProcessViewController.h"
 #import "OnBoardProcessChannelView.h"
 #import "CategorySelectionViewController.h"
+#import "SocialLoginViewController.h"
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
 #import "NMDataType.h"
@@ -162,6 +163,27 @@
 
 #pragma mark - Actions
 
+- (IBAction)loginToYouTube:(id)sender
+{
+    SocialLoginViewController *socialController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+    socialController.loginType = LoginTwitterType;
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:socialController];
+	navController.navigationBar.barStyle = UIBarStyleBlack;
+    socialController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissYouTubeLogin:)] autorelease];
+
+    [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+    [self presentModalViewController:navController animated:YES];
+    
+    [socialController release];
+    [navController release];    
+}
+
+- (IBAction)dismissYouTubeLogin:(id)sender
+{
+    [self dismissModalViewControllerAnimated:YES];
+}
+
 - (IBAction)switchToInfoView:(id)sender
 {
     [self transitionFromView:loginView toView:infoView];
@@ -233,7 +255,7 @@
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
 {
     self.featuredChannels = [NSSet setWithArray:[[aNotification userInfo] objectForKey:@"channels"]];
-
+    
     if (currentView != channelsView) {
         subscribingChannels = [[NSMutableSet alloc] initWithSet:featuredChannels];
         for (NMChannel *channel in subscribingChannels) {
@@ -260,7 +282,7 @@
     
     // Is the channel part of a category the user selected?
     NSArray *selectedCategories = [featuredCategories objectsAtIndexes:categoryGrid.selectedButtonIndexes];    
-    for (NMCategory *category in selectedCategories) {
+    for (NMCategory *category in selectedCategories) {        
         if ([channel.categories containsObject:category]) {
             return [NSString stringWithFormat:@"from %@", category.title];
         }
