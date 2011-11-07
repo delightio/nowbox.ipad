@@ -17,6 +17,7 @@ extern NSString * const NM_USER_WATCH_LATER_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_HISTORY_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY;
+extern NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY;
 extern NSString * const NM_VIDEO_QUALITY_KEY;
 //extern NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY;
 extern NSString * const NM_SESSION_ID_KEY;

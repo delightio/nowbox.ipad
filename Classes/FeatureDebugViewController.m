@@ -158,4 +158,14 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetFeaturedChannels:) name:NMDidGetFeaturedChannelsForCategories object:nil];
 }
 
+- (IBAction)renewToken:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	[tqc issueRenewToken];
+}
+
+- (IBAction)checkTokenExpiryAndRenew:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	[tqc issueTokenTest];
+}
+
 @end

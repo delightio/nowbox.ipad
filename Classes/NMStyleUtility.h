@@ -20,7 +20,7 @@
     UIColor * videoDetailPlayedFontColor;
 	UIColor * clearColor, * channelPanelFontColor;
 	UIImage * videoShadowImage;
-	UIImage * videoHighlightedBackgroundImage, * videoNormalBackgroundImage, * videoDimmedBackgroundImage;
+//	UIImage * videoHighlightedBackgroundImage, * videoNormalBackgroundImage, * videoDimmedBackgroundImage;
     UIImage * videoStatusBadImage, * videoStatusHotImage, * videoStatusFavImage, * videoStatusQueuedImage;
     UIImage * videoNewSessionIndicatorImage;
 	// channel panel
@@ -67,9 +67,9 @@
 @property (nonatomic, readonly) UIFont * videoTitleFont;
 @property (nonatomic, readonly) UIFont * videoDetailFont;
 @property (nonatomic, readonly) UIImage * videoShadowImage;
-@property (nonatomic, readonly) UIImage * videoHighlightedBackgroundImage;
-@property (nonatomic, readonly) UIImage * videoNormalBackgroundImage;
-@property (nonatomic, readonly) UIImage * videoDimmedBackgroundImage;
+//@property (nonatomic, readonly) UIImage * videoHighlightedBackgroundImage;
+//@property (nonatomic, readonly) UIImage * videoNormalBackgroundImage;
+//@property (nonatomic, readonly) UIImage * videoDimmedBackgroundImage;
 @property (nonatomic, readonly) UIColor * videoTitleFontColor;
 @property (nonatomic, readonly) UIColor * videoTitleHighlightedFontColor;
 @property (nonatomic, readonly) UIColor * videoTitlePlayedFontColor;

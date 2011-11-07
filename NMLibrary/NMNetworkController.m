@@ -30,6 +30,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 @synthesize dataController;
 @synthesize controlThread;
 @synthesize errorWindowStartDate;
+@synthesize tokenRenewMode;
 
 - (id)init {
 	self = [super init];
@@ -134,6 +135,15 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[pendingTaskBufferLock unlock];
 	[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
 }
+
+- (void)addNewConnectionForImmediateTask:(NMTask *)aTask {
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer addObject:aTask];
+	aTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
+	[pendingTaskBufferLock unlock];
+	[self performSelector:@selector(createImmediateConnection:) onThread:controlThread withObject:aTask waitUntilDone:NO];
+}
+
 /*
  - (void)configureUploadURLRequest:(NSMutableURLRequest *)request forTask:(NMTask *)aTask {
  NSError *error = nil;
@@ -164,6 +174,8 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 }
 
 - (BOOL)schedulePendingTasks {
+	// if in token renew mode, do not schedule any task
+	if ( tokenRenewMode ) return NO;
 	// for-loop that iterates through all elements. Return YES if we exit running out of network connection resources
 	NMTask *theTask;
 	NSMutableURLRequest *request;
@@ -225,6 +237,21 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	if ( didRunOutResource ) {
 		[self enableConnectionCreationCheck];
 	}
+}
+
+- (void)createImmediateConnection:(NMTask *)theTask {
+	[commandIndexPool addIndex:[theTask commandIndex]];
+	
+	theTask.state = NMTaskExecutionStateConnectionActive;
+	NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:[theTask URLRequest] delegate:self startImmediately:YES];
+	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
+	[connectionPool setObject:conn forKey:key];
+	[taskPool setObject:theTask forKey:key];
+	[conn release];
+	
+	// create notification object
+	NSString * notStr = [theTask willLoadNotificationName];
+	if ( notStr ) [self postNotificationOnMainThread:notStr object:self userInfo:nil];
 }
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task {
@@ -427,7 +454,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
           [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 #endif
 	// prompt user for any error
-	if ( [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
+	if ( !tokenRenewMode && [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
 		// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
 		[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
 		self.errorWindowStartDate = [NSDate date];
@@ -469,30 +496,32 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	
 	theTask.state = NMTaskExecutionStateConnectionCompleted;
 	
-//	if ( theTask.command == NMCommandGetChannelThumbnail ) {
-//		@synchronized(activeChannelThumbnailDownloadSet) {
-//			[activeChannelThumbnailDownloadSet removeObject:((NMImageDownloadTask *)theTask).imageURLString];
-//		}
-//	}
-	
-	// pass the completed task to data controller for processing
-//	if ( theTask.command > NMCommandImageDownloadCommandBoundary ) {
-//		[dataController storeImageForTask:(NMImageDownloadTask *)theTask];
-//	} else {
 	NSInteger scode = theTask.httpStatusCode;
 	if ( scode >= 400 && !theTask.executeSaveActionOnError ) {
-		// fire error notification right here
-		NSDictionary * errorInfo = [theTask failUserInfo];
-		NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:(errorInfo == nil ? [NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil] : errorInfo)];
-		[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
-		NMCommand cmd = theTask.command;
-		if ( scode < 500 && cmd != NMCommandSendEvent && cmd != NMCommandGetYouTubeDirectURL ) {
-			// this is authorization related error. post a pop up box to user
-			if ( [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
-				// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
-				NSError * error = [NSError errorWithDomain:NMServiceErrorDomain code:scode userInfo:nil];
-				[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
-				self.errorWindowStartDate = [NSDate date];
+		if ( scode == 401 ) {
+			if ( !tokenRenewMode ) {
+				// enable the mode 
+				[[NMTaskQueueController sharedTaskQueueController] setTokenRenewMode:YES];
+			}
+			// ignore all error, recover the tasks
+			[taskPool removeObjectForKey:key];
+			[commandIndexPool removeIndex:[theTask commandIndex]];
+			theTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
+			return;
+		} else {
+			// fire error notification right here
+			NSDictionary * errorInfo = [theTask failUserInfo];
+			NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:(errorInfo == nil ? [NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil] : errorInfo)];
+			[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
+			NMCommand cmd = theTask.command;
+			if ( scode < 500 && cmd != NMCommandSendEvent && cmd != NMCommandGetYouTubeDirectURL ) {
+				// this is authorization related error. post a pop up box to user
+				if ( [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
+					// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
+					NSError * error = [NSError errorWithDomain:NMServiceErrorDomain code:scode userInfo:nil];
+					[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
+					self.errorWindowStartDate = [NSDate date];
+				}
 			}
 		}
 	} else {

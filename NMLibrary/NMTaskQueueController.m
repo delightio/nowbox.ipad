@@ -17,11 +17,14 @@
 #import "Reachability.h"
 
 NSInteger NM_USER_ACCOUNT_ID				= 0;
+NSDate * NM_USER_TOKEN_EXPIRY_DATE			= nil;
+NSString * NM_USER_TOKEN					= nil;
 NSInteger NM_USER_FAVORITES_CHANNEL_ID		= 0;
 NSInteger NM_USER_WATCH_LATER_CHANNEL_ID	= 0;
 NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
+BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -39,7 +42,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize managedObjectContext;
 @synthesize networkController;
 @synthesize dataController;
-@synthesize pollingTimer;
+@synthesize pollingTimer, tokenRenewTimer;
 @synthesize unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
@@ -65,6 +68,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
 	[nc addObserver:self selector:@selector(handleFailEditUserSettingsNotification:) name:NMDidFailEditUserSettingsNotification object:nil];
+	[nc addObserver:self selector:@selector(handleTokenNotification:) name:NMDidRequestTokenNotification object:nil];
+	[nc addObserver:self selector:@selector(handleTokenNotification:) name:NMDidFailRequestTokenNotification object:nil];
+	
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
@@ -235,6 +241,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL {
 	NMCreateUserTask * task = [[NMCreateUserTask alloc] initFacebookVerificationWithURL:aURL];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] initYoutubeVerificationWithURL:aURL];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -485,6 +497,45 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NMCheckUpdateTask * task = [[NMCheckUpdateTask alloc] initWithDeviceType:devType];
 	[networkController addNewConnectionForTask:task];
 	[task release];
+}
+
+#pragma mark Token
+- (void)issueRenewToken {
+	NMTokenTask * task = [[NMTokenTask alloc] initGetToken];
+	[networkController addNewConnectionForImmediateTask:task];
+	[task release];
+}
+
+- (void)issueTokenTest {
+	NMTokenTask * task = [[NMTokenTask alloc] initTestToken];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)checkAndRenewToken {
+	NSTimeInterval t = [NM_USER_TOKEN_EXPIRY_DATE timeIntervalSinceNow];
+	if ( t < 0 ) {
+		// token has already expired.
+		[self setTokenRenewMode:YES];
+	} else if ( t < 300.0f ) {
+		// if less than 5 min to expire, renew
+		[self issueRenewToken];
+	}
+}
+
+- (void)setTokenRenewMode:(BOOL)on {
+	networkController.tokenRenewMode = on;
+	[self issueRenewToken];
+}
+
+- (void)handleTokenNotification:(NSNotification *)aNotification {
+	NSString * notName = [aNotification name];
+	if ( [notName isEqualToString:NMDidRequestTokenNotification] ) {
+		// renewed token successfully
+		[self setTokenRenewMode:NO];
+	} else if ( [notName isEqualToString:NMDidFailRequestTokenNotification] ) {
+		[self issueRenewToken];
+	}
 }
 
 #pragma mark Channel Polling

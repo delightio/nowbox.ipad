@@ -40,6 +40,9 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	} else {
 		urlStr = [NSString stringWithFormat:@"http://%@/categories?type=featured", NM_BASE_URL];
 	}
+#ifdef DEBUG_PLAYBACK_NETWORK_CALL
+	NSLog(@"Get categories: %@", urlStr);
+#endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	return request;
 }
