@@ -15,7 +15,7 @@
 
 @interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate, CategorySelectionViewControllerDelegate> {
     BOOL userCreated;
-    NSMutableSet *subscribingChannels;    
+    NSMutableSet *subscribingChannels;
     BOOL scrollingFromPageControl;
     
     UIView *currentView;    
@@ -23,6 +23,7 @@
 
 @property (nonatomic, retain) NSArray *featuredCategories;
 @property (nonatomic, retain) NSSet *featuredChannels;
+@property (nonatomic, retain) NSArray *subscribedChannels;
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
 // Step 1: YouTube login / category selection

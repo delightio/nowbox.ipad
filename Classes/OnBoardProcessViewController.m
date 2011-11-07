@@ -33,6 +33,7 @@
 @synthesize channelsPageControl;
 @synthesize featuredCategories;
 @synthesize featuredChannels;
+@synthesize subscribedChannels;
 @synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -60,6 +61,7 @@
 
     [featuredChannels release];
     [subscribingChannels release];
+    [subscribedChannels release];
     [loginView release];
     [categoryGrid release];
     [infoView release];
@@ -293,6 +295,10 @@
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
 {
+    // Filter out NOWBOX channels (like Watch Later / Favorites)
+    NSArray *allSubscribedChannels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
+    
     [CATransaction begin];
 	CATransition *animation = [CATransition animation];
 	animation.type = kCATransitionFade;
@@ -338,14 +344,12 @@
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
 {
-    NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
-    return [channels count];
+    return [subscribedChannels count];
 }
 
 - (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
 {
-    NSArray *channels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
-    NMChannel *channel = [channels objectAtIndex:index];
+    NMChannel *channel = [subscribedChannels objectAtIndex:index];
     
     OnBoardProcessChannelView *channelView = (OnBoardProcessChannelView *) [gridScrollView dequeueReusableSubview];
     if (!channelView) {
