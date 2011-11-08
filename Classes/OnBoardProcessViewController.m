@@ -168,7 +168,7 @@
 - (IBAction)loginToYouTube:(id)sender
 {
     SocialLoginViewController *socialController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-    socialController.loginType = LoginTwitterType;
+    socialController.loginType = LoginYoutubeType;
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:socialController];
 	navController.navigationBar.barStyle = UIBarStyleBlack;
@@ -363,7 +363,7 @@
     return channelView;
 }
 
-#pragma mark CategorySelectionViewControllerDelegate;
+#pragma mark - CategorySelectionViewControllerDelegate;
 
 - (void)categorySelectionViewControllerWillDismiss:(CategorySelectionViewController *)controller
 {
