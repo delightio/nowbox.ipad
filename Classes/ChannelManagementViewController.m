@@ -620,7 +620,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 																								  @"channelmanagement", AnalyticsPropertySender, nil]];
 					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-						socialCtrl.loginType = LoginYoutubeType;
+						socialCtrl.loginType = NMLoginYoutubeType;
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
 						[[Analytics sharedAPI] track:AnalyticsEventStartYoutubeLogin];
@@ -641,7 +641,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						} else {
 							// login twitter
 							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-							socialCtrl.loginType = LoginTwitterType;
+							socialCtrl.loginType = NMLoginTwitterType;
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							
@@ -657,7 +657,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
 							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-							socialCtrl.loginType = LoginFacebookType;
+							socialCtrl.loginType = NMLoginFacebookType;
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							

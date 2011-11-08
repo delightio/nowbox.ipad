@@ -125,6 +125,8 @@
 		A96AD056145B8F70000A8ECC /* NMUserSettingsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */; };
 		A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */; };
 		A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A989C592144D197B00CBC94D /* NMPollChannelTask.m */; };
+		A96BB8B21468AA31004B93ED /* NMPostSharingTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A96BB8B01468AA31004B93ED /* NMPostSharingTask.h */; };
+		A96BB8B31468AA31004B93ED /* NMPostSharingTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */; };
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
 		A970508513438F860022BF2C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A970503213438F860022BF2C /* Icon.png */; };
 		A970508D13438F860022BF2C /* NMVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A970503D13438F860022BF2C /* NMVideo.m */; };
@@ -385,6 +387,8 @@
 		A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMovieDetailView.m; sourceTree = "<group>"; };
 		A96AD052145B8F29000A8ECC /* NMUserSettingsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMUserSettingsTask.h; sourceTree = "<group>"; };
 		A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMUserSettingsTask.m; sourceTree = "<group>"; };
+		A96BB8B01468AA31004B93ED /* NMPostSharingTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPostSharingTask.h; sourceTree = "<group>"; };
+		A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPostSharingTask.m; sourceTree = "<group>"; };
 		A970501613438F860022BF2C /* VideoPlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackViewController.h; sourceTree = "<group>"; };
 		A970501713438F860022BF2C /* VideoPlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackViewController.m; sourceTree = "<group>"; };
 		A970503213438F860022BF2C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -913,6 +917,8 @@
 				A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */,
 				A9E9E0441465B41200EA8F81 /* NMTokenTask.h */,
 				A9E9E0451465B41200EA8F81 /* NMTokenTask.m */,
+				A96BB8B01468AA31004B93ED /* NMPostSharingTask.h */,
+				A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1000,6 +1006,7 @@
 				A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */,
 				A9E8C79E145F26BC005694D1 /* Reachability.h in Headers */,
 				A9E9E0461465B41200EA8F81 /* NMTokenTask.h in Headers */,
+				A96BB8B21468AA31004B93ED /* NMPostSharingTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1289,6 +1296,7 @@
 				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
 				A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */,
 				A9E9E0471465B41200EA8F81 /* NMTokenTask.m in Sources */,
+				A96BB8B31468AA31004B93ED /* NMPostSharingTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1425,7 +1433,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MIXPANEL,
+					DEBUG_PLAYER_NAVIGATION,
+				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",

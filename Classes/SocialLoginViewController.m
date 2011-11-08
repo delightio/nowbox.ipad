@@ -47,17 +47,17 @@
 	
 	NSString * filename = nil;
 	switch (loginType) {
-		case LoginTwitterType:
+		case NMLoginTwitterType:
 			self.title = @"Twitter";
 			filename = @"TwitterLoading";
 			break;
 			
-		case LoginFacebookType:
+		case NMLoginFacebookType:
 			self.title = @"Facebook";
 			filename = @"FacebookLoading";
 			break;
 			
-		case LoginYoutubeType:
+		case NMLoginYoutubeType:
 			self.title = @"Youtube";
 			filename = @"YoutubeLoading";
 			break;
@@ -85,15 +85,15 @@
 	[super viewDidAppear:animated];
 	NSString * urlStr = nil;
 	switch (loginType) {
-		case LoginTwitterType:
+		case NMLoginTwitterType:
 			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/twitter?user_id=%d", NM_USER_ACCOUNT_ID];
 			break;
 			
-		case LoginFacebookType:
+		case NMLoginFacebookType:
 			urlStr = @"http://api.nowbox.com/auth/facebook";
 			break;
 			
-		case LoginYoutubeType:
+		case NMLoginYoutubeType:
 			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
 			break;
 			
@@ -133,21 +133,21 @@
     [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
     switch (loginType) {
-        case LoginTwitterType:
+        case NMLoginTwitterType:
             [[Analytics sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
             [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
             break;
 
-        case LoginFacebookType:
+        case NMLoginFacebookType:
             [[Analytics sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
             [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
             break;
 			
-		case LoginYoutubeType:
+		case NMLoginYoutubeType:
             [[Analytics sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
             [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
@@ -177,13 +177,13 @@
 	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0f];
     
     switch (loginType) {
-        case LoginTwitterType:
+        case NMLoginTwitterType:
             [[Analytics sharedAPI] track:AnalyticsEventTwitterLoginFailed];
             break;
-        case LoginFacebookType:
+        case NMLoginFacebookType:
             [[Analytics sharedAPI] track:AnalyticsEventFacebookLoginFailed];
             break;
-		case LoginYoutubeType:
+		case NMLoginYoutubeType:
             [[Analytics sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
 			break;
         default:
@@ -195,7 +195,7 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSURL * theURL = [request URL];
 	switch (loginType) {
-		case LoginTwitterType:
+		case NMLoginTwitterType:
 		{
 			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
@@ -219,7 +219,7 @@
 			break;
 		}
 			
-		case LoginFacebookType:
+		case NMLoginFacebookType:
 		{
 			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
@@ -249,7 +249,7 @@
 			break;
 		}
 			
-		case LoginYoutubeType:
+		case NMLoginYoutubeType:
 		{
 			NSLog(@"Youtube URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/youtube/callback"] ) {

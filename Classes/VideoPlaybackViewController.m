@@ -1461,8 +1461,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
-	NMVideo * vdo = playbackModelController.currentVideo;
-	[nowboxTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[nowboxTaskController issueShareWithService:NMLoginTwitterType video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed message:@"test message"];
 	[self animateFavoriteButtonsToInactive];
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
