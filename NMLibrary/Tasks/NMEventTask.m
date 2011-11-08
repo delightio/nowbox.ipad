@@ -336,4 +336,23 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	return nil;
 }
 
+- (NSDictionary *)failUserInfo {
+	switch (eventType) {
+		case NMEventSubscribeChannel:
+		case NMEventUnsubscribeChannel:
+			return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
+			break;
+			
+		case NMEventEnqueue:
+			return [NSDictionary dictionaryWithObject:video forKey:@"video"];
+		case NMEventDequeue:
+			if ( ![video isDeleted] ) {
+				return [NSDictionary dictionaryWithObject:video forKey:@"video"];
+			}
+		default:
+			break;
+	}
+	return nil;
+}
+
 @end
