@@ -189,9 +189,6 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 		theChs = parsedJSONObj;
 	}
 	
-	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-	NSLog(@"%@", str);
-	[str release];
 	parsedObjectDictionary = [[NSMutableDictionary alloc] initWithCapacity:[theChs count]];
 	NSDictionary * cDict, * chnCtnDict;
 	NSMutableDictionary * pDict;

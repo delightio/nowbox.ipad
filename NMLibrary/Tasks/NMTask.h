@@ -23,6 +23,7 @@
 	NSMutableData * buffer;
 	NSMutableArray * parsedObjects;
 	NMCommand command;
+	NSUInteger sequenceLog;
 	BOOL encountersErrorDuringProcessing;
 	NSInteger httpStatusCode;
 	NSNumber * targetID;
@@ -40,6 +41,7 @@
 @property (nonatomic) NSInteger httpStatusCode;
 @property (assign) NMTaskExecutionState state;
 @property (nonatomic, readonly) NMCommand command;
+@property (nonatomic, assign) NSUInteger sequenceLog;
 @property (nonatomic, readonly) NSMutableData * buffer;
 @property (nonatomic, retain) NSNumber * targetID;
 

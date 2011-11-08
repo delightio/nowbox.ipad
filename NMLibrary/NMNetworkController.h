@@ -36,6 +36,8 @@
 	
 	NSDate * errorWindowStartDate;
 	BOOL tokenRenewMode;
+	NSUInteger taskLogMark;
+	NSUInteger taskLogCount;
 	
 	// channel thumbnail_uri cache
 //	NSMutableSet * activeChannelThumbnailDownloadSet;

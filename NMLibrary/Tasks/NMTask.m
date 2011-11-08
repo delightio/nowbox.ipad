@@ -14,6 +14,7 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 @implementation NMTask
 
 @synthesize state, command, buffer;
+@synthesize sequenceLog;
 @synthesize encountersErrorDuringProcessing;
 @synthesize executeSaveActionOnError;
 @synthesize httpStatusCode;
