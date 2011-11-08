@@ -172,6 +172,7 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 	NSLog(@"Get Channels: %@", urlStr);
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:t];
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:@"X-NB-AuthToken"];
 	return request;
 }
 
@@ -188,6 +189,9 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 		theChs = parsedJSONObj;
 	}
 	
+	NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+	NSLog(@"%@", str);
+	[str release];
 	parsedObjectDictionary = [[NSMutableDictionary alloc] initWithCapacity:[theChs count]];
 	NSDictionary * cDict, * chnCtnDict;
 	NSMutableDictionary * pDict;

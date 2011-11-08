@@ -373,6 +373,14 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[[NSNotificationCenter defaultCenter] postNotificationName:NMShowErrorAlertNotification object:self userInfo:[NSDictionary dictionaryWithObject:error forKey:@"error"]];
 }
 
+- (void)setTokenRenewMode:(BOOL)abool {
+	tokenRenewMode = abool;
+	if ( !tokenRenewMode ) {
+		// start running tasks again
+		[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
+	}
+}
+
 #pragma mark NSURLConnection delegate methods
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
 	return nil;

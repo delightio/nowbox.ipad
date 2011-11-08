@@ -34,6 +34,7 @@ NSString * const NMDidFailEditUserSettingsNotification = @"NMDidFailEditUserSett
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users/%d/settings?settings[post_to_twitter]=%@&settings[post_to_facebook]=%@", NM_BASE_URL, NM_USER_ACCOUNT_ID, [[settingsDictionary objectForKey:@"post_to_twitter"] boolValue] ? @"true" : @"false", [[settingsDictionary objectForKey:@"post_to_facebook"] boolValue] ? @"true" : @"false"];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"PUT"];
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:@"X-NB-AuthToken"];
 	
 	return request;
 }

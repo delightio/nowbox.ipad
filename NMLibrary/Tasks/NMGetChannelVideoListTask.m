@@ -126,6 +126,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSLog(@"Get Channel Video List: %@ %@", urlStr, channelName);
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:@"X-NB-AuthToken"];
 	
 	return request;
 }

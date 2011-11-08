@@ -77,6 +77,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
     [nc addObserver: self selector: @selector(reachabilityChanged:) name:kReachabilityChangedNotification object: nil];
+	
+	NM_USER_TOKEN = [[NSString stringWithString:@"no_token"] retain];
 
 	return self;
 }
@@ -524,7 +526,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)setTokenRenewMode:(BOOL)on {
 	networkController.tokenRenewMode = on;
-	[self issueRenewToken];
+	if ( on ) {
+		[self issueRenewToken];
+	}
 }
 
 - (void)handleTokenNotification:(NSNotification *)aNotification {

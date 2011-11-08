@@ -9,7 +9,9 @@
 #import "NMDataType.h"
 #import "JSONKit.h"
 
-#define NM_BASE_URL					@"api.nowbox.com/1"
+//#define NM_BASE_URL					@"api.nowbox.com/1"
+#define NM_BASE_URL						@"api.staging.nowbox.com/1"
+#define NM_BASE_URL_TOKEN				@"api.staging.nowbox.com"
 
 @class NMDataController;
 

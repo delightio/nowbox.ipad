@@ -33,7 +33,7 @@ NSString * const NMDidFailRequestTokenNotification = @"NMDidFailRequestTokenNoti
 	NSMutableURLRequest * request = nil;
 	switch (command) {
 		case NMCommandGetToken:
-			urlStr = [NSString stringWithFormat:@"https://api.nowbox.com/auth/request_token?secret=%@&user_id=%d", secret, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"https://%@/auth/request_token?secret=%@&user_id=%d", NM_BASE_URL_TOKEN, secret, NM_USER_ACCOUNT_ID];
 			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 			[request setHTTPMethod:@"POST"];
 			break;
