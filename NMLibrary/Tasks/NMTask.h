@@ -10,8 +10,13 @@
 #import "JSONKit.h"
 
 //#define NM_BASE_URL					@"api.nowbox.com/1"
+#ifdef DEBUG_USE_STAGING_SERVER
 #define NM_BASE_URL						@"api.staging.nowbox.com/1"
 #define NM_BASE_URL_TOKEN				@"api.staging.nowbox.com"
+#else
+#define NM_BASE_URL						@"api.nowbox.com/1"
+#define NM_BASE_URL_TOKEN				@"api.nowbox.com"
+#endif
 
 @class NMDataController;
 
