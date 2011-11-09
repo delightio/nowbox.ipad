@@ -17,8 +17,9 @@
 #import "NMCachedImageView.h"
 
 #define MEMORY_CACHE_CAPACITY	10
-#define CHANNEL_FILE_CACHE_SIZE	100
-#define AUTHOR_FILE_CACHE_SIZE	100
+#define CHANNEL_FILE_CACHE_SIZE	50
+#define AUTHOR_FILE_CACHE_SIZE	50
+#define VIDEO_THUMBNAIL_CACHE_SIZE	50
 
 static NMCacheController * _sharedCacheController = nil;
 static NSString * const JPIndexPathDictionaryKey = @"idxpath";
@@ -567,6 +568,8 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 - (void)cleanUpCache {
 	[self cleanUpDirectoryAtPath:channelThumbnailCacheDir withLimit:CHANNEL_FILE_CACHE_SIZE];
+	[self cleanUpDirectoryAtPath:videoThumbnailCacheDir withLimit:VIDEO_THUMBNAIL_CACHE_SIZE];
+	[self cleanUpDirectoryAtPath:authorThumbnailCacheDir withLimit:AUTHOR_FILE_CACHE_SIZE];
 }
 
 - (void)cleanBeforeSignout {
