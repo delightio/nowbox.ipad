@@ -426,7 +426,7 @@
 	
 	playFirstVideoOnLaunchWhenReady = aPlayFlag;
 	forceStopByUser = NO;	// reset the flag
-	currentXOffset = 0.0f;
+//	currentXOffset = 0.0f;
 	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
 	ribbonView.userInteractionEnabled = NO;
 
@@ -1132,6 +1132,7 @@
 	}
 	if ( chnObj ) {
 		[self setCurrentChannel:chnObj];
+//		[self playVideo:[chnObj.videos anyObject]];
 		[channelSwitchingScrollView setContentOffset:CGPointMake(0.0f, yOff) animated:YES];
 	} else {
 		[self resetChannelHeaderView:channelSwitchStatus == ChannelSwitchPrevious];
