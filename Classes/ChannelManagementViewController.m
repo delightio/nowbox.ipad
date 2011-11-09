@@ -628,7 +628,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
 						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin];
-						[[Analytics sharedAPI] track:AnalyticsEventStartYouTubeLogin];
 						return;
 					}
 					break;
