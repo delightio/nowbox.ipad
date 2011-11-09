@@ -94,6 +94,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 }
 
 - (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
+	if ( stopShowingError ) return;
 	NSError * error = [[aNotification userInfo] objectForKey:@"error"];
 	NSString * title = nil;
 	NSString * message = nil;
@@ -232,7 +233,8 @@ NSInteger NM_LAST_CHANNEL_ID;
     
     NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
     [[Analytics sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
+                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+	stopShowingError = YES;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -268,7 +270,8 @@ NSInteger NM_LAST_CHANNEL_ID;
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
     [[Analytics sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
+                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+	stopShowingError = NO;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

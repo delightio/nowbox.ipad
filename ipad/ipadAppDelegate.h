@@ -39,6 +39,7 @@ extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 //	UINavigationController * navigationViewController;
 
 @private
+	BOOL stopShowingError;
 	NSUserDefaults * userDefaults;
     NSManagedObjectContext *managedObjectContext_;
     NSManagedObjectModel *managedObjectModel_;
