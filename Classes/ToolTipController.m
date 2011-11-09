@@ -342,6 +342,8 @@ static ToolTipController *toolTipController = nil;
     }
     [monitoredToolTips minusSet:tooltipsToRemove];
     
+    [[Analytics sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, @"tooltip_name", nil]];
+
     if (tooltip.resetCountsOnDisplay) {
         // Tooltip can be shown again, reset all the criteria
         for (ToolTipCriteria *criteria in tooltip.validationCriteria) {
@@ -351,8 +353,6 @@ static ToolTipController *toolTipController = nil;
         // Tooltip cannot be shown again, remove it
         [monitoredToolTips removeObject:tooltip];                        
     }
-    
-    [[Analytics sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, @"tooltip_name", nil]];
 }
 
 - (void)dismissTooltip

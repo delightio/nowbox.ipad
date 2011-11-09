@@ -14,14 +14,14 @@
 @synthesize loginWebView, progressContainerView;
 @synthesize loginType;
 
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        [self setContentSizeForViewInPopover:CGSizeMake(500, 500)];
+    }
+    return self;
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -44,7 +44,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+	    
+    loadingPageLoading = YES;
 	NSString * filename = nil;
 	switch (loginType) {
 		case NMLoginTwitterType:
@@ -79,29 +80,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-	NSString * urlStr = nil;
-	switch (loginType) {
-		case NMLoginTwitterType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/twitter?user_id=%d", NM_USER_ACCOUNT_ID];
-			break;
-			
-		case NMLoginFacebookType:
-			urlStr = @"http://api.nowbox.com/auth/facebook";
-			break;
-			
-		case NMLoginYoutubeType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
-			break;
-			
-		default:
-			break;
-	}
-	
-	[loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -278,4 +256,32 @@
 	}
 	return YES;
 }
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    if (loadingPageLoading) {
+        loadingPageLoading = NO;
+        
+        NSString * urlStr = nil;
+        switch (loginType) {
+            case NMLoginTwitterType:
+                urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/twitter?user_id=%d", NM_USER_ACCOUNT_ID];
+                break;
+                
+            case NMLoginFacebookType:
+                urlStr = @"http://api.nowbox.com/auth/facebook";
+                break;
+                
+            case NMLoginYoutubeType:
+                urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
+                break;
+                
+            default:
+                break;
+        }
+        
+        [loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
+    }
+}
+
 @end

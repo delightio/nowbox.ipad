@@ -9,6 +9,7 @@
 #import "VideoPlaybackViewController.h"
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
+#import "ShareViewController.h"
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
 #import "Analytics.h"
@@ -1186,7 +1187,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-	[self playCurrentVideo];
+    [self playCurrentVideo];
 }
 
 #pragma mark Scroll View Delegate
@@ -1461,8 +1462,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
-	[nowboxTaskController issueShareWithService:NMLoginTwitterType video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed message:@"test message"];
-	[self animateFavoriteButtonsToInactive];
+//	[nowboxTaskController issueShareWithService:NMLoginTwitterType video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed message:@"test message"];
+//	[self animateFavoriteButtonsToInactive];
+    
+    ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
+                                                                                 bundle:[NSBundle mainBundle] 
+                                                                                  video:playbackModelController.currentVideo 
+                                                                               duration:loadedControlView.duration 
+                                                                         elapsedSeconds:loadedControlView.timeElapsed];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [navController.navigationBar setBarStyle:UIBarStyleBlack];
+    [self presentModalViewController:navController animated:YES];
+    navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
+    
+    [shareController release];
+    [navController release];
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
     

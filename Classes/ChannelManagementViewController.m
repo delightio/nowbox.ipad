@@ -645,7 +645,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							
-							[[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin];
+							[[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
 							return;
 						}
@@ -661,7 +661,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							
-							[[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin];
+							[[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
 							return;
 						}
