@@ -28,7 +28,7 @@ typedef enum {
 	NMCommandCreateUser,
 	NMCommandVerifyFacebookUser,
 	NMCommandVerifyTwitterUser,
-	NMCommandVerifyYoutubeUser,
+	NMCommandVerifyYouTubeUser,
 	NMCommandEditUserSettings,
 	NMCommandGetToken,
 	NMCommandTestToken,
@@ -87,7 +87,7 @@ typedef enum {
 	NMChannelUnknownType,
 	NMChannelUserType,
 	NMChannelTrendingType,
-	NMChannelYoutubeType,
+	NMChannelYouTubeType,
 	NMChannelKeywordType,
 	NMChannelVimeoType,
 	NMChannelUserFacebookType,
@@ -97,7 +97,7 @@ typedef enum {
 typedef enum {
 	NMLoginTwitterType,
 	NMLoginFacebookType,
-	NMLoginYoutubeType,
+	NMLoginYouTubeType,
 } NMSocialLoginType;
 
 extern BOOL NM_WIFI_REACHABLE;

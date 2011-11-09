@@ -109,7 +109,7 @@
 
 - (void)setDuration:(NSInteger)d {
 	duration = d;
-	if ( d ) widthPerSec = (self.bounds.size.width - 2.0f) / (CGFloat)(d - 1);	// less the duration by 1 to offset Youtube video inaccuracy
+	if ( d ) widthPerSec = (self.bounds.size.width - 2.0f) / (CGFloat)(d - 1);	// less the duration by 1 to offset YouTube video inaccuracy
 	else widthPerSec = 0.0f;
 	// reset size of other bar
 	NMSeekBarLayoutLayer * theLayer = (NMSeekBarLayoutLayer *)self.layer;

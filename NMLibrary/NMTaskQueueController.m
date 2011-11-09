@@ -247,8 +247,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL {
-	NMCreateUserTask * task = [[NMCreateUserTask alloc] initYoutubeVerificationWithURL:aURL];
+- (void)issueVerifyYouTubeAccountWithURL:(NSURL *)aURL {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] initYouTubeVerificationWithURL:aURL];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
