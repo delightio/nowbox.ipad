@@ -57,9 +57,9 @@
 			filename = @"FacebookLoading";
 			break;
 			
-		case NMLoginYoutubeType:
-			self.title = @"Youtube";
-			filename = @"YoutubeLoading";
+		case NMLoginYouTubeType:
+			self.title = @"YouTube";
+			filename = @"YouTubeLoading";
 			break;
 			
 		default:
@@ -86,15 +86,15 @@
 	NSString * urlStr = nil;
 	switch (loginType) {
 		case NMLoginTwitterType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/twitter?user_id=%d", NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"http://%@/auth/twitter?user_id=%d", NM_BASE_URL_TOKEN, NM_USER_ACCOUNT_ID];
 			break;
 			
 		case NMLoginFacebookType:
-			urlStr = @"http://api.nowbox.com/auth/facebook";
+			urlStr = [NSString stringWithFormat:@"http://%@/auth/facebook", NM_BASE_URL_TOKEN];
 			break;
 			
-		case NMLoginYoutubeType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
+		case NMLoginYouTubeType:
+			urlStr = [NSString stringWithFormat:@"http://%@/auth/you_tube?user_id=%d", NM_BASE_URL_TOKEN, NM_USER_ACCOUNT_ID];
 			break;
 			
 		default:
@@ -112,6 +112,11 @@
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	NSHTTPCookie *cookie;
+	NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+	for (cookie in [storage cookies]) {
+		[storage deleteCookie:cookie];
+	}
 	[progressContainerView release];
     [loginWebView release];
     [super dealloc];
@@ -147,9 +152,9 @@
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
             break;
 			
-		case NMLoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
+		case NMLoginYouTubeType:
+            [[Analytics sharedAPI] track:AnalyticsEventCompleteYouTubeLogin];
+            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
 																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
 			break;
@@ -183,8 +188,8 @@
         case NMLoginFacebookType:
             [[Analytics sharedAPI] track:AnalyticsEventFacebookLoginFailed];
             break;
-		case NMLoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
+		case NMLoginYouTubeType:
+            [[Analytics sharedAPI] track:AnalyticsEventYouTubeLoginFailed];
 			break;
         default:
             break;
@@ -198,7 +203,7 @@
 		case NMLoginTwitterType:
 		{
 			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
-			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
+			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
 				// pass the interface control back the the channel management view controller
@@ -222,7 +227,7 @@
 		case NMLoginFacebookType:
 		{
 			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
-			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
+			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
 				// pass the interface control back the the channel management view controller
@@ -249,10 +254,10 @@
 			break;
 		}
 			
-		case NMLoginYoutubeType:
+		case NMLoginYouTubeType:
 		{
-			NSLog(@"Youtube URL: %@", [theURL absoluteString]);
-			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/youtube/callback"] ) {
+			NSLog(@"YouTube URL: %@", [theURL absoluteString]);
+			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/you_tube/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
 				// pass the interface control back the the channel management view controller
@@ -260,7 +265,7 @@
 				progressContainerView.frame = self.view.bounds;
 				[self.view addSubview:progressContainerView];
 				// show a dark gray screen for now.
-				[[NMTaskQueueController sharedTaskQueueController] issueVerifyTwitterAccountWithURL:theURL];
+				[[NMTaskQueueController sharedTaskQueueController] issueVerifyYouTubeAccountWithURL:theURL];
 				
 				[UIView animateWithDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;

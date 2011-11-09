@@ -26,6 +26,6 @@
 
 - (id)initTwitterVerificationWithURL:(NSURL *)aURL;
 - (id)initFacebookVerificationWithURL:(NSURL *)aURL;
-- (id)initYoutubeVerificationWithURL:(NSURL *)aURL;
+- (id)initYouTubeVerificationWithURL:(NSURL *)aURL;
 
 @end

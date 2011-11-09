@@ -39,9 +39,9 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	return self;
 }
 
-- (id)initYoutubeVerificationWithURL:(NSURL *)aURL {
+- (id)initYouTubeVerificationWithURL:(NSURL *)aURL {
 	self = [super init];
-	command = NMCommandVerifyYoutubeUser;
+	command = NMCommandVerifyYouTubeUser;
 	self.verificationURL = aURL;
 	return self;
 }
@@ -145,7 +145,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 			NM_USER_TWITTER_CHANNEL_ID = [[userDictionary objectForKey:@"twitter_channel_id"] integerValue];
 			break;
 			
-		case NMCommandVerifyYoutubeUser:
+		case NMCommandVerifyYouTubeUser:
 			NM_USER_YOUTUBE_SYNC_ACTIVE = YES;
 			break;
 			
@@ -160,7 +160,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-		case NMCommandVerifyYoutubeUser:
+		case NMCommandVerifyYouTubeUser:
 			return NO;
 			
 		default:

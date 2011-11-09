@@ -52,7 +52,7 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 	if ( [chnType isEqualToString:@"user"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"account::youtube"] ) {
-		[pDict setObject:[NSNumber numberWithInteger:NMChannelYoutubeType] forKey:@"type"];
+		[pDict setObject:[NSNumber numberWithInteger:NMChannelYouTubeType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"account::vimeo"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelVimeoType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"keyword"] ) {
