@@ -22,7 +22,7 @@ typedef enum {
 @property (nonatomic, retain) IBOutlet UITextView *messageText;
 @property (nonatomic, retain) IBOutlet UILabel *characterCountLabel;
 @property (nonatomic, retain) IBOutlet UISegmentedControl *socialNetworkToggle;
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, retain) IBOutlet UIView *progressView;
 @property (nonatomic, retain) NMVideo *video;
 @property (nonatomic, assign) NSInteger duration;
 @property (nonatomic, assign) NSInteger elapsedSeconds;

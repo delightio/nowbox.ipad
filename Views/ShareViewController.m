@@ -12,6 +12,7 @@
 #import "NMTaskQueueController.h"
 #import "NMDataType.h"
 #import "Analytics.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define kMaxTwitterCharacters 119
 #define kDefaultFacebookText @"Watch \"%@\""
@@ -23,7 +24,7 @@
 @synthesize messageText;
 @synthesize characterCountLabel;
 @synthesize socialNetworkToggle;
-@synthesize activityIndicator;
+@synthesize progressView;
 @synthesize video;
 @synthesize duration;
 @synthesize elapsedSeconds;
@@ -55,7 +56,7 @@
     [messageText release];
     [characterCountLabel release];
     [socialNetworkToggle release];
-    [activityIndicator release];
+    [progressView release];
     [video release];
     
     [super dealloc];
@@ -94,6 +95,9 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     self.shareMode = [userDefaults integerForKey:NM_LAST_SOCIAL_NETWORK];   
     socialNetworkToggle.selectedSegmentIndex = shareMode;
+    
+    progressView.layer.cornerRadius = 15.0;
+    progressView.layer.masksToBounds = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated 
@@ -135,7 +139,7 @@
     self.messageText = nil;
     self.characterCountLabel = nil;
     self.socialNetworkToggle = nil;
-    self.activityIndicator = nil;
+    self.progressView = nil;
     
     [super viewDidUnload];
 }
@@ -163,7 +167,7 @@
                                                                             duration:duration
                                                                       elapsedSeconds:elapsedSeconds
                                                                              message:messageText.text];
-            [activityIndicator startAnimating];
+            progressView.hidden = NO;
             [self.navigationItem.rightBarButtonItem setEnabled:NO];
         } else {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
@@ -184,7 +188,7 @@
                                                                                 duration:duration
                                                                           elapsedSeconds:elapsedSeconds
                                                                                  message:messageText.text];
-                [activityIndicator startAnimating];
+                progressView.hidden = NO;
                 [self.navigationItem.rightBarButtonItem setEnabled:NO];            
             } else {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
@@ -228,7 +232,7 @@
     [alertView show];
     [alertView release];
     
-    [activityIndicator stopAnimating];
+    progressView.hidden = YES;
     [self.navigationItem.rightBarButtonItem setEnabled:YES];
 }
 
@@ -242,7 +246,7 @@
     [alertView show];
     [alertView release];
     
-    [activityIndicator stopAnimating];
+    progressView.hidden = YES;
     [self.navigationItem.rightBarButtonItem setEnabled:YES];
 }
 
