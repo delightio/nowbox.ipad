@@ -39,6 +39,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize channelSubscribedIcon, channelSubscribedBackgroundImage;
 @synthesize channelNotSubscribedIcon, channelNotSubscribedBackgroundImage;
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+	firstLoadView = YES;
+	return self;
+}
 
 - (void)dealloc {
 	[channelDetailViewController release];
@@ -82,7 +87,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 {
     [super viewDidLoad];
     
-	firstLoadView = YES;
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	countFormatter = [[NSNumberFormatter alloc] init];
@@ -197,8 +201,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     
     if (selectedIndex == 0) {
         // Reload social channels in case we unsubscribed from one of them
-        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
-        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
+        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
+        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
 
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
                                                           [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, nil]];
@@ -969,7 +973,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark helpers
 -(float)categoryCellWidthFromString:(NSString *)text {
     if (text == nil) {
-        return 38;
+        return 38.0f;
     }
     else {
         CGSize textLabelSize;
@@ -979,9 +983,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         else {
             textLabelSize = [[text uppercaseString] sizeWithFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f]];
         }
-        return textLabelSize.width+40;
+        return textLabelSize.width + 40.0f;
     }
-    return 0;
+    return 0.0f;
 }
 
 #pragma mark UIAlertView delegates
@@ -1025,33 +1029,42 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     NSString *channelName;
     NMChannel * chn;
     if (selectedIndex == 0) {
-        if (tableIndexPath.section == 0) {
-            // Social channels
-            social = YES;
-            
-            if (tableIndexPath.row == 0) {
-                if ( NM_USER_TWITTER_CHANNEL_ID ) {
-                    chn = nowboxTaskController.dataController.userTwitterStreamChannel;
-                    channelName = @"Twitter";
-                } else {
-                    [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
-                    return;
-                }
-            } else {
-                if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-                    chn = nowboxTaskController.dataController.userFacebookStreamChannel;
-                    channelName = @"Facebook";
-                } else {
-                    [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
-                    return;
-                }                
-            }
-        } else {
-            NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row 
-                                                               inSection:0];
-            chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
-            channelName = chn.title;
-        }
+		switch (tableIndexPath.section) {
+			case 0:
+				// YouTube
+				break;
+				
+			case 1:
+				// Social channels
+				social = YES;
+				if (tableIndexPath.row == 0) {
+					if ( NM_USER_TWITTER_CHANNEL_ID ) {
+						chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+						channelName = @"Twitter";
+					} else {
+						[self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
+						return;
+					}
+				} else {
+					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+						chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+						channelName = @"Facebook";
+					} else {
+						[self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
+						return;
+					}                
+				}
+				break;
+				
+			default:
+			{
+				// reset of the channels
+				NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row inSection:0];
+				chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
+				channelName = chn.title;
+				break;
+			}
+		}
     } else {
         chn = [selectedChannelArray objectAtIndex:[channelsTableView indexPathForCell:cell].row];
         channelName = chn.title;        
