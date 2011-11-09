@@ -9,7 +9,16 @@
 #import "NMDataType.h"
 #import "JSONKit.h"
 
-#define NM_BASE_URL					@"api.nowbox.com/1"
+//#define NM_BASE_URL					@"api.nowbox.com/1"
+#ifdef DEBUG_USE_STAGING_SERVER
+#define NM_BASE_URL						@"api.staging.nowbox.com/1"
+#define NM_BASE_URL_TOKEN				@"api.staging.nowbox.com"
+#else
+#define NM_BASE_URL						@"api.nowbox.com/1"
+#define NM_BASE_URL_TOKEN				@"api.nowbox.com"
+#endif
+
+extern NSString * const NMAuthTokenHeaderKey;
 
 @class NMDataController;
 
@@ -21,6 +30,7 @@
 	NSMutableData * buffer;
 	NSMutableArray * parsedObjects;
 	NMCommand command;
+	NSUInteger sequenceLog;
 	BOOL encountersErrorDuringProcessing;
 	NSInteger httpStatusCode;
 	NSNumber * targetID;
@@ -38,6 +48,7 @@
 @property (nonatomic) NSInteger httpStatusCode;
 @property (assign) NMTaskExecutionState state;
 @property (nonatomic, readonly) NMCommand command;
+@property (nonatomic, assign) NSUInteger sequenceLog;
 @property (nonatomic, readonly) NSMutableData * buffer;
 @property (nonatomic, retain) NSNumber * targetID;
 

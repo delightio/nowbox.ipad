@@ -9,11 +9,13 @@
 #import "NMTask.h"
 
 NSString * const NMTaskFailNotification = @"NMTaskFailNotification";
+NSString * const NMAuthTokenHeaderKey = @"X-NB-AuthToken";
 NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 
 @implementation NMTask
 
 @synthesize state, command, buffer;
+@synthesize sequenceLog;
 @synthesize encountersErrorDuringProcessing;
 @synthesize executeSaveActionOnError;
 @synthesize httpStatusCode;

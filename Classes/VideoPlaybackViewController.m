@@ -632,7 +632,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)updateRibbonButtons {
 	[self updateFavoriteButton];
+	if ( favoriteButton.alpha < 1.0f ) {
+		favoriteButton.alpha = 1.0f;
+	}
 	[self updateWatchLaterButton];
+	if ( watchLaterButton.alpha < 1.0f ) {
+		watchLaterButton.alpha = 1.0f;
+	}
 }
 
 - (void)updateFavoriteButton {

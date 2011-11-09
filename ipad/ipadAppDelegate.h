@@ -40,6 +40,7 @@ extern NSString * const NM_LAST_SOCIAL_NETWORK;
 //	UINavigationController * navigationViewController;
 
 @private
+	BOOL stopShowingError;
 	NSUserDefaults * userDefaults;
     NSManagedObjectContext *managedObjectContext_;
     NSManagedObjectModel *managedObjectModel_;
