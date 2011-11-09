@@ -58,6 +58,7 @@
 #define AnalyticsPropertyVisitNumber @"Visit Number"
 #define AnalyticsPropertyAuthFacebook @"Facebook Enabled"
 #define AnalyticsPropertyAuthTwitter @"Twitter Enabled"
+#define AnalyticsPropertyAuthYouTube @"YouTube Enabled"
 #define AnalyticsPropertyChannelName @"Channel Name"
 #define AnalyticsPropertySocialChannel @"Social Channel"
 #define AnalyticsPropertySender @"Sender"
