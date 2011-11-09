@@ -226,6 +226,11 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
 					break;
 					
+				case NMCommandGetChannelsForCategory:
+					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+					[pDict removeObjectForKey:@"category_ids"];
+					break;
+					
 				default:
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
 					break;
