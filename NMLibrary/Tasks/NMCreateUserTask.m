@@ -39,6 +39,13 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	return self;
 }
 
+- (id)initYoutubeVerificationWithURL:(NSURL *)aURL {
+	self = [super init];
+	command = NMCommandVerifyYoutubeUser;
+	self.verificationURL = aURL;
+	return self;
+}
+
 - (id)initFacebookVerificationWithURL:(NSURL *)aURL {
 	self = [super init];
 	command = NMCommandVerifyFacebookUser;
@@ -81,6 +88,9 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 		{
 			urlStr = [NSString stringWithFormat:@"http://%@/users?email=%@", NM_BASE_URL, [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
 			[request setHTTPMethod:@"PUT"];
 			break;
 		}
@@ -135,6 +145,10 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 			NM_USER_TWITTER_CHANNEL_ID = [[userDictionary objectForKey:@"twitter_channel_id"] integerValue];
 			break;
 			
+		case NMCommandVerifyYoutubeUser:
+			NM_USER_YOUTUBE_SYNC_ACTIVE = YES;
+			break;
+			
 		default:
 		{
 			break;
@@ -143,7 +157,15 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	if ( command != NMCommandVerifyTwitterUser && command != NMCommandVerifyFacebookUser ) return NO;
+	switch (command) {
+		case NMCommandVerifyFacebookUser:
+		case NMCommandVerifyTwitterUser:
+		case NMCommandVerifyYoutubeUser:
+			return NO;
+			
+		default:
+			break;
+	}
 	/*
 	 When this task is done, the backend should queue the "Get Channels" task to merge changes in channels.
 	 In this task, there's NO need to merge the channels. Just create the Facebook or Twitter stream channel

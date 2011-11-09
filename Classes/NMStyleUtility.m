@@ -19,7 +19,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize videoTitleFont;
 @synthesize videoDetailFont;
 @synthesize videoShadowImage;
-@synthesize videoHighlightedBackgroundImage, videoNormalBackgroundImage, videoDimmedBackgroundImage;
+//@synthesize videoHighlightedBackgroundImage, videoNormalBackgroundImage, videoDimmedBackgroundImage;
 @synthesize videoTitleFontColor;
 @synthesize videoTitleHighlightedFontColor;
 @synthesize videoTitlePlayedFontColor;
@@ -96,9 +96,9 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
 	videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
 	videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
-    videoHighlightedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-highlight"] retain];
-    videoNormalBackgroundImage = [[UIImage imageNamed:@"channel-video-background-normal"] retain];
-    videoDimmedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-dimmed"] retain];
+//    videoHighlightedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-highlight"] retain];
+//    videoNormalBackgroundImage = [[UIImage imageNamed:@"channel-video-background-normal"] retain];
+//    videoDimmedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-dimmed"] retain];
 	videoDetailFontColor = [[UIColor colorWithRed:90.0f / 255.0f green:90.0f / 255.0f blue:90.0f / 255.0f alpha:1.0f] retain];
 	videoDetailHighlightedFontColor = [[UIColor colorWithRed:162.0f / 255.0f green:162.0f / 255.0f blue:162.0f / 255.0f alpha:1.0f] retain];
 	videoDetailPlayedFontColor = [[UIColor colorWithRed:159 / 255.0f green:159 / 255.0f blue:159 / 255.0f alpha:1.0f] retain];
@@ -130,39 +130,179 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     channelPanelCellDimmedDivider = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];       
     
 	channelBorderColor = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0 alpha:1.0] retain];
-	userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
-	channelContainerBackgroundNormalImage = [[UIImage imageNamed:@"channel-list-cell-normal"] retain];
-	channelContainerBackgroundHighlightImage = [[UIImage imageNamed:@"channel-list-cell-highlighted"] retain];
-	toolbarExpandImage = [[UIImage imageNamed:@"toolbar-expand"] retain];
-	toolbarExpandHighlightedImage = [[UIImage imageNamed:@"toolbar-expand-active"] retain];
-	toolbarCollapseImage = [[UIImage imageNamed:@"toolbar-collapse"] retain];
-	toolbarCollapseHighlightedImage = [[UIImage imageNamed:@"toolbar-collapse-active"] retain];
-	
-	fullScreenImage = [[UIImage imageNamed:@"playback-full-screen"] retain];
-	fullScreenActiveImage = [[UIImage imageNamed:@"playback-full-screen-active"] retain];
-	splitScreenImage = [[UIImage imageNamed:@"playback-normal-screen"] retain];
-	splitScreenActiveImage = [[UIImage imageNamed:@"playback-normal-screen-active"] retain];
-	
-	playImage = [[UIImage imageNamed:@"playback-play"] retain];
-	playActiveImage = [[UIImage imageNamed:@"playback-play-active"] retain];
-	pauseImage = [[UIImage imageNamed:@"playback-pause"] retain];
-	pauseActiveImage = [[UIImage imageNamed:@"playback-pause-active"] retain];
 	
 	blackColor = [[UIColor blackColor] retain];
     
-    videoStatusBadImage = [[UIImage imageNamed:@"channel-video-status-bad"] retain];
-    videoStatusHotImage = [[UIImage imageNamed:@"channel-video-status-hot"] retain];
-    videoStatusFavImage = [[UIImage imageNamed:@"channel-video-status-fav"] retain];
-    videoStatusQueuedImage = [[UIImage imageNamed:@"channel-video-status-watch-later"] retain];
-    
-    videoNewSessionIndicatorImage = [[UIImage imageNamed:@"channel-view-new-session"] retain];
-	
-	favoriteImage = [[UIImage imageNamed:@"button-like"] retain];
-	favoriteActiveImage = [[UIImage imageNamed:@"button-like-active"] retain];
-	watchLaterImage = [[UIImage imageNamed:@"button-watch-later"] retain];
-	watchLaterActiveImage = [[UIImage imageNamed:@"button-watch-later-active"] retain];
-	
 	return self;
+}
+
+- (UIImage *)userPlaceholderImage {
+	if ( userPlaceholderImage == nil ) {
+		userPlaceholderImage = [[UIImage imageNamed:@"user_placeholder_image"] retain];
+	}
+	return userPlaceholderImage;
+}
+
+- (UIImage *)channelContainerBackgroundNormalImage {
+	if ( channelContainerBackgroundNormalImage == nil ) {
+		channelContainerBackgroundNormalImage = [[UIImage imageNamed:@"channel-list-cell-normal"] retain];
+	
+	}
+	return channelContainerBackgroundNormalImage;
+}
+
+- (UIImage *)channelContainerBackgroundHighlightImage {
+	if ( channelContainerBackgroundHighlightImage == nil ) {
+		channelContainerBackgroundHighlightImage = [[UIImage imageNamed:@"channel-list-cell-highlighted"] retain];
+	}
+	return channelContainerBackgroundHighlightImage;
+}
+
+- (UIImage *)toolbarExpandImage {
+	if ( toolbarExpandImage == nil ) {
+		toolbarExpandImage = [[UIImage imageNamed:@"toolbar-expand"] retain];
+	}
+	return toolbarExpandImage;
+}
+
+- (UIImage *)toolbarExpandHighlightedImage {
+	if ( toolbarExpandHighlightedImage == nil ) {
+		toolbarExpandHighlightedImage = [[UIImage imageNamed:@"toolbar-expand-active"] retain];
+	}
+	return toolbarExpandHighlightedImage;
+}
+
+- (UIImage *)toolbarCollapseImage {
+	if ( toolbarCollapseImage == nil ) {
+		toolbarCollapseImage = [[UIImage imageNamed:@"toolbar-collapse"] retain];
+	}
+	return toolbarCollapseImage;
+}
+
+- (UIImage *)toolbarCollapseHighlightedImage {
+	if ( toolbarCollapseHighlightedImage == nil ) {
+		toolbarCollapseHighlightedImage = [[UIImage imageNamed:@"toolbar-collapse-active"] retain];
+	}
+	return toolbarCollapseHighlightedImage;
+}
+
+- (UIImage *)fullScreenImage {
+	if ( fullScreenImage == nil ) {
+		fullScreenImage = [[UIImage imageNamed:@"playback-full-screen"] retain];
+	}
+	return fullScreenImage;
+}
+
+- (UIImage *)fullScreenActiveImage {
+	if ( fullScreenActiveImage == nil ) {
+		fullScreenActiveImage = [[UIImage imageNamed:@"playback-full-screen-active"] retain];
+	}
+	return fullScreenActiveImage;
+}
+
+- (UIImage *)splitScreenImage {
+	if ( splitScreenImage == nil ) {
+		splitScreenImage = [[UIImage imageNamed:@"playback-normal-screen"] retain];
+	}
+	return splitScreenImage;
+}
+
+- (UIImage *)playImage {
+	if ( playImage == nil ) {
+		playImage = [[UIImage imageNamed:@"playback-play"] retain];
+	}
+	return playImage;
+}
+
+- (UIImage *)splitScreenActiveImage {
+	if ( splitScreenActiveImage == nil ) {
+		splitScreenActiveImage = [[UIImage imageNamed:@"playback-normal-screen-active"] retain];
+	}
+	return splitScreenActiveImage;
+}
+
+- (UIImage *)playActiveImage {
+	if ( playActiveImage == nil ) {
+		playActiveImage = [[UIImage imageNamed:@"playback-play-active"] retain];
+	}
+	return playActiveImage;
+}
+
+- (UIImage *)pauseImage {
+	if ( pauseImage == nil ) {
+		pauseImage = [[UIImage imageNamed:@"playback-pause"] retain];
+	}
+	return pauseImage;
+}
+
+- (UIImage *)pauseActiveImage {
+	if ( pauseActiveImage== nil ) {
+		pauseActiveImage = [[UIImage imageNamed:@"playback-pause-active"] retain];
+	}
+	return pauseActiveImage;
+}
+
+- (UIImage *)videoStatusBadImage {
+	if ( videoStatusBadImage == nil ) {
+		videoStatusBadImage = [[UIImage imageNamed:@"channel-video-status-bad"] retain];
+	}
+	return videoStatusBadImage;
+}
+
+- (UIImage *)videoStatusHotImage {
+	if ( videoStatusHotImage == nil ) {
+		videoStatusHotImage = [[UIImage imageNamed:@"channel-video-status-hot"] retain];
+	}
+	return videoStatusHotImage;
+}
+
+- (UIImage *)videoStatusFavImage {
+	if ( videoStatusFavImage == nil ) {
+		videoStatusFavImage = [[UIImage imageNamed:@"channel-video-status-fav"] retain];
+	}
+	return videoStatusFavImage;
+}
+
+- (UIImage *)videoStatusQueuedImage {
+	if ( videoStatusQueuedImage == nil ) {
+		videoStatusQueuedImage = [[UIImage imageNamed:@"channel-video-status-watch-later"] retain];
+	}
+	return videoStatusQueuedImage;
+}
+
+- (UIImage *)videoNewSessionIndicatorImage {
+	if ( videoNewSessionIndicatorImage == nil ) {
+		videoNewSessionIndicatorImage = [[UIImage imageNamed:@"channel-view-new-session"] retain];
+	}
+	return videoNewSessionIndicatorImage;
+}
+
+- (UIImage *)favoriteImage {
+	if ( favoriteImage == nil ) {
+		favoriteImage = [[UIImage imageNamed:@"button-like"] retain];
+	}
+	return favoriteImage;
+}
+
+- (UIImage *)favoriteActiveImage {
+	if ( favoriteActiveImage == nil ) {
+		favoriteActiveImage = [[UIImage imageNamed:@"button-like-active"] retain];
+	}
+	return favoriteActiveImage;
+}
+
+- (UIImage *)watchLaterImage {
+	if ( watchLaterImage == nil ) {
+		watchLaterImage = [[UIImage imageNamed:@"button-watch-later"] retain];
+	}
+	return watchLaterImage;
+}
+
+- (UIImage *)watchLaterActiveImage {
+	if ( watchLaterActiveImage == nil ) {
+		watchLaterActiveImage = [[UIImage imageNamed:@"button-watch-later-active"] retain];
+	}
+	return watchLaterActiveImage;
 }
 
 - (void)dealloc {
@@ -174,9 +314,9 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[videoDetailFont release];
 	[videoTitleFont release];
 	[videoShadowImage release];
-    [videoHighlightedBackgroundImage release];
-    [videoNormalBackgroundImage release];
-    [videoDimmedBackgroundImage release];
+//    [videoHighlightedBackgroundImage release];
+//    [videoNormalBackgroundImage release];
+//    [videoDimmedBackgroundImage release];
 	[videoTitleFontColor release];
 	[videoTitleHighlightedFontColor release];
 	[videoDetailFontColor release];

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Analytics.h"
 
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
 extern NSString * const NM_LAST_SESSION_DATE;
@@ -16,11 +17,13 @@ extern NSString * const NM_USER_WATCH_LATER_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_HISTORY_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY;
+extern NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY;
 extern NSString * const NM_VIDEO_QUALITY_KEY;
 //extern NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
 extern NSString * const NM_FIRST_LAUNCH_KEY;
 extern NSString * const NM_LAST_CHANNEL_ID_KEY;
+extern NSString * const NM_SESSION_COUNT_KEY;
 extern NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY;	
 extern NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY;
 extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
@@ -36,10 +39,17 @@ extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 //	UINavigationController * navigationViewController;
 
 @private
+	BOOL stopShowingError;
 	NSUserDefaults * userDefaults;
     NSManagedObjectContext *managedObjectContext_;
     NSManagedObjectModel *managedObjectModel_;
     NSPersistentStoreCoordinator *persistentStoreCoordinator_;
+    
+    // Analytics
+    MixpanelAPI *mixpanel;
+    NSTimeInterval appStartTime;
+    NSTimeInterval sessionStartTime;
+    NSDateFormatter *dateFormatter;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;

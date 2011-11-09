@@ -56,6 +56,7 @@
 	NM_USER_HISTORY_CHANNEL_ID = [userDefaults integerForKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 	NM_USER_TWITTER_CHANNEL_ID = [userDefaults integerForKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 	NM_USER_FACEBOOK_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+	NM_USER_YOUTUBE_SYNC_ACTIVE = [userDefaults boolForKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
 	NM_VIDEO_QUALITY = [userDefaults integerForKey:NM_VIDEO_QUALITY_KEY];
 //	NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
@@ -124,6 +125,10 @@
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	}
+    
+    [[Analytics sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+    [[Analytics sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[Analytics sharedAPI] track:AnalyticsEventLogin];    
 }
 
 #pragma mark Notification

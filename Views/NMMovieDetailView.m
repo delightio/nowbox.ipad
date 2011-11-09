@@ -43,7 +43,6 @@
 	style = [NMStyleUtility sharedStyleUtility];
 	
 	if ( NM_RUNNING_ON_IPAD ) {
-		
 		descriptionDefaultFrame  = descriptionLabel.frame;
 		titleDefaultFrame = titleLabel.frame;
 		titleMaxSize = titleDefaultFrame.size;
@@ -51,17 +50,18 @@
 		otherInfoDefaultPosition = otherInfoLabel.center;
 		
 		bitmapShadow = [CALayer layer];
-		bitmapShadow.frame = CGRectMake(640.0f, 0.0f, 20.0f, 380.0f);
+		bitmapShadow.frame = CGRectMake(0.0f, 0.0f, 20.0f, 380.0f);
 		bitmapShadow.contents = (id)[NMStyleUtility sharedStyleUtility].videoShadowImage.CGImage;
-		[self.layer addSublayer:bitmapShadow];
+		[infoContainerView.layer insertSublayer:bitmapShadow above:infoContainerView.layer];
+		//	[self.layer addSublayer:bitmapShadow];
 		// the background image
 		self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-	// the fake movie view box
-//	blackLayer = [CALayer layer];
-//	blackLayer.shouldRasterize = YES;
-//	blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
-//	blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
-//	[self.layer insertSublayer:blackLayer below:thumbnailContainerView.layer];
+		// the fake movie view box
+		blackLayer = [CALayer layer];
+		blackLayer.shouldRasterize = YES;
+		blackLayer.backgroundColor = [NMStyleUtility sharedStyleUtility].blackColor.CGColor;
+		blackLayer.frame = CGRectMake(0.0, 0.0, 640.0, 380.0);
+		[self.layer insertSublayer:blackLayer below:thumbnailContainerView.layer];
 		// update the font
 		if ( !NM_RUNNING_IOS_5 ) {
 			UIFont * theFont = [NMStyleUtility sharedStyleUtility].channelNameFont;
@@ -179,18 +179,47 @@
 	if ( thumbnailContainerView.alpha == 0.0f ) thumbnailContainerView.alpha = 1.0f;
 }
 
-- (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
+- (void)setLayoutWhenPinchedForFullScreen:(BOOL)isFullScreen {
 	if ( isFullScreen ) {
-		infoContainerView.hidden = YES;
-		bitmapShadow.hidden = YES;
+		infoContainerView.alpha = 0.0f;
+		infoContainerView.center = CGPointMake(1216.0f, 190.0f);
 		// resize view
 		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
 	} else {
 		infoContainerView.hidden = NO;
-		bitmapShadow.hidden = NO;
+		infoContainerView.alpha = 1.0f;
+		infoContainerView.center = CGPointMake(832.0f, 190.0f);
+//		bitmapShadow.position = CGPointMake(650.0f, 190.0f);
 		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
 	}
-//	blackLayer.frame = thumbnailContainerView.frame;
+}
+
+- (void)resetLayoutAfterPinchedForFullScreen:(BOOL)isFullScreen {
+	if ( isFullScreen ) {
+		infoContainerView.hidden = YES;
+	} /*else {
+		infoContainerView.hidden = NO;
+		bitmapShadow.hidden = NO;
+	}*/
+	blackLayer.frame = thumbnailContainerView.frame;
+}
+
+- (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
+	if ( isFullScreen ) {
+		infoContainerView.hidden = YES;
+		infoContainerView.alpha = 0.0f;
+		infoContainerView.center = CGPointMake(1216.0f, 190.0f);
+//		bitmapShadow.position = CGPointMake(1034.0f, 190.0f);
+		// resize view
+		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
+	} else {
+		infoContainerView.hidden = NO;
+		infoContainerView.alpha = 1.0f;
+		infoContainerView.center = CGPointMake(832.0f, 190.0f);
+//		bitmapShadow.position = CGPointMake(650.0f, 190.0f);
+		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
+	}
+	blackLayer.frame = thumbnailContainerView.frame;
 }
 
 - (void)setActivityViewHidden:(BOOL)aflag {

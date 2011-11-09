@@ -21,15 +21,17 @@ typedef enum {
 	NMCommandGetChannelsForCategory,
 	NMCommandSearchChannels,
 	NMCommandGetChannelWithID,			// this is for subscribing to debug channels
+	NMCommandGetFeaturedChannelsForCategories,
 	NMCommandPollChannel,
 	NMCommandGetChannelDetail,
 	NMCommandCreateKeywordChannel,
 	NMCommandCreateUser,
 	NMCommandVerifyFacebookUser,
 	NMCommandVerifyTwitterUser,
+	NMCommandVerifyYoutubeUser,
 	NMCommandEditUserSettings,
-//	NMCommandDeauthoriseFaceBookAccount,
-//	NMCommandDeauthoriseTwitterAccount,
+	NMCommandGetToken,
+	NMCommandTestToken,
 	NMCommandEditUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
@@ -41,6 +43,7 @@ typedef enum {
 	NMCommandGetVideoThumbnail,
 	NMCommandGetPreviewThumbnail,
 	NMCommandCheckUpdate,
+	NMCommandPostSharing,
 } NMCommand;
 
 typedef enum {
@@ -64,8 +67,8 @@ typedef enum {
 	NMEventUnsubscribeChannel,
 	NMEventEnqueue,
 	NMEventDequeue,
-	NMEventShare,
-	NMEventUnfavorite,
+//	NMEventShare,
+//	NMEventUnfavorite,
 	NMEventView,
 	NMEventExamine,
 } NMEventType;
@@ -91,6 +94,12 @@ typedef enum {
 	NMChannelUserTwitterType,
 } NMChannelType;
 
+typedef enum {
+	NMLoginTwitterType,
+	NMLoginFacebookType,
+	NMLoginYoutubeType,
+} NMSocialLoginType;
+
 extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
 // Notifications
@@ -101,6 +110,11 @@ extern NSString * const NMShowErrorAlertNotification;
 extern NSString * const NMWillCheckUpdateNotification;
 extern NSString * const NMDidCheckUpdateNotification;
 extern NSString * const NMDidFailCheckUpdateNotification;
+
+// token
+extern NSString * const NMWillRequestTokenNotification;
+extern NSString * const NMDidRequestTokenNotification;
+extern NSString * const NMDidFailRequestTokenNotification;
 
 // user
 extern NSString * const NMWillCreateUserNotification;
@@ -132,6 +146,10 @@ extern NSString * const NMDidFailGetChannelsForCategoryNotification;
 extern NSString * const NMWillSearchChannelsNotification;
 extern NSString * const NMDidSearchChannelsNotification;
 extern NSString * const NMDidFailSearchChannelsNotification;
+extern NSString * const NMWillGetFeaturedChannelsForCategories;
+extern NSString * const NMDidGetFeaturedChannelsForCategories;
+extern NSString * const NMDidFailGetFeaturedChannelsForCategories;
+
 extern NSString * const NMWillGetChannelDetailNotification;
 extern NSString * const NMDidGetChannelDetailNotification;
 extern NSString * const NMDidFailGetChannelDetailNotification;

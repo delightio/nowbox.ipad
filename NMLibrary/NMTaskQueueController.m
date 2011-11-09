@@ -17,11 +17,14 @@
 #import "Reachability.h"
 
 NSInteger NM_USER_ACCOUNT_ID				= 0;
+NSDate * NM_USER_TOKEN_EXPIRY_DATE			= nil;
+NSString * NM_USER_TOKEN					= nil;
 NSInteger NM_USER_FAVORITES_CHANNEL_ID		= 0;
 NSInteger NM_USER_WATCH_LATER_CHANNEL_ID	= 0;
 NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
+BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -39,7 +42,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize managedObjectContext;
 @synthesize networkController;
 @synthesize dataController;
-@synthesize pollingTimer;
+@synthesize pollingTimer, tokenRenewTimer;
 @synthesize unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
@@ -65,12 +68,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
 	[nc addObserver:self selector:@selector(handleFailEditUserSettingsNotification:) name:NMDidFailEditUserSettingsNotification object:nil];
+	[nc addObserver:self selector:@selector(handleTokenNotification:) name:NMDidRequestTokenNotification object:nil];
+	[nc addObserver:self selector:@selector(handleTokenNotification:) name:NMDidFailRequestTokenNotification object:nil];
+	
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
     [nc addObserver: self selector: @selector(reachabilityChanged:) name:kReachabilityChangedNotification object: nil];
+	
+	NM_USER_TOKEN = [[NSString stringWithString:@"no_token"] retain];
 
 	return self;
 }
@@ -209,9 +217,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( netStatus == ReachableViaWiFi ) {
 			// switch to HD
 			NM_WIFI_REACHABLE = YES;
+			NM_URL_REQUEST_TIMEOUT = 30.0f;
 		} else {
 			// switch to SD
 			NM_WIFI_REACHABLE = NO;
+			// longer timeout value
+			NM_URL_REQUEST_TIMEOUT = 60.0f;
 		}
 	}
 	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
@@ -232,6 +243,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL {
 	NMCreateUserTask * task = [[NMCreateUserTask alloc] initFacebookVerificationWithURL:aURL];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] initYoutubeVerificationWithURL:aURL];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -269,6 +286,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetChannelWithID:(NSInteger)chnID {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetChannelWithID:chnID];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFeaturedChannelsForCategories:catArray];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -405,10 +428,30 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
-	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
-//	task.duration = vdur;
+- (void)issueSubscribeChannels:(NSArray *)chnArray {
+	NMEventTask * task = nil;
+	NSMutableArray * taskAy = [NSMutableArray arrayWithCapacity:[chnArray count]];
+	for (NMChannel * chnObj in chnArray) {
+		task = [[NMEventTask alloc] initWithChannel:chnObj subscribe:YES];
+		task.bulkSubscribe = YES;
+		[taskAy addObject:task];
+		[task release];
+	}
+	[networkController addNewConnectionForTasks:taskAy];
+}
+
+//- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
+//	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
+//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+////	task.duration = vdur;
+//	task.elapsedSeconds = sec;
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
+
+- (void)issueShareWithService:(NMSocialLoginType)serType video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString {
+	NMPostSharingTask * task = [[NMPostSharingTask alloc] initWithType:serType video:aVideo];
+	task.message = aString;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -455,6 +498,47 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NMCheckUpdateTask * task = [[NMCheckUpdateTask alloc] initWithDeviceType:devType];
 	[networkController addNewConnectionForTask:task];
 	[task release];
+}
+
+#pragma mark Token
+- (void)issueRenewToken {
+	NMTokenTask * task = [[NMTokenTask alloc] initGetToken];
+	[networkController addNewConnectionForImmediateTask:task];
+	[task release];
+}
+
+- (void)issueTokenTest {
+	NMTokenTask * task = [[NMTokenTask alloc] initTestToken];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)checkAndRenewToken {
+	NSTimeInterval t = [NM_USER_TOKEN_EXPIRY_DATE timeIntervalSinceNow];
+	if ( t < 0 ) {
+		// token has already expired.
+		[self setTokenRenewMode:YES];
+	} else if ( t < 300.0f ) {
+		// if less than 5 min to expire, renew
+		[self issueRenewToken];
+	}
+}
+
+- (void)setTokenRenewMode:(BOOL)on {
+	networkController.tokenRenewMode = on;
+	if ( on ) {
+		[self issueRenewToken];
+	}
+}
+
+- (void)handleTokenNotification:(NSNotification *)aNotification {
+	NSString * notName = [aNotification name];
+	if ( [notName isEqualToString:NMDidRequestTokenNotification] ) {
+		// renewed token successfully
+		[self setTokenRenewMode:NO];
+	} else if ( [notName isEqualToString:NMDidFailRequestTokenNotification] ) {
+		[self issueRenewToken];
+	}
 }
 
 #pragma mark Channel Polling

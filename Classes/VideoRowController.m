@@ -10,6 +10,7 @@
 #import "ChannelContainerView.h"
 #import "VideoPlaybackViewController.h"
 #import "PanelVideoCell.h"
+#import "Analytics.h"
 
 @implementation VideoRowController
 @synthesize managedObjectContext=managedObjectContext_;
@@ -79,6 +80,11 @@
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
     [panelController.videoViewController playVideo:theVideo];
     
+    [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
+                                                                       theVideo.title, AnalyticsPropertyVideoName, 
+                                                                       theVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                       @"channelpanel", AnalyticsPropertySender, 
+                                                                       @"tap", @"action", nil]];
 }
 
 - (void)recycleCell:(PanelVideoCell *)cell

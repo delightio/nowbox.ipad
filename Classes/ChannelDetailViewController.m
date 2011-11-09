@@ -10,6 +10,7 @@
 #import "NMStyleUtility.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ChannelPreviewView.h"
+#import "Analytics.h"
 
 #define NM_THUMBNAIL_PADDING		20.0f
 
@@ -135,8 +136,15 @@
 //	[self setPreviewImages];
 	// set channel thumbnail
 	[channelThumbnailView setImageForChannel:channel];
-	// load channel detail
-	[[NMTaskQueueController sharedTaskQueueController] issueGetDetailForChannel:channel];
+	// load channel detail    
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueGetDetailForChannel:channel];
+
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                   || channel == taskQueueController.dataController.userTwitterStreamChannel); 
+    [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
+                                                                                [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -236,7 +244,15 @@
                      }
                      completion:^(BOOL finished) {
                      }];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+    
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueSubscribe:YES channel:channel];
+    
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                   || channel == taskQueueController.dataController.userTwitterStreamChannel); 
+    [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+                                                                              @"channeldetails_subscribe", AnalyticsPropertySender, 
+                                                                              [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 }
 
 -(IBAction)subscribeAndWatchChannel:(id)sender {
@@ -247,8 +263,16 @@
                      }
                      completion:^(BOOL finished) {
                      }];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
+    
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueSubscribe:YES channel:channel];
     shouldDismiss = YES;
+    
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                   || channel == taskQueueController.dataController.userTwitterStreamChannel); 
+    [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+                                                                              @"channeldetails_watchnow", AnalyticsPropertySender, 
+                                                                              [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
 }
 
 -(IBAction)unsubscribeChannel:(id)sender {
@@ -258,7 +282,16 @@
                      }
                      completion:^(BOOL finished) {
                      }];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channel];
+    
+    NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueSubscribe:NO channel:channel];
+    
+    BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
+                || channel == taskQueueController.dataController.userTwitterStreamChannel); 
+    [[Analytics sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName,
+                                                                                @"channeldetails_unsubscribe", AnalyticsPropertySender, 
+                                                                                [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];
+
 }
 
 #pragma mark Notification handlers

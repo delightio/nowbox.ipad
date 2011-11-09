@@ -44,6 +44,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 @synthesize resultDictionary;
 @synthesize elapsedSeconds, startSecond;
 @synthesize playedToEnd;
+@synthesize bulkSubscribe;
 
 - (id)initWithEventType:(NMEventType)evtType forVideo:(NMVideo *)v {
 	self = [super init];
@@ -107,14 +108,14 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			evtStr = @"dequeue";
 			executeSaveActionOnError = YES;
 			break;
-		case NMEventShare:
-			evtStr = @"share";
-			executeSaveActionOnError = YES;
-			break;
-		case NMEventUnfavorite:
-			evtStr = @"unfavorite";
-			executeSaveActionOnError = YES;
-			break;
+//		case NMEventShare:
+//			evtStr = @"share";
+//			executeSaveActionOnError = YES;
+//			break;
+//		case NMEventUnfavorite:
+//			evtStr = @"unfavorite";
+//			executeSaveActionOnError = YES;
+//			break;
 		case NMEventView:
 			evtStr = @"view";
 			break;
@@ -138,7 +139,6 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventUnsubscribeChannel:
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
 			break;
-			
 		default:
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
 			break;
@@ -148,6 +148,9 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
 	
 	return request;
 }
@@ -165,7 +168,12 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{
-			channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+			if ( bulkSubscribe ) {
+				// in case of bulk subscribe (right now, only supported in onboard process), we preserve the order of subscription to be the same as sorting order
+				channel.nm_subscribed = channel.nm_sort_order;
+			} else {
+				channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+			}
 			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			return YES;
 		}
@@ -218,29 +226,29 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
 		}
-		case NMEventShare:
-		{
-			newVideo = [ctrl duplicateVideo:video];
-			newVideo.channel = ctrl.favoriteVideoChannel;
-			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
-			NSNumber * yesNum = [NSNumber numberWithBool:YES];
-			newVideo.nm_favorite = yesNum;
-			// mark the flag
-			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_favorite"];
-			// show/hide channel
-			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
-			return YES;
-		}
-		case NMEventUnfavorite:
-		{
-			// remove video
-			video.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
-			// update the original video object
-			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
-			// show/hide channel
-			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
-			return YES;
-		}	
+//		case NMEventShare:
+//		{
+//			newVideo = [ctrl duplicateVideo:video];
+//			newVideo.channel = ctrl.favoriteVideoChannel;
+//			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
+//			NSNumber * yesNum = [NSNumber numberWithBool:YES];
+//			newVideo.nm_favorite = yesNum;
+//			// mark the flag
+//			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_favorite"];
+//			// show/hide channel
+//			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
+//			return YES;
+//		}
+//		case NMEventUnfavorite:
+//		{
+//			// remove video
+//			video.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
+//			// update the original video object
+//			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
+//			// show/hide channel
+//			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
+//			return YES;
+//		}	
 		default:
 			break;
 	}
@@ -257,10 +265,10 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return NMWillDequeueVideoNotification;
 		case NMEventEnqueue:
 			return NMWillEnqueueVideoNotification;
-		case NMEventShare:
-			return NMWillShareVideoNotification;
-		case NMEventUnfavorite:
-			return NMWillUnfavoriteVideoNotification;
+//		case NMEventShare:
+//			return NMWillShareVideoNotification;
+//		case NMEventUnfavorite:
+//			return NMWillUnfavoriteVideoNotification;
 			
 		default:
 			break;
@@ -278,10 +286,10 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return NMDidDequeueVideoNotification;
 		case NMEventEnqueue:
 			return NMDidEnqueueVideoNotification;
-		case NMEventShare:
-			return NMDidShareVideoNotification;
-		case NMEventUnfavorite:
-			return NMDidUnfavoriteVideoNotification;
+//		case NMEventShare:
+//			return NMDidShareVideoNotification;
+//		case NMEventUnfavorite:
+//			return NMDidUnfavoriteVideoNotification;
 			
 		default:
 			break;
@@ -299,10 +307,10 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return NMDidFailDequeueVideoNotification;
 		case NMEventEnqueue:
 			return NMDidFailEnqueueVideoNotification;
-		case NMEventShare:
-			return NMDidFailShareVideoNotification;
-		case NMEventUnfavorite:
-			return NMDidFailUnfavoriteVideoNotification;
+//		case NMEventShare:
+//			return NMDidFailShareVideoNotification;
+//		case NMEventUnfavorite:
+//			return NMDidFailUnfavoriteVideoNotification;
 			
 		default:
 			break;
@@ -318,10 +326,29 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			break;
 			
 		case NMEventEnqueue:
-		case NMEventShare:
+//		case NMEventShare:
 			return [NSDictionary dictionaryWithObject:video forKey:@"video"];
 		case NMEventDequeue:
-		case NMEventUnfavorite:
+//		case NMEventUnfavorite:
+			if ( ![video isDeleted] ) {
+				return [NSDictionary dictionaryWithObject:video forKey:@"video"];
+			}
+		default:
+			break;
+	}
+	return nil;
+}
+
+- (NSDictionary *)failUserInfo {
+	switch (eventType) {
+		case NMEventSubscribeChannel:
+		case NMEventUnsubscribeChannel:
+			return [NSDictionary dictionaryWithObject:channel forKey:@"channel"];
+			break;
+			
+		case NMEventEnqueue:
+			return [NSDictionary dictionaryWithObject:video forKey:@"video"];
+		case NMEventDequeue:
 			if ( ![video isDeleted] ) {
 				return [NSDictionary dictionaryWithObject:video forKey:@"video"];
 			}

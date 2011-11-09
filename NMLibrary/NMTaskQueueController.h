@@ -6,6 +6,7 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
+#import "NMDataType.h"
 
 @class NMNetworkController;
 @class NMDataController;
@@ -27,6 +28,7 @@
 	
 	// polling channel population status
 	NSTimer * pollingTimer;
+	NSTimer * tokenRenewTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
 	
@@ -37,6 +39,7 @@
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
 @property (nonatomic, retain) NSTimer * pollingTimer;
+@property (nonatomic, retain) NSTimer * tokenRenewTimer;
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
@@ -50,7 +53,16 @@
 - (void)issueCreateUser;
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
+- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL;
 - (void)issueEditUserSettings;
+// Token
+- (void)issueRenewToken;
+- (void)issueTokenTest;
+- (void)checkAndRenewToken;
+/*!
+ In token renew mode, the backend will stop executing other tasks except for the "renew token task". It will also stop popping alert pop up.
+ */
+- (void)setTokenRenewMode:(BOOL)on;
 //- (void)issueSignOutTwitterAccount;
 //- (void)issueSignOutFacebookAccout;
 // Category
@@ -61,11 +73,13 @@
 - (void)issueGetSubscribedChannels;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (void)issueGetChannelWithID:(NSInteger)chnID;
+- (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
 // Channel subscription
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
+- (void)issueSubscribeChannels:(NSArray *)chnArray;
 // Polling channel
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
 - (void)pollServerForChannelReadiness;
@@ -84,7 +98,8 @@
 
 // Event tracking
 // Share video
-- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
+//- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
+- (void)issueShareWithService:(NMSocialLoginType)serType video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec;
 - (void)issueExamineVideo:(NMVideo *)aVideo errorInfo:(NSDictionary *)errDict;

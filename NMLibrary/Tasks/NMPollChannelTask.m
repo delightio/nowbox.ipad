@@ -35,7 +35,11 @@ NSString * const NMDidFailPollChannelNotification = @"NMDidFailPollChannelNotifi
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Poll Channel: %@", urlStr);
 #endif
-	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
+	return request;
 }
 
 - (void)processDownloadedDataInBuffer {
