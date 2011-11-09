@@ -41,7 +41,9 @@ NSString * const NMDidFailRequestTokenNotification = @"NMDidFailRequestTokenNoti
 		case NMCommandTestToken:
 			urlStr = [NSString stringWithFormat:@"http://%@/users/%d/auth_test", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
-			[request addValue:NM_USER_TOKEN forHTTPHeaderField:@"X-NB-AuthToken"];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
 			break;
 			
 		default:

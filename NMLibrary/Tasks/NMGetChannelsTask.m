@@ -172,7 +172,9 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 	NSLog(@"Get Channels: %@", urlStr);
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:t];
-	[request addValue:NM_USER_TOKEN forHTTPHeaderField:@"X-NB-AuthToken"];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
 	return request;
 }
 

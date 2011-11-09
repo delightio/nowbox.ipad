@@ -18,6 +18,8 @@
 #define NM_BASE_URL_TOKEN				@"api.nowbox.com"
 #endif
 
+extern NSString * const NMAuthTokenHeaderKey;
+
 @class NMDataController;
 
 /*!

@@ -148,7 +148,9 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];
-	[request addValue:NM_USER_TOKEN forHTTPHeaderField:@"X-NB-AuthToken"];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
 	
 	return request;
 }
