@@ -168,7 +168,7 @@
 - (IBAction)loginToYouTube:(id)sender
 {
     SocialLoginViewController *socialController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-    socialController.loginType = NMLoginYoutubeType;
+    socialController.loginType = NMLoginYouTubeType;
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:socialController];
 	navController.navigationBar.barStyle = UIBarStyleBlack;
