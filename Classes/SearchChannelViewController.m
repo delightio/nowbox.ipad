@@ -183,7 +183,7 @@
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
     channelDetailViewController.channel = chn;
     
-    [[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
                                                                                 [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
                                                                                 @"search", AnalyticsPropertySender, nil]];
     
@@ -413,12 +413,12 @@
         
     BOOL subscribed = [chn.nm_subscribed boolValue];
     if (subscribed) {
-        [[Analytics sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
                                                                                     @"search_toggle", AnalyticsPropertySender, 
                                                                                     lastSearchQuery, AnalyticsPropertySearchQuery, 
                                                                                     [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, nil]];    
     } else {
-        [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
                                                                                   @"search_toggle", AnalyticsPropertySender, 
                                                                                   lastSearchQuery, AnalyticsPropertySearchQuery, 
                                                                                   [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -439,7 +439,7 @@
         progressView.hidden = NO;
         [ctrl issueChannelSearchForKeyword:searchText];
         
-        [[Analytics sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
         self.lastSearchQuery = searchText;
     }
 }

@@ -278,7 +278,7 @@
             [self.navigationController pushViewController:loginController animated:YES];
             [loginController release];
             
-            [[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
         } else {
             // Go to Twitter login page
             SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
@@ -286,7 +286,7 @@
             [self.navigationController pushViewController:loginController animated:YES];
             [loginController release];
             
-            [[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
         }
     }
 }

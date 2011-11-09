@@ -209,7 +209,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
         [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
 
-        [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
                                                           [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, nil]];
     }
     
@@ -232,7 +232,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 //	[self.navigationController pushViewController:twitCtrl animated:YES];
 //	[twitCtrl release];
     
-    [[Analytics sharedAPI] track:AnalyticsEventShowSearch];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowSearch];
 
 }
 
@@ -577,7 +577,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             self.selectedChannelArray = nil;
             [channelsTableView reloadData];
             
-            [[Analytics sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:@"My Channels", AnalyticsPropertyCategoryName, nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:@"My Channels", AnalyticsPropertyCategoryName, nil]];
 
             return;
         } else if (indexPath.row % 2 == 0) { // other categories
@@ -599,7 +599,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 }
 			}
             
-            [[Analytics sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:cat.title, AnalyticsPropertyCategoryName, nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:cat.title, AnalyticsPropertyCategoryName, nil]];
 
             return;
         } else { // separator
@@ -615,7 +615,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				{
 					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 						// show channel detail? any detail to show?
-						[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName, 
+						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName, 
 																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																								  @"channelmanagement", AnalyticsPropertySender, nil]];
 					} else {
@@ -623,7 +623,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						socialCtrl.loginType = NMLoginYoutubeType;
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
-						[[Analytics sharedAPI] track:AnalyticsEventStartYoutubeLogin];
+						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYoutubeLogin];
 						return;
 					}
 					break;
@@ -635,7 +635,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					if ( indexPath.row == 0 ) {
 						if ( NM_USER_TWITTER_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
-							[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
@@ -645,14 +645,14 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							
-							[[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
 							return;
 						}
 					} else if ( indexPath.row == 1 ) {
 						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
-							[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
@@ -661,7 +661,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							
-							[[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
 							return;
 						}
@@ -671,7 +671,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				default:
 					indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
 					chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
-					[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
+					[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
 																							  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
 																							  @"channelmanagement", AnalyticsPropertySender, nil]];
 					break;
@@ -1055,11 +1055,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
     BOOL subscribed = [chn.nm_subscribed boolValue];
     if (subscribed) {
-        [[Analytics sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
                                                                                     @"channelmanagement_toggle", AnalyticsPropertySender, 
                                                                                     [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];    
     } else {
-        [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
                                                                                   @"channelmanagement_toggle", AnalyticsPropertySender, 
                                                                                   [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }

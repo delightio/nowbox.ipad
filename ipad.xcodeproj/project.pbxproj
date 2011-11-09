@@ -72,7 +72,6 @@
 		83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */; };
 		83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C48C14509EF400AD8880 /* ToolTip.m */; };
 		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
-		83F8E2C11468687E0051D990 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2C01468687E0051D990 /* Analytics.m */; };
 		83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2DC1468C3720051D990 /* ShareViewController.m */; };
 		83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83F8E2DF1468C4B40051D990 /* ShareView.xib */; };
 		A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A903D8551450ABA900FC7B28 /* channel-title-background.png */; };
@@ -320,7 +319,6 @@
 		83F7C48C14509EF400AD8880 /* ToolTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTip.m; sourceTree = "<group>"; };
 		83F7C48F1450B22700AD8880 /* TouchForwardingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchForwardingView.h; sourceTree = "<group>"; };
 		83F7C4901450B22700AD8880 /* TouchForwardingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchForwardingView.m; sourceTree = "<group>"; };
-		83F8E2C01468687E0051D990 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		83F8E2DB1468C3720051D990 /* ShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareViewController.h; path = ../Views/ShareViewController.h; sourceTree = "<group>"; };
 		83F8E2DC1468C3720051D990 /* ShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareViewController.m; path = ../Views/ShareViewController.m; sourceTree = "<group>"; };
 		83F8E2DF1468C4B40051D990 /* ShareView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareView.xib; sourceTree = "<group>"; };
@@ -675,7 +673,6 @@
 				A925014F134385BF001759F5 /* ipadAppDelegate.h */,
 				A9250150134385BF001759F5 /* ipadAppDelegate.m */,
 				83857ACD145B7F87002FFB0B /* Analytics.h */,
-				83F8E2C01468687E0051D990 /* Analytics.m */,
 				A9250152134385BF001759F5 /* MainWindow.xib */,
 				A9250147134385BF001759F5 /* Supporting Files */,
 			);
@@ -1274,7 +1271,6 @@
 				83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */,
 				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
 				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
-				83F8E2C11468687E0051D990 /* Analytics.m in Sources */,
 				83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1374,7 +1370,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MIXPANEL,
+					MIXPANEL_PROD,
 					DEBUG_PLAYER_NAVIGATION,
 				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
@@ -1443,10 +1439,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					MIXPANEL,
-					DEBUG_PLAYER_NAVIGATION,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1471,7 +1464,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MIXPANEL,
+					MIXPANEL_PROD,
 					DEBUG_PLAYER_NAVIGATION,
 				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";

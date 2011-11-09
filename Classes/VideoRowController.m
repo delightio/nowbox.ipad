@@ -80,7 +80,7 @@
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
     [panelController.videoViewController playVideo:theVideo];
     
-    [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
                                                                        theVideo.title, AnalyticsPropertyVideoName, 
                                                                        theVideo.nm_id, AnalyticsPropertyVideoId,
                                                                        @"channelpanel", AnalyticsPropertySender, 

@@ -108,26 +108,26 @@
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
     
-    [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
+    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
     switch (loginType) {
         case NMLoginTwitterType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
             break;
 
         case NMLoginFacebookType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
             break;
 			
 		case NMLoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
 																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
 			break;
@@ -156,13 +156,13 @@
     
     switch (loginType) {
         case NMLoginTwitterType:
-            [[Analytics sharedAPI] track:AnalyticsEventTwitterLoginFailed];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventTwitterLoginFailed];
             break;
         case NMLoginFacebookType:
-            [[Analytics sharedAPI] track:AnalyticsEventFacebookLoginFailed];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventFacebookLoginFailed];
             break;
 		case NMLoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
 			break;
         default:
             break;
