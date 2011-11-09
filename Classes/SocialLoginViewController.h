@@ -13,6 +13,8 @@
 	UIWebView *loginWebView;
 	UIView * progressContainerView;
 	NMSocialLoginType loginType;
+    
+    BOOL loadingPageLoading;
 }
 
 @property (retain, nonatomic) IBOutlet UIWebView *loginWebView;

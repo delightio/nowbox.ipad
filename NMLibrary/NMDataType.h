@@ -180,6 +180,9 @@ extern NSString * const NMDidFailEnqueueVideoNotification;
 extern NSString * const NMWillDequeueVideoNotification;
 extern NSString * const NMDidDequeueVideoNotification;
 extern NSString * const NMDidFailDequeueVideoNotification;
+extern NSString * const NMWillPostSharingNotification;
+extern NSString * const NMDidPostSharingNotification;
+extern NSString * const NMDidFailPostSharingNotification;
 
 // video
 extern NSString * const NMWillGetChannelVideListNotification;

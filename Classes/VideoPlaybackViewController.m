@@ -9,6 +9,7 @@
 #import "VideoPlaybackViewController.h"
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
+#import "ShareViewController.h"
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
 #import "Analytics.h"
@@ -434,7 +435,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 //	[self updateRibbonButtons];
     
-    [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                        playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                        playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                        @"player", AnalyticsPropertySender, 
@@ -775,7 +776,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
             
-            [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
@@ -1192,7 +1193,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 #pragma mark Popover delegate
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-	[self playCurrentVideo];
+    [self playCurrentVideo];
 }
 
 #pragma mark Scroll View Delegate
@@ -1238,7 +1239,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
             
-            [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
@@ -1261,7 +1262,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[self updateRibbonButtons];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
             
-            [[Analytics sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
@@ -1324,7 +1325,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			launchController.progressContainerView.alpha = 0.0f;
 //		}
         
-        [[Analytics sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 
@@ -1342,7 +1343,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
         
-        [[Analytics sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                       playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
@@ -1416,7 +1417,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
         
-        [[Analytics sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                              playbackModelController.currentVideo.title, AnalyticsPropertyVideoName,
                                                                                              nil]];                                                                                                                                                                                                                                                                                                                                                                        
 
@@ -1429,7 +1430,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
         
-        [[Analytics sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                             playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
@@ -1467,12 +1468,26 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
-	[nowboxTaskController issueShareWithService:NMLoginTwitterType video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed message:@"test message"];
-	[self animateFavoriteButtonsToInactive];
+//	[nowboxTaskController issueShareWithService:NMLoginTwitterType video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed message:@"test message"];
+//	[self animateFavoriteButtonsToInactive];
+    
+    ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
+                                                                                 bundle:[NSBundle mainBundle] 
+                                                                                  video:playbackModelController.currentVideo 
+                                                                               duration:loadedControlView.duration 
+                                                                         elapsedSeconds:loadedControlView.timeElapsed];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [navController.navigationBar setBarStyle:UIBarStyleBlack];
+    [self presentModalViewController:navController animated:YES];
+    navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
+    
+    [shareController release];
+    [navController release];
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
     
-    [[Analytics sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                            playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                            playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                            nil]];
@@ -1483,7 +1498,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
     
-    [[Analytics sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                           playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                           playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                           nil]];

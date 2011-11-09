@@ -87,31 +87,6 @@
 			<integer>1</integer>
 		</dict>
 	</dict>
-	<key>ShareButtonTip</key>
-	<dict>
-		<key>CenterX</key>
-		<integer>843</integer>
-		<key>CenterY</key>
-		<integer>202</integer>
-		<key>KeepCountsOnRestart</key>
-		<true/>
-		<key>ResetCountsOnDisplay</key>
-		<false/>
-		<key>ImageFile</key>
-		<string>tooltip-share-videos.png</string>
-		<key>AutoHideInSeconds</key>
-		<integer>0</integer>
-		<key>ValidationCriteria</key>
-		<dict>
-			<key>FavoriteTap</key>
-			<integer>1</integer>
-		</dict>
-		<key>InvalidationCriteria</key>
-		<dict>
-			<key>FavoriteTap</key>
-			<integer>2</integer>
-		</dict>
-	</dict>
 	<key>BadVideoTip</key>
 	<dict>
 		<key>CenterX</key>
