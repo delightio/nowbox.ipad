@@ -164,6 +164,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	NMNavigationController * navCtrl = [[NMNavigationController alloc] initWithRootViewController:chnMngCtrl];
 	navCtrl.navigationBar.barStyle = UIBarStyleBlack;
 	navCtrl.modalPresentationStyle = UIModalPresentationFormSheet;
+	navCtrl.delegate = chnMngCtrl;
 	[videoViewController presentModalViewController:navCtrl animated:YES];
 	
 	[navCtrl release];

@@ -14,7 +14,7 @@
 @class ChannelDetailViewController;
 @class CategoryTableCell;
 
-@interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate> {
+@interface ChannelManagementViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIAlertViewDelegate, UINavigationControllerDelegate> {
 	NMTaskQueueController * nowboxTaskController;
 	
 	ChannelDetailViewController * channelDetailViewController;
@@ -31,8 +31,7 @@
     NSIndexPath * selectedIndexPathForTable;
 	NSArray * selectedChannelArray;
 	
-	BOOL viewPushedByNavigationController;
-    
+	BOOL firstLoadView, dismissViewController;
     UITableViewCell *channelCell;
     
     int selectedIndex;

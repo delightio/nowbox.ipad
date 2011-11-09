@@ -82,6 +82,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 {
     [super viewDidLoad];
     
+	firstLoadView = YES;
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 	countFormatter = [[NSNumberFormatter alloc] init];
@@ -121,6 +122,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
 	
+	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+	// all subsequent transition happened in navigation controller should not fire channel management notification
 }
 
 - (void)viewDidUnload
@@ -140,14 +143,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	return YES;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-	if ( !viewPushedByNavigationController ) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
-		// all subsequent transition happened in navigation controller should not fire channel management notification
-		viewPushedByNavigationController = YES;
-	}
-}
+//- (void)viewWillAppear:(BOOL)animated {
+//	[super viewWillAppear:animated];
+//}
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -155,15 +153,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsForCategoryNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
     
-//    [nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSubscribeChannelNotification object:nil];
-//	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
-    
-    [channelsTableView reloadData];
-    
-    [categoriesTableView flashScrollIndicators];
-
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -173,7 +164,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	if ( !viewPushedByNavigationController ) {
+	if ( dismissViewController ) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
 		[nowboxTaskController.dataController clearChannelCache];
 	}
@@ -244,9 +235,22 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         [alertView show];
         [alertView release];
     } else {    
-        viewPushedByNavigationController = NO;
+        dismissViewController = YES;
         [self dismissModalViewControllerAnimated:YES];
     }
+}
+
+#pragma mark -
+#pragma mark Navigation controller delegate
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+	if ( viewController == self ) {
+		if ( firstLoadView ) {
+			firstLoadView = NO;
+		} else {
+			// reload table view for subsequent appearance
+			[channelsTableView reloadData];
+		}
+	}
 }
 
 #pragma mark -
@@ -397,9 +401,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			if ( indexPath.section == 0 ) {
 				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 					titleLbl.text = @"<User name>";
-					detailLbl.text = @"Youtube sync is currently active";
+					detailLbl.text = @"YouTube sync is currently active";
 				} else {
-					titleLbl.text = @"Youtube";
+					titleLbl.text = @"YouTube";
 					detailLbl.text = @"Sign in to synchronize your channel subscription, Watch Later and favorite videos.";
 					thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
@@ -615,15 +619,16 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				{
 					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 						// show channel detail? any detail to show?
-						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName, 
+						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
 																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																								  @"channelmanagement", AnalyticsPropertySender, nil]];
 					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-						socialCtrl.loginType = NMLoginYoutubeType;
+						socialCtrl.loginType = NMLoginYouTubeType;
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
-						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYoutubeLogin];
+						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin];
+						[[Analytics sharedAPI] track:AnalyticsEventStartYouTubeLogin];
 						return;
 					}
 					break;
