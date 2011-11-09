@@ -77,6 +77,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
     [nc addObserver: self selector: @selector(reachabilityChanged:) name:kReachabilityChangedNotification object: nil];
+	
+	NM_USER_TOKEN = [[NSString stringWithString:@"no_token"] retain];
 
 	return self;
 }
@@ -438,18 +440,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTasks:taskAy];
 }
 
-- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
-	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
-//	task.duration = vdur;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
+//	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
+//	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+////	task.duration = vdur;
+//	task.elapsedSeconds = sec;
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
-- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString {
-	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+- (void)issueShareWithService:(NMSocialLoginType)serType video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString {
+	NMPostSharingTask * task = [[NMPostSharingTask alloc] initWithType:serType video:aVideo];
 	task.message = aString;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
@@ -525,7 +526,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)setTokenRenewMode:(BOOL)on {
 	networkController.tokenRenewMode = on;
-	[self issueRenewToken];
+	if ( on ) {
+		[self issueRenewToken];
+	}
 }
 
 - (void)handleTokenNotification:(NSNotification *)aNotification {

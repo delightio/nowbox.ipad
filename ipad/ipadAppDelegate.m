@@ -14,7 +14,8 @@
 #import <BugSense-iOS/BugSenseCrashController.h>
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
-#define NM_MIXPANEL_TOKEN @"e447bed162e427230f5356bc987a5e16"
+#define NM_DEBUG_MIXPANEL_TOKEN @"79ed82e53930d8f41c4e87f7084d9158"
+#define NM_PROD_MIXPANEL_TOKEN @"e447bed162e427230f5356bc987a5e16"
 #define NM_BUGSENSE_TOKEN @"775bf5eb"
 
 // user data
@@ -43,6 +44,8 @@ NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
 NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
 NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY	= @"NM_ENABLE_EMAIL_NOTIFICATION_KEY";
+// sharing
+NSString * const NM_LAST_SOCIAL_NETWORK     = @"NM_LAST_SOCIAL_NETWORK";
 
 BOOL NM_RUNNING_IOS_5;
 NSInteger NM_LAST_CHANNEL_ID;
@@ -94,6 +97,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 }
 
 - (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
+	if ( stopShowingError ) return;
 	NSError * error = [[aNotification userInfo] objectForKey:@"error"];
 	NSString * title = nil;
 	NSString * message = nil;
@@ -140,7 +144,12 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
     [userDefaults synchronize];
     
-    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_MIXPANEL_TOKEN];
+#ifdef MIXPANEL_PROD
+    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_PROD_MIXPANEL_TOKEN];
+#else
+    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_DEBUG_MIXPANEL_TOKEN];
+#endif
+    
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
                                        sessionCount, AnalyticsPropertyVisitNumber, nil]];
     
@@ -158,9 +167,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Enable analytics and crash reporting
-#ifdef MIXPANEL
     [self setupMixpanel];
-#endif
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
                                                userDictionary:nil 
                                               sendImmediately:NO];
@@ -231,8 +238,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
     NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[Analytics sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
+                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+	stopShowingError = YES;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -267,8 +275,9 @@ NSInteger NM_LAST_CHANNEL_ID;
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
-    [[Analytics sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];    
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
+                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+	stopShowingError = NO;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

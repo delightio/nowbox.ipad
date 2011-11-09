@@ -207,6 +207,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				[commandIndexPool addIndex:taskIdx];
 				
 				theTask.state = NMTaskExecutionStateConnectionActive;
+				theTask.sequenceLog = taskLogCount++;
 				request = [theTask URLRequest];
 				conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 				key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
@@ -373,6 +374,16 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[[NSNotificationCenter defaultCenter] postNotificationName:NMShowErrorAlertNotification object:self userInfo:[NSDictionary dictionaryWithObject:error forKey:@"error"]];
 }
 
+- (void)setTokenRenewMode:(BOOL)abool {
+	tokenRenewMode = abool;
+	if ( !tokenRenewMode ) {
+		// start running tasks again
+		[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
+	} else {
+		taskLogMark = taskLogCount;
+	}
+}
+
 #pragma mark NSURLConnection delegate methods
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
 	return nil;
@@ -499,7 +510,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	NSInteger scode = theTask.httpStatusCode;
 	if ( scode >= 400 && !theTask.executeSaveActionOnError ) {
 		if ( scode == 401 ) {
-			if ( !tokenRenewMode ) {
+			if ( !tokenRenewMode && theTask.sequenceLog >= taskLogMark ) {
 				// enable the mode 
 				[[NMTaskQueueController sharedTaskQueueController] setTokenRenewMode:YES];
 			}

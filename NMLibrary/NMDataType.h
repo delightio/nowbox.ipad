@@ -43,6 +43,7 @@ typedef enum {
 	NMCommandGetVideoThumbnail,
 	NMCommandGetPreviewThumbnail,
 	NMCommandCheckUpdate,
+	NMCommandPostSharing,
 } NMCommand;
 
 typedef enum {
@@ -66,8 +67,8 @@ typedef enum {
 	NMEventUnsubscribeChannel,
 	NMEventEnqueue,
 	NMEventDequeue,
-	NMEventShare,
-	NMEventUnfavorite,
+//	NMEventShare,
+//	NMEventUnfavorite,
 	NMEventView,
 	NMEventExamine,
 } NMEventType;
@@ -92,6 +93,12 @@ typedef enum {
 	NMChannelUserFacebookType,
 	NMChannelUserTwitterType,
 } NMChannelType;
+
+typedef enum {
+	NMLoginTwitterType,
+	NMLoginFacebookType,
+	NMLoginYoutubeType,
+} NMSocialLoginType;
 
 extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
@@ -173,6 +180,9 @@ extern NSString * const NMDidFailEnqueueVideoNotification;
 extern NSString * const NMWillDequeueVideoNotification;
 extern NSString * const NMDidDequeueVideoNotification;
 extern NSString * const NMDidFailDequeueVideoNotification;
+extern NSString * const NMWillPostSharingNotification;
+extern NSString * const NMDidPostSharingNotification;
+extern NSString * const NMDidFailPostSharingNotification;
 
 // video
 extern NSString * const NMWillGetChannelVideListNotification;

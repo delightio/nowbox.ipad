@@ -14,14 +14,14 @@
 @synthesize loginWebView, progressContainerView;
 @synthesize loginType;
 
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        [self setContentSizeForViewInPopover:CGSizeMake(500, 500)];
+    }
+    return self;
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -44,20 +44,21 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+	    
+    loadingPageLoading = YES;
 	NSString * filename = nil;
 	switch (loginType) {
-		case LoginTwitterType:
+		case NMLoginTwitterType:
 			self.title = @"Twitter";
 			filename = @"TwitterLoading";
 			break;
 			
-		case LoginFacebookType:
+		case NMLoginFacebookType:
 			self.title = @"Facebook";
 			filename = @"FacebookLoading";
 			break;
 			
-		case LoginYoutubeType:
+		case NMLoginYoutubeType:
 			self.title = @"Youtube";
 			filename = @"YoutubeLoading";
 			break;
@@ -79,29 +80,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-	NSString * urlStr = nil;
-	switch (loginType) {
-		case LoginTwitterType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/twitter?user_id=%d", NM_USER_ACCOUNT_ID];
-			break;
-			
-		case LoginFacebookType:
-			urlStr = @"http://api.nowbox.com/auth/facebook";
-			break;
-			
-		case LoginYoutubeType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
-			break;
-			
-		default:
-			break;
-	}
-	
-	[loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -130,26 +108,26 @@
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
     
-    [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
+    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
     switch (loginType) {
-        case LoginTwitterType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
+        case NMLoginTwitterType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
             break;
 
-        case LoginFacebookType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
+        case NMLoginFacebookType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
             break;
 			
-		case LoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
+		case NMLoginYoutubeType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
 																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
 			break;
@@ -177,14 +155,14 @@
 	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0f];
     
     switch (loginType) {
-        case LoginTwitterType:
-            [[Analytics sharedAPI] track:AnalyticsEventTwitterLoginFailed];
+        case NMLoginTwitterType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventTwitterLoginFailed];
             break;
-        case LoginFacebookType:
-            [[Analytics sharedAPI] track:AnalyticsEventFacebookLoginFailed];
+        case NMLoginFacebookType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventFacebookLoginFailed];
             break;
-		case LoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
+		case NMLoginYoutubeType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
 			break;
         default:
             break;
@@ -195,7 +173,7 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
 	NSURL * theURL = [request URL];
 	switch (loginType) {
-		case LoginTwitterType:
+		case NMLoginTwitterType:
 		{
 			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
@@ -219,7 +197,7 @@
 			break;
 		}
 			
-		case LoginFacebookType:
+		case NMLoginFacebookType:
 		{
 			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
@@ -249,7 +227,7 @@
 			break;
 		}
 			
-		case LoginYoutubeType:
+		case NMLoginYoutubeType:
 		{
 			NSLog(@"Youtube URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/youtube/callback"] ) {
@@ -278,4 +256,32 @@
 	}
 	return YES;
 }
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    if (loadingPageLoading) {
+        loadingPageLoading = NO;
+        
+        NSString * urlStr = nil;
+        switch (loginType) {
+            case NMLoginTwitterType:
+                urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/twitter?user_id=%d", NM_USER_ACCOUNT_ID];
+                break;
+                
+            case NMLoginFacebookType:
+                urlStr = @"http://api.nowbox.com/auth/facebook";
+                break;
+                
+            case NMLoginYoutubeType:
+                urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
+                break;
+                
+            default:
+                break;
+        }
+        
+        [loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
+    }
+}
+
 @end

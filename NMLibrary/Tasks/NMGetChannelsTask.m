@@ -172,6 +172,9 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 	NSLog(@"Get Channels: %@", urlStr);
 #endif
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:t];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
 	return request;
 }
 
@@ -221,6 +224,11 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 					}
 					[pDict removeObjectForKey:@"category_ids"];
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+					break;
+					
+				case NMCommandGetChannelsForCategory:
+					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+					[pDict removeObjectForKey:@"category_ids"];
 					break;
 					
 				default:

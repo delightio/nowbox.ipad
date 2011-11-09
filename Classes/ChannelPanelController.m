@@ -155,7 +155,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 //	[popover presentPopoverFromRect:settingButton.frame inView:panelView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
 //	popover.delegate = self;
     
-    [[Analytics sharedAPI] track:AnalyticsEventShowSettings properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowSettings properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
 }
 
 - (IBAction)showChannelManagementView:(id)sender {	
@@ -171,7 +171,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelManagementTap sender:sender];
     
-    [[Analytics sharedAPI] track:AnalyticsEventShowChannelManagement properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelManagement properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
 }
 
 //- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
