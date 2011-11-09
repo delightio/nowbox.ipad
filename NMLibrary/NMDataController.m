@@ -637,6 +637,19 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		}
 	}
 	[request release];
+	// remove categories from subscribed channels. this allows channel management view to always show the progress indicator when loading channels.
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:subscribedChannelsPredicate];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", nil]];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		NMChannel * mobj;
+		for (mobj in result) {
+			[mobj removeCategories:mobj.categories];
+		}
+	}
+	[request release];
 	// reset category
 	request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
