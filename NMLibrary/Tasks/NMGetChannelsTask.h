@@ -32,5 +32,6 @@
 - (id)initSearchChannelWithKeyword:(NSString *)str;
 - (id)initGetChannelWithID:(NSInteger)chnID;
 - (id)initGetFeaturedChannelsForCategories:(NSArray *)catArray;
+- (id)initCompareSubscribedChannels;
 
 @end

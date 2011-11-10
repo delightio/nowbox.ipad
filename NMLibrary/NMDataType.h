@@ -23,6 +23,7 @@ typedef enum {
 	NMCommandGetChannelWithID,			// this is for subscribing to debug channels
 	NMCommandGetFeaturedChannelsForCategories,
 	NMCommandPollChannel,
+	NMCommandCompareSubscribedChannels,
 	NMCommandGetChannelDetail,
 	NMCommandCreateKeywordChannel,
 	NMCommandCreateUser,
@@ -33,6 +34,7 @@ typedef enum {
 	NMCommandGetToken,
 	NMCommandTestToken,
 	NMCommandEditUser,
+	NMCommandPollUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetMoreVideoForChannel,
@@ -132,6 +134,9 @@ extern NSString * const NMDidFailSignOutUserNotification;
 extern NSString * const NMWillEditUserSettingsNotification;
 extern NSString * const NMDidEditUserSettingsNotification;
 extern NSString * const NMDidFailEditUserSettingsNotification;
+extern NSString * const NMWillPollUserNotification;
+extern NSString * const NMDidPollUserNotification;
+extern NSString * const NMDidFailPollUserNotification;
 
 // channel
 extern NSString * const NMWillGetChannelsNotification;
@@ -149,6 +154,9 @@ extern NSString * const NMDidFailSearchChannelsNotification;
 extern NSString * const NMWillGetFeaturedChannelsForCategories;
 extern NSString * const NMDidGetFeaturedChannelsForCategories;
 extern NSString * const NMDidFailGetFeaturedChannelsForCategories;
+extern NSString * const NMWillCompareSubscribedChannelsNotification;
+extern NSString * const NMDidCompareSubscribedChannelsNotification;
+extern NSString * const NMDidFailCompareSubscribedChannelsNotification;
 
 extern NSString * const NMWillGetChannelDetailNotification;
 extern NSString * const NMDidGetChannelDetailNotification;
