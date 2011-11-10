@@ -37,8 +37,8 @@
 @synthesize channelsScrollView;
 @synthesize channelsPageControl;
 @synthesize featuredCategories;
-@synthesize featuredChannels;
 @synthesize subscribedChannels;
+@synthesize subscribingChannels;
 @synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -67,9 +67,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [mainGradient release];
-    [featuredChannels release];
-    [subscribingChannels release];
     [subscribedChannels release];
+    [subscribingChannels release];
     [categoriesView release];
     [categoryGrid release];
     [proceedToSocialButton release];
@@ -112,7 +111,6 @@
 - (void)notifyVideosReady
 {
     // Allow the user to proceed past the info step
-    [proceedToChannelsButton setTitle:@"NEXT" forState:UIControlStateNormal];
     proceedToChannelsButton.hidden = NO;
 }
 
@@ -224,10 +222,7 @@
     [self transitionFromView:categoriesView toView:socialView];
     currentView = socialView;
     
-    if ([categoryGrid.selectedButtonIndexes count] == 0) {
-        // Didn't select any categories, skip the subscribe step
-        [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-    } else {
+    if ([categoryGrid.selectedButtonIndexes count] > 0) {
         [self subscribeToSelectedCategories];
     }
 }
@@ -236,6 +231,10 @@
 {
     [self transitionFromView:socialView toView:infoView];
     currentView = infoView;
+    
+    if ([subscribingChannels count] == 0) {
+        [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+    }
 }
 
 - (IBAction)switchToChannelsView:(id)sender
@@ -267,13 +266,10 @@
 
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
 {
-    self.featuredChannels = [NSSet setWithArray:[[aNotification userInfo] objectForKey:@"channels"]];
+    self.subscribingChannels = [NSMutableSet setWithArray:[[aNotification userInfo] objectForKey:@"channels"]];
     
-    if (currentView != channelsView) {
-        subscribingChannels = [[NSMutableSet alloc] initWithSet:featuredChannels];
-        for (NMChannel *channel in subscribingChannels) {
-            [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
-        }
+    for (NMChannel *channel in subscribingChannels) {
+        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
     }
 }
 
@@ -283,8 +279,10 @@
     [subscribingChannels removeObject:channel];
     
     if ([subscribingChannels count] == 0) {
-        // All channels have been subscribed to - ready to get the channel list
-        [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+        // All channels have been subscribed to
+        if (currentView == infoView) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+        }
     }
 }
 

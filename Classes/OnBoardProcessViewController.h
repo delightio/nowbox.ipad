@@ -14,15 +14,14 @@
 @protocol OnBoardProcessViewControllerDelegate;
 
 @interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {
-    NSMutableSet *subscribingChannels;
     BOOL scrollingFromPageControl;
     
     UIView *currentView;    
 }
 
 @property (nonatomic, retain) NSArray *featuredCategories;
-@property (nonatomic, retain) NSSet *featuredChannels;
 @property (nonatomic, retain) NSArray *subscribedChannels;
+@property (nonatomic, retain) NSMutableSet *subscribingChannels;
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
 @property (nonatomic, retain) IBOutlet GradientView *mainGradient;
