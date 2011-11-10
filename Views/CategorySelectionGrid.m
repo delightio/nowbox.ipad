@@ -79,8 +79,8 @@
     NSUInteger row = 0, col = 0;
     NSUInteger numberOfRows = ceil((float)[categoryTitles count] / (numberOfColumns > 0 ? numberOfColumns : 1));
     
-    CGFloat itemWidth = (self.frame.size.width - (numberOfColumns - 1) * horizontalSpacing) / numberOfColumns;
-    CGFloat itemHeight = (self.frame.size.height - (numberOfRows - 1) * verticalSpacing) / numberOfRows;
+    CGFloat itemWidth = round((self.frame.size.width - (numberOfColumns - 1) * horizontalSpacing) / numberOfColumns);
+    CGFloat itemHeight = round((self.frame.size.height - (numberOfRows - 1) * verticalSpacing) / numberOfRows);
     
     for (NSString *title in categoryTitles) {
         OnBoardProcessCategoryView *categoryView = [[[recycledViews anyObject] retain] autorelease];

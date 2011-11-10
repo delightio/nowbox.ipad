@@ -114,8 +114,8 @@
 
 - (void)populatePage:(NSUInteger)page
 {
-    CGFloat columnWidth = (self.frame.size.width - pageMarginLeft - pageMarginRight) / columnsPerPage;
-    CGFloat rowHeight = self.frame.size.height / rowsPerPage;
+    CGFloat columnWidth = round((self.frame.size.width - pageMarginLeft - pageMarginRight) / columnsPerPage);
+    CGFloat rowHeight = round(self.frame.size.height / rowsPerPage);
     
     for (NSInteger row = 0; row < rowsPerPage; row++) {
         for (NSInteger col = 0; col < columnsPerPage && (page * rowsPerPage * columnsPerPage + row * columnsPerPage + col < numberOfItems); col++) {
