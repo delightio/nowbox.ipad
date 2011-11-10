@@ -490,12 +490,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
 	player.playbackDelegate = self;
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-//	if ( NM_RUNNING_IOS_5 ) {
+	if ( kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber_iOS_4_0 ) {
 		player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 //		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
-//	}
-#endif
+	}
 	movieView.player = player;
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
