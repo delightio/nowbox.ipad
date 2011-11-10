@@ -52,6 +52,8 @@ extern NSString * const NMAuthTokenHeaderKey;
 @property (nonatomic, readonly) NSMutableData * buffer;
 @property (nonatomic, retain) NSNumber * targetID;
 
++ (NSString *)stringByAddingPercentEscapes:(NSString *)str;
+
 - (void)prepareDataBuffer;
 - (void)clearDataBuffer;
 - (NSMutableURLRequest *)URLRequest;
