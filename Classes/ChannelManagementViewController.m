@@ -414,7 +414,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					[backgroundView setImage:channelSubscribedBackgroundImage];                        
 				} else {
 					titleLbl.text = @"YouTube";
-					detailLbl.text = @"Sign in to synchronize your channel subscription, Watch Later and favorite videos.";
+					detailLbl.text = @"Not available in this preview";
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 					
@@ -627,6 +627,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			switch ( indexPath.section ) {
 				case 0:
 				{
+					return;
 					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 						// show channel detail? any detail to show?
 						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
