@@ -67,9 +67,6 @@
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
-		83E04678144F79EC00C91525 /* tooltip-channel-management.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04671144F79EC00C91525 /* tooltip-channel-management.png */; };
-		83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04673144F79EC00C91525 /* tooltip-share-videos.png */; };
-		83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */; };
 		83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C48C14509EF400AD8880 /* ToolTip.m */; };
 		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
 		83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2DC1468C3720051D990 /* ShareViewController.m */; };
@@ -313,9 +310,6 @@
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
 		83E0466F144F79EC00C91525 /* tooltip-bad-video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-bad-video.png"; sourceTree = "<group>"; };
-		83E04671144F79EC00C91525 /* tooltip-channel-management.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-channel-management.png"; sourceTree = "<group>"; };
-		83E04673144F79EC00C91525 /* tooltip-share-videos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-videos.png"; sourceTree = "<group>"; };
-		83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-swipe-next-video.png"; sourceTree = "<group>"; };
 		83F7C48B14509EF400AD8880 /* ToolTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTip.h; sourceTree = "<group>"; };
 		83F7C48C14509EF400AD8880 /* ToolTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTip.m; sourceTree = "<group>"; };
 		83F7C48F1450B22700AD8880 /* TouchForwardingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchForwardingView.h; sourceTree = "<group>"; };
@@ -816,9 +810,6 @@
 				A9FEF58A13D416C40094514C /* toolbar-expand.png */,
 				A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */,
 				83E0466F144F79EC00C91525 /* tooltip-bad-video.png */,
-				83E04671144F79EC00C91525 /* tooltip-channel-management.png */,
-				83E04673144F79EC00C91525 /* tooltip-share-videos.png */,
-				83E04675144F79EC00C91525 /* tooltip-swipe-next-video.png */,
 				A92CE47013E56B4C00007B04 /* top-bar-author-background.png */,
 				A92CE47113E56B4C00007B04 /* top-bar-channel-background.png */,
 				A92CE47513E56BCB00007B04 /* top-bar-title-background.png */,
@@ -1206,9 +1197,6 @@
 				A9D04874144FB39600EFD21F /* user_placeholder_image.png in Resources */,
 				83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */,
 				83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */,
-				83E04678144F79EC00C91525 /* tooltip-channel-management.png in Resources */,
-				83E0467A144F79EC00C91525 /* tooltip-share-videos.png in Resources */,
-				83E0467C144F79EC00C91525 /* tooltip-swipe-next-video.png in Resources */,
 				A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */,
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
 				A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */,
