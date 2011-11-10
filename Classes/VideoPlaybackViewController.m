@@ -988,7 +988,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( playbackModelController.nextVideo == nil ) {
 			// finish up playing the whole channel
 			didPlayToEnd = NO;
-			[self dismissModalViewControllerAnimated:YES];
 		} else {
 			[self showNextVideo:YES];
 		}
