@@ -11,15 +11,15 @@
 @protocol CategorySelectionGridDelegate;
 
 @interface CategorySelectionGrid : UIView {
-    NSMutableArray *categoryButtons;
-    NSMutableSet *recycledButtons;
+    NSMutableArray *categoryViews;
+    NSMutableSet *recycledViews;
 }
 
 @property (nonatomic, retain) NSArray *categoryTitles;
 @property (nonatomic, assign) NSUInteger numberOfColumns;
 @property (nonatomic, assign) CGFloat horizontalSpacing;
 @property (nonatomic, assign) CGFloat verticalSpacing;
-@property (nonatomic, retain) NSMutableIndexSet *selectedButtonIndexes;
+@property (nonatomic, retain) NSMutableIndexSet *selectedViewIndexes;
 @property (nonatomic, assign) id<CategorySelectionGridDelegate> delegate;
 
 @end

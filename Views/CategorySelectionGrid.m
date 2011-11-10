@@ -7,6 +7,7 @@
 //
 
 #import "CategorySelectionGrid.h"
+#import "OnBoardProcessCategoryView.h"
 
 @implementation CategorySelectionGrid
 
@@ -14,15 +15,15 @@
 @synthesize numberOfColumns;
 @synthesize horizontalSpacing;
 @synthesize verticalSpacing;
-@synthesize selectedButtonIndexes;
+@synthesize selectedViewIndexes;
 @synthesize delegate;
 
 - (void)setup
 {
     self.backgroundColor = [UIColor clearColor];
-    categoryButtons = [[NSMutableArray alloc] init];
-    recycledButtons = [[NSMutableSet alloc] init];
-    selectedButtonIndexes = [[NSMutableIndexSet alloc] init];
+    categoryViews = [[NSMutableArray alloc] init];
+    recycledViews = [[NSMutableSet alloc] init];
+    selectedViewIndexes = [[NSMutableIndexSet alloc] init];
     numberOfColumns = 3;
     horizontalSpacing = 10.0f;
     verticalSpacing = 10.0f;
@@ -58,23 +59,23 @@
 - (void)dealloc
 {
     [categoryTitles release];
-    [categoryButtons release];
-    [recycledButtons release];
-    [selectedButtonIndexes release];
+    [categoryViews release];
+    [recycledViews release];
+    [selectedViewIndexes release];
     
     [super dealloc];
 }
 
 - (void)layoutSubviews
 {
-    // Remove old buttons
-    for (UIButton *button in categoryButtons) {
-        [button removeFromSuperview];
-        [recycledButtons addObject:button];
+    // Remove old views
+    for (UIView *view in categoryViews) {
+        [view removeFromSuperview];
+        [recycledViews addObject:view];
     }
-    [categoryButtons removeAllObjects];
+    [categoryViews removeAllObjects];
     
-    // Add new buttons
+    // Add new views
     NSUInteger row = 0, col = 0;
     NSUInteger numberOfRows = ceil((float)[categoryTitles count] / (numberOfColumns > 0 ? numberOfColumns : 1));
     
@@ -82,29 +83,22 @@
     CGFloat itemHeight = (self.frame.size.height - (numberOfRows - 1) * verticalSpacing) / numberOfRows;
     
     for (NSString *title in categoryTitles) {
-        UIButton *categoryButton = [[[recycledButtons anyObject] retain] autorelease];
-        if (categoryButton) {
-            [recycledButtons removeObject:categoryButton];
+        OnBoardProcessCategoryView *categoryView = [[[recycledViews anyObject] retain] autorelease];
+        if (categoryView) {
+            [recycledViews removeObject:categoryView];
         } else {
-            categoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            categoryView = [[[OnBoardProcessCategoryView alloc] init] autorelease];
         }
         
-        categoryButton.frame = CGRectMake(col * (itemWidth + horizontalSpacing), row * (itemHeight + verticalSpacing),
+        categoryView.frame = CGRectMake(col * (itemWidth + horizontalSpacing), row * (itemHeight + verticalSpacing),
                                           itemWidth, itemHeight);
-        [categoryButton setTitle:title forState:UIControlStateNormal];
-        [categoryButton setTag:row*numberOfColumns + col];        
-        [categoryButton addTarget:self action:@selector(categoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [categoryView setTitle:title];
+        [categoryView.button setTag:row*numberOfColumns + col];        
+        [categoryView.button addTarget:self action:@selector(categoryViewPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [categoryView.button setSelected:[selectedViewIndexes containsIndex:categoryView.tag]];
         
-        if ([selectedButtonIndexes containsIndex:categoryButton.tag]) {
-            [categoryButton setBackgroundImage:[[UIImage imageNamed:@"button-red-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];    
-            [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        } else {
-            [categoryButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-            [categoryButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        }
-
-        [self addSubview:categoryButton];
-        [categoryButtons addObject:categoryButton];
+        [self addSubview:categoryView];
+        [categoryViews addObject:categoryView];
         
         col++;
         if (col >= numberOfColumns) {
@@ -114,18 +108,17 @@
     }
 }
 
-- (void)categoryButtonPressed:(id)sender
+- (void)categoryViewPressed:(id)sender
 {
-    UIButton *categoryButton = (UIButton *)sender;
-    NSInteger categoryIndex = [categoryButton tag];
-    if ([selectedButtonIndexes containsIndex:categoryIndex]) {
-        [categoryButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-        [categoryButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];        
-        [selectedButtonIndexes removeIndex:categoryIndex];
+    UIButton *button = (UIButton *)sender;
+    NSInteger categoryIndex = button.tag;
+    
+    if ([selectedViewIndexes containsIndex:categoryIndex]) {
+        [button setSelected:NO];
+        [selectedViewIndexes removeIndex:categoryIndex];
     } else {
-        [categoryButton setBackgroundImage:[[UIImage imageNamed:@"button-red-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-        [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [selectedButtonIndexes addIndex:categoryIndex];
+        [button setSelected:YES];
+        [selectedViewIndexes addIndex:categoryIndex];
     }
     
     [delegate categorySelectionGrid:self didSelectCategoryAtIndex:categoryIndex];
@@ -159,10 +152,10 @@
     [self setNeedsLayout];
 }
 
-- (void)setSelectedButtonIndexes:(NSMutableIndexSet *)aSelectedButtonIndexes
+- (void)setSelectedViewIndexes:(NSMutableIndexSet *)aSelectedViewIndexes
 {
-    [selectedButtonIndexes release];
-    selectedButtonIndexes = [[NSMutableIndexSet alloc] initWithIndexSet:aSelectedButtonIndexes];
+    [selectedViewIndexes release];
+    selectedViewIndexes = [[NSMutableIndexSet alloc] initWithIndexSet:aSelectedViewIndexes];
 
     [self setNeedsLayout];    
 }

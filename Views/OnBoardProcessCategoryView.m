@@ -1,25 +1,23 @@
 //
-//  OnBoardProcessChannelView.m
+//  OnBoardProcessCategoryView.m
 //  ipad
 //
-//  Created by Chris Haugli on 11/3/11.
+//  Created by Chris Haugli on 11/10/11.
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 
-#import "OnBoardProcessChannelView.h"
+#import "OnBoardProcessCategoryView.h"
 
-@implementation OnBoardProcessChannelView
+@implementation OnBoardProcessCategoryView
 
 @synthesize contentView;
-@synthesize thumbnailImage;
+@synthesize button;
 @synthesize titleLabel;
-@synthesize reasonLabel;
 @synthesize title;
-@synthesize reason;
 
 - (void)setupWithExistingFrame:(BOOL)useExistingFrame
 {
-    [[NSBundle mainBundle] loadNibNamed:@"OnBoardProcessChannelView" owner:self options:nil];
+    [[NSBundle mainBundle] loadNibNamed:@"OnBoardProcessCategoryView" owner:self options:nil];
     
     if (useExistingFrame) {
         contentView.frame = self.bounds;
@@ -31,7 +29,6 @@
     [self addSubview:contentView];
     
     titleLabel.text = @"";
-    reasonLabel.text = @"";
 }
 
 - (id)init
@@ -64,9 +61,8 @@
 - (void)dealloc
 {
     [contentView release];
-    [thumbnailImage release];
     [titleLabel release];
-    [reasonLabel release];
+    [button release];
     [title release];
     
     [super dealloc];
@@ -79,15 +75,6 @@
         title = [aTitle copy];
         titleLabel.text = aTitle;
     }
-}
-
-- (void)setReason:(NSString *)aReason
-{
-    if (reason != aReason) {
-        [reason release];
-        reason = [aReason copy];
-        reasonLabel.text = aReason;        
-    }    
 }
 
 @end

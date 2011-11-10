@@ -109,7 +109,7 @@
 
 - (void)subscribeToSelectedCategories
 {
-    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:categoryGrid.selectedButtonIndexes]];
+    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:categoryGrid.selectedViewIndexes]];
 }
 
 - (void)notifyVideosReady
@@ -238,7 +238,7 @@
     [self transitionFromView:categoriesView toView:socialView];
     currentView = socialView;
     
-    if ([categoryGrid.selectedButtonIndexes count] > 0) {
+    if ([categoryGrid.selectedViewIndexes count] > 0) {
         [self subscribeToSelectedCategories];
     }
 }
@@ -306,7 +306,7 @@
 - (NSString *)reasonForChannel:(NMChannel *)channel
 {
     // Is the channel part of a category the user selected?
-    NSArray *selectedCategories = [featuredCategories objectsAtIndexes:categoryGrid.selectedButtonIndexes];    
+    NSArray *selectedCategories = [featuredCategories objectsAtIndexes:categoryGrid.selectedViewIndexes];    
     for (NMCategory *category in selectedCategories) {        
         if ([channel.categories containsObject:category]) {
             return [NSString stringWithFormat:@"from %@", category.title];

@@ -71,6 +71,8 @@
 		83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852143145A34000047B7E0 /* BugSense-iOS.framework */; };
 		83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852145145A34100047B7E0 /* CoreLocation.framework */; };
 		83857AF0146B2F1200E3B3DA /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83857AEF146B2F1200E3B3DA /* GradientView.m */; };
+		83AC4E82146C7D0E00624448 /* OnBoardProcessCategoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83AC4E81146C7D0E00624448 /* OnBoardProcessCategoryView.xib */; };
+		83AC4E85146C7F5A00624448 /* OnBoardProcessCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */; };
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
@@ -328,6 +330,9 @@
 		83857ACD145B7F87002FFB0B /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		83857AEE146B2F1200E3B3DA /* GradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GradientView.h; sourceTree = "<group>"; };
 		83857AEF146B2F1200E3B3DA /* GradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GradientView.m; sourceTree = "<group>"; };
+		83AC4E81146C7D0E00624448 /* OnBoardProcessCategoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessCategoryView.xib; sourceTree = "<group>"; };
+		83AC4E83146C7F5A00624448 /* OnBoardProcessCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessCategoryView.h; sourceTree = "<group>"; };
+		83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessCategoryView.m; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -637,6 +642,7 @@
 			children = (
 				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
 				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
+				83AC4E81146C7D0E00624448 /* OnBoardProcessCategoryView.xib */,
 				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
 			);
 			name = Launch;
@@ -667,6 +673,8 @@
 		83810ADD1464659E003D3F76 /* Launch */ = {
 			isa = PBXGroup;
 			children = (
+				83AC4E83146C7F5A00624448 /* OnBoardProcessCategoryView.h */,
+				83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */,
 				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
 				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
 				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
@@ -1278,6 +1286,7 @@
 				837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */,
 				A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */,
 				83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */,
+				83AC4E82146C7D0E00624448 /* OnBoardProcessCategoryView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1347,6 +1356,7 @@
 				837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */,
 				83810AE01464A633003D3F76 /* GridScrollView.m in Sources */,
 				83857AF0146B2F1200E3B3DA /* GradientView.m in Sources */,
+				83AC4E85146C7F5A00624448 /* OnBoardProcessCategoryView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
