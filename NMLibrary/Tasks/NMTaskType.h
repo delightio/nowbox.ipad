@@ -22,3 +22,4 @@
 #import "NMCheckUpdateTask.h"
 #import "NMTokenTask.h"
 #import "NMPostSharingTask.h"
+#import "NMPollUserTask.h"

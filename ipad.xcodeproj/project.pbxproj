@@ -145,6 +145,7 @@
 		A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D313439B540022BF2C /* CoreMedia.framework */; };
 		A9719F451402F54C00393975 /* seek-time-bubble-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9719F441402F54C00393975 /* seek-time-bubble-background.png */; };
 		A973AC2713AAFAD90050025B /* NMChannelPanelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A973AC2613AAFAD90050025B /* NMChannelPanelView.m */; };
+		A978AEEE146B61F300F7D3E5 /* NMPollUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A978AEEB146B60A700F7D3E5 /* NMPollUserTask.m */; };
 		A97E238013A6E8F400EBA5EE /* ChannelPanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */; };
 		A97EBE5D13F7B2AF00CC0F5C /* SocialLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */; };
 		A97EBE6013F7B2BF00CC0F5C /* SocialLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */; };
@@ -452,6 +453,8 @@
 		A9719F441402F54C00393975 /* seek-time-bubble-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "seek-time-bubble-background.png"; sourceTree = "<group>"; };
 		A973AC2513AAFAD90050025B /* NMChannelPanelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelPanelView.h; sourceTree = "<group>"; };
 		A973AC2613AAFAD90050025B /* NMChannelPanelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelPanelView.m; sourceTree = "<group>"; };
+		A978AEEA146B60A700F7D3E5 /* NMPollUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPollUserTask.h; sourceTree = "<group>"; };
+		A978AEEB146B60A700F7D3E5 /* NMPollUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPollUserTask.m; sourceTree = "<group>"; };
 		A97E237E13A6E8F400EBA5EE /* ChannelPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelPanelController.h; sourceTree = "<group>"; };
 		A97E237F13A6E8F400EBA5EE /* ChannelPanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelPanelController.m; sourceTree = "<group>"; };
 		A97EBE5B13F7B2AF00CC0F5C /* SocialLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialLoginViewController.h; sourceTree = "<group>"; };
@@ -950,6 +953,8 @@
 		A970504A13438F860022BF2C /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
+				A978AEEA146B60A700F7D3E5 /* NMPollUserTask.h */,
+				A978AEEB146B60A700F7D3E5 /* NMPollUserTask.m */,
 				A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */,
 				A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */,
 				A970504B13438F860022BF2C /* NMGetChannelsTask.h */,
@@ -1349,6 +1354,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A978AEEE146B61F300F7D3E5 /* NMPollUserTask.m in Sources */,
 				A9976F0613BB35AD00B06DFF /* JSONKit.m in Sources */,
 				A9976F0713BB35AD00B06DFF /* NMDataController.m in Sources */,
 				A9976F0813BB35AD00B06DFF /* NMCacheController.m in Sources */,
