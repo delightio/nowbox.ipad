@@ -237,9 +237,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    NSTimeInterval elapsedSessionTime = now - sessionStartTime;
+    NSTimeInterval elapsedTotalTime = now - appStartTime;
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedSessionTime], AnalyticsPropertySessionElapsedTime, 
+                                                                                [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = YES;
 }
 
@@ -275,8 +277,9 @@ NSInteger NM_LAST_CHANNEL_ID;
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
+    NSTimeInterval elapsedTotalTime = [[NSDate date] timeIntervalSince1970] - appStartTime;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+                                                                                [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = NO;
 }
 
