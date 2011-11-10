@@ -25,6 +25,7 @@ extern NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY;
 extern NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY;
 extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 extern NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY;
+extern NSString * const NM_FIRST_LAUNCH_KEY;
 extern NSNumber * NM_SESSION_ID;
 extern BOOL NM_USER_SHOW_FAVORITE_CHANNEL;
 extern NSInteger NM_VIDEO_QUALITY;

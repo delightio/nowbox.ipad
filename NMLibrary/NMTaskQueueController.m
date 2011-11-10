@@ -203,6 +203,14 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		NSLog(@"Should schedule polling timer");
 		[self pollServerForChannelReadiness];
 	}
+	if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+		// check if it's first launch
+		BOOL firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+		if ( firstLaunch ) {
+			// need to poll the server to look for difference
+			
+		}
+	}
 }
 
 - (void)handleFailEditUserSettingsNotification:(NSNotification *)aNotification {
@@ -597,8 +605,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-//- (void)handleFailChannelPollingNotification:(NSNotification *)aNotification {
-//	
-//}
+- (void)pollForYouTubeSyncSignal {
+	
+}
 
 @end
