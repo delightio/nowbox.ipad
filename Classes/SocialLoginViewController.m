@@ -60,7 +60,7 @@
 			
 		case NMLoginYouTubeType:
 			self.title = @"YouTube";
-			filename = @"YouTubeLoading";
+			filename = @"YoutubeLoading";
 			break;
 			
 		default:

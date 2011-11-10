@@ -20,6 +20,7 @@
 #define kChannelGridNumberOfColumns 3
 #define kChannelGridItemHorizontalSpacing 300
 #define kChannelGridItemPadding 10
+#define kYouTubeSyncTimeoutInSeconds 15
 
 @implementation OnBoardProcessViewController
 
@@ -57,6 +58,7 @@
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];     
         [nc addObserver:self selector:@selector(handleDidVerifyUserNotification:) name:NMDidVerifyUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailVerifyUserNotification:) name:NMDidFailVerifyUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidPollUserNotification:) name:NMDidPollUserNotification object:nil];
     }
     
     return self;
@@ -66,6 +68,8 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
+    
     [mainGradient release];
     [subscribedChannels release];
     [subscribingChannels release];
@@ -112,6 +116,14 @@
 {
     // Allow the user to proceed past the info step
     proceedToChannelsButton.hidden = NO;
+}
+
+- (void)youtubeTimeoutTimerFired
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidPollUserNotification object:nil];
+    youtubeTimeoutTimer = nil;
+    youtubeSynced = YES;
+    [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 }
 
 #pragma mark - View lifecycle
@@ -183,7 +195,7 @@
 
 - (void)loginToSocialNetworkWithType:(NMSocialLoginType)loginType
 {
-    SocialLoginViewController *socialController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+    socialController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
     socialController.loginType = loginType;
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:socialController];
@@ -215,6 +227,7 @@
 - (void)dismissSocialLogin:(id)sender
 {
     [self dismissModalViewControllerAnimated:YES];
+    socialController = nil;
 }
 
 - (IBAction)switchToSocialView:(id)sender
@@ -232,7 +245,8 @@
     [self transitionFromView:socialView toView:infoView];
     currentView = infoView;
     
-    if ([subscribingChannels count] == 0) {
+    // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
+    if ([subscribingChannels count] == 0 && !NM_USER_YOUTUBE_SYNC_ACTIVE) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
 }
@@ -280,7 +294,7 @@
     
     if ([subscribingChannels count] == 0) {
         // All channels have been subscribed to
-        if (currentView == infoView) {
+        if (currentView == infoView ) {
             [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
         }
     }
@@ -328,6 +342,12 @@
     [youtubeButton setTitle:(NM_USER_YOUTUBE_SYNC_ACTIVE ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [facebookButton setTitle:(NM_USER_FACEBOOK_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [twitterButton setTitle:(NM_USER_TWITTER_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    
+    if (socialController.loginType == NMLoginYouTubeType && NM_USER_YOUTUBE_SYNC_ACTIVE) {
+        [youtubeTimeoutTimer invalidate];
+        youtubeTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:kYouTubeSyncTimeoutInSeconds target:self selector:@selector(youtubeTimeoutTimerFired) userInfo:nil repeats:NO];
+    }
+    
     [self dismissSocialLogin:nil];
 }
 
@@ -337,6 +357,18 @@
     [alertView show];
     [alertView release];
     [self dismissSocialLogin:nil];    
+}
+
+- (void)handleDidPollUserNotification:(NSNotification *)aNotification 
+{
+    if ([[[aNotification userInfo] objectForKey:@"youtube_synced"] boolValue]) {
+        youtubeSynced = YES;
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidPollUserNotification object:nil];
+        
+        if (currentView == infoView) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+        }
+    }
 }
 
 #pragma mark - UIAlertViewDelegate

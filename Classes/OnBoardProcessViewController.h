@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SocialLoginViewController.h"
 #import "CategorySelectionGrid.h"
 #import "GridScrollView.h"
 #import "GradientView.h"
@@ -17,6 +18,10 @@
     BOOL scrollingFromPageControl;
     
     UIView *currentView;    
+    NSTimer *youtubeTimeoutTimer;
+    BOOL youtubeSynced;
+    
+    SocialLoginViewController *socialController;
 }
 
 @property (nonatomic, retain) NSArray *featuredCategories;
