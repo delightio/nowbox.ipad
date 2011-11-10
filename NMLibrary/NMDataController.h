@@ -43,6 +43,8 @@
 	
 	// all subscribed channels should belong to this category
 	NMCategory * internalSubscribedChannelsCategory;
+	// for onboard process use only. Temporarily store a channel obtained from YouTube sync to this category for displaying the reason appropriately in the onboard process UI
+	NMCategory * internalYouTubeCategory;
 	
 	// internal channels
 	NMChannel * myQueueChannel, * favoriteVideoChannel;
@@ -58,6 +60,7 @@
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
 @property (nonatomic, retain) NMCategory * internalSubscribedChannelsCategory;
+@property (nonatomic, retain) NMCategory * internalYouTubeCategory;
 @property (nonatomic, readonly) NSArray * subscribedChannels;	// for debug purpose
 @property (nonatomic, readonly) NSArray * categories;
 @property (nonatomic, retain) NSArray * lastSessionVideoIDs;
