@@ -276,55 +276,34 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Launch / onboard process
-//- (void)setLaunchModeActive:(BOOL)flag {
-//	if ( flag ) {
-//		// set to full screen
-//		[self toggleChannelPanel:nil];
-//	}
-//	launchModeActive = flag;
-//}
 
 - (void)showLaunchView {
 	[launchController loadView];
-//	UIView * theView = launchController.progressContainerView;
-//	[theView removeFromSuperview];
 	[self.view addSubview:launchController.view];
-//	CGRect winRect = self.view.bounds;
-//	CGRect theRect = theView.frame;
-//	theRect.origin.x = winRect.size.width - theRect.size.width;
-//	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
-//	theView.frame = theRect;
-//	[self.view addSubview:launchController.progressContainerView];
 }
 
-//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
 - (void)showPlaybackView {
 	if ( launchModeActive ) {
-//		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
 		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
-		// bring the playback view to the front
-//		[self.view bringSubviewToFront:topLevelContainerView];
-		// cross fade the view
+
 		shouldFadeOutVideoThumbnail = YES;
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
+        [launchController.view removeFromSuperview];
+        [launchController release];
+        launchController = nil;
+        launchModeActive = NO;
+        playFirstVideoOnLaunchWhenReady = YES;
+        
+/*		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
 			// remove launch view
 			[launchController.view removeFromSuperview];
 			[launchController release];
 			launchController = nil;
 			launchModeActive = NO;
 			playFirstVideoOnLaunchWhenReady = YES;
-		}];
-		// slide in the view
-//		[UIView animateWithDuration:0.5f animations:^{
-//			topLevelContainerView.center = launchController.view.center;
-//			shouldFadeOutVideoThumbnail = YES;
-//		} completion:^(BOOL finished) {
-//			playFirstVideoOnLaunchWhenReady = YES;
-//			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
-//		}];
+		}];*/
 
 	} else {
 		// cross fade
@@ -344,10 +323,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}];
 #endif
 	}
-//	if ( !launchModeActive ) {
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-//	}
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     // Start monitoring for tooltips
     [[ToolTipController sharedToolTipController] startTimer];
