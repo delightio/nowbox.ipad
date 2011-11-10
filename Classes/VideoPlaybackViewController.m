@@ -413,6 +413,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		return;	// return if the channel object is nil
 	}
 	
+	[loadedControlView resetView];
 	// flush video player
 	[movieView.player removeAllItems];
 	// save the channel ID to user defaults
@@ -808,6 +809,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
+	[loadedControlView resetView];
 	[pool release];
 }
 
