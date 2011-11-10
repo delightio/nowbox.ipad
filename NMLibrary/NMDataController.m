@@ -31,6 +31,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize subscribedChannels;
 @synthesize internalSearchCategory;
 @synthesize internalSubscribedChannelsCategory;
+@synthesize internalYouTubeCategory;
 @synthesize myQueueChannel, favoriteVideoChannel;
 @synthesize userFacebookStreamChannel, userTwitterStreamChannel;
 @synthesize lastSessionVideoIDs;
@@ -70,6 +71,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[operationQueue release];
 	[internalSearchCategory release];
 	[internalSubscribedChannelsCategory release];
+	[internalYouTubeCategory release];
 	[channelEntityDescription release], [videoEntityDescription release];
 	[super dealloc];
 }
@@ -273,7 +275,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
 		NSNumber * searchCatID = [NSNumber numberWithInteger:-2];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id = %@", searchCatID]];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id == %@", searchCatID]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 		if ( result == nil || [result count] == 0 ) {
@@ -288,6 +290,29 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[request release];
 	}
 	return internalSubscribedChannelsCategory;
+}
+
+- (NMCategory *)internalYouTubeCategory {
+	if ( internalYouTubeCategory == nil ) {
+		// retrieve that category
+		NSFetchRequest * request = [[NSFetchRequest alloc] init];
+		[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
+		NSNumber * searchCatID = [NSNumber numberWithInteger:-3];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id == %@", searchCatID]];
+		[request setReturnsObjectsAsFaults:NO];
+		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+		if ( result == nil || [result count] == 0 ) {
+			// we need to create the category
+			NMCategory * categoryObj = [NSEntityDescription insertNewObjectForEntityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext];
+			categoryObj.title = @"YouTube";
+			categoryObj.nm_id = searchCatID;
+			self.internalYouTubeCategory = categoryObj;
+		} else {
+			self.internalYouTubeCategory = [result objectAtIndex:0];
+		}
+		[request release];
+	}
+	return internalYouTubeCategory;
 }
 
 #pragma mark Channels
@@ -647,6 +672,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		NMChannel * mobj;
 		for (mobj in result) {
 			[mobj removeCategories:mobj.categories];
+			// assign the "internal subscribed channels category" relationship back
+			[mobj addCategoriesObject:self.internalSubscribedChannelsCategory];
 		}
 	}
 	[request release];
