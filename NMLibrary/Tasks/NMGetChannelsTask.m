@@ -35,6 +35,10 @@ NSString * const NMWillGetFeaturedChannelsForCategories = @"NMWillGetFeaturedCha
 NSString * const NMDidGetFeaturedChannelsForCategories = @"NMDidGetFeaturedChannelsForCategories";
 NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeaturedChannelsForCategories";
 
+NSString * const NMWillCompareSubscribedChannelsNotification = @"NMWillCompareSubscribedChannelsNotification";
+NSString * const NMDidCompareSubscribedChannelsNotification = @"NMDidCompareSubscribedChannelsNotification";
+NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCompareSubscribedChannelsNotification";
+
 @implementation NMGetChannelsTask
 
 //@synthesize trendingChannel;
@@ -134,6 +138,12 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 	return self;
 }
 
+- (id)initCompareSubscribedChannels {
+	self = [self init];
+	command = NMCommandCompareSubscribedChannels;
+	return self;
+}
+
 - (void)dealloc {
 	[channelJSONKeys release];
 //	[trendingChannel release];
@@ -209,6 +219,7 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 			switch (command) {
 				case NMCommandGetSubscribedChannels:
 				case NMCommandGetChannelWithID:
+				case NMCommandCompareSubscribedChannels:
 #ifdef DEBUG_CHANNEL
 					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
 #else
@@ -373,6 +384,10 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 				if ( [chn.type integerValue] == NMChannelUserType ) {
 					chn.nm_hidden = [NSNumber numberWithBool:YES];
 				}
+				if ( command == NMCommandCompareSubscribedChannels ) {
+					// assign the new channel to YouTube group
+					[chn addCategoriesObject:ctrl.internalSubscribedChannelsCategory];
+				}
 			} else {
 				// the channel already exists, just update the sort order.
 				[chn setValuesForKeysWithDictionary:chnDict];
@@ -410,6 +425,8 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 			return NMWillGetChannelWithIDNotification;
 		case NMCommandGetFeaturedChannelsForCategories:
 			return NMWillGetFeaturedCategoriesNotification;
+		case NMCommandCompareSubscribedChannels:
+			return NMWillCompareSubscribedChannelsNotification;
 		default:
 			return NMWillGetChannelsNotification;
 	}
@@ -425,6 +442,8 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 			return NMDidGetChannelWithIDNotification;
 		case NMCommandGetFeaturedChannelsForCategories:
 			return NMDidGetFeaturedChannelsForCategories;
+		case NMCommandCompareSubscribedChannels:
+			return NMDidCompareSubscribedChannelsNotification;
 		default:
 			return NMDidGetChannelsNotification;
 	}
@@ -440,6 +459,8 @@ NSString * const NMDidFailGetFeaturedChannelsForCategories = @"NMDidFailGetFeatu
 			return NMDidFailGetChannelWithIDNotification;
 		case NMCommandGetFeaturedChannelsForCategories:
 			return NMDidFailGetFeaturedCategoriesNotification;
+		case NMCommandCompareSubscribedChannels:
+			return NMDidFailCompareSubscribedChannelsNotification;
 		default:
 			return NMDidFailGetChannelsNotification;
 	}
