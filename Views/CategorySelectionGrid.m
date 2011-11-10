@@ -23,7 +23,7 @@
     categoryButtons = [[NSMutableArray alloc] init];
     recycledButtons = [[NSMutableSet alloc] init];
     selectedButtonIndexes = [[NSMutableIndexSet alloc] init];
-    numberOfColumns = 2;
+    numberOfColumns = 3;
     horizontalSpacing = 10.0f;
     verticalSpacing = 10.0f;
 }

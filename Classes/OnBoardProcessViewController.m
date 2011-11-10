@@ -8,7 +8,6 @@
 
 #import "OnBoardProcessViewController.h"
 #import "OnBoardProcessChannelView.h"
-#import "CategorySelectionViewController.h"
 #import "SocialLoginViewController.h"
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
@@ -24,8 +23,10 @@
 
 @implementation OnBoardProcessViewController
 
-@synthesize loginView;
+@synthesize mainGradient;
+@synthesize categoriesView;
 @synthesize categoryGrid;
+@synthesize socialView;
 @synthesize infoView;
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
@@ -59,11 +60,13 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    [mainGradient release];
     [featuredChannels release];
     [subscribingChannels release];
     [subscribedChannels release];
-    [loginView release];
+    [categoriesView release];
     [categoryGrid release];
+    [socialView release];
     [infoView release];
     [proceedToChannelsButton release];    
     [channelsView release];
@@ -99,7 +102,7 @@
 - (void)notifyVideosReady
 {
     // Allow the user to proceed past the info step
-    [proceedToChannelsButton setTitle:@"Next" forState:UIControlStateNormal];
+    [proceedToChannelsButton setTitle:@"NEXT" forState:UIControlStateNormal];
     proceedToChannelsButton.enabled = YES;
 }
 
@@ -109,10 +112,15 @@
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"playback_background_pattern"]];
-    loginView.backgroundColor = [UIColor clearColor];
+    categoriesView.backgroundColor = [UIColor clearColor];
+    socialView.backgroundColor = [UIColor clearColor];
     infoView.backgroundColor = [UIColor clearColor];
     channelsView.backgroundColor = [UIColor clearColor];
+    categoryGrid.backgroundColor = [UIColor clearColor];
+    
+    [mainGradient setColours:242:242:242 :234:234:234];
+    mainGradient.layer.cornerRadius = 5;
+    mainGradient.layer.masksToBounds = YES;
     
     // Sort the categories by name
     NSArray *categories = [[[NMTaskQueueController sharedTaskQueueController] dataController] categories];
@@ -131,17 +139,19 @@
     channelsScrollView.pageMarginRight = 50;
     
     // Show the login page to start
-    [loginView setFrame:self.view.bounds];
-    [self.view addSubview:loginView];    
-    currentView = loginView;
+    [categoriesView setFrame:self.view.bounds];
+    [self.view addSubview:categoriesView];    
+    currentView = categoriesView;
     
     [[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 }
 
 - (void)viewDidUnload
 {
-    self.loginView = nil;
+    self.mainGradient = nil;
+    self.categoriesView = nil;
     self.categoryGrid = nil;
+    self.socialView = nil;
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
@@ -152,12 +162,6 @@
     [super viewDidUnload];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
@@ -165,40 +169,59 @@
 
 #pragma mark - Actions
 
-- (IBAction)loginToYouTube:(id)sender
+- (void)loginToSocialNetworkWithType:(NMSocialLoginType)loginType
 {
     SocialLoginViewController *socialController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-    socialController.loginType = NMLoginYouTubeType;
+    socialController.loginType = loginType;
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:socialController];
 	navController.navigationBar.barStyle = UIBarStyleBlack;
-    socialController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissYouTubeLogin:)] autorelease];
-
+    socialController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSocialLogin:)] autorelease];
+    
     [navController setModalPresentationStyle:UIModalPresentationFormSheet];
     [self presentModalViewController:navController animated:YES];
     
     [socialController release];
-    [navController release];    
+    [navController release];      
 }
 
-- (IBAction)dismissYouTubeLogin:(id)sender
+- (IBAction)loginToYouTube:(id)sender
+{
+    [self loginToSocialNetworkWithType:NMLoginYouTubeType];
+}
+
+- (IBAction)loginToFacebook:(id)sender
+{
+    [self loginToSocialNetworkWithType:NMLoginFacebookType];
+}
+
+- (IBAction)loginToTwitter:(id)sender
+{
+    [self loginToSocialNetworkWithType:NMLoginTwitterType];
+}
+
+- (void)dismissSocialLogin:(id)sender
 {
     [self dismissModalViewControllerAnimated:YES];
 }
 
+- (IBAction)switchToSocialView:(id)sender
+{
+    [self transitionFromView:categoriesView toView:socialView];
+    currentView = socialView;
+    
+    if ([categoryGrid.selectedButtonIndexes count] == 0) {
+        // Didn't select any categories, skip the subscribe step
+        [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+    } else {
+        [self subscribeToSelectedCategories];
+    }
+}
+
 - (IBAction)switchToInfoView:(id)sender
 {
-    [self transitionFromView:loginView toView:infoView];
+    [self transitionFromView:socialView toView:infoView];
     currentView = infoView;
-    
-    if (userCreated) {
-        if ([categoryGrid.selectedButtonIndexes count] == 0) {
-            // Didn't select any categories, skip the subscribe step
-            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-        } else {
-            [self subscribeToSelectedCategories];
-        }
-    }
 }
 
 - (IBAction)switchToChannelsView:(id)sender
@@ -213,23 +236,6 @@
 - (IBAction)switchToPlaybackView:(id)sender
 {
     [delegate onBoardProcessViewControllerDidFinish:self];
-}
-
-- (IBAction)addInterests:(id)sender
-{
-    CategorySelectionViewController *categorySelectionController = [[CategorySelectionViewController alloc] initWithCategories:featuredCategories 
-                                                                                                       selectedCategoryIndexes:categoryGrid.selectedButtonIndexes
-                                                                                                            subscribedChannels:featuredChannels];
-    categorySelectionController.delegate = self;
-    
-	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:categorySelectionController];
-	navController.navigationBar.barStyle = UIBarStyleBlack;
-    
-    [navController setModalPresentationStyle:UIModalPresentationFormSheet];
-    [self presentModalViewController:navController animated:YES];
-    
-    [categorySelectionController release];
-    [navController release];
 }
 
 - (IBAction)pageControlValueChanged:(id)sender
@@ -279,9 +285,6 @@
 
 - (NSString *)reasonForChannel:(NMChannel *)channel
 {
-    // Is the channel one of the user's YouTube channels?
-    // TODO
-    
     // Is the channel part of a category the user selected?
     NSArray *selectedCategories = [featuredCategories objectsAtIndexes:categoryGrid.selectedButtonIndexes];    
     for (NMCategory *category in selectedCategories) {        
@@ -290,7 +293,7 @@
         }
     }
     
-    return @"Featured channel";
+    return @"From YouTube";
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
@@ -361,13 +364,6 @@
     [channelView.thumbnailImage setImageForChannel:channel];
     
     return channelView;
-}
-
-#pragma mark - CategorySelectionViewControllerDelegate;
-
-- (void)categorySelectionViewControllerWillDismiss:(CategorySelectionViewController *)controller
-{
-    categoryGrid.selectedButtonIndexes = controller.categoryGrid.selectedButtonIndexes;
 }
 
 @end

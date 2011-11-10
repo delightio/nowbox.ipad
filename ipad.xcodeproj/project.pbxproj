@@ -56,22 +56,21 @@
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
 		837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C741414631012009F3C2A /* OnBoardProcessChannelView.m */; };
 		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
-		837C742714637557009F3C2A /* CategorySelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742614637557009F3C2A /* CategorySelectionViewController.m */; };
 		837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742A14637998009F3C2A /* CategorySelectionGrid.m */; };
-		83810AD91464655F003D3F76 /* CategorySelectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83810AD81464655F003D3F76 /* CategorySelectionView.xib */; };
-		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		837E904B14587FA3009F32DD /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E903F14587FA3009F32DD /* MPCJSONDataSerializer.m */; };
 		837E904C14587FA3009F32DD /* MPCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904114587FA3009F32DD /* MPCJSONSerializer.m */; };
 		837E904D14587FA3009F32DD /* MPCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904314587FA3009F32DD /* MPCSerializedJSONData.m */; };
 		837E904E14587FA3009F32DD /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904614587FA3009F32DD /* NSData+MPBase64.m */; };
 		837E904F14587FA3009F32DD /* MixpanelAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904814587FA3009F32DD /* MixpanelAPI.m */; };
 		837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904A14587FA3009F32DD /* MixpanelEvent.m */; };
+		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
 		83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852143145A34000047B7E0 /* BugSense-iOS.framework */; };
 		83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852145145A34100047B7E0 /* CoreLocation.framework */; };
+		83857AF0146B2F1200E3B3DA /* GradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83857AEF146B2F1200E3B3DA /* GradientView.m */; };
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
@@ -300,13 +299,8 @@
 		837C741314631012009F3C2A /* OnBoardProcessChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessChannelView.h; sourceTree = "<group>"; };
 		837C741414631012009F3C2A /* OnBoardProcessChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessChannelView.m; sourceTree = "<group>"; };
 		837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessChannelView.xib; sourceTree = "<group>"; };
-		837C742514637557009F3C2A /* CategorySelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySelectionViewController.h; sourceTree = "<group>"; };
-		837C742614637557009F3C2A /* CategorySelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionViewController.m; sourceTree = "<group>"; };
 		837C742914637998009F3C2A /* CategorySelectionGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySelectionGrid.h; sourceTree = "<group>"; };
 		837C742A14637998009F3C2A /* CategorySelectionGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionGrid.m; sourceTree = "<group>"; };
-		83810AD81464655F003D3F76 /* CategorySelectionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategorySelectionView.xib; sourceTree = "<group>"; };
-		83810ADE1464A633003D3F76 /* GridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridScrollView.h; sourceTree = "<group>"; };
-		83810ADF1464A633003D3F76 /* GridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridScrollView.m; sourceTree = "<group>"; };
 		837E903E14587FA3009F32DD /* MPCJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONDataSerializer.h; sourceTree = "<group>"; };
 		837E903F14587FA3009F32DD /* MPCJSONDataSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCJSONDataSerializer.m; sourceTree = "<group>"; };
 		837E904014587FA3009F32DD /* MPCJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONSerializer.h; sourceTree = "<group>"; };
@@ -319,6 +313,8 @@
 		837E904814587FA3009F32DD /* MixpanelAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelAPI.m; sourceTree = "<group>"; };
 		837E904914587FA3009F32DD /* MixpanelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelEvent.h; sourceTree = "<group>"; };
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
+		83810ADE1464A633003D3F76 /* GridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridScrollView.h; sourceTree = "<group>"; };
+		83810ADF1464A633003D3F76 /* GridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridScrollView.m; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
@@ -329,6 +325,8 @@
 		83852143145A34000047B7E0 /* BugSense-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "BugSense-iOS.framework"; path = "Libraries/BugSense-iOS.framework"; sourceTree = "<group>"; };
 		83852145145A34100047B7E0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		83857ACD145B7F87002FFB0B /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
+		83857AEE146B2F1200E3B3DA /* GradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GradientView.h; sourceTree = "<group>"; };
+		83857AEF146B2F1200E3B3DA /* GradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GradientView.m; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -580,54 +578,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		83810ADA14646569003D3F76 /* Launch */ = {
-			isa = PBXGroup;
-			children = (
-				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
-				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
-				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
-				83810AD81464655F003D3F76 /* CategorySelectionView.xib */,
-			);
-			name = Launch;
-			sourceTree = "<group>";
-		};
-		83810ADB14646578003D3F76 /* Launch */ = {
-			isa = PBXGroup;
-			children = (
-				A9389B83143109CE00959946 /* LaunchController.h */,
-				A9389B84143109CE00959946 /* LaunchController.m */,
-				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
-				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
-				837C742514637557009F3C2A /* CategorySelectionViewController.h */,
-				837C742614637557009F3C2A /* CategorySelectionViewController.m */,
-			);
-			name = Launch;
-			sourceTree = "<group>";
-		};
-		83810ADC14646589003D3F76 /* Tooltips */ = {
-			isa = PBXGroup;
-			children = (
-				83F7C48B14509EF400AD8880 /* ToolTip.h */,
-				83F7C48C14509EF400AD8880 /* ToolTip.m */,
-				83E04669144F468300C91525 /* ToolTipController.h */,
-				83E0466A144F468300C91525 /* ToolTipController.m */,
-			);
-			name = Tooltips;
-			sourceTree = "<group>";
-		};
-		83810ADD1464659E003D3F76 /* Launch */ = {
-			isa = PBXGroup;
-			children = (
-				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
-				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
-				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
-				837C742A14637998009F3C2A /* CategorySelectionGrid.m */,
-				83810ADE1464A633003D3F76 /* GridScrollView.h */,
-				83810ADF1464A633003D3F76 /* GridScrollView.m */,
-			);
-			name = Launch;
-			sourceTree = "<group>";
-		};
 		837E903914587F43009F32DD /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -677,6 +627,53 @@
 				837E904614587FA3009F32DD /* NSData+MPBase64.m */,
 			);
 			path = NSData_Base64;
+			sourceTree = "<group>";
+		};
+		83810ADA14646569003D3F76 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
+				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
+				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
+			);
+			name = Launch;
+			sourceTree = "<group>";
+		};
+		83810ADB14646578003D3F76 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				A9389B83143109CE00959946 /* LaunchController.h */,
+				A9389B84143109CE00959946 /* LaunchController.m */,
+				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
+				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
+			);
+			name = Launch;
+			sourceTree = "<group>";
+		};
+		83810ADC14646589003D3F76 /* Tooltips */ = {
+			isa = PBXGroup;
+			children = (
+				83F7C48B14509EF400AD8880 /* ToolTip.h */,
+				83F7C48C14509EF400AD8880 /* ToolTip.m */,
+				83E04669144F468300C91525 /* ToolTipController.h */,
+				83E0466A144F468300C91525 /* ToolTipController.m */,
+			);
+			name = Tooltips;
+			sourceTree = "<group>";
+		};
+		83810ADD1464659E003D3F76 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
+				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
+				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
+				837C742A14637998009F3C2A /* CategorySelectionGrid.m */,
+				83810ADE1464A633003D3F76 /* GridScrollView.h */,
+				83810ADF1464A633003D3F76 /* GridScrollView.m */,
+				83857AEE146B2F1200E3B3DA /* GradientView.h */,
+				83857AEF146B2F1200E3B3DA /* GradientView.m */,
+			);
+			name = Launch;
 			sourceTree = "<group>";
 		};
 		A90F21FD143F63CA006B298D /* HTML */ = {
@@ -1274,7 +1271,6 @@
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
 				83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */,
 				837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */,
-				83810AD91464655F003D3F76 /* CategorySelectionView.xib in Resources */,
 				A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */,
 				83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */,
 			);
@@ -1343,10 +1339,9 @@
 				83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */,
 				83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */,
 				837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */,
-				837C742714637557009F3C2A /* CategorySelectionViewController.m in Sources */,
 				837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */,
 				83810AE01464A633003D3F76 /* GridScrollView.m in Sources */,
-				83F8E2C11468687E0051D990 /* Analytics.m in Sources */,
+				83857AF0146B2F1200E3B3DA /* GradientView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "CategorySelectionGrid.h"
-#import "CategorySelectionViewController.h"
 #import "GridScrollView.h"
+#import "GradientView.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate, CategorySelectionViewControllerDelegate> {
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {
     BOOL userCreated;
     NSMutableSet *subscribingChannels;
     BOOL scrollingFromPageControl;
@@ -26,23 +26,30 @@
 @property (nonatomic, retain) NSArray *subscribedChannels;
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
-// Step 1: YouTube login / category selection
-@property (nonatomic, retain) IBOutlet UIView *loginView;
+@property (nonatomic, retain) IBOutlet GradientView *mainGradient;
+
+// Step 1: Category selection
+@property (nonatomic, retain) IBOutlet UIView *categoriesView;
 @property (nonatomic, retain) IBOutlet CategorySelectionGrid *categoryGrid;
 
-// Step 2: NOWMOV info
+// Step 2: Social login
+@property (nonatomic, retain) IBOutlet UIView *socialView;
+
+// Step 3: NOWMOV info
 @property (nonatomic, retain) IBOutlet UIView *infoView;
 @property (nonatomic, retain) IBOutlet UIButton *proceedToChannelsButton;
 
-// Step 3: Auto-selected channels
+// Step 4: Auto-selected channels
 @property (nonatomic, retain) IBOutlet UIView *channelsView;
 @property (nonatomic, retain) IBOutlet GridScrollView *channelsScrollView;
 @property (nonatomic, retain) IBOutlet UIPageControl *channelsPageControl;
 
 - (IBAction)loginToYouTube:(id)sender;
+- (IBAction)loginToFacebook:(id)sender;
+- (IBAction)loginToTwitter:(id)sender;
+- (IBAction)switchToSocialView:(id)sender;
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
-- (IBAction)addInterests:(id)sender;
 - (IBAction)pageControlValueChanged:(id)sender;
 - (void)notifyVideosReady;
 

@@ -30,7 +30,6 @@
     contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:contentView];
     
-    contentView.backgroundColor = [UIColor clearColor];
     titleLabel.text = @"";
     reasonLabel.text = @"";
 }
