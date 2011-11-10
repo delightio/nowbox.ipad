@@ -98,6 +98,8 @@
     
     progressView.layer.cornerRadius = 15.0;
     progressView.layer.masksToBounds = NO;
+    
+    [messageText becomeFirstResponder];
 }
 
 - (void)viewWillAppear:(BOOL)animated 
@@ -113,7 +115,6 @@
 {
     [super viewDidAppear:animated];
     
-    [messageText becomeFirstResponder];
     [self textViewDidChange:messageText];
 }
 
