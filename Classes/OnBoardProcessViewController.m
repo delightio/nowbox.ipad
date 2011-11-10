@@ -123,7 +123,10 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidPollUserNotification object:nil];
     youtubeTimeoutTimer = nil;
     youtubeSynced = YES;
-    [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+    
+    if (currentView == infoView) {
+        [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+    }
 }
 
 #pragma mark - View lifecycle
@@ -246,7 +249,7 @@
     currentView = infoView;
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
-    if ([subscribingChannels count] == 0 && !NM_USER_YOUTUBE_SYNC_ACTIVE) {
+    if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
 }
@@ -294,7 +297,7 @@
     
     if ([subscribingChannels count] == 0) {
         // All channels have been subscribed to
-        if (currentView == infoView ) {
+        if (currentView == infoView && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
             [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
         }
     }
