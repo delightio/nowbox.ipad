@@ -413,6 +413,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		return;	// return if the channel object is nil
 	}
 	
+	[loadedControlView resetView];
 	// flush video player
 	[movieView.player removeAllItems];
 	// save the channel ID to user defaults
@@ -806,6 +807,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
+	[loadedControlView resetView];
 	[pool release];
 }
 
@@ -1485,6 +1487,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     [self presentModalViewController:navController animated:YES];
     navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
     
+    CGRect frame = navController.view.superview.frame;
+    frame.origin.y = 20;
+    navController.view.superview.frame = frame;
+//    navController.view.superview.center = CGPointMake(navController.view.superview.center.x, 195);
     [shareController release];
     [navController release];
     
