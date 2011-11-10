@@ -14,7 +14,6 @@
 @protocol OnBoardProcessViewControllerDelegate;
 
 @interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {
-    BOOL userCreated;
     NSMutableSet *subscribingChannels;
     BOOL scrollingFromPageControl;
     
@@ -31,9 +30,13 @@
 // Step 1: Category selection
 @property (nonatomic, retain) IBOutlet UIView *categoriesView;
 @property (nonatomic, retain) IBOutlet CategorySelectionGrid *categoryGrid;
+@property (nonatomic, retain) IBOutlet UIButton *proceedToSocialButton;
 
 // Step 2: Social login
 @property (nonatomic, retain) IBOutlet UIView *socialView;
+@property (nonatomic, retain) IBOutlet UIButton *youtubeButton;
+@property (nonatomic, retain) IBOutlet UIButton *facebookButton;
+@property (nonatomic, retain) IBOutlet UIButton *twitterButton;
 
 // Step 3: NOWMOV info
 @property (nonatomic, retain) IBOutlet UIView *infoView;

@@ -26,7 +26,11 @@
 @synthesize mainGradient;
 @synthesize categoriesView;
 @synthesize categoryGrid;
+@synthesize proceedToSocialButton;
 @synthesize socialView;
+@synthesize youtubeButton;
+@synthesize facebookButton;
+@synthesize twitterButton;
 @synthesize infoView;
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
@@ -50,7 +54,9 @@
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailSubscribeChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
-		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];        
+		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];     
+        [nc addObserver:self selector:@selector(handleDidVerifyUserNotification:) name:NMDidVerifyUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailVerifyUserNotification:) name:NMDidFailVerifyUserNotification object:nil];
     }
     
     return self;
@@ -66,7 +72,11 @@
     [subscribedChannels release];
     [categoriesView release];
     [categoryGrid release];
+    [proceedToSocialButton release];
     [socialView release];
+    [youtubeButton release];
+    [facebookButton release];
+    [twitterButton release];
     [infoView release];
     [proceedToChannelsButton release];    
     [channelsView release];
@@ -103,7 +113,7 @@
 {
     // Allow the user to proceed past the info step
     [proceedToChannelsButton setTitle:@"NEXT" forState:UIControlStateNormal];
-    proceedToChannelsButton.enabled = YES;
+    proceedToChannelsButton.hidden = NO;
 }
 
 #pragma mark - View lifecycle
@@ -151,7 +161,11 @@
     self.mainGradient = nil;
     self.categoriesView = nil;
     self.categoryGrid = nil;
+    self.proceedToSocialButton = nil;
     self.socialView = nil;
+    self.youtubeButton = nil;
+    self.facebookButton = nil;
+    self.twitterButton = nil;
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
@@ -248,16 +262,7 @@
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
 {
-    userCreated = YES;
-    if (currentView == infoView) {
-        // We were waiting on this call to finish
-        if ([categoryGrid.selectedButtonIndexes count] == 0) {
-            // Didn't select any categories, skip the subscribe step
-            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-        } else {
-            [self subscribeToSelectedCategories];
-        }
-    }
+    proceedToSocialButton.hidden = NO;
 }
 
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
@@ -293,7 +298,7 @@
         }
     }
     
-    return @"From YouTube";
+    return @"from YouTube";
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
@@ -315,9 +320,25 @@
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, it looks like the service is down. Please try again in a little while." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, it looks like the service is down. Please try again later." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alertView show];
     [alertView release];
+}
+
+- (void)handleDidVerifyUserNotification:(NSNotification *)aNotification 
+{
+    [youtubeButton setTitle:(NM_USER_YOUTUBE_SYNC_ACTIVE ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [facebookButton setTitle:(NM_USER_FACEBOOK_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [twitterButton setTitle:(NM_USER_TWITTER_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [self dismissSocialLogin:nil];
+}
+
+- (void)handleDidFailVerifyUserNotification:(NSNotification *)aNotification 
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we were unable to connect your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
+    [self dismissSocialLogin:nil];    
 }
 
 #pragma mark - UIAlertViewDelegate
