@@ -118,6 +118,14 @@
     proceedToChannelsButton.hidden = NO;
 }
 
+
+- (void)updateSocialNetworkButtonTexts
+{
+    [youtubeButton setTitle:(NM_USER_YOUTUBE_SYNC_ACTIVE ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [facebookButton setTitle:(NM_USER_FACEBOOK_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [twitterButton setTitle:(NM_USER_TWITTER_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+}
+
 - (void)youtubeTimeoutTimerFired
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidPollUserNotification object:nil];
@@ -160,6 +168,10 @@
     
     channelsScrollView.pageMarginLeft = 50;
     channelsScrollView.pageMarginRight = 50;
+    
+    // Have we already synced some services? (Probably only applicable for debugging)
+    youtubeSynced = NM_USER_YOUTUBE_SYNC_ACTIVE;
+    [self updateSocialNetworkButtonTexts];
     
     // Show the login page to start
     [categoriesView setFrame:self.view.bounds];
@@ -350,9 +362,7 @@
 
 - (void)handleDidVerifyUserNotification:(NSNotification *)aNotification 
 {
-    [youtubeButton setTitle:(NM_USER_YOUTUBE_SYNC_ACTIVE ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
-    [facebookButton setTitle:(NM_USER_FACEBOOK_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
-    [twitterButton setTitle:(NM_USER_TWITTER_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [self updateSocialNetworkButtonTexts];
     
     if (socialController.loginType == NMLoginYouTubeType && NM_USER_YOUTUBE_SYNC_ACTIVE) {
         [youtubeTimeoutTimer invalidate];

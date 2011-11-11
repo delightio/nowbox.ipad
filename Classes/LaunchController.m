@@ -349,7 +349,8 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
 
 - (void)onBoardProcessViewControllerDidFinish:(OnBoardProcessViewController *)controller
 {
-    [viewController dismissModalViewControllerAnimated:NO];
+    [onBoardProcessController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [viewController dismissModalViewControllerAnimated:YES];
     [onBoardProcessController release]; onBoardProcessController = nil;
     [self slideInVideoViewAnimated];
 }

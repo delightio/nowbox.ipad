@@ -59,6 +59,7 @@
 - (IBAction)switchToChannelsView:(id)sender;
 - (IBAction)pageControlValueChanged:(id)sender;
 - (void)notifyVideosReady;
+- (void)updateSocialNetworkButtonTexts;
 
 @end
 
