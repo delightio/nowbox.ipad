@@ -491,12 +491,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
 	player.playbackDelegate = self;
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-	if ( NM_RUNNING_IOS_5 ) {
+	if ( kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber_iOS_4_0 ) {
 		player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 //		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
 	}
-#endif
 	movieView.player = player;
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
@@ -970,25 +968,29 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Notification handling
-- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
-	if ( playbackModelController.nextVideo == nil ) {
-		// finish up playing the whole channel
-		[self dismissModalViewControllerAnimated:YES];
-	} else {
-		didPlayToEnd = YES;
-		[self showNextVideo:YES];
-	}
-}
+//- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
+//	if ( playbackModelController.nextVideo == nil ) {
+//		// finish up playing the whole channel
+//		[self dismissModalViewControllerAnimated:YES];
+//	} else {
+//		[self showNextVideo:YES];
+//	}
+//}
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 	// For unknown reason, AVPlayerItemDidPlayToEndTimeNotification is sent twice sometimes. Don't know why. This delay execution mechanism tries to solve this problem
 #ifdef DEBUG_PLAYBACK_QUEUE
-	NSLog(@"did play notification: %@", [aNotification name]);
+	NSLog(@"did play notification: %p", [aNotification object]);
 #endif
+	didPlayToEnd = YES;
 	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayHandleDidPlayItem:) object:[aNotification object]];
-		[self performSelector:@selector(delayHandleDidPlayItem:) withObject:[aNotification object] afterDelay:0.1];
+		if ( playbackModelController.nextVideo == nil ) {
+			// finish up playing the whole channel
+			didPlayToEnd = NO;
+		} else {
+			[self showNextVideo:YES];
+		}
 	});
 }
 
@@ -1119,7 +1121,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		if ( !forceStopByUser ) {
+		// ignore buffer condition when user explicity mean to stop video or when we play to the end of a video and in transition to the next one
+		if ( !forceStopByUser && !didPlayToEnd ) {
 			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f && !self.modalViewController ) {
 				[self playCurrentVideo];

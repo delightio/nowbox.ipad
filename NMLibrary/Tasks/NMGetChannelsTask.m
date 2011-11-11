@@ -160,6 +160,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	NSTimeInterval t = NM_URL_REQUEST_TIMEOUT;
 	switch (command) {
 		case NMCommandGetSubscribedChannels:
+		case NMCommandCompareSubscribedChannels:
 			urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetChannelsForCategory:
@@ -386,7 +387,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				}
 				if ( command == NMCommandCompareSubscribedChannels ) {
 					// assign the new channel to YouTube group
-					[chn addCategoriesObject:ctrl.internalSubscribedChannelsCategory];
+					[ctrl.internalYouTubeCategory addChannelsObject:chn];
 				}
 			} else {
 				// the channel already exists, just update the sort order.
