@@ -56,7 +56,7 @@
 	NSUInteger numberOfVideos;
 	NMTaskQueueController * nowboxTaskController;
 	VideoPlaybackModelController * playbackModelController;
-	
+    
 	BOOL didSkippedVideo;
 //	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;

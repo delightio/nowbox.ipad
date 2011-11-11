@@ -46,9 +46,9 @@
 #define AnalyticsEventStartFacebookLogin @"Start Facebook Login"
 #define AnalyticsEventCompleteFacebookLogin @"Complete Facebook Login"
 #define AnalyticsEventFacebookLoginFailed @"Facebook Login Failed"
-#define AnalyticsEventStartYoutubeLogin @"Start Youtube Login"
-#define AnalyticsEventCompleteYoutubeLogin @"Complete Youtube Login"
-#define AnalyticsEventYoutubeLoginFailed @"Youtube Login Failed"
+#define AnalyticsEventStartYouTubeLogin @"Start YouTube Login"
+#define AnalyticsEventCompleteYouTubeLogin @"Complete YouTube Login"
+#define AnalyticsEventYouTubeLoginFailed @"YouTube Login Failed"
 
 /*********************************************
  *                PROPERTIES                 *
@@ -58,6 +58,7 @@
 #define AnalyticsPropertyVisitNumber @"Visit Number"
 #define AnalyticsPropertyAuthFacebook @"Facebook Enabled"
 #define AnalyticsPropertyAuthTwitter @"Twitter Enabled"
+#define AnalyticsPropertyAuthYouTube @"YouTube Enabled"
 #define AnalyticsPropertyChannelName @"Channel Name"
 #define AnalyticsPropertySocialChannel @"Social Channel"
 #define AnalyticsPropertySender @"Sender"
@@ -72,8 +73,3 @@
 #define AnalyticsPropertyTimeOfDay @"Time Of Day"
 #define AnalyticsPropertyDayOfWeek @"Day Of Week"
 
-@interface Analytics : NSObject
-
-+ (id)sharedAPI;
-
-@end

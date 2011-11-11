@@ -14,7 +14,8 @@
 #import <BugSense-iOS/BugSenseCrashController.h>
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
-#define NM_MIXPANEL_TOKEN @"e447bed162e427230f5356bc987a5e16"
+#define NM_DEBUG_MIXPANEL_TOKEN @"79ed82e53930d8f41c4e87f7084d9158"
+#define NM_PROD_MIXPANEL_TOKEN @"e447bed162e427230f5356bc987a5e16"
 #define NM_BUGSENSE_TOKEN @"775bf5eb"
 
 // user data
@@ -26,6 +27,7 @@ NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY = @"NM_USER_FACEBOOK_CHANNEL_ID
 NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY = @"NM_USER_TWITTER_CHANNEL_ID_KEY";
 NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY = @"NM_SETTING_FACEBOOK_AUTO_POST_KEY"; // just need the key. no need for the bool variable
 NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY = @"NM_USER_YOUTUBE_SYNC_ACTIVE_KEY";
+NSString * const NM_USER_YOUTUBE_USER_NAME_KEY = @"NM_USER_YOUTUBE_USER_NAME_KEY";
 NSString * const NM_USER_TOKEN_KEY = @"NM_USER_TOKEN_KEY";
 NSString * const NM_USER_TOKEN_EXPIRY_DATE_KEY = @"NM_USER_TOKEN_EXPIRY_DATE_KEY";
 NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
@@ -43,6 +45,8 @@ NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
 NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
 NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY	= @"NM_ENABLE_EMAIL_NOTIFICATION_KEY";
+// sharing
+NSString * const NM_LAST_SOCIAL_NETWORK     = @"NM_LAST_SOCIAL_NETWORK";
 
 BOOL NM_RUNNING_IOS_5;
 BOOL NM_RUNNING_ON_IPAD;
@@ -69,6 +73,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  dDate, NM_LAST_SESSION_DATE,
 	  zeroNum, NM_USER_ACCOUNT_ID_KEY, 
 	  @"", NM_USER_TOKEN_KEY,
+	  @"", NM_USER_YOUTUBE_USER_NAME_KEY,
 	  dDate, NM_USER_TOKEN_EXPIRY_DATE_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
@@ -142,7 +147,12 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
     [userDefaults synchronize];
     
-    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_MIXPANEL_TOKEN];
+#ifdef MIXPANEL_PROD
+    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_PROD_MIXPANEL_TOKEN];
+#else
+    mixpanel = [MixpanelAPI sharedAPIWithToken:NM_DEBUG_MIXPANEL_TOKEN];
+#endif
+    
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
                                        sessionCount, AnalyticsPropertyVisitNumber, nil]];
     
@@ -161,9 +171,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 {
 	NM_RUNNING_ON_IPAD = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
     // Enable analytics and crash reporting
-#ifdef MIXPANEL
     [self setupMixpanel];
-#endif
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
                                                userDictionary:nil 
                                               sendImmediately:NO];
@@ -233,9 +241,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[Analytics sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    NSTimeInterval elapsedSessionTime = now - sessionStartTime;
+    NSTimeInterval elapsedTotalTime = now - appStartTime;
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedSessionTime], AnalyticsPropertySessionElapsedTime, 
+                                                                                [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = YES;
 }
 
@@ -271,8 +281,9 @@ NSInteger NM_LAST_CHANNEL_ID;
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
-    [[Analytics sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+    NSTimeInterval elapsedTotalTime = [[NSDate date] timeIntervalSince1970] - appStartTime;
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
+                                                                                [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = NO;
 }
 

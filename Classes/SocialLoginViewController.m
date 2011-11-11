@@ -14,14 +14,14 @@
 @synthesize loginWebView, progressContainerView;
 @synthesize loginType;
 
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        [self setContentSizeForViewInPopover:CGSizeMake(500, 500)];
+    }
+    return self;
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -44,7 +44,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+	    
+    loadingPageLoading = YES;
 	NSString * filename = nil;
 	switch (loginType) {
 		case NMLoginTwitterType:
@@ -57,9 +58,9 @@
 			filename = @"FacebookLoading";
 			break;
 			
-		case NMLoginYoutubeType:
-			self.title = @"Youtube";
-			filename = @"YoutubeLoading";
+		case NMLoginYouTubeType:
+			self.title = @"YouTube";
+			filename = @"YouTubeLoading";
 			break;
 			
 		default:
@@ -81,29 +82,6 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-	NSString * urlStr = nil;
-	switch (loginType) {
-		case NMLoginTwitterType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/twitter?user_id=%d", NM_USER_ACCOUNT_ID];
-			break;
-			
-		case NMLoginFacebookType:
-			urlStr = @"http://api.nowbox.com/auth/facebook";
-			break;
-			
-		case NMLoginYoutubeType:
-			urlStr = [NSString stringWithFormat:@"http://api.nowbox.com/auth/you_tube?user_id=%d", NM_USER_ACCOUNT_ID];
-			break;
-			
-		default:
-			break;
-	}
-	
-	[loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -112,6 +90,11 @@
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	NSHTTPCookie *cookie;
+	NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+	for (cookie in [storage cookies]) {
+		[storage deleteCookie:cookie];
+	}
 	[progressContainerView release];
     [loginWebView release];
     [super dealloc];
@@ -129,40 +112,55 @@
 	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
+	[defs setObject:NM_USER_YOUTUBE_USER_NAME forKey:NM_USER_YOUTUBE_USER_NAME_KEY];
     
-    [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
+    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
     switch (loginType) {
         case NMLoginTwitterType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
+		{
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-            break;
-
-        case NMLoginFacebookType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
-                                                                                      @"channelmanagement_login", AnalyticsPropertySender, 
-                                                                                      [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-            break;
+			// channel refresh command is issued in TaskQueueScheduler
 			
-		case NMLoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventCompleteYoutubeLogin];
-            [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName,
+			// listen to channel refresh notification 
+			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+           break;
+		}
+			
+        case NMLoginFacebookType:
+		{
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
+                                                                                      @"channelmanagement_login", AnalyticsPropertySender, 
+                                                                                      [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
+			// channel refresh command is issued in TaskQueueScheduler
+			
+			// listen to channel refresh notification 
+			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+           break;
+		}
+			
+		case NMLoginYouTubeType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteYouTubeLogin];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
 																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
+			// dismiss the view right away
+			progressLabel.text = @"Verified Successfully";
+			[loadingIndicator stopAnimating];
+			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];
 			break;
 			
         default:
             break;
     }
-	// channel refresh command is issued in TaskQueueScheduler
-	
-	// listen to channel refresh notification 
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
-	[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
 }
 
 - (void)handleChannelRefreshNotification:(NSNotification *)aNotification {
@@ -178,13 +176,13 @@
     
     switch (loginType) {
         case NMLoginTwitterType:
-            [[Analytics sharedAPI] track:AnalyticsEventTwitterLoginFailed];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventTwitterLoginFailed];
             break;
         case NMLoginFacebookType:
-            [[Analytics sharedAPI] track:AnalyticsEventFacebookLoginFailed];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventFacebookLoginFailed];
             break;
-		case NMLoginYoutubeType:
-            [[Analytics sharedAPI] track:AnalyticsEventYoutubeLoginFailed];
+		case NMLoginYouTubeType:
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventYouTubeLoginFailed];
 			break;
         default:
             break;
@@ -198,7 +196,7 @@
 		case NMLoginTwitterType:
 		{
 			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
-			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
+			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
 				// pass the interface control back the the channel management view controller
@@ -222,7 +220,7 @@
 		case NMLoginFacebookType:
 		{
 			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
-			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
+			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
 				// pass the interface control back the the channel management view controller
@@ -249,10 +247,10 @@
 			break;
 		}
 			
-		case NMLoginYoutubeType:
+		case NMLoginYouTubeType:
 		{
-			NSLog(@"Youtube URL: %@", [theURL absoluteString]);
-			if ( [[theURL host] isEqualToString:@"api.nowbox.com"] && [[theURL path] isEqualToString:@"/auth/youtube/callback"] ) {
+			NSLog(@"YouTube URL: %@", [theURL absoluteString]);
+			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/you_tube/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
 				// pass the interface control back the the channel management view controller
@@ -260,7 +258,7 @@
 				progressContainerView.frame = self.view.bounds;
 				[self.view addSubview:progressContainerView];
 				// show a dark gray screen for now.
-				[[NMTaskQueueController sharedTaskQueueController] issueVerifyTwitterAccountWithURL:theURL];
+				[[NMTaskQueueController sharedTaskQueueController] issueVerifyYouTubeAccountWithURL:theURL];
 				
 				[UIView animateWithDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;
@@ -278,4 +276,32 @@
 	}
 	return YES;
 }
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    if (loadingPageLoading) {
+        loadingPageLoading = NO;
+        
+		NSString * urlStr = nil;
+		switch (loginType) {
+			case NMLoginTwitterType:
+				urlStr = [NSString stringWithFormat:@"http://%@/auth/twitter?user_id=%d", NM_BASE_URL_TOKEN, NM_USER_ACCOUNT_ID];
+				break;
+				
+			case NMLoginFacebookType:
+				urlStr = [NSString stringWithFormat:@"http://%@/auth/facebook", NM_BASE_URL_TOKEN];
+				break;
+				
+			case NMLoginYouTubeType:
+				urlStr = [NSString stringWithFormat:@"http://%@/auth/you_tube?user_id=%d", NM_BASE_URL_TOKEN, NM_USER_ACCOUNT_ID];
+				break;
+				
+			default:
+				break;
+		}
+		
+		[loginWebView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:30.0f]];
+    }
+}
+
 @end

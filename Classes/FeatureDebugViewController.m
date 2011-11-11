@@ -26,6 +26,7 @@
 	[selectedChannel release];
 	[targetChannel release];
 	[playbackViewController release];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 
@@ -121,6 +122,13 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetFeaturedChannelsForCategories object:nil];
 }
 
+- (void)handleChannelCompareNotification:(NSNotification *)aNotification {
+	NSSet * chns = [NMTaskQueueController sharedTaskQueueController].dataController.internalYouTubeCategory.channels;
+	for (NMChannel * chnObj in chns) {
+		NSLog(@"%@", chnObj);
+	}
+}
+
 #pragma mark Target action methods
 
 - (IBAction)resetTooltip:(id)sender {
@@ -166,6 +174,12 @@
 - (IBAction)checkTokenExpiryAndRenew:(id)sender {
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
 	[tqc issueTokenTest];
+}
+
+- (IBAction)pollUserYouTube:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	[tqc pollServerForYouTubeSyncSignal];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChannelCompareNotification:) name:NMDidCompareSubscribedChannelsNotification object:nil];
 }
 
 @end

@@ -848,25 +848,30 @@
 }
 
 #pragma mark Notification handling
-- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
-	if ( playbackModelController.nextVideo == nil ) {
-		// finish up playing the whole channel
-		[self dismissModalViewControllerAnimated:YES];
-	} else {
-		didPlayToEnd = YES;
-		[self showNextVideo:YES];
-	}
-}
+//- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
+//	if ( playbackModelController.nextVideo == nil ) {
+//		// finish up playing the whole channel
+//		[self dismissModalViewControllerAnimated:YES];
+//	} else {
+//		didPlayToEnd = YES;
+//		[self showNextVideo:YES];
+//	}
+//}
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 	// For unknown reason, AVPlayerItemDidPlayToEndTimeNotification is sent twice sometimes. Don't know why. This delay execution mechanism tries to solve this problem
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NSLog(@"did play notification: %@", [aNotification name]);
 #endif
+	didPlayToEnd = YES;
 	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayHandleDidPlayItem:) object:[aNotification object]];
-		[self performSelector:@selector(delayHandleDidPlayItem:) withObject:[aNotification object] afterDelay:0.1];
+		if ( playbackModelController.nextVideo == nil ) {
+			// finish up playing the whole channel
+			didPlayToEnd = NO;
+		} else {
+			[self showNextVideo:YES];
+		}
 	});
 }
 
@@ -997,7 +1002,7 @@
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		if ( !forceStopByUser ) {
+		if ( !forceStopByUser && !didPlayToEnd ) {
 			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f && !self.modalViewController ) {
 				[self playCurrentVideo];

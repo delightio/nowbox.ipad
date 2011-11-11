@@ -39,6 +39,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize channelSubscribedIcon, channelSubscribedBackgroundImage;
 @synthesize channelNotSubscribedIcon, channelNotSubscribedBackgroundImage;
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+	firstLoadView = YES;
+	return self;
+}
 
 - (void)dealloc {
 	[channelDetailViewController release];
@@ -121,6 +126,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [categoriesTableView selectRowAtIndexPath:indexPath animated:NO  scrollPosition:UITableViewScrollPositionNone];
     [[categoriesTableView delegate] tableView:categoriesTableView didSelectRowAtIndexPath:indexPath];
 	
+	[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+	// all subsequent transition happened in navigation controller should not fire channel management notification
 }
 
 - (void)viewDidUnload
@@ -140,14 +147,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	return YES;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-	if ( !viewPushedByNavigationController ) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
-		// all subsequent transition happened in navigation controller should not fire channel management notification
-		viewPushedByNavigationController = YES;
-	}
-}
+//- (void)viewWillAppear:(BOOL)animated {
+//	[super viewWillAppear:animated];
+//}
 
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -155,15 +157,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsForCategoryNotification:) name:NMDidGetChannelsForCategoryNotification object:nil];
     
-//    [nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillSubscribeChannelNotification object:nil];
-//	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
-    
-    [channelsTableView reloadData];
-    
-    [categoriesTableView flashScrollIndicators];
-
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -173,7 +168,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	if ( !viewPushedByNavigationController ) {
+	if ( dismissViewController ) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
 		[nowboxTaskController.dataController clearChannelCache];
 	}
@@ -206,11 +201,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     
     if (selectedIndex == 0) {
         // Reload social channels in case we unsubscribed from one of them
-        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
-        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
+        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationNone];            
+//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
+//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
+//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
 
-        [[Analytics sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
-                                                          [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, nil]];
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                                          [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+														  [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube,
+														  nil]];
     }
     
     for (int i=0; i<[selectedChannelArray count]; i++) {
@@ -232,7 +231,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 //	[self.navigationController pushViewController:twitCtrl animated:YES];
 //	[twitCtrl release];
     
-    [[Analytics sharedAPI] track:AnalyticsEventShowSearch];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShowSearch];
 
 }
 
@@ -244,9 +243,22 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         [alertView show];
         [alertView release];
     } else {    
-        viewPushedByNavigationController = NO;
+        dismissViewController = YES;
         [self dismissModalViewControllerAnimated:YES];
     }
+}
+
+#pragma mark -
+#pragma mark Navigation controller delegate
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+	if ( viewController == self ) {
+		if ( firstLoadView ) {
+			firstLoadView = NO;
+		} else {
+			// reload table view for subsequent appearance
+			[channelsTableView reloadData];
+		}
+	}
 }
 
 #pragma mark -
@@ -396,16 +408,18 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 			if ( indexPath.section == 0 ) {
 				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-					titleLbl.text = @"<User name>";
-					detailLbl.text = @"Youtube sync is currently active";
+					titleLbl.text = NM_USER_YOUTUBE_USER_NAME;
+					detailLbl.text = @"YouTube sync is currently active";
+					[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+					[backgroundView setImage:channelSubscribedBackgroundImage];                        
 				} else {
-					titleLbl.text = @"Youtube";
+					titleLbl.text = @"YouTube";
 					detailLbl.text = @"Sign in to synchronize your channel subscription, Watch Later and favorite videos.";
-					thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 					
 				}
+				thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
 			} else {
 				switch (indexPath.row) {
 					case 0:
@@ -425,10 +439,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						} else {
 							titleLbl.text = @"Twitter";
 							detailLbl.text = @"Sign in to watch videos in your Twitter network";
-							thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 						}
+						thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 						break;
 						
 					case 1:
@@ -449,10 +463,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						} else {
 							titleLbl.text = @"Facebook";
 							detailLbl.text = @"Sign in to watch videos in your Facebook network";
-							thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
 						}
+						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 						break;
 						
 					default:
@@ -577,7 +591,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             self.selectedChannelArray = nil;
             [channelsTableView reloadData];
             
-            [[Analytics sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:@"My Channels", AnalyticsPropertyCategoryName, nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:@"My Channels", AnalyticsPropertyCategoryName, nil]];
 
             return;
         } else if (indexPath.row % 2 == 0) { // other categories
@@ -599,7 +613,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 }
 			}
             
-            [[Analytics sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:cat.title, AnalyticsPropertyCategoryName, nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventSelectCategory properties:[NSDictionary dictionaryWithObjectsAndKeys:cat.title, AnalyticsPropertyCategoryName, nil]];
 
             return;
         } else { // separator
@@ -613,19 +627,19 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			switch ( indexPath.section ) {
 				case 0:
 				{
-					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-						// show channel detail? any detail to show?
-						[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Youtube", AnalyticsPropertyChannelName, 
-																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
-																								  @"channelmanagement", AnalyticsPropertySender, nil]];
-					} else {
+//					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+//						// show channel detail? any detail to show?
+//						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
+//																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+//																								  @"channelmanagement", AnalyticsPropertySender, nil]];
+//					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-						socialCtrl.loginType = NMLoginYoutubeType;
+						socialCtrl.loginType = NMLoginYouTubeType;
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
-						[[Analytics sharedAPI] track:AnalyticsEventStartYoutubeLogin];
+						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin];
 						return;
-					}
+//					}
 					break;
 				}	
 				case 1:
@@ -635,7 +649,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					if ( indexPath.row == 0 ) {
 						if ( NM_USER_TWITTER_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
-							[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
@@ -645,14 +659,14 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							
-							[[Analytics sharedAPI] track:AnalyticsEventStartTwitterLogin];
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
 							return;
 						}
 					} else if ( indexPath.row == 1 ) {
 						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
-							[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
@@ -661,7 +675,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[self.navigationController pushViewController:socialCtrl animated:YES];
 							[socialCtrl release];
 							
-							[[Analytics sharedAPI] track:AnalyticsEventStartFacebookLogin];
+							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
 							return;
 						}
@@ -671,7 +685,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				default:
 					indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
 					chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
-					[[Analytics sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
+					[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
 																							  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
 																							  @"channelmanagement", AnalyticsPropertySender, nil]];
 					break;
@@ -854,11 +868,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     if (controller == categoryFetchedResultsController) {
         [categoriesTableView beginUpdates];
-    }
-    else {
-        if (selectedIndex == 0) {
-            [channelsTableView beginUpdates];
-        }
+    } else if (selectedIndex == 0) {
+		[channelsTableView beginUpdates];
     }
 }
 
@@ -876,20 +887,17 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 [categoriesTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
                 break;
         }
-    }
-    else {
-        if (selectedIndex == 0) {
-            switch(type) {
-                case NSFetchedResultsChangeInsert:
-                    [channelsTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                    
-                case NSFetchedResultsChangeDelete:
-                    [channelsTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-            }
-        }
-    }
+    } else if (selectedIndex == 0) {
+		switch(type) {
+			case NSFetchedResultsChangeInsert:
+				[channelsTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+				break;
+				
+			case NSFetchedResultsChangeDelete:
+				[channelsTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+				break;
+		}
+	}
 }
 
 
@@ -921,32 +929,29 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 [categoriesTableView reloadData];
                 break;
         }
-    }
-    else {
-        if (selectedIndex == 0) {
-            // Map section 0 in core data to section 1 in table
-            newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:1];
-            indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:1];
-            
-            switch(type) {
-                case NSFetchedResultsChangeInsert:
-                    [channelsTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                    
-                case NSFetchedResultsChangeDelete:
-                    [channelsTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                    
-                case NSFetchedResultsChangeUpdate:
-                    [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-                    
-                case NSFetchedResultsChangeMove:
-                    [channelsTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-                    [channelsTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
-                    break;
-            }
-        }
+    } else if (selectedIndex == 0) {
+		// Map section 0 in core data to section 1 in table
+		newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:2];
+		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:2];
+		
+		switch(type) {
+			case NSFetchedResultsChangeInsert:
+				[channelsTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+				break;
+				
+			case NSFetchedResultsChangeDelete:
+				[channelsTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+				break;
+				
+			case NSFetchedResultsChangeUpdate:
+				[channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+				break;
+				
+			case NSFetchedResultsChangeMove:
+				[channelsTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+				[channelsTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+				break;
+		}
     }
 }
 
@@ -954,18 +959,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     if (controller == categoryFetchedResultsController) {
         [categoriesTableView endUpdates];
-    }
-    else {
-        if (selectedIndex == 0) {
-            [channelsTableView endUpdates];
-        }
+    } else if (selectedIndex == 0) {
+		[channelsTableView endUpdates];
     }
 }
 
 #pragma mark helpers
 -(float)categoryCellWidthFromString:(NSString *)text {
     if (text == nil) {
-        return 38;
+        return 38.0f;
     }
     else {
         CGSize textLabelSize;
@@ -975,9 +977,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         else {
             textLabelSize = [[text uppercaseString] sizeWithFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0f]];
         }
-        return textLabelSize.width+40;
+        return textLabelSize.width + 40.0f;
     }
-    return 0;
+    return 0.0f;
 }
 
 #pragma mark UIAlertView delegates
@@ -1021,33 +1023,42 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     NSString *channelName;
     NMChannel * chn;
     if (selectedIndex == 0) {
-        if (tableIndexPath.section == 0) {
-            // Social channels
-            social = YES;
-            
-            if (tableIndexPath.row == 0) {
-                if ( NM_USER_TWITTER_CHANNEL_ID ) {
-                    chn = nowboxTaskController.dataController.userTwitterStreamChannel;
-                    channelName = @"Twitter";
-                } else {
-                    [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
-                    return;
-                }
-            } else {
-                if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-                    chn = nowboxTaskController.dataController.userFacebookStreamChannel;
-                    channelName = @"Facebook";
-                } else {
-                    [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
-                    return;
-                }                
-            }
-        } else {
-            NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row 
-                                                               inSection:0];
-            chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
-            channelName = chn.title;
-        }
+		switch (tableIndexPath.section) {
+			case 0:
+				// YouTube
+				break;
+				
+			case 1:
+				// Social channels
+				social = YES;
+				if (tableIndexPath.row == 0) {
+					if ( NM_USER_TWITTER_CHANNEL_ID ) {
+						chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+						channelName = @"Twitter";
+					} else {
+						[self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
+						return;
+					}
+				} else {
+					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+						chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+						channelName = @"Facebook";
+					} else {
+						[self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
+						return;
+					}                
+				}
+				break;
+				
+			default:
+			{
+				// reset of the channels
+				NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row inSection:0];
+				chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
+				channelName = chn.title;
+				break;
+			}
+		}
     } else {
         chn = [selectedChannelArray objectAtIndex:[channelsTableView indexPathForCell:cell].row];
         channelName = chn.title;        
@@ -1055,11 +1066,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
     BOOL subscribed = [chn.nm_subscribed boolValue];
     if (subscribed) {
-        [[Analytics sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
                                                                                     @"channelmanagement_toggle", AnalyticsPropertySender, 
                                                                                     [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];    
     } else {
-        [[Analytics sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
                                                                                   @"channelmanagement_toggle", AnalyticsPropertySender, 
                                                                                   [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }

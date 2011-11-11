@@ -25,6 +25,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 @implementation NMCreateUserTask
 @synthesize verificationURL, email;
 @synthesize userDictionary;
+@synthesize username;
 
 - (id)init {
 	self = [super init];
@@ -39,9 +40,9 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	return self;
 }
 
-- (id)initYoutubeVerificationWithURL:(NSURL *)aURL {
+- (id)initYouTubeVerificationWithURL:(NSURL *)aURL {
 	self = [super init];
-	command = NMCommandVerifyYoutubeUser;
+	command = NMCommandVerifyYouTubeUser;
 	self.verificationURL = aURL;
 	return self;
 }
@@ -64,6 +65,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	[email release];
 	[verificationURL release];
 	[userDictionary release];
+	[username release];
 	[super dealloc];
 }
 
@@ -145,10 +147,27 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 			NM_USER_TWITTER_CHANNEL_ID = [[userDictionary objectForKey:@"twitter_channel_id"] integerValue];
 			break;
 			
-		case NMCommandVerifyYoutubeUser:
+		case NMCommandVerifyYouTubeUser:
+		{
+			NSArray * acAy = [userDictionary objectForKey:@"accounts"];
+			if ( acAy ) {
+				NSString * providerStr = nil;
+				for (NSDictionary * acDict in acAy) {
+					providerStr = [acDict objectForKey:@"provider"];
+					if ( [providerStr isEqualToString:@"youtube"] || [providerStr isEqualToString:@"you_tube"] ) {
+						// update user's youtube username
+						if ( NM_USER_YOUTUBE_USER_NAME ) {
+							[NM_USER_YOUTUBE_USER_NAME release];
+							NM_USER_YOUTUBE_USER_NAME = nil;
+						}
+						NM_USER_YOUTUBE_USER_NAME = [[acDict objectForKey:@"username"] retain];
+					}
+				}
+			}
 			NM_USER_YOUTUBE_SYNC_ACTIVE = YES;
 			break;
-			
+		}
+		
 		default:
 		{
 			break;
@@ -160,7 +179,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-		case NMCommandVerifyYoutubeUser:
+		case NMCommandVerifyYouTubeUser:
 			return NO;
 			
 		default:

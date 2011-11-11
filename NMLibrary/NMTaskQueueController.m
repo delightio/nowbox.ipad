@@ -25,6 +25,7 @@ NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
+NSString * NM_USER_YOUTUBE_USER_NAME		= nil;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -66,6 +67,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 //	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidSignOutUserNotification object:nil];
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleYouTubePollingNotification:) name:NMDidPollUserNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
 	[nc addObserver:self selector:@selector(handleFailEditUserSettingsNotification:) name:NMDidFailEditUserSettingsNotification object:nil];
 	[nc addObserver:self selector:@selector(handleTokenNotification:) name:NMDidRequestTokenNotification object:nil];
@@ -144,9 +146,28 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
-	didFinishLogin = YES;
-	// get that particular channel
-	[self issueGetSubscribedChannels];
+	NMTask * sender = [aNotificaiton object];
+	switch (sender.command) {
+		case NMCommandVerifyFacebookUser:
+		case NMCommandVerifyTwitterUser:
+			didFinishLogin = YES;
+			// get that particular channel
+			[self issueGetSubscribedChannels];
+			break;
+			
+		case NMCommandVerifyYouTubeUser:
+			if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+				// check if it's first launch
+				BOOL firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+				if ( firstLaunch ) {
+					// need to poll the server to look for difference
+					[self pollServerForYouTubeSyncSignal];
+				}
+			}
+			break;
+		default:
+			break;
+	}
 }
 
 - (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
@@ -247,8 +268,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL {
-	NMCreateUserTask * task = [[NMCreateUserTask alloc] initYoutubeVerificationWithURL:aURL];
+- (void)issueVerifyYouTubeAccountWithURL:(NSURL *)aURL {
+	NMCreateUserTask * task = [[NMCreateUserTask alloc] initYouTubeVerificationWithURL:aURL];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -292,6 +313,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray {
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFeaturedChannelsForCategories:catArray];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueCompareSubscribedChannels {
+	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initCompareSubscribedChannels];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -541,7 +568,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-#pragma mark Channel Polling
+#pragma mark Server Polling
 - (void)issuePollServerForChannel:(NMChannel *)chnObj {
 	NMPollChannelTask * task = [[NMPollChannelTask alloc] initWithChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
@@ -556,6 +583,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
 		// run the timer method
 		if ( !pollingTimer ) {
+			pollingRetryCount = 0;
 			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
 		} else {
 			[pollingTimer fire];
@@ -580,6 +608,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleChannelPollingNotification:(NSNotification *)aNotification {
+	pollingRetryCount++;
 	// check polling status
 	NSDictionary * dict = [aNotification userInfo];
 	NMChannel * chnObj = [dict objectForKey:@"channel"];
@@ -590,15 +619,45 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		// fire the get channel list request
 		[self issueGetMoreVideoForChannel:chnObj];
 	}
-	if ( [unpopulatedChannels count] == 0 ) {
+	if ( [unpopulatedChannels count] == 0 || pollingRetryCount > 5 ) {
 		// all channels have been processed and populated
 		[pollingTimer invalidate];
 		self.pollingTimer = nil;
 	}
 }
 
-//- (void)handleFailChannelPollingNotification:(NSNotification *)aNotification {
-//	
-//}
+- (void)issuePollServerForYouTubeSyncSignal {
+	NMPollUserTask * task = [[NMPollUserTask alloc] init];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)pollServerForYouTubeSyncSignal {
+	// we assue the backend will only activate pollingTimer for only 1 service - YouTube, Facebook or Twitter.
+	if ( pollingTimer ) {
+		[pollingTimer fire];
+	} else {
+		pollingRetryCount = 0;
+		self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+	}
+}
+
+- (void)performYouTubePollingForTimer:(NSTimer *)aTimer {
+	[self issuePollServerForYouTubeSyncSignal];
+}
+
+- (void)handleYouTubePollingNotification:(NSNotification *)aNotification {
+	pollingRetryCount++;
+	BOOL ytSynced = [[[aNotification userInfo] objectForKey:@"youtube_synced"] boolValue];
+	if ( ytSynced ) {
+		// the account is synced. get the list of channel
+		[self issueCompareSubscribedChannels];
+		[pollingTimer invalidate];
+		self.pollingTimer = nil;
+	} else if ( pollingRetryCount > 5 ) {
+		[pollingTimer invalidate];
+		self.pollingTimer = nil;
+	}
+}
 
 @end

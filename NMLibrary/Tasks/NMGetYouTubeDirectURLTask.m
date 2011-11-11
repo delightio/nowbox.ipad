@@ -9,8 +9,8 @@
 #import "NMGetYouTubeDirectURLTask.h"
 #import "NMVideo.h"
 
-static NSString * const NMYoutubeUserAgent = @"Apple iPad v5.0 YouTube v1.0.0.9A5288d";
-static NSString * const NMYoutubeMobileBrowserAgent = @"Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3";
+static NSString * const NMYouTubeUserAgent = @"Apple iPad v5.0 YouTube v1.0.0.9A5288d";
+static NSString * const NMYouTubeMobileBrowserAgent = @"Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3";
 
 NSString * const NMWillGetYouTubeDirectURLNotification = @"NMWillGetYouTubeDirectURLNotification";
 NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectURLNotification";
@@ -50,12 +50,12 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
 		[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
 		[theRequest setValue:@"en-us" forHTTPHeaderField:@"Accept-Language"];
-		[theRequest setValue:NMYoutubeMobileBrowserAgent forHTTPHeaderField:@"User-Agent"];
+		[theRequest setValue:NMYouTubeMobileBrowserAgent forHTTPHeaderField:@"User-Agent"];
 //	} else {
 //		urlStr = [NSString stringWithFormat:@"http://gdata.youtube.com/feeds/api/videos/%@?alt=json&format=2,3,8,9", externalID];
 //		theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
 //		
-//		[theRequest setValue:NMYoutubeUserAgent forHTTPHeaderField:@"User-Agent"];
+//		[theRequest setValue:NMYouTubeUserAgent forHTTPHeaderField:@"User-Agent"];
 //		[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
 //		[theRequest setValue:@"en-us,en;q=0.5" forHTTPHeaderField:@"Accept-Language"];
 //		[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
@@ -77,7 +77,7 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}
 //	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
 	NSString * resultString = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-	// remove odd begin pattern in the JSON source from Youtube
+	// remove odd begin pattern in the JSON source from YouTube
 	NSString * cleanResultStr =[resultString stringByReplacingOccurrencesOfString:@")]}'" withString:@"" options:0 range:NSMakeRange(0, 5)];
 	[resultString release];
 	

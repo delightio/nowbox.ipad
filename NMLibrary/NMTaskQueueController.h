@@ -31,6 +31,7 @@
 	NSTimer * tokenRenewTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
+	NSUInteger pollingRetryCount;
 	
 	Reachability * wifiReachability;
 }
@@ -53,7 +54,7 @@
 - (void)issueCreateUser;
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
-- (void)issueVerifyYoutubeAccountWithURL:(NSURL *)aURL;
+- (void)issueVerifyYouTubeAccountWithURL:(NSURL *)aURL;
 - (void)issueEditUserSettings;
 // Token
 - (void)issueRenewToken;
@@ -74,6 +75,7 @@
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (void)issueGetChannelWithID:(NSInteger)chnID;
 - (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
+- (void)issueCompareSubscribedChannels;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
@@ -84,6 +86,9 @@
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
 - (void)pollServerForChannelReadiness;
 - (void)stopPollingServer;
+// Poll for YouTube
+- (void)issuePollServerForYouTubeSyncSignal;
+- (void)pollServerForYouTubeSyncSignal;
 // Get update info
 - (void)issueCheckUpdateForDevice:(NSString *)devType;
 

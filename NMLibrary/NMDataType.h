@@ -23,16 +23,18 @@ typedef enum {
 	NMCommandGetChannelWithID,			// this is for subscribing to debug channels
 	NMCommandGetFeaturedChannelsForCategories,
 	NMCommandPollChannel,
+	NMCommandCompareSubscribedChannels,
 	NMCommandGetChannelDetail,
 	NMCommandCreateKeywordChannel,
 	NMCommandCreateUser,
 	NMCommandVerifyFacebookUser,
 	NMCommandVerifyTwitterUser,
-	NMCommandVerifyYoutubeUser,
+	NMCommandVerifyYouTubeUser,
 	NMCommandEditUserSettings,
 	NMCommandGetToken,
 	NMCommandTestToken,
 	NMCommandEditUser,
+	NMCommandPollUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetMoreVideoForChannel,
@@ -87,7 +89,7 @@ typedef enum {
 	NMChannelUnknownType,
 	NMChannelUserType,
 	NMChannelTrendingType,
-	NMChannelYoutubeType,
+	NMChannelYouTubeType,
 	NMChannelKeywordType,
 	NMChannelVimeoType,
 	NMChannelUserFacebookType,
@@ -97,7 +99,7 @@ typedef enum {
 typedef enum {
 	NMLoginTwitterType,
 	NMLoginFacebookType,
-	NMLoginYoutubeType,
+	NMLoginYouTubeType,
 } NMSocialLoginType;
 
 extern BOOL NM_WIFI_REACHABLE;
@@ -132,6 +134,9 @@ extern NSString * const NMDidFailSignOutUserNotification;
 extern NSString * const NMWillEditUserSettingsNotification;
 extern NSString * const NMDidEditUserSettingsNotification;
 extern NSString * const NMDidFailEditUserSettingsNotification;
+extern NSString * const NMWillPollUserNotification;
+extern NSString * const NMDidPollUserNotification;
+extern NSString * const NMDidFailPollUserNotification;
 
 // channel
 extern NSString * const NMWillGetChannelsNotification;
@@ -149,6 +154,9 @@ extern NSString * const NMDidFailSearchChannelsNotification;
 extern NSString * const NMWillGetFeaturedChannelsForCategories;
 extern NSString * const NMDidGetFeaturedChannelsForCategories;
 extern NSString * const NMDidFailGetFeaturedChannelsForCategories;
+extern NSString * const NMWillCompareSubscribedChannelsNotification;
+extern NSString * const NMDidCompareSubscribedChannelsNotification;
+extern NSString * const NMDidFailCompareSubscribedChannelsNotification;
 
 extern NSString * const NMWillGetChannelDetailNotification;
 extern NSString * const NMDidGetChannelDetailNotification;
@@ -180,6 +188,9 @@ extern NSString * const NMDidFailEnqueueVideoNotification;
 extern NSString * const NMWillDequeueVideoNotification;
 extern NSString * const NMDidDequeueVideoNotification;
 extern NSString * const NMDidFailDequeueVideoNotification;
+extern NSString * const NMWillPostSharingNotification;
+extern NSString * const NMDidPostSharingNotification;
+extern NSString * const NMDidFailPostSharingNotification;
 
 // video
 extern NSString * const NMWillGetChannelVideListNotification;
