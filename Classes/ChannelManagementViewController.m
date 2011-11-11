@@ -627,19 +627,19 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			switch ( indexPath.section ) {
 				case 0:
 				{
-					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-						// show channel detail? any detail to show?
-						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
-																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
-																								  @"channelmanagement", AnalyticsPropertySender, nil]];
-					} else {
+//					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+//						// show channel detail? any detail to show?
+//						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
+//																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+//																								  @"channelmanagement", AnalyticsPropertySender, nil]];
+//					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 						socialCtrl.loginType = NMLoginYouTubeType;
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
 						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin];
 						return;
-					}
+//					}
 					break;
 				}	
 				case 1:

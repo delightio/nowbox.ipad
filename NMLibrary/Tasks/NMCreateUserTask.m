@@ -149,7 +149,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 			
 		case NMCommandVerifyYouTubeUser:
 		{
-			NSArray * acAy = [userDictionary objectForKey:NM_USER_YOUTUBE_USER_NAME_KEY];
+			NSArray * acAy = [userDictionary objectForKey:@"accounts"];
 			if ( acAy ) {
 				NSString * providerStr = nil;
 				for (NSDictionary * acDict in acAy) {

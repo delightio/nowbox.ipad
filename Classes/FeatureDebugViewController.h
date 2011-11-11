@@ -28,5 +28,6 @@
 - (IBAction)bulkSubscibe:(id)sender;
 - (IBAction)renewToken:(id)sender;
 - (IBAction)checkTokenExpiryAndRenew:(id)sender;
+- (IBAction)pollUserYouTube:(id)sender;
 
 @end

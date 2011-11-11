@@ -118,35 +118,49 @@
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
     switch (loginType) {
         case NMLoginTwitterType:
+		{
             [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteTwitterLogin];
             [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-            break;
-
+			// channel refresh command is issued in TaskQueueScheduler
+			
+			// listen to channel refresh notification 
+			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+           break;
+		}
+			
         case NMLoginFacebookType:
+		{
             [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteFacebookLogin];
             [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName,
                                                                                       @"channelmanagement_login", AnalyticsPropertySender, 
                                                                                       [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-            break;
+			// channel refresh command is issued in TaskQueueScheduler
+			
+			// listen to channel refresh notification 
+			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+           break;
+		}
 			
 		case NMLoginYouTubeType:
             [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteYouTubeLogin];
             [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
 																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
+			// dismiss the view right away
+			progressLabel.text = @"Verified Successfully";
+			[loadingIndicator stopAnimating];
+			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];
 			break;
 			
         default:
             break;
     }
-	// channel refresh command is issued in TaskQueueScheduler
-	
-	// listen to channel refresh notification 
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
-	[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
 }
 
 - (void)handleChannelRefreshNotification:(NSNotification *)aNotification {
