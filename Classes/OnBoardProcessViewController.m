@@ -14,6 +14,7 @@
 #import "NMDataType.h"
 #import "NMCategory.h"
 #import "NMChannel.h"
+#import "Analytics.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kChannelGridNumberOfRows 4
@@ -291,6 +292,10 @@
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
 {
     proceedToSocialButton.hidden = NO;
+    
+    [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
 }
 
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
