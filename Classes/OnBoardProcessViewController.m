@@ -295,11 +295,9 @@
 
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
 {
-    self.subscribingChannels = [NSMutableSet setWithArray:[[aNotification userInfo] objectForKey:@"channels"]];
-    
-    for (NMChannel *channel in subscribingChannels) {
-        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:channel];
-    }
+    NSArray *featuredChannels = [[aNotification userInfo] objectForKey:@"channels"];
+    self.subscribingChannels = [NSMutableSet setWithArray:featuredChannels];
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribeChannels:featuredChannels];    
 }
 
 - (void)handleDidSubscribeNotification:(NSNotification *)aNotification 
