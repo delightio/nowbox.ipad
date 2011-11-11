@@ -305,6 +305,12 @@
 
 - (NSString *)reasonForChannel:(NMChannel *)channel
 {
+    // Is the channel from the user's YouTube account?
+    NMCategory *youtubeCategory = [[[NMTaskQueueController sharedTaskQueueController] dataController] internalYouTubeCategory];
+    if ([youtubeCategory.channels containsObject:channel]) {
+        return @"from YouTube";
+    }
+    
     // Is the channel part of a category the user selected?
     NSArray *selectedCategories = [featuredCategories objectsAtIndexes:categoryGrid.selectedViewIndexes];    
     for (NMCategory *category in selectedCategories) {        
@@ -313,13 +319,15 @@
         }
     }
     
-    return @"from YouTube";
+    return @"Featured channel";
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
 {
     // Filter out NOWBOX channels (like Watch Later / Favorites)
-    NSArray *allSubscribedChannels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    NSMutableArray *allSubscribedChannels = [NSMutableArray arrayWithArray:[[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels]];
+    [allSubscribedChannels removeObject:[[NMTaskQueueController sharedTaskQueueController].dataController userFacebookStreamChannel]];
+    [allSubscribedChannels removeObject:[[NMTaskQueueController sharedTaskQueueController].dataController userTwitterStreamChannel]];     
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
     [CATransaction begin];
