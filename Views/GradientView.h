@@ -20,6 +20,6 @@
 }
 
 - (void) setColoursWithCGColors:(CGColorRef)color1:(CGColorRef)color2;
-- (void) setColours:(float) startRed:(float) startGreen:(float) startBlue:(float) endRed:(float) endGreen:(float)endBlue;
+- (void) setColours:(NSInteger)startRed :(NSInteger)startGreen :(NSInteger)startBlue :(NSInteger)endRed :(NSInteger)endGreen :(NSInteger)endBlue;
 
 @end

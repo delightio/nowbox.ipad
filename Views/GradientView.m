@@ -35,7 +35,7 @@
 }
 
 // Set colours as CGColorRefs.
-- (void) setColoursWithCGColors:(CGColorRef)color1:(CGColorRef)color2
+- (void)setColoursWithCGColors:(CGColorRef)color1:(CGColorRef)color2
 {
 	const CGFloat *startComponents = CGColorGetComponents(color1);
 	const CGFloat *endComponents = CGColorGetComponents(color2);
@@ -44,17 +44,17 @@
 }
 
 // Set colours as component RGB.
-- (void) setColours:(float) _startRed:(float) _startGreen:(float) _startBlue:(float) _endRed:(float) _endGreen:(float)_endBlue
-{
-	self.backgroundColor = [UIColor colorWithRed:_endRed green:_endGreen blue:_endBlue alpha:1.0];
+- (void)setColours:(NSInteger) _startRed:(NSInteger) _startGreen:(NSInteger) _startBlue:(NSInteger) _endRed:(NSInteger) _endGreen:(NSInteger)_endBlue
+{	
+	startRed = _startRed/255.0;
+	startGreen = _startGreen/255.0;
+	startBlue = _startBlue/255.0;
 	
-	startRed = _startRed;
-	startGreen = _startGreen;
-	startBlue = _startBlue;
-	
-	endRed = _endRed;
-	endGreen = _endGreen;
-	endBlue = _endBlue;
+	endRed = _endRed/255.0;
+	endGreen = _endGreen/255.0;
+	endBlue = _endBlue/255.0;
+    
+    self.backgroundColor = [UIColor colorWithRed:endRed green:endGreen blue:endBlue alpha:1.0];
 }
 
 - (void)dealloc

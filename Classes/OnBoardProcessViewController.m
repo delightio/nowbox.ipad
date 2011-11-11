@@ -331,7 +331,7 @@
         }
     }
     
-    return @"Featured channel";
+    return @"Featured Channel";
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
@@ -342,13 +342,7 @@
     [allSubscribedChannels removeObject:[[NMTaskQueueController sharedTaskQueueController].dataController userTwitterStreamChannel]];     
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
-    [CATransaction begin];
-	CATransition *animation = [CATransition animation];
-	animation.type = kCATransitionFade;
-	animation.duration = 0.4;
-	[[channelsScrollView layer] addAnimation:animation forKey:@"Fade"];
     [channelsScrollView reloadData];      
-	[CATransaction commit];
     
     channelsPageControl.numberOfPages = channelsScrollView.contentSize.width / channelsScrollView.frame.size.width;
 }
