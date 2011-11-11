@@ -199,6 +199,7 @@
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
 		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
+		A9E3C051146DCC4C005C976F /* YouTubeAccountStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
 		A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */; };
 		A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */; };
@@ -496,6 +497,8 @@
 		A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelManagementViewController.h; sourceTree = "<group>"; };
 		A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelManagementViewController.m; sourceTree = "<group>"; };
 		A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelManagementView.xib; sourceTree = "<group>"; };
+		A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouTubeAccountStatusViewController.h; sourceTree = "<group>"; };
+		A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YouTubeAccountStatusViewController.m; sourceTree = "<group>"; };
 		A9E4B01513F3EA6F00DAE368 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
 		A9E4B01613F3EA6F00DAE368 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
 		A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCheckUpdateTask.h; sourceTree = "<group>"; };
@@ -739,6 +742,8 @@
 				83852140145A03F60047B7E0 /* NMNavigationController.m */,
 				83F8E2DB1468C3720051D990 /* ShareViewController.h */,
 				83F8E2DC1468C3720051D990 /* ShareViewController.m */,
+				A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */,
+				A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1277,6 +1282,7 @@
 				8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */,
 				835C747D146084CE00702643 /* VideoRowTableView.m in Sources */,
 				83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */,
+				A9E3C051146DCC4C005C976F /* YouTubeAccountStatusViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
