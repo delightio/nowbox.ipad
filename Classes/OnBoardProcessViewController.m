@@ -20,7 +20,7 @@
 #define kChannelGridNumberOfColumns 3
 #define kChannelGridItemHorizontalSpacing 300
 #define kChannelGridItemPadding 10
-#define kYouTubeSyncTimeoutInSeconds 15
+#define kYouTubeSyncTimeoutInSeconds 20
 
 @implementation OnBoardProcessViewController
 
@@ -58,7 +58,7 @@
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];     
         [nc addObserver:self selector:@selector(handleDidVerifyUserNotification:) name:NMDidVerifyUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailVerifyUserNotification:) name:NMDidFailVerifyUserNotification object:nil];
-        [nc addObserver:self selector:@selector(handleDidPollUserNotification:) name:NMDidPollUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidCompareSubscribedChannelsNotification:) name:NMDidCompareSubscribedChannelsNotification object:nil];
     }
     
     return self;
@@ -372,21 +372,18 @@
     [self dismissSocialLogin:nil];    
 }
 
-- (void)handleDidPollUserNotification:(NSNotification *)aNotification 
+- (void)handleDidCompareSubscribedChannelsNotification:(NSNotification *)aNotification 
 {
-    if ([[[aNotification userInfo] objectForKey:@"youtube_synced"] boolValue]) {
-        youtubeSynced = YES;
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidPollUserNotification object:nil];
-        
-        if (currentView == infoView) {
-            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-        }
+    youtubeSynced = YES;
+    
+    if (currentView == infoView) {
+        [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
 }
 
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     exit(0);
 }
