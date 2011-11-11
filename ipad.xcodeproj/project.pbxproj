@@ -124,7 +124,7 @@
 		A962DD5E13A82552004CC111 /* MovieDetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */; };
 		A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */; };
 		A96AD056145B8F70000A8ECC /* NMUserSettingsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */; };
-		A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */; };
+		A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */; };
 		A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A989C592144D197B00CBC94D /* NMPollChannelTask.m */; };
 		A96BB8B21468AA31004B93ED /* NMPostSharingTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A96BB8B01468AA31004B93ED /* NMPostSharingTask.h */; };
 		A96BB8B31468AA31004B93ED /* NMPostSharingTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */; };
@@ -377,8 +377,8 @@
 		A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-expand-active.png"; sourceTree = "<group>"; };
 		A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "airplay-tv-indicator.png"; sourceTree = "<group>"; };
 		A93E6BD21402966200B06191 /* airplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airplay.png; sourceTree = "<group>"; };
-		A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSignOutUserTask.h; sourceTree = "<group>"; };
-		A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NMSignOutUserTask.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A93EF2FD144BEDF2004F72C5 /* NMDeauthorizeUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMDeauthorizeUserTask.h; sourceTree = "<group>"; };
+		A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NMDeauthorizeUserTask.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
 		A9452BC61415E75E00056361 /* NMFileExistsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFileExistsCache.h; sourceTree = "<group>"; };
@@ -918,8 +918,8 @@
 				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
 				A9E90A8B14173AE700EB38DC /* NMCreateUserTask.h */,
 				A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */,
-				A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */,
-				A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */,
+				A93EF2FD144BEDF2004F72C5 /* NMDeauthorizeUserTask.h */,
+				A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */,
 				A96AD052145B8F29000A8ECC /* NMUserSettingsTask.h */,
 				A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */,
 				A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */,
@@ -1303,7 +1303,7 @@
 				A9D027BA142217590064A89D /* NMImageDownloadTask.m in Sources */,
 				A9D027BB142217590064A89D /* NMCreateUserTask.m in Sources */,
 				A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */,
-				A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */,
+				A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */,
 				A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */,
 				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
 				A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */,

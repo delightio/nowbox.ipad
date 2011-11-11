@@ -30,6 +30,7 @@ typedef enum {
 	NMCommandVerifyFacebookUser,
 	NMCommandVerifyTwitterUser,
 	NMCommandVerifyYouTubeUser,
+	NMCommandDeauthorizeYoutubeUser,
 	NMCommandEditUserSettings,
 	NMCommandGetToken,
 	NMCommandTestToken,
@@ -128,9 +129,9 @@ extern NSString * const NMDidFailEditUserNotification;
 extern NSString * const NMWillVerifyUserNotification;
 extern NSString * const NMDidVerifyUserNotification;
 extern NSString * const NMDidFailVerifyUserNotification;
-extern NSString * const NMWillSignOutUserNotification;
-extern NSString * const NMDidSignOutUserNotification;
-extern NSString * const NMDidFailSignOutUserNotification;
+extern NSString * const NMWillDeauthorizeUserNotification;
+extern NSString * const NMDidDeauthorizeUserNotification;
+extern NSString * const NMDidFailDeauthorizeUserNotification;
 extern NSString * const NMWillEditUserSettingsNotification;
 extern NSString * const NMDidEditUserSettingsNotification;
 extern NSString * const NMDidFailEditUserSettingsNotification;

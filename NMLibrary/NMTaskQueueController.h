@@ -55,6 +55,7 @@
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyYouTubeAccountWithURL:(NSURL *)aURL;
+- (void)issueDeauthorizeYouTube;
 - (void)issueEditUserSettings;
 // Token
 - (void)issueRenewToken;

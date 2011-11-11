@@ -64,7 +64,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
-//	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidSignOutUserNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleYouTubePollingNotification:) name:NMDidPollUserNotification object:nil];
@@ -274,6 +274,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueDeauthorizeYouTube {
+	NMDeauthorizeUserTask * task = [[NMDeauthorizeUserTask alloc] initForYouTube];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueEditUserSettings {
 	// user settings should be readily saved in NSUserDefaults
 	NMUserSettingsTask * task = [[NMUserSettingsTask alloc] init];
@@ -282,13 +288,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 //- (void)issueSignOutTwitterAccount {
-//	NMSignOutUserTask * task = [[NMSignOutUserTask alloc] initWithCommand:NMCommandDeauthoriseTwitterAccount];
+//	NMDeauthorizeUserTask * task = [[NMDeauthorizeUserTask alloc] initWithCommand:NMCommandDeauthoriseTwitterAccount];
 //	[networkController addNewConnectionForTask:task];
 //	[task release];
 //}
 //
 //- (void)issueSignOutFacebookAccout {
-//	NMSignOutUserTask * task = [[NMSignOutUserTask alloc] initWithCommand:NMCommandDeauthoriseFaceBookAccount];
+//	NMDeauthorizeUserTask * task = [[NMDeauthorizeUserTask alloc] initWithCommand:NMCommandDeauthoriseFaceBookAccount];
 //	[networkController addNewConnectionForTask:task];
 //	[task release];
 //}

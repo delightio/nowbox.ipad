@@ -26,6 +26,8 @@
 @property (nonatomic, retain) NSDictionary * userDictionary;
 @property (nonatomic, retain) NSString * username;
 
++ (NSInteger)updateAppUserInfo:(NSDictionary *)infoDict;
+
 - (id)initTwitterVerificationWithURL:(NSURL *)aURL;
 - (id)initFacebookVerificationWithURL:(NSURL *)aURL;
 - (id)initYouTubeVerificationWithURL:(NSURL *)aURL;
