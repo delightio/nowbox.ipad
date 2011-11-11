@@ -25,6 +25,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 @implementation NMCreateUserTask
 @synthesize verificationURL, email;
 @synthesize userDictionary;
+@synthesize username;
 
 - (id)init {
 	self = [super init];
@@ -64,6 +65,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	[email release];
 	[verificationURL release];
 	[userDictionary release];
+	[username release];
 	[super dealloc];
 }
 
@@ -146,9 +148,26 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 			break;
 			
 		case NMCommandVerifyYouTubeUser:
+		{
+			NSArray * acAy = [userDictionary objectForKey:@"accounts"];
+			if ( acAy ) {
+				NSString * providerStr = nil;
+				for (NSDictionary * acDict in acAy) {
+					providerStr = [acDict objectForKey:@"provider"];
+					if ( [providerStr isEqualToString:@"youtube"] || [providerStr isEqualToString:@"you_tube"] ) {
+						// update user's youtube username
+						if ( NM_USER_YOUTUBE_USER_NAME ) {
+							[NM_USER_YOUTUBE_USER_NAME release];
+							NM_USER_YOUTUBE_USER_NAME = nil;
+						}
+						NM_USER_YOUTUBE_USER_NAME = [[acDict objectForKey:@"username"] retain];
+					}
+				}
+			}
 			NM_USER_YOUTUBE_SYNC_ACTIVE = YES;
 			break;
-			
+		}
+		
 		default:
 		{
 			break;

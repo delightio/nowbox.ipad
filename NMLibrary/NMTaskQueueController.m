@@ -25,6 +25,7 @@ NSInteger NM_USER_HISTORY_CHANNEL_ID		= 0;
 NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
+NSString * NM_USER_YOUTUBE_USER_NAME		= nil;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -567,7 +568,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-#pragma mark Channel Polling
+#pragma mark Server Polling
 - (void)issuePollServerForChannel:(NMChannel *)chnObj {
 	NMPollChannelTask * task = [[NMPollChannelTask alloc] initWithChannel:chnObj];
 	[networkController addNewConnectionForTask:task];
@@ -642,7 +643,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)performYouTubePollingForTimer:(NSTimer *)aTimer {
-	[self issueTokenTest];
+	[self issuePollServerForYouTubeSyncSignal];
 }
 
 - (void)handleYouTubePollingNotification:(NSNotification *)aNotification {

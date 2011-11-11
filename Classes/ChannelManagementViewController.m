@@ -408,13 +408,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 			if ( indexPath.section == 0 ) {
 				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-					titleLbl.text = @"<User name>";
+					titleLbl.text = NM_USER_YOUTUBE_USER_NAME;
 					detailLbl.text = @"YouTube sync is currently active";
 					[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelSubscribedBackgroundImage];                        
 				} else {
 					titleLbl.text = @"YouTube";
-					detailLbl.text = @"Not available in this preview";
+					detailLbl.text = @"Sign in to synchronize your channel subscription, Watch Later and favorite videos.";
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 					
@@ -627,20 +627,19 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			switch ( indexPath.section ) {
 				case 0:
 				{
-					return;
-					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-						// show channel detail? any detail to show?
-						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
-																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
-																								  @"channelmanagement", AnalyticsPropertySender, nil]];
-					} else {
+//					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+//						// show channel detail? any detail to show?
+//						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
+//																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
+//																								  @"channelmanagement", AnalyticsPropertySender, nil]];
+//					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 						socialCtrl.loginType = NMLoginYouTubeType;
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
 						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin];
 						return;
-					}
+//					}
 					break;
 				}	
 				case 1:

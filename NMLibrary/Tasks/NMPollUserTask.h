@@ -15,11 +15,7 @@
  */
 
 @interface NMPollUserTask : NMTask {
-	NSDate * datePopulated;
 	BOOL accountSynced;
 }
-
-@property (nonatomic, retain) NMChannel * channel;
-@property (nonatomic, retain) NSDate * datePopulated;
 
 @end
