@@ -26,6 +26,7 @@
 @implementation OnBoardProcessViewController
 
 @synthesize mainGradient;
+@synthesize splashView;
 @synthesize categoriesView;
 @synthesize categoryGrid;
 @synthesize proceedToSocialButton;
@@ -72,6 +73,7 @@
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     
     [mainGradient release];
+    [splashView release];
     [subscribedChannels release];
     [subscribingChannels release];
     [categoriesView release];
@@ -104,8 +106,10 @@
                          view2.frame = CGRectOffset(view2.frame, -self.view.bounds.size.width, 0);
                      }
                      completion:^(BOOL finished){
-                         [view1 removeFromSuperview];                         
-                     }];    
+                         [view1 removeFromSuperview];  
+                     }];  
+    
+    currentView = view2;
 }
 
 - (void)subscribeToSelectedCategories
@@ -174,10 +178,7 @@
     youtubeSynced = NM_USER_YOUTUBE_SYNC_ACTIVE;
     [self updateSocialNetworkButtonTexts];
     
-    // Show the login page to start
-    [categoriesView setFrame:self.view.bounds];
-    [self.view addSubview:categoriesView];    
-    currentView = categoriesView;
+    currentView = splashView;
     
     [[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 }
@@ -185,6 +186,7 @@
 - (void)viewDidUnload
 {
     self.mainGradient = nil;
+    self.splashView = nil;
     self.categoriesView = nil;
     self.categoryGrid = nil;
     self.proceedToSocialButton = nil;
@@ -246,10 +248,15 @@
     socialController = nil;
 }
 
+- (IBAction)switchToCategoriesView:(id)sender
+{
+    [self transitionFromView:splashView toView:categoriesView];
+    self.splashView = nil;
+}
+
 - (IBAction)switchToSocialView:(id)sender
 {
     [self transitionFromView:categoriesView toView:socialView];
-    currentView = socialView;
     
     if ([categoryGrid.selectedViewIndexes count] > 0) {
         [self subscribeToSelectedCategories];
@@ -259,7 +266,6 @@
 - (IBAction)switchToInfoView:(id)sender
 {
     [self transitionFromView:socialView toView:infoView];
-    currentView = infoView;
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
     if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
@@ -273,7 +279,6 @@
     [nc removeObserver:self name:NMDidSubscribeChannelNotification object:nil];
     
     [self transitionFromView:infoView toView:channelsView];
-    currentView = channelsView;
 }
 
 - (IBAction)switchToPlaybackView:(id)sender

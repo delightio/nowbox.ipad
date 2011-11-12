@@ -53,11 +53,81 @@
 						</object>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 					</object>
+					<object class="IBUIView" id="600771266">
+						<reference key="NSNextResponder" ref="749940058"/>
+						<int key="NSvFlags">274</int>
+						<array class="NSMutableArray" key="NSSubviews">
+							<object class="IBUIImageView" id="923065139">
+								<reference key="NSNextResponder" ref="600771266"/>
+								<int key="NSvFlags">274</int>
+								<string key="NSFrame">{{2, 0}, {1024, 768}}</string>
+								<reference key="NSSuperview" ref="600771266"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="936063482"/>
+								<string key="NSReuseIdentifierKey">_NS:569</string>
+								<int key="IBUIContentMode">6</int>
+								<bool key="IBUIUserInteractionEnabled">NO</bool>
+								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">onboard-splash.png</string>
+								</object>
+							</object>
+							<object class="IBUIButton" id="936063482">
+								<reference key="NSNextResponder" ref="600771266"/>
+								<int key="NSvFlags">269</int>
+								<string key="NSFrame">{{477, 676}, {69, 68}}</string>
+								<reference key="NSSuperview" ref="600771266"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="68313262"/>
+								<string key="NSReuseIdentifierKey">_NS:241</string>
+								<bool key="IBUIOpaque">NO</bool>
+								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<int key="IBUIContentHorizontalAlignment">0</int>
+								<int key="IBUIContentVerticalAlignment">0</int>
+								<object class="NSColor" key="IBUIHighlightedTitleColor" id="911806604">
+									<int key="NSColorSpace">3</int>
+									<bytes key="NSWhite">MQA</bytes>
+								</object>
+								<object class="NSColor" key="IBUINormalTitleColor">
+									<int key="NSColorSpace">1</int>
+									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+								</object>
+								<object class="NSColor" key="IBUINormalTitleShadowColor" id="951357013">
+									<int key="NSColorSpace">3</int>
+									<bytes key="NSWhite">MC41AA</bytes>
+								</object>
+								<object class="NSCustomResource" key="IBUINormalImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">onboard-splash-button.png</string>
+								</object>
+								<object class="IBUIFontDescription" key="IBUIFontDescription">
+									<int key="type">2</int>
+									<double key="pointSize">15</double>
+								</object>
+								<object class="NSFont" key="IBUIFont">
+									<string key="NSName">Helvetica-Bold</string>
+									<double key="NSSize">15</double>
+									<int key="NSfFlags">16</int>
+								</object>
+							</object>
+						</array>
+						<string key="NSFrameSize">{1024, 768}</string>
+						<reference key="NSSuperview" ref="749940058"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="923065139"/>
+						<string key="NSReuseIdentifierKey">_NS:212</string>
+						<object class="NSColor" key="IBUIBackgroundColor">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MAA</bytes>
+						</object>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+					</object>
 				</array>
 				<string key="NSFrameSize">{1024, 768}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView" ref="68313262"/>
+				<reference key="NSNextKeyView" ref="600771266"/>
 				<string key="NSReuseIdentifierKey">_NS:212</string>
 				<object class="NSColor" key="IBUIBackgroundColor" id="1065437238">
 					<int key="NSColorSpace">1</int>
@@ -87,15 +157,9 @@
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">NEXT</string>
-						<object class="NSColor" key="IBUIHighlightedTitleColor" id="911806604">
-							<int key="NSColorSpace">3</int>
-							<bytes key="NSWhite">MQA</bytes>
-						</object>
+						<reference key="IBUIHighlightedTitleColor" ref="911806604"/>
 						<reference key="IBUINormalTitleColor" ref="1065437238"/>
-						<object class="NSColor" key="IBUINormalTitleShadowColor" id="951357013">
-							<int key="NSColorSpace">3</int>
-							<bytes key="NSWhite">MC41AA</bytes>
-						</object>
+						<reference key="IBUINormalTitleShadowColor" ref="951357013"/>
 						<object class="IBUIFontDescription" key="IBUIFontDescription" id="181684983">
 							<string key="name">Futura-Medium</string>
 							<string key="family">Futura</string>
@@ -803,14 +867,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">socialView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="796525060"/>
-					</object>
-					<int key="connectionID">92</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">youtubeButton</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="1024419024"/>
@@ -840,6 +896,22 @@
 						<reference key="destination" ref="361566352"/>
 					</object>
 					<int key="connectionID">106</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">socialView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="796525060"/>
+					</object>
+					<int key="connectionID">112</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">splashView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="600771266"/>
+					</object>
+					<int key="connectionID">114</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -921,6 +993,15 @@
 					</object>
 					<int key="connectionID">101</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">switchToCategoriesView:</string>
+						<reference key="source" ref="936063482"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">113</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -959,6 +1040,7 @@
 						<reference key="object" ref="749940058"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="68313262"/>
+							<reference ref="600771266"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1136,6 +1218,27 @@
 						<reference key="object" ref="1062635266"/>
 						<reference key="parent" ref="796525060"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">107</int>
+						<reference key="object" ref="600771266"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="936063482"/>
+							<reference ref="923065139"/>
+						</array>
+						<reference key="parent" ref="749940058"/>
+						<string key="objectName">Splash View</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">108</int>
+						<reference key="object" ref="923065139"/>
+						<reference key="parent" ref="600771266"/>
+						<string key="objectName">Splash Image</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">109</int>
+						<reference key="object" ref="936063482"/>
+						<reference key="parent" ref="600771266"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -1144,6 +1247,9 @@
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="107.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="108.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="109.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="13.CustomClassName">CategorySelectionGrid</string>
 				<string key="13.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="18.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1181,7 +1287,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">106</int>
+			<int key="maxID">114</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1228,6 +1334,7 @@
 						<string key="loginToTwitter:">id</string>
 						<string key="loginToYouTube:">id</string>
 						<string key="pageControlValueChanged:">id</string>
+						<string key="switchToCategoriesView:">id</string>
 						<string key="switchToChannelsView:">id</string>
 						<string key="switchToInfoView:">id</string>
 						<string key="switchToSocialView:">id</string>
@@ -1247,6 +1354,10 @@
 						</object>
 						<object class="IBActionInfo" key="pageControlValueChanged:">
 							<string key="name">pageControlValueChanged:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="switchToCategoriesView:">
+							<string key="name">switchToCategoriesView:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="switchToChannelsView:">
@@ -1274,6 +1385,7 @@
 						<string key="proceedToChannelsButton">UIButton</string>
 						<string key="proceedToSocialButton">UIButton</string>
 						<string key="socialView">UIView</string>
+						<string key="splashView">UIView</string>
 						<string key="twitterButton">UIButton</string>
 						<string key="youtubeButton">UIButton</string>
 					</dictionary>
@@ -1322,6 +1434,10 @@
 							<string key="name">socialView</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="splashView">
+							<string key="name">splashView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="twitterButton">
 							<string key="name">twitterButton</string>
 							<string key="candidateClassName">UIButton</string>
@@ -1342,10 +1458,11 @@
 		<string key="IBDocument.TargetRuntimeIdentifier">IBIPadFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">toolbar-channel-management.png</string>
-			<string key="NS.object.0">{60, 40}</string>
-		</object>
+		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="onboard-splash-button.png">{69, 68}</string>
+			<string key="onboard-splash.png">{839, 768}</string>
+			<string key="toolbar-channel-management.png">{60, 40}</string>
+		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>
 </archive>

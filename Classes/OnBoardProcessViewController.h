@@ -30,6 +30,7 @@
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
 @property (nonatomic, retain) IBOutlet GradientView *mainGradient;
+@property (nonatomic, retain) IBOutlet UIView *splashView;
 
 // Step 1: Category selection
 @property (nonatomic, retain) IBOutlet UIView *categoriesView;
@@ -54,6 +55,7 @@
 - (IBAction)loginToYouTube:(id)sender;
 - (IBAction)loginToFacebook:(id)sender;
 - (IBAction)loginToTwitter:(id)sender;
+- (IBAction)switchToCategoriesView:(id)sender;
 - (IBAction)switchToSocialView:(id)sender;
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
