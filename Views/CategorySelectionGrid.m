@@ -15,6 +15,7 @@
 @synthesize numberOfColumns;
 @synthesize horizontalSpacing;
 @synthesize verticalSpacing;
+@synthesize itemHeight;
 @synthesize selectedViewIndexes;
 @synthesize delegate;
 
@@ -25,8 +26,11 @@
     recycledViews = [[NSMutableSet alloc] init];
     selectedViewIndexes = [[NSMutableIndexSet alloc] init];
     numberOfColumns = 3;
-    horizontalSpacing = 10.0f;
+    horizontalSpacing = 30.0f;
     verticalSpacing = 10.0f;
+    itemHeight = 91.0f;
+    
+    [self reloadData];
 }
 
 - (id)init
@@ -66,7 +70,7 @@
     [super dealloc];
 }
 
-- (void)layoutSubviews
+- (void)reloadData
 {
     // Remove old views
     for (UIView *view in categoryViews) {
@@ -76,11 +80,8 @@
     [categoryViews removeAllObjects];
     
     // Add new views
-    NSUInteger row = 0, col = 0;
-    NSUInteger numberOfRows = ceil((float)[categoryTitles count] / (numberOfColumns > 0 ? numberOfColumns : 1));
-    
+    NSUInteger row = 0, col = 0;    
     CGFloat itemWidth = round((self.frame.size.width - (numberOfColumns - 1) * horizontalSpacing) / numberOfColumns);
-    CGFloat itemHeight = round((self.frame.size.height - (numberOfRows - 1) * verticalSpacing) / numberOfRows);
     
     for (NSString *title in categoryTitles) {
         OnBoardProcessCategoryView *categoryView = [[[recycledViews anyObject] retain] autorelease];
@@ -96,10 +97,11 @@
         [categoryView.button setTag:row*numberOfColumns + col];        
         [categoryView.button addTarget:self action:@selector(categoryViewPressed:) forControlEvents:UIControlEventTouchUpInside];
         [categoryView.button setSelected:[selectedViewIndexes containsIndex:categoryView.tag]];
-        
         [self addSubview:categoryView];
         [categoryViews addObject:categoryView];
         
+        self.contentSize = CGSizeMake(self.frame.size.width, categoryView.frame.origin.y + categoryView.frame.size.height + verticalSpacing);
+
         col++;
         if (col >= numberOfColumns) {
             row++;            
@@ -131,25 +133,25 @@
         categoryTitles = [aCategoryTitles retain];
     }
     
-    [self setNeedsLayout];
+    [self reloadData];
 }
 
 - (void)setNumberOfColumns:(NSUInteger)aNumberOfColumns
 {
     numberOfColumns = aNumberOfColumns;
-    [self setNeedsLayout];
+    [self reloadData];
 }
 
 - (void)setHorizontalSpacing:(CGFloat)aHorizontalSpacing
 {
     horizontalSpacing = aHorizontalSpacing;
-    [self setNeedsLayout];
+    [self reloadData];
 }
 
 - (void)setVerticalSpacing:(CGFloat)aVerticalSpacing
 {
     verticalSpacing = aVerticalSpacing;
-    [self setNeedsLayout];
+    [self reloadData];
 }
 
 - (void)setSelectedViewIndexes:(NSMutableIndexSet *)aSelectedViewIndexes
@@ -157,7 +159,7 @@
     [selectedViewIndexes release];
     selectedViewIndexes = [[NSMutableIndexSet alloc] initWithIndexSet:aSelectedViewIndexes];
 
-    [self setNeedsLayout];    
+    [self reloadData];    
 }
 
 @end

@@ -10,7 +10,7 @@
 
 @protocol CategorySelectionGridDelegate;
 
-@interface CategorySelectionGrid : UIView {
+@interface CategorySelectionGrid : UIScrollView {
     NSMutableArray *categoryViews;
     NSMutableSet *recycledViews;
 }
@@ -19,8 +19,11 @@
 @property (nonatomic, assign) NSUInteger numberOfColumns;
 @property (nonatomic, assign) CGFloat horizontalSpacing;
 @property (nonatomic, assign) CGFloat verticalSpacing;
+@property (nonatomic, assign) CGFloat itemHeight;
 @property (nonatomic, retain) NSMutableIndexSet *selectedViewIndexes;
 @property (nonatomic, assign) id<CategorySelectionGridDelegate> delegate;
+
+- (void)reloadData;
 
 @end
 

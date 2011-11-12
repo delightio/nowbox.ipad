@@ -73,7 +73,7 @@
     if (title != aTitle) {
         [title release];
         title = [aTitle copy];
-        titleLabel.text = aTitle;
+        titleLabel.text = [aTitle uppercaseString];
     }
 }
 

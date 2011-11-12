@@ -120,9 +120,10 @@
 - (void)notifyVideosReady
 {
     // Allow the user to proceed past the info step
-    proceedToChannelsButton.hidden = NO;
+    [UIView animateWithDuration:0.3 animations:^{
+        proceedToChannelsButton.alpha = 1;
+    }];
 }
-
 
 - (void)updateSocialNetworkButtonTexts
 {
@@ -261,11 +262,14 @@
     if ([categoryGrid.selectedViewIndexes count] > 0) {
         [self subscribeToSelectedCategories];
     }
+    
+    self.categoriesView = nil;
 }
 
 - (IBAction)switchToInfoView:(id)sender
 {
     [self transitionFromView:socialView toView:infoView];
+    self.socialView = nil;
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
     if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
@@ -279,6 +283,7 @@
     [nc removeObserver:self name:NMDidSubscribeChannelNotification object:nil];
     
     [self transitionFromView:infoView toView:channelsView];
+    self.infoView = nil;
 }
 
 - (IBAction)switchToPlaybackView:(id)sender
@@ -296,7 +301,9 @@
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
 {
-    proceedToSocialButton.hidden = NO;
+    [UIView animateWithDuration:0.3 animations:^{
+        proceedToSocialButton.alpha = 1;
+    }];
     
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
     [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];

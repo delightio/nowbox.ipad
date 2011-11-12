@@ -75,6 +75,13 @@
 		83AC4E85146C7F5A00624448 /* OnBoardProcessCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */; };
 		83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A14146DEC13008393F1 /* onboard-splash-button.png */; };
 		83D21A17146DEC13008393F1 /* onboard-splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A15146DEC13008393F1 /* onboard-splash.png */; };
+		83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A19146DF107008393F1 /* onboard-button-next.png */; };
+		83D21A1C146DF562008393F1 /* onboard-nowbox-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */; };
+		83D21A1E146DF7C5008393F1 /* onboard-divider.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A1D146DF7C5008393F1 /* onboard-divider.png */; };
+		83D21A20146DF84E008393F1 /* onboard-header-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A1F146DF84E008393F1 /* onboard-header-background.png */; };
+		83D21A24146DFE5D008393F1 /* onboard-category-background-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A21146DFE5D008393F1 /* onboard-category-background-default.png */; };
+		83D21A25146DFE5D008393F1 /* onboard-category-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A22146DFE5D008393F1 /* onboard-category-background-selected.png */; };
+		83D21A26146DFE5D008393F1 /* onboard-category-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A23146DFE5D008393F1 /* onboard-category-icon.png */; };
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
@@ -334,6 +341,13 @@
 		83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessCategoryView.m; sourceTree = "<group>"; };
 		83D21A14146DEC13008393F1 /* onboard-splash-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button.png"; sourceTree = "<group>"; };
 		83D21A15146DEC13008393F1 /* onboard-splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash.png"; sourceTree = "<group>"; };
+		83D21A19146DF107008393F1 /* onboard-button-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next.png"; sourceTree = "<group>"; };
+		83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-nowbox-logo.png"; sourceTree = "<group>"; };
+		83D21A1D146DF7C5008393F1 /* onboard-divider.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider.png"; sourceTree = "<group>"; };
+		83D21A1F146DF84E008393F1 /* onboard-header-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-header-background.png"; sourceTree = "<group>"; };
+		83D21A21146DFE5D008393F1 /* onboard-category-background-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-background-default.png"; sourceTree = "<group>"; };
+		83D21A22146DFE5D008393F1 /* onboard-category-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-background-selected.png"; sourceTree = "<group>"; };
+		83D21A23146DFE5D008393F1 /* onboard-category-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-icon.png"; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -853,6 +867,13 @@
 				A97F5291144FA22E00D1B2F6 /* launch-status-background.png */,
 				223015E31416F378006FC44E /* movie-detail-swipe-indicator.png */,
 				2238D5C01430752A00F8CDBF /* nowbox_background.png */,
+				83D21A19146DF107008393F1 /* onboard-button-next.png */,
+				83D21A21146DFE5D008393F1 /* onboard-category-background-default.png */,
+				83D21A22146DFE5D008393F1 /* onboard-category-background-selected.png */,
+				83D21A23146DFE5D008393F1 /* onboard-category-icon.png */,
+				83D21A1D146DF7C5008393F1 /* onboard-divider.png */,
+				83D21A1F146DF84E008393F1 /* onboard-header-background.png */,
+				83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */,
 				83D21A15146DEC13008393F1 /* onboard-splash.png */,
 				83D21A14146DEC13008393F1 /* onboard-splash-button.png */,
 				A931612C13E0902B009694C3 /* playback-full-screen-active.png */,
@@ -1283,6 +1304,13 @@
 				83AC4E82146C7D0E00624448 /* OnBoardProcessCategoryView.xib in Resources */,
 				83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */,
 				83D21A17146DEC13008393F1 /* onboard-splash.png in Resources */,
+				83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */,
+				83D21A1C146DF562008393F1 /* onboard-nowbox-logo.png in Resources */,
+				83D21A1E146DF7C5008393F1 /* onboard-divider.png in Resources */,
+				83D21A20146DF84E008393F1 /* onboard-header-background.png in Resources */,
+				83D21A24146DFE5D008393F1 /* onboard-category-background-default.png in Resources */,
+				83D21A25146DFE5D008393F1 /* onboard-category-background-selected.png in Resources */,
+				83D21A26146DFE5D008393F1 /* onboard-category-icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
