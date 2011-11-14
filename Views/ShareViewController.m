@@ -45,6 +45,7 @@
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
+        [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
     }
     return self;
 }
@@ -116,6 +117,11 @@
     [super viewDidAppear:animated];
     
     [self textViewDidChange:messageText];
+    
+    if (autoPost) {
+        [self shareButtonPressed:nil];
+        autoPost = NO;
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -249,6 +255,11 @@
     
     progressView.hidden = YES;
     [self.navigationItem.rightBarButtonItem setEnabled:YES];
+}
+
+- (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification 
+{
+    autoPost = YES;
 }
 
 #pragma mark - UITextViewDelegate
