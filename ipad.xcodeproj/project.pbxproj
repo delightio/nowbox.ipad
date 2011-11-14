@@ -56,7 +56,6 @@
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
 		837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C741414631012009F3C2A /* OnBoardProcessChannelView.m */; };
 		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
-		837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C742A14637998009F3C2A /* CategorySelectionGrid.m */; };
 		837E904B14587FA3009F32DD /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E903F14587FA3009F32DD /* MPCJSONDataSerializer.m */; };
 		837E904C14587FA3009F32DD /* MPCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904114587FA3009F32DD /* MPCJSONSerializer.m */; };
 		837E904D14587FA3009F32DD /* MPCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904314587FA3009F32DD /* MPCSerializedJSONData.m */; };
@@ -82,8 +81,6 @@
 		838F27E61471C7E000935D5A /* onboard-channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E51471C7E000935D5A /* onboard-channel-background.png */; };
 		838F27E81471C9C700935D5A /* onboard-divider-flipped.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E71471C9C700935D5A /* onboard-divider-flipped.png */; };
 		838F27EA1471CA9900935D5A /* onboard-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E91471CA9900935D5A /* onboard-background.png */; };
-		83AC4E82146C7D0E00624448 /* OnBoardProcessCategoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83AC4E81146C7D0E00624448 /* OnBoardProcessCategoryView.xib */; };
-		83AC4E85146C7F5A00624448 /* OnBoardProcessCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */; };
 		83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A14146DEC13008393F1 /* onboard-splash-button.png */; };
 		83D21A17146DEC13008393F1 /* onboard-splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A15146DEC13008393F1 /* onboard-splash.png */; };
 		83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A19146DF107008393F1 /* onboard-button-next.png */; };
@@ -318,8 +315,6 @@
 		837C741314631012009F3C2A /* OnBoardProcessChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessChannelView.h; sourceTree = "<group>"; };
 		837C741414631012009F3C2A /* OnBoardProcessChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessChannelView.m; sourceTree = "<group>"; };
 		837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessChannelView.xib; sourceTree = "<group>"; };
-		837C742914637998009F3C2A /* CategorySelectionGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategorySelectionGrid.h; sourceTree = "<group>"; };
-		837C742A14637998009F3C2A /* CategorySelectionGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategorySelectionGrid.m; sourceTree = "<group>"; };
 		837E903E14587FA3009F32DD /* MPCJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONDataSerializer.h; sourceTree = "<group>"; };
 		837E903F14587FA3009F32DD /* MPCJSONDataSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCJSONDataSerializer.m; sourceTree = "<group>"; };
 		837E904014587FA3009F32DD /* MPCJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONSerializer.h; sourceTree = "<group>"; };
@@ -356,9 +351,6 @@
 		838F27E51471C7E000935D5A /* onboard-channel-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-channel-background.png"; sourceTree = "<group>"; };
 		838F27E71471C9C700935D5A /* onboard-divider-flipped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-flipped.png"; sourceTree = "<group>"; };
 		838F27E91471CA9900935D5A /* onboard-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-background.png"; sourceTree = "<group>"; };
-		83AC4E81146C7D0E00624448 /* OnBoardProcessCategoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessCategoryView.xib; sourceTree = "<group>"; };
-		83AC4E83146C7F5A00624448 /* OnBoardProcessCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessCategoryView.h; sourceTree = "<group>"; };
-		83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessCategoryView.m; sourceTree = "<group>"; };
 		83D21A14146DEC13008393F1 /* onboard-splash-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button.png"; sourceTree = "<group>"; };
 		83D21A15146DEC13008393F1 /* onboard-splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash.png"; sourceTree = "<group>"; };
 		83D21A19146DF107008393F1 /* onboard-button-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next.png"; sourceTree = "<group>"; };
@@ -668,54 +660,6 @@
 			path = NSData_Base64;
 			sourceTree = "<group>";
 		};
-		83810ADA14646569003D3F76 /* Launch */ = {
-			isa = PBXGroup;
-			children = (
-				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
-				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
-				83AC4E81146C7D0E00624448 /* OnBoardProcessCategoryView.xib */,
-				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
-			);
-			name = Launch;
-			sourceTree = "<group>";
-		};
-		83810ADB14646578003D3F76 /* Launch */ = {
-			isa = PBXGroup;
-			children = (
-				A9389B83143109CE00959946 /* LaunchController.h */,
-				A9389B84143109CE00959946 /* LaunchController.m */,
-				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
-				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
-			);
-			name = Launch;
-			sourceTree = "<group>";
-		};
-		83810ADC14646589003D3F76 /* Tooltips */ = {
-			isa = PBXGroup;
-			children = (
-				83F7C48B14509EF400AD8880 /* ToolTip.h */,
-				83F7C48C14509EF400AD8880 /* ToolTip.m */,
-				83E04669144F468300C91525 /* ToolTipController.h */,
-				83E0466A144F468300C91525 /* ToolTipController.m */,
-			);
-			name = Tooltips;
-			sourceTree = "<group>";
-		};
-		83810ADD1464659E003D3F76 /* Launch */ = {
-			isa = PBXGroup;
-			children = (
-				83AC4E83146C7F5A00624448 /* OnBoardProcessCategoryView.h */,
-				83AC4E84146C7F5A00624448 /* OnBoardProcessCategoryView.m */,
-				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
-				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
-				837C742914637998009F3C2A /* CategorySelectionGrid.h */,
-				837C742A14637998009F3C2A /* CategorySelectionGrid.m */,
-				83810ADE1464A633003D3F76 /* GridScrollView.h */,
-				83810ADF1464A633003D3F76 /* GridScrollView.m */,
-			);
-			name = Launch;
-			sourceTree = "<group>";
-		};
 		A90F21FD143F63CA006B298D /* HTML */ = {
 			isa = PBXGroup;
 			children = (
@@ -832,8 +776,14 @@
 				A98555DF141758CD00079453 /* KeychainItemWrapper.m */,
 				22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */,
 				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
-				83810ADB14646578003D3F76 /* Launch */,
-				83810ADC14646589003D3F76 /* Tooltips */,
+				A9389B83143109CE00959946 /* LaunchController.h */,
+				A9389B84143109CE00959946 /* LaunchController.m */,
+				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
+				83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */,
+				83F7C48B14509EF400AD8880 /* ToolTip.h */,
+				83F7C48C14509EF400AD8880 /* ToolTip.m */,
+				83E04669144F468300C91525 /* ToolTipController.h */,
+				83E0466A144F468300C91525 /* ToolTipController.m */,
 				8385213F145A03F60047B7E0 /* NMNavigationController.h */,
 				83852140145A03F60047B7E0 /* NMNavigationController.m */,
 				83F8E2DB1468C3720051D990 /* ShareViewController.h */,
@@ -1089,7 +1039,10 @@
 				83F7C4901450B22700AD8880 /* TouchForwardingView.m */,
 				8381B648145F728A00696110 /* FindChannelTableCell.h */,
 				8381B649145F728A00696110 /* FindChannelTableCell.m */,
-				83810ADD1464659E003D3F76 /* Launch */,
+				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
+				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
+				83810ADE1464A633003D3F76 /* GridScrollView.h */,
+				83810ADF1464A633003D3F76 /* GridScrollView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1097,7 +1050,6 @@
 		A97050A213438F980022BF2C /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
-				83810ADA14646569003D3F76 /* Launch */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
@@ -1109,6 +1061,9 @@
 				A9A4810F13FD189F00850536 /* FeatureDebugView.xib */,
 				A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */,
 				A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */,
+				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
+				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
+				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
 				221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */,
 				83F8E2DF1468C4B40051D990 /* ShareView.xib */,
 			);
@@ -1329,7 +1284,6 @@
 				837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */,
 				A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */,
 				83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */,
-				83AC4E82146C7D0E00624448 /* OnBoardProcessCategoryView.xib in Resources */,
 				83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */,
 				83D21A17146DEC13008393F1 /* onboard-splash.png in Resources */,
 				83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */,
@@ -1416,9 +1370,7 @@
 				83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */,
 				83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */,
 				837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */,
-				837C742B14637998009F3C2A /* CategorySelectionGrid.m in Sources */,
 				83810AE01464A633003D3F76 /* GridScrollView.m in Sources */,
-				83AC4E85146C7F5A00624448 /* OnBoardProcessCategoryView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

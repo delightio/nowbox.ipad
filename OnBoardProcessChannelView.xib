@@ -36,7 +36,7 @@
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">274</int>
 				<array class="NSMutableArray" key="NSSubviews">
-					<object class="IBUIImageView" id="119958233">
+					<object class="IBUIImageView" id="162450559">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
 						<string key="NSFrameSize">{260, 90}</string>
@@ -54,7 +54,7 @@
 					<object class="IBUIImageView" id="420885842">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">300</int>
-						<string key="NSFrame">{{16, 23}, {44, 44}}</string>
+						<string key="NSFrame">{{18, 25}, {40, 40}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="798712409"/>
@@ -77,12 +77,12 @@
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<string key="IBUIText">Channel Name</string>
-						<object class="NSColor" key="IBUITextColor" id="248961016">
+						<object class="NSColor" key="IBUITextColor" id="250448526">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4yMTQwNTYxOTk2IDAuMjE1ODgzMzE2NSAwLjIxNjEzNTMzMjcAA</bytes>
 						</object>
 						<nil key="IBUIHighlightedColor"/>
-						<object class="NSColor" key="IBUIShadowColor" id="443336782">
+						<object class="NSColor" key="IBUIShadowColor" id="681100089">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MSAxIDEAA</bytes>
 						</object>
@@ -113,9 +113,9 @@
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<string key="IBUIText">from YouTube account</string>
-						<reference key="IBUITextColor" ref="248961016"/>
+						<reference key="IBUITextColor" ref="250448526"/>
 						<nil key="IBUIHighlightedColor"/>
-						<reference key="IBUIShadowColor" ref="443336782"/>
+						<reference key="IBUIShadowColor" ref="681100089"/>
 						<string key="IBUIShadowOffset">{0, 1}</string>
 						<int key="IBUIBaselineAdjustment">1</int>
 						<float key="IBUIMinimumFontSize">10</float>
@@ -133,10 +133,10 @@
 				<string key="NSFrameSize">{260, 90}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView" ref="119958233"/>
+				<reference key="NSNextKeyView" ref="162450559"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">1</int>
-					<bytes key="NSRGB">MC44ODIzNTI5NDEyIDAuODgyMzUyOTQxMiAwLjg4MjM1Mjk0MTIAA</bytes>
+					<bytes key="NSRGB">MC44ODIzNTI5NDEyIDAuODgyMzUyOTQxMiAwLjg4MjM1Mjk0MTIgMAA</bytes>
 				</object>
 				<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 			</object>
@@ -191,7 +191,7 @@
 							<reference ref="798712409"/>
 							<reference ref="880753501"/>
 							<reference ref="420885842"/>
-							<reference ref="119958233"/>
+							<reference ref="162450559"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -226,7 +226,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">10</int>
-						<reference key="object" ref="119958233"/>
+						<reference key="object" ref="162450559"/>
 						<reference key="parent" ref="191373211"/>
 						<string key="objectName">Background Image</string>
 					</object>

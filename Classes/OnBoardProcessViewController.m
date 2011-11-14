@@ -40,6 +40,7 @@
 @synthesize channelsView;
 @synthesize channelsScrollView;
 @synthesize featuredCategories;
+@synthesize selectedCategoryIndexes;
 @synthesize subscribedChannels;
 @synthesize subscribingChannels;
 @synthesize delegate;
@@ -61,6 +62,8 @@
         [nc addObserver:self selector:@selector(handleDidVerifyUserNotification:) name:NMDidVerifyUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailVerifyUserNotification:) name:NMDidFailVerifyUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidCompareSubscribedChannelsNotification:) name:NMDidCompareSubscribedChannelsNotification object:nil];
+        
+        self.selectedCategoryIndexes = [NSMutableIndexSet indexSet];
     }
     
     return self;
@@ -88,6 +91,7 @@
     [channelsView release];
     [channelsScrollView release];
     [featuredCategories release];
+    [selectedCategoryIndexes release];
     
     [super dealloc];
 }
@@ -135,7 +139,7 @@
 
 - (void)subscribeToSelectedCategories
 {
-    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:categoryGrid.selectedViewIndexes]];
+    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:selectedCategoryIndexes]];
 }
 
 - (void)notifyVideosReady
@@ -156,17 +160,24 @@
 
 - (void)updateSocialNetworkButtonTexts
 {
-    [youtubeButton setTitle:(NM_USER_YOUTUBE_SYNC_ACTIVE ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
-    [youtubeButton setSelected:NM_USER_YOUTUBE_SYNC_ACTIVE];
+    BOOL youtubeConnected = NM_USER_YOUTUBE_SYNC_ACTIVE;
+    BOOL facebookConnected = NM_USER_FACEBOOK_CHANNEL_ID != 0;
+    BOOL twitterConnected = NM_USER_TWITTER_CHANNEL_ID != 0;
+    
+    [youtubeButton setTitle:(youtubeConnected ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [youtubeButton setSelected:youtubeConnected];
     [youtubeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [youtubeButton setUserInteractionEnabled:!youtubeConnected];
     
-    [facebookButton setTitle:(NM_USER_FACEBOOK_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
-    [facebookButton setSelected:NM_USER_FACEBOOK_CHANNEL_ID != 0];
+    [facebookButton setTitle:(facebookConnected ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [facebookButton setSelected:facebookConnected];
     [facebookButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
-    
-    [twitterButton setTitle:(NM_USER_TWITTER_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
-    [twitterButton setSelected:NM_USER_TWITTER_CHANNEL_ID != 0];
+    [facebookButton setUserInteractionEnabled:!facebookConnected];
+
+    [twitterButton setTitle:(twitterConnected ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [twitterButton setSelected:twitterConnected != 0];
     [twitterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [twitterButton setUserInteractionEnabled:!twitterConnected];
 }
 
 - (void)youtubeTimeoutTimerFired
@@ -190,22 +201,16 @@
     socialView.backgroundColor = [UIColor clearColor];
     infoView.backgroundColor = [UIColor clearColor];
     channelsView.backgroundColor = [UIColor clearColor];
-    categoryGrid.backgroundColor = [UIColor clearColor];
         
+    categoryGrid.itemSize = CGSizeMake(265, 96);
+    
     // Sort the categories by name
     NSArray *categories = [[[NMTaskQueueController sharedTaskQueueController] dataController] categories];
     NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
     self.featuredCategories = [categories sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
     [sorter release];
-    
-    // Now we can populate the featured category list
-    NSMutableArray *categoryTitles = [NSMutableArray array];
-    for (NMCategory *category in featuredCategories) {
-        [categoryTitles addObject:category.title];
-    }
-    [categoryGrid setCategoryTitles:categoryTitles];
-    [categoryGrid setGridDelegate:self];
-    
+    [categoryGrid reloadData];
+        
     // Have we already synced some services? (Probably only applicable for debugging)
     youtubeSynced = NM_USER_YOUTUBE_SYNC_ACTIVE;
     [self updateSocialNetworkButtonTexts];
@@ -241,6 +246,26 @@
 }
 
 #pragma mark - Actions
+
+- (IBAction)categorySelected:(id)sender
+{
+    NSUInteger index = [sender tag];
+    if ([selectedCategoryIndexes containsIndex:index]) {
+        [sender setSelected:NO];
+        [selectedCategoryIndexes removeIndex:index];
+    } else {
+        [sender setSelected:YES];
+        [selectedCategoryIndexes addIndex:index];
+    }
+    
+    BOOL showNextButton = ([selectedCategoryIndexes count] > 0 && userCreated);
+        
+    if ((proceedToSocialButton.alpha == 0 && showNextButton) || (proceedToSocialButton.alpha == 1 && !showNextButton)) {
+        [UIView animateWithDuration:0.3 animations:^{
+            proceedToSocialButton.alpha = (showNextButton ? 1 : 0);
+        }];
+    }
+}
 
 - (void)loginToSocialNetworkWithType:(NMSocialLoginType)loginType
 {
@@ -295,7 +320,7 @@
 {
     [self transitionFromView:categoriesView toView:socialView];
     
-    if ([categoryGrid.selectedViewIndexes count] > 0) {
+    if ([selectedCategoryIndexes count] > 0) {
         [self subscribeToSelectedCategories];
     }
     
@@ -339,7 +364,7 @@
 	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 	[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
     
-    if ([categoryGrid.selectedViewIndexes count] > 0) {
+    if ([selectedCategoryIndexes count] > 0) {
         [UIView animateWithDuration:0.3 animations:^{
             proceedToSocialButton.alpha = 1;
         }];
@@ -379,7 +404,7 @@
     }
     
     // Is the channel part of a category the user selected?
-    NSArray *selectedCategories = [featuredCategories objectsAtIndexes:categoryGrid.selectedViewIndexes];    
+    NSArray *selectedCategories = [featuredCategories objectsAtIndexes:selectedCategoryIndexes];    
     for (NMCategory *category in selectedCategories) {        
         if ([channel.categories containsObject:category]) {
             return [NSString stringWithFormat:@"from %@", category.title];
@@ -402,9 +427,12 @@
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, it looks like the service is down. Please try again later." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alertView show];
-    [alertView release];
+    if (!alertShowing) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, it looks like the service is down. Please try again later." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];
+        alertShowing = YES;
+    }
 }
 
 - (void)handleDidVerifyUserNotification:(NSNotification *)aNotification 
@@ -443,40 +471,71 @@
     exit(0);
 }
 
-#pragma mark - CategorySelectionGridDelegate
-
-- (void)categorySelectionGrid:(CategorySelectionGrid *)aCategoryGrid didSelectCategoryAtIndex:(NSUInteger)index
-{
-    BOOL showNextButton = ([aCategoryGrid.selectedViewIndexes count] > 0 && userCreated);
-    
-    if ((proceedToSocialButton.alpha == 0 && showNextButton) || (proceedToSocialButton.alpha == 1 && !showNextButton)) {
-        [UIView animateWithDuration:0.3 animations:^{
-            proceedToSocialButton.alpha = (showNextButton ? 1 : 0);
-        }];
-    }
-}
-
 #pragma mark - GridScrollViewDelegate
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
 {
-    return [subscribedChannels count];
+    if (gridScrollView == categoryGrid) {
+        // Category grid
+        return [featuredCategories count];
+    } else {
+        // Channels grid
+        return [subscribedChannels count];
+    }
 }
 
 - (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
 {
-    NMChannel *channel = [subscribedChannels objectAtIndex:index];
-    
-    OnBoardProcessChannelView *channelView = (OnBoardProcessChannelView *) [gridScrollView dequeueReusableSubview];
-    if (!channelView) {
-        channelView = [[[OnBoardProcessChannelView alloc] init] autorelease];
+    if (gridScrollView == categoryGrid) {
+        // Categories
+        NMCategory *category = [featuredCategories objectAtIndex:index];
+        
+        UIButton *categoryButton = (UIButton *) [gridScrollView dequeueReusableSubview];
+        if (!categoryButton) {
+            categoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [categoryButton addTarget:self action:@selector(categorySelected:) forControlEvents:UIControlEventTouchUpInside];
+            [categoryButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+            [categoryButton setBackgroundImage:[UIImage imageNamed:@"onboard-category-background-default.png"] forState:UIControlStateNormal];
+            [categoryButton setBackgroundImage:[UIImage imageNamed:@"onboard-category-background-selected.png"] forState:UIControlStateSelected];
+            [categoryButton setImage:[UIImage imageNamed:@"onboard-category-icon.png"] forState:UIControlStateNormal];
+            [categoryButton setImageEdgeInsets:UIEdgeInsetsMake(0, 18, 2, 0)];
+            [categoryButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 30, 2, 0)];            
+            [categoryButton setTitleColor:[UIColor colorWithRed:76/255.0 green:77/255.0 blue:74/255.0 alpha:1] forState:UIControlStateNormal];
+            [categoryButton setTitleColor:[UIColor colorWithRed:76/255.0 green:77/255.0 blue:74/255.0 alpha:1] forState:UIControlStateSelected];
+            [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+            [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted | UIControlStateSelected];
+            [categoryButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [categoryButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
+            [categoryButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted | UIControlStateSelected];
+            [categoryButton.titleLabel setShadowOffset:CGSizeMake(0, 1)];
+            
+            UIFont *font = [UIFont fontWithName:@"Futura-CondensedMedium" size:20.0];
+            if (!font) {
+                font = [UIFont fontWithName:@"Futura-Medium" size:18.0];
+            }
+            [categoryButton.titleLabel setFont:font];
+        }
+        
+        [categoryButton setTitle:[category.title uppercaseString] forState:UIControlStateNormal];
+        [categoryButton setSelected:[selectedCategoryIndexes containsIndex:index]];
+        
+        return categoryButton;
+        
+    } else {
+        // Channels
+        NMChannel *channel = [subscribedChannels objectAtIndex:index];
+        
+        OnBoardProcessChannelView *channelView = (OnBoardProcessChannelView *) [gridScrollView dequeueReusableSubview];
+        if (!channelView) {
+            channelView = [[[OnBoardProcessChannelView alloc] init] autorelease];
+        }
+        
+        [channelView setTitle:channel.title];
+        [channelView setReason:[self reasonForChannel:channel]];
+        [channelView.thumbnailImage setImageForChannel:channel];
+        
+        return channelView;        
     }
-    
-    [channelView setTitle:channel.title];
-    [channelView setReason:[self reasonForChannel:channel]];
-    [channelView.thumbnailImage setImageForChannel:channel];
-    
-    return channelView;
 }
 
 @end

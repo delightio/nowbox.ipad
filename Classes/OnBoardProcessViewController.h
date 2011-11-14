@@ -8,21 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import "SocialLoginViewController.h"
-#import "CategorySelectionGrid.h"
 #import "GridScrollView.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, CategorySelectionGridDelegate, GridScrollViewDelegate> {    
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {    
     UIView *currentView;    
     NSTimer *youtubeTimeoutTimer;
     BOOL youtubeSynced;
     BOOL userCreated;
+    BOOL alertShowing;
     
     SocialLoginViewController *socialController;
 }
 
 @property (nonatomic, retain) NSArray *featuredCategories;
+@property (nonatomic, retain) NSMutableIndexSet *selectedCategoryIndexes;
 @property (nonatomic, retain) NSArray *subscribedChannels;
 @property (nonatomic, retain) NSMutableSet *subscribingChannels;
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
@@ -31,7 +32,7 @@
 
 // Step 1: Category selection
 @property (nonatomic, retain) IBOutlet UIView *categoriesView;
-@property (nonatomic, retain) IBOutlet CategorySelectionGrid *categoryGrid;
+@property (nonatomic, retain) IBOutlet GridScrollView *categoryGrid;
 @property (nonatomic, retain) IBOutlet UIButton *proceedToSocialButton;
 
 // Step 2: Social login
@@ -49,6 +50,7 @@
 @property (nonatomic, retain) IBOutlet UIView *channelsView;
 @property (nonatomic, retain) IBOutlet GridScrollView *channelsScrollView;
 
+- (IBAction)categorySelected:(id)sender;
 - (IBAction)loginToYouTube:(id)sender;
 - (IBAction)loginToFacebook:(id)sender;
 - (IBAction)loginToTwitter:(id)sender;
