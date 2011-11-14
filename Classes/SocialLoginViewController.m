@@ -195,7 +195,7 @@
 	switch (loginType) {
 		case NMLoginTwitterType:
 		{
-			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
+//			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
@@ -219,7 +219,7 @@
 			
 		case NMLoginFacebookType:
 		{
-			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
+//			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
@@ -231,7 +231,7 @@
 				// create the new URL by inserting the user ID
 				NSArray * ay = [[theURL absoluteString] componentsSeparatedByString:@"#"];
 				NSString * urlStr = [NSString stringWithFormat:@"%@&user_id=%d", [ay objectAtIndex:0], NM_USER_ACCOUNT_ID];
-				NSLog(@"Facebook verification URL: %@", urlStr);
+//				NSLog(@"Facebook verification URL: %@", urlStr);
 				
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyFacebookAccountWithURL:[NSURL URLWithString:urlStr]];
@@ -249,7 +249,7 @@
 			
 		case NMLoginYouTubeType:
 		{
-			NSLog(@"YouTube URL: %@", [theURL absoluteString]);
+//			NSLog(@"YouTube URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/you_tube/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
