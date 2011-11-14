@@ -200,6 +200,7 @@
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
 		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
 		A9E3C051146DCC4C005C976F /* YouTubeAccountStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */; };
+		A9E3C0601471AECB005C976F /* button-logout-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9E3C05F1471AECB005C976F /* button-logout-background.png */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
 		A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */; };
 		A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */; };
@@ -499,6 +500,7 @@
 		A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelManagementView.xib; sourceTree = "<group>"; };
 		A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouTubeAccountStatusViewController.h; sourceTree = "<group>"; };
 		A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YouTubeAccountStatusViewController.m; sourceTree = "<group>"; };
+		A9E3C05F1471AECB005C976F /* button-logout-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-logout-background.png"; sourceTree = "<group>"; };
 		A9E4B01513F3EA6F00DAE368 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
 		A9E4B01613F3EA6F00DAE368 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
 		A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCheckUpdateTask.h; sourceTree = "<group>"; };
@@ -768,6 +770,7 @@
 				A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */,
 				A98C241113D38C030061A594 /* button-like-active.png */,
 				A98C241213D38C030061A594 /* button-like.png */,
+				A9E3C05F1471AECB005C976F /* button-logout-background.png */,
 				A98C241313D38C030061A594 /* button-watch-later-active.png */,
 				A98C241413D38C030061A594 /* button-watch-later.png */,
 				A99FB6CD140EB57700689040 /* button-gray-background.png */,
@@ -1218,6 +1221,7 @@
 				8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */,
 				A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */,
 				83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */,
+				A9E3C0601471AECB005C976F /* button-logout-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1451,7 +1455,11 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG_PLAYER_NAVIGATION;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_USE_STAGING_SERVER,
+					DEBUG_PLAYER_NAVIGATION,
+					DEBUG_DO_NOT_SEND_API_TOKEN,
+				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1499,8 +1507,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_DO_NOT_SEND_API_TOKEN,
 					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_PLAYBACK_NETWORK_CALL,
+					DEBUG_USE_STAGING_SERVER,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

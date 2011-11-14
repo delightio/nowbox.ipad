@@ -38,8 +38,11 @@ NSString * const NMDidFailDeauthorizeUserNotification = @"NMDidFailDeauthorizeUs
 		default:
 			break;
 	}
-	NSString * urlStr = [NSString stringWithFormat:@"http://%@/auth/%@/deauthorize?user_id=%d", NM_BASE_URL, srv, NM_USER_ACCOUNT_ID];
+	NSString * urlStr = [NSString stringWithFormat:@"http://%@/auth/%@/deauthorize?user_id=%d", NM_BASE_URL_TOKEN, srv, NM_USER_ACCOUNT_ID];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+	[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+#endif
 	[request setHTTPMethod:@"POST"];
 	return request;
 }
@@ -50,10 +53,12 @@ NSString * const NMDidFailDeauthorizeUserNotification = @"NMDidFailDeauthorizeUs
 	}
 	self.userDictionary = [buffer objectFromJSONData];
 	// update user info as if the user has just been created.
+	if ( NM_USER_YOUTUBE_USER_NAME ) {
+		[NM_USER_YOUTUBE_USER_NAME release];
+		NM_USER_YOUTUBE_USER_NAME = nil;
+	}
+	NM_USER_YOUTUBE_SYNC_ACTIVE = NO;
 	encountersErrorDuringProcessing = [NMCreateUserTask updateAppUserInfo:userDictionary] == 0;
-	
-	NSString * str = [[[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding] autorelease];
-	NSLog(@"%@", str);
 }
 
 - (NSString *)willLoadNotificationName {

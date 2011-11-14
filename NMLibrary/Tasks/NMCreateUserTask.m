@@ -162,6 +162,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 							NM_USER_YOUTUBE_USER_NAME = nil;
 						}
 						NM_USER_YOUTUBE_USER_NAME = [[acDict objectForKey:@"username"] retain];
+						[NMCreateUserTask updateAppUserInfo:userDictionary];
 					}
 				}
 			}

@@ -633,6 +633,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						YouTubeAccountStatusViewController * ytStatusCtrl = [[YouTubeAccountStatusViewController alloc] initWithStyle:UITableViewStyleGrouped];
 						[self.navigationController pushViewController:ytStatusCtrl animated:YES];
 						[ytStatusCtrl release];
+						return;
 					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 						socialCtrl.loginType = NMLoginYouTubeType;

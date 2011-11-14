@@ -8,6 +8,7 @@
 
 #import "YouTubeAccountStatusViewController.h"
 #import "NMLibrary.h"
+#import "ipadAppDelegate.h"
 
 
 @implementation YouTubeAccountStatusViewController
@@ -17,8 +18,23 @@
     self = [super initWithStyle:style];
     if (self) {
         self.title = @"YouTube";
+		logoutButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		logoutButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		[logoutButton setTitle:@"Logout Account" forState:UIControlStateNormal];
+		[logoutButton addTarget:self action:@selector(logoutUser:) forControlEvents:UIControlEventTouchUpInside];
+		logoutButton.frame = CGRectMake(30.0f, 20.0f, 260.0f, 45.0f);
+		UIImage * btnBgImage = [UIImage imageNamed:@"button-logout-background"];
+		[logoutButton setBackgroundImage:[btnBgImage stretchableImageWithLeftCapWidth:16 topCapHeight:0] forState:UIControlStateNormal];
+		[logoutButton.titleLabel setFont:[UIFont boldSystemFontOfSize:[UIFont labelFontSize]]];
+		logoutButton.titleLabel.shadowOffset = CGSizeMake(0.0f, -1.0f);
     }
     return self;
+}
+
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[logoutButton release];
+	[super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
@@ -34,22 +50,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
-	// the unlink button
-	UIButton * logoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	logoutButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	[logoutButton setTitle:@"Logout Account" forState:UIControlStateNormal];
-	[logoutButton addTarget:self action:@selector(logoutUser:) forControlEvents:UIControlEventTouchUpInside];
-	self.tableView.tableFooterView = logoutButton;
-	
+
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDeauthNotification:) name:NMDidDeauthorizeUserNotification object:nil];
+	[nc addObserver:self selector:@selector(handleFailDeauthNotification:) name:NMDidFailDeauthorizeUserNotification object:nil];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidUnload
@@ -59,26 +64,6 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -86,6 +71,16 @@
 }
 
 #pragma mark - Table view data source
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 65.0f;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+	UIView * ctnView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 45.0f)];
+	ctnView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	[ctnView addSubview:logoutButton];
+	return [ctnView autorelease];
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -105,7 +100,8 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 	
 	switch (indexPath.row) {
@@ -117,8 +113,8 @@
 			
 		case 1:
 			// cell
-			cell.textLabel.text = @"Status";
-			cell.detailTextLabel.text = @"Sync Activated";
+			cell.textLabel.text = @"Sync Status";
+			cell.detailTextLabel.text = @"Active";
 			break;
 			
 		default:
@@ -171,17 +167,24 @@
 #pragma mark - Notification handler
 - (void)handleDeauthNotification:(NSNotification *)aNotification {
 	[self.navigationController popViewControllerAnimated:YES];
+	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
+	[defs setObject:NM_USER_YOUTUBE_USER_NAME forKey:NM_USER_YOUTUBE_USER_NAME_KEY];
 }
 
+- (void)handleFailDeauthNotification:(NSNotification *)aNotification {
+	logoutButton.enabled = YES;
+}
 #pragma mark - Target-action methods
 - (void)logoutUser:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueDeauthorizeYouTube];
+	logoutButton.enabled = NO;
 }
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
     // Navigation logic may go here. Create and push another view controller.
     /*
      <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
@@ -190,6 +193,6 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
-}
+//}
 
 @end

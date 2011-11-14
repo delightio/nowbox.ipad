@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface YouTubeAccountStatusViewController : UITableViewController
+@interface YouTubeAccountStatusViewController : UITableViewController {
+	UIButton * logoutButton;
+}
 
 @end
