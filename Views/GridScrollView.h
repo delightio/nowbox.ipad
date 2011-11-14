@@ -12,18 +12,16 @@
 
 @interface GridScrollView : UIScrollView <UIScrollViewDelegate> {
     NSUInteger numberOfItems;
-    NSUInteger numberOfPages;
-    NSInteger firstVisiblePage;
-    NSInteger lastVisiblePage;
+    NSUInteger numberOfRows;
+    CGFloat horizontalItemPadding;
     
     NSMutableSet *visibleViews;
     NSMutableSet *recycledViews;
 }
 
-@property (nonatomic, assign) NSInteger rowsPerPage;
-@property (nonatomic, assign) NSInteger columnsPerPage;
-@property (nonatomic, assign) CGFloat pageMarginLeft;
-@property (nonatomic, assign) CGFloat pageMarginRight;
+@property (nonatomic, assign) NSUInteger numberOfColumns;
+@property (nonatomic, assign) CGSize itemSize;
+@property (nonatomic, assign) CGFloat verticalItemPadding;
 @property (nonatomic, assign) IBOutlet id<GridScrollViewDelegate> gridDelegate;
 
 - (void)reloadData;

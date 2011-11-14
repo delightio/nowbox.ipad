@@ -10,25 +10,21 @@
 
 @implementation GridScrollView
 
-@synthesize rowsPerPage;
-@synthesize columnsPerPage;
-@synthesize pageMarginLeft;
-@synthesize pageMarginRight;
+@synthesize numberOfColumns;
+@synthesize itemSize;
+@synthesize verticalItemPadding;
 @synthesize gridDelegate;
 
 - (void)setup
 {
-    self.pagingEnabled = YES;
     self.delegate = self;
-    
-    columnsPerPage = 3;
-    rowsPerPage = 4;
-    
-    firstVisiblePage = -1;
-    lastVisiblePage = -1;
     
     visibleViews = [[NSMutableSet alloc] init];
     recycledViews = [[NSMutableSet alloc] init];
+    
+    numberOfColumns = 3;
+    itemSize = CGSizeMake(260, 90);
+    verticalItemPadding = 10;
 }
 
 - (id)init
@@ -66,30 +62,6 @@
     [super dealloc];
 }
 
-- (void)setRowsPerPage:(NSInteger)aRowsPerPage
-{
-    rowsPerPage = aRowsPerPage;
-    [self reloadData];
-}
-
-- (void)setColumnsPerPage:(NSInteger)aColumnsPerPage
-{
-    columnsPerPage = aColumnsPerPage;
-    [self reloadData];
-}
-
-- (void)setPageMarginLeft:(CGFloat)aPageMarginLeft
-{
-    pageMarginLeft = aPageMarginLeft;
-    [self setNeedsLayout];
-}
-
-- (void)setPageMarginRight:(CGFloat)aPageMarginRight
-{
-    pageMarginRight = aPageMarginRight;
-    [self setNeedsLayout];
-}
-
 - (void)setDelegate:(id<UIScrollViewDelegate>)delegate
 {
     if (delegate == self || delegate == nil) {
@@ -98,6 +70,21 @@
         NSLog(@"Warning: setting scroll view delegate on GridScrollView is not supported. Use gridDelegate instead.");
         [self doesNotRecognizeSelector:_cmd];
     }
+}
+
+- (void)setNumberOfColumns:(NSUInteger)aNumberOfColumns
+{
+    numberOfColumns = aNumberOfColumns;
+    
+    if (gridDelegate) {
+        [self reloadData];        
+    }    
+}
+
+- (void)setItemSize:(CGSize)anItemSize
+{
+    itemSize = anItemSize;
+    [self reloadData];
 }
 
 - (void)setGridDelegate:(id<GridScrollViewDelegate>)aGridDelegate
@@ -112,34 +99,30 @@
     [self setNeedsLayout];
 }
 
-- (void)populatePage:(NSUInteger)page
-{
-    CGFloat columnWidth = round((self.frame.size.width - pageMarginLeft - pageMarginRight) / columnsPerPage);
-    CGFloat rowHeight = round(self.frame.size.height / rowsPerPage);
-    
-    for (NSInteger row = 0; row < rowsPerPage; row++) {
-        for (NSInteger col = 0; col < columnsPerPage && (page * rowsPerPage * columnsPerPage + row * columnsPerPage + col < numberOfItems); col++) {
-            UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:page * rowsPerPage * columnsPerPage + row * columnsPerPage + col];
-            view.frame = CGRectMake(page * self.frame.size.width + pageMarginLeft + col * columnWidth, row * rowHeight, view.frame.size.width, view.frame.size.height);
-            view.tag = page;
-            [self addSubview:view];
-            [visibleViews addObject:view];
-        }
-    }
-}
-
 - (void)layoutSubviews
 {
-    // Figure out which pages should be shown
-    CGFloat leftX = self.contentOffset.x;
-    CGFloat rightX = self.contentOffset.x + self.frame.size.width;
-    NSInteger leftPage = MAX(0, floor((leftX - 10) / self.frame.size.width));
-    NSInteger rightPage = MIN(numberOfPages - 1, floor((rightX + 10) / self.frame.size.width));
+    [super layoutSubviews];
+    
+    NSInteger firstVisibleRow = INT_MAX;
+    NSInteger lastVisibleRow = INT_MIN;
+    CGFloat topY = 0;
+    CGFloat bottomY = 0;
     
     // Can we remove any views?
     NSMutableSet *viewsToRemove = [[NSMutableSet alloc] init];
     for (UIView *view in visibleViews) {
-        if (view.tag < leftPage || view.tag > rightPage) {
+        if (CGRectIntersectsRect(view.frame, CGRectMake(0, self.contentOffset.y, self.frame.size.width, self.frame.size.height))) {
+            // Keep the view
+            if (view.tag < firstVisibleRow) {
+                firstVisibleRow = view.tag;
+                topY = view.frame.origin.y;
+            }
+            if (view.tag > lastVisibleRow) {
+                lastVisibleRow = view.tag;
+                bottomY = view.frame.origin.y + view.frame.size.height + verticalItemPadding;
+            }
+        } else {
+            // Remove it
             [recycledViews addObject:view];
             [view removeFromSuperview];
             [viewsToRemove addObject:view];
@@ -148,30 +131,46 @@
     [visibleViews minusSet:viewsToRemove];
     [viewsToRemove release];
     
-    // Do we need to add any views?
-    if (firstVisiblePage == -1) {
-        [self populatePage:leftPage];
-        [self populatePage:rightPage];
-    } else {
-        while (firstVisiblePage > leftPage) {
-            [self populatePage:--firstVisiblePage];
-        }
-        while (lastVisiblePage < rightPage) {
-            [self populatePage:++lastVisiblePage];
-        }
+    if (lastVisibleRow == INT_MIN) {
+        lastVisibleRow = -1;
     }
     
-    firstVisiblePage = leftPage;
-    lastVisiblePage = rightPage;        
+    // Do we need to add any views?
+    while ((lastVisibleRow == -1) || (bottomY < self.contentOffset.y + self.frame.size.height && lastVisibleRow < numberOfRows - 1)) {
+        lastVisibleRow++;
+        for (NSUInteger column = 0; column < numberOfColumns; column++) {
+            if (lastVisibleRow * numberOfColumns + column < numberOfItems) {            
+                UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:(lastVisibleRow * numberOfColumns + column)];
+                view.frame = CGRectMake(column * (self.frame.size.width / 3 + horizontalItemPadding), bottomY, itemSize.width, itemSize.height);
+                view.tag = lastVisibleRow;
+                [self addSubview:view];
+                [visibleViews addObject:view];
+            }
+        }
+        bottomY += itemSize.height + verticalItemPadding;
+    }
+
+    while (topY > self.contentOffset.y && firstVisibleRow > 0) {
+        firstVisibleRow--;
+        topY -= itemSize.height + verticalItemPadding;
+        for (NSUInteger column = 0; column < numberOfColumns; column++) {
+            if (firstVisibleRow * numberOfColumns + column < numberOfItems) {
+                UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:(firstVisibleRow * numberOfColumns + column)];
+                view.frame = CGRectMake(column * (self.frame.size.width / 3 + horizontalItemPadding), topY, itemSize.width, itemSize.height);
+                view.tag = firstVisibleRow;
+                [self addSubview:view];
+                [visibleViews addObject:view];
+            }
+        }
+    }    
 }
 
 - (void)reloadData
 {
     numberOfItems = [gridDelegate gridScrollViewNumberOfItems:self];
-    numberOfPages = ceil((float)numberOfItems / (columnsPerPage * rowsPerPage));
+    numberOfRows = ceil((float)numberOfItems / numberOfColumns);
     
-    firstVisiblePage = -1;
-    lastVisiblePage = -1;
+    horizontalItemPadding = (numberOfColumns == 0 ? 0 : (self.frame.size.width - (itemSize.width * numberOfColumns)) / (numberOfColumns - 1));
     
     // Remove all existing visible views
     for (UIView *view in visibleViews) {
@@ -180,8 +179,8 @@
     }
     [visibleViews removeAllObjects];
 
-    self.contentSize = CGSizeMake(numberOfPages * self.frame.size.width, self.frame.size.height);
-
+    self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding);
+    self.contentOffset = CGPointMake(0, -self.contentInset.top);
     [self setNeedsLayout];
 }
 

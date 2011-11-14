@@ -10,7 +10,6 @@
 #import "SocialLoginViewController.h"
 #import "CategorySelectionGrid.h"
 #import "GridScrollView.h"
-#import "GradientView.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
 
@@ -28,7 +27,6 @@
 @property (nonatomic, retain) NSMutableSet *subscribingChannels;
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
-@property (nonatomic, retain) IBOutlet GradientView *mainGradient;
 @property (nonatomic, retain) IBOutlet UIView *splashView;
 
 // Step 1: Category selection

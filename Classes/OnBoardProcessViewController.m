@@ -26,7 +26,6 @@
 
 @implementation OnBoardProcessViewController
 
-@synthesize mainGradient;
 @synthesize splashView;
 @synthesize categoriesView;
 @synthesize categoryGrid;
@@ -73,7 +72,6 @@
 
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     
-    [mainGradient release];
     [splashView release];
     [subscribedChannels release];
     [subscribingChannels release];
@@ -194,10 +192,6 @@
     channelsView.backgroundColor = [UIColor clearColor];
     categoryGrid.backgroundColor = [UIColor clearColor];
         
-    [mainGradient setColours:242:242:242 :234:234:234];
-    mainGradient.layer.cornerRadius = 5;
-    mainGradient.layer.masksToBounds = YES;
-    
     // Sort the categories by name
     NSArray *categories = [[[NMTaskQueueController sharedTaskQueueController] dataController] categories];
     NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
@@ -212,9 +206,6 @@
     [categoryGrid setCategoryTitles:categoryTitles];
     [categoryGrid setGridDelegate:self];
     
-    channelsScrollView.pageMarginLeft = 50;
-    channelsScrollView.pageMarginRight = 50;
-    
     // Have we already synced some services? (Probably only applicable for debugging)
     youtubeSynced = NM_USER_YOUTUBE_SYNC_ACTIVE;
     [self updateSocialNetworkButtonTexts];
@@ -226,7 +217,6 @@
 
 - (void)viewDidUnload
 {
-    self.mainGradient = nil;
     self.splashView = nil;
     self.categoriesView = nil;
     self.categoryGrid = nil;
@@ -385,7 +375,7 @@
     // Is the channel from the user's YouTube account?
     NMCategory *youtubeCategory = [[[NMTaskQueueController sharedTaskQueueController] dataController] internalYouTubeCategory];
     if ([youtubeCategory.channels containsObject:channel]) {
-        return @"from YouTube";
+        return @"from YouTube account";
     }
     
     // Is the channel part of a category the user selected?
