@@ -175,6 +175,7 @@
 - (void)handleFailDeauthNotification:(NSNotification *)aNotification {
 	logoutButton.enabled = YES;
 }
+
 #pragma mark - Target-action methods
 - (void)logoutUser:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueDeauthorizeYouTube];
