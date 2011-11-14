@@ -14,9 +14,7 @@
 
 @protocol OnBoardProcessViewControllerDelegate;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, CategorySelectionGridDelegate, GridScrollViewDelegate> {
-    BOOL scrollingFromPageControl;
-    
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, CategorySelectionGridDelegate, GridScrollViewDelegate> {    
     UIView *currentView;    
     NSTimer *youtubeTimeoutTimer;
     BOOL youtubeSynced;
@@ -46,12 +44,12 @@
 
 // Step 3: NOWMOV info
 @property (nonatomic, retain) IBOutlet UIView *infoView;
+@property (nonatomic, retain) IBOutlet UIView *settingUpView;
 @property (nonatomic, retain) IBOutlet UIButton *proceedToChannelsButton;
 
 // Step 4: Auto-selected channels
 @property (nonatomic, retain) IBOutlet UIView *channelsView;
 @property (nonatomic, retain) IBOutlet GridScrollView *channelsScrollView;
-@property (nonatomic, retain) IBOutlet UIPageControl *channelsPageControl;
 
 - (IBAction)loginToYouTube:(id)sender;
 - (IBAction)loginToFacebook:(id)sender;
@@ -60,7 +58,6 @@
 - (IBAction)switchToSocialView:(id)sender;
 - (IBAction)switchToInfoView:(id)sender;
 - (IBAction)switchToChannelsView:(id)sender;
-- (IBAction)pageControlValueChanged:(id)sender;
 - (void)notifyVideosReady;
 - (void)updateSocialNetworkButtonTexts;
 

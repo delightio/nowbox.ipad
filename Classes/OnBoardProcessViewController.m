@@ -15,6 +15,7 @@
 #import "NMCategory.h"
 #import "NMChannel.h"
 #import "Analytics.h"
+#import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kChannelGridNumberOfRows 4
@@ -35,10 +36,10 @@
 @synthesize facebookButton;
 @synthesize twitterButton;
 @synthesize infoView;
+@synthesize settingUpView;
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
 @synthesize channelsScrollView;
-@synthesize channelsPageControl;
 @synthesize featuredCategories;
 @synthesize subscribedChannels;
 @synthesize subscribingChannels;
@@ -84,10 +85,10 @@
     [facebookButton release];
     [twitterButton release];
     [infoView release];
+    [settingUpView release];
     [proceedToChannelsButton release];    
     [channelsView release];
     [channelsScrollView release];
-    [channelsPageControl release];
     [featuredCategories release];
     
     [super dealloc];
@@ -120,16 +121,29 @@
 - (void)notifyVideosReady
 {
     // Allow the user to proceed past the info step
-    [UIView animateWithDuration:0.3 animations:^{
-        proceedToChannelsButton.alpha = 1;
-    }];
+    [UIView animateWithDuration:0.15 
+                     animations:^{
+                         settingUpView.alpha = 0;
+                     }
+                     completion:^(BOOL finished){
+                         [UIView animateWithDuration:0.15 
+                                          animations:^{
+                                              proceedToChannelsButton.alpha = 1;
+                             
+                         }];
+                     }];
 }
 
 - (void)updateSocialNetworkButtonTexts
 {
     [youtubeButton setTitle:(NM_USER_YOUTUBE_SYNC_ACTIVE ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [youtubeButton setSelected:NM_USER_YOUTUBE_SYNC_ACTIVE];
+    
     [facebookButton setTitle:(NM_USER_FACEBOOK_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [facebookButton setSelected:NM_USER_FACEBOOK_CHANNEL_ID != 0];
+    
     [twitterButton setTitle:(NM_USER_TWITTER_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+    [twitterButton setSelected:NM_USER_TWITTER_CHANNEL_ID != 0];
 }
 
 - (void)youtubeTimeoutTimerFired
@@ -199,8 +213,8 @@
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
-    self.channelsPageControl = nil;
     self.featuredCategories = nil;
+    self.settingUpView = nil;
     self.proceedToChannelsButton = nil;
     
     [super viewDidUnload];
@@ -292,17 +306,17 @@
     [delegate onBoardProcessViewControllerDidFinish:self];
 }
 
-- (IBAction)pageControlValueChanged:(id)sender
-{
-    [channelsScrollView setContentOffset:CGPointMake(channelsPageControl.currentPage * channelsScrollView.frame.size.width, 0) animated:YES];
-    scrollingFromPageControl = YES;
-}
-
 #pragma mark - Notifications
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
 {
     userCreated = YES;
+    
+    // Begin new session
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY] + 1;
+	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+	[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
     
     if ([categoryGrid.selectedViewIndexes count] > 0) {
         [UIView animateWithDuration:0.3 animations:^{
@@ -363,8 +377,6 @@
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
     [channelsScrollView reloadData];      
-    
-    channelsPageControl.numberOfPages = channelsScrollView.contentSize.width / channelsScrollView.frame.size.width;
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
@@ -424,22 +436,6 @@
 }
 
 #pragma mark - GridScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    if (!scrollingFromPageControl) {
-        NSInteger page = round(scrollView.contentOffset.x / scrollView.frame.size.width);
-        page = MAX(page, 0);
-        page = MIN(page, channelsPageControl.numberOfPages - 1);
-        
-        channelsPageControl.currentPage = page;
-    }
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    scrollingFromPageControl = NO;
-}
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
 {

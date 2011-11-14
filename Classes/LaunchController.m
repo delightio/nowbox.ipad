@@ -205,11 +205,6 @@
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 //	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	// begin new session
-	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
-	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
 		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
 		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
@@ -224,6 +219,12 @@
 		[viewController setCurrentChannel:channel startPlaying:NO];
 		// wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
 	} else {
+        // begin new session
+        NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
+        NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+        [[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+        [df setInteger:sid forKey:NM_SESSION_ID_KEY];
+        
 		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:1.0f];
