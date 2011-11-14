@@ -94,6 +94,27 @@
     [super dealloc];
 }
 
+- (void)updateFontsForView:(UIView *)view
+{
+    // Update font to Futura Condensed if available
+    static NSString *oldFontName = @"Futura-Medium";
+    static NSString *newFontName = @"Futura-CondensedMedium";
+    UIFont *condensedFont = [UIFont fontWithName:newFontName size:12.0];
+    
+    if (condensedFont) {
+        for (UIView *subview in view.subviews) {
+            if ([subview isKindOfClass:[UILabel class]]) {
+                UILabel *label = (UILabel *)subview;
+                if ([label.font.fontName isEqualToString:oldFontName]) {
+                    [label setFont:[UIFont fontWithName:newFontName size:label.font.pointSize + 2]];
+                }
+            } else {
+                [self updateFontsForView:subview];
+            }
+        }
+    }
+}
+
 - (void)transitionFromView:(UIView *)view1 toView:(UIView *)view2
 {
     view2.frame = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
@@ -111,6 +132,7 @@
                      }];  
     
     currentView = view2;
+    [self updateFontsForView:currentView];
 }
 
 - (void)subscribeToSelectedCategories
@@ -138,12 +160,15 @@
 {
     [youtubeButton setTitle:(NM_USER_YOUTUBE_SYNC_ACTIVE ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [youtubeButton setSelected:NM_USER_YOUTUBE_SYNC_ACTIVE];
+    [youtubeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     
     [facebookButton setTitle:(NM_USER_FACEBOOK_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [facebookButton setSelected:NM_USER_FACEBOOK_CHANNEL_ID != 0];
+    [facebookButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     
     [twitterButton setTitle:(NM_USER_TWITTER_CHANNEL_ID != 0 ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [twitterButton setSelected:NM_USER_TWITTER_CHANNEL_ID != 0];
+    [twitterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
 }
 
 - (void)youtubeTimeoutTimerFired
@@ -168,7 +193,7 @@
     infoView.backgroundColor = [UIColor clearColor];
     channelsView.backgroundColor = [UIColor clearColor];
     categoryGrid.backgroundColor = [UIColor clearColor];
-    
+        
     [mainGradient setColours:242:242:242 :234:234:234];
     mainGradient.layer.cornerRadius = 5;
     mainGradient.layer.masksToBounds = YES;
@@ -245,17 +270,23 @@
 
 - (IBAction)loginToYouTube:(id)sender
 {
-    [self loginToSocialNetworkWithType:NMLoginYouTubeType];
+    if (![sender isSelected]) {
+        [self loginToSocialNetworkWithType:NMLoginYouTubeType];
+    }
 }
 
 - (IBAction)loginToFacebook:(id)sender
 {
-    [self loginToSocialNetworkWithType:NMLoginFacebookType];
+    if (![sender isSelected]) {    
+        [self loginToSocialNetworkWithType:NMLoginFacebookType];
+    }
 }
 
 - (IBAction)loginToTwitter:(id)sender
 {
-    [self loginToSocialNetworkWithType:NMLoginTwitterType];
+    if (![sender isSelected]) {    
+        [self loginToSocialNetworkWithType:NMLoginTwitterType];
+    }
 }
 
 - (void)dismissSocialLogin:(id)sender
