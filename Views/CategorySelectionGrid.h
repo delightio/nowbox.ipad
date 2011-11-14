@@ -21,7 +21,7 @@
 @property (nonatomic, assign) CGFloat verticalSpacing;
 @property (nonatomic, assign) CGFloat itemHeight;
 @property (nonatomic, retain) NSMutableIndexSet *selectedViewIndexes;
-@property (nonatomic, assign) id<CategorySelectionGridDelegate> delegate;
+@property (nonatomic, assign) id<CategorySelectionGridDelegate> gridDelegate;
 
 - (void)reloadData;
 

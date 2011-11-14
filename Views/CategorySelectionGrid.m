@@ -17,7 +17,7 @@
 @synthesize verticalSpacing;
 @synthesize itemHeight;
 @synthesize selectedViewIndexes;
-@synthesize delegate;
+@synthesize gridDelegate;
 
 - (void)setup
 {
@@ -123,7 +123,7 @@
         [selectedViewIndexes addIndex:categoryIndex];
     }
     
-    [delegate categorySelectionGrid:self didSelectCategoryAtIndex:categoryIndex];
+    [gridDelegate categorySelectionGrid:self didSelectCategoryAtIndex:categoryIndex];
 }
 
 - (void)setCategoryTitles:(NSArray *)aCategoryTitles

@@ -101,7 +101,6 @@
 						<string key="NSFrame">{{68, 25}, {177, 42}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:345</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -113,11 +112,11 @@
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MC4yOTYxMTg5NTE2IDAuMzA0MTgzNDY3NyAwLjI5MjIxMjcwMTYAA</bytes>
 						</object>
-						<nil key="IBUIHighlightedColor"/>
-						<object class="NSColor" key="IBUIShadowColor">
+						<object class="NSColor" key="IBUIHighlightedColor" id="473281890">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MSAxIDEAA</bytes>
 						</object>
+						<reference key="IBUIShadowColor" ref="473281890"/>
 						<string key="IBUIShadowOffset">{0, 1}</string>
 						<int key="IBUIBaselineAdjustment">1</int>
 						<float key="IBUIMinimumFontSize">10</float>

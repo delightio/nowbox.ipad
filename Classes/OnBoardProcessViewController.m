@@ -171,6 +171,7 @@
         [categoryTitles addObject:category.title];
     }
     [categoryGrid setCategoryTitles:categoryTitles];
+    [categoryGrid setGridDelegate:self];
     
     channelsScrollView.pageMarginLeft = 50;
     channelsScrollView.pageMarginRight = 50;
@@ -301,9 +302,13 @@
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
 {
-    [UIView animateWithDuration:0.3 animations:^{
-        proceedToSocialButton.alpha = 1;
-    }];
+    userCreated = YES;
+    
+    if ([categoryGrid.selectedViewIndexes count] > 0) {
+        [UIView animateWithDuration:0.3 animations:^{
+            proceedToSocialButton.alpha = 1;
+        }];
+    }
     
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
     [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
@@ -403,6 +408,19 @@
 - (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     exit(0);
+}
+
+#pragma mark - CategorySelectionGridDelegate
+
+- (void)categorySelectionGrid:(CategorySelectionGrid *)aCategoryGrid didSelectCategoryAtIndex:(NSUInteger)index
+{
+    BOOL showNextButton = ([aCategoryGrid.selectedViewIndexes count] > 0 && userCreated);
+    
+    if ((proceedToSocialButton.alpha == 0 && showNextButton) || (proceedToSocialButton.alpha == 1 && !showNextButton)) {
+        [UIView animateWithDuration:0.3 animations:^{
+            proceedToSocialButton.alpha = (showNextButton ? 1 : 0);
+        }];
+    }
 }
 
 #pragma mark - GridScrollViewDelegate

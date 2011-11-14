@@ -14,12 +14,13 @@
 
 @protocol OnBoardProcessViewControllerDelegate;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, CategorySelectionGridDelegate, GridScrollViewDelegate> {
     BOOL scrollingFromPageControl;
     
     UIView *currentView;    
     NSTimer *youtubeTimeoutTimer;
     BOOL youtubeSynced;
+    BOOL userCreated;
     
     SocialLoginViewController *socialController;
 }
