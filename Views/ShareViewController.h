@@ -16,6 +16,7 @@ typedef enum {
 
 @interface ShareViewController : UIViewController <UITextViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate> {
     BOOL viewPushedByNavigationController;
+    BOOL autoPost;
 }
 
 @property (nonatomic, assign) ShareMode shareMode;

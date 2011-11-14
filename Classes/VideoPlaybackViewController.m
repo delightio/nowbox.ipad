@@ -1597,17 +1597,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark - ToolTipControllerDelegate
 
 - (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
-    if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-        // Don't show share tip if user is already logged in
-        if (NM_USER_TWITTER_CHANNEL_ID || NM_USER_FACEBOOK_CHANNEL_ID) {
-            return NO;
-        }
-    } else if ([tooltip.name hasPrefix:@"SwipeTip"] && sender) {
-        // Don't show swipe tip until next video is ready to play
-        pendingToolTip = tooltip;
-        return NO;
-    }
-    
     return loadedControlView.playbackMode == NMHalfScreenMode;
 }
 
@@ -1632,12 +1621,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
             center.y++;
         }
         tooltip.center = center;
-    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
-        tooltip.target = channelController;
-        tooltip.action = @selector(showChannelManagementView:);
-    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-        tooltip.target = channelController;
-        tooltip.action = @selector(showChannelManagementView:);        
     }
     
     return self.view;
