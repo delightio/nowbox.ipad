@@ -40,6 +40,8 @@
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
 @synthesize channelsScrollView;
+@synthesize shadowDownView;
+@synthesize shadowUpView;
 @synthesize featuredCategories;
 @synthesize selectedCategoryIndexes;
 @synthesize subscribedChannels;
@@ -92,6 +94,8 @@
     [proceedToChannelsButton release];    
     [channelsView release];
     [channelsScrollView release];
+    [shadowDownView release];
+    [shadowUpView release];
     [featuredCategories release];
     [selectedCategoryIndexes release];
     
@@ -205,10 +209,11 @@
     channelsView.backgroundColor = [UIColor clearColor];
         
     categoryGrid.itemSize = CGSizeMake(265, 96);
+    channelsScrollView.verticalItemPadding = 18;
     
-    // Sort the categories by name
+    // Sort the categories by sort order
     NSArray *categories = [[[NMTaskQueueController sharedTaskQueueController] dataController] categories];
-    NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
+    NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
     self.featuredCategories = [categories sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
     [sorter release];
     [categoryGrid reloadData];
@@ -236,6 +241,8 @@
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
+    self.shadowDownView = nil;
+    self.shadowUpView = nil;
     self.featuredCategories = nil;
     self.settingUpView = nil;
     self.proceedToChannelsButton = nil;
@@ -555,6 +562,12 @@
         
         return channelView;        
     }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    shadowDownView.alpha = MIN(1, MAX(0, scrollView.contentOffset.y / 10));
+    shadowUpView.alpha = MIN(1, MAX(0, (scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.frame.size.height)) / 10));
 }
 
 @end

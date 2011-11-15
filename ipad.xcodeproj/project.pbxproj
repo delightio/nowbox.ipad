@@ -77,11 +77,12 @@
 		838F27DE1471996600935D5A /* onboard-nowbox-is.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27DD1471996600935D5A /* onboard-nowbox-is.png */; };
 		838F27E014719DA300935D5A /* onboard-button-settingup.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27DF14719DA300935D5A /* onboard-button-settingup.png */; };
 		838F27E21471A2DF00935D5A /* onboard-channelmanagement-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E11471A2DF00935D5A /* onboard-channelmanagement-icon.png */; };
-		838F27E41471A37200935D5A /* onboard-divider-shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E31471A37100935D5A /* onboard-divider-shadow.png */; };
 		838F27E61471C7E000935D5A /* onboard-channel-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E51471C7E000935D5A /* onboard-channel-background.png */; };
 		838F27E81471C9C700935D5A /* onboard-divider-flipped.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E71471C9C700935D5A /* onboard-divider-flipped.png */; };
 		838F27EA1471CA9900935D5A /* onboard-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27E91471CA9900935D5A /* onboard-background.png */; };
 		838F27F11471E49000935D5A /* onboard-welcome-text.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27F01471E49000935D5A /* onboard-welcome-text.png */; };
+		838F281B14722A7800935D5A /* onboard-divider-shadow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281914722A7800935D5A /* onboard-divider-shadow-down.png */; };
+		838F281C14722A7800935D5A /* onboard-divider-shadow-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */; };
 		83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A14146DEC13008393F1 /* onboard-splash-button.png */; };
 		83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A19146DF107008393F1 /* onboard-button-next.png */; };
 		83D21A1C146DF562008393F1 /* onboard-nowbox-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */; };
@@ -348,11 +349,12 @@
 		838F27DD1471996600935D5A /* onboard-nowbox-is.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-nowbox-is.png"; sourceTree = "<group>"; };
 		838F27DF14719DA300935D5A /* onboard-button-settingup.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-settingup.png"; sourceTree = "<group>"; };
 		838F27E11471A2DF00935D5A /* onboard-channelmanagement-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-channelmanagement-icon.png"; sourceTree = "<group>"; };
-		838F27E31471A37100935D5A /* onboard-divider-shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow.png"; sourceTree = "<group>"; };
 		838F27E51471C7E000935D5A /* onboard-channel-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-channel-background.png"; sourceTree = "<group>"; };
 		838F27E71471C9C700935D5A /* onboard-divider-flipped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-flipped.png"; sourceTree = "<group>"; };
 		838F27E91471CA9900935D5A /* onboard-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-background.png"; sourceTree = "<group>"; };
 		838F27F01471E49000935D5A /* onboard-welcome-text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-welcome-text.png"; sourceTree = "<group>"; };
+		838F281914722A7800935D5A /* onboard-divider-shadow-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-down.png"; sourceTree = "<group>"; };
+		838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-up.png"; sourceTree = "<group>"; };
 		83D21A14146DEC13008393F1 /* onboard-splash-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button.png"; sourceTree = "<group>"; };
 		83D21A19146DF107008393F1 /* onboard-button-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next.png"; sourceTree = "<group>"; };
 		83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-nowbox-logo.png"; sourceTree = "<group>"; };
@@ -851,7 +853,8 @@
 				838F27E11471A2DF00935D5A /* onboard-channelmanagement-icon.png */,
 				83D21A1D146DF7C5008393F1 /* onboard-divider.png */,
 				838F27E71471C9C700935D5A /* onboard-divider-flipped.png */,
-				838F27E31471A37100935D5A /* onboard-divider-shadow.png */,
+				838F281914722A7800935D5A /* onboard-divider-shadow-down.png */,
+				838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */,
 				838F27DD1471996600935D5A /* onboard-nowbox-is.png */,
 				83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */,
 				838F27D21471949000935D5A /* onboard-social-facebook.png */,
@@ -1303,12 +1306,13 @@
 				838F27DE1471996600935D5A /* onboard-nowbox-is.png in Resources */,
 				838F27E014719DA300935D5A /* onboard-button-settingup.png in Resources */,
 				838F27E21471A2DF00935D5A /* onboard-channelmanagement-icon.png in Resources */,
-				838F27E41471A37200935D5A /* onboard-divider-shadow.png in Resources */,
 				838F27E61471C7E000935D5A /* onboard-channel-background.png in Resources */,
 				838F27E81471C9C700935D5A /* onboard-divider-flipped.png in Resources */,
 				838F27EA1471CA9900935D5A /* onboard-background.png in Resources */,
 				838F27F11471E49000935D5A /* onboard-welcome-text.png in Resources */,
 				A9E3C0601471AECB005C976F /* button-logout-background.png in Resources */,
+				838F281B14722A7800935D5A /* onboard-divider-shadow-down.png in Resources */,
+				838F281C14722A7800935D5A /* onboard-divider-shadow-up.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

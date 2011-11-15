@@ -50,6 +50,8 @@
 // Step 4: Auto-selected channels
 @property (nonatomic, retain) IBOutlet UIView *channelsView;
 @property (nonatomic, retain) IBOutlet GridScrollView *channelsScrollView;
+@property (nonatomic, retain) IBOutlet UIView *shadowDownView;
+@property (nonatomic, retain) IBOutlet UIView *shadowUpView;
 
 - (IBAction)categorySelected:(id)sender;
 - (IBAction)loginToYouTube:(id)sender;
