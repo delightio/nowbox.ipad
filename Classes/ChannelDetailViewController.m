@@ -297,7 +297,7 @@
 
 -(IBAction)unsubscribeChannel:(id)sender {
 	if ( !enableUnsubscribe ) {
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Nowbox requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"NOWBOX requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 		[alertView show];
 		[alertView release];
 		return;

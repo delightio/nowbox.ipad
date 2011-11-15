@@ -312,7 +312,7 @@
 		
 		MFMailComposeViewController * mvc = [[MFMailComposeViewController alloc] init];
 		mvc.mailComposeDelegate = self;
-		[mvc setSubject:@"Nowbox iPad app user feedback"];
+		[mvc setSubject:@"NOWBOX iPad app user feedback"];
 		[mvc setToRecipients:[NSArray arrayWithObject:@"feedback@nowbox.com"]];
 		[mvc setMessageBody:[NSString stringWithFormat:@"\n\nVersion: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID] isHTML:NO];
 		[self presentModalViewController:mvc animated:YES];
