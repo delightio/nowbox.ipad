@@ -15,7 +15,7 @@
 #define NM_THUMBNAIL_PADDING		20.0f
 
 @implementation ChannelDetailViewController
-@synthesize channel;
+@synthesize channel, enableUnsubscribe;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -276,6 +276,12 @@
 }
 
 -(IBAction)unsubscribeChannel:(id)sender {
+	if ( !enableUnsubscribe ) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Nowbox requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		[alertView release];
+		return;
+	}
     [UIView animateWithDuration:0.25f
                      animations:^{
                          unsubscribeButton.enabled = NO;
