@@ -27,6 +27,23 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 @synthesize userDictionary;
 @synthesize username;
 
++ (NSInteger)updateAppUserInfo:(NSDictionary *)infoDict {
+	NSInteger uid = [[infoDict objectForKey:@"id"] integerValue];
+	if ( uid ) {
+		NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+		// update global variable
+		NM_USER_ACCOUNT_ID = uid;
+		NM_USER_WATCH_LATER_CHANNEL_ID = [[infoDict objectForKey:@"queue_channel_id"] integerValue];
+		NM_USER_FAVORITES_CHANNEL_ID = [[infoDict objectForKey:@"favorite_channel_id"] integerValue];
+		NM_USER_HISTORY_CHANNEL_ID = [[infoDict objectForKey:@"history_channel_id"] integerValue];
+		[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+		[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+		[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+		[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+	}
+	return uid;
+}
+
 - (id)init {
 	self = [super init];
 	command = NMCommandCreateUser;
@@ -113,26 +130,10 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	}
 	// parse the returned JSON object
 	self.userDictionary = [buffer objectFromJSONData];
-	NSInteger uid = [[userDictionary objectForKey:@"id"] integerValue];
-	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	switch (command) {
 		case NMCommandCreateUser:
 		{
-			if ( uid ) {
-				//TODO: save the data to Keychain
-				
-				// update global variable
-				NM_USER_ACCOUNT_ID = uid;
-				NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
-				NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
-				NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
-				[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
-				[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
-				[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
-				[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
-			} else {
-				encountersErrorDuringProcessing = YES;
-			}
+			encountersErrorDuringProcessing = [NMCreateUserTask updateAppUserInfo:userDictionary] == 0;
 			break;
 		}
 		case NMCommandEditUser:
@@ -161,6 +162,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 							NM_USER_YOUTUBE_USER_NAME = nil;
 						}
 						NM_USER_YOUTUBE_USER_NAME = [[acDict objectForKey:@"username"] retain];
+						[NMCreateUserTask updateAppUserInfo:userDictionary];
 					}
 				}
 			}

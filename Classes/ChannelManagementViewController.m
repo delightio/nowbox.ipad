@@ -15,6 +15,7 @@
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
 #import "SocialLoginViewController.h"
+#import "YouTubeAccountStatusViewController.h"
 #import "Analytics.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
@@ -159,6 +160,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDeauthNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -218,6 +220,14 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:i inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
         }
     }
+}
+
+- (void)handleDeauthNotification:(NSNotification *)aNotification {
+	[channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:0 inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
+	[[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+													  [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+													  [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube,
+													  nil]];
 }
 
 #pragma mark Target-action methods
@@ -627,19 +637,20 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			switch ( indexPath.section ) {
 				case 0:
 				{
-//					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-//						// show channel detail? any detail to show?
-//						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
-//																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
-//																								  @"channelmanagement", AnalyticsPropertySender, nil]];
-//					} else {
+					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+						// show current status
+						YouTubeAccountStatusViewController * ytStatusCtrl = [[YouTubeAccountStatusViewController alloc] initWithStyle:UITableViewStyleGrouped];
+						[self.navigationController pushViewController:ytStatusCtrl animated:YES];
+						[ytStatusCtrl release];
+						return;
+					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 						socialCtrl.loginType = NMLoginYouTubeType;
 						[self.navigationController pushViewController:socialCtrl animated:YES];
 						[socialCtrl release];
 						[[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin];
 						return;
-//					}
+					}
 					break;
 				}	
 				case 1:
@@ -1026,6 +1037,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		switch (tableIndexPath.section) {
 			case 0:
 				// YouTube
+				[nowboxTaskController issueDeauthorizeYouTube];
+				return;
 				break;
 				
 			case 1:

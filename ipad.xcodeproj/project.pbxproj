@@ -146,7 +146,7 @@
 		A962DD5E13A82552004CC111 /* MovieDetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */; };
 		A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */; };
 		A96AD056145B8F70000A8ECC /* NMUserSettingsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */; };
-		A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */; };
+		A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */; };
 		A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A989C592144D197B00CBC94D /* NMPollChannelTask.m */; };
 		A96BB8B21468AA31004B93ED /* NMPostSharingTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A96BB8B01468AA31004B93ED /* NMPostSharingTask.h */; };
 		A96BB8B31468AA31004B93ED /* NMPostSharingTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */; };
@@ -220,6 +220,8 @@
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
 		A9E2A93C13F6602200807C17 /* ChannelManagementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */; };
+		A9E3C051146DCC4C005C976F /* YouTubeAccountStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */; };
+		A9E3C0601471AECB005C976F /* button-logout-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A9E3C05F1471AECB005C976F /* button-logout-background.png */; };
 		A9E4B01713F3EA6F00DAE368 /* NMCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E4B01613F3EA6F00DAE368 /* NMCategory.m */; };
 		A9E8C799145F2517005694D1 /* NMCheckUpdateTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */; };
 		A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E8C798145F2517005694D1 /* NMCheckUpdateTask.m */; };
@@ -423,8 +425,8 @@
 		A9398C2613D4290D005E3CB0 /* toolbar-expand-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-expand-active.png"; sourceTree = "<group>"; };
 		A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "airplay-tv-indicator.png"; sourceTree = "<group>"; };
 		A93E6BD21402966200B06191 /* airplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airplay.png; sourceTree = "<group>"; };
-		A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSignOutUserTask.h; sourceTree = "<group>"; };
-		A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NMSignOutUserTask.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A93EF2FD144BEDF2004F72C5 /* NMDeauthorizeUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMDeauthorizeUserTask.h; sourceTree = "<group>"; };
+		A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NMDeauthorizeUserTask.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
 		A9452BC61415E75E00056361 /* NMFileExistsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFileExistsCache.h; sourceTree = "<group>"; };
@@ -541,6 +543,9 @@
 		A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelManagementViewController.h; sourceTree = "<group>"; };
 		A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelManagementViewController.m; sourceTree = "<group>"; };
 		A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelManagementView.xib; sourceTree = "<group>"; };
+		A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouTubeAccountStatusViewController.h; sourceTree = "<group>"; };
+		A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YouTubeAccountStatusViewController.m; sourceTree = "<group>"; };
+		A9E3C05F1471AECB005C976F /* button-logout-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-logout-background.png"; sourceTree = "<group>"; };
 		A9E4B01513F3EA6F00DAE368 /* NMCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCategory.h; sourceTree = "<group>"; };
 		A9E4B01613F3EA6F00DAE368 /* NMCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCategory.m; sourceTree = "<group>"; };
 		A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCheckUpdateTask.h; sourceTree = "<group>"; };
@@ -786,6 +791,8 @@
 				83852140145A03F60047B7E0 /* NMNavigationController.m */,
 				83F8E2DB1468C3720051D990 /* ShareViewController.h */,
 				83F8E2DC1468C3720051D990 /* ShareViewController.m */,
+				A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */,
+				A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -810,6 +817,7 @@
 				A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */,
 				A98C241113D38C030061A594 /* button-like-active.png */,
 				A98C241213D38C030061A594 /* button-like.png */,
+				A9E3C05F1471AECB005C976F /* button-logout-background.png */,
 				A98C241313D38C030061A594 /* button-watch-later-active.png */,
 				A98C241413D38C030061A594 /* button-watch-later.png */,
 				A99FB6CD140EB57700689040 /* button-gray-background.png */,
@@ -981,8 +989,8 @@
 				A9ECD613135E9703004B7F78 /* NMImageDownloadTask.m */,
 				A9E90A8B14173AE700EB38DC /* NMCreateUserTask.h */,
 				A9E90A8C14173AE700EB38DC /* NMCreateUserTask.m */,
-				A93EF2FD144BEDF2004F72C5 /* NMSignOutUserTask.h */,
-				A93EF2FE144BEDF2004F72C5 /* NMSignOutUserTask.m */,
+				A93EF2FD144BEDF2004F72C5 /* NMDeauthorizeUserTask.h */,
+				A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */,
 				A96AD052145B8F29000A8ECC /* NMUserSettingsTask.h */,
 				A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */,
 				A9E8C797145F2517005694D1 /* NMCheckUpdateTask.h */,
@@ -1300,6 +1308,7 @@
 				838F27E81471C9C700935D5A /* onboard-divider-flipped.png in Resources */,
 				838F27EA1471CA9900935D5A /* onboard-background.png in Resources */,
 				838F27F11471E49000935D5A /* onboard-welcome-text.png in Resources */,
+				A9E3C0601471AECB005C976F /* button-logout-background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1367,6 +1376,7 @@
 				83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */,
 				837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */,
 				83810AE01464A633003D3F76 /* GridScrollView.m in Sources */,
+				A9E3C051146DCC4C005C976F /* YouTubeAccountStatusViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1393,7 +1403,7 @@
 				A9D027BA142217590064A89D /* NMImageDownloadTask.m in Sources */,
 				A9D027BB142217590064A89D /* NMCreateUserTask.m in Sources */,
 				A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */,
-				A96AD057145B8F83000A8ECC /* NMSignOutUserTask.m in Sources */,
+				A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */,
 				A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */,
 				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
 				A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */,
