@@ -227,19 +227,20 @@
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
 //	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
-		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
-		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
-		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
-		// listen to notification of getting videos. check if the channel is empty. if so, move to the next channel. this avoids first launch from hanging in there because the first channel has no video
-		[dn addObserver:self selector:@selector(handleDidGetVideoNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
-		resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
-		// assign the channel to playback view controller
-		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
-		// no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
-		[viewController setCurrentChannel:channel startPlaying:NO];
-		// wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
+	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {        
+        // Only trigger next step on get subscribed channels, not get featured channels. Look for total_channel key.
+        NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
+        [dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
+        [dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+        // listen to notification of getting videos. check if the channel is empty. if so, move to the next channel. this avoids first launch from hanging in there because the first channel has no video
+        [dn addObserver:self selector:@selector(handleDidGetVideoNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+        thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
+        resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
+        // assign the channel to playback view controller
+        self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+        // no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
+        [viewController setCurrentChannel:channel startPlaying:NO];
+        // wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
 	} else {
         // begin new session
         NSUserDefaults * df = [NSUserDefaults standardUserDefaults];

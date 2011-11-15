@@ -425,11 +425,11 @@
 
 - (NSString *)reasonForChannel:(NMChannel *)channel
 {
-    // Is the channel from the user's YouTube account?
+/*    // Is the channel from the user's YouTube account?
     NMCategory *youtubeCategory = [[[NMTaskQueueController sharedTaskQueueController] dataController] internalYouTubeCategory];
     if ([youtubeCategory.channels containsObject:channel]) {
         return @"from YouTube account";
-    }
+    }*/
     
     // Is the channel part of a category the user selected?
     NSArray *selectedCategories = [featuredCategories objectsAtIndexes:selectedCategoryIndexes];    
@@ -439,7 +439,7 @@
         }
     }
     
-    return @"Featured Channel";
+    return @"from YouTube account";
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification
@@ -486,6 +486,7 @@
 - (void)handleDidCompareSubscribedChannelsNotification:(NSNotification *)aNotification 
 {
     youtubeSynced = YES;
+    [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     
     if (currentView == infoView) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
