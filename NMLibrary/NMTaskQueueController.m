@@ -181,48 +181,54 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
-	if ( !didFinishLogin ) return;
-	
-	didFinishLogin = NO;
-	// check user channels
-	if ( ![dataController.myQueueChannel.nm_populated boolValue] ) {
-		[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
-	}
-	if ( ![dataController.favoriteVideoChannel.nm_populated boolValue] ) {
-		[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
-	}
-	// stream channel (twitter/facebook), we don't distinguish here whether the user has just logged in twitter or facebook. no harm fetching video list for 
-	NMChannel * chnObj = nil;
-	BOOL shouldFirePollingLogic = NO;
-	if ( NM_USER_TWITTER_CHANNEL_ID ) {
-		chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
-		if ( [chnObj.nm_populated boolValue] ) {
-			if ( [chnObj.nm_hidden boolValue] ) {
-				chnObj.nm_hidden = [NSNumber numberWithBool:NO];
+	if ( didFinishLogin ) {
+		didFinishLogin = NO;
+		// check user channels
+		if ( ![dataController.myQueueChannel.nm_populated boolValue] ) {
+			[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
+		}
+		if ( ![dataController.favoriteVideoChannel.nm_populated boolValue] ) {
+			[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
+		}
+		// stream channel (twitter/facebook), we don't distinguish here whether the user has just logged in twitter or facebook. no harm fetching video list for 
+		NMChannel * chnObj = nil;
+		BOOL shouldFirePollingLogic = NO;
+		if ( NM_USER_TWITTER_CHANNEL_ID ) {
+			chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
+			if ( [chnObj.nm_populated boolValue] ) {
+				if ( [chnObj.nm_hidden boolValue] ) {
+					chnObj.nm_hidden = [NSNumber numberWithBool:NO];
+				}
+				// fetch the list of video in this twitter stream channel
+				[self issueGetMoreVideoForChannel:chnObj];
+			} else {
+				// never populated before
+				shouldFirePollingLogic = YES;
 			}
-			// fetch the list of video in this twitter stream channel
-			[self issueGetMoreVideoForChannel:chnObj];
-		} else {
-			// never populated before
-			shouldFirePollingLogic = YES;
+		}
+		if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+			chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
+			if ( [chnObj.nm_populated boolValue] ) {
+				if ( [chnObj.nm_hidden boolValue] ) {
+					chnObj.nm_hidden = [NSNumber numberWithBool:NO];
+				}
+				// fetch the list of video in this twitter stream channel
+				[self issueGetMoreVideoForChannel:chnObj];
+			} else {
+				// never populated before
+				shouldFirePollingLogic = YES;
+			}
+		}
+		if ( shouldFirePollingLogic ) {
+			NSLog(@"Should schedule polling timer");
+			[self pollServerForChannelReadiness];
 		}
 	}
-	if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-		chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
-		if ( [chnObj.nm_populated boolValue] ) {
-			if ( [chnObj.nm_hidden boolValue] ) {
-				chnObj.nm_hidden = [NSNumber numberWithBool:NO];
-			}
-			// fetch the list of video in this twitter stream channel
-			[self issueGetMoreVideoForChannel:chnObj];
-		} else {
-			// never populated before
-			shouldFirePollingLogic = YES;
-		}
-	}
-	if ( shouldFirePollingLogic ) {
-		NSLog(@"Should schedule polling timer");
-		[self pollServerForChannelReadiness];
+	// check if there's any channel being deleted
+	NSDictionary * info = [aNotification userInfo];
+	if ( [[info objectForKey:@"num_channel_deleted"] unsignedIntegerValue] ) {
+		// some channels are "deleted"
+		[dataController permanentDeleteMarkedChannels];
 	}
 }
 
@@ -246,7 +252,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			NM_URL_REQUEST_TIMEOUT = 60.0f;
 		}
 	}
-	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
+//	NSLog(@"########## wifi reachable %d ###########", NM_WIFI_REACHABLE);
 }
 
 #pragma mark Queue tasks to network controller

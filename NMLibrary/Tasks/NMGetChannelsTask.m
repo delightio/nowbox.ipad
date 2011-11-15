@@ -284,6 +284,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			break;
 		case NMCommandGetSubscribedChannels:
 			// if getting subscribed channel, compare with all existing subscribed channels
+			numberOfRowsFromServer = [ctrl.subscribedChannels count];
 			theChannelPool = ctrl.subscribedChannels;
 			break;
 		case NMCommandGetFeaturedChannelsForCategories:
@@ -368,7 +369,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		}
 	}
 	// delete objects
-	if ( objectsToDelete ) [ctrl batchDeleteChannels:objectsToDelete];
+	if ( objectsToDelete ) {
+		numberOfRowsDeleted = [objectsToDelete count];
+		[ctrl bulkMarkChannelsDeleteStatus:objectsToDelete];
+	}
 	if ( [channelIndexSet count] ) {
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
@@ -388,6 +392,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				if ( command == NMCommandCompareSubscribedChannels ) {
 					// assign the new channel to YouTube group
 					[ctrl.internalYouTubeCategory addChannelsObject:chn];
+					numberOfRowsAdded++;
 				}
 			} else {
 				// the channel already exists, just update the sort order.
@@ -487,6 +492,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		case NMCommandGetFeaturedChannelsForCategories:
 		{
 			return [NSDictionary dictionaryWithObject:categoryIDs forKey:@"channels"];
+		}
+		case NMCommandGetSubscribedChannels:
+		{
+			return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfRowsAdded], @"num_channel_added", [NSNumber numberWithUnsignedInteger:numberOfRowsDeleted], @"num_channel_deleted", [NSNumber numberWithUnsignedInteger:numberOfRowsFromServer], @"total_channel", nil];
 		}
 		default:
 			break;

@@ -19,6 +19,8 @@
 	NSMutableIndexSet * channelIndexSet;
 	NSMutableDictionary * parsedObjectDictionary;
 	NSMutableArray * categoryIDs;
+	NSUInteger numberOfRowsAdded, numberOfRowsDeleted;
+	NSUInteger numberOfRowsFromServer;
 }
 
 //@property (nonatomic, retain) NMChannel * trendingChannel;

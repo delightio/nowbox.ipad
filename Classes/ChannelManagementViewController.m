@@ -203,10 +203,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     
     if (selectedIndex == 0) {
         // Reload social channels in case we unsubscribed from one of them
-        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationNone];            
-//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
-//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
-//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
+        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationNone];
 
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
                                                           [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
@@ -220,6 +217,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:i inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
         }
     }
+	
+	if ( [[aNotification name] isEqualToString:NMDidUnsubscribeChannelNotification] ) {
+		didUnsubscribeSomeChannels = YES;
+	}
 }
 
 - (void)handleDeauthNotification:(NSNotification *)aNotification {
@@ -256,6 +257,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         dismissViewController = YES;
         [self dismissModalViewControllerAnimated:YES];
     }
+	if ( didUnsubscribeSomeChannels ) {
+		// permanently delete channels
+		[nowboxTaskController.dataController permanentDeleteMarkedChannels];
+	}
 }
 
 #pragma mark -
@@ -699,6 +704,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
 																							  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
 																							  @"channelmanagement", AnalyticsPropertySender, nil]];
+					if ( [channelsTableView numberOfRowsInSection:2] == 1 ) {
+						channelDetailViewController.enableUnsubscribe = NO;
+					} else {
+						channelDetailViewController.enableUnsubscribe = YES;
+					}
 					break;
 			}
         } else {
@@ -836,7 +846,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], nil]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], nil]]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
@@ -1017,6 +1027,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
     UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
     NSIndexPath *tableIndexPath = [channelsTableView indexPathForCell:cell];
+	NSLog(@"Number of items: %d", [channelsTableView numberOfRowsInSection:2]);
+	if ( selectedIndex == 0 && tableIndexPath.section == 2 && [channelsTableView numberOfRowsInSection:2] == 1 ) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Nowbox requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		[alertView release];
+		return;
+	}
 
     UIActivityIndicatorView *actView;
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];

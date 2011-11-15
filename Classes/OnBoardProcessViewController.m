@@ -381,24 +381,26 @@
 #pragma mark - Notifications
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
-{
-    userCreated = YES;
-    
-    // Begin new session
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY] + 1;
-	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
-	[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
-    
-    if ([selectedCategoryIndexes count] > 0) {
-        [UIView animateWithDuration:0.3 animations:^{
-            proceedToSocialButton.alpha = 1;
-        }];
+{    
+    if (!userCreated) {
+        userCreated = YES;
+
+        // Begin new session
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY] + 1;
+        [[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+        [userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
+        
+        if ([selectedCategoryIndexes count] > 0) {
+            [UIView animateWithDuration:0.3 animations:^{
+                proceedToSocialButton.alpha = 1;
+            }];
+        }
+        
+        [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+        [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
     }
-    
-    [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
 }
 
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification

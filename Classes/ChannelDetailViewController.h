@@ -17,13 +17,16 @@
 	IBOutlet UILabel * metricLabel;
 	IBOutlet UIButton * subscribeAndWatchButton;
 	IBOutlet UIButton * subscribeButton;
+	IBOutlet UIButton * subscribeUnpopulatedButton;    
 	IBOutlet UIButton * unsubscribeButton;
     IBOutlet UIView * subscribeView;
     IBOutlet UIView * unsubscribeView;
     IBOutlet NMCachedImageView * channelThumbnailView;
     IBOutlet UIView * containerView;
+    IBOutlet UIView * unpopulatedMessageView;
 	CGRect descriptionDefaultFrame;
     BOOL shouldDismiss;
+	BOOL enableUnsubscribe;
 	
 	NMChannel * channel;
 	NSMutableArray * previewViewsArray;
@@ -31,6 +34,7 @@
 }
 
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic) BOOL enableUnsubscribe;
 
 - (void)setDescriptionLabelText;
 - (void)setPreviewImages;
