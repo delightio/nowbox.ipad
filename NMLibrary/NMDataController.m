@@ -695,7 +695,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// remove categories from subscribed channels. this allows channel management view to always show the progress indicator when loading channels.
 	request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:subscribedChannelsPredicate];
+	[request setPredicate:[subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"HIDDEN"]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", nil]];
 	result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
