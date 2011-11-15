@@ -60,7 +60,8 @@
     
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
-    
+    channelDetailViewController.enableUnsubscribe = YES;
+
     [self fetchedResultsController];
     [self clearSearchResults];
 }
