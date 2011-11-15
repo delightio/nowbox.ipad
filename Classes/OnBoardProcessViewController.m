@@ -192,7 +192,7 @@
     youtubeTimeoutTimer = nil;
     youtubeSynced = YES;
     
-    if (currentView == infoView) {
+    if (currentView && currentView == infoView) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
 }
@@ -417,7 +417,7 @@
     
     if ([subscribingChannels count] == 0) {
         // All channels have been subscribed to
-        if (currentView == infoView && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
+        if (currentView && currentView == infoView && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
             [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
         }
     }
@@ -469,7 +469,7 @@
     
     if (socialController.loginType == NMLoginYouTubeType && NM_USER_YOUTUBE_SYNC_ACTIVE) {
         [youtubeTimeoutTimer invalidate];
-        youtubeTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:kYouTubeSyncTimeoutInSeconds target:self selector:@selector(youtubeTimeoutTimerFired) userInfo:nil repeats:NO];
+        youtubeTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:kYouTubeSyncTimeoutInSeconds target:self selector:@selector(youtubeTimeoutTimerFired) userInfo:nil repeats:NO];        
     }
     
     [self dismissSocialLogin:nil];
