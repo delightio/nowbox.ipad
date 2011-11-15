@@ -349,6 +349,11 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			break;
 	}
 	
+	if ( numberOfRowsFromServer == 0 ) {
+		// there's no data channel from the server
+		return NO;
+	}
+	
 	NSUInteger cid;
 	NSMutableArray * objectsToDelete = nil;
 	NMChannel * chnObj;

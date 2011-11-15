@@ -219,6 +219,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
+	// channel
+	[defaultNotificationCenter addObserver:self selector:@selector(handleGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
     
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -1008,6 +1010,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// resume video playing
 			[self playCurrentVideo];
 		}
+	}
+}
+
+- (void)handleGetChannelsNotification:(NSNotification *)aNotification {
+	NSDictionary * info = [aNotification userInfo];
+	if ( [[info objectForKey:@"total_channel"] unsignedIntegerValue] == 0 && NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+		// there's no channels from the server
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"It appears that you have all YouTube channels unsubscribed. NOWBOX will preserve all your channels. You can manage your channels through Channel Management View" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];
 	}
 }
 

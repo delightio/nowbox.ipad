@@ -1029,7 +1029,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     NSIndexPath *tableIndexPath = [channelsTableView indexPathForCell:cell];
 	NSLog(@"Number of items: %d", [channelsTableView numberOfRowsInSection:2]);
 	if ( selectedIndex == 0 && tableIndexPath.section == 2 && [channelsTableView numberOfRowsInSection:2] == 1 ) {
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Nowbox requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"NOWBOX requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 		[alertView show];
 		[alertView release];
 		return;
