@@ -42,7 +42,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	
-	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0"] retain];
+	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == $HIDDEN"] retain];
 	cachedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed <= 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID AND channel == $CHANNEL"] retain];
@@ -328,7 +328,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:subscribedChannelsPredicate];
+	[request setPredicate:[subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"HIDDEN"]]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	return [result count] ? result : nil;
@@ -495,33 +495,54 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return chnObj;
 }
 
-- (void)batchDeleteChannels:(NSArray *)chnAy {
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	
-	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", chnAy]];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
-	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	if ( [result count] ) {
-		NSManagedObject * mobj;
-		for (mobj in result) {
-			[managedObjectContext deleteObject:mobj];
-		}
-	}
-	[request release];
-	// clean up cache
-	[channelCacheDictionary removeAllObjects];
-	
-	[pool release];
-}
+//- (void)batchDeleteChannels:(NSArray *)chnAy {
+//	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+//	
+//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+//	[request setEntity:channelEntityDescription];
+//	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", chnAy]];
+//	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
+//	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+//	if ( [result count] ) {
+//		NSManagedObject * mobj;
+//		for (mobj in result) {
+//			[managedObjectContext deleteObject:mobj];
+//		}
+//	}
+//	[request release];
+//	// clean up cache
+//	[channelCacheDictionary removeAllObjects];
+//	
+//	[pool release];
+//}
 
-- (void)batchDeleteChannelForIDs:(NSArray *)idAy {
+//- (void)batchDeleteChannelForIDs:(NSArray *)idAy {
+//	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+//	
+//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+//	[request setEntity:channelEntityDescription];
+//	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id in %@", idAy]];
+//	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
+//	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+//	if ( [result count] ) {
+//		NSManagedObject * mobj;
+//		for (mobj in result) {
+//			[managedObjectContext deleteObject:mobj];
+//		}
+//	}
+//	[request release];
+//	// clean up cache
+//	[channelCacheDictionary removeAllObjects];
+//	
+//	[pool release];
+//}
+
+- (void)permanentDeleteMarkedChannels {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id in %@", idAy]];
+	[request setPredicate:[subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"HIDDEN"]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
@@ -620,7 +641,16 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 	// save changes
 	[managedObjectContext save:nil];
-    [request release];
+	[request release];
+}
+
+- (void)bulkMarkChannelsDeleteStatus:(NSArray *)chnAy {
+	NSNumber * yesNum = [NSNumber numberWithBool:YES];
+	for (NMChannel * chnObj in chnAy) {
+		chnObj.nm_hidden = yesNum;
+	}
+	[channelCacheDictionary removeAllObjects];
+	[managedObjectContext save:nil];
 }
 
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj {
