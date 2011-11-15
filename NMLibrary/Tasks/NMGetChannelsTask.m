@@ -284,7 +284,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			break;
 		case NMCommandGetSubscribedChannels:
 			// if getting subscribed channel, compare with all existing subscribed channels
-			numberOfRowsFromServer = [ctrl.subscribedChannels count];
+			numberOfRowsFromServer = [parsedObjectDictionary count];
 			theChannelPool = ctrl.subscribedChannels;
 			break;
 		case NMCommandGetFeaturedChannelsForCategories:
