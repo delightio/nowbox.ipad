@@ -64,6 +64,11 @@
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
 		83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852143145A34000047B7E0 /* BugSense-iOS.framework */; };
 		83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852145145A34100047B7E0 /* CoreLocation.framework */; };
+		838F2802147208A700935D5A /* share-facebook-off.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27FE147208A700935D5A /* share-facebook-off.png */; };
+		838F2803147208A700935D5A /* share-facebook-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27FF147208A700935D5A /* share-facebook-on.png */; };
+		838F2804147208A700935D5A /* share-twitter-off.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F2800147208A700935D5A /* share-twitter-off.png */; };
+		838F2805147208A700935D5A /* share-twitter-on.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F2801147208A700935D5A /* share-twitter-on.png */; };
+		838F280814720B2A00935D5A /* share-button-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F280714720B2A00935D5A /* share-button-post.png */; };
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
@@ -308,6 +313,11 @@
 		83852143145A34000047B7E0 /* BugSense-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "BugSense-iOS.framework"; path = "Libraries/BugSense-iOS.framework"; sourceTree = "<group>"; };
 		83852145145A34100047B7E0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		83857ACD145B7F87002FFB0B /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
+		838F27FE147208A700935D5A /* share-facebook-off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-facebook-off.png"; sourceTree = "<group>"; };
+		838F27FF147208A700935D5A /* share-facebook-on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-facebook-on.png"; sourceTree = "<group>"; };
+		838F2800147208A700935D5A /* share-twitter-off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-twitter-off.png"; sourceTree = "<group>"; };
+		838F2801147208A700935D5A /* share-twitter-on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-twitter-on.png"; sourceTree = "<group>"; };
+		838F280714720B2A00935D5A /* share-button-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-button-post.png"; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -802,6 +812,11 @@
 				A99C0B4B13E017BB0006FAA5 /* progress-nub.png */,
 				221ADF4213DDD92F00BC9488 /* channel-thumbnail-frame.png */,
 				A9719F441402F54C00393975 /* seek-time-bubble-background.png */,
+				838F280714720B2A00935D5A /* share-button-post.png */,
+				838F27FE147208A700935D5A /* share-facebook-off.png */,
+				838F27FF147208A700935D5A /* share-facebook-on.png */,
+				838F2800147208A700935D5A /* share-twitter-off.png */,
+				838F2801147208A700935D5A /* share-twitter-on.png */,
 				A9398C1913D41B31005E3CB0 /* social-facebook.png */,
 				A9398C1A13D41B31005E3CB0 /* social-twitter.png */,
 				A9398C1B13D41B31005E3CB0 /* social-vimeo.png */,
@@ -1210,6 +1225,11 @@
 				A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */,
 				83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */,
 				A9E3C0601471AECB005C976F /* button-logout-background.png in Resources */,
+				838F2802147208A700935D5A /* share-facebook-off.png in Resources */,
+				838F2803147208A700935D5A /* share-facebook-on.png in Resources */,
+				838F2804147208A700935D5A /* share-twitter-off.png in Resources */,
+				838F2805147208A700935D5A /* share-twitter-on.png in Resources */,
+				838F280814720B2A00935D5A /* share-button-post.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
