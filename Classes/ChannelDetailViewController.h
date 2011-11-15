@@ -24,6 +24,7 @@
     IBOutlet UIView * containerView;
 	CGRect descriptionDefaultFrame;
     BOOL shouldDismiss;
+	BOOL enableUnsubscribe;
 	
 	NMChannel * channel;
 	NSMutableArray * previewViewsArray;
@@ -31,6 +32,7 @@
 }
 
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic) BOOL enableUnsubscribe;
 
 - (void)setDescriptionLabelText;
 - (void)setPreviewImages;

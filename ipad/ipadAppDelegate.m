@@ -342,9 +342,9 @@ NSInteger NM_LAST_CHANNEL_ID;
              */
 			//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 			//            abort();
-			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-			[alert show];
-			[alert release];
+//			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//			[alert show];
+//			[alert release];
 			
 			// we should relaunch the app if there's error saving the context
 			// reset the context
