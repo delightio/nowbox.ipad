@@ -33,6 +33,7 @@
 	
 	BOOL firstLoadView, dismissViewController;
     UITableViewCell *channelCell;
+	BOOL didUnsubscribeSomeChannels;
     
     int selectedIndex;
     

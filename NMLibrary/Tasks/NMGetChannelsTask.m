@@ -368,7 +368,9 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		}
 	}
 	// delete objects
-	if ( objectsToDelete ) [ctrl batchDeleteChannels:objectsToDelete];
+	if ( objectsToDelete ) {
+		[ctrl bulkMarkChannelsDeleteStatus:objectsToDelete];
+	}
 	if ( [channelIndexSet count] ) {
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
