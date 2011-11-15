@@ -70,8 +70,8 @@ typedef enum {
 	NMEventUnsubscribeChannel,
 	NMEventEnqueue,
 	NMEventDequeue,
-//	NMEventShare,
-//	NMEventUnfavorite,
+	NMEventShare,
+	NMEventUnfavorite,
 	NMEventView,
 	NMEventExamine,
 } NMEventType;
