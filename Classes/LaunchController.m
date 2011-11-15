@@ -23,6 +23,7 @@
 
 @implementation LaunchController
 @synthesize view;
+@synthesize activityIndicator;
 @synthesize viewController;
 @synthesize lastFailNotificationName;
 @synthesize channel;
@@ -31,6 +32,7 @@
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[view release];
+    [activityIndicator release];
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
@@ -136,9 +138,15 @@
 - (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
 {
     if (!onBoardProcessController) {
-        onBoardProcessController = [[OnBoardProcessViewController alloc] init];
-        onBoardProcessController.delegate = self;
-        [viewController presentModalViewController:onBoardProcessController animated:NO];
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             activityIndicator.alpha = 0;
+                         }
+                         completion:^(BOOL finished){
+                             onBoardProcessController = [[OnBoardProcessViewController alloc] init];
+                             onBoardProcessController.delegate = self;                             
+                             [viewController presentModalViewController:onBoardProcessController animated:NO];
+                         }];
     }
 }
 
@@ -153,12 +161,19 @@
 	} else {
 		lblStr = @"Service is down";
 	}
+
 	if ( [notName isEqualToString:NMDidFailCreateUserNotification] ) {
 		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];        
 	} else if ( [notName isEqualToString:NMDidFailGetChannelsNotification] ) {
 		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];  
 	} else if ( [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
 		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];  
+    } else if ( [notName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];
 	} else if ( [notName isEqualToString:NMDidFailDownloadImageNotification] ) {
 		// can't download the video thumbnail. that's not important. just make sure the launch service will continue
 		ignoreThumbnailDownloadIndex = YES;
@@ -182,15 +197,22 @@
 			// begin with creating new user
 			[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 			[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
+            [activityIndicator startAnimating];
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelsNotification] ) {
 			// begin with getting channels
 			[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 			[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
+            [activityIndicator startAnimating];            
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
 			// begin with fetching video list
 			self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
 			[viewController setCurrentChannel:channel startPlaying:NO];
-		}
+            [activityIndicator startAnimating];            
+		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
+			// begin with fetching featured categories
+			[[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
+            [activityIndicator startAnimating];         
+        }
 	} else if ( [notName isEqualToString:UIApplicationWillTerminateNotification] ) {
 		// clean up the database
 		[[NMTaskQueueController sharedTaskQueueController].dataController resetDatabase];

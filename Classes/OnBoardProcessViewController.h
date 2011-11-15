@@ -29,6 +29,7 @@
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
 @property (nonatomic, retain) IBOutlet UIView *splashView;
+@property (nonatomic, retain) IBOutlet UIView *slideInView;
 
 // Step 1: Category selection
 @property (nonatomic, retain) IBOutlet UIView *categoriesView;

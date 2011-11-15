@@ -27,6 +27,7 @@
 @implementation OnBoardProcessViewController
 
 @synthesize splashView;
+@synthesize slideInView;
 @synthesize categoriesView;
 @synthesize categoryGrid;
 @synthesize proceedToSocialButton;
@@ -76,6 +77,7 @@
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     
     [splashView release];
+    [slideInView release];
     [subscribedChannels release];
     [subscribingChannels release];
     [categoriesView release];
@@ -223,6 +225,7 @@
 - (void)viewDidUnload
 {
     self.splashView = nil;
+    self.slideInView = nil;
     self.categoriesView = nil;
     self.categoryGrid = nil;
     self.proceedToSocialButton = nil;
@@ -239,6 +242,22 @@
     
     [super viewDidUnload];
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    slideInView.frame = CGRectOffset(slideInView.frame, 0, 200);
+    [UIView animateWithDuration:0.5
+                          delay:0.5
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         slideInView.frame = CGRectOffset(slideInView.frame, 0, -200);                         
+                     }
+                     completion:^(BOOL finished){
+                         
+                     }];
+}   
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

@@ -28,6 +28,7 @@
 
 @property (nonatomic, assign) VideoPlaybackViewController * viewController;
 @property (nonatomic, retain) IBOutlet UIView * view;
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView * activityIndicator;
 @property (nonatomic, retain) NSString * lastFailNotificationName;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSURL * updateURL;
