@@ -260,6 +260,7 @@
 - (void)removeFromSuperview
 {
     [videoRowDelegate recycleCell:self];
+    self.videoRowDelegate = nil;
     [super removeFromSuperview];
 }
 
