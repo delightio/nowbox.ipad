@@ -204,6 +204,7 @@
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
 		A9A8E7BF13E4B96300552E6E /* NMCachedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A8E7BE13E4B96300552E6E /* NMCachedImageView.m */; };
 		A9B3EE6F13B91C340058E114 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */; };
+		A9C473071473961400BE45CA /* YoutubeError.html in Resources */ = {isa = PBXBuildFile; fileRef = A9C473061473961400BE45CA /* YoutubeError.html */; };
 		A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */; };
 		A9D027B1142217590064A89D /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
 		A9D027B2142217590064A89D /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
@@ -540,6 +541,7 @@
 		A9B19640134C6B0B00CA17A0 /* NMEventTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMEventTask.m; sourceTree = "<group>"; };
 		A9B3EE6D13B91C330058E114 /* NMVideoDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideoDetail.h; sourceTree = "<group>"; };
 		A9B3EE6E13B91C330058E114 /* NMVideoDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideoDetail.m; sourceTree = "<group>"; };
+		A9C473061473961400BE45CA /* YoutubeError.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = YoutubeError.html; sourceTree = "<group>"; };
 		A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppleTVIndicationView.xib; sourceTree = "<group>"; };
 		A9D04873144FB39600EFD21F /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A9D19B29140E274E008CF101 /* NMChannelDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelDetail.h; sourceTree = "<group>"; };
@@ -678,6 +680,7 @@
 		A90F21FD143F63CA006B298D /* HTML */ = {
 			isa = PBXGroup;
 			children = (
+				A9C473061473961400BE45CA /* YoutubeError.html */,
 				A90F2200143F63E1006B298D /* loading.gif */,
 				A90F21FE143F63CA006B298D /* TwitterLoading.html */,
 				A90F2204143F6CAF006B298D /* FacebookLoading.html */,
@@ -1333,6 +1336,7 @@
 				838F2804147208A700935D5A /* share-twitter-off.png in Resources */,
 				838F2805147208A700935D5A /* share-twitter-on.png in Resources */,
 				838F280814720B2A00935D5A /* share-button-post.png in Resources */,
+				A9C473071473961400BE45CA /* YoutubeError.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

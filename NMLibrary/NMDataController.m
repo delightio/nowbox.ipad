@@ -936,7 +936,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	
 	if ( task.executeSaveActionOnError || !task.encountersErrorDuringProcessing ) {
 		if ( NMVideoPlaybackViewIsScrolling ) {
-			[self performSelector:@selector(delayedSaveCacheForTask:) withObject:task afterDelay:0.25f];
+			[self performSelector:@selector(delayedSaveCacheForTask:) withObject:task afterDelay:0.25];
 		} else {
 			[self performSelectorOnMainThread:@selector(saveCacheForTask:) withObject:task waitUntilDone:NO];
 		}

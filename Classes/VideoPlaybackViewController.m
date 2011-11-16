@@ -881,10 +881,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[UIView animateWithDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 			} completion:^(BOOL finished) {
-				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 			}];
 		} else {
-			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		}
 	}
 }
@@ -1076,7 +1076,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		
 		showMovieControlTimestamp = 1;
 		
-		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25f];
+		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25];
 		
 		if ( didPlayToEnd ) {
 			controlScrollView.scrollEnabled = YES;

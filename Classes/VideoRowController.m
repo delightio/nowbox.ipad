@@ -353,7 +353,7 @@
 //            if ([[info objectForKey:@"num_video_added"] integerValue]==0) {
 //            }
 //			NSLog(@"should hide \"loading label\": %@", channel.title);
-            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0f];
+            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
             isLoadingNewContent = NO;
             isAnimatingNewContentCell = YES;
 			[videoTableView reloadData];

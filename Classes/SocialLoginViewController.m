@@ -105,6 +105,12 @@
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)delayShowYouTubeErroView {
+	progressContainerView.alpha = 0.0f;
+	NSURL * theURL = [[NSBundle mainBundle] URLForResource:@"YoutubeError" withExtension:@"html"];
+	[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
+}
+
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
 	// save the user
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
@@ -114,6 +120,7 @@
 	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
 	[defs setObject:NM_USER_YOUTUBE_USER_NAME forKey:NM_USER_YOUTUBE_USER_NAME_KEY];
 	[defs setInteger:NM_USER_YOUTUBE_LAST_SYNC forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
+	[defs synchronize];
     
     [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
                                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, nil]];
@@ -156,7 +163,7 @@
 			// dismiss the view right away
 			progressLabel.text = @"Verified Successfully";
 			[loadingIndicator stopAnimating];
-			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];
+			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
 			break;
 			
         default:
@@ -167,13 +174,18 @@
 - (void)handleChannelRefreshNotification:(NSNotification *)aNotification {
 	progressLabel.text = @"Verified Successfully";
 	[loadingIndicator stopAnimating];
-	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];
+	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
 }
 
 - (void)handleLoginFailNotification:(NSNotification *)aNotification {
 	progressLabel.text = @"Verification Process Failed";
 	[loadingIndicator stopAnimating];
-	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0f];
+	if ( loginType == NMLoginYouTubeType ) {
+		// show a longer error view
+		[self performSelector:@selector(delayShowYouTubeErroView) withObject:nil afterDelay:1.0];
+	} else {
+		[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0];
+	}
     
     switch (loginType) {
         case NMLoginTwitterType:
