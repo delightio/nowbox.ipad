@@ -153,7 +153,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 #endif
     
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
-                                       sessionCount, AnalyticsPropertyVisitNumber, nil]];
+                                       sessionCount, AnalyticsPropertyVisitNumber, 
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenVideo, 
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     appStartTime = sessionStartTime;

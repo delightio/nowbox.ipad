@@ -73,18 +73,28 @@
 
 }
 
--(void)playVideoForIndexPath:(NSIndexPath *)indexPath {
+-(void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender {
 	if ( !NM_AIRPLAY_ACTIVE ) 
 		[panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
     [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[indexPath row]];
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
     [panelController.videoViewController playVideo:theVideo];
     
+    
+    NSString *senderStr;
+    if ([sender isKindOfClass:[PanelVideoCell class]]) {
+        senderStr = @"channelpanel_videocell";
+    } else if ([sender isKindOfClass:[ChannelPanelController class]]) {
+        senderStr = @"channelmanagement_watchnow";
+    } else {
+        senderStr = @"channelpanel_channelcolumn";
+    }
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
                                                                        theVideo.title, AnalyticsPropertyVideoName, 
                                                                        theVideo.nm_id, AnalyticsPropertyVideoId,
-                                                                       @"channelpanel", AnalyticsPropertySender, 
-                                                                       @"tap", @"action", nil]];
+                                                                       senderStr, AnalyticsPropertySender, 
+                                                                       @"tap", AnalyticsPropertyAction,
+                                                                       [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 }
 
 - (void)recycleCell:(PanelVideoCell *)cell

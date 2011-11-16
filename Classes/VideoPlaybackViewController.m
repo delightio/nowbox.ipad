@@ -418,7 +418,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                        playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                        playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                        @"player", AnalyticsPropertySender, 
-                                                                       @"auto", AnalyticsPropertyAction, nil]];
+                                                                       @"auto", AnalyticsPropertyAction, 
+                                                                       [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 }
 
 - (NMVideo *)currentVideo {
@@ -757,7 +758,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"auto", AnalyticsPropertyAction, nil]];
+                                                                               @"auto", AnalyticsPropertyAction, 
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -1236,7 +1238,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"swipe", AnalyticsPropertyAction, nil]];
+                                                                               @"swipe", AnalyticsPropertyAction, 
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1259,7 +1262,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"swipe", AnalyticsPropertyAction, nil]];
+                                                                               @"swipe", AnalyticsPropertyAction,
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	} else {
 		scrollView.scrollEnabled = YES;
@@ -1293,6 +1297,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// assume the panel is visible
 		panelHidden = NO;
 	}
+    
+    NSString *senderStr;
+    if ([sender isKindOfClass:[UIButton class]]) {
+        senderStr = @"button";
+    } else {
+        senderStr = @"pinch";
+    }
 
 	CGRect viewRect;
 	
@@ -1318,8 +1329,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			launchController.progressContainerView.alpha = 0.0f;
 //		}
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                     senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 
 	} else {
@@ -1336,8 +1349,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                      senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
 	[UIView commitAnimations];
@@ -1410,6 +1425,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenChannelPanel]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                              playbackModelController.currentVideo.title, AnalyticsPropertyVideoName,
                                                                                              nil]];                                                                                                                                                                                                                                                                                                                                                                        
@@ -1423,6 +1439,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenChannelPanel]];        
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                             playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 

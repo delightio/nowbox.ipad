@@ -399,6 +399,7 @@
         
         [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
         [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+        [[MixpanelAPI sharedAPI] track:@"$born"];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
     }
 }
