@@ -202,7 +202,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		NMChannel * chnObj = nil;
 		BOOL shouldFirePollingLogic = NO;
 		if ( NM_USER_TWITTER_CHANNEL_ID ) {
-			chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
+			chnObj = dataController.userTwitterStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
 			if ( [chnObj.nm_populated boolValue] ) {
 				if ( [chnObj.nm_hidden boolValue] ) {
 					chnObj.nm_hidden = [NSNumber numberWithBool:NO];
@@ -215,7 +215,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			}
 		}
 		if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
-			chnObj = [dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
+			chnObj = dataController.userFacebookStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
 			if ( [chnObj.nm_populated boolValue] ) {
 				if ( [chnObj.nm_hidden boolValue] ) {
 					chnObj.nm_hidden = [NSNumber numberWithBool:NO];
