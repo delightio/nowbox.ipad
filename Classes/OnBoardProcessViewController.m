@@ -339,7 +339,6 @@
 - (IBAction)switchToCategoriesView:(id)sender
 {
     [self transitionFromView:splashView toView:categoriesView];
-    self.splashView = nil;
 }
 
 - (IBAction)switchToSocialView:(id)sender
@@ -349,14 +348,11 @@
     if ([selectedCategoryIndexes count] > 0) {
         [self subscribeToSelectedCategories];
     }
-    
-    self.categoriesView = nil;
 }
 
 - (IBAction)switchToInfoView:(id)sender
 {
     [self transitionFromView:socialView toView:infoView];
-    self.socialView = nil;
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
     if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
@@ -370,7 +366,6 @@
     [nc removeObserver:self name:NMDidSubscribeChannelNotification object:nil];
     
     [self transitionFromView:infoView toView:channelsView];
-    self.infoView = nil;
 }
 
 - (IBAction)switchToPlaybackView:(id)sender
@@ -489,7 +484,7 @@
     youtubeSynced = YES;
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     
-    if (currentView == infoView) {
+    if (currentView && currentView == infoView) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
 }
