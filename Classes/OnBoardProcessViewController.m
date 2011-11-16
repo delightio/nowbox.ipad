@@ -217,7 +217,7 @@
     self.featuredCategories = [categories sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
     [sorter release];
     [categoryGrid reloadData];
-        
+    
     // Have we already synced some services? (Probably only applicable for debugging)
     youtubeSynced = NM_USER_YOUTUBE_SYNC_ACTIVE;
     [self updateSocialNetworkButtonTexts];
@@ -447,6 +447,9 @@
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
     [channelsScrollView reloadData];      
+    
+    // Set shadow alpha
+    [self scrollViewDidScroll:channelsScrollView];
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
