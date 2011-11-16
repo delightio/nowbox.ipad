@@ -999,6 +999,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)handleChannelManagementNotification:(NSNotification *)aNotification {
 	if ( NM_RUNNING_IOS_5 ) {
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
+            videoWasPaused = (movieView.player.rate == 0.0);
+
 			// stop video from playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 			if ( !movieView.player.airPlayVideoActive ) {
@@ -1009,20 +1011,24 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			// resume video playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-			if ( !movieView.player.airPlayVideoActive ) {
+			if ( !movieView.player.airPlayVideoActive && !videoWasPaused ) {
 				forceStopByUser = NO;
 				[self playCurrentVideo];
 			}
 #endif
 		}
 	} else {
-		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {            
+		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) { 
+            videoWasPaused = (movieView.player.rate == 0.0);
+
 			// stop video from playing
 			[self stopVideo];
 		} else {
-			forceStopByUser = NO;
-			// resume video playing
-			[self playCurrentVideo];
+            if (!videoWasPaused) {
+                forceStopByUser = NO;
+                // resume video playing
+                [self playCurrentVideo];
+            }
 		}
 	}
 }
