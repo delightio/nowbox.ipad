@@ -147,18 +147,22 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
 	NMTask * sender = [aNotificaiton object];
+	BOOL firstLaunch;
 	switch (sender.command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-			didFinishLogin = YES;
+			firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 			// get that particular channel
-			[self issueGetSubscribedChannels];
+			if ( !firstLaunch ) {
+				didFinishLogin = YES;
+				[self issueGetSubscribedChannels];
+			}
 			break;
 			
 		case NMCommandVerifyYouTubeUser:
 			if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 				// check if it's first launch
-				BOOL firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+				firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 				if ( firstLaunch ) {
 					// need to poll the server to look for difference
 					[self pollServerForYouTubeSyncSignal];
