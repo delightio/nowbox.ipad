@@ -279,6 +279,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	switch (command) {
 		case NMCommandGetChannelsForCategory:
 			// if getting channel for a category, check if the category contains the channel
+			numberOfRowsFromServer = [parsedObjectDictionary count];
 			theChannelPool = category.channels;
 			category.nm_last_refresh = [NSDate date];
 			break;
