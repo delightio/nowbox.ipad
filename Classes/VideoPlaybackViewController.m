@@ -1494,15 +1494,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                duration:loadedControlView.duration 
                                                                          elapsedSeconds:loadedControlView.timeElapsed];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
-    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navController.modalPresentationStyle = UIModalPresentationPageSheet;
     [navController.navigationBar setBarStyle:UIBarStyleBlack];
     [self presentModalViewController:navController animated:YES];
     navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
     
     CGRect frame = navController.view.superview.frame;
-    frame.origin.y = 20;
+    frame.origin.y = 40;
     navController.view.superview.frame = frame;
-//    navController.view.superview.center = CGPointMake(navController.view.superview.center.x, 195);
+
     [shareController release];
     [navController release];
     
