@@ -91,7 +91,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return 2;
+    return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -117,6 +117,15 @@
 			cell.detailTextLabel.text = @"Active";
 			break;
 			
+		case 2:
+		{
+			cell.textLabel.text = @"Last Sync";
+			NSDateFormatter * fmt = [[NSDateFormatter alloc] init];
+			[fmt setDateStyle:NSDateFormatterShortStyle];
+			[fmt setTimeStyle:NSDateFormatterShortStyle];
+			cell.detailTextLabel.text = [fmt stringFromDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)NM_USER_YOUTUBE_LAST_SYNC]];
+			break;
+		}	
 		default:
 			break;
 	}
