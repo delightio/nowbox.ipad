@@ -15,7 +15,9 @@
  */
 
 @interface NMPollUserTask : NMTask {
-	BOOL accountSynced;
+	NSUInteger lastSyncTime;
 }
+
+@property (nonatomic) NSUInteger lastSyncTime;
 
 @end

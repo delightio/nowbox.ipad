@@ -15,9 +15,9 @@
 NSString * const NMWillCreateUserNotification = @"NMWillCreateUserNotification";
 NSString * const NMDidCreateUserNotification = @"NMDidCreateUserNotification";
 NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotification";
-NSString * const NMWillEditUserNotification = @"NMWillEditUserNotification";
-NSString * const NMDidEditUserNotification = @"NMDidEditUserNotification";
-NSString * const NMDidFailEditUserNotification = @"NMDidFailEditUserNotification";
+//NSString * const NMWillEditUserNotification = @"NMWillEditUserNotification";
+//NSString * const NMDidEditUserNotification = @"NMDidEditUserNotification";
+//NSString * const NMDidFailEditUserNotification = @"NMDidFailEditUserNotification";
 NSString * const NMWillVerifyUserNotification = @"NMWillVerifyUserNotification";
 NSString * const NMDidVerifyUserNotification = @"NMDidVerifyUserNotification";
 NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotification";
@@ -71,12 +71,12 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	return self;
 }
 
-- (id)initWithEmail:(NSString *)anEmail {
-	self = [super init];
-	command = NMCommandEditUser;
-	self.email = anEmail;
-	return self;
-}
+//- (id)initWithEmail:(NSString *)anEmail {
+//	self = [super init];
+//	command = NMCommandEditUser;
+//	self.email = anEmail;
+//	return self;
+//}
 
 - (void)dealloc {
 	[email release];
@@ -103,16 +103,16 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 #endif
 			break;
 		}
-		case NMCommandEditUser:
-		{
-			urlStr = [NSString stringWithFormat:@"http://%@/users?email=%@", NM_BASE_URL, [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
-#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
-			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
-#endif
-			[request setHTTPMethod:@"PUT"];
-			break;
-		}
+//		case NMCommandEditUser:
+//		{
+//			urlStr = [NSString stringWithFormat:@"http://%@/users?email=%@", NM_BASE_URL, [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+//#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+//			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+//#endif
+//			[request setHTTPMethod:@"PUT"];
+//			break;
+//		}
 			
 		default:
 		{
@@ -136,10 +136,10 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 			encountersErrorDuringProcessing = [NMCreateUserTask updateAppUserInfo:userDictionary] == 0;
 			break;
 		}
-		case NMCommandEditUser:
-		{
-			break;
-		}
+//		case NMCommandEditUser:
+//		{
+//			break;
+//		}
 		case NMCommandVerifyFacebookUser:
 			NM_USER_FACEBOOK_CHANNEL_ID = [[userDictionary objectForKey:@"facebook_channel_id"] integerValue];
 			break;
@@ -219,8 +219,8 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandCreateUser:
 			return NMWillCreateUserNotification;
-		case NMCommandEditUser:
-			return NMWillEditUserNotification;
+//		case NMCommandEditUser:
+//			return NMWillEditUserNotification;
 			
 		default:
 			return NMWillVerifyUserNotification;
@@ -232,8 +232,8 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandCreateUser:
 			return NMDidCreateUserNotification;
-		case NMCommandEditUser:
-			return NMDidEditUserNotification;
+//		case NMCommandEditUser:
+//			return NMDidEditUserNotification;
 			
 		default:
 			return NMDidVerifyUserNotification;
@@ -245,8 +245,8 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandCreateUser:
 			return NMDidFailCreateUserNotification;
-		case NMCommandEditUser:
-			return NMDidFailEditUserNotification;
+//		case NMCommandEditUser:
+//			return NMDidFailEditUserNotification;
 			
 		default:
 			return NMDidFailVerifyUserNotification;

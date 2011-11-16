@@ -169,8 +169,8 @@
 }
 
 - (IBAction)checkTokenExpiryAndRenew:(id)sender {
-	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
-	[tqc issueTokenTest];
+//	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+//	[tqc issueTokenTest];
 }
 
 - (IBAction)pollUserYouTube:(id)sender {
@@ -182,6 +182,10 @@
 - (IBAction)getSubscribedChannels:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
+}
+
+- (IBAction)syncRequest:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueSyncRequest];
 }
 
 @end

@@ -16,6 +16,9 @@
 #import "NMVideoDetail.h"
 #import "Reachability.h"
 
+#define NM_USER_SYNC_CHECK_TIMER_INTERVAL	300.0
+#define NM_USER_POLLING_TIMER_INTERVAL		5.0
+
 NSInteger NM_USER_ACCOUNT_ID				= 0;
 NSDate * NM_USER_TOKEN_EXPIRY_DATE			= nil;
 NSString * NM_USER_TOKEN					= nil;
@@ -27,6 +30,7 @@ NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
 NSString * NM_USER_YOUTUBE_USER_NAME		= nil;
 NSUInteger NM_USER_YOUTUBE_LAST_SYNC		= 0;
+NSUInteger NM_USER_YOUTUBE_SYNC_LAST_ISSUED	= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -45,6 +49,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize networkController;
 @synthesize dataController;
 @synthesize pollingTimer, tokenRenewTimer;
+@synthesize userSyncTimer;
 @synthesize unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
@@ -65,6 +70,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
 //	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
@@ -107,7 +113,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController release];
 	[networkController release];
 	[NM_SESSION_ID release];
-	[pollingTimer release];
+	if ( pollingTimer ) {
+		[pollingTimer invalidate], [pollingTimer release];	
+	}
+	if ( userSyncTimer ) {
+		[userSyncTimer invalidate], [userSyncTimer release];
+	}
+	if ( tokenRenewTimer ) {
+		[tokenRenewTimer invalidate], [tokenRenewTimer release];
+	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
 	[super dealloc];
@@ -297,6 +311,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)issueEditUserSettings {
 	// user settings should be readily saved in NSUserDefaults
 	NMUserSettingsTask * task = [[NMUserSettingsTask alloc] init];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueSyncRequest {
+	NMUserSynchronizeTask * task = [[NMUserSynchronizeTask alloc] init];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -554,11 +574,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueTokenTest {
-	NMTokenTask * task = [[NMTokenTask alloc] initTestToken];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueTokenTest {
+//	NMTokenTask * task = [[NMTokenTask alloc] initTestToken];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (void)checkAndRenewToken {
 	NSTimeInterval t = [NM_USER_TOKEN_EXPIRY_DATE timeIntervalSinceNow];
@@ -658,7 +678,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		[pollingTimer fire];
 	} else {
 		pollingRetryCount = 0;
-		self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+		self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_POLLING_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+		//MARK: we may need to fire the timer once here so that we don't have the initial wait.
 	}
 }
 
@@ -668,8 +689,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)handleYouTubePollingNotification:(NSNotification *)aNotification {
 	pollingRetryCount++;
-	BOOL ytSynced = [[[aNotification userInfo] objectForKey:@"youtube_synced"] boolValue];
-	if ( ytSynced ) {
+	NMPollUserTask * theTask = [aNotification object];
+	if ( theTask.lastSyncTime > 0 ) {
 		// the account is synced. get the list of channel
 		[self issueCompareSubscribedChannels];
 		[pollingTimer invalidate];
@@ -677,6 +698,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	} else if ( pollingRetryCount > 5 ) {
 		[pollingTimer invalidate];
 		self.pollingTimer = nil;
+	}
+}
+
+- (void)handleDidSyncUserNotification:(NSNotification *)aNotification {
+	if ( userSyncTimer ) {
+		[userSyncTimer fire];
+	} else {
+		// create timer
+		self.userSyncTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_SYNC_CHECK_TIMER_INTERVAL target:self selector:@selector(performCheckUserSyncForTimer:) userInfo:nil repeats:YES];
 	}
 }
 

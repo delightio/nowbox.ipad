@@ -14,6 +14,7 @@ NSString * const NMDidPollUserNotification = @"NMDidPollUserNotification";
 NSString * const NMDidFailPollUserNotification = @"NMDidFailPollUserNotification";
 
 @implementation NMPollUserTask
+@synthesize lastSyncTime;
 
 - (id)initWithChannel:(NMChannel *)chnObj {
 	self = [super init];
@@ -49,7 +50,7 @@ NSString * const NMDidFailPollUserNotification = @"NMDidFailPollUserNotification
 			pdrStr = [acDict objectForKey:@"provider"];
 			if ( [pdrStr isEqualToString:@"youtube"] || [pdrStr isEqualToString:@"you_tube"] ) {
 				// check the date
-				accountSynced = [[acDict objectForKey:@"synchronized_at"] integerValue] > 0;
+				lastSyncTime = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
 			}
 		}
 	}
@@ -70,10 +71,6 @@ NSString * const NMDidFailPollUserNotification = @"NMDidFailPollUserNotification
 
 - (NSString *)didFailNotificationName {
 	return NMDidFailPollUserNotification;
-}
-
-- (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:accountSynced] forKey:@"youtube_synced"];
 }
 
 @end

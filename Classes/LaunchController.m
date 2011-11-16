@@ -62,6 +62,7 @@
 	NM_USER_FACEBOOK_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	NM_USER_YOUTUBE_SYNC_ACTIVE = [userDefaults boolForKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
 	NM_USER_YOUTUBE_LAST_SYNC = [[userDefaults objectForKey:NM_USER_YOUTUBE_LAST_SYNC_KEY] unsignedIntegerValue];
+	NM_USER_YOUTUBE_SYNC_LAST_ISSUED = [[userDefaults objectForKey:NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY] unsignedIntegerValue];
 	
 	NM_VIDEO_QUALITY = [userDefaults integerForKey:NM_VIDEO_QUALITY_KEY];
 	NM_USER_YOUTUBE_USER_NAME = [[userDefaults stringForKey:NM_USER_YOUTUBE_USER_NAME_KEY] retain];

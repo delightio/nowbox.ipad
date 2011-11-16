@@ -28,6 +28,7 @@
 	
 	// polling channel population status
 	NSTimer * pollingTimer;
+	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
@@ -40,6 +41,7 @@
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
 @property (nonatomic, retain) NSTimer * pollingTimer;
+@property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 
@@ -57,9 +59,10 @@
 - (void)issueVerifyYouTubeAccountWithURL:(NSURL *)aURL;
 - (void)issueDeauthorizeYouTube;
 - (void)issueEditUserSettings;
+- (void)issueSyncRequest;
 // Token
 - (void)issueRenewToken;
-- (void)issueTokenTest;
+//- (void)issueTokenTest;
 - (void)checkAndRenewToken;
 /*!
  In token renew mode, the backend will stop executing other tasks except for the "renew token task". It will also stop popping alert pop up.
