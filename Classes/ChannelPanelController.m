@@ -136,10 +136,6 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[tableView setEditing:!tableView.editing animated:YES];
 }
 
-- (IBAction)debugRefreshChannel:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-}
-
 - (IBAction)showSettingsView:(id)sender {
 	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:settingCtrl];
@@ -448,7 +444,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 //        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
 		// only play video in that channel which has not been played before
         if ( theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue]) ) {
-            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0] sender:aTableView];
             break;
         }
     }
@@ -648,7 +644,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
         // htview num rows always have at least 1 because of the loading cell, checking against the FRC object would be a better idea down the line
         if ([htView numberOfRowsInSection:0] > 1) {
-            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] sender:self];
         }
     }
 }

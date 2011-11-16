@@ -90,13 +90,15 @@
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (NSArray *)hiddenSubscribedChannels;
 - (NMChannel *)lastSessionChannel;
-- (void)batchDeleteChannels:(NSArray *)chnAy;
-- (void)batchDeleteChannelForIDs:(NSArray *)idAy;
+//- (void)batchDeleteChannels:(NSArray *)chnAy;
+//- (void)batchDeleteChannelForIDs:(NSArray *)idAy;
+- (void)permanentDeleteMarkedChannels;
 - (NSInteger)maxChannelSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
 - (void)updateFavoriteChannelHideStatus;
 - (void)markChannelDeleteStatus:(NMChannel *)chnObj;
 - (void)markChannelDeleteStatusForID:(NSInteger)chnID;
+- (void)bulkMarkChannelsDeleteStatus:(NSArray *)chnAy;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NMChannel *)channelNextTo:(NMChannel *)anotherChannel;

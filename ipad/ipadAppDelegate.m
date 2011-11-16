@@ -27,6 +27,8 @@ NSString * const NM_USER_FACEBOOK_CHANNEL_ID_KEY = @"NM_USER_FACEBOOK_CHANNEL_ID
 NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY = @"NM_USER_TWITTER_CHANNEL_ID_KEY";
 NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY = @"NM_SETTING_FACEBOOK_AUTO_POST_KEY"; // just need the key. no need for the bool variable
 NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY = @"NM_USER_YOUTUBE_SYNC_ACTIVE_KEY";
+NSString * const NM_USER_YOUTUBE_USER_NAME_KEY = @"NM_USER_YOUTUBE_USER_NAME_KEY";
+NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY = @"NM_USER_YOUTUBE_LAST_SYNC_KEY";
 NSString * const NM_USER_TOKEN_KEY = @"NM_USER_TOKEN_KEY";
 NSString * const NM_USER_TOKEN_EXPIRY_DATE_KEY = @"NM_USER_TOKEN_EXPIRY_DATE_KEY";
 NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
@@ -71,6 +73,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  dDate, NM_LAST_SESSION_DATE,
 	  zeroNum, NM_USER_ACCOUNT_ID_KEY, 
 	  @"", NM_USER_TOKEN_KEY,
+	  @"", NM_USER_YOUTUBE_USER_NAME_KEY,
 	  dDate, NM_USER_TOKEN_EXPIRY_DATE_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
@@ -87,6 +90,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  yesNum, NM_SETTING_FACEBOOK_AUTO_POST_KEY,
 	  yesNum, NM_SETTING_TWITTER_AUTO_POST_KEY,
 	  noNum, NM_USER_YOUTUBE_SYNC_ACTIVE_KEY,
+	  zeroNum, NM_USER_YOUTUBE_LAST_SYNC_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
 	  nil]];
 }
@@ -151,7 +155,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 #endif
     
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
-                                       sessionCount, AnalyticsPropertyVisitNumber, nil]];
+                                       sessionCount, AnalyticsPropertyVisitNumber, 
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenVideo, 
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     appStartTime = sessionStartTime;
@@ -237,9 +243,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSince1970] - sessionStartTime;
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedTime], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    NSTimeInterval elapsedSessionTime = now - sessionStartTime;
+    NSTimeInterval elapsedTotalTime = now - appStartTime;
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedSessionTime], AnalyticsPropertySessionElapsedTime, 
+                                                                                [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = YES;
 }
 
@@ -275,8 +283,9 @@ NSInteger NM_LAST_CHANNEL_ID;
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
+    NSTimeInterval elapsedTotalTime = [[NSDate date] timeIntervalSince1970] - appStartTime;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
-                                                                                [NSNumber numberWithFloat:appStartTime], AnalyticsPropertyTotalElapsedTime, nil]];
+                                                                                [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = NO;
 }
 
@@ -337,9 +346,9 @@ NSInteger NM_LAST_CHANNEL_ID;
              */
 			//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 			//            abort();
-			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-			[alert show];
-			[alert release];
+//			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//			[alert show];
+//			[alert release];
 			
 			// we should relaunch the app if there's error saving the context
 			// reset the context

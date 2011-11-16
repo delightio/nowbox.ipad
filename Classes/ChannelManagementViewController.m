@@ -15,6 +15,7 @@
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
 #import "SocialLoginViewController.h"
+#import "YouTubeAccountStatusViewController.h"
 #import "Analytics.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
@@ -159,6 +160,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDeauthNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -201,10 +203,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     
     if (selectedIndex == 0) {
         // Reload social channels in case we unsubscribed from one of them
-        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationNone];            
-//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];            
-//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
-//        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationNone];            
+        [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:0 inSection:1], [NSIndexPath indexPathForRow:1 inSection:1], nil] withRowAnimation:UITableViewRowAnimationNone];
 
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
                                                           [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
@@ -218,6 +217,18 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:i inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
         }
     }
+	
+	if ( [[aNotification name] isEqualToString:NMDidUnsubscribeChannelNotification] ) {
+		didUnsubscribeSomeChannels = YES;
+	}
+}
+
+- (void)handleDeauthNotification:(NSNotification *)aNotification {
+	[channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:[NSIndexPath indexPathForRow:0 inSection:0], nil] withRowAnimation:UITableViewRowAnimationNone];
+	[[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+													  [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+													  [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube,
+													  nil]];
 }
 
 #pragma mark Target-action methods
@@ -246,6 +257,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         dismissViewController = YES;
         [self dismissModalViewControllerAnimated:YES];
     }
+	if ( didUnsubscribeSomeChannels ) {
+		// permanently delete channels
+		[nowboxTaskController.dataController permanentDeleteMarkedChannels];
+	}
 }
 
 #pragma mark -
@@ -408,13 +423,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 			if ( indexPath.section == 0 ) {
 				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-					titleLbl.text = @"<User name>";
+					titleLbl.text = NM_USER_YOUTUBE_USER_NAME;
 					detailLbl.text = @"YouTube sync is currently active";
 					[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelSubscribedBackgroundImage];                        
 				} else {
 					titleLbl.text = @"YouTube";
-					detailLbl.text = @"Not available in this preview";
+					detailLbl.text = @"Sync your Subscriptions, Favorites and Watch Later videos";
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 					
@@ -438,7 +453,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							}
 						} else {
 							titleLbl.text = @"Twitter";
-							detailLbl.text = @"Sign in to watch videos in your Twitter network";
+							detailLbl.text = @"Sign in to watch videos from people you follow on Twitter";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 						}
@@ -462,7 +477,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							}
 						} else {
 							titleLbl.text = @"Facebook";
-							detailLbl.text = @"Sign in to watch videos in your Facebook network";
+							detailLbl.text = @"Sign in to watch videos from your Facebook friends";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
 						}
@@ -627,12 +642,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			switch ( indexPath.section ) {
 				case 0:
 				{
-					return;
 					if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-						// show channel detail? any detail to show?
-						[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName, 
-																								  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
-																								  @"channelmanagement", AnalyticsPropertySender, nil]];
+						// show current status
+						YouTubeAccountStatusViewController * ytStatusCtrl = [[YouTubeAccountStatusViewController alloc] initWithStyle:UITableViewStyleGrouped];
+						[self.navigationController pushViewController:ytStatusCtrl animated:YES];
+						[ytStatusCtrl release];
+						return;
 					} else {
 						SocialLoginViewController * socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 						socialCtrl.loginType = NMLoginYouTubeType;
@@ -689,6 +704,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
 																							  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
 																							  @"channelmanagement", AnalyticsPropertySender, nil]];
+					if ( [channelsTableView numberOfRowsInSection:2] == 1 ) {
+						channelDetailViewController.enableUnsubscribe = NO;
+					} else {
+						channelDetailViewController.enableUnsubscribe = YES;
+					}
 					break;
 			}
         } else {
@@ -826,7 +846,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], nil]]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], nil]]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
@@ -1007,6 +1027,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
     UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
     NSIndexPath *tableIndexPath = [channelsTableView indexPathForCell:cell];
+	NSLog(@"Number of items: %d", [channelsTableView numberOfRowsInSection:2]);
+	if ( selectedIndex == 0 && tableIndexPath.section == 2 && [channelsTableView numberOfRowsInSection:2] == 1 ) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"NOWBOX requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		[alertView release];
+		return;
+	}
 
     UIActivityIndicatorView *actView;
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
@@ -1027,6 +1054,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		switch (tableIndexPath.section) {
 			case 0:
 				// YouTube
+				[nowboxTaskController issueDeauthorizeYouTube];
+				return;
 				break;
 				
 			case 1:

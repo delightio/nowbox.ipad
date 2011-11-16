@@ -15,7 +15,7 @@
 #define NM_THUMBNAIL_PADDING		20.0f
 
 @implementation ChannelDetailViewController
-@synthesize channel;
+@synthesize channel, enableUnsubscribe;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,13 +46,6 @@
 
 #pragma mark - View lifecycle
 
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
@@ -65,6 +58,7 @@
 	containerView.backgroundColor = bgColor;
 	// button
 	[subscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
+	[subscribeUnpopulatedButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	[subscribeAndWatchButton setBackgroundImage:[[UIImage imageNamed:@"button-yellow-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	[unsubscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-red-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	// listen to notification
@@ -115,12 +109,17 @@
     
     unsubscribeButton.enabled = YES;
     subscribeButton.enabled = YES;
+    subscribeUnpopulatedButton.enabled = YES;
     subscribeAndWatchButton.enabled = YES;
+    
     if ([channel.nm_subscribed intValue] > 0) {
+        unpopulatedMessageView.alpha = 0;
         subscribeView.alpha = 0;
         unsubscribeView.alpha = 1;
     } else {
-        subscribeView.alpha = 1;
+        // If unsubscribe, delay until handleDidGetDetailNotification where we'll know if it's populated or not
+        unpopulatedMessageView.alpha = 0;
+        subscribeView.alpha = 0;
         unsubscribeView.alpha = 0;
     }
     shouldDismiss = NO;
@@ -184,11 +183,30 @@
 	NMChannel * targetChn = [[aNotification userInfo] objectForKey:@"channel"];
 	// do not proceed if not the same channel object as the current one.
 	if ( targetChn != channel ) return;
-	
+
 	[self setPreviewImages];
 	if ( [descriptionLabel.text isEqualToString:@""] ) {
 		[self setDescriptionLabelText];
 	}
+        
+    if ([channel.nm_subscribed intValue] <= 0) {
+        // Not subscribed
+        NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
+        [UIView animateWithDuration:0.25f 
+						 animations:^{
+                            if ([channel.populated_at timeIntervalSince1970] <= 0 && [vdoThumbnails count] == 0) {
+                                // Not populated
+                                unpopulatedMessageView.alpha = 1;
+                                subscribeView.alpha = 0;
+                                unsubscribeView.alpha = 0;            
+                            } else {
+                                // Populated
+                                unpopulatedMessageView.alpha = 0;
+                                subscribeView.alpha = 1;
+                                unsubscribeView.alpha = 0; 
+                            }
+                         }];
+    }
 }
 
 - (void)handleDidFailNotification:(NSNotification *)aNotification {
@@ -241,6 +259,7 @@
                      animations:^{
                          subscribeButton.enabled = NO;
                          subscribeAndWatchButton.enabled = NO;
+                         subscribeUnpopulatedButton.enabled = NO;
                      }
                      completion:^(BOOL finished) {
                      }];
@@ -260,6 +279,7 @@
                      animations:^{
                          subscribeButton.enabled = NO;
                          subscribeAndWatchButton.enabled = NO;
+                         subscribeUnpopulatedButton.enabled = NO;
                      }
                      completion:^(BOOL finished) {
                      }];
@@ -276,6 +296,12 @@
 }
 
 -(IBAction)unsubscribeChannel:(id)sender {
+	if ( !enableUnsubscribe ) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"NOWBOX requires channel subscription to function. We are keeping this channel subscribed for you." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+		[alertView show];
+		[alertView release];
+		return;
+	}
     [UIView animateWithDuration:0.25f
                      animations:^{
                          unsubscribeButton.enabled = NO;
@@ -303,19 +329,33 @@
 
 - (void)handleSubscriptionNotification:(NSNotification *)aNotification {
 	NSDictionary * userInfo = [aNotification userInfo];
+    
     if (channel == [userInfo objectForKey:@"channel"]) {
+        NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
         [UIView animateWithDuration:0.25f 
 						 animations:^{
 							 if ([channel.nm_subscribed intValue] > 0) {
                                  unsubscribeButton.enabled = YES;
                                  subscribeView.alpha = 0;
                                  unsubscribeView.alpha = 1;
+                                 unpopulatedMessageView.alpha = 0;  
                              } else {
                                  shouldDismiss = NO;
                                  subscribeButton.enabled = YES;
                                  subscribeAndWatchButton.enabled = YES;
-                                 subscribeView.alpha = 1;
-                                 unsubscribeView.alpha = 0;
+                                 subscribeUnpopulatedButton.enabled = YES;
+                                 
+                                 if ([channel.populated_at timeIntervalSince1970] <= 0 && [vdoThumbnails count] == 0) {
+                                     // Not populated
+                                     unpopulatedMessageView.alpha = 1;
+                                     subscribeView.alpha = 0;
+                                     unsubscribeView.alpha = 0;            
+                                 } else {
+                                     // Populated
+                                     unpopulatedMessageView.alpha = 0;
+                                     subscribeView.alpha = 1;
+                                     unsubscribeView.alpha = 0; 
+                                 }                        
                              }
                          }
                          completion:^(BOOL finished) {

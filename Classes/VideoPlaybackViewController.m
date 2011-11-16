@@ -219,6 +219,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
+	// channel
+	[defaultNotificationCenter addObserver:self selector:@selector(handleGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
     
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -276,55 +278,34 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Launch / onboard process
-//- (void)setLaunchModeActive:(BOOL)flag {
-//	if ( flag ) {
-//		// set to full screen
-//		[self toggleChannelPanel:nil];
-//	}
-//	launchModeActive = flag;
-//}
 
 - (void)showLaunchView {
 	[launchController loadView];
-//	UIView * theView = launchController.progressContainerView;
-//	[theView removeFromSuperview];
 	[self.view addSubview:launchController.view];
-//	CGRect winRect = self.view.bounds;
-//	CGRect theRect = theView.frame;
-//	theRect.origin.x = winRect.size.width - theRect.size.width;
-//	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
-//	theView.frame = theRect;
-//	[self.view addSubview:launchController.progressContainerView];
 }
 
-//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
 - (void)showPlaybackView {
 	if ( launchModeActive ) {
-//		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
 		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
-		// bring the playback view to the front
-//		[self.view bringSubviewToFront:topLevelContainerView];
-		// cross fade the view
+
 		shouldFadeOutVideoThumbnail = YES;
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
+        [launchController.view removeFromSuperview];
+        [launchController release];
+        launchController = nil;
+        launchModeActive = NO;
+        playFirstVideoOnLaunchWhenReady = YES;
+        
+/*		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
 			// remove launch view
 			[launchController.view removeFromSuperview];
 			[launchController release];
 			launchController = nil;
 			launchModeActive = NO;
 			playFirstVideoOnLaunchWhenReady = YES;
-		}];
-		// slide in the view
-//		[UIView animateWithDuration:0.5f animations:^{
-//			topLevelContainerView.center = launchController.view.center;
-//			shouldFadeOutVideoThumbnail = YES;
-//		} completion:^(BOOL finished) {
-//			playFirstVideoOnLaunchWhenReady = YES;
-//			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
-//		}];
+		}];*/
 
 	} else {
 		// cross fade
@@ -344,10 +325,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}];
 #endif
 	}
-//	if ( !launchModeActive ) {
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-//	}
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     // Start monitoring for tooltips
     [[ToolTipController sharedToolTipController] startTimer];
@@ -440,7 +418,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                        playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                        playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                        @"player", AnalyticsPropertySender, 
-                                                                       @"auto", AnalyticsPropertyAction, nil]];
+                                                                       @"auto", AnalyticsPropertyAction, 
+                                                                       [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 }
 
 - (NMVideo *)currentVideo {
@@ -491,12 +470,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
 	player.playbackDelegate = self;
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-	if ( NM_RUNNING_IOS_5 ) {
+	if ( kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber_iOS_4_0 ) {
 		player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
 //		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
 	}
-#endif
 	movieView.player = player;
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
@@ -781,7 +758,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"auto", AnalyticsPropertyAction, nil]];
+                                                                               @"auto", AnalyticsPropertyAction, 
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -903,10 +881,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[UIView animateWithDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 			} completion:^(BOOL finished) {
-				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 			}];
 		} else {
-			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		}
 	}
 }
@@ -970,25 +948,29 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Notification handling
-- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
-	if ( playbackModelController.nextVideo == nil ) {
-		// finish up playing the whole channel
-		[self dismissModalViewControllerAnimated:YES];
-	} else {
-		didPlayToEnd = YES;
-		[self showNextVideo:YES];
-	}
-}
+//- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
+//	if ( playbackModelController.nextVideo == nil ) {
+//		// finish up playing the whole channel
+//		[self dismissModalViewControllerAnimated:YES];
+//	} else {
+//		[self showNextVideo:YES];
+//	}
+//}
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 	// For unknown reason, AVPlayerItemDidPlayToEndTimeNotification is sent twice sometimes. Don't know why. This delay execution mechanism tries to solve this problem
 #ifdef DEBUG_PLAYBACK_QUEUE
-	NSLog(@"did play notification: %@", [aNotification name]);
+	NSLog(@"did play notification: %p", [aNotification object]);
 #endif
+	didPlayToEnd = YES;
 	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayHandleDidPlayItem:) object:[aNotification object]];
-		[self performSelector:@selector(delayHandleDidPlayItem:) withObject:[aNotification object] afterDelay:0.1];
+		if ( playbackModelController.nextVideo == nil ) {
+			// finish up playing the whole channel
+			didPlayToEnd = NO;
+		} else {
+			[self showNextVideo:YES];
+		}
 	});
 }
 
@@ -1030,6 +1012,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// resume video playing
 			[self playCurrentVideo];
 		}
+	}
+}
+
+- (void)handleGetChannelsNotification:(NSNotification *)aNotification {
+	NSDictionary * info = [aNotification userInfo];
+	if ( [[info objectForKey:@"total_channel"] unsignedIntegerValue] == 0 && NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+		// there's no channels from the server
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"It appears that you have all YouTube channels unsubscribed. NOWBOX will preserve all your channels. You can manage your channels through Channel Management View" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];
 	}
 }
 
@@ -1084,7 +1076,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		
 		showMovieControlTimestamp = 1;
 		
-		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25f];
+		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25];
 		
 		if ( didPlayToEnd ) {
 			controlScrollView.scrollEnabled = YES;
@@ -1119,7 +1111,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// refer to https://pipely.lighthouseapp.com/projects/77614/tickets/93-study-video-switching-behavior-how-to-show-loading-ui-state
 	else if ( c == NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT ) {
-		if ( !forceStopByUser ) {
+		// ignore buffer condition when user explicity mean to stop video or when we play to the end of a video and in transition to the next one
+		if ( !forceStopByUser && !didPlayToEnd ) {
 			NMAVPlayerItem * theItem = (NMAVPlayerItem *)object;
 			if ( theItem.playbackLikelyToKeepUp && movieView.player.rate == 0.0f && !self.modalViewController ) {
 				[self playCurrentVideo];
@@ -1245,7 +1238,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"swipe", AnalyticsPropertyAction, nil]];
+                                                                               @"swipe", AnalyticsPropertyAction, 
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1268,7 +1262,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"swipe", AnalyticsPropertyAction, nil]];
+                                                                               @"swipe", AnalyticsPropertyAction,
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	} else {
 		scrollView.scrollEnabled = YES;
@@ -1302,6 +1297,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// assume the panel is visible
 		panelHidden = NO;
 	}
+    
+    NSString *senderStr;
+    if ([sender isKindOfClass:[UIButton class]]) {
+        senderStr = @"button";
+    } else {
+        senderStr = @"pinch";
+    }
 
 	CGRect viewRect;
 	
@@ -1327,8 +1329,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			launchController.progressContainerView.alpha = 0.0f;
 //		}
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                     senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 
 	} else {
@@ -1345,8 +1349,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                      senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
 	[UIView commitAnimations];
@@ -1419,6 +1425,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenChannelPanel]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                              playbackModelController.currentVideo.title, AnalyticsPropertyVideoName,
                                                                                              nil]];                                                                                                                                                                                                                                                                                                                                                                        
@@ -1432,6 +1439,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenChannelPanel]];        
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                             playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
@@ -1484,6 +1492,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     [self presentModalViewController:navController animated:YES];
     navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
     
+    CGRect frame = navController.view.superview.frame;
+    frame.origin.y = 20;
+    navController.view.superview.frame = frame;
+//    navController.view.superview.center = CGPointMake(navController.view.superview.center.x, 195);
     [shareController release];
     [navController release];
     
@@ -1590,17 +1602,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark - ToolTipControllerDelegate
 
 - (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
-    if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-        // Don't show share tip if user is already logged in
-        if (NM_USER_TWITTER_CHANNEL_ID || NM_USER_FACEBOOK_CHANNEL_ID) {
-            return NO;
-        }
-    } else if ([tooltip.name hasPrefix:@"SwipeTip"] && sender) {
-        // Don't show swipe tip until next video is ready to play
-        pendingToolTip = tooltip;
-        return NO;
-    }
-    
     return loadedControlView.playbackMode == NMHalfScreenMode;
 }
 
@@ -1625,12 +1626,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
             center.y++;
         }
         tooltip.center = center;
-    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
-        tooltip.target = channelController;
-        tooltip.action = @selector(showChannelManagementView:);
-    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-        tooltip.target = channelController;
-        tooltip.action = @selector(showChannelManagementView:);        
     }
     
     return self.view;

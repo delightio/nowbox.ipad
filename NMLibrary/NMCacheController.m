@@ -216,7 +216,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 				iv.downloadTask = nil;
 			}
 			// no existing download task for this image. create new download task
-			[iv performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:1.0f];
+			[iv performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:1.0];
 		}
 	}
 
@@ -283,7 +283,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 				iv.downloadTask = nil;
 			}
 			// no existing download task for this image. create new download task
-			[iv performSelector:@selector(delayedIssueChannelImageDownloadRequest) withObject:nil afterDelay:1.0f];
+			[iv performSelector:@selector(delayedIssueChannelImageDownloadRequest) withObject:nil afterDelay:1.0];
 		}
 	}
 	iv.image = styleUtility.userPlaceholderImage;

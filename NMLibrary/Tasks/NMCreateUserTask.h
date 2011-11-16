@@ -18,11 +18,15 @@
 	NSURL * verificationURL;
 	NSString * email;
 	NSDictionary * userDictionary;
+	NSString * username;
 }
 
 @property (nonatomic, retain) NSURL * verificationURL;
 @property (nonatomic, retain) NSString * email;
 @property (nonatomic, retain) NSDictionary * userDictionary;
+@property (nonatomic, retain) NSString * username;
+
++ (NSInteger)updateAppUserInfo:(NSDictionary *)infoDict;
 
 - (id)initTwitterVerificationWithURL:(NSURL *)aURL;
 - (id)initFacebookVerificationWithURL:(NSURL *)aURL;

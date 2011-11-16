@@ -260,6 +260,7 @@
 - (void)removeFromSuperview
 {
     [videoRowDelegate recycleCell:self];
+    self.videoRowDelegate = nil;
     [super removeFromSuperview];
 }
 
@@ -288,7 +289,7 @@
     if (state != PanelVideoCellStateUnplayable) {
         if (videoRowDelegate) {
             [self changeViewToHighlighted:YES];
-            [videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:self.tag inSection:0]];
+            [videoRowDelegate playVideoForIndexPath:[NSIndexPath indexPathForRow:self.tag inSection:0] sender:self];
             [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventVideoTap sender:self];            
         }
     } else {

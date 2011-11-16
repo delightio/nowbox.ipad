@@ -26,6 +26,7 @@
 	[selectedChannel release];
 	[targetChannel release];
 	[playbackViewController release];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 
@@ -106,8 +107,13 @@
 }
 
 - (void)handleGetChannelNotification:(NSNotification *)aNotification {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetChannelWithIDNotification object:nil];
-	
+	NSString * notName = [aNotification name];
+	if ( [notName isEqualToString:NMDidGetChannelsNotification] ) {
+		// check if we have deleted any channel
+		NSDictionary * info = [aNotification userInfo];
+		NSLog(@"channel update status: %@", info);
+	}
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:notName object:nil];
 }
 
 - (void)handleCheckUpdateNotification:(NSNotification *)aNotification {
@@ -119,6 +125,13 @@
 	NSArray * ay = [[aNotification userInfo] objectForKey:@"channels"];
 	[[NMTaskQueueController sharedTaskQueueController] issueSubscribeChannels:ay];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetFeaturedChannelsForCategories object:nil];
+}
+
+- (void)handleChannelCompareNotification:(NSNotification *)aNotification {
+	NSSet * chns = [NMTaskQueueController sharedTaskQueueController].dataController.internalYouTubeCategory.channels;
+	for (NMChannel * chnObj in chns) {
+		NSLog(@"%@", chnObj);
+	}
 }
 
 #pragma mark Target action methods
@@ -135,14 +148,6 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelWithIDNotification object:nil];
 	// get debug channel
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:2513];
-}
-
-- (IBAction)subscribeDebugChannel:(id)sender {
-	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
-	NMChannel * chnObj = [tqc.dataController channelForID:[NSNumber numberWithInteger:2513]];
-	if ( chnObj ) {
-		[tqc issueSubscribe:YES channel:chnObj];
-	}
 }
 
 - (IBAction)checkUpdate:(id)sender {
@@ -166,6 +171,17 @@
 - (IBAction)checkTokenExpiryAndRenew:(id)sender {
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
 	[tqc issueTokenTest];
+}
+
+- (IBAction)pollUserYouTube:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	[tqc pollServerForYouTubeSyncSignal];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChannelCompareNotification:) name:NMDidCompareSubscribedChannelsNotification object:nil];
+}
+
+- (IBAction)getSubscribedChannels:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 }
 
 @end

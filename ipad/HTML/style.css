@@ -1,3 +1,11 @@
+#wrapper {
+	display:table; height: 100%;
+	margin: 0 auto;
+}
+#cell {
+	display:table-cell;
+	vertical-align:middle;
+}
 #loading {
 	position: absolute;
 	top: 0;
@@ -15,9 +23,30 @@
 	bottom: 0;
 	left: 0;
 }
-body {
+#youtubeError {
+	display: block;
+	background-color: #666;
+	padding: 1px 20px;
+	color: white;
+	width: 320px;
+	text-shadow: black 0 -1px 0;
+	font: 14pt "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	border-radius: 10px;
+}
+html, body {
 	background-color: #333;
+	height: 100%;
+	display: block;
+	padding: 0;
+	margin: 0;
 }
 #loading p {
 	margin: 44px 0 8px 0;
+}
+a {
+	font-weight: bold;
+	color: #eaeaea;
+}
+a:hover {
+	color: #ccc;
 }

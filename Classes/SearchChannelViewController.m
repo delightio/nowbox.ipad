@@ -60,7 +60,8 @@
     
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
-    
+    channelDetailViewController.enableUnsubscribe = YES;
+
     [self fetchedResultsController];
     [self clearSearchResults];
 }
@@ -389,7 +390,7 @@
     progressView.hidden = YES;
     
     if ([searchText length] > 0) {
-        [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0f];        
+        [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0];        
     }
 }
 

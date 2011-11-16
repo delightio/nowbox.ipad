@@ -23,10 +23,11 @@
 @property (nonatomic, retain) VideoPlaybackViewController * playbackViewController;
 
 - (IBAction)resetTooltip:(id)sender;
-- (IBAction)getDebugChannel:(id)sender;
 - (IBAction)checkUpdate:(id)sender;
 - (IBAction)bulkSubscibe:(id)sender;
 - (IBAction)renewToken:(id)sender;
 - (IBAction)checkTokenExpiryAndRenew:(id)sender;
+- (IBAction)pollUserYouTube:(id)sender;
+- (IBAction)getSubscribedChannels:(id)sender;
 
 @end

@@ -31,6 +31,7 @@
 	NSTimer * tokenRenewTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
+	NSUInteger pollingRetryCount;
 	
 	Reachability * wifiReachability;
 }
@@ -54,6 +55,7 @@
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyYouTubeAccountWithURL:(NSURL *)aURL;
+- (void)issueDeauthorizeYouTube;
 - (void)issueEditUserSettings;
 // Token
 - (void)issueRenewToken;
@@ -74,6 +76,7 @@
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
 - (void)issueGetChannelWithID:(NSInteger)chnID;
 - (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
+- (void)issueCompareSubscribedChannels;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
@@ -84,6 +87,9 @@
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
 - (void)pollServerForChannelReadiness;
 - (void)stopPollingServer;
+// Poll for YouTube
+- (void)issuePollServerForYouTubeSyncSignal;
+- (void)pollServerForYouTubeSyncSignal;
 // Get update info
 - (void)issueCheckUpdateForDevice:(NSString *)devType;
 
@@ -98,7 +104,7 @@
 
 // Event tracking
 // Share video
-//- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
+- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
 - (void)issueShareWithService:(NMSocialLoginType)serType video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec;

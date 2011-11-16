@@ -23,7 +23,9 @@
 @synthesize shareMode;
 @synthesize messageText;
 @synthesize characterCountLabel;
-@synthesize socialNetworkToggle;
+@synthesize facebookButton;
+@synthesize twitterButton;
+@synthesize shareButton;
 @synthesize progressView;
 @synthesize video;
 @synthesize duration;
@@ -35,7 +37,6 @@
     if (self) {
         self.title = @"Message";
         self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed:)] autorelease];
-        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Post" style:UIBarButtonItemStyleDone target:self action:@selector(shareButtonPressed:)] autorelease];
         self.video = aVideo;
         self.duration = aDuration;
         self.elapsedSeconds = anElapsedSeconds;
@@ -45,6 +46,7 @@
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
+        [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
     }
     return self;
 }
@@ -55,7 +57,9 @@
     
     [messageText release];
     [characterCountLabel release];
-    [socialNetworkToggle release];
+    [facebookButton release];
+    [twitterButton release];
+    [shareButton release];
     [progressView release];
     [video release];
     
@@ -70,14 +74,14 @@
     NSString *defaultTwitterText = [NSString stringWithFormat:kDefaultTwitterText, video.title];
     
     if (shareMode == ShareModeFacebook) {
-        self.navigationItem.rightBarButtonItem.title = @"Post";
+        [shareButton setTitle:@"POST" forState:UIControlStateNormal];
         characterCountLabel.hidden = YES;
         
         if (video && ([messageText.text isEqualToString:defaultTwitterText] || [messageText.text length] == 0)) {
             messageText.text = defaultFacebookText;
         }
     } else {
-        self.navigationItem.rightBarButtonItem.title = @"Tweet";
+        [shareButton setTitle:@"TWEET" forState:UIControlStateNormal];
         characterCountLabel.hidden = NO;
         
         if (video && ([messageText.text isEqualToString:defaultFacebookText] || [messageText.text length] == 0)) {
@@ -94,10 +98,18 @@
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     self.shareMode = [userDefaults integerForKey:NM_LAST_SOCIAL_NETWORK];   
-    socialNetworkToggle.selectedSegmentIndex = shareMode;
+    [facebookButton setSelected:(shareMode == ShareModeFacebook)];
+    [twitterButton setSelected:(shareMode == ShareModeTwitter)];
     
     progressView.layer.cornerRadius = 15.0;
     progressView.layer.masksToBounds = NO;
+    
+    [messageText becomeFirstResponder];
+    
+    UIFont *condensedFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f];
+    if (condensedFont) {
+        [shareButton.titleLabel setFont:condensedFont];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated 
@@ -113,8 +125,12 @@
 {
     [super viewDidAppear:animated];
     
-    [messageText becomeFirstResponder];
     [self textViewDidChange:messageText];
+    
+    if (autoPost) {
+        [self shareButtonPressed:nil];
+        autoPost = NO;
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -138,7 +154,8 @@
 {
     self.messageText = nil;
     self.characterCountLabel = nil;
-    self.socialNetworkToggle = nil;
+    self.facebookButton = nil;
+    self.twitterButton = nil;
     self.progressView = nil;
     
     [super viewDidUnload];
@@ -168,7 +185,7 @@
                                                                       elapsedSeconds:elapsedSeconds
                                                                              message:messageText.text];
             progressView.hidden = NO;
-            [self.navigationItem.rightBarButtonItem setEnabled:NO];
+            [shareButton setEnabled:NO];
         } else {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
                                                                 message:@"You are not logged in to Facebook. Would you like to log in now?"
@@ -189,7 +206,7 @@
                                                                           elapsedSeconds:elapsedSeconds
                                                                                  message:messageText.text];
                 progressView.hidden = NO;
-                [self.navigationItem.rightBarButtonItem setEnabled:NO];            
+                [shareButton setEnabled:NO];            
             } else {
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
                                                                     message:[NSString stringWithFormat:@"Sorry, but your message is too long. Try something a bit shorter.", (shareMode == ShareModeFacebook ? @"posted" : @"tweeted")]
@@ -211,13 +228,18 @@
     }
 }
 
-- (IBAction)shareModeChanged:(id)sender
+- (IBAction)facebookButtonPressed:(id)sender
 {
-    if ([sender selectedSegmentIndex] == 0) {
-        self.shareMode = ShareModeFacebook;
-    } else {
-        self.shareMode = ShareModeTwitter;
-    }
+    self.shareMode = ShareModeFacebook;
+    [facebookButton setSelected:YES];
+    [twitterButton setSelected:NO];
+}
+
+- (IBAction)twitterButtonPressed:(id)sender
+{
+    self.shareMode = ShareModeTwitter;
+    [facebookButton setSelected:NO];
+    [twitterButton setSelected:YES];    
 }
 
 #pragma mark - Notifications
@@ -229,11 +251,12 @@
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
+    alertView.tag = 0;
     [alertView show];
     [alertView release];
     
     progressView.hidden = YES;
-    [self.navigationItem.rightBarButtonItem setEnabled:YES];
+    [shareButton setEnabled:YES];
 }
 
 - (void)handleDidFailShareVideoNotification:(NSNotification *)aNotification 
@@ -243,11 +266,17 @@
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
+    alertView.tag = -1;
     [alertView show];
     [alertView release];
     
     progressView.hidden = YES;
-    [self.navigationItem.rightBarButtonItem setEnabled:YES];
+    [shareButton setEnabled:YES];
+}
+
+- (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification 
+{
+    autoPost = YES;
 }
 
 #pragma mark - UITextViewDelegate
@@ -269,7 +298,9 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     if ([alertView numberOfButtons] == 1) {
-        [self cancelButtonPressed:nil];
+        if (alertView.tag >= 0) {
+            [self cancelButtonPressed:nil];
+        }
     } else if (buttonIndex == 1) {
         if (shareMode == ShareModeFacebook) {
             // Go to Facebook login page
