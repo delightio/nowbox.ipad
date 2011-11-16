@@ -402,7 +402,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
-            [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+            [[NSBundle mainBundle] loadNibNamed:@"FindChannelTableCell" owner:self options:nil];
             cell = channelCell;
             self.channelCell = nil;
         }

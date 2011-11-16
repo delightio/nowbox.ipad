@@ -224,6 +224,7 @@
 								<string key="NSFrame">{{467, 22}, {20, 20}}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:1012</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<float key="IBUIAlpha">0.0</float>
