@@ -34,6 +34,7 @@
 	BOOL didFinishLogin;
 	NSUInteger pollingRetryCount;
 	
+	BOOL appFirstLaunch;
 	Reachability * wifiReachability;
 }
 
@@ -68,8 +69,6 @@
  In token renew mode, the backend will stop executing other tasks except for the "renew token task". It will also stop popping alert pop up.
  */
 - (void)setTokenRenewMode:(BOOL)on;
-//- (void)issueSignOutTwitterAccount;
-//- (void)issueSignOutFacebookAccout;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;
@@ -93,6 +92,7 @@
 // Poll for YouTube
 - (void)issuePollServerForYouTubeSyncSignal;
 - (void)pollServerForYouTubeSyncSignal;
+- (void)syncYouTubeChannels;
 // Get update info
 - (void)issueCheckUpdateForDevice:(NSString *)devType;
 

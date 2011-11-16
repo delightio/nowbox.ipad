@@ -162,13 +162,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
 	NMCreateUserTask * sender = [aNotificaiton object];
-	BOOL firstLaunch;
 	switch (sender.command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-			firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+			appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 			// get that particular channel
-			if ( !firstLaunch ) {
+			if ( !appFirstLaunch ) {
 				didFinishLogin = YES;
 				[self issueGetSubscribedChannels];
 			}
@@ -177,13 +176,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		case NMCommandVerifyYouTubeUser:
 			if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 				// check if it's first launch
-				firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
-				if ( firstLaunch ) {
+				appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+				if ( appFirstLaunch ) {
 					// need to poll the server to look for difference
 					[self pollServerForYouTubeSyncSignal];
 				} else if ( NM_USER_YOUTUBE_LAST_SYNC ) {
 					// immediately issue get channel
-					[self issueGetSubscribedChannels];
+					[self syncYouTubeChannels];
 				}
 			}
 			break;
@@ -567,6 +566,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)syncYouTubeChannels {
+	[self issueGetSubscribedChannels];
+	[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
+	[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
+	NM_USER_YOUTUBE_SYNC_LAST_ISSUED = (NSUInteger)[[NSDate date] timeIntervalSince1970];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_SYNC_LAST_ISSUED] forKey:NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY];
+
+}
+
 #pragma mark Token
 - (void)issueRenewToken {
 	NMTokenTask * task = [[NMTokenTask alloc] initGetToken];
@@ -634,9 +642,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)stopPollingServer {
 	if ( pollingTimer ) {
-		NSLog(@"stop timer method");
-		[pollingTimer invalidate];
-		self.pollingTimer = nil;
+		[pollingTimer invalidate], self.pollingTimer = nil;	
+	}
+	if ( userSyncTimer ) {
+		[userSyncTimer invalidate], self.userSyncTimer = nil;
+	}
+	if ( tokenRenewTimer ) {
+		[tokenRenewTimer invalidate], self.tokenRenewTimer = nil;
 	}
 }
 
@@ -688,20 +700,39 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleYouTubePollingNotification:(NSNotification *)aNotification {
-	pollingRetryCount++;
-	NMPollUserTask * theTask = [aNotification object];
-	if ( theTask.lastSyncTime > 0 ) {
-		// the account is synced. get the list of channel
-		[self issueCompareSubscribedChannels];
-		[pollingTimer invalidate];
-		self.pollingTimer = nil;
-	} else if ( pollingRetryCount > 5 ) {
-		[pollingTimer invalidate];
-		self.pollingTimer = nil;
+	if ( appFirstLaunch ) {
+		// refresh app launch
+		appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+		if ( !appFirstLaunch ) {
+			// this is the case where the user has finished up the onboard process with a YouTube login. However, the onboard is done before the polling work finish. In this case, we don't need to perform the sync anymore
+			// invalidate the timer
+			[pollingTimer invalidate];
+			self.pollingTimer = nil;
+			
+			return;
+		}
+		pollingRetryCount++;
+		NMPollUserTask * theTask = [aNotification object];
+		if ( theTask.lastSyncTime > 0 ) {
+			// the account is synced. get the list of channel
+			[self issueCompareSubscribedChannels];
+			[pollingTimer invalidate];
+			self.pollingTimer = nil;
+		} else if ( pollingRetryCount > 5 ) {
+			[pollingTimer invalidate];
+			self.pollingTimer = nil;
+		}
+	} else {
+		[self syncYouTubeChannels];
 	}
 }
 
+- (void)performCheckUserSyncForTimer:(NSTimer *)aTimer {
+	[self issuePollServerForYouTubeSyncSignal];
+}
+
 - (void)handleDidSyncUserNotification:(NSNotification *)aNotification {
+	appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 	if ( userSyncTimer ) {
 		[userSyncTimer fire];
 	} else {
