@@ -268,6 +268,18 @@
 				}];
 				
 				return NO;
+			} else {
+				NSString * urlStr = [theURL absoluteString];
+				if ( urlStr ) {
+					NSRange rng = [urlStr rangeOfString:@"ltmpl=sso"];
+					if ( rng.location != NSNotFound ) {
+						// need to modify this
+						urlStr = [urlStr stringByReplacingCharactersInRange:rng withString:@"ltmpl=mobile"];
+						NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
+						[webView performSelector:@selector(loadRequest:) withObject:request afterDelay:0.0];
+						return NO;
+					}
+				}
 			}
 			break;
 		}
