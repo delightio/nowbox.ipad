@@ -71,6 +71,7 @@
 	
     [[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
     [nc addObserver:self selector:@selector(handleDidCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];
+    [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCheckUpdateNotification object:nil];    
 }
 
 - (void)launchApp {
@@ -176,6 +177,10 @@
     } else if ( [notName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
 		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
         [activityIndicator stopAnimating];
+    } else if ( [notName isEqualToString:NMDidFailCheckUpdateNotification] ) {
+        progressLabel.hidden = NO;
+        [progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];
 	} else if ( [notName isEqualToString:NMDidFailDownloadImageNotification] ) {
 		// can't download the video thumbnail. that's not important. just make sure the launch service will continue
 		ignoreThumbnailDownloadIndex = YES;
@@ -213,6 +218,10 @@
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
 			// begin with fetching featured categories
 			[[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
+            [activityIndicator startAnimating];         
+        } else if ( [lastFailNotificationName isEqualToString:NMDidFailCheckUpdateNotification] ) {
+			// begin with fetching featured categories
+			[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
             [activityIndicator startAnimating];         
         }
 	} else if ( [notName isEqualToString:UIApplicationWillTerminateNotification] ) {
