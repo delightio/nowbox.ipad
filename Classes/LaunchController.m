@@ -137,17 +137,17 @@
 
 - (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
 {
-    if (!onBoardProcessController) {
         [UIView animateWithDuration:0.3
                          animations:^{
                              activityIndicator.alpha = 0;
                          }
                          completion:^(BOOL finished){
-                             onBoardProcessController = [[OnBoardProcessViewController alloc] init];
-                             onBoardProcessController.delegate = self;                             
-                             [viewController presentModalViewController:onBoardProcessController animated:NO];
+                             if (!onBoardProcessController) {
+                                 onBoardProcessController = [[OnBoardProcessViewController alloc] init];
+                                 onBoardProcessController.delegate = self;                             
+                                 [viewController presentModalViewController:onBoardProcessController animated:NO];
+                             }
                          }];
-    }
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification {
