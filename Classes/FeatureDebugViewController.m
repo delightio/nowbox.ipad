@@ -107,8 +107,13 @@
 }
 
 - (void)handleGetChannelNotification:(NSNotification *)aNotification {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetChannelWithIDNotification object:nil];
-	
+	NSString * notName = [aNotification name];
+	if ( [notName isEqualToString:NMDidGetChannelsNotification] ) {
+		// check if we have deleted any channel
+		NSDictionary * info = [aNotification userInfo];
+		NSLog(@"channel update status: %@", info);
+	}
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:notName object:nil];
 }
 
 - (void)handleCheckUpdateNotification:(NSNotification *)aNotification {
@@ -145,14 +150,6 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:2513];
 }
 
-- (IBAction)subscribeDebugChannel:(id)sender {
-	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
-	NMChannel * chnObj = [tqc.dataController channelForID:[NSNumber numberWithInteger:2513]];
-	if ( chnObj ) {
-		[tqc issueSubscribe:YES channel:chnObj];
-	}
-}
-
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];
@@ -180,6 +177,11 @@
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
 	[tqc pollServerForYouTubeSyncSignal];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChannelCompareNotification:) name:NMDidCompareSubscribedChannelsNotification object:nil];
+}
+
+- (IBAction)getSubscribedChannels:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 }
 
 @end

@@ -136,10 +136,6 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[tableView setEditing:!tableView.editing animated:YES];
 }
 
-- (IBAction)debugRefreshChannel:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-}
-
 - (IBAction)showSettingsView:(id)sender {
 	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:settingCtrl];

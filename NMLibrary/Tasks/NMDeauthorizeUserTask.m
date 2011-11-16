@@ -58,6 +58,7 @@ NSString * const NMDidFailDeauthorizeUserNotification = @"NMDidFailDeauthorizeUs
 		NM_USER_YOUTUBE_USER_NAME = nil;
 	}
 	NM_USER_YOUTUBE_SYNC_ACTIVE = NO;
+	NM_USER_YOUTUBE_LAST_SYNC = 0;
 	encountersErrorDuringProcessing = [NMCreateUserTask updateAppUserInfo:userDictionary] == 0;
 }
 
