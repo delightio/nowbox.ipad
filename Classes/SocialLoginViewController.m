@@ -109,6 +109,7 @@
 	progressContainerView.alpha = 0.0f;
 	NSURL * theURL = [[NSBundle mainBundle] URLForResource:@"YoutubeError" withExtension:@"html"];
 	[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
+	self.navigationItem.hidesBackButton = NO;
 }
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
