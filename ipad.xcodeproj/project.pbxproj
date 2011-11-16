@@ -65,6 +65,7 @@
 		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
+		8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */ = {isa = PBXBuildFile; fileRef = 8383BD551473A111002956C4 /* onboard-social-footer.png */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
 		83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852143145A34000047B7E0 /* BugSense-iOS.framework */; };
@@ -339,6 +340,7 @@
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
+		8383BD551473A111002956C4 /* onboard-social-footer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-footer.png"; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
 		83844041144DE51E007C99A2 /* PanelVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCell.m; sourceTree = "<group>"; };
 		8385213F145A03F60047B7E0 /* NMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMNavigationController.h; sourceTree = "<group>"; };
@@ -868,6 +870,7 @@
 				838F27DD1471996600935D5A /* onboard-nowbox-is.png */,
 				83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */,
 				838F27D21471949000935D5A /* onboard-social-facebook.png */,
+				8383BD551473A111002956C4 /* onboard-social-footer.png */,
 				838F27D31471949000935D5A /* onboard-social-twitter.png */,
 				838F27D41471949000935D5A /* onboard-social-youtube.png */,
 				83D21A14146DEC13008393F1 /* onboard-splash-button.png */,
@@ -1333,6 +1336,7 @@
 				838F2804147208A700935D5A /* share-twitter-off.png in Resources */,
 				838F2805147208A700935D5A /* share-twitter-on.png in Resources */,
 				838F280814720B2A00935D5A /* share-button-post.png in Resources */,
+				8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
