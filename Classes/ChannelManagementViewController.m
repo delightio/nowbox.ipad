@@ -403,8 +403,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
             [[NSBundle mainBundle] loadNibNamed:@"FindChannelTableCell" owner:self options:nil];
-            cell = channelCell;
-            self.channelCell = nil;
+            cell = [channelCell retain];
+            self.channelCell = nil;		// not sure if setting property to nil will "release" or "autorelease" it.
+			[cell autorelease];
         }
 		
 		NMCachedImageView *thumbnailView;
