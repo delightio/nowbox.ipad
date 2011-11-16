@@ -26,6 +26,7 @@ NSInteger NM_USER_FACEBOOK_CHANNEL_ID		= 0;
 NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
 NSString * NM_USER_YOUTUBE_USER_NAME		= nil;
+NSUInteger NM_USER_YOUTUBE_LAST_SYNC		= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -146,7 +147,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
-	NMTask * sender = [aNotificaiton object];
+	NMCreateUserTask * sender = [aNotificaiton object];
 	BOOL firstLaunch;
 	switch (sender.command) {
 		case NMCommandVerifyFacebookUser:
@@ -166,6 +167,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 				if ( firstLaunch ) {
 					// need to poll the server to look for difference
 					[self pollServerForYouTubeSyncSignal];
+				} else if ( NM_USER_YOUTUBE_LAST_SYNC ) {
+					// immediately issue get channel
+					[self issueGetSubscribedChannels];
 				}
 			}
 			break;
@@ -231,8 +235,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// check if there's any channel being deleted
 	NSDictionary * info = [aNotification userInfo];
 	if ( [[info objectForKey:@"num_channel_deleted"] unsignedIntegerValue] ) {
-		// some channels are "deleted"
-		[dataController permanentDeleteMarkedChannels];
+		// some channels are "deleted", perform the delete after a 5s chilling period.
+		[dataController performSelector:@selector(permanentDeleteMarkedChannels) withObject:nil afterDelay:5.0];
 	}
 }
 
