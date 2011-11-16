@@ -402,7 +402,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
-            [[NSBundle mainBundle] loadNibNamed:@"FindChannelTableCell" owner:self options:nil];
+            [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
             cell = channelCell;
             self.channelCell = nil;
         }
@@ -412,7 +412,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         UIImageView *backgroundView;
         UIButton *buttonView;
 		
-		if ( selectedIndex == 0 && (indexPath.section == 1 || indexPath.section == 0 ) ) {
+		if ( selectedIndex == 0 && indexPath.section <= 1 ) {
 			// the social login
 			UILabel * titleLbl, * detailLbl;
 			titleLbl = (UILabel *)[cell viewWithTag:12];
@@ -432,7 +432,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					detailLbl.text = @"Sync your Subscriptions, Favorites and Watch Later videos";
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
-					
 				}
 				thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
 			} else {
@@ -456,8 +455,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							detailLbl.text = @"Sign in to watch videos from people you follow on Twitter";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
+							thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 						}
-						thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 						break;
 						
 					case 1:
@@ -480,8 +479,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							detailLbl.text = @"Sign in to watch videos from your Facebook friends";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
+							thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 						}
-						thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 						break;
 						
 					default:
