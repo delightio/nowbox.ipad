@@ -976,6 +976,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)handleApplicationDidBecomeActiveNotification:(NSNotification *)aNotification {
+	if (launchModeActive) {
+        return;
+    }
+    
 	// resume playing the video
 	[self playCurrentVideo];
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
