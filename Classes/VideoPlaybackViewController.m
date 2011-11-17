@@ -213,16 +213,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	// event
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
+    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidPostSharingNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailShareVideoNotification object:nil];
+    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailPostSharingNotification object:nil];    
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
 	// channel
 	[defaultNotificationCenter addObserver:self selector:@selector(handleGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
-    
+
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -1049,7 +1051,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( vidObj == nil ) return;
 	
 	NSString * name = [aNotification name];
-	if ( [name isEqualToString:NMDidShareVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+	if ( ([name isEqualToString:NMDidShareVideoNotification] || [name isEqualToString:NMDidPostSharingNotification]) && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		[self animateFavoriteButtonsToActive];
 	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		[self animateFavoriteButtonsToActive];
@@ -1059,7 +1061,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// dequeued a video successfully
 		[self animateWatchLaterButtonsToActive];
-	}
+	} else if ( [name isEqualToString:NMWillPostSharingNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+        [self animateFavoriteButtonsToInactive];   
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -1495,33 +1499,44 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
-//	[nowboxTaskController issueShareWithService:NMLoginTwitterType video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed message:@"test message"];
-//	[self animateFavoriteButtonsToInactive];
+    NMVideo *video = playbackModelController.currentVideo;
     
-    ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
-                                                                                 bundle:[NSBundle mainBundle] 
-                                                                                  video:playbackModelController.currentVideo 
-                                                                               duration:loadedControlView.duration 
-                                                                         elapsedSeconds:loadedControlView.timeElapsed];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
-    navController.modalPresentationStyle = UIModalPresentationPageSheet;
-    [navController.navigationBar setBarStyle:UIBarStyleBlack];
-    [self presentModalViewController:navController animated:YES];
-    navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
-    
-    CGRect frame = navController.view.superview.frame;
-    frame.origin.y = 40;
-    navController.view.superview.frame = frame;
+    if ([video.nm_favorite boolValue]) {
+        // Unfavorite video
+        [nowboxTaskController issueShare:NO video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+        [self animateFavoriteButtonsToInactive];   
 
-    [shareController release];
-    [navController release];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnfavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               video.title, AnalyticsPropertyVideoName, 
+                                                                               video.nm_id, AnalyticsPropertyVideoId,
+                                                                               nil]];
+    } else {
+        // Share video
+        ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
+                                                                                     bundle:[NSBundle mainBundle] 
+                                                                                      video:video
+                                                                                   duration:loadedControlView.duration 
+                                                                             elapsedSeconds:loadedControlView.timeElapsed];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
+        navController.modalPresentationStyle = UIModalPresentationPageSheet;
+        [navController.navigationBar setBarStyle:UIBarStyleBlack];
+        [self presentModalViewController:navController animated:YES];
+        navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
+        
+        CGRect frame = navController.view.superview.frame;
+        frame.origin.y = 40;
+        navController.view.superview.frame = frame;
+
+        [shareController release];
+        [navController release];
+                
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               video.title, AnalyticsPropertyVideoName, 
+                                                                               video.nm_id, AnalyticsPropertyVideoId,
+                                                                               nil]];
+    }
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
-    
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                           playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
-                                                                           playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
-                                                                           nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
