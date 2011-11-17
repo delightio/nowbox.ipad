@@ -182,6 +182,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 					[self pollServerForYouTubeSyncSignal];
 				} else if ( NM_USER_YOUTUBE_LAST_SYNC ) {
 					// immediately issue get channel
+					didFinishLogin = YES;
 					[self syncYouTubeChannels];
 				}
 			}
@@ -568,8 +569,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)syncYouTubeChannels {
 	[self issueGetSubscribedChannels];
-	[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
-	[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
+//	[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
+//	[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
 	NM_USER_YOUTUBE_SYNC_LAST_ISSUED = (NSUInteger)[[NSDate date] timeIntervalSince1970];
 	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_SYNC_LAST_ISSUED] forKey:NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY];
 

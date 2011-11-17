@@ -115,8 +115,13 @@
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
 	// save the user
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+	// user stream channels
 	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+	//uid
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
 	[defs setObject:NM_USER_YOUTUBE_USER_NAME forKey:NM_USER_YOUTUBE_USER_NAME_KEY];

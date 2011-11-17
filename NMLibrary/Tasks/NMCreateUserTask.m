@@ -30,16 +30,23 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 + (NSInteger)updateAppUserInfo:(NSDictionary *)infoDict {
 	NSInteger uid = [[infoDict objectForKey:@"id"] integerValue];
 	if ( uid ) {
-		NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 		// update global variable
 		NM_USER_ACCOUNT_ID = uid;
 		NM_USER_WATCH_LATER_CHANNEL_ID = [[infoDict objectForKey:@"queue_channel_id"] integerValue];
 		NM_USER_FAVORITES_CHANNEL_ID = [[infoDict objectForKey:@"favorite_channel_id"] integerValue];
 		NM_USER_HISTORY_CHANNEL_ID = [[infoDict objectForKey:@"history_channel_id"] integerValue];
-		[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
-		[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
-		[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
-		[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+		id theNum = [infoDict objectForKey:@"facebook_channel_id"];
+		if ( theNum == [NSNull null] ) {
+			NM_USER_FACEBOOK_CHANNEL_ID = 0;
+		} else {
+			NM_USER_FACEBOOK_CHANNEL_ID = [theNum integerValue];
+		}
+		theNum = [infoDict objectForKey:@"twitter_channel_id"];
+		if ( theNum == [NSNull null] ) {
+			NM_USER_TWITTER_CHANNEL_ID = 0;
+		} else {
+			NM_USER_TWITTER_CHANNEL_ID = [theNum integerValue];
+		}
 	}
 	return uid;
 }
@@ -182,9 +189,16 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-		case NMCommandVerifyYouTubeUser:
 			return NO;
-			
+		case NMCommandVerifyYouTubeUser:
+		{
+			// flush current channels
+			ctrl.favoriteVideoChannel = nil;
+			ctrl.myQueueChannel = nil;
+			ctrl.userFacebookStreamChannel = nil;
+			ctrl.userTwitterStreamChannel = nil;
+			return YES;
+		}	
 		default:
 			break;
 	}
