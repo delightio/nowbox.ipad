@@ -409,7 +409,14 @@
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY] + 1;
         [[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+        
+        // Save user ID and more
         [userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
+		[userDefaults setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+		[userDefaults setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+		[userDefaults setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+		[userDefaults setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+        [userDefaults synchronize];
         
         if ([selectedCategoryIndexes count] > 0) {
             [UIView animateWithDuration:0.3 animations:^{
@@ -421,6 +428,7 @@
         [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
         [[MixpanelAPI sharedAPI] track:@"$born"];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
+        
     }
 }
 

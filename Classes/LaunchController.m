@@ -101,6 +101,7 @@
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)slideInVideoViewAnimated {
@@ -112,6 +113,7 @@
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)checkUpdateChannels {
