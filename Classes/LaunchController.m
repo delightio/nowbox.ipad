@@ -130,6 +130,9 @@
 		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+			[[NMTaskQueueController sharedTaskQueueController] issueSyncRequest];
+		}
 	}
     
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];

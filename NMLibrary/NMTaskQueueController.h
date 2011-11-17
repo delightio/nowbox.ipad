@@ -27,12 +27,13 @@
 	NMDataController * dataController;
 	
 	// polling channel population status
+	NSTimer * channelPollingTimer;
 	NSTimer * pollingTimer;
 	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
-	NSUInteger pollingRetryCount;
+	NSUInteger pollingRetryCount, channelPollingRetryCount;
 	
 	BOOL appFirstLaunch;
 	Reachability * wifiReachability;
@@ -41,6 +42,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
+@property (nonatomic, retain) NSTimer * channelPollingTimer;
 @property (nonatomic, retain) NSTimer * pollingTimer;
 @property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
@@ -92,6 +94,7 @@
 // Poll for YouTube
 - (void)issuePollServerForYouTubeSyncSignal;
 - (void)pollServerForYouTubeSyncSignal;
+- (void)slowPollServerForYouTubeSyncSycnal;
 - (void)syncYouTubeChannels;
 // Get update info
 - (void)issueCheckUpdateForDevice:(NSString *)devType;

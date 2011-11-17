@@ -69,9 +69,11 @@
 	NSURL * theURL = [[NSBundle mainBundle] URLForResource:filename withExtension:@"html"];
 	[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
 	
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
-	[nc addObserver:self selector:@selector(handleLoginFailNotification:) name:NMDidFailVerifyUserNotification object:nil];
+	defaultCenter = [NSNotificationCenter defaultCenter];
+	[defaultCenter addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	[defaultCenter addObserver:self selector:@selector(handleLoginFailNotification:) name:NMDidFailVerifyUserNotification object:nil];
+	
+	appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 }
 
 - (void)viewDidUnload
@@ -89,7 +91,7 @@
 }
 
 - (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[defaultCenter removeObserver:self];
 	NSHTTPCookie *cookie;
 	NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 	for (cookie in [storage cookies]) {
@@ -140,9 +142,8 @@
 			// channel refresh command is issued in TaskQueueScheduler
 			
 			// listen to channel refresh notification 
-			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
            break;
 		}
 			
@@ -155,9 +156,8 @@
 			// channel refresh command is issued in TaskQueueScheduler
 			
 			// listen to channel refresh notification 
-			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
            break;
 		}
 			
@@ -166,10 +166,8 @@
             [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
 																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-			// dismiss the view right away
-			progressLabel.text = @"Verified Successfully";
-			[loadingIndicator stopAnimating];
-			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
 			break;
 			
         default:
@@ -180,7 +178,9 @@
 - (void)handleChannelRefreshNotification:(NSNotification *)aNotification {
 	progressLabel.text = @"Verified Successfully";
 	[loadingIndicator stopAnimating];
-	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
+	if ( !appFirstLaunch ) {
+		[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
+	}
 }
 
 - (void)handleLoginFailNotification:(NSNotification *)aNotification {
@@ -188,9 +188,12 @@
 	[loadingIndicator stopAnimating];
 	if ( loginType == NMLoginYouTubeType ) {
 		// show a longer error view
-		[self performSelector:@selector(delayShowYouTubeErroView) withObject:nil afterDelay:1.0];
+		[self performSelector:@selector(delayShowYouTubeErroView) withObject:nil afterDelay:1.5];
 	} else {
-		[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0];
+		if ( !appFirstLaunch ) {
+			
+			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
+		}
 	}
     
     switch (loginType) {

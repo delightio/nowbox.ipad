@@ -14,10 +14,6 @@
  Poll the server for readiness of a channel. This mainly serves for stream and keyword channels
  */
 
-@interface NMPollUserTask : NMTask {
-	NSUInteger lastSyncTime;
-}
-
-@property (nonatomic) NSUInteger lastSyncTime;
+@interface NMPollUserTask : NMTask
 
 @end
