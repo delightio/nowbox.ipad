@@ -22,11 +22,11 @@ NSString * const NMDidFailRequestTokenNotification = @"NMDidFailRequestTokenNoti
 	return self;
 }
 
-- (id)initTestToken {
-	self = [super init];
-	command = NMCommandTestToken;
-	return self;
-}
+//- (id)initTestToken {
+//	self = [super init];
+//	command = NMCommandTestToken;
+//	return self;
+//}
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = nil;
@@ -38,13 +38,13 @@ NSString * const NMDidFailRequestTokenNotification = @"NMDidFailRequestTokenNoti
 			[request setHTTPMethod:@"POST"];
 			break;
 			
-		case NMCommandTestToken:
-			urlStr = [NSString stringWithFormat:@"http://%@/users/%d/auth_test", NM_BASE_URL, NM_USER_ACCOUNT_ID];
-			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
-#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
-			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
-#endif
-			break;
+//		case NMCommandTestToken:
+//			urlStr = [NSString stringWithFormat:@"http://%@/users/%d/auth_test", NM_BASE_URL, NM_USER_ACCOUNT_ID];
+//			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+//#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+//			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+//#endif
+//			break;
 			
 		default:
 			break;
@@ -66,13 +66,13 @@ NSString * const NMDidFailRequestTokenNotification = @"NMDidFailRequestTokenNoti
 			NM_USER_TOKEN_EXPIRY_DATE = [[NSDate dateWithTimeIntervalSince1970:[[tkDict objectForKey:@"expires_at"] floatValue]] retain];
 			break;
 		}
-		case NMCommandTestToken:
-		{
-			NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-			NSLog(@"Token test result: %@", str);
-			[str release];
-			break;
-		}
+//		case NMCommandTestToken:
+//		{
+//			NSString * str = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
+//			NSLog(@"Token test result: %@", str);
+//			[str release];
+//			break;
+//		}
 		default:
 			break;
 	}

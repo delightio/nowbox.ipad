@@ -13,8 +13,11 @@
 	UIWebView *loginWebView;
 	UIView * progressContainerView;
 	NMSocialLoginType loginType;
+	
+	NSNotificationCenter * defaultCenter;
     
     BOOL loadingPageLoading;
+	BOOL appFirstLaunch;
 }
 
 @property (retain, nonatomic) IBOutlet UIWebView *loginWebView;

@@ -434,6 +434,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 				}
+				[thumbnailView cancelDownload];
 				thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
 			} else {
 				switch (indexPath.row) {
@@ -456,6 +457,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							detailLbl.text = @"Sign in to watch videos from people you follow on Twitter";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
+							[thumbnailView cancelDownload];
 							thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 						}
 						break;
@@ -480,6 +482,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							detailLbl.text = @"Sign in to watch videos from your Facebook friends";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
+							[thumbnailView cancelDownload];
 							thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 						}
 						break;

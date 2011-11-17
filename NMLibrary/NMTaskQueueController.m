@@ -16,6 +16,9 @@
 #import "NMVideoDetail.h"
 #import "Reachability.h"
 
+#define NM_USER_SYNC_CHECK_TIMER_INTERVAL	60.0
+#define NM_USER_POLLING_TIMER_INTERVAL		5.0
+
 NSInteger NM_USER_ACCOUNT_ID				= 0;
 NSDate * NM_USER_TOKEN_EXPIRY_DATE			= nil;
 NSString * NM_USER_TOKEN					= nil;
@@ -27,6 +30,7 @@ NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
 NSString * NM_USER_YOUTUBE_USER_NAME		= nil;
 NSUInteger NM_USER_YOUTUBE_LAST_SYNC		= 0;
+NSUInteger NM_USER_YOUTUBE_SYNC_LAST_ISSUED	= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -45,6 +49,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize networkController;
 @synthesize dataController;
 @synthesize pollingTimer, tokenRenewTimer;
+@synthesize channelPollingTimer, userSyncTimer;
 @synthesize unpopulatedChannels;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
@@ -65,6 +70,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
 //	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
@@ -107,7 +113,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController release];
 	[networkController release];
 	[NM_SESSION_ID release];
-	[pollingTimer release];
+	if ( pollingTimer ) {
+		[pollingTimer invalidate], [pollingTimer release];	
+	}
+	if ( userSyncTimer ) {
+		[userSyncTimer invalidate], [userSyncTimer release];
+	}
+	if ( tokenRenewTimer ) {
+		[tokenRenewTimer invalidate], [tokenRenewTimer release];
+	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
 	[super dealloc];
@@ -148,13 +162,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
 	NMCreateUserTask * sender = [aNotificaiton object];
-	BOOL firstLaunch;
 	switch (sender.command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-			firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+			appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 			// get that particular channel
-			if ( !firstLaunch ) {
+			if ( !appFirstLaunch ) {
 				didFinishLogin = YES;
 				[self issueGetSubscribedChannels];
 			}
@@ -163,13 +176,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		case NMCommandVerifyYouTubeUser:
 			if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 				// check if it's first launch
-				firstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
-				if ( firstLaunch ) {
+				appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+				if ( appFirstLaunch ) {
 					// need to poll the server to look for difference
 					[self pollServerForYouTubeSyncSignal];
-				} else if ( NM_USER_YOUTUBE_LAST_SYNC ) {
+				} else {
 					// immediately issue get channel
+					didFinishLogin = YES;
+					// don't call "syncYouTubeChannels" method. Cos we haven't created the watch later and favorite channel yet.
+					NM_USER_YOUTUBE_SYNC_LAST_ISSUED = (NSUInteger)[[NSDate date] timeIntervalSince1970];
 					[self issueGetSubscribedChannels];
+					[self slowPollServerForYouTubeSyncSycnal];
 				}
 			}
 			break;
@@ -297,6 +314,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)issueEditUserSettings {
 	// user settings should be readily saved in NSUserDefaults
 	NMUserSettingsTask * task = [[NMUserSettingsTask alloc] init];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueSyncRequest {
+	NMUserSynchronizeTask * task = [[NMUserSynchronizeTask alloc] init];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -547,6 +570,14 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)syncYouTubeChannels {
+	[self issueGetSubscribedChannels];
+	[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
+	[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
+	NM_USER_YOUTUBE_SYNC_LAST_ISSUED = (NSUInteger)[[NSDate date] timeIntervalSince1970];
+
+}
+
 #pragma mark Token
 - (void)issueRenewToken {
 	NMTokenTask * task = [[NMTokenTask alloc] initGetToken];
@@ -554,11 +585,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueTokenTest {
-	NMTokenTask * task = [[NMTokenTask alloc] initTestToken];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-}
+//- (void)issueTokenTest {
+//	NMTokenTask * task = [[NMTokenTask alloc] initTestToken];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//}
 
 - (void)checkAndRenewToken {
 	NSTimeInterval t = [NM_USER_TOKEN_EXPIRY_DATE timeIntervalSinceNow];
@@ -602,11 +633,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( result ) {
 		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
 		// run the timer method
-		if ( !pollingTimer ) {
-			pollingRetryCount = 0;
-			self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
+		if ( channelPollingTimer ) {
+			[channelPollingTimer fire];
 		} else {
-			[pollingTimer fire];
+			channelPollingRetryCount = 0;
+			self.channelPollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
 		}
 		// issue poll request for each channel
 	}
@@ -614,21 +645,30 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)stopPollingServer {
 	if ( pollingTimer ) {
-		NSLog(@"stop timer method");
-		[pollingTimer invalidate];
-		self.pollingTimer = nil;
+		[pollingTimer invalidate], self.pollingTimer = nil;	
 	}
+	if ( userSyncTimer ) {
+		[userSyncTimer invalidate], self.userSyncTimer = nil;
+	}
+	if ( tokenRenewTimer ) {
+		[tokenRenewTimer invalidate], self.tokenRenewTimer = nil;
+	}
+	if ( channelPollingTimer ) {
+		[channelPollingTimer invalidate], self.channelPollingTimer = nil;
+	}
+	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_LAST_SYNC] forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
+	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_SYNC_LAST_ISSUED] forKey:NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY];
 }
 
 - (void)pollingTimerMethod:(NSTimer *)aTimer {
-	NSLog(@"polling timer method called");
 	for (NMChannel * chnObj in unpopulatedChannels) {
 		[self issuePollServerForChannel:chnObj];
 	}
 }
 
 - (void)handleChannelPollingNotification:(NSNotification *)aNotification {
-	pollingRetryCount++;
+	channelPollingRetryCount++;
 	// check polling status
 	NSDictionary * dict = [aNotification userInfo];
 	NMChannel * chnObj = [dict objectForKey:@"channel"];
@@ -639,10 +679,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		// fire the get channel list request
 		[self issueGetMoreVideoForChannel:chnObj];
 	}
-	if ( [unpopulatedChannels count] == 0 || pollingRetryCount > 5 ) {
+	if ( [unpopulatedChannels count] == 0 || channelPollingRetryCount > 5 ) {
 		// all channels have been processed and populated
-		[pollingTimer invalidate];
-		self.pollingTimer = nil;
+		[channelPollingTimer invalidate];
+		self.channelPollingTimer = nil;
 	}
 }
 
@@ -658,7 +698,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		[pollingTimer fire];
 	} else {
 		pollingRetryCount = 0;
-		self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+		self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_POLLING_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+		//MARK: we may need to fire the timer once here so that we don't have the initial wait.
 	}
 }
 
@@ -667,17 +708,59 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)handleYouTubePollingNotification:(NSNotification *)aNotification {
-	pollingRetryCount++;
-	BOOL ytSynced = [[[aNotification userInfo] objectForKey:@"youtube_synced"] boolValue];
-	if ( ytSynced ) {
-		// the account is synced. get the list of channel
-		[self issueCompareSubscribedChannels];
-		[pollingTimer invalidate];
-		self.pollingTimer = nil;
-	} else if ( pollingRetryCount > 5 ) {
-		[pollingTimer invalidate];
-		self.pollingTimer = nil;
+	if ( appFirstLaunch ) {
+		// refresh app launch
+		appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+		if ( !appFirstLaunch ) {
+			// this is the case where the user has finished up the onboard process with a YouTube login. However, the onboard is done before the polling work finish. In this case, we don't need to perform the sync anymore
+			// invalidate the timer
+			[pollingTimer invalidate];
+			self.pollingTimer = nil;
+			
+			return;
+		}
+		pollingRetryCount++;
+		if ( NM_USER_YOUTUBE_LAST_SYNC > 0 ) {
+			// the account is synced. get the list of channel
+			[self issueCompareSubscribedChannels];
+			[pollingTimer invalidate];
+			self.pollingTimer = nil;
+		} else if ( pollingRetryCount > 5 ) {
+			[pollingTimer invalidate];
+			self.pollingTimer = nil;
+		}
+	} else {
+		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+			pollingRetryCount++;
+			if ( NM_USER_YOUTUBE_LAST_SYNC > NM_USER_YOUTUBE_SYNC_LAST_ISSUED ) {
+				[self syncYouTubeChannels];
+				[userSyncTimer invalidate];
+				self.userSyncTimer = nil;
+			} else if ( pollingRetryCount > 5 ) {
+				[userSyncTimer invalidate];
+				self.userSyncTimer = nil;
+			}
+		} else {
+			// it's possible that the YouTube polling process is happening after the user has signed out.
+			[userSyncTimer invalidate];
+			self.userSyncTimer = nil;
+		}
 	}
+}
+
+- (void)slowPollServerForYouTubeSyncSycnal {
+	appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
+	if ( userSyncTimer ) {
+		[userSyncTimer fire];
+	} else {
+		pollingRetryCount = 0;
+		// create timer
+		self.userSyncTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_SYNC_CHECK_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+	}
+}
+
+- (void)handleDidSyncUserNotification:(NSNotification *)aNotification {
+	[self slowPollServerForYouTubeSyncSycnal];
 }
 
 @end
