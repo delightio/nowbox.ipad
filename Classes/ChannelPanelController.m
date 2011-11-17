@@ -563,8 +563,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 						   
 				if (nextChannelIndexPath) {
 					NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
-					// do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
-					[videoViewController setCurrentChannel:channel];
+                    NSArray *videos = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:channel];
+
+                    // do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
+                    if ([videos count] > 0) {
+                        [videoViewController playVideo:[videos objectAtIndex:0]];
+                    }
 				}
 			}
             
