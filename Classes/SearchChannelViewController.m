@@ -182,6 +182,13 @@
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
+    
+    if ([chn.nm_id integerValue] == 0) {
+        // Don't let user see details for keyword-based channel
+        [aTableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
+    
     channelDetailViewController.channel = chn;
     
     [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
