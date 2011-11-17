@@ -188,7 +188,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (NSPredicate *)searchResultsPredicate {
 	if ( searchResultsPredicate == nil ) {
 		// create the predicate
-		searchResultsPredicate = [[NSPredicate predicateWithFormat:@"ANY categories == %@", self.internalSearchCategory] retain];
+		searchResultsPredicate = [[NSPredicate predicateWithFormat:@"ANY categories == %@ && nm_id != 0", self.internalSearchCategory] retain];
 	}
 	return searchResultsPredicate;
 }

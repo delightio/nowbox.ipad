@@ -30,6 +30,7 @@
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
 @property (nonatomic, retain) IBOutlet UIView *progressView;
+@property (nonatomic, retain) IBOutlet UIView *noResultsView;
 @property (nonatomic, retain) NSString * lastSearchQuery;
 
 - (void)clearSearchResults;
