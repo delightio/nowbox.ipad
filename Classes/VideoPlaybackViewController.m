@@ -399,7 +399,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
 	playFirstVideoOnLaunchWhenReady = aPlayFlag;
-    forceStopByUser = self.modalViewController != nil;	// reset the flag
+    forceStopByUser = (self.modalViewController != nil && !launchModeActive);	// force stop if we're showing Channel Management or Settings page
 
 	currentXOffset = 0.0f;
 	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
