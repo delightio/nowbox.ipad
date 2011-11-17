@@ -336,7 +336,7 @@
 					</object>
 					<object class="IBUILabel" id="472344070">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">290</int>
 						<string key="NSFrame">{{90, 668}, {845, 60}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
@@ -359,15 +359,15 @@
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
+						<object class="IBUIFontDescription" key="IBUIFontDescription" id="278080677">
 							<string key="name">Georgia-Italic</string>
 							<string key="family">Georgia</string>
 							<int key="traits">1</int>
-							<double key="pointSize">14</double>
+							<double key="pointSize">15</double>
 						</object>
-						<object class="NSFont" key="IBUIFont">
+						<object class="NSFont" key="IBUIFont" id="930433677">
 							<string key="NSName">Georgia-Italic</string>
-							<double key="NSSize">14</double>
+							<double key="NSSize">15</double>
 							<int key="NSfFlags">16</int>
 						</object>
 					</object>
@@ -775,7 +775,7 @@
 						<string key="NSFrame">{{89, 665}, {845, 2}}</string>
 						<reference key="NSSuperview" ref="796525060"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="841432142"/>
 						<string key="NSReuseIdentifierKey">_NS:569</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -784,7 +784,7 @@
 					<object class="IBUIImageView" id="841432142">
 						<reference key="NSNextResponder" ref="796525060"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{85, 685}, {755, 32}}</string>
+						<string key="NSFrame">{{62, 685}, {803, 39}}</string>
 						<reference key="NSSuperview" ref="796525060"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -876,22 +876,13 @@
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">onboard-button-settingup.png</string>
 						</object>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
-							<string key="name">Georgia-Italic</string>
-							<string key="family">Georgia</string>
-							<int key="traits">1</int>
-							<double key="pointSize">15</double>
-						</object>
-						<object class="NSFont" key="IBUIFont">
-							<string key="NSName">Georgia-Italic</string>
-							<double key="NSSize">15</double>
-							<int key="NSfFlags">16</int>
-						</object>
+						<reference key="IBUIFontDescription" ref="278080677"/>
+						<reference key="IBUIFont" ref="930433677"/>
 					</object>
 					<object class="IBUIImageView" id="699199443">
 						<reference key="NSNextResponder" ref="93123308"/>
 						<int key="NSvFlags">293</int>
-						<string key="NSFrame">{{91, 258}, {843, 370}}</string>
+						<string key="NSFrame">{{91, 256}, {842, 375}}</string>
 						<reference key="NSSuperview" ref="93123308"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -1003,7 +994,7 @@
 					<object class="IBUILabel" id="402969252">
 						<reference key="NSNextResponder" ref="486635400"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{20, 668}, {933, 60}}</string>
+						<string key="NSFrame">{{8, 668}, {933, 60}}</string>
 						<reference key="NSSuperview" ref="486635400"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1632346"/>
@@ -1025,22 +1016,13 @@
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
-							<string key="name">Georgia-Italic</string>
-							<string key="family">Georgia</string>
-							<int key="traits">1</int>
-							<double key="pointSize">13</double>
-						</object>
-						<object class="NSFont" key="IBUIFont">
-							<string key="NSName">Georgia-Italic</string>
-							<double key="NSSize">13</double>
-							<int key="NSfFlags">16</int>
-						</object>
+						<reference key="IBUIFontDescription" ref="278080677"/>
+						<reference key="IBUIFont" ref="930433677"/>
 					</object>
 					<object class="IBUIImageView" id="1632346">
 						<reference key="NSNextResponder" ref="486635400"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{647, 674}, {48, 58}}</string>
+						<string key="NSFrame">{{658, 674}, {48, 58}}</string>
 						<reference key="NSSuperview" ref="486635400"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -1830,7 +1812,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">146</int>
+			<int key="maxID">147</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2007,10 +1989,10 @@
 			<string key="onboard-divider-shadow-down.png">{814, 14}</string>
 			<string key="onboard-divider-shadow-up.png">{814, 14}</string>
 			<string key="onboard-divider.png">{845, 2}</string>
-			<string key="onboard-nowbox-is.png">{843, 369}</string>
+			<string key="onboard-nowbox-is.png">{842, 375}</string>
 			<string key="onboard-nowbox-logo.png">{132, 18}</string>
 			<string key="onboard-social-facebook.png">{234, 234}</string>
-			<string key="onboard-social-footer.png">{755, 32}</string>
+			<string key="onboard-social-footer.png">{803, 39}</string>
 			<string key="onboard-social-twitter.png">{234, 234}</string>
 			<string key="onboard-social-youtube.png">{234, 234}</string>
 			<string key="onboard-splash-button.png">{69, 68}</string>
