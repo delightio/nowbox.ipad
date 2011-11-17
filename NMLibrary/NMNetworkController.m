@@ -519,15 +519,13 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 			[commandIndexPool removeIndex:[theTask commandIndex]];
 			theTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
 			return;
-		} else if ( scode == 404 ) {
-			// swallow the error. do nothing
 		} else {
 			// fire error notification right here
 			NSDictionary * errorInfo = [theTask failUserInfo];
 			NSNotification * n = [NSNotification notificationWithName:[theTask didFailNotificationName] object:theTask userInfo:(errorInfo == nil ? [NSDictionary dictionaryWithObjectsAndKeys:@"HTTP status code indicates error", @"message", [NSNumber numberWithInteger:theTask.httpStatusCode], @"code", theTask, @"task", nil] : errorInfo)];
 			[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 			NMCommand cmd = theTask.command;
-			if ( scode < 500 && cmd != NMCommandSendEvent && cmd != NMCommandGetYouTubeDirectURL ) {
+			if ( scode < 500 && scode != 404 && cmd != NMCommandSendEvent && cmd != NMCommandGetYouTubeDirectURL ) {
 				// this is authorization related error. post a pop up box to user
 				if ( [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
 					// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
