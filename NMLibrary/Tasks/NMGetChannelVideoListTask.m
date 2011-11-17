@@ -161,10 +161,17 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NMVideoDetail * dtlObj;
 	NSUInteger vidCount = 0;
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
+	NSNumber * yesNum = [NSNumber numberWithBool:YES];
 	for (dict in parsedObjects) {
 		vidObj = [ctrl insertNewVideo];
 		[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
 		[vidObj setValuesForKeysWithDictionary:dict];
+		if ( isFavoriteChannel ) {
+			vidObj.nm_favorite = yesNum;
+		}
+		if ( isWatchLaterChannel ) {
+			vidObj.nm_watch_later = yesNum;
+		}
 		// channel
 		vidObj.channel = channel;
 		// video detail
@@ -195,12 +202,19 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		}
 		numberOfVideoAdded = 0;
 		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
+		NSNumber * yesNum = [NSNumber numberWithBool:YES];
 		for (dict in parsedObjects) {
 			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"nm_id"] unsignedIntegerValue]] ) {
 				numberOfVideoAdded++;
 				vidObj = [ctrl insertNewVideo];
 				[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
 				[vidObj setValuesForKeysWithDictionary:dict];
+				if ( isFavoriteChannel ) {
+					vidObj.nm_favorite = yesNum;
+				}
+				if ( isWatchLaterChannel ) {
+					vidObj.nm_watch_later = yesNum;
+				}
 				// channel
 				vidObj.channel = channel;
 				//[channel addVideosObject:vidObj];
@@ -228,6 +242,8 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	if ( numberOfRowsFromServer ) {
+		isFavoriteChannel = [ctrl.favoriteVideoChannel isEqual:channel];
+		isWatchLaterChannel = [ctrl.myQueueChannel isEqual:channel];
 		[self insertOnlyNewVideosInController:ctrl];
 		// update the page number
 		if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
