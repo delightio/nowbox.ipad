@@ -272,6 +272,7 @@
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
 	[resolutionVideoIndex addIndex:[vdo.nm_id unsignedIntegerValue]];
 	NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+    NSLog(@"resolved URL for %i, looking for %i", [vdo.nm_id unsignedIntegerValue], cIdx);
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
 		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
@@ -287,6 +288,7 @@
 		// store all indexes. the order of downloading video thumbnail is not guaranteed. need to check against all indexes downloaded. 
 		[thumbnailVideoIndex addIndex:[targetVdo.nm_id unsignedIntegerValue]];
 		NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+        NSLog(@"got thumbnail for %i, looking for %i", [targetVdo.nm_id unsignedIntegerValue], cIdx);
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
 			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
                 [onBoardProcessController notifyVideosReady];

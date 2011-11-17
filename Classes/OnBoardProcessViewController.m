@@ -151,6 +151,7 @@
 
 - (void)showProceedToChannelsButton
 {
+    NSLog(@"Onboard process continuing");
     // Allow the user to proceed past the info step
     [UIView animateWithDuration:0.15 
                      animations:^{
@@ -199,6 +200,7 @@
 
 - (void)infoWaitTimerFired
 {
+    NSLog(@"Wait timer ready for onboard process to continue");
     infoWaitTimer = nil;
     infoWaitTimerFired = YES;
     
@@ -209,6 +211,7 @@
 
 - (void)notifyVideosReady
 {
+    NSLog(@"Videos ready for onboard process to continue");
     videosReady = YES;
     
     if (infoWaitTimerFired) {
@@ -451,11 +454,11 @@
 
 - (NSString *)reasonForChannel:(NMChannel *)channel
 {
-/*    // Is the channel from the user's YouTube account?
-    NMCategory *youtubeCategory = [[[NMTaskQueueController sharedTaskQueueController] dataController] internalYouTubeCategory];
-    if ([youtubeCategory.channels containsObject:channel]) {
-        return @"from YouTube account";
-    }*/
+    if (channel == [[NMTaskQueueController sharedTaskQueueController].dataController userFacebookStreamChannel]) {
+        return @"Facebook channel";
+    } else if (channel == [[NMTaskQueueController sharedTaskQueueController].dataController userTwitterStreamChannel]) {
+        return @"Twitter channel";
+    }
     
     // Is the channel part of a category the user selected?
     NSArray *selectedCategories = [featuredCategories objectsAtIndexes:selectedCategoryIndexes];    
