@@ -359,7 +359,9 @@
                              }
                          }
                          completion:^(BOOL finished) {
-                             if ( shouldDismiss && [[NMTaskQueueController sharedTaskQueueController].dataController channelContainsVideo:channel] ) {
+							 if ( [channel.type integerValue] == NMChannelUserTwitterType || [channel.type integerValue] == NMChannelUserFacebookType ) {
+								 [self.navigationController popViewControllerAnimated:YES];
+							 } else if ( shouldDismiss && [[NMTaskQueueController sharedTaskQueueController].dataController channelContainsVideo:channel] ) {
 								 [[NSNotificationCenter defaultCenter] postNotificationName:NMShouldPlayNewlySubscribedChannelNotification object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", nil]];
 								 [self dismissModalViewControllerAnimated:YES];
                              }

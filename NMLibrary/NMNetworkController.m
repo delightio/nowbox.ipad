@@ -519,6 +519,8 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 			[commandIndexPool removeIndex:[theTask commandIndex]];
 			theTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
 			return;
+		} else if ( scode == 404 ) {
+			// swallow the error. do nothing
 		} else {
 			// fire error notification right here
 			NSDictionary * errorInfo = [theTask failUserInfo];
