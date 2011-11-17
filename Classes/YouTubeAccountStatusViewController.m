@@ -127,7 +127,7 @@
             if (NM_USER_YOUTUBE_LAST_SYNC > 0) {
                 cell.detailTextLabel.text = [fmt stringFromDate:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)NM_USER_YOUTUBE_LAST_SYNC]];
             } else {
-                cell.detailTextLabel.text = @"Synchronizing";
+                cell.detailTextLabel.text = @"Waiting for Server";
             }
 			break;
 		}	
