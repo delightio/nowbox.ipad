@@ -77,6 +77,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
+    [infoWaitTimer invalidate]; infoWaitTimer = nil;
     
     [splashView release];
     [slideInView release];
@@ -148,7 +149,7 @@
     [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:selectedCategoryIndexes]];
 }
 
-- (void)notifyVideosReady
+- (void)showProceedToChannelsButton
 {
     // Allow the user to proceed past the info step
     [UIView animateWithDuration:0.15 
@@ -159,9 +160,8 @@
                          [UIView animateWithDuration:0.15 
                                           animations:^{
                                               proceedToChannelsButton.alpha = 1;
-                             
-                         }];
-                     }];
+                                          }];
+                     }];    
 }
 
 - (void)updateSocialNetworkButtonTexts
@@ -194,6 +194,25 @@
     
     if (currentView && currentView == infoView) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+    }
+}
+
+- (void)infoWaitTimerFired
+{
+    infoWaitTimer = nil;
+    infoWaitTimerFired = YES;
+    
+    if (videosReady) {
+        [self showProceedToChannelsButton];
+    }
+}
+
+- (void)notifyVideosReady
+{
+    videosReady = YES;
+    
+    if (infoWaitTimerFired) {
+        [self showProceedToChannelsButton];
     }
 }
 
@@ -358,6 +377,9 @@
     if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
+    
+    [infoWaitTimer invalidate];
+    infoWaitTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(infoWaitTimerFired) userInfo:nil repeats:NO];
 }
 
 - (IBAction)switchToChannelsView:(id)sender
