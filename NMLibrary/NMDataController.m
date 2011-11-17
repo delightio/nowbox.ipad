@@ -744,6 +744,19 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 #pragma mark Video 
+- (NMVideo *)video:(NMVideo *)vid inChannel:(NMChannel *)chnObj {
+	if ( vid == nil || chnObj == nil ) return nil;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_id == %@", chnObj, vid.nm_id]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+    [request release];
+    
+	return [result count] ? [result objectAtIndex:0] : nil;
+}
+
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
 	NMVideo * dupVideo = [self insertNewVideo];
 	NMVideoDetail * dupDtl = [self insertNewVideoDetail];

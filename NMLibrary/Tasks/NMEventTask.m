@@ -219,7 +219,9 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		{
 			// get the video from Watch Later channel
 			//remove video to "watch later" channel
-			video.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
+			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.favoriteVideoChannel];
+			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
+//			video.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
 			// show/hide channel
@@ -242,7 +244,9 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventUnfavorite:
 		{
 			// remove video
-			video.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
+			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.favoriteVideoChannel];
+			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
+//			video.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
 			// show/hide channel
