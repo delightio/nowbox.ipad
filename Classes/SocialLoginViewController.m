@@ -176,7 +176,7 @@
 }
 
 - (void)handleChannelRefreshNotification:(NSNotification *)aNotification {
-	progressLabel.text = @"Verified Successfully";
+	progressLabel.text = @"Authorized Successfully";
 	[loadingIndicator stopAnimating];
 	if ( !appFirstLaunch ) {
 		[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
@@ -184,7 +184,7 @@
 }
 
 - (void)handleLoginFailNotification:(NSNotification *)aNotification {
-	progressLabel.text = @"Verification Process Failed";
+	progressLabel.text = @"Authorization Process Failed";
 	[loadingIndicator stopAnimating];
 	if ( loginType == NMLoginYouTubeType ) {
 		// show a longer error view
