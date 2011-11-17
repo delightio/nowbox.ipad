@@ -133,6 +133,16 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[managedObjectContext deleteObject:vid];
 	}
 	[request release];
+	
+	// delete videos without parent channel
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel = nil"]];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	for (NMVideo * vid in result) {
+		[managedObjectContext deleteObject:vid];
+	}
+	[request release];
 }
 
 - (void)resetAllChannelsPageNumber {

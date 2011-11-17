@@ -208,7 +208,6 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel sessionOnly:NO] + 1];
 			NSNumber * yesNum = [NSNumber numberWithBool:YES];
 			newVideo.nm_watch_later = yesNum;
-			[ctrl.myQueueChannel addVideosObject:newVideo];
 			// mark the flag
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_watch_later"];
 			// show/hide channel
@@ -221,6 +220,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			//remove video to "watch later" channel
 			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.myQueueChannel];
 			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
+			theVdo.channel = nil;
 //			video.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
@@ -246,6 +246,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			// remove video
 			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.favoriteVideoChannel];
 			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
+			theVdo.channel = nil;
 //			video.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
