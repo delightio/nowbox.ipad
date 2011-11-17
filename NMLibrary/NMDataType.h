@@ -32,9 +32,9 @@ typedef enum {
 	NMCommandVerifyYouTubeUser,
 	NMCommandDeauthorizeYoutubeUser,
 	NMCommandEditUserSettings,
+	NMCommandUserSynchronize,
 	NMCommandGetToken,
-	NMCommandTestToken,
-	NMCommandEditUser,
+//	NMCommandEditUser,
 	NMCommandPollUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
@@ -123,9 +123,9 @@ extern NSString * const NMDidFailRequestTokenNotification;
 extern NSString * const NMWillCreateUserNotification;
 extern NSString * const NMDidCreateUserNotification;
 extern NSString * const NMDidFailCreateUserNotification;
-extern NSString * const NMWillEditUserNotification;
-extern NSString * const NMDidEditUserNotification;
-extern NSString * const NMDidFailEditUserNotification;
+//extern NSString * const NMWillEditUserNotification;
+//extern NSString * const NMDidEditUserNotification;
+//extern NSString * const NMDidFailEditUserNotification;
 extern NSString * const NMWillVerifyUserNotification;
 extern NSString * const NMDidVerifyUserNotification;
 extern NSString * const NMDidFailVerifyUserNotification;
@@ -138,6 +138,9 @@ extern NSString * const NMDidFailEditUserSettingsNotification;
 extern NSString * const NMWillPollUserNotification;
 extern NSString * const NMDidPollUserNotification;
 extern NSString * const NMDidFailPollUserNotification;
+extern NSString * const NMWillSynchronizeUserNotification;
+extern NSString * const NMDidSynchronizeUserNotification;
+extern NSString * const NMDidFailSynchronizeUserNotification;
 
 // channel
 extern NSString * const NMWillGetChannelsNotification;

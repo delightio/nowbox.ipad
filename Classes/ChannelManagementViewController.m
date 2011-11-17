@@ -434,6 +434,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 				}
+				[thumbnailView cancelDownload];
 				thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
 			} else {
 				switch (indexPath.row) {
@@ -456,6 +457,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							detailLbl.text = @"Sign in to watch videos from people you follow on Twitter";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
+							[thumbnailView cancelDownload];
 							thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
 						}
 						break;
@@ -480,6 +482,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							detailLbl.text = @"Sign in to watch videos from your Facebook friends";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
+							[thumbnailView cancelDownload];
 							thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
 						}
 						break;
@@ -665,6 +668,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					if ( indexPath.row == 0 ) {
 						if ( NM_USER_TWITTER_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
+							channelDetailViewController.enableUnsubscribe = YES;
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
@@ -682,6 +686,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					} else if ( indexPath.row == 1 ) {
 						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
+							channelDetailViewController.enableUnsubscribe = YES;
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
@@ -1054,8 +1059,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		switch (tableIndexPath.section) {
 			case 0:
 				// YouTube
-				[nowboxTaskController issueDeauthorizeYouTube];
-				return;
+                if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
+                    [nowboxTaskController issueDeauthorizeYouTube];
+                } else {
+                    [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
+                }
+                return;
 				break;
 				
 			case 1:

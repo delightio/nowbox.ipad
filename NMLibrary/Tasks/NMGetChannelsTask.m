@@ -308,8 +308,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 					chnObj = [ctrl insertNewChannelForID:theKey];
 					[chnObj setValuesForKeysWithDictionary:chnDict];
 					if ( [catIDAy count] ) {
-						catObj = [ctrl categoryForID:[catIDAy objectAtIndex:0]];
-						[catObj addChannelsObject:chnObj];
+                        for (NSNumber *categoryId in catIDAy) {
+                            catObj = [ctrl categoryForID:categoryId];
+                            [catObj addChannelsObject:chnObj];                            
+                        }
 					}
 					// there's no need to set relationship with the existing channel objects.
 				} else if ( [chnObj.nm_id integerValue] == 0 ) {

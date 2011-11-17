@@ -106,6 +106,7 @@
 // channel detail
 - (NSArray *)previewsForChannel:(NMChannel *)chnObj;
 // video
+- (NMVideo *)video:(NMVideo *)vid inChannel:(NMChannel *)chnObj;
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;
 - (NMVideoDetail *)insertNewVideoDetail;

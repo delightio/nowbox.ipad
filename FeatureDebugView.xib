@@ -52,7 +52,7 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<int key="IBUIButtonType">1</int>
-						<string key="IBUINormalTitle">Reset Tooltip</string>
+						<string key="IBUINormalTitle">Sync Request</string>
 						<object class="NSColor" key="IBUIHighlightedTitleColor" id="440652087">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MQA</bytes>
@@ -252,12 +252,12 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">resetTooltip:</string>
+						<string key="label">syncRequest:</string>
 						<reference key="source" ref="152170958"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
-					<int key="connectionID">28</int>
+					<int key="connectionID">45</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -352,11 +352,6 @@
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">25</int>
-						<reference key="object" ref="152170958"/>
-						<reference key="parent" ref="191373211"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">26</int>
 						<reference key="object" ref="564784364"/>
 						<reference key="parent" ref="191373211"/>
@@ -384,6 +379,11 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">41</int>
 						<reference key="object" ref="84045625"/>
+						<reference key="parent" ref="191373211"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">25</int>
+						<reference key="object" ref="152170958"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
 				</object>
@@ -433,7 +433,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">44</int>
+			<int key="maxID">45</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -451,7 +451,7 @@
 							<string>getSubscribedChannels:</string>
 							<string>pollUserYouTube:</string>
 							<string>renewToken:</string>
-							<string>resetTooltip:</string>
+							<string>syncRequest:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -474,7 +474,7 @@
 							<string>getSubscribedChannels:</string>
 							<string>pollUserYouTube:</string>
 							<string>renewToken:</string>
-							<string>resetTooltip:</string>
+							<string>syncRequest:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -503,7 +503,7 @@
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
-								<string key="name">resetTooltip:</string>
+								<string key="name">syncRequest:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>

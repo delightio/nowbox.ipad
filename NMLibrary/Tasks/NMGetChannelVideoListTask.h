@@ -20,6 +20,7 @@
 	NSUInteger numberOfVideoAdded, totalNumberOfRows;
 	NSUInteger numberOfRowsFromServer;
 	NSUInteger currentPage;
+	BOOL isFavoriteChannel, isWatchLaterChannel;
 }
 
 @property (nonatomic, retain) NMChannel * channel;

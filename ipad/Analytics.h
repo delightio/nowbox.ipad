@@ -37,6 +37,7 @@
 #define AnalyticsEventEnterFullScreenChannelPanel @"Enter Full Screen Channel Panel"
 #define AnalyticsEventExitFullScreenChannelPanel @"Enter Full Screen Channel Panel"
 #define AnalyticsEventFavoriteVideo @"Favorite Video"
+#define AnalyticsEventUnfavoriteVideo @"Unfavorite Video"
 #define AnalyticsEventEnqueueVideo @"Enqueue Video"
 
 // Social events

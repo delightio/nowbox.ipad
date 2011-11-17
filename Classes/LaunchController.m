@@ -62,6 +62,7 @@
 	NM_USER_FACEBOOK_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	NM_USER_YOUTUBE_SYNC_ACTIVE = [userDefaults boolForKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
 	NM_USER_YOUTUBE_LAST_SYNC = [[userDefaults objectForKey:NM_USER_YOUTUBE_LAST_SYNC_KEY] unsignedIntegerValue];
+	NM_USER_YOUTUBE_SYNC_LAST_ISSUED = [[userDefaults objectForKey:NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY] unsignedIntegerValue];
 	
 	NM_VIDEO_QUALITY = [userDefaults integerForKey:NM_VIDEO_QUALITY_KEY];
 	NM_USER_YOUTUBE_USER_NAME = [[userDefaults stringForKey:NM_USER_YOUTUBE_USER_NAME_KEY] retain];
@@ -100,6 +101,7 @@
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)slideInVideoViewAnimated {
@@ -111,6 +113,7 @@
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)checkUpdateChannels {
@@ -129,6 +132,9 @@
 		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
 		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
 		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+			[[NMTaskQueueController sharedTaskQueueController] issueSyncRequest];
+		}
 	}
     
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
@@ -272,6 +278,7 @@
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
 	[resolutionVideoIndex addIndex:[vdo.nm_id unsignedIntegerValue]];
 	NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+    NSLog(@"resolved URL for %i, looking for %i", [vdo.nm_id unsignedIntegerValue], cIdx);
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
 		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
@@ -287,6 +294,7 @@
 		// store all indexes. the order of downloading video thumbnail is not guaranteed. need to check against all indexes downloaded. 
 		[thumbnailVideoIndex addIndex:[targetVdo.nm_id unsignedIntegerValue]];
 		NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+        NSLog(@"got thumbnail for %i, looking for %i", [targetVdo.nm_id unsignedIntegerValue], cIdx);
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
 			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
                 [onBoardProcessController notifyVideosReady];

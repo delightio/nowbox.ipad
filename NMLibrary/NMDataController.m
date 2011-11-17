@@ -133,6 +133,16 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[managedObjectContext deleteObject:vid];
 	}
 	[request release];
+	
+	// delete videos without parent channel
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel = nil"]];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	for (NMVideo * vid in result) {
+		[managedObjectContext deleteObject:vid];
+	}
+	[request release];
 }
 
 - (void)resetAllChannelsPageNumber {
@@ -178,7 +188,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (NSPredicate *)searchResultsPredicate {
 	if ( searchResultsPredicate == nil ) {
 		// create the predicate
-		searchResultsPredicate = [[NSPredicate predicateWithFormat:@"ANY categories == %@", self.internalSearchCategory] retain];
+		searchResultsPredicate = [[NSPredicate predicateWithFormat:@"ANY categories == %@ && nm_id != 0", self.internalSearchCategory] retain];
 	}
 	return searchResultsPredicate;
 }
@@ -744,6 +754,19 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 #pragma mark Video 
+- (NMVideo *)video:(NMVideo *)vid inChannel:(NMChannel *)chnObj {
+	if ( vid == nil || chnObj == nil ) return nil;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_id == %@", chnObj, vid.nm_id]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+    [request release];
+    
+	return [result count] ? [result objectAtIndex:0] : nil;
+}
+
 - (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
 	NMVideo * dupVideo = [self insertNewVideo];
 	NMVideoDetail * dupDtl = [self insertNewVideoDetail];

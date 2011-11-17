@@ -77,6 +77,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
+    [infoWaitTimer invalidate]; infoWaitTimer = nil;
     
     [splashView release];
     [slideInView release];
@@ -148,8 +149,9 @@
     [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:selectedCategoryIndexes]];
 }
 
-- (void)notifyVideosReady
+- (void)showProceedToChannelsButton
 {
+    NSLog(@"Onboard process continuing");
     // Allow the user to proceed past the info step
     [UIView animateWithDuration:0.15 
                      animations:^{
@@ -159,9 +161,8 @@
                          [UIView animateWithDuration:0.15 
                                           animations:^{
                                               proceedToChannelsButton.alpha = 1;
-                             
-                         }];
-                     }];
+                                          }];
+                     }];    
 }
 
 - (void)updateSocialNetworkButtonTexts
@@ -197,6 +198,27 @@
     }
 }
 
+- (void)infoWaitTimerFired
+{
+    NSLog(@"Wait timer ready for onboard process to continue");
+    infoWaitTimer = nil;
+    infoWaitTimerFired = YES;
+    
+    if (videosReady) {
+        [self showProceedToChannelsButton];
+    }
+}
+
+- (void)notifyVideosReady
+{
+    NSLog(@"Videos ready for onboard process to continue");
+    videosReady = YES;
+    
+    if (infoWaitTimerFired) {
+        [self showProceedToChannelsButton];
+    }
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -217,7 +239,7 @@
     self.featuredCategories = [categories sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
     [sorter release];
     [categoryGrid reloadData];
-        
+    
     // Have we already synced some services? (Probably only applicable for debugging)
     youtubeSynced = NM_USER_YOUTUBE_SYNC_ACTIVE;
     [self updateSocialNetworkButtonTexts];
@@ -339,7 +361,6 @@
 - (IBAction)switchToCategoriesView:(id)sender
 {
     [self transitionFromView:splashView toView:categoriesView];
-    self.splashView = nil;
 }
 
 - (IBAction)switchToSocialView:(id)sender
@@ -349,19 +370,19 @@
     if ([selectedCategoryIndexes count] > 0) {
         [self subscribeToSelectedCategories];
     }
-    
-    self.categoriesView = nil;
 }
 
 - (IBAction)switchToInfoView:(id)sender
 {
     [self transitionFromView:socialView toView:infoView];
-    self.socialView = nil;
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
     if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
+    
+    [infoWaitTimer invalidate];
+    infoWaitTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(infoWaitTimerFired) userInfo:nil repeats:NO];
 }
 
 - (IBAction)switchToChannelsView:(id)sender
@@ -370,7 +391,6 @@
     [nc removeObserver:self name:NMDidSubscribeChannelNotification object:nil];
     
     [self transitionFromView:infoView toView:channelsView];
-    self.infoView = nil;
 }
 
 - (IBAction)switchToPlaybackView:(id)sender
@@ -389,7 +409,14 @@
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSInteger sid = [userDefaults integerForKey:NM_SESSION_ID_KEY] + 1;
         [[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+        
+        // Save user ID and more
         [userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
+		[userDefaults setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+		[userDefaults setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+		[userDefaults setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+		[userDefaults setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+        [userDefaults synchronize];
         
         if ([selectedCategoryIndexes count] > 0) {
             [UIView animateWithDuration:0.3 animations:^{
@@ -401,14 +428,23 @@
         [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
         [[MixpanelAPI sharedAPI] track:@"$born"];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
+        
     }
 }
 
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
 {
     NSArray *featuredChannels = [[aNotification userInfo] objectForKey:@"channels"];
-    self.subscribingChannels = [NSMutableSet setWithArray:featuredChannels];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribeChannels:featuredChannels];    
+    
+    if ([featuredChannels count] > 0) {
+        self.subscribingChannels = [NSMutableSet setWithArray:featuredChannels];
+        [[NMTaskQueueController sharedTaskQueueController] issueSubscribeChannels:featuredChannels];    
+    } else {
+        // Skip to next step
+        if (currentView && currentView == infoView && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+        }
+    }
 }
 
 - (void)handleDidSubscribeNotification:(NSNotification *)aNotification 
@@ -426,11 +462,11 @@
 
 - (NSString *)reasonForChannel:(NMChannel *)channel
 {
-/*    // Is the channel from the user's YouTube account?
-    NMCategory *youtubeCategory = [[[NMTaskQueueController sharedTaskQueueController] dataController] internalYouTubeCategory];
-    if ([youtubeCategory.channels containsObject:channel]) {
-        return @"from YouTube account";
-    }*/
+    if (channel == [[NMTaskQueueController sharedTaskQueueController].dataController userFacebookStreamChannel]) {
+        return @"Facebook channel";
+    } else if (channel == [[NMTaskQueueController sharedTaskQueueController].dataController userTwitterStreamChannel]) {
+        return @"Twitter channel";
+    }
     
     // Is the channel part of a category the user selected?
     NSArray *selectedCategories = [featuredCategories objectsAtIndexes:selectedCategoryIndexes];    
@@ -452,6 +488,9 @@
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
     [channelsScrollView reloadData];      
+    
+    // Set shadow alpha
+    [self scrollViewDidScroll:channelsScrollView];
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
@@ -478,7 +517,7 @@
 
 - (void)handleDidFailVerifyUserNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we were unable to connect your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry. Please note we only support YouTube accounts right now." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alertView show];
     [alertView release];
     [self dismissSocialLogin:nil];    
@@ -489,7 +528,7 @@
     youtubeSynced = YES;
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     
-    if (currentView == infoView) {
+    if (currentView && currentView == infoView) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
 }

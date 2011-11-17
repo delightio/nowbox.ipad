@@ -44,6 +44,32 @@
 	[super dealloc];
 }
 
+- (void)configureView {
+    [self setPreviewImages];
+	if ( [descriptionLabel.text isEqualToString:@""] ) {
+		[self setDescriptionLabelText];
+	}
+    
+    if ([channel.nm_subscribed intValue] <= 0) {
+        // Not subscribed
+        NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
+        [UIView animateWithDuration:0.25f 
+						 animations:^{
+                             if ([channel.populated_at timeIntervalSince1970] <= 0 && [vdoThumbnails count] == 0) {
+                                 // Not populated
+                                 unpopulatedMessageView.alpha = 1;
+                                 subscribeView.alpha = 0;
+                                 unsubscribeView.alpha = 0;            
+                             } else {
+                                 // Populated
+                                 unpopulatedMessageView.alpha = 0;
+                                 subscribeView.alpha = 1;
+                                 unsubscribeView.alpha = 0; 
+                             }
+                         }];
+    }
+}
+
 #pragma mark - View lifecycle
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -58,7 +84,7 @@
 	containerView.backgroundColor = bgColor;
 	// button
 	[subscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
-	[subscribeUnpopulatedButton setBackgroundImage:[[UIImage imageNamed:@"button-gray-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
+	[subscribeUnpopulatedButton setBackgroundImage:[[UIImage imageNamed:@"button-yellow-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	[subscribeAndWatchButton setBackgroundImage:[[UIImage imageNamed:@"button-yellow-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	[unsubscribeButton setBackgroundImage:[[UIImage imageNamed:@"button-red-background"] stretchableImageWithLeftCapWidth:7 topCapHeight:0] forState:UIControlStateNormal];
 	// listen to notification
@@ -137,7 +163,11 @@
 	[channelThumbnailView setImageForChannel:channel];
 	// load channel detail    
     NMTaskQueueController *taskQueueController = [NMTaskQueueController sharedTaskQueueController];
-    [taskQueueController issueGetDetailForChannel:channel];
+    if ([channel.nm_id integerValue] == 0) {
+        [self configureView];
+    } else {
+        [taskQueueController issueGetDetailForChannel:channel];
+    }
 
     BOOL social = (channel == taskQueueController.dataController.userFacebookStreamChannel 
                    || channel == taskQueueController.dataController.userTwitterStreamChannel); 
@@ -183,30 +213,7 @@
 	NMChannel * targetChn = [[aNotification userInfo] objectForKey:@"channel"];
 	// do not proceed if not the same channel object as the current one.
 	if ( targetChn != channel ) return;
-
-	[self setPreviewImages];
-	if ( [descriptionLabel.text isEqualToString:@""] ) {
-		[self setDescriptionLabelText];
-	}
-        
-    if ([channel.nm_subscribed intValue] <= 0) {
-        // Not subscribed
-        NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
-        [UIView animateWithDuration:0.25f 
-						 animations:^{
-                            if ([channel.populated_at timeIntervalSince1970] <= 0 && [vdoThumbnails count] == 0) {
-                                // Not populated
-                                unpopulatedMessageView.alpha = 1;
-                                subscribeView.alpha = 0;
-                                unsubscribeView.alpha = 0;            
-                            } else {
-                                // Populated
-                                unpopulatedMessageView.alpha = 0;
-                                subscribeView.alpha = 1;
-                                unsubscribeView.alpha = 0; 
-                            }
-                         }];
-    }
+    [self configureView];
 }
 
 - (void)handleDidFailNotification:(NSNotification *)aNotification {
@@ -359,7 +366,9 @@
                              }
                          }
                          completion:^(BOOL finished) {
-                             if ( shouldDismiss && [[NMTaskQueueController sharedTaskQueueController].dataController channelContainsVideo:channel] ) {
+							 if ( [channel.type integerValue] == NMChannelUserTwitterType || [channel.type integerValue] == NMChannelUserFacebookType ) {
+								 [self.navigationController popViewControllerAnimated:YES];
+							 } else if ( shouldDismiss && [[NMTaskQueueController sharedTaskQueueController].dataController channelContainsVideo:channel] ) {
 								 [[NSNotificationCenter defaultCenter] postNotificationName:NMShouldPlayNewlySubscribedChannelNotification object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", nil]];
 								 [self dismissModalViewControllerAnimated:YES];
                              }

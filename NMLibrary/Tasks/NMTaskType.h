@@ -24,3 +24,4 @@
 #import "NMPostSharingTask.h"
 #import "NMPollUserTask.h"
 #import "NMDeauthorizeUserTask.h"
+#import "NMUserSynchronizeTask.h"

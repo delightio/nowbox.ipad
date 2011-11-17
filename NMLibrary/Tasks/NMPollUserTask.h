@@ -14,8 +14,6 @@
  Poll the server for readiness of a channel. This mainly serves for stream and keyword channels
  */
 
-@interface NMPollUserTask : NMTask {
-	BOOL accountSynced;
-}
+@interface NMPollUserTask : NMTask
 
 @end
