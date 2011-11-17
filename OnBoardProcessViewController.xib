@@ -140,7 +140,7 @@
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MSAwAA</bytes>
-									<object class="NSColorSpace" key="NSCustomColorSpace" id="11583667">
+									<object class="NSColorSpace" key="NSCustomColorSpace" id="1002482242">
 										<int key="NSID">2</int>
 									</object>
 								</object>
@@ -360,13 +360,13 @@
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
-						<object class="IBUIFontDescription" key="IBUIFontDescription" id="276352455">
+						<object class="IBUIFontDescription" key="IBUIFontDescription" id="403396973">
 							<string key="name">Georgia-Italic</string>
 							<string key="family">Georgia</string>
 							<int key="traits">1</int>
 							<double key="pointSize">15</double>
 						</object>
-						<object class="NSFont" key="IBUIFont" id="192618959">
+						<object class="NSFont" key="IBUIFont" id="1068365468">
 							<string key="NSName">Georgia-Italic</string>
 							<double key="NSSize">15</double>
 							<int key="NSfFlags">16</int>
@@ -855,17 +855,17 @@
 						<reference key="IBUIFontDescription" ref="1017444045"/>
 						<reference key="IBUIFont" ref="404655974"/>
 					</object>
-					<object class="IBUIView" id="464367399">
+					<object class="IBUIView" id="704116456">
 						<reference key="NSNextResponder" ref="93123308"/>
 						<int key="NSvFlags">289</int>
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="IBUIButton" id="288046866">
-								<reference key="NSNextResponder" ref="464367399"/>
+								<reference key="NSNextResponder" ref="704116456"/>
 								<int key="NSvFlags">289</int>
 								<string key="NSFrameSize">{235, 61}</string>
-								<reference key="NSSuperview" ref="464367399"/>
+								<reference key="NSSuperview" ref="704116456"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="579303596"/>
+								<reference key="NSNextKeyView" ref="993590885"/>
 								<string key="NSReuseIdentifierKey">_NS:241</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -877,7 +877,7 @@
 								<double key="IBUIContentEdgeInsets.bottom">0.0</double>
 								<double key="IBUIContentEdgeInsets.left">32</double>
 								<double key="IBUIContentEdgeInsets.right">0.0</double>
-								<string key="IBUINormalTitle">setting up your channels...</string>
+								<string key="IBUINormalTitle">Setting up your channels...</string>
 								<reference key="IBUIHighlightedTitleColor" ref="911806604"/>
 								<reference key="IBUINormalTitleColor" ref="500548339"/>
 								<reference key="IBUINormalTitleShadowColor" ref="951357013"/>
@@ -885,14 +885,14 @@
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">onboard-button-settingup.png</string>
 								</object>
-								<reference key="IBUIFontDescription" ref="276352455"/>
-								<reference key="IBUIFont" ref="192618959"/>
+								<reference key="IBUIFontDescription" ref="403396973"/>
+								<reference key="IBUIFont" ref="1068365468"/>
 							</object>
-							<object class="IBUIActivityIndicatorView" id="579303596">
-								<reference key="NSNextResponder" ref="464367399"/>
+							<object class="IBUIActivityIndicatorView" id="993590885">
+								<reference key="NSNextResponder" ref="704116456"/>
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{14, 21}, {20, 20}}</string>
-								<reference key="NSSuperview" ref="464367399"/>
+								<reference key="NSSuperview" ref="704116456"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="771085805"/>
 								<string key="NSReuseIdentifierKey">_NS:1062</string>
@@ -910,7 +910,7 @@
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MSAwAA</bytes>
-							<reference key="NSCustomColorSpace" ref="11583667"/>
+							<reference key="NSCustomColorSpace" ref="1002482242"/>
 						</object>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 					</object>
@@ -920,7 +920,7 @@
 						<string key="NSFrame">{{91, 256}, {842, 375}}</string>
 						<reference key="NSSuperview" ref="93123308"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="464367399"/>
+						<reference key="NSNextKeyView" ref="704116456"/>
 						<string key="NSReuseIdentifierKey">_NS:569</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -1051,8 +1051,8 @@
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
-						<reference key="IBUIFontDescription" ref="276352455"/>
-						<reference key="IBUIFont" ref="192618959"/>
+						<reference key="IBUIFontDescription" ref="403396973"/>
+						<reference key="IBUIFont" ref="1068365468"/>
 					</object>
 					<object class="IBUIImageView" id="1632346">
 						<reference key="NSNextResponder" ref="486635400"/>
@@ -1297,7 +1297,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">settingUpView</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="464367399"/>
+						<reference key="destination" ref="704116456"/>
 					</object>
 					<int key="connectionID">150</int>
 				</object>
@@ -1447,7 +1447,7 @@
 							<reference ref="771085805"/>
 							<reference ref="699199443"/>
 							<reference ref="315407346"/>
-							<reference ref="464367399"/>
+							<reference ref="704116456"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Step 3 - Info</string>
@@ -1769,23 +1769,23 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">149</int>
-						<reference key="object" ref="464367399"/>
+						<reference key="object" ref="704116456"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="288046866"/>
-							<reference ref="579303596"/>
+							<reference ref="993590885"/>
 						</array>
 						<reference key="parent" ref="93123308"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">133</int>
 						<reference key="object" ref="288046866"/>
-						<reference key="parent" ref="464367399"/>
+						<reference key="parent" ref="704116456"/>
 						<string key="objectName">Setting Up Your Channels</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">148</int>
-						<reference key="object" ref="579303596"/>
-						<reference key="parent" ref="464367399"/>
+						<reference key="object" ref="993590885"/>
+						<reference key="parent" ref="704116456"/>
 					</object>
 				</array>
 			</object>
