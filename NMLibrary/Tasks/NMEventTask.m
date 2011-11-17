@@ -219,8 +219,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		{
 			// get the video from Watch Later channel
 			//remove video to "watch later" channel
-			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.favoriteVideoChannel];
-			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
+			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.myQueueChannel];
+			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
 //			video.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
 			// update the original video object
 			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
