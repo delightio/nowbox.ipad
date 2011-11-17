@@ -15,8 +15,8 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define kMaxTwitterCharacters 119
-#define kDefaultFacebookText @"Watch \"%@\""
-#define kDefaultTwitterText @"Watch \"%@\" on @NOWBOX"
+#define kDefaultFacebookText @"Watching \"%@\""
+#define kDefaultTwitterText @"Watching \"%@\" on @NOWBOX"
 
 @implementation ShareViewController
 
