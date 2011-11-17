@@ -424,8 +424,16 @@
 - (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification
 {
     NSArray *featuredChannels = [[aNotification userInfo] objectForKey:@"channels"];
-    self.subscribingChannels = [NSMutableSet setWithArray:featuredChannels];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribeChannels:featuredChannels];    
+    
+    if ([featuredChannels count] > 0) {
+        self.subscribingChannels = [NSMutableSet setWithArray:featuredChannels];
+        [[NMTaskQueueController sharedTaskQueueController] issueSubscribeChannels:featuredChannels];    
+    } else {
+        // Skip to next step
+        if (currentView && currentView == infoView && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+        }
+    }
 }
 
 - (void)handleDidSubscribeNotification:(NSNotification *)aNotification 
