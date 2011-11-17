@@ -1507,7 +1507,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Pipely Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pipely Inc.";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1515,17 +1516,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					MIXPANEL_PROD,
-					DEBUG_PLAYER_NAVIGATION,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = MIXPANEL_PROD;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "4E396524-91D3-4E9B-B653-C8BAB6B0F0A2";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4E396524-91D3-4E9B-B653-C8BAB6B0F0A2";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1585,10 +1584,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_PLAYER_NAVIGATION,
-					DEBUG_USE_STAGING_SERVER,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1605,6 +1601,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Pipely Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pipely Inc.";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1612,16 +1610,15 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					MIXPANEL_PROD,
-					DEBUG_PLAYER_NAVIGATION,
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = MIXPANEL_PROD;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "B7FE21AC-E38B-4242-B585-9368E881A8B5";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B7FE21AC-E38B-4242-B585-9368E881A8B5";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
