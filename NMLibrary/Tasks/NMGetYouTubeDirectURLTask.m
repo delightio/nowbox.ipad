@@ -104,12 +104,17 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
-	if ( directURLString == nil && directSDURLString == nil ) {
+	NSUInteger dlen, dsdlen;
+	dlen = [directURLString length];
+	dsdlen = [directSDURLString length];
+	if ( dlen == 0 && dsdlen == 0 ) {
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
 		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate any video stream", @"reason", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", video, @"target_object", nil];
-	} else if ( directURLString == nil && directSDURLString ) {
+	} else if ( dlen == 0 && dsdlen ) {
 		self.directURLString = directSDURLString;
+	} else if ( dlen && dsdlen == 0 ) {
+		self.directSDURLString = directURLString;
 	}
 	/*} else {
 		if ( httpStatusCode >= 400 && httpStatusCode < 500 ) {
@@ -184,6 +189,9 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"resolved URL for %@: %@", self.targetID, [directURLString length] ? @"Y" : [NSString stringWithFormat:@"N - %d", encountersErrorDuringProcessing]);
+	if ( [directURLString length] == 0 ) {
+		NSLog(@"video is f up");
+	}
 #endif
 }
 
