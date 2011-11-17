@@ -77,6 +77,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
+    [infoWaitTimer invalidate]; infoWaitTimer = nil;
     
     [splashView release];
     [slideInView release];
@@ -148,7 +149,7 @@
     [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[featuredCategories objectsAtIndexes:selectedCategoryIndexes]];
 }
 
-- (void)notifyVideosReady
+- (void)showProceedToChannelsButton
 {
     // Allow the user to proceed past the info step
     [UIView animateWithDuration:0.15 
@@ -159,9 +160,8 @@
                          [UIView animateWithDuration:0.15 
                                           animations:^{
                                               proceedToChannelsButton.alpha = 1;
-                             
-                         }];
-                     }];
+                                          }];
+                     }];    
 }
 
 - (void)updateSocialNetworkButtonTexts
@@ -197,6 +197,25 @@
     }
 }
 
+- (void)infoWaitTimerFired
+{
+    infoWaitTimer = nil;
+    infoWaitTimerFired = YES;
+    
+    if (videosReady) {
+        [self showProceedToChannelsButton];
+    }
+}
+
+- (void)notifyVideosReady
+{
+    videosReady = YES;
+    
+    if (infoWaitTimerFired) {
+        [self showProceedToChannelsButton];
+    }
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -217,7 +236,7 @@
     self.featuredCategories = [categories sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
     [sorter release];
     [categoryGrid reloadData];
-        
+    
     // Have we already synced some services? (Probably only applicable for debugging)
     youtubeSynced = NM_USER_YOUTUBE_SYNC_ACTIVE;
     [self updateSocialNetworkButtonTexts];
@@ -339,7 +358,6 @@
 - (IBAction)switchToCategoriesView:(id)sender
 {
     [self transitionFromView:splashView toView:categoriesView];
-    self.splashView = nil;
 }
 
 - (IBAction)switchToSocialView:(id)sender
@@ -349,19 +367,19 @@
     if ([selectedCategoryIndexes count] > 0) {
         [self subscribeToSelectedCategories];
     }
-    
-    self.categoriesView = nil;
 }
 
 - (IBAction)switchToInfoView:(id)sender
 {
     [self transitionFromView:socialView toView:infoView];
-    self.socialView = nil;
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
     if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
+    
+    [infoWaitTimer invalidate];
+    infoWaitTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(infoWaitTimerFired) userInfo:nil repeats:NO];
 }
 
 - (IBAction)switchToChannelsView:(id)sender
@@ -370,7 +388,6 @@
     [nc removeObserver:self name:NMDidSubscribeChannelNotification object:nil];
     
     [self transitionFromView:infoView toView:channelsView];
-    self.infoView = nil;
 }
 
 - (IBAction)switchToPlaybackView:(id)sender
@@ -452,6 +469,9 @@
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
     [channelsScrollView reloadData];      
+    
+    // Set shadow alpha
+    [self scrollViewDidScroll:channelsScrollView];
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
@@ -489,7 +509,7 @@
     youtubeSynced = YES;
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     
-    if (currentView == infoView) {
+    if (currentView && currentView == infoView) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
 }

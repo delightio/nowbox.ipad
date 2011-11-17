@@ -11,12 +11,13 @@
 			<string key="NS.object.0">933</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
-			<string>IBUILabel</string>
-			<string>IBUIButton</string>
-			<string>IBUIImageView</string>
 			<string>IBUIView</string>
-			<string>IBUIScrollView</string>
+			<string>IBUIImageView</string>
+			<string>IBUILabel</string>
 			<string>IBProxyObject</string>
+			<string>IBUIActivityIndicatorView</string>
+			<string>IBUIScrollView</string>
+			<string>IBUIButton</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -139,7 +140,7 @@
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MSAwAA</bytes>
-									<object class="NSColorSpace" key="NSCustomColorSpace">
+									<object class="NSColorSpace" key="NSCustomColorSpace" id="11583667">
 										<int key="NSID">2</int>
 									</object>
 								</object>
@@ -336,7 +337,7 @@
 					</object>
 					<object class="IBUILabel" id="472344070">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">290</int>
 						<string key="NSFrame">{{90, 668}, {845, 60}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
@@ -359,15 +360,15 @@
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
+						<object class="IBUIFontDescription" key="IBUIFontDescription" id="276352455">
 							<string key="name">Georgia-Italic</string>
 							<string key="family">Georgia</string>
 							<int key="traits">1</int>
-							<double key="pointSize">14</double>
+							<double key="pointSize">15</double>
 						</object>
-						<object class="NSFont" key="IBUIFont">
+						<object class="NSFont" key="IBUIFont" id="192618959">
 							<string key="NSName">Georgia-Italic</string>
-							<double key="NSSize">14</double>
+							<double key="NSSize">15</double>
 							<int key="NSfFlags">16</int>
 						</object>
 					</object>
@@ -775,7 +776,7 @@
 						<string key="NSFrame">{{89, 665}, {845, 2}}</string>
 						<reference key="NSSuperview" ref="796525060"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="841432142"/>
 						<string key="NSReuseIdentifierKey">_NS:569</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -784,7 +785,7 @@
 					<object class="IBUIImageView" id="841432142">
 						<reference key="NSNextResponder" ref="796525060"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{85, 685}, {755, 32}}</string>
+						<string key="NSFrame">{{62, 685}, {803, 39}}</string>
 						<reference key="NSSuperview" ref="796525060"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -854,47 +855,72 @@
 						<reference key="IBUIFontDescription" ref="1017444045"/>
 						<reference key="IBUIFont" ref="404655974"/>
 					</object>
-					<object class="IBUIButton" id="288046866">
+					<object class="IBUIView" id="464367399">
 						<reference key="NSNextResponder" ref="93123308"/>
 						<int key="NSvFlags">289</int>
+						<array class="NSMutableArray" key="NSSubviews">
+							<object class="IBUIButton" id="288046866">
+								<reference key="NSNextResponder" ref="464367399"/>
+								<int key="NSvFlags">289</int>
+								<string key="NSFrameSize">{235, 61}</string>
+								<reference key="NSSuperview" ref="464367399"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="579303596"/>
+								<string key="NSReuseIdentifierKey">_NS:241</string>
+								<bool key="IBUIOpaque">NO</bool>
+								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<bool key="IBUIEnabled">NO</bool>
+								<int key="IBUIContentHorizontalAlignment">0</int>
+								<int key="IBUIContentVerticalAlignment">0</int>
+								<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
+								<double key="IBUIContentEdgeInsets.top">0.0</double>
+								<double key="IBUIContentEdgeInsets.bottom">0.0</double>
+								<double key="IBUIContentEdgeInsets.left">32</double>
+								<double key="IBUIContentEdgeInsets.right">0.0</double>
+								<string key="IBUINormalTitle">setting up your channels...</string>
+								<reference key="IBUIHighlightedTitleColor" ref="911806604"/>
+								<reference key="IBUINormalTitleColor" ref="500548339"/>
+								<reference key="IBUINormalTitleShadowColor" ref="951357013"/>
+								<object class="NSCustomResource" key="IBUINormalBackgroundImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">onboard-button-settingup.png</string>
+								</object>
+								<reference key="IBUIFontDescription" ref="276352455"/>
+								<reference key="IBUIFont" ref="192618959"/>
+							</object>
+							<object class="IBUIActivityIndicatorView" id="579303596">
+								<reference key="NSNextResponder" ref="464367399"/>
+								<int key="NSvFlags">292</int>
+								<string key="NSFrame">{{14, 21}, {20, 20}}</string>
+								<reference key="NSSuperview" ref="464367399"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="771085805"/>
+								<string key="NSReuseIdentifierKey">_NS:1062</string>
+								<bool key="IBUIOpaque">NO</bool>
+								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<bool key="IBUIHidesWhenStopped">NO</bool>
+								<bool key="IBUIAnimating">YES</bool>
+							</object>
+						</array>
 						<string key="NSFrame">{{754, 23}, {235, 61}}</string>
 						<reference key="NSSuperview" ref="93123308"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="771085805"/>
-						<string key="NSReuseIdentifierKey">_NS:241</string>
-						<bool key="IBUIOpaque">NO</bool>
+						<reference key="NSNextKeyView"/>
+						<string key="NSReuseIdentifierKey">_NS:212</string>
+						<object class="NSColor" key="IBUIBackgroundColor">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MSAwAA</bytes>
+							<reference key="NSCustomColorSpace" ref="11583667"/>
+						</object>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-						<bool key="IBUIEnabled">NO</bool>
-						<int key="IBUIContentHorizontalAlignment">0</int>
-						<int key="IBUIContentVerticalAlignment">0</int>
-						<bool key="IBUIAdjustsImageWhenDisabled">NO</bool>
-						<string key="IBUINormalTitle">setting up your channels...</string>
-						<reference key="IBUIHighlightedTitleColor" ref="911806604"/>
-						<reference key="IBUINormalTitleColor" ref="500548339"/>
-						<reference key="IBUINormalTitleShadowColor" ref="951357013"/>
-						<object class="NSCustomResource" key="IBUINormalBackgroundImage">
-							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">onboard-button-settingup.png</string>
-						</object>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
-							<string key="name">Georgia-Italic</string>
-							<string key="family">Georgia</string>
-							<int key="traits">1</int>
-							<double key="pointSize">15</double>
-						</object>
-						<object class="NSFont" key="IBUIFont">
-							<string key="NSName">Georgia-Italic</string>
-							<double key="NSSize">15</double>
-							<int key="NSfFlags">16</int>
-						</object>
 					</object>
 					<object class="IBUIImageView" id="699199443">
 						<reference key="NSNextResponder" ref="93123308"/>
 						<int key="NSvFlags">293</int>
-						<string key="NSFrame">{{91, 258}, {843, 370}}</string>
+						<string key="NSFrame">{{91, 256}, {842, 375}}</string>
 						<reference key="NSSuperview" ref="93123308"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
+						<reference key="NSNextKeyView" ref="464367399"/>
 						<string key="NSReuseIdentifierKey">_NS:569</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -1003,7 +1029,7 @@
 					<object class="IBUILabel" id="402969252">
 						<reference key="NSNextResponder" ref="486635400"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{20, 668}, {933, 60}}</string>
+						<string key="NSFrame">{{8, 668}, {933, 60}}</string>
 						<reference key="NSSuperview" ref="486635400"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1632346"/>
@@ -1025,22 +1051,13 @@
 						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
-						<object class="IBUIFontDescription" key="IBUIFontDescription">
-							<string key="name">Georgia-Italic</string>
-							<string key="family">Georgia</string>
-							<int key="traits">1</int>
-							<double key="pointSize">13</double>
-						</object>
-						<object class="NSFont" key="IBUIFont">
-							<string key="NSName">Georgia-Italic</string>
-							<double key="NSSize">13</double>
-							<int key="NSfFlags">16</int>
-						</object>
+						<reference key="IBUIFontDescription" ref="276352455"/>
+						<reference key="IBUIFont" ref="192618959"/>
 					</object>
 					<object class="IBUIImageView" id="1632346">
 						<reference key="NSNextResponder" ref="486635400"/>
 						<int key="NSvFlags">268</int>
-						<string key="NSFrame">{{647, 674}, {48, 58}}</string>
+						<string key="NSFrame">{{658, 674}, {48, 58}}</string>
 						<reference key="NSSuperview" ref="486635400"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -1254,14 +1271,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">settingUpView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="288046866"/>
-					</object>
-					<int key="connectionID">134</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">slideInView</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="268560661"/>
@@ -1283,6 +1292,14 @@
 						<reference key="destination" ref="649135517"/>
 					</object>
 					<int key="connectionID">145</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">settingUpView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="464367399"/>
+					</object>
+					<int key="connectionID">150</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -1429,8 +1446,8 @@
 						<array class="NSMutableArray" key="children">
 							<reference ref="771085805"/>
 							<reference ref="699199443"/>
-							<reference ref="288046866"/>
 							<reference ref="315407346"/>
+							<reference ref="464367399"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Step 3 - Info</string>
@@ -1694,12 +1711,6 @@
 						<reference key="parent" ref="93123308"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">133</int>
-						<reference key="object" ref="288046866"/>
-						<reference key="parent" ref="93123308"/>
-						<string key="objectName">Setting Up Your Channels</string>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">135</int>
 						<reference key="object" ref="58400623"/>
 						<reference key="parent" ref="486635400"/>
@@ -1756,6 +1767,26 @@
 						<reference key="parent" ref="796525060"/>
 						<string key="objectName">Footer Image</string>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">149</int>
+						<reference key="object" ref="464367399"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="288046866"/>
+							<reference ref="579303596"/>
+						</array>
+						<reference key="parent" ref="93123308"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">133</int>
+						<reference key="object" ref="288046866"/>
+						<reference key="parent" ref="464367399"/>
+						<string key="objectName">Setting Up Your Channels</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">148</int>
+						<reference key="object" ref="579303596"/>
+						<reference key="parent" ref="464367399"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -1794,6 +1825,8 @@
 				<string key="142.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="143.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="146.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="148.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="149.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="18.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="23.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<real value="1" key="23.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
@@ -1830,7 +1863,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">146</int>
+			<int key="maxID">150</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2007,10 +2040,10 @@
 			<string key="onboard-divider-shadow-down.png">{814, 14}</string>
 			<string key="onboard-divider-shadow-up.png">{814, 14}</string>
 			<string key="onboard-divider.png">{845, 2}</string>
-			<string key="onboard-nowbox-is.png">{843, 369}</string>
+			<string key="onboard-nowbox-is.png">{842, 375}</string>
 			<string key="onboard-nowbox-logo.png">{132, 18}</string>
 			<string key="onboard-social-facebook.png">{234, 234}</string>
-			<string key="onboard-social-footer.png">{755, 32}</string>
+			<string key="onboard-social-footer.png">{803, 39}</string>
 			<string key="onboard-social-twitter.png">{234, 234}</string>
 			<string key="onboard-social-youtube.png">{234, 234}</string>
 			<string key="onboard-splash-button.png">{69, 68}</string>

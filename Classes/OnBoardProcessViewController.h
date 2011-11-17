@@ -14,8 +14,16 @@
 
 @interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {    
     UIView *currentView;    
+    
+    // YouTube sync can take ages. Have a timeout while waiting for the compare channels notification.
     NSTimer *youtubeTimeoutTimer;
+    
+    // Force user to wait at info page at least a few seconds
+    NSTimer *infoWaitTimer;
+    
     BOOL youtubeSynced;
+    BOOL infoWaitTimerFired;
+    BOOL videosReady;
     BOOL userCreated;
     BOOL alertShowing;
     

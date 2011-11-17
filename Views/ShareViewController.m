@@ -15,8 +15,8 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define kMaxTwitterCharacters 119
-#define kDefaultFacebookText @"Watch \"%@\""
-#define kDefaultTwitterText @"Watch \"%@\" on @NOWBOX"
+#define kDefaultFacebookText @"Watching \"%@\""
+#define kDefaultTwitterText @"Watching \"%@\" on @NOWBOX"
 
 @implementation ShareViewController
 
@@ -40,8 +40,6 @@
         self.video = aVideo;
         self.duration = aDuration;
         self.elapsedSeconds = anElapsedSeconds;
-        
-        [self setContentSizeForViewInPopover:CGSizeMake(500, 200)];
         
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
@@ -104,6 +102,7 @@
     progressView.layer.cornerRadius = 15.0;
     progressView.layer.masksToBounds = NO;
     
+    [self textViewDidChange:messageText];
     [messageText becomeFirstResponder];
     
     UIFont *condensedFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f];
@@ -117,19 +116,34 @@
 	[super viewWillAppear:animated];
 	if (!viewPushedByNavigationController) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
-		viewPushedByNavigationController = YES;
-	}
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    [self textViewDidChange:messageText];
-    
+        
     if (autoPost) {
         [self shareButtonPressed:nil];
         autoPost = NO;
+    }
+    
+    if (!viewPushedByNavigationController) {
+        viewPushedByNavigationController = YES;
+    } else {
+        [UIView animateWithDuration:0.3
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
+                             UIView *superview = self.navigationController.view.superview;
+                             superview.bounds = CGRectMake(0, 0, 500, 325);
+                             
+                             CGRect frame = superview.frame;
+                             frame.origin.x = 40;
+                             superview.frame = frame;
+                         }
+                         completion:^(BOOL finished){
+                         }];     
     }
 }
 
@@ -224,6 +238,7 @@
                                                       otherButtonTitles:@"Log In", nil];
             [alertView show];
             [alertView release];
+            [messageText resignFirstResponder];
         }        
     }
 }
@@ -311,15 +326,36 @@
             
             [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
         } else {
-            // Go to Twitter login page
-            SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
-            loginController.loginType = NMLoginTwitterType;
-            [self.navigationController pushViewController:loginController animated:YES];
-            [loginController release];
+            UIView *superview = self.navigationController.view.superview;
             
-            [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+            // Hide shadow flicker when resizing
+            float oldShadowOpacity = superview.layer.shadowOpacity;
+            
+            // Make view taller so Twitter login page fits
+            [UIView animateWithDuration:0.3
+                                  delay:0
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^{
+                                 superview.layer.shadowOpacity = 0;                                 
+                                 superview.bounds = CGRectMake(0, 0, 500, 525);
+                                 
+                                 CGRect frame = superview.frame;
+                                 frame.origin.x = 20;
+                                 superview.frame = frame;
+                             }
+                             completion:^(BOOL finished){
+                                 superview.layer.shadowOpacity = oldShadowOpacity;
+                                 
+                                 // Go to Twitter login page
+                                 SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
+                                 loginController.loginType = NMLoginTwitterType;
+                                 [self.navigationController pushViewController:loginController animated:YES];
+                                 [loginController release];
+                                 
+                                 [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+                             }];            
         }
     }
 }
-
+            
 @end
