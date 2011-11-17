@@ -509,7 +509,7 @@
 
 - (void)handleDidFailVerifyUserNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we were unable to connect your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry. Please note we only support YouTube accounts right now." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alertView show];
     [alertView release];
     [self dismissSocialLogin:nil];    
