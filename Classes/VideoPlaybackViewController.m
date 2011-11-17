@@ -787,7 +787,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		currentChannel = [chnObj retain];
 	}
 	[playbackModelController setVideo:aVideo];
-	forceStopByUser = (self.modalViewController != nil && !launchModeActive);	// force stop if we're showing Channel Management page
+	forceStopByUser = NO;
 	[loadedControlView resetView];
 	[pool release];
 }
