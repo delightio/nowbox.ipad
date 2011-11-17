@@ -1057,8 +1057,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		switch (tableIndexPath.section) {
 			case 0:
 				// YouTube
-				[nowboxTaskController issueDeauthorizeYouTube];
-				return;
+                if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
+                    [nowboxTaskController issueDeauthorizeYouTube];
+                } else {
+                    [self tableView:channelsTableView didSelectRowAtIndexPath:tableIndexPath];
+                }
+                return;
 				break;
 				
 			case 1:
