@@ -1047,13 +1047,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)handleVideoEventNotification:(NSNotification *)aNotification {
 	// check it's the current, previous or next video
 	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
+	NSString * name = [aNotification name];
+
+    if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] ) {
+		[self updateFavoriteButton];
+        return;
+    }
+    
 	// do nth if the video object is nil
 	if ( vidObj == nil ) return;
 	
-	NSString * name = [aNotification name];
 	if ( ([name isEqualToString:NMDidShareVideoNotification] || [name isEqualToString:NMDidPostSharingNotification]) && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		[self animateFavoriteButtonsToActive];
-	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		[self animateFavoriteButtonsToActive];
 	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// queued a video successfully, animate the icon to appropriate state
@@ -1061,9 +1065,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// dequeued a video successfully
 		[self animateWatchLaterButtonsToActive];
-	} else if ( [name isEqualToString:NMWillPostSharingNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-        [self animateFavoriteButtonsToInactive];   
-    }
+	}
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -1504,7 +1506,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     if ([video.nm_favorite boolValue]) {
         // Unfavorite video
         [nowboxTaskController issueShare:NO video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-        [self animateFavoriteButtonsToInactive];   
 
         [[MixpanelAPI sharedAPI] track:AnalyticsEventUnfavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                video.title, AnalyticsPropertyVideoName, 
