@@ -84,13 +84,14 @@
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
 
-        [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
 		viewController.launchModeActive = YES;
 	} else {
 		// listen to fail notification
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[self checkUpdateChannels];
 	}
+    
+    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
 }
 
 - (void)showVideoViewAnimated {
