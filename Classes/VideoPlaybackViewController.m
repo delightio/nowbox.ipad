@@ -185,7 +185,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	// ======
 #endif
-	[nowboxTaskController issueGetFeaturedCategories];
 	
 	// load channel view
 #ifndef DEBUG_NO_CHANNEL_VIEW

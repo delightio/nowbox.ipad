@@ -517,7 +517,14 @@
 
 - (void)handleDidFailVerifyUserNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry. Please note we only support YouTube accounts right now." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    NSString *message;
+    if (socialController.loginType == NMLoginYouTubeType) {
+        message = @"Sorry. Please note we only support YouTube accounts right now.";
+    } else {
+        message = @"Sorry, we weren't able to verify your account. Please try again later.";
+    }
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alertView show];
     [alertView release];
     [self dismissSocialLogin:nil];    
