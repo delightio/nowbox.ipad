@@ -159,7 +159,10 @@ NSInteger NM_LAST_CHANNEL_ID;
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
                                        sessionCount, AnalyticsPropertyVisitNumber, 
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenVideo, 
-                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, nil]];
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, 
+                                       [NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     appStartTime = sessionStartTime;
