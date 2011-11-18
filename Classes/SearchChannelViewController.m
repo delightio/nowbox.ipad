@@ -232,8 +232,10 @@
     if ([keyword isEqualToString:searchText]) {
         // These are the search results we're looking for
         progressView.hidden = YES;
-        NSInteger numberOfRows = [[NMTaskQueueController sharedTaskQueueController].dataController.internalSearchCategory.channels count];  // There must be an easier way
-        noResultsView.hidden = (numberOfRows > 1);
+        
+        // There must be an easier way to check if the results are empty. Querying the FRC always returns 0 rows at this point.
+        NSSet *channels = [NMTaskQueueController sharedTaskQueueController].dataController.internalSearchCategory.channels;
+        noResultsView.hidden = ([channels count] > 1 || [[[channels anyObject] nm_id] integerValue] > 0);
         
         // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
         resigningFirstResponder = YES;
