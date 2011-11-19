@@ -28,6 +28,7 @@
 
 @synthesize splashView;
 @synthesize slideInView;
+@synthesize tappableArea;
 @synthesize categoriesView;
 @synthesize categoryGrid;
 @synthesize proceedToSocialButton;
@@ -81,6 +82,7 @@
     
     [splashView release];
     [slideInView release];
+    [tappableArea release];
     [subscribedChannels release];
     [subscribingChannels release];
     [categoriesView release];
@@ -253,6 +255,7 @@
 {
     self.splashView = nil;
     self.slideInView = nil;
+    self.tappableArea = nil;
     self.categoriesView = nil;
     self.categoryGrid = nil;
     self.proceedToSocialButton = nil;
@@ -284,7 +287,7 @@
                          slideInView.frame = CGRectOffset(slideInView.frame, 0, -200);                         
                      }
                      completion:^(BOOL finished){
-                         
+                         tappableArea.userInteractionEnabled = YES;
                      }];
 }   
 
