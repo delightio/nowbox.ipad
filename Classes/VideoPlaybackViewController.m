@@ -490,8 +490,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		NSInteger sec = 0;
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = t.value / t.timescale;
+			loadedControlView.timeElapsed = sec;
 		}
-		loadedControlView.timeElapsed = sec;
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
 //			[movieView setActivityIndicationHidden:YES animated:YES];
