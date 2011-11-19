@@ -42,7 +42,7 @@ NSString * const NMDidFailPostSharingNotification = @"NMDidFailPostSharingNotifi
 	NSString * urlStr = nil;
 	NSString * ser = (service == NMLoginTwitterType ? @"twitter" : @"facebook");
 	if ( message ) {
-		urlStr = [NSString stringWithFormat:@"http://%@/shares?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&network=%@&user_id=%d&message=%@", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, ser, NM_USER_ACCOUNT_ID, [message stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		urlStr = [NSString stringWithFormat:@"http://%@/shares?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&network=%@&user_id=%d&message=%@", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, ser, NM_USER_ACCOUNT_ID, [NMTask stringByAddingPercentEscapes:message]];
 	} else {
 		urlStr = [NSString stringWithFormat:@"http://%@/shares?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&network=%@&user_id=%d", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, ser, NM_USER_ACCOUNT_ID];
 	}

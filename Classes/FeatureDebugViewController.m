@@ -112,7 +112,7 @@
 		// check if we have deleted any channel
 		NSDictionary * info = [aNotification userInfo];
 		NSLog(@"channel update status: %@", info);
-	}
+	} 
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:notName object:nil];
 }
 
@@ -147,7 +147,7 @@
 - (IBAction)getDebugChannel:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelWithIDNotification object:nil];
 	// get debug channel
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:2513];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:4670];
 }
 
 - (IBAction)checkUpdate:(id)sender {

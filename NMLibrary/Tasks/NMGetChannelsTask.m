@@ -348,6 +348,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			}
 			return NO;		// return this function
 		}
+		case NMCommandGetChannelWithID:
+			numberOfRowsFromServer = 1;
+			break;
+			
 		default:
 			break;
 	}
