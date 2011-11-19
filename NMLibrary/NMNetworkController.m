@@ -465,7 +465,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
           [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
 #endif
 	// prompt user for any error
-	if ( !tokenRenewMode && [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 ) {
+	if ( !tokenRenewMode && [errorWindowStartDate timeIntervalSinceDate:[NSDate date]] < -10.0 && [error code] == NSURLErrorNotConnectedToInternet ) {
 		// only prompt user if the error happens outside the 10 sec window. We don't wanna prompt user about error mutiple times
 		[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
 		self.errorWindowStartDate = [NSDate date];

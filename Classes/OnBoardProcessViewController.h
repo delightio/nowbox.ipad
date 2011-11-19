@@ -36,26 +36,28 @@
 @property (nonatomic, retain) NSMutableSet *subscribingChannels;
 @property (nonatomic, assign) id<OnBoardProcessViewControllerDelegate> delegate;
 
+// Step 1: Splash screen
 @property (nonatomic, retain) IBOutlet UIView *splashView;
 @property (nonatomic, retain) IBOutlet UIView *slideInView;
+@property (nonatomic, retain) IBOutlet UIButton *tappableArea;
 
-// Step 1: Category selection
+// Step 2: Category selection
 @property (nonatomic, retain) IBOutlet UIView *categoriesView;
 @property (nonatomic, retain) IBOutlet GridScrollView *categoryGrid;
 @property (nonatomic, retain) IBOutlet UIButton *proceedToSocialButton;
 
-// Step 2: Social login
+// Step 3: Social login
 @property (nonatomic, retain) IBOutlet UIView *socialView;
 @property (nonatomic, retain) IBOutlet UIButton *youtubeButton;
 @property (nonatomic, retain) IBOutlet UIButton *facebookButton;
 @property (nonatomic, retain) IBOutlet UIButton *twitterButton;
 
-// Step 3: NOWMOV info
+// Step 4: NOWMOV info
 @property (nonatomic, retain) IBOutlet UIView *infoView;
 @property (nonatomic, retain) IBOutlet UIView *settingUpView;
 @property (nonatomic, retain) IBOutlet UIButton *proceedToChannelsButton;
 
-// Step 4: Auto-selected channels
+// Step 5: Auto-selected channels
 @property (nonatomic, retain) IBOutlet UIView *channelsView;
 @property (nonatomic, retain) IBOutlet GridScrollView *channelsScrollView;
 @property (nonatomic, retain) IBOutlet UIView *shadowDownView;
