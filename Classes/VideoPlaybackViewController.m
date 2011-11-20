@@ -775,6 +775,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self stopVideo];
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
+	// removeAllItems cannot always remove all items. This happens when there's bad videos during resolution. To avoid movie detail view problem, we reclaim the view again
+	for (NMMovieDetailView * dtlView in movieDetailViewArray) {
+		if ( dtlView.video ) {
+			dtlView.video = nil;
+		}
+	}
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
