@@ -342,7 +342,7 @@ static ToolTipController *toolTipController = nil;
     }
     [monitoredToolTips minusSet:tooltipsToRemove];
     
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, @"tooltip_name", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, AnalyticsPropertyTooltipName, nil]];
 
     if (tooltip.resetCountsOnDisplay) {
         // Tooltip can be shown again, reset all the criteria
