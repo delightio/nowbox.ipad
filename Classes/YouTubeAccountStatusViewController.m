@@ -22,16 +22,18 @@
 		logoutButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		[logoutButton setTitle:@"Logout Account" forState:UIControlStateNormal];
 		[logoutButton addTarget:self action:@selector(logoutUser:) forControlEvents:UIControlEventTouchUpInside];
-		logoutButton.frame = CGRectMake(30.0f, 20.0f, 260.0f, 45.0f);
 		UIImage * btnBgImage = [UIImage imageNamed:@"button-logout-background"];
 		[logoutButton setBackgroundImage:[btnBgImage stretchableImageWithLeftCapWidth:16 topCapHeight:0] forState:UIControlStateNormal];
 		[logoutButton.titleLabel setFont:[UIFont boldSystemFontOfSize:[UIFont labelFontSize]]];
 		logoutButton.titleLabel.shadowOffset = CGSizeMake(0.0f, -1.0f);
+        
+        [[NMTaskQueueController sharedTaskQueueController] addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
     }
     return self;
 }
 
 - (void)dealloc {
+    [[NMTaskQueueController sharedTaskQueueController] removeObserver:self forKeyPath:@"syncInProgress"];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[logoutButton release];
 	[super dealloc];
@@ -70,6 +72,21 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInt = (NSInteger)context;
+	switch (ctxInt) {
+		case 1001:
+            [self.tableView reloadData];
+			break;
+			
+		default:
+			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+			break;
+	}
+}
+
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 65.0f;
@@ -78,6 +95,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
 	UIView * ctnView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 45.0f)];
 	ctnView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    logoutButton.frame = CGRectMake(30.0f, 20.0f, 260.0f, 45.0f);
 	[ctnView addSubview:logoutButton];
 	return [ctnView autorelease];
 }
@@ -114,7 +132,12 @@
 		case 1:
 			// cell
 			cell.textLabel.text = @"Sync Status";
-			cell.detailTextLabel.text = @"Active";
+            
+            if ([NMTaskQueueController sharedTaskQueueController].syncInProgress) {
+                cell.detailTextLabel.text = @"Synchronizing";
+            } else {
+                cell.detailTextLabel.text = @"Active";
+            }
 			break;
 			
 		case 2:
