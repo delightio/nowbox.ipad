@@ -550,12 +550,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         buttonView = (UIButton *)[cell viewWithTag:11];
         backgroundView = (UIImageView *)[cell viewWithTag:14];
+        UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
         if ([chn.nm_subscribed boolValue]) {
             [buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
             [backgroundView setImage:channelSubscribedBackgroundImage];
+            newChannelIndicator.hidden = ![chn.nm_is_new boolValue];            
         } else {
             [buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
             [backgroundView setImage:channelNotSubscribedBackgroundImage];
+            newChannelIndicator.hidden = YES;            
         }
         
         UILabel *label;
@@ -577,10 +580,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
         [actView setAlpha:0];
         [buttonView setAlpha:1];
-        
-        UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
-        newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
-      
+              
         return cell;
 	}
     

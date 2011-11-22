@@ -158,12 +158,15 @@
     
     buttonView = (UIButton *)[cell viewWithTag:11];
     backgroundView = (UIImageView *)[cell viewWithTag:14];
+    UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
     if ([chn.nm_subscribed boolValue]) {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
+        newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
     } else {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
+        newChannelIndicator.hidden = YES;        
     }
         
     UIActivityIndicatorView *actView;
