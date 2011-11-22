@@ -62,8 +62,12 @@
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
 	
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	if ( tqc.syncInProgress ) {
+		[syncActivityView startAnimating];
+	}
 	// observer
-	[[NMTaskQueueController sharedTaskQueueController] addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
+	[tqc addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
 }
 
 - (void)viewDidUnload
