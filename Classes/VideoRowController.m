@@ -74,6 +74,10 @@
 }
 
 -(void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender {
+	PanelVideoCell * vdoCell = (PanelVideoCell *)[videoTableView cellForRowAtIndexPath:indexPath];
+	if ( vdoCell.isPlayingVideo ) {
+		return;
+	}
 	if ( !NM_AIRPLAY_ACTIVE ) 
 		[panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
     [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[indexPath row]];
