@@ -161,10 +161,20 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDeauthNotification:) name:NMDidDeauthorizeUserNotification object:nil];
+    
+    if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
+        [nowboxTaskController addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
+        observingYouTubeSync = YES;
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    if (observingYouTubeSync) {
+        [nowboxTaskController removeObserver:self forKeyPath:@"syncInProgress"];
+    }
+    
     [super viewWillDisappear:animated];
 }
 
@@ -260,6 +270,24 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	if ( didUnsubscribeSomeChannels ) {
 		// permanently delete channels
 		[nowboxTaskController.dataController permanentDeleteMarkedChannels];
+	}
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInt = (NSInteger)context;
+	switch (ctxInt) {
+		case 1001:
+            if (selectedIndex == 0) {
+                // Reload YouTube cell
+                [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            }
+			break;
+			
+		default:
+			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+			break;
 	}
 }
 
@@ -422,12 +450,21 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             buttonView = (UIButton *)[cell viewWithTag:11];
             backgroundView = (UIImageView *)[cell viewWithTag:14];        
 
+            UIActivityIndicatorView *actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+            [actView setAlpha:0];
+            [buttonView setAlpha:1];
+
 			if ( indexPath.section == 0 ) {
 				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 					titleLbl.text = NM_USER_YOUTUBE_USER_NAME;
 					detailLbl.text = @"YouTube sync is currently active";
 					[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
-					[backgroundView setImage:channelSubscribedBackgroundImage];                        
+					[backgroundView setImage:channelSubscribedBackgroundImage];  
+                    
+                    if (nowboxTaskController.syncInProgress) {
+                        [actView setAlpha:1];
+                        [buttonView setAlpha:0];
+                    }
 				} else {
 					titleLbl.text = @"YouTube";
 					detailLbl.text = @"Sync your Subscriptions, Favorites and Watch Later videos";
@@ -491,12 +528,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						break;
 				}
 			}
-            
-            UIActivityIndicatorView *actView;
-            actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
-            [actView setAlpha:0];
-            [buttonView setAlpha:1];
-            
+                        
 			return cell;
 		}
 		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
