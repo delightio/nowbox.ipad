@@ -454,6 +454,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             [actView setAlpha:0];
             [buttonView setAlpha:1];
 
+            UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
+            newChannelIndicator.hidden = YES;
+            
 			if ( indexPath.section == 0 ) {
 				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 					titleLbl.text = NM_USER_YOUTUBE_USER_NAME;
@@ -489,6 +492,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 								[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
+                            
+                            newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Twitter";
 							detailLbl.text = @"Sign in to watch videos from people you follow on Twitter";
@@ -514,6 +519,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 								[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
+                            
+                            newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Facebook";
 							detailLbl.text = @"Sign in to watch videos from your Facebook friends";
@@ -528,10 +535,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						break;
 				}
 			}
-            
-            UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
-            newChannelIndicator.hidden = YES;
-                        
+                                    
 			return cell;
 		}
 		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
