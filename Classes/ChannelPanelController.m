@@ -265,6 +265,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
         [ctnView.textLabel setFrame:CGRectMake(0, 0, ctnView.frame.size.width, cell.contentView.bounds.size.height)];
     }
 
+    ctnView.newChannelIndicator.hidden = ![theChannel.nm_is_new boolValue];
 	[ctnView.imageView setImageForChannel:theChannel];
 
 	// video row
