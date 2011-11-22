@@ -570,6 +570,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
         [actView setAlpha:0];
         [buttonView setAlpha:1];
+        
+        UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
+        newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
       
         return cell;
 	}

@@ -89,6 +89,7 @@
 		838F280814720B2A00935D5A /* share-button-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F280714720B2A00935D5A /* share-button-post.png */; };
 		838F281B14722A7800935D5A /* onboard-divider-shadow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281914722A7800935D5A /* onboard-divider-shadow-down.png */; };
 		838F281C14722A7800935D5A /* onboard-divider-shadow-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */; };
+		83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */; };
 		83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A14146DEC13008393F1 /* onboard-splash-button.png */; };
 		83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A19146DF107008393F1 /* onboard-button-next.png */; };
 		83D21A1C146DF562008393F1 /* onboard-nowbox-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */; };
@@ -370,6 +371,7 @@
 		838F280714720B2A00935D5A /* share-button-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-button-post.png"; sourceTree = "<group>"; };
 		838F281914722A7800935D5A /* onboard-divider-shadow-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-down.png"; sourceTree = "<group>"; };
 		838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-up.png"; sourceTree = "<group>"; };
+		83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-new-indicator.png"; sourceTree = "<group>"; };
 		83D21A14146DEC13008393F1 /* onboard-splash-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button.png"; sourceTree = "<group>"; };
 		83D21A19146DF107008393F1 /* onboard-button-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next.png"; sourceTree = "<group>"; };
 		83D21A1B146DF562008393F1 /* onboard-nowbox-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-nowbox-logo.png"; sourceTree = "<group>"; };
@@ -844,6 +846,7 @@
 				A99FB6CD140EB57700689040 /* button-gray-background.png */,
 				223A7C561414004A00AF75B3 /* button-red-background.png */,
 				A99FB6CE140EB57700689040 /* button-yellow-background.png */,
+				83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */,
 				A903D8551450ABA900FC7B28 /* channel-title-background.png */,
 				A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */,
 				223015D01416D13D006FC44E /* channel-video-background-dimmed.png */,
@@ -1348,6 +1351,7 @@
 				838F280814720B2A00935D5A /* share-button-post.png in Resources */,
 				A9C473071473961400BE45CA /* YoutubeError.html in Resources */,
 				8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */,
+				83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1633,9 +1637,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_USE_STAGING_SERVER,
 					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_USE_STAGING_SERVER,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
