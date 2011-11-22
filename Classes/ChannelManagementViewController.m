@@ -528,6 +528,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						break;
 				}
 			}
+            
+            UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
+            newChannelIndicator.hidden = YES;
                         
 			return cell;
 		}
