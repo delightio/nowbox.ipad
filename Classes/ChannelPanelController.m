@@ -331,6 +331,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
     [ctnView setHighlighted:YES];
+    [ctnView.newChannelIndicator setHidden:!theChannel.nm_is_new];
 
     NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
     
