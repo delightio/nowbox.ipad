@@ -101,7 +101,6 @@
 }
 
 - (void)showVideoViewAnimated {
-	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
 	viewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
@@ -110,11 +109,13 @@
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 	taskQueueController.appFirstLaunch = NO;
+    
+	[viewController showPlaybackView];
 }
 
 - (void)slideInVideoViewAnimated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[viewController showPlaybackView];
+
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
 //	viewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
@@ -123,6 +124,8 @@
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 	taskQueueController.appFirstLaunch = NO;
+    
+    [viewController showPlaybackView];
 }
 
 - (void)checkUpdateChannels {
