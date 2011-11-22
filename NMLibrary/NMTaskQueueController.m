@@ -395,9 +395,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 #if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
 #endif
-	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetMoreVideoForChannel:chnObj];
-	[networkController addNewConnectionForTask:task];
-	[task release];
+	if ( sessionID ) {
+		NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetMoreVideoForChannel:chnObj];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
 }
 
 //- (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
