@@ -326,6 +326,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			launchController = nil;
 		}];
 #endif
+		playFirstVideoOnLaunchWhenReady = YES;
 	}
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
