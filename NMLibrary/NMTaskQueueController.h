@@ -36,6 +36,7 @@
 	NSUInteger pollingRetryCount, channelPollingRetryCount;
 	
 	BOOL appFirstLaunch;
+	BOOL syncInProgress;
 	Reachability * wifiReachability;
 }
 
@@ -47,6 +48,8 @@
 @property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
+@property (nonatomic) BOOL syncInProgress;
+@property (nonatomic) BOOL appFirstLaunch;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 

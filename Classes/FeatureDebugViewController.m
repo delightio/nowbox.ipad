@@ -27,6 +27,7 @@
 	[targetChannel release];
 	[playbackViewController release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NMTaskQueueController sharedTaskQueueController] removeObserver:self forKeyPath:@"syncInProgress"];
 	[super dealloc];
 }
 
@@ -60,6 +61,9 @@
 	[nc addObserver:self selector:@selector(handleWillLoadNotification:) name:NMWillUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+	
+	// observer
+	[[NMTaskQueueController sharedTaskQueueController] addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
 }
 
 - (void)viewDidUnload
@@ -73,6 +77,25 @@
 {
     // Return YES for supported orientations
 	return YES;
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInt = (NSInteger)context;
+	switch (ctxInt) {
+		case 1001:
+			if ( [NMTaskQueueController sharedTaskQueueController].syncInProgress ) {
+				[syncActivityView startAnimating];
+			} else {
+				[syncActivityView stopAnimating];
+			}
+			break;
+			
+		default:
+			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+			break;
+	}
 }
 
 #pragma mark Notification handlers
@@ -147,7 +170,7 @@
 - (IBAction)getDebugChannel:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelWithIDNotification object:nil];
 	// get debug channel
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:4670];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:2258];
 }
 
 - (IBAction)checkUpdate:(id)sender {

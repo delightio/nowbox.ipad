@@ -51,6 +51,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize pollingTimer, tokenRenewTimer;
 @synthesize channelPollingTimer, userSyncTimer;
 @synthesize unpopulatedChannels;
+@synthesize syncInProgress, appFirstLaunch;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
 	if ( sharedTaskQueueController_ == nil ) {
@@ -165,7 +166,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	switch (sender.command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-			appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 			// get that particular channel
 			if ( !appFirstLaunch ) {
 				didFinishLogin = YES;
@@ -176,7 +176,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		case NMCommandVerifyYouTubeUser:
 			if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 				// check if it's first launch
-				appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 				if ( appFirstLaunch ) {
 					// need to poll the server to look for difference
 					[self pollServerForYouTubeSyncSignal];
@@ -255,6 +254,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		// some channels are "deleted", perform the delete after a 5s chilling period.
 		[dataController performSelector:@selector(permanentDeleteMarkedChannels) withObject:nil afterDelay:5.0];
 	}
+	self.syncInProgress = NO;
 }
 
 - (void)handleFailEditUserSettingsNotification:(NSNotification *)aNotification {
@@ -374,14 +374,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueGetSubscribedChannels {
-//	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetFriendChannels];
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-
-//	task = [[NMGetChannelsTask alloc] initGetTopicChannels];
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-
+	self.syncInProgress = YES;
 	NMGetChannelsTask * task = [[NMGetChannelsTask alloc] initGetDefaultChannels];
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -710,7 +703,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)handleYouTubePollingNotification:(NSNotification *)aNotification {
 	if ( appFirstLaunch ) {
 		// refresh app launch
-		appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 		if ( !appFirstLaunch ) {
 			// this is the case where the user has finished up the onboard process with a YouTube login. However, the onboard is done before the polling work finish. In this case, we don't need to perform the sync anymore
 			// invalidate the timer
@@ -749,7 +741,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)slowPollServerForYouTubeSyncSycnal {
-	appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 	if ( userSyncTimer ) {
 		[userSyncTimer fire];
 	} else {

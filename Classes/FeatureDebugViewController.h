@@ -12,6 +12,7 @@
 
 @interface FeatureDebugViewController : UIViewController <NSFetchedResultsControllerDelegate> {
 	IBOutlet UIButton * subscribeButton;
+	IBOutlet UIActivityIndicatorView * syncActivityView;
 
 	NMChannel * targetChannel;
 	NMChannel * selectedChannel;

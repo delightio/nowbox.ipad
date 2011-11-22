@@ -386,6 +386,8 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		[ctrl bulkMarkChannelsDeleteStatus:objectsToDelete];
 	}
 	if ( [channelIndexSet count] ) {
+		BOOL fLaunch = [NMTaskQueueController sharedTaskQueueController].appFirstLaunch;
+		NSNumber * yesNum = [NSNumber numberWithBool:YES];
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 			// check if the channel exists among all stored
@@ -399,7 +401,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				[chn setValuesForKeysWithDictionary:chnDict];
 				// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
 				if ( [chn.type integerValue] == NMChannelUserType ) {
-					chn.nm_hidden = [NSNumber numberWithBool:YES];
+					chn.nm_hidden = yesNum;
+				}
+				if ( !fLaunch ) {
+					chn.nm_is_new = yesNum;
 				}
 				if ( command == NMCommandCompareSubscribedChannels ) {
 					// assign the new channel to YouTube group
