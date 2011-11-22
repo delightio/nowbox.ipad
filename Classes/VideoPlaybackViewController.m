@@ -408,6 +408,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
+	chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
 //	NSArray * vidAy = [playbackModelController videosForBuffering];
 //	if ( vidAy ) {
 //		[movieView.player resolveAndQueueVideos:vidAy];
@@ -793,6 +794,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( ![currentChannel isEqual:chnObj] ) {
 		if ( currentChannel ) [currentChannel release];
 		currentChannel = [chnObj retain];
+		chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
