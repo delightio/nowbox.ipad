@@ -76,5 +76,5 @@
 #define AnalyticsPropertyDayOfWeek @"Day Of Week"
 #define AnalyticsPropertyFullScreenVideo @"Full Screen Video"
 #define AnalyticsPropertyFullScreenChannelPanel @"Full Screen Channel Panel"
-
+#define AnalyticsPropertyTooltipName @"Tooltip Name"
 

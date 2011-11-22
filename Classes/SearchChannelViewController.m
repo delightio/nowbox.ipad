@@ -451,7 +451,7 @@
         noResultsView.hidden = YES;
         [ctrl issueChannelSearchForKeyword:searchText];
         
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:AnalyticsPropertySearchQuery]];
         self.lastSearchQuery = searchText;
     }
 }

@@ -146,8 +146,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 }
 
 - (void)setupMixpanel {
-    NSNumber *sessionCount = [NSNumber numberWithInteger:[userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1];
-	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
+    NSInteger sessionCount = [userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1;
+	[userDefaults setInteger:sessionCount forKey:NM_SESSION_COUNT_KEY];
     [userDefaults synchronize];
     
 #ifdef MIXPANEL_PROD
@@ -157,7 +157,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 #endif
     
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
-                                       sessionCount, AnalyticsPropertyVisitNumber, 
+                                       [NSNumber numberWithInteger:sessionCount], AnalyticsPropertyVisitNumber, 
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenVideo, 
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, 
                                        [NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
@@ -177,6 +177,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    userDefaults = [NSUserDefaults standardUserDefaults];
+
     // Enable analytics and crash reporting
     [self setupMixpanel];
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
@@ -198,7 +200,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
-	userDefaults = [NSUserDefaults standardUserDefaults];
+
 #ifdef DEBUG_ONBOARD_PROCESS
 	[userDefaults setBool:YES forKey:NM_FIRST_LAUNCH_KEY];
 	[[NMCacheController sharedCacheController] removeAllFiles];
