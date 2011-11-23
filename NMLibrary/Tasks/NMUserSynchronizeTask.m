@@ -45,7 +45,7 @@ NSString * const NMDidFailSynchronizeUserNotification = @"NMDidFailSynchronizeUs
 		for (NSDictionary * acDict in acAy) {
 			providerStr = [acDict objectForKey:@"provider"];
 			if ( [providerStr isEqualToString:@"youtube"] || [providerStr isEqualToString:@"you_tube"] ) {
-				NM_USER_YOUTUBE_LAST_SYNC = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
+				NM_USER_YOUTUBE_SYNC_SERVER_TIME = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
 			}
 		}
 	}

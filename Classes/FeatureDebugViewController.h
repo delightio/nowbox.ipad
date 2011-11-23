@@ -12,6 +12,7 @@
 
 @interface FeatureDebugViewController : UIViewController <NSFetchedResultsControllerDelegate> {
 	IBOutlet UIButton * subscribeButton;
+	IBOutlet UIActivityIndicatorView * syncActivityView;
 
 	NMChannel * targetChannel;
 	NMChannel * selectedChannel;
@@ -29,5 +30,6 @@
 - (IBAction)pollUserYouTube:(id)sender;
 - (IBAction)getSubscribedChannels:(id)sender;
 - (IBAction)syncRequest:(id)sender;
+- (IBAction)getDebugChannel:(id)sender;
 
 @end

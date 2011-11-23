@@ -170,7 +170,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 						}
 						NM_USER_YOUTUBE_USER_NAME = [[acDict objectForKey:@"username"] retain];
 						[NMCreateUserTask updateAppUserInfo:userDictionary];
-						NM_USER_YOUTUBE_LAST_SYNC = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
+						NM_USER_YOUTUBE_SYNC_SERVER_TIME = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
 						NM_USER_YOUTUBE_SYNC_ACTIVE = YES;
 					}
 				}
