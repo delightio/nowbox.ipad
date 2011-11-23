@@ -1088,6 +1088,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				shouldFadeOutVideoThumbnail = YES;
 				break;
 			}
+			case AVPlayerStatusFailed:
+			{
+				controlScrollView.scrollEnabled = YES;
+				break;
+			}
 			default:
 				break;
 		}

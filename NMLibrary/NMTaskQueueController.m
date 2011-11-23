@@ -30,7 +30,7 @@ NSInteger NM_USER_TWITTER_CHANNEL_ID		= 0;
 BOOL NM_USER_YOUTUBE_SYNC_ACTIVE			= NO;
 NSString * NM_USER_YOUTUBE_USER_NAME		= nil;
 NSUInteger NM_USER_YOUTUBE_LAST_SYNC		= 0;
-NSUInteger NM_USER_YOUTUBE_SYNC_LAST_ISSUED	= 0;
+NSUInteger NM_USER_YOUTUBE_SYNC_SERVER_TIME	= 0;
 BOOL NM_USER_SHOW_FAVORITE_CHANNEL			= NO;
 NSInteger NM_VIDEO_QUALITY					= 0;
 //BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION	= YES;
@@ -184,7 +184,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 					didFinishLogin = YES;
 					self.syncInProgress = YES;
 					// don't call "syncYouTubeChannels" method. Cos we haven't created the watch later and favorite channel yet.
-					NM_USER_YOUTUBE_SYNC_LAST_ISSUED = (NSUInteger)[[NSDate date] timeIntervalSince1970];
 					[self issueGetSubscribedChannels];
 					[self slowPollServerForYouTubeSyncSycnal];
 				}
@@ -571,7 +570,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueGetSubscribedChannels];
 	[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
 	[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
-	NM_USER_YOUTUBE_SYNC_LAST_ISSUED = (NSUInteger)[[NSDate date] timeIntervalSince1970];
+	NM_USER_YOUTUBE_SYNC_SERVER_TIME = NM_USER_YOUTUBE_LAST_SYNC;
 
 }
 
@@ -655,7 +654,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_LAST_SYNC] forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
-	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_SYNC_LAST_ISSUED] forKey:NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY];
 }
 
 - (void)pollingTimerMethod:(NSTimer *)aTimer {
@@ -716,11 +714,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			return;
 		}
 		pollingRetryCount++;
-		if ( NM_USER_YOUTUBE_LAST_SYNC > 0 ) {
+		if ( NM_USER_YOUTUBE_SYNC_SERVER_TIME > 0 ) {
 			// the account is synced. get the list of channel
 			[self issueCompareSubscribedChannels];
 			[pollingTimer invalidate];
 			self.pollingTimer = nil;
+			NM_USER_YOUTUBE_LAST_SYNC = NM_USER_YOUTUBE_SYNC_SERVER_TIME;
+			[[NSUserDefaults standardUserDefaults] setInteger:NM_USER_YOUTUBE_LAST_SYNC forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
 		} else if ( pollingRetryCount > 5 ) {
 			[pollingTimer invalidate];
 			self.pollingTimer = nil;
@@ -728,11 +728,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	} else {
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 			pollingRetryCount++;
-			if ( NM_USER_YOUTUBE_LAST_SYNC > NM_USER_YOUTUBE_SYNC_LAST_ISSUED ) {
+			if ( NM_USER_YOUTUBE_SYNC_SERVER_TIME > NM_USER_YOUTUBE_LAST_SYNC  ) {
 				[self syncYouTubeChannels];
 				[userSyncTimer invalidate];
 				self.userSyncTimer = nil;
 				self.syncInProgress = NO;
+				NM_USER_YOUTUBE_LAST_SYNC = NM_USER_YOUTUBE_SYNC_SERVER_TIME;
+				[[NSUserDefaults standardUserDefaults] setInteger:NM_USER_YOUTUBE_LAST_SYNC forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
 			} else if ( pollingRetryCount > 5 ) {
 				[userSyncTimer invalidate];
 				self.userSyncTimer = nil;
