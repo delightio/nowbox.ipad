@@ -570,7 +570,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueGetSubscribedChannels];
 	[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
 	[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
-	NM_USER_YOUTUBE_SYNC_SERVER_TIME = NM_USER_YOUTUBE_LAST_SYNC;
 
 }
 
