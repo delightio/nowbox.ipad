@@ -20,7 +20,6 @@ extern NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY;
 extern NSString * const NM_USER_YOUTUBE_USER_NAME_KEY;
 extern NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY;
-extern NSString * const NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY;
 extern NSString * const NM_VIDEO_QUALITY_KEY;
 //extern NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
