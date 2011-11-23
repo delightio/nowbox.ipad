@@ -174,6 +174,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			} else {
 				channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
 			}
+			channel.nm_hidden = (NSNumber *)kCFBooleanFalse;
 			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			return YES;
 		}
