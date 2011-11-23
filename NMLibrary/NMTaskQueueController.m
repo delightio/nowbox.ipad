@@ -755,6 +755,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		pollingRetryCount = 0;
 		// create timer
 		self.userSyncTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_SYNC_CHECK_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+		[userSyncTimer fire];
 	}
 }
 
