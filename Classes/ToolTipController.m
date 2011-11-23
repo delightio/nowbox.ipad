@@ -255,6 +255,8 @@ static ToolTipController *toolTipController = nil;
         }
     }
     
+/*  // Need to implement this better. [NSUserDefaults synchronize] is too slow.  
+ 
     // Update the global elapsed counts
     NSString *key = nil;
     switch (eventType) {
@@ -270,7 +272,7 @@ static ToolTipController *toolTipController = nil;
         int newValue = [[userDefaults objectForKey:key] intValue] + 1;
         [userDefaults setObject:[NSNumber numberWithInt:newValue] forKey:key];
         [userDefaults synchronize];
-    }
+    }*/
     
     // Check if any tooltips can be shown
     [self performToolTipCheckForEventType:eventType sender:sender];
