@@ -758,6 +758,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
             
+            [self updateRibbonButtons];
+            
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
