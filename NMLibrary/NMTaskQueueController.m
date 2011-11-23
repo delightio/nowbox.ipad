@@ -182,6 +182,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 				} else {
 					// immediately issue get channel
 					didFinishLogin = YES;
+					self.syncInProgress = YES;
 					// don't call "syncYouTubeChannels" method. Cos we haven't created the watch later and favorite channel yet.
 					NM_USER_YOUTUBE_SYNC_LAST_ISSUED = (NSUInteger)[[NSDate date] timeIntervalSince1970];
 					[self issueGetSubscribedChannels];
@@ -247,6 +248,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			NSLog(@"Should schedule polling timer");
 			[self pollServerForChannelReadiness];
 		}
+	} else {
+		self.syncInProgress = NO;
 	}
 	// check if there's any channel being deleted
 	NSDictionary * info = [aNotification userInfo];
@@ -254,7 +257,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		// some channels are "deleted", perform the delete after a 5s chilling period.
 		[dataController performSelector:@selector(permanentDeleteMarkedChannels) withObject:nil afterDelay:5.0];
 	}
-	self.syncInProgress = NO;
 }
 
 - (void)handleFailEditUserSettingsNotification:(NSNotification *)aNotification {
@@ -730,14 +732,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 				[self syncYouTubeChannels];
 				[userSyncTimer invalidate];
 				self.userSyncTimer = nil;
+				self.syncInProgress = NO;
 			} else if ( pollingRetryCount > 5 ) {
 				[userSyncTimer invalidate];
 				self.userSyncTimer = nil;
+				self.syncInProgress = NO;
 			}
 		} else {
 			// it's possible that the YouTube polling process is happening after the user has signed out.
 			[userSyncTimer invalidate];
 			self.userSyncTimer = nil;
+			self.syncInProgress = NO;
 		}
 	}
 }
