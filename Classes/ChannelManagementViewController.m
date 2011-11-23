@@ -165,6 +165,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
         [nowboxTaskController addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
         observingYouTubeSync = YES;
+    } else {
+        observingYouTubeSync = NO;
     }
 }
 
