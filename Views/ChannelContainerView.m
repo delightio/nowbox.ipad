@@ -14,6 +14,7 @@
 @implementation ChannelContainerView
 @synthesize textLabel;
 @synthesize imageView;
+@synthesize newChannelIndicator;
 @synthesize highlighted;
 
 //+ (Class)layerClass {
@@ -90,6 +91,12 @@
         imageView.opaque = YES;
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
 		[self addSubview:imageView];
+        
+        newChannelIndicator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"channel-new-indicator.png"]];
+        newChannelIndicator.frame = CGRectMake(0, 0, newChannelIndicator.frame.size.width, newChannelIndicator.frame.size.height);
+        newChannelIndicator.center = CGPointMake(newChannelIndicator.center.x, aHeight / 2);
+        newChannelIndicator.hidden = YES;
+        [self addSubview:newChannelIndicator];
 
 	}
 	return self;
@@ -131,6 +138,7 @@
 {
 	[textLabel release];
 	[imageView release];
+    [newChannelIndicator release];
     [super dealloc];
 }
 

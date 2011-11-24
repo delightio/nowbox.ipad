@@ -13,7 +13,7 @@
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
-#define NM_NUMBER_OF_VIDEOS_PER_PAGE	10
+#define NM_NUMBER_OF_VIDEOS_PER_PAGE	5
 
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";

@@ -143,6 +143,23 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[managedObjectContext deleteObject:vid];
 	}
 	[request release];
+	// reset the videos
+	if ( [lastSessionVideoIDs count] ) {
+		request = [[NSFetchRequest alloc] init];
+		[request setEntity:videoEntityDescription];
+		thePredicate = [NSPredicate predicateWithFormat:@"NOT (channel.nm_id == %@ AND nm_id IN %@)", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID], lastSessionVideoIDs];
+		[request setPredicate:thePredicate];
+		[request setReturnsObjectsAsFaults:NO];
+		result = [managedObjectContext executeFetchRequest:request error:nil];
+		for (NMVideo * vid in result) {
+			if ( [vid.nm_error integerValue] == 0 ) {
+				vid.nm_playback_status = 0;
+				vid.nm_direct_url = nil;
+				vid.nm_direct_sd_url = nil;
+			}
+		}
+		[request release];
+	}
 }
 
 - (void)resetAllChannelsPageNumber {

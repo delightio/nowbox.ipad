@@ -29,7 +29,6 @@ NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY = @"NM_SETTING_FACEBOOK_AUTO_
 NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY = @"NM_USER_YOUTUBE_SYNC_ACTIVE_KEY";
 NSString * const NM_USER_YOUTUBE_USER_NAME_KEY = @"NM_USER_YOUTUBE_USER_NAME_KEY";
 NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY = @"NM_USER_YOUTUBE_LAST_SYNC_KEY";
-NSString * const NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY = @"NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY";
 NSString * const NM_USER_TOKEN_KEY = @"NM_USER_TOKEN_KEY";
 NSString * const NM_USER_TOKEN_EXPIRY_DATE_KEY = @"NM_USER_TOKEN_EXPIRY_DATE_KEY";
 NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
@@ -92,7 +91,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  yesNum, NM_SETTING_TWITTER_AUTO_POST_KEY,
 	  noNum, NM_USER_YOUTUBE_SYNC_ACTIVE_KEY,
 	  zeroNum, NM_USER_YOUTUBE_LAST_SYNC_KEY,
-	  zeroNum, NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
 	  nil]];
 }
@@ -146,8 +144,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 }
 
 - (void)setupMixpanel {
-    NSNumber *sessionCount = [NSNumber numberWithInteger:[userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1];
-	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
+    NSInteger sessionCount = [userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1;
+	[userDefaults setInteger:sessionCount forKey:NM_SESSION_COUNT_KEY];
     [userDefaults synchronize];
     
 #ifdef MIXPANEL_PROD
@@ -157,9 +155,12 @@ NSInteger NM_LAST_CHANNEL_ID;
 #endif
     
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
-                                       sessionCount, AnalyticsPropertyVisitNumber, 
+                                       [NSNumber numberWithInteger:sessionCount], AnalyticsPropertyVisitNumber, 
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenVideo, 
-                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, nil]];
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, 
+                                       [NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     appStartTime = sessionStartTime;
@@ -174,6 +175,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    userDefaults = [NSUserDefaults standardUserDefaults];
+
     // Enable analytics and crash reporting
     [self setupMixpanel];
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
@@ -195,7 +198,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
-	userDefaults = [NSUserDefaults standardUserDefaults];
+
 #ifdef DEBUG_ONBOARD_PROCESS
 	[userDefaults setBool:YES forKey:NM_FIRST_LAUNCH_KEY];
 	[[NMCacheController sharedCacheController] removeAllFiles];

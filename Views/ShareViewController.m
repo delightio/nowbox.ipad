@@ -88,6 +88,52 @@
     }
 }
 
+- (void)showLoginPage
+{
+    UIView *superview = self.navigationController.view.superview;
+    
+    // Hide shadow flicker when resizing
+    float oldShadowOpacity = superview.layer.shadowOpacity;
+    
+    // Make view taller so login page fits
+    [UIView animateWithDuration:0.3
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         superview.layer.shadowOpacity = 0;                                 
+                         superview.bounds = CGRectMake(0, 0, 500, 525);
+                         
+                         UIInterfaceOrientation statusBarOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+                         
+                         CGRect frame = superview.frame;
+                         frame.origin.x = (statusBarOrientation == UIInterfaceOrientationLandscapeRight ? [[UIScreen mainScreen] bounds].size.width - frame.size.width - 20 : 20);
+                         superview.frame = frame;
+                     }
+                     completion:^(BOOL finished){
+                         superview.layer.shadowOpacity = oldShadowOpacity;
+                         
+                         // Go to Twitter/FB login page
+                         SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
+                         
+                         NMSocialLoginType loginType;
+                         NSString *analyticsEvent;
+                         
+                         if (shareMode == ShareModeTwitter) {
+                             loginType = NMLoginTwitterType;
+                             analyticsEvent = AnalyticsEventStartTwitterLogin;
+                         } else {
+                             loginType = NMLoginFacebookType;
+                             analyticsEvent = AnalyticsEventStartFacebookLogin;
+                         }
+                         
+                         loginController.loginType = loginType;
+                         [self.navigationController pushViewController:loginController animated:YES];
+                         [loginController release];
+                         
+                         [[MixpanelAPI sharedAPI] track:analyticsEvent properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+                     }];  
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -135,11 +181,14 @@
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
+                             // Return to original size
                              UIView *superview = self.navigationController.view.superview;
                              superview.bounds = CGRectMake(0, 0, 500, 325);
-                             
+
+                             UIInterfaceOrientation statusBarOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+
                              CGRect frame = superview.frame;
-                             frame.origin.x = 40;
+                             frame.origin.x = (statusBarOrientation == UIInterfaceOrientationLandscapeRight ? [[UIScreen mainScreen] bounds].size.width - frame.size.width - 40 : 40);
                              superview.frame = frame;
                          }
                          completion:^(BOOL finished){
@@ -276,14 +325,28 @@
 
 - (void)handleDidFailShareVideoNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:[NSString stringWithFormat:@"Sorry, but something went wrong and your message could not be %@. Please try again a bit later.", (shareMode == ShareModeFacebook ? @"posted" : @"tweeted")]
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    alertView.tag = -1;
-    [alertView show];
-    [alertView release];
+    NSDictionary *userInfo = [aNotification userInfo];
+    NSInteger statusCode = [[userInfo objectForKey:@"code"] integerValue];
+    
+    if (statusCode == 400) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
+                                                            message:@"Sorry, but something went wrong and your message could not be posted. Please try logging in again."
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Cancel"
+                                                  otherButtonTitles:@"Log In", nil];
+        [alertView show];
+        [alertView release];
+        [messageText resignFirstResponder];
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                            message:[NSString stringWithFormat:@"Sorry, but something went wrong and your message could not be %@. Please try again a bit later.", (shareMode == ShareModeFacebook ? @"posted" : @"tweeted")]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+        alertView.tag = -1;
+        [alertView show];
+        [alertView release];        
+    }
     
     progressView.hidden = YES;
     [shareButton setEnabled:YES];
@@ -317,44 +380,7 @@
             [self cancelButtonPressed:nil];
         }
     } else if (buttonIndex == 1) {
-        if (shareMode == ShareModeFacebook) {
-            // Go to Facebook login page
-            SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
-            loginController.loginType = NMLoginFacebookType;
-            [self.navigationController pushViewController:loginController animated:YES];
-            [loginController release];
-            
-            [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
-        } else {
-            UIView *superview = self.navigationController.view.superview;
-            
-            // Hide shadow flicker when resizing
-            float oldShadowOpacity = superview.layer.shadowOpacity;
-            
-            // Make view taller so Twitter login page fits
-            [UIView animateWithDuration:0.3
-                                  delay:0
-                                options:UIViewAnimationOptionCurveEaseInOut
-                             animations:^{
-                                 superview.layer.shadowOpacity = 0;                                 
-                                 superview.bounds = CGRectMake(0, 0, 500, 525);
-                                 
-                                 CGRect frame = superview.frame;
-                                 frame.origin.x = 20;
-                                 superview.frame = frame;
-                             }
-                             completion:^(BOOL finished){
-                                 superview.layer.shadowOpacity = oldShadowOpacity;
-                                 
-                                 // Go to Twitter login page
-                                 SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
-                                 loginController.loginType = NMLoginTwitterType;
-                                 [self.navigationController pushViewController:loginController animated:YES];
-                                 [loginController release];
-                                 
-                                 [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
-                             }];            
-        }
+        [self showLoginPage];
     }
 }
             

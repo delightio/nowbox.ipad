@@ -326,6 +326,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			launchController = nil;
 		}];
 #endif
+		playFirstVideoOnLaunchWhenReady = YES;
 	}
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
@@ -407,6 +408,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
+	chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
 //	NSArray * vidAy = [playbackModelController videosForBuffering];
 //	if ( vidAy ) {
 //		[movieView.player resolveAndQueueVideos:vidAy];
@@ -490,8 +492,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		NSInteger sec = 0;
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = t.value / t.timescale;
+			loadedControlView.timeElapsed = sec;
 		}
-		loadedControlView.timeElapsed = sec;
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
 //			[movieView setActivityIndicationHidden:YES animated:YES];
@@ -756,6 +758,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
             
+            [self updateRibbonButtons];
+            
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
@@ -775,6 +779,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self stopVideo];
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
+	// removeAllItems cannot always remove all items. This happens when there's bad videos during resolution. To avoid movie detail view problem, we reclaim the view again
+	for (NMMovieDetailView * dtlView in movieDetailViewArray) {
+		if ( dtlView.video ) {
+			dtlView.video = nil;
+		}
+	}
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
@@ -786,6 +796,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( ![currentChannel isEqual:chnObj] ) {
 		if ( currentChannel ) [currentChannel release];
 		currentChannel = [chnObj retain];
+		chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
@@ -1075,6 +1086,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			case AVPlayerStatusReadyToPlay:
 			{
 				shouldFadeOutVideoThumbnail = YES;
+				break;
+			}
+			case AVPlayerStatusFailed:
+			{
+				controlScrollView.scrollEnabled = YES;
 				break;
 			}
 			default:
@@ -1371,6 +1387,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
         
+        rowIndexToCenterOn = [channelController highlightedChannelIndex];
+
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                       playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 

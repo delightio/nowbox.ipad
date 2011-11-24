@@ -49,7 +49,7 @@ NSString * const NMDidFailPollUserNotification = @"NMDidFailPollUserNotification
 			pdrStr = [acDict objectForKey:@"provider"];
 			if ( [pdrStr isEqualToString:@"youtube"] || [pdrStr isEqualToString:@"you_tube"] ) {
 				// check the date
-				NM_USER_YOUTUBE_LAST_SYNC = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
+				NM_USER_YOUTUBE_SYNC_SERVER_TIME = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
 			}
 		}
 	}

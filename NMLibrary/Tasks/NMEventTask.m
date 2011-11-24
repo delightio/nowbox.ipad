@@ -129,7 +129,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		{
 			NSString * reasonStr = [errorInfo objectForKey:@"reason"];
 			if ( reasonStr ) {
-				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&action=%@&user_id=%d&reason=%@", NM_BASE_URL, channelID, targetID, evtStr, NM_USER_ACCOUNT_ID, [reasonStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&action=%@&user_id=%d&reason=%@", NM_BASE_URL, channelID, targetID, evtStr, NM_USER_ACCOUNT_ID, [NMTask stringByAddingPercentEscapes:reasonStr]];
 			} else {
 				urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, evtStr, NM_USER_ACCOUNT_ID];
 			}
@@ -174,6 +174,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			} else {
 				channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
 			}
+			channel.nm_hidden = (NSNumber *)kCFBooleanFalse;
 			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
 			return YES;
 		}

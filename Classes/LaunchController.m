@@ -62,7 +62,6 @@
 	NM_USER_FACEBOOK_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	NM_USER_YOUTUBE_SYNC_ACTIVE = [userDefaults boolForKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
 	NM_USER_YOUTUBE_LAST_SYNC = [[userDefaults objectForKey:NM_USER_YOUTUBE_LAST_SYNC_KEY] unsignedIntegerValue];
-	NM_USER_YOUTUBE_SYNC_LAST_ISSUED = [[userDefaults objectForKey:NM_USER_YOUTUBE_SYNC_LAST_ISSUED_KEY] unsignedIntegerValue];
 	
 	NM_VIDEO_QUALITY = [userDefaults integerForKey:NM_VIDEO_QUALITY_KEY];
 	NM_USER_YOUTUBE_USER_NAME = [[userDefaults stringForKey:NM_USER_YOUTUBE_USER_NAME_KEY] retain];
@@ -70,9 +69,15 @@
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
-    [[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
+	taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueCheckUpdateForDevice:@"ipad"];
+	taskQueueController.appFirstLaunch = appFirstLaunch;
     [nc addObserver:self selector:@selector(handleDidCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];
-    [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCheckUpdateNotification object:nil];    
+    [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCheckUpdateNotification object:nil];  
+    
+    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
 }
 
 - (void)launchApp {
@@ -91,30 +96,35 @@
 		[self checkUpdateChannels];
 	}
     
-    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
+    [taskQueueController issueGetFeaturedCategories];
 }
 
 - (void)showVideoViewAnimated {
-	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
-	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+	viewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
+	taskQueueController.appFirstLaunch = NO;
+    
+	[viewController showPlaybackView];
 }
 
 - (void)slideInVideoViewAnimated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[viewController showPlaybackView];
+
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
-//	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+//	viewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
+	taskQueueController.appFirstLaunch = NO;
+    
+    [viewController showPlaybackView];
 }
 
 - (void)checkUpdateChannels {
@@ -126,15 +136,15 @@
 		) { 
 		progressLabel.hidden = NO;
 		// get channel
-		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+		[taskQueueController issueGetSubscribedChannels];
 		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
 		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+		[taskQueueController beginNewSession:sid];
 		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
-			[[NMTaskQueueController sharedTaskQueueController] issueSyncRequest];
+			[taskQueueController issueSyncRequest];
 		}
 	}
     
@@ -209,42 +219,43 @@
 		// fire the launch process again
 		if ( [lastFailNotificationName isEqualToString:NMDidFailCreateUserNotification] ) {
 			// begin with creating new user
-			[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+			[taskQueueController issueCreateUser];
 			[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
             [activityIndicator startAnimating];
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelsNotification] ) {
 			// begin with getting channels
-			[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+			[taskQueueController issueGetSubscribedChannels];
 			[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
             [activityIndicator startAnimating];            
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
 			// begin with fetching video list
-			self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+			self.channel = [taskQueueController.dataController lastSessionChannel];
 			[viewController setCurrentChannel:channel startPlaying:NO];
             [activityIndicator startAnimating];            
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
 			// begin with fetching featured categories
-			[[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedCategories];
+			[taskQueueController issueGetFeaturedCategories];
             [activityIndicator startAnimating];         
         } else if ( [lastFailNotificationName isEqualToString:NMDidFailCheckUpdateNotification] ) {
 			// begin with fetching featured categories
-			[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
+			[taskQueueController issueCheckUpdateForDevice:@"ipad"];
             [activityIndicator startAnimating];         
         }
 	} else if ( [notName isEqualToString:UIApplicationWillTerminateNotification] ) {
 		// clean up the database
-		[[NMTaskQueueController sharedTaskQueueController].dataController resetDatabase];
+		[taskQueueController.dataController resetDatabase];
 		NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 		[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 		[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
 		[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
 		[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 		[defs setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+		taskQueueController.appFirstLaunch = NO;
 	}
 }
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-//	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+//	NMDataController * dataCtrl = taskQueueController.dataController;
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {        
         NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
         [dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
@@ -258,7 +269,7 @@
         }
         
         // assign the channel to playback view controller
-        self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+        self.channel = [taskQueueController.dataController lastSessionChannel];
         // no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
         [viewController setCurrentChannel:channel startPlaying:NO];
         // wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
@@ -266,7 +277,7 @@
         // begin new session
         NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
         NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-        [[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
+        [taskQueueController beginNewSession:sid];
         [df setInteger:sid forKey:NM_SESSION_ID_KEY];
         
 		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
@@ -307,7 +318,7 @@
 - (void)handleDidGetVideoNotification:(NSNotification *)aNotification {
 	NSDictionary * info = [aNotification userInfo];
 	if ( [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
-		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController channelNextTo:channel];
+		self.channel = [taskQueueController.dataController channelNextTo:channel];
 		[viewController setCurrentChannel:channel startPlaying:NO];
 	}
 }
