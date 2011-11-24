@@ -13,6 +13,7 @@
 #import "NMDataType.h"
 #import "Analytics.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIView+InteractiveAnimation.h"
 
 #define kMaxTwitterCharacters 119
 #define kDefaultFacebookText @"Watching \"%@\""

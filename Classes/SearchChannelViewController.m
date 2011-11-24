@@ -11,6 +11,7 @@
 #import "NMCachedImageView.h"
 #import "ChannelDetailViewController.h"
 #import "Analytics.h"
+#import "UIView+InteractiveAnimation.h"
 
 @implementation SearchChannelViewController
 
@@ -415,7 +416,7 @@
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView startAnimating];
     
-    [UIView animateWithDuration:0.3
+    [UIView animateWithInteractiveDuration:0.3
                      animations:^{
                          [actView setAlpha:1];
                          [sender setAlpha:0];
