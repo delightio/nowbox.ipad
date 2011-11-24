@@ -9,6 +9,7 @@
 #import "ToolTipController.h"
 #import "ipadAppDelegate.h"
 #import "TouchForwardingView.h"
+#import "UIView+InteractiveAnimation.h"
 
 #pragma mark - ToolTipController
 

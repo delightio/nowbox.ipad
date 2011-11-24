@@ -9,6 +9,7 @@
 #import "SocialLoginViewController.h"
 #import "ipadAppDelegate.h"
 #import "NMLibrary.h"
+#import "UIView+InteractiveAnimation.h"
 
 @implementation SocialLoginViewController
 @synthesize loginWebView, progressContainerView;
@@ -228,7 +229,7 @@
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyTwitterAccountWithURL:theURL];
 				
-				[UIView animateWithDuration:0.25f animations:^{
+				[UIView animateWithInteractiveDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;
 				} completion:^(BOOL finished) {
 					[loadingIndicator startAnimating];
@@ -258,7 +259,7 @@
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyFacebookAccountWithURL:[NSURL URLWithString:urlStr]];
 				
-				[UIView animateWithDuration:0.25f animations:^{
+				[UIView animateWithInteractiveDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;
 				} completion:^(BOOL finished) {
 					[loadingIndicator startAnimating];
@@ -282,7 +283,7 @@
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyYouTubeAccountWithURL:theURL];
 				
-				[UIView animateWithDuration:0.25f animations:^{
+				[UIView animateWithInteractiveDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;
 				} completion:^(BOOL finished) {
 					[loadingIndicator startAnimating];

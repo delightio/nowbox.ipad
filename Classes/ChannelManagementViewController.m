@@ -17,6 +17,7 @@
 #import "SocialLoginViewController.h"
 #import "YouTubeAccountStatusViewController.h"
 #import "Analytics.h"
+#import "UIView+InteractiveAnimation.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -1061,7 +1062,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         UIButton *buttonView = (UIButton *)[cellToUnsubscribeFrom viewWithTag:11];
         
-        [UIView animateWithDuration:0.3
+        [UIView animateWithInteractiveDuration:0.3
                          animations:^{
                              [actView setAlpha:1];
                              [buttonView setAlpha:0];
@@ -1088,7 +1089,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView startAnimating];
     
-    [UIView animateWithDuration:0.3
+    [UIView animateWithInteractiveDuration:0.3
                      animations:^{
                          [actView setAlpha:1];
                          [sender setAlpha:0];

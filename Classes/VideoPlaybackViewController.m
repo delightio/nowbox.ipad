@@ -13,6 +13,7 @@
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
 #import "Analytics.h"
+#import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -531,13 +532,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
-	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
-		movieView.alpha = 1.0f;
-	} completion:^(BOOL finished) {
-//		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
-			[loadedControlView setControlsHidden:NO animated:YES];
-//		}
-	}];
+	[UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionTransitionNone
+                     animations:^{
+                         movieView.alpha = 1.0f;
+                     } completion:^(BOOL finished) {
+                         //		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
+                         [loadedControlView setControlsHidden:NO animated:YES];
+                         //		}
+                     }];
 }
 
 - (NMMovieDetailView *)getFreeMovieDetailView {
@@ -552,7 +554,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 //- (void)hideControlView {
 //	if ( loadedControlView.alpha > 0.0f ) {
-//		[UIView animateWithDuration:0.25f animations:^{
+//		[UIView animateWithInteractiveDuration:0.25f animations:^{
 //			loadedControlView.alpha = 0.0f;
 //		}];
 //	}
@@ -747,13 +749,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// will activate again on "currentItem" change kvo notification
 	controlScrollView.scrollEnabled = NO;
 	// fade out the view
-	[UIView animateWithDuration:0.75f animations:^(void) {
+	[UIView animateWithInteractiveDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
 		currentXOffset += 1024.0f;
 		// scroll to next video
 		// translate the movie view
-		[UIView animateWithDuration:0.5f animations:^{
+		[UIView animateWithInteractiveDuration:0.5f animations:^{
 			controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 		}];
 		if ( [playbackModelController moveToNextVideo] ) {
@@ -897,7 +899,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update offset
 			currentXOffset = newOffset;
 			// move over to the new location
-			[UIView animateWithDuration:0.5f animations:^{
+			[UIView animateWithInteractiveDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 			} completion:^(BOOL finished) {
 				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
@@ -1198,7 +1200,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)delayRestoreDetailView {
 	// update which video the buttons hook up to
 	[self updateRibbonButtons];
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		ribbonView.alpha = 1.0f;
 	}];
 	ribbonView.userInteractionEnabled = YES;
@@ -1240,7 +1242,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
 	if ( NM_RUNNING_IOS_5 ) {
-		[UIView animateWithDuration:0.25f animations:^{
+		[UIView animateWithInteractiveDuration:0.25f animations:^{
 			ribbonView.alpha = 0.15;
 		}];
 		ribbonView.userInteractionEnabled = NO;
@@ -1315,7 +1317,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		ribbonView.alpha = 1.0f;
 	}];
 	ribbonView.userInteractionEnabled = YES;
@@ -1499,7 +1501,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
 	loadedControlView.hidden = NO;
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
@@ -1515,7 +1517,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)controlsViewTouchUp:(id)sender {
 //	UIView * v = (UIView *)sender;
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
 		if ( finished ) {
@@ -1591,7 +1593,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// get current control nub position
 	[loadedControlView updateSeekBubbleLocation];
 	// show seek bubble
-	[UIView animateWithDuration:0.25 animations:^{
+	[UIView animateWithInteractiveDuration:0.25 animations:^{
 		loadedControlView.seekBubbleButton.alpha = 1.0f;
 		if ( NM_AIRPLAY_ACTIVE ) {
 			// hide the airplay indicator
@@ -1606,7 +1608,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self playCurrentVideo];
 	loadedControlView.isSeeking = NO;
 	showMovieControlTimestamp = loadedControlView.timeElapsed;
-	[UIView animateWithDuration:0.25 animations:^{
+	[UIView animateWithInteractiveDuration:0.25 animations:^{
 		loadedControlView.seekBubbleButton.alpha = 0.0f;
 		if ( NM_AIRPLAY_ACTIVE ) {
 			// show the airplay indicator

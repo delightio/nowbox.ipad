@@ -17,6 +17,7 @@
 #import "Analytics.h"
 #import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIView+InteractiveAnimation.h"
 
 #define kChannelGridNumberOfRows 4
 #define kChannelGridNumberOfColumns 3
@@ -155,12 +156,12 @@
 {
     NSLog(@"Onboard process continuing");
     // Allow the user to proceed past the info step
-    [UIView animateWithDuration:0.15 
+    [UIView animateWithInteractiveDuration:0.15 
                      animations:^{
                          settingUpView.alpha = 0;
                      }
                      completion:^(BOOL finished){
-                         [UIView animateWithDuration:0.15 
+                         [UIView animateWithInteractiveDuration:0.15 
                                           animations:^{
                                               proceedToChannelsButton.alpha = 1;
                                           }];
@@ -312,7 +313,7 @@
     BOOL showNextButton = ([selectedCategoryIndexes count] > 0 && userCreated);
         
     if ((proceedToSocialButton.alpha == 0 && showNextButton) || (proceedToSocialButton.alpha == 1 && !showNextButton)) {
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithInteractiveDuration:0.3 animations:^{
             proceedToSocialButton.alpha = (showNextButton ? 1 : 0);
         }];
     }
@@ -422,7 +423,7 @@
         [userDefaults synchronize];
         
         if ([selectedCategoryIndexes count] > 0) {
-            [UIView animateWithDuration:0.3 animations:^{
+            [UIView animateWithInteractiveDuration:0.3 animations:^{
                 proceedToSocialButton.alpha = 1;
             }];
         }
