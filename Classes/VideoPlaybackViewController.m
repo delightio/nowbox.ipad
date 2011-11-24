@@ -375,6 +375,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag {
 	if ( currentChannel ) {
 		if ( currentChannel != chnObj ) {
+			// report event
+			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 			// clear all task related to the previous channel
 			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
@@ -774,6 +776,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)playVideo:(NMVideo *)aVideo {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+
+	// report event
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+
 	// Channel View calls this method when user taps a video from the table
 	// stop video
 	[self stopVideo];
