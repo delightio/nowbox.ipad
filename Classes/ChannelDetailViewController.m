@@ -11,6 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ChannelPreviewView.h"
 #import "Analytics.h"
+#import "UIView+InteractiveAnimation.h"
 
 #define NM_THUMBNAIL_PADDING		20.0f
 
@@ -53,7 +54,7 @@
     if ([channel.nm_subscribed intValue] <= 0) {
         // Not subscribed
         NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
-        [UIView animateWithDuration:0.25f 
+        [UIView animateWithInteractiveDuration:0.25f 
 						 animations:^{
                              if ([channel.populated_at timeIntervalSince1970] <= 0 && [vdoThumbnails count] == 0) {
                                  // Not populated
@@ -262,7 +263,7 @@
 }
 
 -(IBAction)subscribeChannel:(id)sender {
-    [UIView animateWithDuration:0.25f
+    [UIView animateWithInteractiveDuration:0.25f
                      animations:^{
                          subscribeButton.enabled = NO;
                          subscribeAndWatchButton.enabled = NO;
@@ -282,7 +283,7 @@
 }
 
 -(IBAction)subscribeAndWatchChannel:(id)sender {
-    [UIView animateWithDuration:0.25f
+    [UIView animateWithInteractiveDuration:0.25f
                      animations:^{
                          subscribeButton.enabled = NO;
                          subscribeAndWatchButton.enabled = NO;
@@ -309,7 +310,7 @@
 		[alertView release];
 		return;
 	}
-    [UIView animateWithDuration:0.25f
+    [UIView animateWithInteractiveDuration:0.25f
                      animations:^{
                          unsubscribeButton.enabled = NO;
                      }
@@ -339,7 +340,7 @@
     
     if (channel == [userInfo objectForKey:@"channel"]) {
         NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
-        [UIView animateWithDuration:0.25f 
+        [UIView animateWithInteractiveDuration:0.25f 
 						 animations:^{
 							 if ([channel.nm_subscribed intValue] > 0) {
                                  unsubscribeButton.enabled = YES;

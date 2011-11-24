@@ -383,7 +383,14 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	// delete objects
 	if ( objectsToDelete ) {
 		numberOfRowsDeleted = [objectsToDelete count];
-		[ctrl bulkMarkChannelsDeleteStatus:objectsToDelete];
+		if ( command == NMCommandGetChannelsForCategory ) {
+			// do not delete the item. just remove the category
+			for (chnObj in objectsToDelete) {
+				[chnObj removeCategoriesObject:category];
+			}
+		} else {
+			[ctrl bulkMarkChannelsDeleteStatus:objectsToDelete];
+		}
 	}
 	if ( [channelIndexSet count] ) {
 		BOOL fLaunch = [NMTaskQueueController sharedTaskQueueController].appFirstLaunch;

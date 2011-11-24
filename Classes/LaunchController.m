@@ -10,6 +10,7 @@
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
 #import "ipadAppDelegate.h"
+#import "UIView+InteractiveAnimation.h"
 
 #define GP_CHANNEL_UPDATE_INTERVAL	-600.0f //-12.0 * 3600.0
 #ifdef DEBUG_ONBOARD_PROCESS
@@ -157,7 +158,7 @@
 
 - (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
 {
-        [UIView animateWithDuration:0.3
+        [UIView animateWithInteractiveDuration:0.3
                          animations:^{
                              activityIndicator.alpha = 0;
                          }

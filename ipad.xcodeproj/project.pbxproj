@@ -97,6 +97,7 @@
 		83D21A24146DFE5D008393F1 /* onboard-category-background-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A21146DFE5D008393F1 /* onboard-category-background-default.png */; };
 		83D21A25146DFE5D008393F1 /* onboard-category-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A22146DFE5D008393F1 /* onboard-category-background-selected.png */; };
 		83D21A26146DFE5D008393F1 /* onboard-category-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A23146DFE5D008393F1 /* onboard-category-icon.png */; };
+		83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */; };
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
@@ -379,6 +380,8 @@
 		83D21A21146DFE5D008393F1 /* onboard-category-background-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-background-default.png"; sourceTree = "<group>"; };
 		83D21A22146DFE5D008393F1 /* onboard-category-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-background-selected.png"; sourceTree = "<group>"; };
 		83D21A23146DFE5D008393F1 /* onboard-category-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-icon.png"; sourceTree = "<group>"; };
+		83D84A2C147DD65A00474EBC /* UIView+InteractiveAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+InteractiveAnimation.h"; sourceTree = "<group>"; };
+		83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+InteractiveAnimation.m"; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -816,6 +819,8 @@
 				83F8E2DC1468C3720051D990 /* ShareViewController.m */,
 				A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */,
 				A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */,
+				83D84A2C147DD65A00474EBC /* UIView+InteractiveAnimation.h */,
+				83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1420,6 +1425,7 @@
 				837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */,
 				83810AE01464A633003D3F76 /* GridScrollView.m in Sources */,
 				A9E3C051146DCC4C005C976F /* YouTubeAccountStatusViewController.m in Sources */,
+				83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
