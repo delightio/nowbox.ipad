@@ -418,6 +418,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 //	[self updateRibbonButtons];
     
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:0 playedToEnd:NO];
+	
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                        playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                        playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
@@ -801,6 +803,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
 	[loadedControlView resetView];
+
+	[nowboxTaskController issueSendViewEventForVideo:aVideo elapsedSeconds:0 playedToEnd:NO];
+
 	[pool release];
 }
 
@@ -1272,6 +1277,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
             
+			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:0 playedToEnd:NO];
+			
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
@@ -1296,6 +1303,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[self updateRibbonButtons];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
             
+			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:0 playedToEnd:NO];
+			
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
