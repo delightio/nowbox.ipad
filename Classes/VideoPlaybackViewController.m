@@ -418,8 +418,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 //	[self updateRibbonButtons];
     
-	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:0 playedToEnd:NO];
-	
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                        playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                        playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
@@ -803,9 +801,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
 	[loadedControlView resetView];
-
-	[nowboxTaskController issueSendViewEventForVideo:aVideo elapsedSeconds:0 playedToEnd:NO];
-
 	[pool release];
 }
 
@@ -1266,6 +1261,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 //	scrollView.scrollEnabled = YES; move to animation handler
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
@@ -1276,8 +1272,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
-            
-			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:0 playedToEnd:NO];
 			
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
@@ -1303,8 +1297,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[self updateRibbonButtons];
 			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
             
-			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:0 playedToEnd:NO];
-			
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
