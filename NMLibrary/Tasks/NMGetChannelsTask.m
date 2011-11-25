@@ -173,7 +173,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			urlStr = [NSString stringWithFormat:@"http://%@/channels/%@?user_id=%d", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetFeaturedChannelsForCategories:
-			urlStr = [NSString stringWithFormat:@"http://%@/channels?category_ids=%@&type=featured", NM_BASE_URL, [categoryIDs componentsJoinedByString:@","], NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"http://%@/channels?category_ids=%@&type=featured&user_id=%d", NM_BASE_URL, [categoryIDs componentsJoinedByString:@","], NM_USER_ACCOUNT_ID];
 			break;
 		default:
 			break;
