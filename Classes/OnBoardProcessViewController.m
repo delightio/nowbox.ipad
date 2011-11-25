@@ -301,12 +301,13 @@
 
 - (IBAction)categorySelected:(id)sender
 {
-    NSUInteger index = [sender tag];
+	UIButton * categoryButton = (UIButton *)sender;
+    NSUInteger index = [categoryButton.superview tag];
     if ([selectedCategoryIndexes containsIndex:index]) {
-        [sender setSelected:NO];
+        [categoryButton setSelected:NO];
         [selectedCategoryIndexes removeIndex:index];
     } else {
-        [sender setSelected:YES];
+        [categoryButton setSelected:YES];
         [selectedCategoryIndexes addIndex:index];
     }
     
@@ -570,16 +571,20 @@
         // Categories
         NMCategory *category = [featuredCategories objectAtIndex:index];
         
-        UIButton *categoryButton = (UIButton *) [gridScrollView dequeueReusableSubview];
-        if (!categoryButton) {
+		UIView * categoryView = [gridScrollView dequeueReusableSubview];
+		UIButton * categoryButton;
+		NMCachedImageView * categoryThumbnail;
+        if (!categoryView) {
+			categoryView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
             categoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+			categoryButton.tag = 1001;
             [categoryButton addTarget:self action:@selector(categorySelected:) forControlEvents:UIControlEventTouchUpInside];
             [categoryButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
             [categoryButton setBackgroundImage:[UIImage imageNamed:@"onboard-category-background-default.png"] forState:UIControlStateNormal];
             [categoryButton setBackgroundImage:[UIImage imageNamed:@"onboard-category-background-selected.png"] forState:UIControlStateSelected];
-            [categoryButton setImage:[UIImage imageNamed:@"onboard-category-icon.png"] forState:UIControlStateNormal];
-            [categoryButton setImageEdgeInsets:UIEdgeInsetsMake(0, 18, 2, 0)];
-            [categoryButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 30, 2, 0)];            
+//            [categoryButton setImage:[UIImage imageNamed:@"onboard-category-icon.png"] forState:UIControlStateNormal];
+//            [categoryButton setImageEdgeInsets:UIEdgeInsetsMake(0, 18, 2, 0)];
+            [categoryButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 68, 2, 0)];            
             [categoryButton setTitleColor:[UIColor colorWithRed:76/255.0 green:77/255.0 blue:74/255.0 alpha:1] forState:UIControlStateNormal];
             [categoryButton setTitleColor:[UIColor colorWithRed:76/255.0 green:77/255.0 blue:74/255.0 alpha:1] forState:UIControlStateSelected];
             [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
@@ -594,12 +599,23 @@
                 font = [UIFont fontWithName:@"Futura-Medium" size:18.0];
             }
             [categoryButton.titleLabel setFont:font];
-        }
+			categoryButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+			[categoryView addSubview:categoryButton];
+			// thumbnail image
+			categoryThumbnail = [[NMCachedImageView alloc] initWithFrame:CGRectMake(18.0f, 26.0f, 40.0f, 40.0f)];
+			categoryThumbnail.tag = 1002;
+			categoryView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+			[categoryView addSubview:categoryThumbnail];
+        } else {
+			categoryButton = (UIButton *)[categoryView viewWithTag:1001];
+			categoryThumbnail = (NMCachedImageView *)[categoryView viewWithTag:1002];
+		}
         
         [categoryButton setTitle:[category.title uppercaseString] forState:UIControlStateNormal];
         [categoryButton setSelected:[selectedCategoryIndexes containsIndex:index]];
+		[categoryThumbnail setImageForCategory:category];
         
-        return categoryButton;
+        return categoryView;
         
     } else {
         // Channels

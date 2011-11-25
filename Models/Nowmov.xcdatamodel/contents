@@ -4,6 +4,8 @@
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_last_refresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thumbnail_uri" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="channels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMChannel" inverseName="categories" inverseEntity="NMChannel"/>
     </entity>
@@ -81,7 +83,7 @@
         <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="detail" inverseEntity="NMVideo" indexed="YES"/>
     </entity>
     <elements>
-        <element name="NMCategory" positionX="18" positionY="54" width="128" height="120"/>
+        <element name="NMCategory" positionX="18" positionY="54" width="128" height="150"/>
         <element name="NMChannel" positionX="288" positionY="-207" width="153" height="375"/>
         <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
         <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="195"/>

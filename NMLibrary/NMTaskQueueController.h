@@ -84,6 +84,7 @@
 - (void)issueGetChannelWithID:(NSInteger)chnID;
 - (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
 - (void)issueCompareSubscribedChannels;
+- (NMImageDownloadTask *)issueGetThumbnailForCategory:(NMCategory *)catObj;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;

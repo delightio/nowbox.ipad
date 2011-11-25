@@ -9,6 +9,7 @@
 
 @class NMFileExistsCache;
 @class NMImageDownloadTask;
+@class NMCategory;
 @class NMChannel;
 @class NMPreviewThumbnail;
 @class NMVideo;
@@ -46,8 +47,10 @@
 - (void)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
 - (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
+- (void)setImageForCategory:(NMCategory *)cat imageView:(NMCachedImageView *)iv;
 
 // interface for NMCachedImageView
+- (NMImageDownloadTask *)downloadImageForCategory:(NMCategory *)cat imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
@@ -55,6 +58,7 @@
 //- (void)saveCacheWithInfo:(NSDictionary *)userInfo;
 
 // saving image from server
+- (void)writeCategoryImageData:(NSData *)aData withFilename:(NSString *)fname;
 - (void)writeAuthorImageData:(NSData *)aData withFilename:(NSString *)fname;
 - (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname;
 - (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname;

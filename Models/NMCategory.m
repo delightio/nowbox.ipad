@@ -15,6 +15,8 @@
 @dynamic nm_id;
 @dynamic nm_last_refresh;
 @dynamic nm_sort_order;
+@dynamic nm_thumbnail_file_name;
+@dynamic thumbnail_uri;
 @dynamic title;
 @dynamic channels;
 

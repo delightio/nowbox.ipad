@@ -10,6 +10,7 @@
 
 @implementation NMCachedImageView
 @synthesize downloadTask;
+@synthesize category;
 @synthesize channel;
 @synthesize video;
 @synthesize videoDetail;
@@ -38,6 +39,7 @@
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[downloadTask release];
+	[category release];
 	[channel release];
 	[video release];
 	[videoDetail release];
@@ -113,6 +115,11 @@
 	self.previewThumbnail = pv;
 	// check if there's local cache
 	[cacheController setImageForPreviewThumbnail:pv imageView:self];
+}
+
+- (void)setImageForCategory:(NMCategory *)cat {
+	self.category = cat;
+	[cacheController setImageForCategory:cat imageView:self];
 }
 
 - (void)cancelDownload {
