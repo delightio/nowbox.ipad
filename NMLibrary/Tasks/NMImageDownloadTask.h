@@ -8,6 +8,7 @@
 
 #import "NMTask.h"
 
+@class NMCategory;
 @class NMChannel;
 @class NMPreviewThumbnail;
 @class NMVideo;
@@ -17,6 +18,7 @@
 @interface NMImageDownloadTask : NMTask {
 	NSString * imageURLString;
 	NSString * originalImagePath;
+	NMCategory * category;
 	NMChannel * channel;
 	NMVideoDetail * videoDetail;
 	NMVideo * video;
@@ -28,6 +30,7 @@
 	NSInteger retainCount;
 }
 
+@property (nonatomic, retain) NMCategory * category;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMPreviewThumbnail * previewThumbnail;
 @property (nonatomic, retain) NMVideo * video;
@@ -38,11 +41,13 @@
 @property (nonatomic, retain) NSString * originalImagePath;
 @property (nonatomic, retain) NSHTTPURLResponse * httpResponse;
 
++ (NSUInteger)commandIndexForCategory:(NMCategory *)cat;
 + (NSUInteger)commandIndexForChannel:(NMChannel *)chn;
 + (NSUInteger)commandIndexForAuthor:(NMVideoDetail *)dtl;
 + (NSUInteger)commandIndexForVideo:(NMVideo *)vdo;
 + (NSUInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 
+- (id)initWithCategory:(NMCategory *)cat;
 - (id)initWithChannel:(NMChannel *)chn;
 - (id)initWithAuthor:(NMVideoDetail *)dtl;
 - (id)initWithVideoThumbnail:(NMVideo *)vdo;

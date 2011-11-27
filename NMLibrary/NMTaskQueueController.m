@@ -10,6 +10,7 @@
 #import "NMTaskType.h"
 #import "NMNetworkController.h"
 #import "NMDataController.h"
+#import "NMCategory.h"
 #import "NMChannel.h"
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
@@ -435,6 +436,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	NMImageDownloadTask * task = nil;
 	if ( dtlObj.author_thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithAuthor:dtlObj];
+		[networkController addNewConnectionForTask:task];
+		[task autorelease];
+	}
+	return task;
+}
+
+- (NMImageDownloadTask *)issueGetThumbnailForCategory:(NMCategory *)catObj {
+	NMImageDownloadTask * task = nil;
+	if ( catObj.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithCategory:catObj];
 		[networkController addNewConnectionForTask:task];
 		[task autorelease];
 	}

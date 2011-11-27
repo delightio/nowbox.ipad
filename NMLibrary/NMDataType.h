@@ -41,6 +41,7 @@ typedef enum {
 	NMCommandGetMoreVideoForChannel,
 	NMCommandGetYouTubeDirectURL,
 	NMCommandGetVimeoDirectURL,
+	NMCommandGetCategoryThumbnail,
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
 	NMCommandGetVideoThumbnail,
