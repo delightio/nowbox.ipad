@@ -250,6 +250,10 @@
     
     currentView = splashView;
     
+    // Preload the categories view so that we can start downloading category icons
+    categoriesView.frame = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
+    [self.view addSubview:categoriesView];
+    
     [[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 }
 
