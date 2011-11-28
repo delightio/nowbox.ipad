@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NMVideoDetail * videoDetail;
 @property (nonatomic, retain) NMPreviewThumbnail * previewThumbnail;
+@property (nonatomic, assign) BOOL adjustsImageOnHighlight;
 
 - (void)setImageForChannel:(NMChannel *)chn;
 - (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl;

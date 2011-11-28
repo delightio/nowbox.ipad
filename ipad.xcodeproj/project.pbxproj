@@ -101,6 +101,9 @@
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
+		83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */; };
+		83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */; };
+		83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C8148433B900ED7993 /* UIImage+Tint.m */; };
 		83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C48C14509EF400AD8880 /* ToolTip.m */; };
 		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
 		83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2DC1468C3720051D990 /* ShareViewController.m */; };
@@ -386,6 +389,11 @@
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
 		83E0466F144F79EC00C91525 /* tooltip-bad-video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-bad-video.png"; sourceTree = "<group>"; };
+		83EF90C214841F0200ED7993 /* OnBoardProcessCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessCategoryView.h; sourceTree = "<group>"; };
+		83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessCategoryView.m; sourceTree = "<group>"; };
+		83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessCategoryView.xib; sourceTree = "<group>"; };
+		83EF90C7148433B900ED7993 /* UIImage+Tint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Tint.h"; sourceTree = "<group>"; };
+		83EF90C8148433B900ED7993 /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
 		83F7C48B14509EF400AD8880 /* ToolTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTip.h; sourceTree = "<group>"; };
 		83F7C48C14509EF400AD8880 /* ToolTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTip.m; sourceTree = "<group>"; };
 		83F7C48F1450B22700AD8880 /* TouchForwardingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchForwardingView.h; sourceTree = "<group>"; };
@@ -688,6 +696,19 @@
 			path = NSData_Base64;
 			sourceTree = "<group>";
 		};
+		83EF90CA148433D000ED7993 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				83EF90C7148433B900ED7993 /* UIImage+Tint.h */,
+				83EF90C8148433B900ED7993 /* UIImage+Tint.m */,
+				22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */,
+				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
+				83D84A2C147DD65A00474EBC /* UIView+InteractiveAnimation.h */,
+				83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
 		A90F21FD143F63CA006B298D /* HTML */ = {
 			isa = PBXGroup;
 			children = (
@@ -706,6 +727,7 @@
 			children = (
 				A97050A213438F980022BF2C /* Interfaces */,
 				A970500F13438F860022BF2C /* Classes */,
+				83EF90CA148433D000ED7993 /* Categories */,
 				A970501813438F860022BF2C /* Images */,
 				A970503913438F860022BF2C /* Models */,
 				A970503F13438F860022BF2C /* NMLibrary */,
@@ -803,8 +825,6 @@
 				A99FB6C8140EAC0400689040 /* ChannelDetailViewController.m */,
 				A98555DE141758CD00079453 /* KeychainItemWrapper.h */,
 				A98555DF141758CD00079453 /* KeychainItemWrapper.m */,
-				22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */,
-				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
 				A9389B83143109CE00959946 /* LaunchController.h */,
 				A9389B84143109CE00959946 /* LaunchController.m */,
 				83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */,
@@ -819,8 +839,6 @@
 				83F8E2DC1468C3720051D990 /* ShareViewController.m */,
 				A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */,
 				A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */,
-				83D84A2C147DD65A00474EBC /* UIView+InteractiveAnimation.h */,
-				83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1082,6 +1100,8 @@
 				83F7C4901450B22700AD8880 /* TouchForwardingView.m */,
 				8381B648145F728A00696110 /* FindChannelTableCell.h */,
 				8381B649145F728A00696110 /* FindChannelTableCell.m */,
+				83EF90C214841F0200ED7993 /* OnBoardProcessCategoryView.h */,
+				83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */,
 				837C741314631012009F3C2A /* OnBoardProcessChannelView.h */,
 				837C741414631012009F3C2A /* OnBoardProcessChannelView.m */,
 				83810ADE1464A633003D3F76 /* GridScrollView.h */,
@@ -1106,6 +1126,7 @@
 				A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */,
 				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
 				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
+				83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */,
 				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
 				221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */,
 				83F8E2DF1468C4B40051D990 /* ShareView.xib */,
@@ -1357,6 +1378,7 @@
 				A9C473071473961400BE45CA /* YoutubeError.html in Resources */,
 				8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */,
 				83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */,
+				83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1426,6 +1448,8 @@
 				83810AE01464A633003D3F76 /* GridScrollView.m in Sources */,
 				A9E3C051146DCC4C005C976F /* YouTubeAccountStatusViewController.m in Sources */,
 				83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */,
+				83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */,
+				83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
