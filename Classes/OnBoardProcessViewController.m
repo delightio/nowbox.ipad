@@ -287,7 +287,7 @@
     
     slideInView.frame = CGRectOffset(slideInView.frame, 0, 200);
     [UIView animateWithDuration:0.5
-                          delay:0.5
+                          delay:1.5
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          slideInView.frame = CGRectOffset(slideInView.frame, 0, -200);                         
