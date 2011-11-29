@@ -143,6 +143,13 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	return userPlaceholderImage;
 }
 
+- (UIImage *)channelPlaceholderImage {
+	if ( channelPlaceholderImage == nil ) {
+		channelPlaceholderImage = [[UIImage imageNamed:@"onboard-category-icon.png"] retain];
+	}
+	return channelPlaceholderImage;
+}
+
 - (UIImage *)channelContainerBackgroundNormalImage {
 	if ( channelContainerBackgroundNormalImage == nil ) {
 		channelContainerBackgroundNormalImage = [[UIImage imageNamed:@"channel-list-cell-normal"] retain];
@@ -344,7 +351,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
     [channelPanelCellDimmedDivider release];
     
     [channelBorderColor release];
-	[userPlaceholderImage release];
+	[userPlaceholderImage release], [channelPlaceholderImage release];
 	[toolbarExpandImage release], [toolbarExpandHighlightedImage release];
 	[toolbarCollapseImage release], [toolbarCollapseHighlightedImage release];
 

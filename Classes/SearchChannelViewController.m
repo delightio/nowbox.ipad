@@ -11,12 +11,14 @@
 #import "NMCachedImageView.h"
 #import "ChannelDetailViewController.h"
 #import "Analytics.h"
+#import "UIView+InteractiveAnimation.h"
 
 @implementation SearchChannelViewController
 
 @synthesize searchBar, tableView, channelCell;
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize progressView;
+@synthesize noResultsView;
 @synthesize lastSearchQuery;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -60,7 +62,8 @@
     
 	// load the channel detail view
 	channelDetailViewController = [[ChannelDetailViewController alloc] initWithNibName:@"ChannelDetailView" bundle:nil];
-    
+    channelDetailViewController.enableUnsubscribe = YES;
+
     [self fetchedResultsController];
     [self clearSearchResults];
 }
@@ -69,6 +72,7 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     self.progressView = nil;
+    self.noResultsView = nil;
     
     [super viewDidUnload];
 }
@@ -89,6 +93,7 @@
 	[fetchedResultsController_ release];
  	[countFormatter release];
     [progressView release];
+    [noResultsView release];
     [lastSearchQuery release];
     
 	[super dealloc];
@@ -154,12 +159,15 @@
     
     buttonView = (UIButton *)[cell viewWithTag:11];
     backgroundView = (UIImageView *)[cell viewWithTag:14];
+    UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
     if ([chn.nm_subscribed boolValue]) {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
+        newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
     } else {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
+        newChannelIndicator.hidden = YES;        
     }
         
     UIActivityIndicatorView *actView;
@@ -181,6 +189,7 @@
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:indexPath];
+    
     channelDetailViewController.channel = chn;
     
     [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
@@ -227,7 +236,11 @@
     if ([keyword isEqualToString:searchText]) {
         // These are the search results we're looking for
         progressView.hidden = YES;
-                
+        
+        // There must be an easier way to check if the results are empty. Querying the FRC always returns 0 rows at this point.
+        NSSet *channels = [NMTaskQueueController sharedTaskQueueController].dataController.internalSearchCategory.channels;
+        noResultsView.hidden = ([channels count] > 1 || [[[channels anyObject] nm_id] integerValue] > 0);
+        
         // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
         resigningFirstResponder = YES;
         [searchBar resignFirstResponder];
@@ -241,6 +254,7 @@
 
 - (void)handleDidFailNotification:(NSNotification *)aNotification {
     progressView.hidden = YES;
+    noResultsView.hidden = YES;
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
                                                         message:@"The search could not be completed. Please try again later." 
@@ -352,12 +366,12 @@
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
             break;
-    }
+    }    
 }
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-	[tableView endUpdates];
+	[tableView endUpdates];    
 }
 
 -(void)clearSearchResults {
@@ -387,9 +401,10 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [self clearSearchResults];
     progressView.hidden = YES;
+    noResultsView.hidden = YES;
     
     if ([searchText length] > 0) {
-        [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0f];        
+        [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0];        
     }
 }
 
@@ -401,7 +416,7 @@
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView startAnimating];
     
-    [UIView animateWithDuration:0.3
+    [UIView animateWithInteractiveDuration:0.3
                      animations:^{
                          [actView setAlpha:1];
                          [sender setAlpha:0];
@@ -437,9 +452,10 @@
     if ([searchText length] > 0) {
         NSLog(@"issuing search for text %@", searchText);
         progressView.hidden = NO;
+        noResultsView.hidden = YES;
         [ctrl issueChannelSearchForKeyword:searchText];
         
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:@"search_text"]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:AnalyticsPropertySearchQuery]];
         self.lastSearchQuery = searchText;
     }
 }

@@ -9,6 +9,7 @@
 #import "ToolTipController.h"
 #import "ipadAppDelegate.h"
 #import "TouchForwardingView.h"
+#import "UIView+InteractiveAnimation.h"
 
 #pragma mark - ToolTipController
 
@@ -255,6 +256,8 @@ static ToolTipController *toolTipController = nil;
         }
     }
     
+/*  // Need to implement this better. [NSUserDefaults synchronize] is too slow.  
+ 
     // Update the global elapsed counts
     NSString *key = nil;
     switch (eventType) {
@@ -270,7 +273,7 @@ static ToolTipController *toolTipController = nil;
         int newValue = [[userDefaults objectForKey:key] intValue] + 1;
         [userDefaults setObject:[NSNumber numberWithInt:newValue] forKey:key];
         [userDefaults synchronize];
-    }
+    }*/
     
     // Check if any tooltips can be shown
     [self performToolTipCheckForEventType:eventType sender:sender];
@@ -342,7 +345,7 @@ static ToolTipController *toolTipController = nil;
     }
     [monitoredToolTips minusSet:tooltipsToRemove];
     
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, @"tooltip_name", nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventPresentTooltip properties:[NSDictionary dictionaryWithObjectsAndKeys:tooltip.name, AnalyticsPropertyTooltipName, nil]];
 
     if (tooltip.resetCountsOnDisplay) {
         // Tooltip can be shown again, reset all the criteria

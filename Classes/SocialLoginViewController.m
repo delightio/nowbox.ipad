@@ -9,6 +9,7 @@
 #import "SocialLoginViewController.h"
 #import "ipadAppDelegate.h"
 #import "NMLibrary.h"
+#import "UIView+InteractiveAnimation.h"
 
 @implementation SocialLoginViewController
 @synthesize loginWebView, progressContainerView;
@@ -60,7 +61,7 @@
 			
 		case NMLoginYouTubeType:
 			self.title = @"YouTube";
-			filename = @"YouTubeLoading";
+			filename = @"YoutubeLoading";
 			break;
 			
 		default:
@@ -69,9 +70,11 @@
 	NSURL * theURL = [[NSBundle mainBundle] URLForResource:filename withExtension:@"html"];
 	[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
 	
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
-	[nc addObserver:self selector:@selector(handleLoginFailNotification:) name:NMDidFailVerifyUserNotification object:nil];
+	defaultCenter = [NSNotificationCenter defaultCenter];
+	[defaultCenter addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	[defaultCenter addObserver:self selector:@selector(handleLoginFailNotification:) name:NMDidFailVerifyUserNotification object:nil];
+	
+	appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 }
 
 - (void)viewDidUnload
@@ -89,7 +92,7 @@
 }
 
 - (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[defaultCenter removeObserver:self];
 	NSHTTPCookie *cookie;
 	NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 	for (cookie in [storage cookies]) {
@@ -105,17 +108,31 @@
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)delayShowYouTubeErroView {
+	progressContainerView.alpha = 0.0f;
+	NSURL * theURL = [[NSBundle mainBundle] URLForResource:@"YoutubeError" withExtension:@"html"];
+	[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
+	self.navigationItem.hidesBackButton = NO;
+}
+
 - (void)handleSocialMediaLoginNotificaiton:(NSNotification *)aNotificaiton {
 	// save the user
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
+	// user stream channels
 	[defs setInteger:NM_USER_FACEBOOK_CHANNEL_ID forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	[defs setInteger:NM_USER_TWITTER_CHANNEL_ID forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+	[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+	//uid
 	[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 	[defs setBool:NM_USER_YOUTUBE_SYNC_ACTIVE forKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
 	[defs setObject:NM_USER_YOUTUBE_USER_NAME forKey:NM_USER_YOUTUBE_USER_NAME_KEY];
+	[defs synchronize];
     
-    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], @"auth_facebook",
-                                                      [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], @"auth_twitter", nil]];
+    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                                      [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+                                                      [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
     switch (loginType) {
         case NMLoginTwitterType:
 		{
@@ -126,9 +143,8 @@
 			// channel refresh command is issued in TaskQueueScheduler
 			
 			// listen to channel refresh notification 
-			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
            break;
 		}
 			
@@ -141,9 +157,8 @@
 			// channel refresh command is issued in TaskQueueScheduler
 			
 			// listen to channel refresh notification 
-			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
-			[nc addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
            break;
 		}
 			
@@ -152,10 +167,8 @@
             [[MixpanelAPI sharedAPI] track:AnalyticsEventSubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:@"YouTube", AnalyticsPropertyChannelName,
 																					@"channelmanagement_login", AnalyticsPropertySender, 
 																					[NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, nil]];
-			// dismiss the view right away
-			progressLabel.text = @"Verified Successfully";
-			[loadingIndicator stopAnimating];
-			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidGetChannelsNotification object:nil];
+			[defaultCenter addObserver:self selector:@selector(handleChannelRefreshNotification:) name:NMDidFailGetChannelsNotification object:nil];
 			break;
 			
         default:
@@ -164,15 +177,25 @@
 }
 
 - (void)handleChannelRefreshNotification:(NSNotification *)aNotification {
-	progressLabel.text = @"Verified Successfully";
+	progressLabel.text = @"Authorized Successfully";
 	[loadingIndicator stopAnimating];
-	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5f];
+	if ( !appFirstLaunch ) {
+		[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
+	}
 }
 
 - (void)handleLoginFailNotification:(NSNotification *)aNotification {
-	progressLabel.text = @"Verification Process Failed";
+	progressLabel.text = @"Authorization Process Failed";
 	[loadingIndicator stopAnimating];
-	[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.0f];
+	if ( loginType == NMLoginYouTubeType ) {
+		// show a longer error view
+		[self performSelector:@selector(delayShowYouTubeErroView) withObject:nil afterDelay:1.5];
+	} else {
+		if ( !appFirstLaunch ) {
+			
+			[self performSelector:@selector(delayPushOutView) withObject:nil afterDelay:1.5];
+		}
+	}
     
     switch (loginType) {
         case NMLoginTwitterType:
@@ -195,7 +218,7 @@
 	switch (loginType) {
 		case NMLoginTwitterType:
 		{
-			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
+//			NSLog(@"Twitter URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/twitter/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
@@ -206,7 +229,7 @@
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyTwitterAccountWithURL:theURL];
 				
-				[UIView animateWithDuration:0.25f animations:^{
+				[UIView animateWithInteractiveDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;
 				} completion:^(BOOL finished) {
 					[loadingIndicator startAnimating];
@@ -219,7 +242,7 @@
 			
 		case NMLoginFacebookType:
 		{
-			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
+//			NSLog(@"Facebook URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/facebook/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
@@ -231,12 +254,12 @@
 				// create the new URL by inserting the user ID
 				NSArray * ay = [[theURL absoluteString] componentsSeparatedByString:@"#"];
 				NSString * urlStr = [NSString stringWithFormat:@"%@&user_id=%d", [ay objectAtIndex:0], NM_USER_ACCOUNT_ID];
-				NSLog(@"Facebook verification URL: %@", urlStr);
+//				NSLog(@"Facebook verification URL: %@", urlStr);
 				
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyFacebookAccountWithURL:[NSURL URLWithString:urlStr]];
 				
-				[UIView animateWithDuration:0.25f animations:^{
+				[UIView animateWithInteractiveDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;
 				} completion:^(BOOL finished) {
 					[loadingIndicator startAnimating];
@@ -249,7 +272,7 @@
 			
 		case NMLoginYouTubeType:
 		{
-			NSLog(@"YouTube URL: %@", [theURL absoluteString]);
+//			NSLog(@"YouTube URL: %@", [theURL absoluteString]);
 			if ( [[theURL host] isEqualToString:NM_BASE_URL_TOKEN] && [[theURL path] isEqualToString:@"/auth/you_tube/callback"] ) {
 				self.navigationItem.hidesBackButton = YES;
 				// we should intercept this call. Use task queue scheduler.
@@ -260,13 +283,25 @@
 				// show a dark gray screen for now.
 				[[NMTaskQueueController sharedTaskQueueController] issueVerifyYouTubeAccountWithURL:theURL];
 				
-				[UIView animateWithDuration:0.25f animations:^{
+				[UIView animateWithInteractiveDuration:0.25f animations:^{
 					progressContainerView.alpha = 1.0f;
 				} completion:^(BOOL finished) {
 					[loadingIndicator startAnimating];
 				}];
 				
 				return NO;
+			} else {
+				NSString * urlStr = [theURL absoluteString];
+				if ( urlStr ) {
+					NSRange rng = [urlStr rangeOfString:@"ltmpl=sso"];
+					if ( rng.location != NSNotFound ) {
+						// need to modify this
+						urlStr = [urlStr stringByReplacingCharactersInRange:rng withString:@"ltmpl=mobile"];
+						NSURLRequest * request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
+						[webView performSelector:@selector(loadRequest:) withObject:request afterDelay:0.0];
+						return NO;
+					}
+				}
 			}
 			break;
 		}

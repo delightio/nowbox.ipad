@@ -22,6 +22,11 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 @synthesize errorInfo;
 @synthesize targetID;
 
++ (NSString *)stringByAddingPercentEscapes:(NSString *)str {
+	CFStringRef percentWord = CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)str, NULL, CFSTR(":/?#[]@!$&’()*+,;="), kCFStringEncodingUTF8);
+	str = (NSString *)percentWord;
+	return [str autorelease];
+}
 
 - (NSDate *)dateTimeFromString:(NSString *)str {
 	if ( _dateTimeFormatter == nil ) {
@@ -87,7 +92,7 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 - (NSUInteger)commandIndex {
 	if ( targetID ) {
 		NSUInteger tid = [self.targetID unsignedIntegerValue];
-		return tid << 5 | (NSUInteger)command;
+		return tid << 6 | (NSUInteger)command;
 	}
 	return (NSUInteger)command;
 }

@@ -173,7 +173,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			urlStr = [NSString stringWithFormat:@"http://%@/channels/%@?user_id=%d", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetFeaturedChannelsForCategories:
-			urlStr = [NSString stringWithFormat:@"http://%@/channels?category_ids=%@&type=featured", NM_BASE_URL, [categoryIDs componentsJoinedByString:@","], NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"http://%@/channels?category_ids=%@&type=featured&user_id=%d", NM_BASE_URL, [categoryIDs componentsJoinedByString:@","], NM_USER_ACCOUNT_ID];
 			break;
 		default:
 			break;
@@ -279,11 +279,13 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	switch (command) {
 		case NMCommandGetChannelsForCategory:
 			// if getting channel for a category, check if the category contains the channel
+			numberOfRowsFromServer = [parsedObjectDictionary count];
 			theChannelPool = category.channels;
 			category.nm_last_refresh = [NSDate date];
 			break;
 		case NMCommandGetSubscribedChannels:
 			// if getting subscribed channel, compare with all existing subscribed channels
+			numberOfRowsFromServer = [parsedObjectDictionary count];
 			theChannelPool = ctrl.subscribedChannels;
 			break;
 		case NMCommandGetFeaturedChannelsForCategories:
@@ -306,8 +308,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 					chnObj = [ctrl insertNewChannelForID:theKey];
 					[chnObj setValuesForKeysWithDictionary:chnDict];
 					if ( [catIDAy count] ) {
-						catObj = [ctrl categoryForID:[catIDAy objectAtIndex:0]];
-						[catObj addChannelsObject:chnObj];
+                        for (NSNumber *categoryId in catIDAy) {
+                            catObj = [ctrl categoryForID:categoryId];
+                            [catObj addChannelsObject:chnObj];                            
+                        }
 					}
 					// there's no need to set relationship with the existing channel objects.
 				} else if ( [chnObj.nm_id integerValue] == 0 ) {
@@ -344,8 +348,17 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			}
 			return NO;		// return this function
 		}
+		case NMCommandGetChannelWithID:
+			numberOfRowsFromServer = 1;
+			break;
+			
 		default:
 			break;
+	}
+	
+	if ( numberOfRowsFromServer == 0 ) {
+		// there's no data channel from the server
+		return NO;
 	}
 	
 	NSUInteger cid;
@@ -368,8 +381,20 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		}
 	}
 	// delete objects
-	if ( objectsToDelete ) [ctrl batchDeleteChannels:objectsToDelete];
+	if ( objectsToDelete ) {
+		numberOfRowsDeleted = [objectsToDelete count];
+		if ( command == NMCommandGetChannelsForCategory ) {
+			// do not delete the item. just remove the category
+			for (chnObj in objectsToDelete) {
+				[chnObj removeCategoriesObject:category];
+			}
+		} else {
+			[ctrl bulkMarkChannelsDeleteStatus:objectsToDelete];
+		}
+	}
 	if ( [channelIndexSet count] ) {
+		BOOL fLaunch = [NMTaskQueueController sharedTaskQueueController].appFirstLaunch;
+		NSNumber * yesNum = [NSNumber numberWithBool:YES];
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 			// check if the channel exists among all stored
@@ -383,11 +408,15 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				[chn setValuesForKeysWithDictionary:chnDict];
 				// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
 				if ( [chn.type integerValue] == NMChannelUserType ) {
-					chn.nm_hidden = [NSNumber numberWithBool:YES];
+					chn.nm_hidden = yesNum;
+				}
+				if ( !fLaunch ) {
+					chn.nm_is_new = yesNum;
 				}
 				if ( command == NMCommandCompareSubscribedChannels ) {
 					// assign the new channel to YouTube group
 					[ctrl.internalYouTubeCategory addChannelsObject:chn];
+					numberOfRowsAdded++;
 				}
 			} else {
 				// the channel already exists, just update the sort order.
@@ -487,6 +516,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		case NMCommandGetFeaturedChannelsForCategories:
 		{
 			return [NSDictionary dictionaryWithObject:categoryIDs forKey:@"channels"];
+		}
+		case NMCommandGetSubscribedChannels:
+		{
+			return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:numberOfRowsAdded], @"num_channel_added", [NSNumber numberWithUnsignedInteger:numberOfRowsDeleted], @"num_channel_deleted", [NSNumber numberWithUnsignedInteger:numberOfRowsFromServer], @"total_channel", nil];
 		}
 		default:
 			break;

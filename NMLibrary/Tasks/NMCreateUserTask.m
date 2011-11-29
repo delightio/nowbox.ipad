@@ -15,9 +15,9 @@
 NSString * const NMWillCreateUserNotification = @"NMWillCreateUserNotification";
 NSString * const NMDidCreateUserNotification = @"NMDidCreateUserNotification";
 NSString * const NMDidFailCreateUserNotification = @"NMDidFailCreateUserNotification";
-NSString * const NMWillEditUserNotification = @"NMWillEditUserNotification";
-NSString * const NMDidEditUserNotification = @"NMDidEditUserNotification";
-NSString * const NMDidFailEditUserNotification = @"NMDidFailEditUserNotification";
+//NSString * const NMWillEditUserNotification = @"NMWillEditUserNotification";
+//NSString * const NMDidEditUserNotification = @"NMDidEditUserNotification";
+//NSString * const NMDidFailEditUserNotification = @"NMDidFailEditUserNotification";
 NSString * const NMWillVerifyUserNotification = @"NMWillVerifyUserNotification";
 NSString * const NMDidVerifyUserNotification = @"NMDidVerifyUserNotification";
 NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotification";
@@ -26,6 +26,30 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 @synthesize verificationURL, email;
 @synthesize userDictionary;
 @synthesize username;
+
++ (NSInteger)updateAppUserInfo:(NSDictionary *)infoDict {
+	NSInteger uid = [[infoDict objectForKey:@"id"] integerValue];
+	if ( uid ) {
+		// update global variable
+		NM_USER_ACCOUNT_ID = uid;
+		NM_USER_WATCH_LATER_CHANNEL_ID = [[infoDict objectForKey:@"queue_channel_id"] integerValue];
+		NM_USER_FAVORITES_CHANNEL_ID = [[infoDict objectForKey:@"favorite_channel_id"] integerValue];
+		NM_USER_HISTORY_CHANNEL_ID = [[infoDict objectForKey:@"history_channel_id"] integerValue];
+		id theNum = [infoDict objectForKey:@"facebook_channel_id"];
+		if ( theNum == [NSNull null] ) {
+			NM_USER_FACEBOOK_CHANNEL_ID = 0;
+		} else {
+			NM_USER_FACEBOOK_CHANNEL_ID = [theNum integerValue];
+		}
+		theNum = [infoDict objectForKey:@"twitter_channel_id"];
+		if ( theNum == [NSNull null] ) {
+			NM_USER_TWITTER_CHANNEL_ID = 0;
+		} else {
+			NM_USER_TWITTER_CHANNEL_ID = [theNum integerValue];
+		}
+	}
+	return uid;
+}
 
 - (id)init {
 	self = [super init];
@@ -54,12 +78,12 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	return self;
 }
 
-- (id)initWithEmail:(NSString *)anEmail {
-	self = [super init];
-	command = NMCommandEditUser;
-	self.email = anEmail;
-	return self;
-}
+//- (id)initWithEmail:(NSString *)anEmail {
+//	self = [super init];
+//	command = NMCommandEditUser;
+//	self.email = anEmail;
+//	return self;
+//}
 
 - (void)dealloc {
 	[email release];
@@ -86,16 +110,16 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 #endif
 			break;
 		}
-		case NMCommandEditUser:
-		{
-			urlStr = [NSString stringWithFormat:@"http://%@/users?email=%@", NM_BASE_URL, [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
-#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
-			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
-#endif
-			[request setHTTPMethod:@"PUT"];
-			break;
-		}
+//		case NMCommandEditUser:
+//		{
+//			urlStr = [NSString stringWithFormat:@"http://%@/users?email=%@", NM_BASE_URL, [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+//			request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
+//#ifndef DEBUG_DO_NOT_SEND_API_TOKEN
+//			[request addValue:NM_USER_TOKEN forHTTPHeaderField:NMAuthTokenHeaderKey];
+//#endif
+//			[request setHTTPMethod:@"PUT"];
+//			break;
+//		}
 			
 		default:
 		{
@@ -113,32 +137,16 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	}
 	// parse the returned JSON object
 	self.userDictionary = [buffer objectFromJSONData];
-	NSInteger uid = [[userDictionary objectForKey:@"id"] integerValue];
-	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	switch (command) {
 		case NMCommandCreateUser:
 		{
-			if ( uid ) {
-				//TODO: save the data to Keychain
-				
-				// update global variable
-				NM_USER_ACCOUNT_ID = uid;
-				NM_USER_WATCH_LATER_CHANNEL_ID = [[userDictionary objectForKey:@"queue_channel_id"] integerValue];
-				NM_USER_FAVORITES_CHANNEL_ID = [[userDictionary objectForKey:@"favorite_channel_id"] integerValue];
-				NM_USER_HISTORY_CHANNEL_ID = [[userDictionary objectForKey:@"history_channel_id"] integerValue];
-				[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
-				[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
-				[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
-				[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
-			} else {
-				encountersErrorDuringProcessing = YES;
-			}
+			encountersErrorDuringProcessing = [NMCreateUserTask updateAppUserInfo:userDictionary] == 0;
 			break;
 		}
-		case NMCommandEditUser:
-		{
-			break;
-		}
+//		case NMCommandEditUser:
+//		{
+//			break;
+//		}
 		case NMCommandVerifyFacebookUser:
 			NM_USER_FACEBOOK_CHANNEL_ID = [[userDictionary objectForKey:@"facebook_channel_id"] integerValue];
 			break;
@@ -161,10 +169,12 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 							NM_USER_YOUTUBE_USER_NAME = nil;
 						}
 						NM_USER_YOUTUBE_USER_NAME = [[acDict objectForKey:@"username"] retain];
+						[NMCreateUserTask updateAppUserInfo:userDictionary];
+						NM_USER_YOUTUBE_SYNC_SERVER_TIME = [[acDict objectForKey:@"synchronized_at"] unsignedIntegerValue];
+						NM_USER_YOUTUBE_SYNC_ACTIVE = YES;
 					}
 				}
 			}
-			NM_USER_YOUTUBE_SYNC_ACTIVE = YES;
 			break;
 		}
 		
@@ -179,9 +189,16 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandVerifyFacebookUser:
 		case NMCommandVerifyTwitterUser:
-		case NMCommandVerifyYouTubeUser:
 			return NO;
-			
+		case NMCommandVerifyYouTubeUser:
+		{
+			// flush current channels
+			ctrl.favoriteVideoChannel = nil;
+			ctrl.myQueueChannel = nil;
+			ctrl.userFacebookStreamChannel = nil;
+			ctrl.userTwitterStreamChannel = nil;
+			return YES;
+		}	
 		default:
 			break;
 	}
@@ -216,8 +233,8 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandCreateUser:
 			return NMWillCreateUserNotification;
-		case NMCommandEditUser:
-			return NMWillEditUserNotification;
+//		case NMCommandEditUser:
+//			return NMWillEditUserNotification;
 			
 		default:
 			return NMWillVerifyUserNotification;
@@ -229,8 +246,8 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandCreateUser:
 			return NMDidCreateUserNotification;
-		case NMCommandEditUser:
-			return NMDidEditUserNotification;
+//		case NMCommandEditUser:
+//			return NMDidEditUserNotification;
 			
 		default:
 			return NMDidVerifyUserNotification;
@@ -242,8 +259,8 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	switch (command) {
 		case NMCommandCreateUser:
 			return NMDidFailCreateUserNotification;
-		case NMCommandEditUser:
-			return NMDidFailEditUserNotification;
+//		case NMCommandEditUser:
+//			return NMDidFailEditUserNotification;
 			
 		default:
 			return NMDidFailVerifyUserNotification;

@@ -27,21 +27,29 @@
 	NMDataController * dataController;
 	
 	// polling channel population status
+	NSTimer * channelPollingTimer;
 	NSTimer * pollingTimer;
+	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
-	NSUInteger pollingRetryCount;
+	NSUInteger pollingRetryCount, channelPollingRetryCount;
 	
+	BOOL appFirstLaunch;
+	BOOL syncInProgress;
 	Reachability * wifiReachability;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
+@property (nonatomic, retain) NSTimer * channelPollingTimer;
 @property (nonatomic, retain) NSTimer * pollingTimer;
+@property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
+@property (nonatomic) BOOL syncInProgress;
+@property (nonatomic) BOOL appFirstLaunch;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 
@@ -55,17 +63,17 @@
 - (void)issueVerifyTwitterAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyFacebookAccountWithURL:(NSURL *)aURL;
 - (void)issueVerifyYouTubeAccountWithURL:(NSURL *)aURL;
+- (void)issueDeauthorizeYouTube;
 - (void)issueEditUserSettings;
+- (void)issueSyncRequest;
 // Token
 - (void)issueRenewToken;
-- (void)issueTokenTest;
+//- (void)issueTokenTest;
 - (void)checkAndRenewToken;
 /*!
  In token renew mode, the backend will stop executing other tasks except for the "renew token task". It will also stop popping alert pop up.
  */
 - (void)setTokenRenewMode:(BOOL)on;
-//- (void)issueSignOutTwitterAccount;
-//- (void)issueSignOutFacebookAccout;
 // Category
 - (void)issueGetFeaturedCategories;
 - (void)issueGetChannelsForCategory:(NMCategory *)aCat;
@@ -76,6 +84,7 @@
 - (void)issueGetChannelWithID:(NSInteger)chnID;
 - (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
 - (void)issueCompareSubscribedChannels;
+- (NMImageDownloadTask *)issueGetThumbnailForCategory:(NMCategory *)catObj;
 - (NMImageDownloadTask *)issueGetThumbnailForChannel:(NMChannel *)chnObj;
 - (NMImageDownloadTask *)issueGetPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj;
@@ -89,6 +98,8 @@
 // Poll for YouTube
 - (void)issuePollServerForYouTubeSyncSignal;
 - (void)pollServerForYouTubeSyncSignal;
+- (void)slowPollServerForYouTubeSyncSycnal;
+- (void)syncYouTubeChannels;
 // Get update info
 - (void)issueCheckUpdateForDevice:(NSString *)devType;
 
@@ -103,7 +114,7 @@
 
 // Event tracking
 // Share video
-//- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
+- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec;
 - (void)issueShareWithService:(NMSocialLoginType)serType video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec;

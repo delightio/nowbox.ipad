@@ -53,7 +53,7 @@
 								<string key="NSFrameSize">{540, 65}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="192558861"/>
+								<reference key="NSNextKeyView" ref="422051682"/>
 								<string key="NSReuseIdentifierKey">_NS:365</string>
 								<int key="IBUITag">14</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -135,7 +135,7 @@
 							<object class="IBUILabel" id="112317138">
 								<reference key="NSNextResponder" ref="39451577"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{81, 30}, {394, 25}}</string>
+								<string key="NSFrame">{{81, 30}, {376, 25}}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="822524542"/>
@@ -233,6 +233,22 @@
 								<bool key="IBUIHidesWhenStopped">NO</bool>
 								<bool key="IBUIAnimating">YES</bool>
 								<int key="IBUIStyle">2</int>
+							</object>
+							<object class="IBUIImageView" id="422051682">
+								<reference key="NSNextResponder" ref="39451577"/>
+								<int key="NSvFlags">-2147483348</int>
+								<string key="NSFrame">{{0, 27}, {6, 10}}</string>
+								<reference key="NSSuperview" ref="39451577"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="192558861"/>
+								<string key="NSReuseIdentifierKey">_NS:569</string>
+								<int key="IBUITag">16</int>
+								<bool key="IBUIUserInteractionEnabled">NO</bool>
+								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">channel-new-indicator.png</string>
+								</object>
 							</object>
 						</object>
 						<string key="NSFrameSize">{520, 64}</string>
@@ -347,6 +363,7 @@
 							<reference ref="809480226"/>
 							<reference ref="822524542"/>
 							<reference ref="323227341"/>
+							<reference ref="422051682"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -390,6 +407,12 @@
 						<reference key="object" ref="323227341"/>
 						<reference key="parent" ref="604669886"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">24</int>
+						<reference key="object" ref="422051682"/>
+						<reference key="parent" ref="604669886"/>
+						<string key="objectName">New Channel Indicator</string>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -404,6 +427,7 @@
 					<string>12.IBPluginDependency</string>
 					<string>13.IBPluginDependency</string>
 					<string>20.IBPluginDependency</string>
+					<string>24.IBPluginDependency</string>
 					<string>3.CustomClassName</string>
 					<string>3.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
@@ -417,6 +441,7 @@
 					<string>ChannelManagementViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>UIResponder</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -443,7 +468,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">23</int>
+			<int key="maxID">24</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -569,6 +594,7 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>channel-new-indicator.png</string>
 				<string>channel-thumbnail-frame.png</string>
 				<string>find-channel-list-highlighted.png</string>
 				<string>find-channel-list-normal.png</string>
@@ -576,6 +602,7 @@
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<string>{6, 10}</string>
 				<string>{48, 48}</string>
 				<string>{1, 65}</string>
 				<string>{1, 65}</string>

@@ -9,7 +9,7 @@
 #import "NMAVQueuePlayer.h"
 #import "NMAVPlayerItem.h"
 
-#define NM_PLAYER_DELAY_REQUEST_DURATION	0.75f
+#define NM_PLAYER_DELAY_REQUEST_DURATION	0.75
 
 @interface NMAVQueuePlayer (PrivateMethods)
 

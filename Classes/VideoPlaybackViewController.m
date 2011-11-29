@@ -13,6 +13,7 @@
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
 #import "Analytics.h"
+#import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -182,7 +183,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	// ======
 #endif
-	[nowboxTaskController issueGetFeaturedCategories];
 	
 	// load channel view
 #ifndef DEBUG_NO_CHANNEL_VIEW
@@ -200,6 +200,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidPlayItemNotification:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 	// listen to system notification
 	[defaultNotificationCenter addObserver:self selector:@selector(handleApplicationDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleApplicationDidEnterBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 	// 2nd display support
 //	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayConnectedNotification:) name:UIScreenDidConnectNotification object:nil];
 //	[defaultNotificationCenter addObserver:self selector:@selector(handleDisplayDisconnectedNotification:) name:UIScreenDidDisconnectNotification object:nil];
@@ -209,14 +210,18 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	// event
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
+    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidPostSharingNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailShareVideoNotification object:nil];
+    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailPostSharingNotification object:nil];    
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
-    
+	// channel
+	[defaultNotificationCenter addObserver:self selector:@selector(handleGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
+
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -273,55 +278,34 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 #pragma mark Launch / onboard process
-//- (void)setLaunchModeActive:(BOOL)flag {
-//	if ( flag ) {
-//		// set to full screen
-//		[self toggleChannelPanel:nil];
-//	}
-//	launchModeActive = flag;
-//}
 
 - (void)showLaunchView {
 	[launchController loadView];
-//	UIView * theView = launchController.progressContainerView;
-//	[theView removeFromSuperview];
 	[self.view addSubview:launchController.view];
-//	CGRect winRect = self.view.bounds;
-//	CGRect theRect = theView.frame;
-//	theRect.origin.x = winRect.size.width - theRect.size.width;
-//	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
-//	theView.frame = theRect;
-//	[self.view addSubview:launchController.progressContainerView];
 }
 
-//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
 - (void)showPlaybackView {
 	if ( launchModeActive ) {
-//		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
 		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
 		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
-		// bring the playback view to the front
-//		[self.view bringSubviewToFront:topLevelContainerView];
-		// cross fade the view
+
 		shouldFadeOutVideoThumbnail = YES;
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
+        [launchController.view removeFromSuperview];
+        [launchController release];
+        launchController = nil;
+        launchModeActive = NO;
+        playFirstVideoOnLaunchWhenReady = YES;
+        
+/*		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
 			// remove launch view
 			[launchController.view removeFromSuperview];
 			[launchController release];
 			launchController = nil;
 			launchModeActive = NO;
 			playFirstVideoOnLaunchWhenReady = YES;
-		}];
-		// slide in the view
-//		[UIView animateWithDuration:0.5f animations:^{
-//			topLevelContainerView.center = launchController.view.center;
-//			shouldFadeOutVideoThumbnail = YES;
-//		} completion:^(BOOL finished) {
-//			playFirstVideoOnLaunchWhenReady = YES;
-//			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
-//		}];
+		}];*/
 
 	} else {
 		// cross fade
@@ -340,11 +324,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			launchController = nil;
 		}];
 #endif
+		playFirstVideoOnLaunchWhenReady = YES;
 	}
-//	if ( !launchModeActive ) {
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-//	}
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
     // Start monitoring for tooltips
     [[ToolTipController sharedToolTipController] startTimer];
@@ -391,6 +373,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag {
 	if ( currentChannel ) {
 		if ( currentChannel != chnObj ) {
+			// report event
+			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
 			// clear all task related to the previous channel
 			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
@@ -417,13 +401,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
 	playFirstVideoOnLaunchWhenReady = aPlayFlag;
-	forceStopByUser = NO;	// reset the flag
+    forceStopByUser = NO;	// reset the flag
 	currentXOffset = 0.0f;
 	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
 	ribbonView.userInteractionEnabled = NO;
 
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
+	chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
 //	NSArray * vidAy = [playbackModelController videosForBuffering];
 //	if ( vidAy ) {
 //		[movieView.player resolveAndQueueVideos:vidAy];
@@ -437,7 +422,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                        playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                        playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                        @"player", AnalyticsPropertySender, 
-                                                                       @"auto", AnalyticsPropertyAction, nil]];
+                                                                       @"auto", AnalyticsPropertyAction, 
+                                                                       [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 }
 
 - (NMVideo *)currentVideo {
@@ -506,8 +492,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		NSInteger sec = 0;
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = t.value / t.timescale;
+			loadedControlView.timeElapsed = sec;
 		}
-		loadedControlView.timeElapsed = sec;
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
 //			[movieView setActivityIndicationHidden:YES animated:YES];
@@ -543,13 +529,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
-	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
-		movieView.alpha = 1.0f;
-	} completion:^(BOOL finished) {
-//		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
-			[loadedControlView setControlsHidden:NO animated:YES];
-//		}
-	}];
+	[UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionTransitionNone
+                     animations:^{
+                         movieView.alpha = 1.0f;
+                     } completion:^(BOOL finished) {
+                         //		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
+                         [loadedControlView setControlsHidden:NO animated:YES];
+                         //		}
+                     }];
 }
 
 - (NMMovieDetailView *)getFreeMovieDetailView {
@@ -564,7 +551,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 //- (void)hideControlView {
 //	if ( loadedControlView.alpha > 0.0f ) {
-//		[UIView animateWithDuration:0.25f animations:^{
+//		[UIView animateWithInteractiveDuration:0.25f animations:^{
 //			loadedControlView.alpha = 0.0f;
 //		}];
 //	}
@@ -752,31 +739,34 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// send tracking event
 	NMVideo * theVideo = [self playerCurrentVideo];
-	[nowboxTaskController issueSendViewEventForVideo:theVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:aEndOfVideo];
+	[nowboxTaskController issueSendViewEventForVideo:theVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
 	// visually transit to next video just like the user has tapped next button
 	//if ( aEndOfVideo ) {
 	// disable interface scrolling
 	// will activate again on "currentItem" change kvo notification
 	controlScrollView.scrollEnabled = NO;
 	// fade out the view
-	[UIView animateWithDuration:0.75f animations:^(void) {
+	[UIView animateWithInteractiveDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
 		currentXOffset += 1024.0f;
 		// scroll to next video
 		// translate the movie view
-		[UIView animateWithDuration:0.5f animations:^{
+		[UIView animateWithInteractiveDuration:0.5f animations:^{
 			controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 		}];
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
             
+            [self updateRibbonButtons];
+            
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"auto", AnalyticsPropertyAction, nil]];
+                                                                               @"auto", AnalyticsPropertyAction, 
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	}];
 	// when traisition is done. move shift the scroll view and reveals the video player again
@@ -785,11 +775,21 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)playVideo:(NMVideo *)aVideo {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+
+	// report event
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+
 	// Channel View calls this method when user taps a video from the table
 	// stop video
 	[self stopVideo];
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
+	// removeAllItems cannot always remove all items. This happens when there's bad videos during resolution. To avoid movie detail view problem, we reclaim the view again
+	for (NMMovieDetailView * dtlView in movieDetailViewArray) {
+		if ( dtlView.video ) {
+			dtlView.video = nil;
+		}
+	}
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
@@ -801,6 +801,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( ![currentChannel isEqual:chnObj] ) {
 		if ( currentChannel ) [currentChannel release];
 		currentChannel = [chnObj retain];
+		chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;
@@ -895,13 +896,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update offset
 			currentXOffset = newOffset;
 			// move over to the new location
-			[UIView animateWithDuration:0.5f animations:^{
+			[UIView animateWithInteractiveDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 			} completion:^(BOOL finished) {
-				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 			}];
 		} else {
-			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
+			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		}
 	}
 }
@@ -992,6 +993,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)handleApplicationDidBecomeActiveNotification:(NSNotification *)aNotification {
+	if (launchModeActive) {
+        return;
+    }
+    
 	// resume playing the video
 	[self playCurrentVideo];
 	NMAVPlayerItem * item = (NMAVPlayerItem *)movieView.player.currentItem;
@@ -1001,9 +1006,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 }
 
+- (void)handleApplicationDidEnterBackgroundNotification:(NSNotification *)aNotification {
+	if ( !NM_AIRPLAY_ACTIVE ) {
+		[self stopVideo];
+	}
+}
+
 - (void)handleChannelManagementNotification:(NSNotification *)aNotification {
 	if ( NM_RUNNING_IOS_5 ) {
 		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {
+            videoWasPaused = (movieView.player.rate == 0.0);
+
 			// stop video from playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
 			if ( !movieView.player.airPlayVideoActive ) {
@@ -1014,34 +1027,52 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			// resume video playing
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_4_3
-			if ( !movieView.player.airPlayVideoActive ) {
+			if ( !movieView.player.airPlayVideoActive && !videoWasPaused ) {
 				forceStopByUser = NO;
 				[self playCurrentVideo];
 			}
 #endif
 		}
 	} else {
-		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) {            
+		if ( [[aNotification name] isEqualToString:NMChannelManagementWillAppearNotification] ) { 
+            videoWasPaused = (movieView.player.rate == 0.0);
+
 			// stop video from playing
 			[self stopVideo];
 		} else {
-			forceStopByUser = NO;
-			// resume video playing
-			[self playCurrentVideo];
+            if (!videoWasPaused) {
+                forceStopByUser = NO;
+                // resume video playing
+                [self playCurrentVideo];
+            }
 		}
+	}
+}
+
+- (void)handleGetChannelsNotification:(NSNotification *)aNotification {
+	NSDictionary * info = [aNotification userInfo];
+	if ( [[info objectForKey:@"total_channel"] unsignedIntegerValue] == 0 && NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+		// there's no channels from the server
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"It appears that you have all YouTube channels unsubscribed. NOWBOX will preserve all your channels. You can manage your channels through Channel Management View" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];
 	}
 }
 
 - (void)handleVideoEventNotification:(NSNotification *)aNotification {
 	// check it's the current, previous or next video
 	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
+	NSString * name = [aNotification name];
+
+    if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] ) {
+		[self updateFavoriteButton];
+        return;
+    }
+    
 	// do nth if the video object is nil
 	if ( vidObj == nil ) return;
 	
-	NSString * name = [aNotification name];
-	if ( [name isEqualToString:NMDidShareVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		[self animateFavoriteButtonsToActive];
-	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+	if ( ([name isEqualToString:NMDidShareVideoNotification] || [name isEqualToString:NMDidPostSharingNotification]) && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		[self animateFavoriteButtonsToActive];
 	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// queued a video successfully, animate the icon to appropriate state
@@ -1060,6 +1091,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			case AVPlayerStatusReadyToPlay:
 			{
 				shouldFadeOutVideoThumbnail = YES;
+				break;
+			}
+			case AVPlayerStatusFailed:
+			{
+				controlScrollView.scrollEnabled = YES;
 				break;
 			}
 			default:
@@ -1083,7 +1119,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		
 		showMovieControlTimestamp = 1;
 		
-		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25f];
+		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25];
 		
 		if ( didPlayToEnd ) {
 			controlScrollView.scrollEnabled = YES;
@@ -1161,7 +1197,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)delayRestoreDetailView {
 	// update which video the buttons hook up to
 	[self updateRibbonButtons];
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		ribbonView.alpha = 1.0f;
 	}];
 	ribbonView.userInteractionEnabled = YES;
@@ -1203,7 +1239,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
 	if ( NM_RUNNING_IOS_5 ) {
-		[UIView animateWithDuration:0.25f animations:^{
+		[UIView animateWithInteractiveDuration:0.25f animations:^{
 			ribbonView.alpha = 0.15;
 		}];
 		ribbonView.userInteractionEnabled = NO;
@@ -1230,6 +1266,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// switch to the next/prev video
 //	scrollView.scrollEnabled = YES; move to animation handler
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
@@ -1240,12 +1277,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
-            
+			
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"swipe", AnalyticsPropertyAction, nil]];
+                                                                               @"swipe", AnalyticsPropertyAction, 
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1268,14 +1306,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
                                                                                playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
-                                                                               @"swipe", AnalyticsPropertyAction, nil]];
+                                                                               @"swipe", AnalyticsPropertyAction,
+                                                                               [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	} else {
 		scrollView.scrollEnabled = YES;
 	}
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		ribbonView.alpha = 1.0f;
 	}];
 	ribbonView.userInteractionEnabled = YES;
@@ -1302,6 +1341,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// assume the panel is visible
 		panelHidden = NO;
 	}
+    
+    NSString *senderStr;
+    if ([sender isKindOfClass:[UIButton class]]) {
+        senderStr = @"button";
+    } else {
+        senderStr = @"pinch";
+    }
 
 	CGRect viewRect;
 	
@@ -1327,8 +1373,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			launchController.progressContainerView.alpha = 0.0f;
 //		}
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                     senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 
 	} else {
@@ -1345,8 +1393,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		theFrame.origin.y = 768.0;
 		channelController.panelView.frame = theFrame;
         
+        rowIndexToCenterOn = [channelController highlightedChannelIndex];
+
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                      senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
 	[UIView commitAnimations];
@@ -1419,6 +1471,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMFullScreenChannelMode];
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenChannelPanel]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                              playbackModelController.currentVideo.title, AnalyticsPropertyVideoName,
                                                                                              nil]];                                                                                                                                                                                                                                                                                                                                                                        
@@ -1432,6 +1485,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		ribbonView.center = rvPosition;
 		[channelController postAnimationChangeForDisplayMode:NMHalfScreenMode];
         
+        [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenChannelPanel]];        
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
                                                                                             playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
@@ -1444,7 +1498,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
 	loadedControlView.hidden = NO;
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
@@ -1460,7 +1514,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)controlsViewTouchUp:(id)sender {
 //	UIView * v = (UIView *)sender;
-	[UIView animateWithDuration:0.25f animations:^{
+	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
 		if ( finished ) {
@@ -1470,33 +1524,43 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
-//	[nowboxTaskController issueShareWithService:NMLoginTwitterType video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed message:@"test message"];
-//	[self animateFavoriteButtonsToInactive];
+    NMVideo *video = playbackModelController.currentVideo;
     
-    ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
-                                                                                 bundle:[NSBundle mainBundle] 
-                                                                                  video:playbackModelController.currentVideo 
-                                                                               duration:loadedControlView.duration 
-                                                                         elapsedSeconds:loadedControlView.timeElapsed];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
-    navController.modalPresentationStyle = UIModalPresentationFormSheet;
-    [navController.navigationBar setBarStyle:UIBarStyleBlack];
-    [self presentModalViewController:navController animated:YES];
-    navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
-    
-    CGRect frame = navController.view.superview.frame;
-    frame.origin.y = 20;
-    navController.view.superview.frame = frame;
-//    navController.view.superview.center = CGPointMake(navController.view.superview.center.x, 195);
-    [shareController release];
-    [navController release];
+    if ([video.nm_favorite boolValue]) {
+        // Unfavorite video
+        [nowboxTaskController issueShare:NO video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnfavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               video.title, AnalyticsPropertyVideoName, 
+                                                                               video.nm_id, AnalyticsPropertyVideoId,
+                                                                               nil]];
+    } else {
+        // Share video
+        ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
+                                                                                     bundle:[NSBundle mainBundle] 
+                                                                                      video:video
+                                                                                   duration:loadedControlView.duration 
+                                                                             elapsedSeconds:loadedControlView.timeElapsed];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
+        navController.modalPresentationStyle = UIModalPresentationPageSheet;
+        [navController.navigationBar setBarStyle:UIBarStyleBlack];
+        [self presentModalViewController:navController animated:YES];
+        navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
+        
+        CGRect frame = navController.view.superview.frame;
+        frame.origin.y = 40;
+        navController.view.superview.frame = frame;
+
+        [shareController release];
+        [navController release];
+                
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                               video.title, AnalyticsPropertyVideoName, 
+                                                                               video.nm_id, AnalyticsPropertyVideoId,
+                                                                               nil]];
+    }
     
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
-    
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                           playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
-                                                                           playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
-                                                                           nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1526,14 +1590,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// get current control nub position
 	[loadedControlView updateSeekBubbleLocation];
 	// show seek bubble
-	[UIView animateWithDuration:0.25 animations:^{
+	[UIView animateWithInteractiveDuration:0.25 animations:^{
 		loadedControlView.seekBubbleButton.alpha = 1.0f;
 		if ( NM_AIRPLAY_ACTIVE ) {
 			// hide the airplay indicator
 			movieView.airPlayIndicatorView.alpha = 0.0f;
 		}
 	}];
-	lastStartTime = lastTimeElapsed;
 	lastTimeElapsed = loadedControlView.timeElapsed;
 }
 
@@ -1542,7 +1605,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[self playCurrentVideo];
 	loadedControlView.isSeeking = NO;
 	showMovieControlTimestamp = loadedControlView.timeElapsed;
-	[UIView animateWithDuration:0.25 animations:^{
+	[UIView animateWithInteractiveDuration:0.25 animations:^{
 		loadedControlView.seekBubbleButton.alpha = 0.0f;
 		if ( NM_AIRPLAY_ACTIVE ) {
 			// show the airplay indicator
@@ -1550,8 +1613,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 	}];
 	// send the event
-	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed];
-	lastTimeElapsed = showMovieControlTimestamp;
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed - lastStartTime];
+	lastStartTime = showMovieControlTimestamp;
 }
 
 # pragma mark Gestures

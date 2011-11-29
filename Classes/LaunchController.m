@@ -10,6 +10,7 @@
 #import "VideoPlaybackBaseViewController.h"
 #import "NMLibrary.h"
 #import "ipadAppDelegate.h"
+#import "UIView+InteractiveAnimation.h"
 
 #define GP_CHANNEL_UPDATE_INTERVAL	-600.0f //-12.0 * 3600.0
 #ifdef DEBUG_ONBOARD_PROCESS
@@ -18,11 +19,18 @@
 #define NM_ALWAYS_SHOW_ONBOARD_PROCESS	NO
 #endif
 
+#ifdef DEBUG_SKIP_ONBOARD_PROCESS
+#define NM_SKIP_ONBOARD_PROCESS YES
+#else
+#define NM_SKIP_ONBOARD_PROCESS NO
+#endif
+
 #define ALERT_TAG_OPTIONAL_UPDATE 1
 #define ALERT_TAG_MANDATORY_UPDATE 2
 
 @implementation LaunchController
 @synthesize view;
+@synthesize activityIndicator;
 @synthesize viewController;
 @synthesize lastFailNotificationName;
 @synthesize channel;
@@ -31,11 +39,14 @@
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[view release];
+    [activityIndicator release];
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
 	[lastFailNotificationName release];
     [updateURL release];
+    [onBoardProcessController release];
+    
 	[super dealloc];
 }
 
@@ -57,74 +68,94 @@
 	NM_USER_TWITTER_CHANNEL_ID = [userDefaults integerForKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 	NM_USER_FACEBOOK_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 	NM_USER_YOUTUBE_SYNC_ACTIVE = [userDefaults boolForKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
+	NM_USER_YOUTUBE_LAST_SYNC = [[userDefaults objectForKey:NM_USER_YOUTUBE_LAST_SYNC_KEY] unsignedIntegerValue];
+	
 	NM_VIDEO_QUALITY = [userDefaults integerForKey:NM_VIDEO_QUALITY_KEY];
 	NM_USER_YOUTUBE_USER_NAME = [[userDefaults stringForKey:NM_USER_YOUTUBE_USER_NAME_KEY] retain];
 //	NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
-    [[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
+	taskQueueController = [NMTaskQueueController sharedTaskQueueController];
+    [taskQueueController issueCheckUpdateForDevice:@"ipad"];
+	taskQueueController.appFirstLaunch = appFirstLaunch;
     [nc addObserver:self selector:@selector(handleDidCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];
+    [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCheckUpdateNotification object:nil];  
+    
+    [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
 }
 
 - (void)launchApp {
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 
     if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
-		progressLabel.hidden = NO;
-		[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
-		[nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
-		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
-		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetFeaturedCategoriesNotification:) name:NMDidGetFeaturedCategoriesNotification object:nil];
+        [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedCategoriesNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
-		// create new user
-		[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+
 		viewController.launchModeActive = YES;
 	} else {
 		// listen to fail notification
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[self checkUpdateChannels];
 	}
+    
+    [taskQueueController issueGetFeaturedCategories];
+}
+
+- (void)beginNewSession {
+    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+    NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
+    [taskQueueController beginNewSession:sid];
+    [df setInteger:sid forKey:NM_SESSION_ID_KEY];
 }
 
 - (void)showVideoViewAnimated {
-	[viewController showPlaybackView];
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
-	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+	viewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+	taskQueueController.appFirstLaunch = NO;
+    
+	[viewController showPlaybackView];
 }
 
 - (void)slideInVideoViewAnimated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[viewController showPlaybackView];
+
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
-//	viewController.currentChannel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+//	viewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+	taskQueueController.appFirstLaunch = NO;
+    
+    [viewController showPlaybackView];
 }
 
-- (void)checkUpdateChannels {
-	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	
+- (void)checkUpdateChannels {	
 	NSDate * lastDate = (NSDate *)[[NSUserDefaults standardUserDefaults] objectForKey:NM_CHANNEL_LAST_UPDATE];
 	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch || 
 		[lastDate timeIntervalSinceNow] < GP_CHANNEL_UPDATE_INTERVAL
 		) { 
 		progressLabel.hidden = NO;
 		// get channel
-		[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+		[taskQueueController issueGetSubscribedChannels];
 		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
-		NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
-		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+        [self beginNewSession];
+		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+			[taskQueueController issueSyncRequest];
+		}
 	}
     
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
@@ -133,9 +164,34 @@
 }
 
 #pragma mark Notification
-- (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
-	// new user created, get channel
-	[self checkUpdateChannels];
+
+- (void)handleDidGetFeaturedCategoriesNotification:(NSNotification *)aNotification 
+{
+    if (NM_SKIP_ONBOARD_PROCESS) {
+        // For debugging - create user here rather than going via onboard process
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetFeaturedChannelsNotification:) name:NMDidGetFeaturedChannelsForCategories object:nil];
+        [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedChannelsForCategories object:nil];
+        [nc addObserver:self selector:@selector(handleDidSubscribeNotification:) name:NMDidSubscribeChannelNotification object:nil];
+        [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailSubscribeChannelNotification object:nil];
+
+        [[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+    } else {
+        // Show onboard process
+        [UIView animateWithInteractiveDuration:0.3
+                         animations:^{
+                             activityIndicator.alpha = 0;
+                         }
+                         completion:^(BOOL finished){
+                             if (!onBoardProcessController) {
+                                 onBoardProcessController = [[OnBoardProcessViewController alloc] init];
+                                 onBoardProcessController.delegate = self;                             
+                                 [viewController presentModalViewController:onBoardProcessController animated:NO];
+                             }
+                         }];
+    }
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification {
@@ -149,12 +205,23 @@
 	} else {
 		lblStr = @"Service is down";
 	}
+
 	if ( [notName isEqualToString:NMDidFailCreateUserNotification] ) {
 		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];        
 	} else if ( [notName isEqualToString:NMDidFailGetChannelsNotification] ) {
 		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];  
 	} else if ( [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
 		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];  
+    } else if ( [notName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
+		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];
+    } else if ( [notName isEqualToString:NMDidFailCheckUpdateNotification] ) {
+        progressLabel.hidden = NO;
+        [progressLabel setTitle:lblStr forState:UIControlStateNormal];
+        [activityIndicator stopAnimating];
 	} else if ( [notName isEqualToString:NMDidFailDownloadImageNotification] ) {
 		// can't download the video thumbnail. that's not important. just make sure the launch service will continue
 		ignoreThumbnailDownloadIndex = YES;
@@ -176,50 +243,61 @@
 		// fire the launch process again
 		if ( [lastFailNotificationName isEqualToString:NMDidFailCreateUserNotification] ) {
 			// begin with creating new user
-			[[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
+			[taskQueueController issueCreateUser];
 			[progressLabel setTitle:@"Creating user..." forState:UIControlStateNormal];
+            [activityIndicator startAnimating];
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelsNotification] ) {
 			// begin with getting channels
-			[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
+			[taskQueueController issueGetSubscribedChannels];
 			[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
+            [activityIndicator startAnimating];            
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
 			// begin with fetching video list
-			self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
+			self.channel = [taskQueueController.dataController lastSessionChannel];
 			[viewController setCurrentChannel:channel startPlaying:NO];
-		}
+            [activityIndicator startAnimating];            
+		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
+			// begin with fetching featured categories
+			[taskQueueController issueGetFeaturedCategories];
+            [activityIndicator startAnimating];         
+        } else if ( [lastFailNotificationName isEqualToString:NMDidFailCheckUpdateNotification] ) {
+			// begin with fetching featured categories
+			[taskQueueController issueCheckUpdateForDevice:@"ipad"];
+            [activityIndicator startAnimating];         
+        }
 	} else if ( [notName isEqualToString:UIApplicationWillTerminateNotification] ) {
 		// clean up the database
-		[[NMTaskQueueController sharedTaskQueueController].dataController resetDatabase];
+		[taskQueueController.dataController resetDatabase];
 		NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 		[defs setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
 		[defs setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
 		[defs setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
 		[defs setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
 		[defs setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
+		taskQueueController.appFirstLaunch = NO;
 	}
 }
 
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-//	NMDataController * dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
-	// begin new session
-	NSUserDefaults * df = [NSUserDefaults standardUserDefaults];
-	NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-	[[NMTaskQueueController sharedTaskQueueController] beginNewSession:sid];
-	[df setInteger:sid forKey:NM_SESSION_ID_KEY];
-	if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
-		NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
-		[dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
-		[dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
-		// listen to notification of getting videos. check if the channel is empty. if so, move to the next channel. this avoids first launch from hanging in there because the first channel has no video
-		[dn addObserver:self selector:@selector(handleDidGetVideoNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-		thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
-		resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
-		// assign the channel to playback view controller
-		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController lastSessionChannel];
-		// no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
-		[viewController setCurrentChannel:channel startPlaying:NO];
-		// wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
+    if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {        
+        NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
+        [dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
+        [dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
+        // listen to notification of getting videos. check if the channel is empty. if so, move to the next channel. this avoids first launch from hanging in there because the first channel has no video
+        [dn addObserver:self selector:@selector(handleDidGetVideoNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+        
+        if (!thumbnailVideoIndex) {
+            thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
+            resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
+        }
+        
+        // assign the channel to playback view controller
+        self.channel = [taskQueueController.dataController lastSessionChannel];
+        // no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
+        [viewController setCurrentChannel:channel startPlaying:NO];
+        // wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
 	} else {
+        [self beginNewSession];
 		[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:1.0f];
@@ -230,13 +308,15 @@
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
 	[resolutionVideoIndex addIndex:[vdo.nm_id unsignedIntegerValue]];
 	NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+    NSLog(@"resolved URL for %i, looking for %i", [vdo.nm_id unsignedIntegerValue], cIdx);
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
 		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
-			[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
-			// ready to show the launch view
-			[NSObject cancelPreviousPerformRequestsWithTarget:self];
-			[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+            if (NM_SKIP_ONBOARD_PROCESS) {
+                [self slideInVideoViewAnimated];
+            } else {
+                [onBoardProcessController notifyVideosReady];
+            }
 		}
 	}
 }
@@ -248,12 +328,14 @@
 		// store all indexes. the order of downloading video thumbnail is not guaranteed. need to check against all indexes downloaded. 
 		[thumbnailVideoIndex addIndex:[targetVdo.nm_id unsignedIntegerValue]];
 		NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
+        NSLog(@"got thumbnail for %i, looking for %i", [targetVdo.nm_id unsignedIntegerValue], cIdx);
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
 			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
-				[progressLabel setTitle:@"Ready to go..." forState:UIControlStateNormal];
-				// ready to show launch view
-				[NSObject cancelPreviousPerformRequestsWithTarget:self];
-				[self performSelector:@selector(slideInVideoViewAnimated) withObject:nil afterDelay:1.5f];
+                if (NM_SKIP_ONBOARD_PROCESS) {
+                    [self slideInVideoViewAnimated];
+                } else {
+                    [onBoardProcessController notifyVideosReady];
+                }
 			}
 		}
 	}
@@ -262,7 +344,7 @@
 - (void)handleDidGetVideoNotification:(NSNotification *)aNotification {
 	NSDictionary * info = [aNotification userInfo];
 	if ( [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
-		self.channel = [[NMTaskQueueController sharedTaskQueueController].dataController channelNextTo:channel];
+		self.channel = [taskQueueController.dataController channelNextTo:channel];
 		[viewController setCurrentChannel:channel startPlaying:NO];
 	}
 }
@@ -331,9 +413,57 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     }
 }
 
+
+#pragma mark - Skip onboard process notifications
+
+- (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
+    [self beginNewSession];
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setInteger:NM_USER_ACCOUNT_ID forKey:NM_USER_ACCOUNT_ID_KEY];
+    [userDefaults setInteger:NM_USER_WATCH_LATER_CHANNEL_ID forKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+    [userDefaults setInteger:NM_USER_FAVORITES_CHANNEL_ID forKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+    [userDefaults setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+    [userDefaults synchronize];
+    
+    [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] track:@"$born"];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
+    
+    // Get some channels so we can subscribe to some of them
+    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[NMTaskQueueController sharedTaskQueueController].dataController.categories];
+}
+
+- (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification {
+    // Got a list of featured channels, subscribe to some of them
+    NSArray *channels = [[aNotification userInfo] objectForKey:@"channels"];
+    subscribingChannels = [[NSMutableSet alloc] init];
+    
+    while ([subscribingChannels count] < MIN(5, [channels count])) {
+        NSUInteger index = arc4random() % [channels count];
+        NMChannel *aChannel = [channels objectAtIndex:index];
+        [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:aChannel];
+        
+        if (![subscribingChannels containsObject:aChannel]) {
+            [subscribingChannels addObject:aChannel];
+        }
+    }
+}
+
+- (void)handleDidSubscribeNotification:(NSNotification *)aNotification {
+    NMChannel *aChannel = [[aNotification userInfo] objectForKey:@"channel"];
+    [subscribingChannels removeObject:aChannel];
+    
+    if ([subscribingChannels count] == 0) {
+        [self checkUpdateChannels];
+    }
+}
+
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
     if (alertView.tag == ALERT_TAG_OPTIONAL_UPDATE) {
         if (buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:self.updateURL];
@@ -345,6 +475,16 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
         }
         exit(0);
     }
+}
+
+#pragma mark - OnBoardProcessViewControllerDelegate
+
+- (void)onBoardProcessViewControllerDidFinish:(OnBoardProcessViewController *)controller
+{
+    [onBoardProcessController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [viewController dismissModalViewControllerAnimated:YES];
+    [onBoardProcessController release]; onBoardProcessController = nil;
+    [self slideInVideoViewAnimated];
 }
 
 @end

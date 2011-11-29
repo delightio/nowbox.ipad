@@ -16,6 +16,8 @@
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSDate * nm_last_refresh;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
+@property (nonatomic, retain) NSString * nm_thumbnail_file_name;
+@property (nonatomic, retain) NSString * thumbnail_uri;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSSet *channels;
 @end

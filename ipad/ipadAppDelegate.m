@@ -28,6 +28,7 @@ NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY = @"NM_USER_TWITTER_CHANNEL_ID_K
 NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY = @"NM_SETTING_FACEBOOK_AUTO_POST_KEY"; // just need the key. no need for the bool variable
 NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY = @"NM_USER_YOUTUBE_SYNC_ACTIVE_KEY";
 NSString * const NM_USER_YOUTUBE_USER_NAME_KEY = @"NM_USER_YOUTUBE_USER_NAME_KEY";
+NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY = @"NM_USER_YOUTUBE_LAST_SYNC_KEY";
 NSString * const NM_USER_TOKEN_KEY = @"NM_USER_TOKEN_KEY";
 NSString * const NM_USER_TOKEN_EXPIRY_DATE_KEY = @"NM_USER_TOKEN_EXPIRY_DATE_KEY";
 NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
@@ -90,6 +91,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  yesNum, NM_SETTING_FACEBOOK_AUTO_POST_KEY,
 	  yesNum, NM_SETTING_TWITTER_AUTO_POST_KEY,
 	  noNum, NM_USER_YOUTUBE_SYNC_ACTIVE_KEY,
+	  zeroNum, NM_USER_YOUTUBE_LAST_SYNC_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
 	  nil]];
 }
@@ -143,8 +145,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 }
 
 - (void)setupMixpanel {
-    NSNumber *sessionCount = [NSNumber numberWithInteger:[userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1];
-	[userDefaults setObject:sessionCount forKey:NM_SESSION_COUNT_KEY];
+    NSInteger sessionCount = [userDefaults integerForKey:NM_SESSION_COUNT_KEY] + 1;
+	[userDefaults setInteger:sessionCount forKey:NM_SESSION_COUNT_KEY];
     [userDefaults synchronize];
     
 #ifdef MIXPANEL_PROD
@@ -154,7 +156,12 @@ NSInteger NM_LAST_CHANNEL_ID;
 #endif
     
     [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
-                                       sessionCount, AnalyticsPropertyVisitNumber, nil]];
+                                       [NSNumber numberWithInteger:sessionCount], AnalyticsPropertyVisitNumber, 
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenVideo, 
+                                       [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, 
+                                       [NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
+                                       [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
+                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     appStartTime = sessionStartTime;
@@ -170,6 +177,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	NM_RUNNING_ON_IPAD = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
+    userDefaults = [NSUserDefaults standardUserDefaults];
     // Enable analytics and crash reporting
     [self setupMixpanel];
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
@@ -191,7 +199,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
-	userDefaults = [NSUserDefaults standardUserDefaults];
+
 #ifdef DEBUG_ONBOARD_PROCESS
 	[userDefaults setBool:YES forKey:NM_FIRST_LAUNCH_KEY];
 	[[NMCacheController sharedCacheController] removeAllFiles];
@@ -262,16 +270,19 @@ NSInteger NM_LAST_CHANNEL_ID;
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
 	tqc.dataController.lastSessionVideoIDs = vdoList;
 	if ( [theDate timeIntervalSinceNow] < -NM_SESSION_DURATION ) {	// 30 min
-		[[NMTaskQueueController sharedTaskQueueController] beginNewSession:++sid];
+		[tqc beginNewSession:++sid];
 		[userDefaults setInteger:sid forKey:NM_SESSION_ID_KEY];
 	} else {
 		// use the same session
-		[[NMTaskQueueController sharedTaskQueueController] resumeSession:sid];
+		[tqc resumeSession:sid];
 	}
 	if ( ![userDefaults boolForKey:NM_FIRST_LAUNCH_KEY] ) {
 		// poll the server to see if those hidden has got content now.
 		[tqc issueRefreshHiddenSubscribedChannels];
 		[tqc pollServerForChannelReadiness];
+		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
+			[tqc issueSyncRequest];
+		}
 	}
 	// init core data
 	
@@ -344,9 +355,9 @@ NSInteger NM_LAST_CHANNEL_ID;
              */
 			//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 			//            abort();
-			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-			[alert show];
-			[alert release];
+//			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Capture this screen and send to Bill!!!" message:[NSString stringWithFormat:@"Unresolved error %@, %@", error, [error userInfo]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//			[alert show];
+//			[alert release];
 			
 			// we should relaunch the app if there's error saving the context
 			// reset the context

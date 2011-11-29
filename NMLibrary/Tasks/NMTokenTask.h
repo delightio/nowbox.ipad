@@ -15,6 +15,6 @@
 @property (nonatomic, retain) NSString * secret;
 
 - (id)initGetToken;
-- (id)initTestToken;
+//- (id)initTestToken;
 
 @end

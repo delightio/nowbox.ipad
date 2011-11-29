@@ -39,7 +39,7 @@
 - (id)init;
 -(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
--(void)playVideoForIndexPath:(NSIndexPath *)indexPath;
+-(void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender;
 - (void)recycleCell:(PanelVideoCell *)cell;
 - (void)resetAnimatingVariable;
 

@@ -30,16 +30,18 @@ typedef enum {
 	NMCommandVerifyFacebookUser,
 	NMCommandVerifyTwitterUser,
 	NMCommandVerifyYouTubeUser,
+	NMCommandDeauthorizeYoutubeUser,
 	NMCommandEditUserSettings,
+	NMCommandUserSynchronize,
 	NMCommandGetToken,
-	NMCommandTestToken,
-	NMCommandEditUser,
+//	NMCommandEditUser,
 	NMCommandPollUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetMoreVideoForChannel,
 	NMCommandGetYouTubeDirectURL,
 	NMCommandGetVimeoDirectURL,
+	NMCommandGetCategoryThumbnail,
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
 	NMCommandGetVideoThumbnail,
@@ -69,8 +71,8 @@ typedef enum {
 	NMEventUnsubscribeChannel,
 	NMEventEnqueue,
 	NMEventDequeue,
-//	NMEventShare,
-//	NMEventUnfavorite,
+	NMEventShare,
+	NMEventUnfavorite,
 	NMEventView,
 	NMEventExamine,
 } NMEventType;
@@ -122,21 +124,24 @@ extern NSString * const NMDidFailRequestTokenNotification;
 extern NSString * const NMWillCreateUserNotification;
 extern NSString * const NMDidCreateUserNotification;
 extern NSString * const NMDidFailCreateUserNotification;
-extern NSString * const NMWillEditUserNotification;
-extern NSString * const NMDidEditUserNotification;
-extern NSString * const NMDidFailEditUserNotification;
+//extern NSString * const NMWillEditUserNotification;
+//extern NSString * const NMDidEditUserNotification;
+//extern NSString * const NMDidFailEditUserNotification;
 extern NSString * const NMWillVerifyUserNotification;
 extern NSString * const NMDidVerifyUserNotification;
 extern NSString * const NMDidFailVerifyUserNotification;
-extern NSString * const NMWillSignOutUserNotification;
-extern NSString * const NMDidSignOutUserNotification;
-extern NSString * const NMDidFailSignOutUserNotification;
+extern NSString * const NMWillDeauthorizeUserNotification;
+extern NSString * const NMDidDeauthorizeUserNotification;
+extern NSString * const NMDidFailDeauthorizeUserNotification;
 extern NSString * const NMWillEditUserSettingsNotification;
 extern NSString * const NMDidEditUserSettingsNotification;
 extern NSString * const NMDidFailEditUserSettingsNotification;
 extern NSString * const NMWillPollUserNotification;
 extern NSString * const NMDidPollUserNotification;
 extern NSString * const NMDidFailPollUserNotification;
+extern NSString * const NMWillSynchronizeUserNotification;
+extern NSString * const NMDidSynchronizeUserNotification;
+extern NSString * const NMDidFailSynchronizeUserNotification;
 
 // channel
 extern NSString * const NMWillGetChannelsNotification;

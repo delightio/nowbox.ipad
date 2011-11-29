@@ -33,6 +33,8 @@
 	
 	BOOL firstLoadView, dismissViewController;
     UITableViewCell *channelCell;
+	BOOL didUnsubscribeSomeChannels;
+    BOOL observingYouTubeSync;
     
     int selectedIndex;
     
@@ -63,7 +65,7 @@
 @property (nonatomic, retain) NSIndexPath * selectedIndexPath;
 @property (nonatomic, retain) NSIndexPath * selectedIndexPathForTable;
 @property (nonatomic, retain) NSArray * selectedChannelArray;
-@property (nonatomic, assign) IBOutlet UITableViewCell *channelCell;
+@property (nonatomic, retain) IBOutlet UITableViewCell *channelCell;
 @property (nonatomic, retain) UIImage * sectionTitleBackgroundImage;
 @property (nonatomic, retain) UIColor * sectionTitleColor;
 @property (nonatomic, retain) UIFont * sectionTitleFont;

@@ -53,15 +53,15 @@ NSString * const NMDidFailEditUserSettingsNotification = @"NMDidFailEditUserSett
 }
 
 - (NSString *)willLoadNotificationName {
-	return NMWillEditUserNotification;
+	return NMWillEditUserSettingsNotification;
 }
 
 - (NSString *)didLoadNotificationName {
-	return NMDidEditUserNotification;
+	return NMDidEditUserSettingsNotification;
 }
 
 - (NSString *)didFailNotificationName {
-	return NMDidFailEditUserNotification;
+	return NMDidFailEditUserSettingsNotification;
 }
 
 @end

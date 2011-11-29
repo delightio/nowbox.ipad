@@ -12,6 +12,7 @@
 	NMCacheController * cacheController;
 	NMImageDownloadTask * downloadTask;
 //	NSNotificationCenter * notificationCenter;
+	NMCategory * category;
 	NMChannel * channel;
 	NMVideo * video;
 	NMVideoDetail * videoDetail;
@@ -19,15 +20,18 @@
 }
 
 @property (nonatomic, retain) NMImageDownloadTask * downloadTask;
+@property (nonatomic, retain) NMCategory * category;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NMVideoDetail * videoDetail;
 @property (nonatomic, retain) NMPreviewThumbnail * previewThumbnail;
+@property (nonatomic, assign) BOOL adjustsImageOnHighlight;
 
 - (void)setImageForChannel:(NMChannel *)chn;
 - (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl;
 - (void)setImageForVideoThumbnail:(NMVideo *)vdo;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
+- (void)setImageForCategory:(NMCategory *)cat;
 
 - (void)delayedIssueChannelImageDownloadRequest;
 - (void)delayedIssueAuthorImageDownloadRequest;

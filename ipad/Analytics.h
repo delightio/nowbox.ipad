@@ -37,6 +37,7 @@
 #define AnalyticsEventEnterFullScreenChannelPanel @"Enter Full Screen Channel Panel"
 #define AnalyticsEventExitFullScreenChannelPanel @"Enter Full Screen Channel Panel"
 #define AnalyticsEventFavoriteVideo @"Favorite Video"
+#define AnalyticsEventUnfavoriteVideo @"Unfavorite Video"
 #define AnalyticsEventEnqueueVideo @"Enqueue Video"
 
 // Social events
@@ -66,10 +67,14 @@
 #define AnalyticsPropertyCategoryName @"Category Name"
 #define AnalyticsPropertyVideoName @"Video Name"
 #define AnalyticsPropertyVideoId @"Video ID"
+#define AnalyticsPropertyAirPlayActive @"AirPlay Active"
 #define AnalyticsPropertyAction @"Action"
 #define AnalyticsPropertySessionElapsedTime @"Session Elapsed Time"
 #define AnalyticsPropertyTotalElapsedTime @"Total Elapsed Time"
 #define AnalyticsPropertyRoundedTimeOnApp @"Rounded Time On App"
 #define AnalyticsPropertyTimeOfDay @"Time Of Day"
 #define AnalyticsPropertyDayOfWeek @"Day Of Week"
+#define AnalyticsPropertyFullScreenVideo @"Full Screen Video"
+#define AnalyticsPropertyFullScreenChannelPanel @"Full Screen Channel Panel"
+#define AnalyticsPropertyTooltipName @"Tooltip Name"
 

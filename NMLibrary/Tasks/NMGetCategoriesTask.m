@@ -60,12 +60,15 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	NSDictionary * contentDict;
 	NSNumber * catNum = nil;
 	NSInteger i = 0;
+	NSString * uriStr;
 	for (NSDictionary * cDict in catAy) {
 		for (NSString * rKey in cDict) {			// attribute key cleanser
 			contentDict = [cDict objectForKey:rKey];
 			nomCatDict = [NSMutableDictionary dictionaryWithCapacity:3];
 			catNum = [contentDict objectForKey:@"id"];
 			[nomCatDict setObject:catNum forKey:@"nm_id"];
+			uriStr = [contentDict objectForKey:@"thumbnail_uri"];
+			if ( uriStr ) [nomCatDict setObject:uriStr forKey:@"thumbnail_uri"];
 			[nomCatDict setObject:[NSNumber numberWithInteger:i++] forKey:@"nm_sort_order"];
 			[nomCatDict setObject:[contentDict objectForKey:@"title"] forKey:@"title"];
 			[serverCategoryIDIndexSet addIndex:[catNum unsignedIntegerValue]];

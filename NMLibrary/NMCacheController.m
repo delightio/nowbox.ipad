@@ -216,7 +216,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 				iv.downloadTask = nil;
 			}
 			// no existing download task for this image. create new download task
-			[iv performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:1.0f];
+			[iv performSelector:@selector(delayedIssueAuthorImageDownloadRequest) withObject:nil afterDelay:1.0];
 		}
 	}
 
@@ -283,10 +283,76 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 				iv.downloadTask = nil;
 			}
 			// no existing download task for this image. create new download task
-			[iv performSelector:@selector(delayedIssueChannelImageDownloadRequest) withObject:nil afterDelay:1.0f];
+			[iv performSelector:@selector(delayedIssueChannelImageDownloadRequest) withObject:nil afterDelay:1.0];
 		}
 	}
 	iv.image = styleUtility.userPlaceholderImage;
+	
+}
+
+- (void)setImageForCategory:(NMCategory *)cat imageView:(NMCachedImageView *)iv {
+	if ( cat == nil || iv == nil ) return;
+	// check if the image is in local file system
+	if ( [cat.nm_thumbnail_file_name length] ) {
+		NSString * fPath = [channelThumbnailCacheDir stringByAppendingPathComponent:cat.nm_thumbnail_file_name];
+		NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
+			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+			if ( img ) {
+				// file exists in path, load the file
+				iv.image = img;
+				return;
+			} else {
+				// the file specified by the cache does not exist
+				//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
+			}
+		}
+	}
+	// check if the channel contains a uri
+	if ( [cat.thumbnail_uri length] ) {
+		// check if there's already an existing task requesting the image
+		NSUInteger idxNum = [NMImageDownloadTask commandIndexForCategory:cat];
+		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+		
+		// cancel previous delayed method
+		[NSObject cancelPreviousPerformRequestsWithTarget:iv];
+		// we have the download task already exists for the current channel thumbnail image
+		if ( task ) {
+			// check if "self" is requesting
+			if ( [iv.downloadTask commandIndex] == idxNum ) {
+				// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+				// do nothing
+			} else {
+				// stop listening the notification
+				[notificationCenter removeObserver:iv];
+				// listen to notification
+				[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+				[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+				// release original download count
+				[iv.downloadTask releaseDownload];
+				// retain download count
+				[task retainDownload];
+				iv.downloadTask = task;
+			}
+		} else {
+			// the channel does not contain any existing download task.
+			// check the image view if it contains a download task
+			if ( iv.downloadTask ) {
+				// stop listening
+				[notificationCenter removeObserver:iv];
+				[iv.downloadTask releaseDownload];
+				iv.downloadTask = nil;
+			}
+			// no existing download task for this image. create new download task
+			[self downloadImageForCategory:cat imageView:iv];
+		}
+	}
+	iv.image = styleUtility.channelPlaceholderImage;
 	
 }
 
@@ -417,6 +483,19 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	return task;
 }
 
+- (NMImageDownloadTask *)downloadImageForCategory:(NMCategory *)cat imageView:(NMCachedImageView *)iv {
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForCategory:cat]];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowboxTaskController issueGetThumbnailForCategory:cat];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+	}
+	iv.downloadTask = task;
+	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+	return task;
+}
+
 - (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl imageView:(NMCachedImageView *)iv {
 	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForAuthor:dtl]];
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
@@ -518,6 +597,10 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 #ifdef DEBUG_IMAGE_CACHE
 	NSLog(@"write channel image: %@", [channelThumbnailCacheDir stringByAppendingPathComponent:fname]);
 #endif
+	[aData writeToFile:[channelThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
+- (void)writeCategoryImageData:(NSData *)aData withFilename:(NSString *)fname {
 	[aData writeToFile:[channelThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
 }
 

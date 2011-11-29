@@ -7,13 +7,16 @@
 //
 
 #import "NMCachedImageView.h"
+#import "UIImage+Tint.h"
 
 @implementation NMCachedImageView
 @synthesize downloadTask;
+@synthesize category;
 @synthesize channel;
 @synthesize video;
 @synthesize videoDetail;
 @synthesize previewThumbnail;
+@synthesize adjustsImageOnHighlight;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
 	self = [super initWithCoder:aDecoder];
@@ -38,6 +41,7 @@
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[downloadTask release];
+	[category release];
 	[channel release];
 	[video release];
 	[videoDetail release];
@@ -113,6 +117,19 @@
 	self.previewThumbnail = pv;
 	// check if there's local cache
 	[cacheController setImageForPreviewThumbnail:pv imageView:self];
+}
+
+- (void)setImageForCategory:(NMCategory *)cat {
+	self.category = cat;
+	[cacheController setImageForCategory:cat imageView:self];
+}
+
+- (void)setImage:(UIImage *)image {
+    [super setImage:image];
+    
+    if (self.adjustsImageOnHighlight) {
+        self.highlightedImage = [image tintedImageUsingColor:[UIColor colorWithWhite:0.0 alpha:0.4]];
+    }
 }
 
 - (void)cancelDownload {

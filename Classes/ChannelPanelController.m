@@ -136,10 +136,6 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[tableView setEditing:!tableView.editing animated:YES];
 }
 
-- (IBAction)debugRefreshChannel:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
-}
-
 - (IBAction)showSettingsView:(id)sender {
 	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:settingCtrl];
@@ -269,6 +265,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
         [ctnView.textLabel setFrame:CGRectMake(0, 0, ctnView.frame.size.width, cell.contentView.bounds.size.height)];
     }
 
+    ctnView.newChannelIndicator.hidden = ![theChannel.nm_is_new boolValue];
 	[ctnView.imageView setImageForChannel:theChannel];
 
 	// video row
@@ -334,6 +331,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
     [ctnView setHighlighted:YES];
+    [ctnView.newChannelIndicator setHidden:![theChannel.nm_is_new boolValue]];
 
     NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
     
@@ -448,7 +446,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 //        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
 		// only play video in that channel which has not been played before
         if ( theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue]) ) {
-            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0] sender:aTableView];
             break;
         }
     }
@@ -567,8 +565,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 						   
 				if (nextChannelIndexPath) {
 					NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
-					// do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
-					[videoViewController setCurrentChannel:channel];
+                    NSArray *videos = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:channel];
+
+                    // do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
+                    if ([videos count] > 0) {
+                        [videoViewController playVideo:[videos objectAtIndex:0]];
+                    }
 				}
 			}
             
@@ -648,7 +650,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         AGOrientedTableView * htView = (AGOrientedTableView *)[channelCell viewWithTag:1009];
         // htview num rows always have at least 1 because of the loading cell, checking against the FRC object would be a better idea down the line
         if ([htView numberOfRowsInSection:0] > 1) {
-            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+            [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] sender:self];
         }
     }
 }

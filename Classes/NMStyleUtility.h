@@ -46,6 +46,7 @@
 
     UIColor * channelBorderColor;
 	UIImage * userPlaceholderImage, * channelContainerBackgroundNormalImage, * channelContainerBackgroundHighlightImage;
+	UIImage * channelPlaceholderImage;
 	UIImage * toolbarExpandImage, * toolbarExpandHighlightedImage;
 	UIImage * toolbarCollapseImage, * toolbarCollapseHighlightedImage;
 	// playback control
@@ -108,6 +109,7 @@
 
 @property (nonatomic, readonly) UIColor * channelBorderColor;
 @property (nonatomic, readonly) UIImage * userPlaceholderImage;
+@property (nonatomic, readonly) UIImage * channelPlaceholderImage;
 @property (nonatomic, readonly) UIImage * channelContainerBackgroundNormalImage;
 @property (nonatomic, readonly) UIImage * channelContainerBackgroundHighlightImage;
 @property (nonatomic, readonly) UIImage * toolbarExpandImage;
