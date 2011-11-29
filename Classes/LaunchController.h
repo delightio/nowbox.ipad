@@ -25,6 +25,7 @@
 	NSMutableIndexSet * thumbnailVideoIndex, * resolutionVideoIndex;
 	NMChannel * channel;
 	NMTaskQueueController * taskQueueController;
+    NSMutableSet * subscribingChannels;
 }
 
 @property (nonatomic, assign) VideoPlaybackViewController * viewController;
