@@ -183,19 +183,12 @@
 		lblStr = @"Service is down";
 	}
 
-	if ( [notName isEqualToString:NMDidFailCreateUserNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];        
-	} else if ( [notName isEqualToString:NMDidFailGetChannelsNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];  
-	} else if ( [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];  
-    } else if ( [notName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];
-    } else if ( [notName isEqualToString:NMDidFailCheckUpdateNotification] ) {
+	if ([notName isEqualToString:NMDidFailCreateUserNotification] ||
+        [notName isEqualToString:NMDidFailGetChannelsNotification] ||
+        [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ||
+        [notName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ||
+        [notName isEqualToString:NMDidFailCheckUpdateNotification]) {
+        
         progressLabel.hidden = NO;
         [progressLabel setTitle:lblStr forState:UIControlStateNormal];
         [activityIndicator stopAnimating];
