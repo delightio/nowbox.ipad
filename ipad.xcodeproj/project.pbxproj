@@ -70,6 +70,8 @@
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
 		83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852143145A34000047B7E0 /* BugSense-iOS.framework */; };
 		83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852145145A34100047B7E0 /* CoreLocation.framework */; };
+		838668041486F4B10038F86A /* onboard-category-icon-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 838668031486F4B10038F86A /* onboard-category-icon-background.png */; };
+		838668071486F63B0038F86A /* onboard-category-icon-background-selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 838668061486F63B0038F86A /* onboard-category-icon-background-selected.png */; };
 		838F27D51471949000935D5A /* onboard-social-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D21471949000935D5A /* onboard-social-facebook.png */; };
 		838F27D61471949000935D5A /* onboard-social-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D31471949000935D5A /* onboard-social-twitter.png */; };
 		838F27D71471949000935D5A /* onboard-social-youtube.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D41471949000935D5A /* onboard-social-youtube.png */; };
@@ -356,6 +358,8 @@
 		83852143145A34000047B7E0 /* BugSense-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "BugSense-iOS.framework"; path = "Libraries/BugSense-iOS.framework"; sourceTree = "<group>"; };
 		83852145145A34100047B7E0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		83857ACD145B7F87002FFB0B /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
+		838668031486F4B10038F86A /* onboard-category-icon-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-icon-background.png"; sourceTree = "<group>"; };
+		838668061486F63B0038F86A /* onboard-category-icon-background-selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-category-icon-background-selected.png"; sourceTree = "<group>"; };
 		838F27D21471949000935D5A /* onboard-social-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-facebook.png"; sourceTree = "<group>"; };
 		838F27D31471949000935D5A /* onboard-social-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-twitter.png"; sourceTree = "<group>"; };
 		838F27D41471949000935D5A /* onboard-social-youtube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-youtube.png"; sourceTree = "<group>"; };
@@ -894,6 +898,8 @@
 				83D21A21146DFE5D008393F1 /* onboard-category-background-default.png */,
 				83D21A22146DFE5D008393F1 /* onboard-category-background-selected.png */,
 				83D21A23146DFE5D008393F1 /* onboard-category-icon.png */,
+				838668031486F4B10038F86A /* onboard-category-icon-background.png */,
+				838668061486F63B0038F86A /* onboard-category-icon-background-selected.png */,
 				838F27E51471C7E000935D5A /* onboard-channel-background.png */,
 				838F27E11471A2DF00935D5A /* onboard-channelmanagement-icon.png */,
 				83D21A1D146DF7C5008393F1 /* onboard-divider.png */,
@@ -1379,6 +1385,8 @@
 				8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */,
 				83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */,
 				83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */,
+				838668041486F4B10038F86A /* onboard-category-icon-background.png in Resources */,
+				838668071486F63B0038F86A /* onboard-category-icon-background-selected.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
