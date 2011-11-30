@@ -380,6 +380,7 @@
     
     gridController = [[GridController alloc] init];
     gridController.delegate = self;
+    gridController.managedObjectContext = self.managedObjectContext;
     [self.view addSubview:gridController.view];
     [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }

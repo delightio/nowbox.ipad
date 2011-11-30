@@ -16,7 +16,8 @@
 @synthesize gridView;
 @synthesize currentChannel;
 @synthesize currentVideo;
-@synthesize itemArray;
+@synthesize fetchedResultsController;
+@synthesize managedObjectContext;
 @synthesize delegate;
 
 - (id)init
@@ -27,7 +28,6 @@
         gridView.itemSize = CGSizeMake(100, 50);
         gridView.numberOfColumns = 0;
         
-        dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
         self.currentChannel = nil;
     }
     return self;
@@ -39,7 +39,8 @@
     [gridView release];
     [currentChannel release];
     [currentVideo release];
-    [itemArray release];
+    [fetchedResultsController release];
+    [managedObjectContext release];
     
     [super dealloc];
 }
@@ -53,12 +54,6 @@
     
     self.currentVideo = nil;
     
-    if (currentChannel) {
-        self.itemArray = [dataController sortedVideoListForChannel:aCurrentChannel];
-    } else {
-        self.itemArray = [dataController subscribedChannels];
-    }
-    
     [gridView reloadData];
 }
 
@@ -70,9 +65,18 @@
     }
     
     if (currentVideo) {
-        self.itemArray = [dataController sortedVideoListForChannel:aCurrentVideo.channel];
         [gridView reloadData];
     }
+}
+
+- (void)setManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
+{
+    if (managedObjectContext != aManagedObjectContext) {
+        [managedObjectContext release];
+        managedObjectContext = [aManagedObjectContext retain];
+    }
+    
+    [gridView reloadData];
 }
 
 #pragma mark - Navigation
@@ -96,12 +100,18 @@
 
 - (void)pushToChannel:(NMChannel *)channel
 {
+    [fetchedResultsController release];
+    fetchedResultsController = nil;
+
     self.currentChannel = channel;
     [self slideGridForward:YES];
 }
 
 - (void)pushToVideo:(NMVideo *)video
 {
+    [fetchedResultsController release];
+    fetchedResultsController = nil;
+    
     if (currentVideo) {
         self.currentVideo = video;
         [self slideGridForward:YES];
@@ -127,7 +137,7 @@
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
 {
-    return [itemArray count];
+    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
 }
 
 - (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
@@ -142,11 +152,11 @@
     
     if (currentChannel) {
         // We're on the videos page
-        NMVideo *video = [itemArray objectAtIndex:index];
+        NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         [button setTitle:video.title forState:UIControlStateNormal];
     } else {
         // We're on the channels page
-        NMChannel *channel = [itemArray objectAtIndex:index];
+        NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         [button setTitle:channel.title forState:UIControlStateNormal];        
     }
 
@@ -159,15 +169,68 @@
     
     if (currentChannel) {
         // We're on the videos page
-        NMVideo *video = [itemArray objectAtIndex:index];
+        NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         [delegate gridController:self didSelectVideo:video];
-        //[self pushToVideo:video];
+        [self pushToVideo:video];
     } else {
         // We're on the channels page
-        NMChannel *channel = [itemArray objectAtIndex:index];
+        NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         [delegate gridController:self didSelectChannel:channel];
-        //[self pushToChannel:channel];
+        [self pushToChannel:channel];
     }       
+}
+
+#pragma mark - NSFetchedResultsController
+
+- (NSFetchedResultsController *)fetchedResultsController 
+{
+    if (!managedObjectContext) {
+        return nil;
+    }
+        
+    if (!fetchedResultsController) {
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setReturnsObjectsAsFaults:NO];
+        
+        if (currentChannel) {
+            [fetchRequest setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext]];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error < %@", currentChannel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
+            [fetchRequest setFetchBatchSize:5];
+            
+            NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+            NSSortDescriptor *timestampDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
+            NSArray *sortDescriptors = [NSArray arrayWithObjects:timestampDescriptor, sortDescriptor, nil];
+            [fetchRequest setSortDescriptors:sortDescriptors];
+            [timestampDescriptor release];
+            [sortDescriptor release];
+            
+        } else {
+            [fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext]];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];	
+            [fetchRequest setFetchBatchSize:20];
+
+            NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
+            [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+            [sortDescriptor release];
+        }
+        
+        fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        fetchedResultsController.delegate = self;
+        [fetchRequest release];
+        
+        NSError *error = nil;
+        if (![fetchedResultsController performFetch:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    }
+    
+    return fetchedResultsController;
+}    
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
+{
+    [gridView reloadData];
 }
 
 @end

@@ -14,15 +14,16 @@
 
 @protocol GridControllerDelegate;
 
-@interface GridController : NSObject <GridScrollViewDelegate> {
-    NMDataController *dataController;
+@interface GridController : NSObject <GridScrollViewDelegate, NSFetchedResultsControllerDelegate> {
+
 }
 
 @property (nonatomic, retain) IBOutlet UIView *view;
 @property (nonatomic, retain) IBOutlet GridScrollView *gridView;
 @property (nonatomic, retain) NMChannel *currentChannel;
 @property (nonatomic, retain) NMVideo *currentVideo;
-@property (nonatomic, retain) NSArray *itemArray;
+@property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, assign) id<GridControllerDelegate> delegate;
 
 - (void)pushToChannel:(NMChannel *)channel;
