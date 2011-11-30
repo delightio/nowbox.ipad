@@ -18,6 +18,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
+#import "GridController.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -35,7 +36,7 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, GridControllerDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
@@ -71,6 +72,8 @@ enum {
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
 	LaunchController * launchController;
+    GridController * gridController;
+
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;
 	BOOL forceStopByUser;
@@ -91,7 +94,7 @@ enum {
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
     
-    ToolTip *pendingToolTip;
+    ToolTip *pendingToolTip;    
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;

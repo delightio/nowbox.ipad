@@ -12,6 +12,7 @@
 
 @synthesize numberOfColumns;
 @synthesize itemSize;
+@synthesize horizontalItemPadding;
 @synthesize verticalItemPadding;
 @synthesize gridDelegate;
 
@@ -23,7 +24,8 @@
     recycledViews = [[NSMutableSet alloc] init];
     
     numberOfColumns = 3;
-    itemSize = CGSizeMake(260, 90);
+    itemSize = CGSizeMake(0, 90);
+    horizontalItemPadding = 10;
     verticalItemPadding = 10;
 }
 
@@ -96,7 +98,7 @@
 - (void)setFrame:(CGRect)frame
 {
     [super setFrame:frame];
-    [self setNeedsLayout];
+    [self reloadData];
 }
 
 - (void)layoutSubviews
@@ -137,14 +139,14 @@
         lastVisibleRow = -1;
     }
     
-    // Do we need to add any views?
+    // Do we need to add any views?    
     while ((lastVisibleRow == -1) || (bottomY < self.contentOffset.y + self.frame.size.height && lastVisibleRow < numberOfRows - 1)) {
         lastVisibleRow++;
-        for (NSUInteger column = 0; column < numberOfColumns; column++) {
-            NSUInteger index = (lastVisibleRow * numberOfColumns + column);
+        for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
+            NSUInteger index = (lastVisibleRow * resolvedNumberOfColumns + column);
             if (index < numberOfItems) {            
                 UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:index];
-                view.frame = CGRectMake(round(column * (itemSize.width + horizontalItemPadding)), bottomY, itemSize.width, itemSize.height);
+                view.frame = CGRectMake(round(column * (resolvedItemWidth + resolvedHorizontalItemPadding)), bottomY, resolvedItemWidth, itemSize.height);
                 view.tag = index;
                 [self insertSubview:view atIndex:0];
                 [visibleViews addObject:view];                
@@ -156,11 +158,11 @@
     while (topY > self.contentOffset.y && firstVisibleRow > 0) {
         firstVisibleRow--;
         topY -= itemSize.height + verticalItemPadding;
-        for (NSUInteger column = 0; column < numberOfColumns; column++) {
-            NSUInteger index = (firstVisibleRow * numberOfColumns + column);            
+        for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
+            NSUInteger index = (firstVisibleRow * resolvedNumberOfColumns + column);            
             if (index < numberOfItems) {
                 UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:index];
-                view.frame = CGRectMake(round(column * (itemSize.width + horizontalItemPadding)), topY, itemSize.width, itemSize.height);
+                view.frame = CGRectMake(round(column * (resolvedItemWidth + resolvedHorizontalItemPadding)), topY, resolvedItemWidth, itemSize.height);
                 view.tag = index;
                 [self insertSubview:view atIndex:0];
                 [visibleViews addObject:view];
@@ -172,9 +174,18 @@
 - (void)reloadData
 {
     numberOfItems = [gridDelegate gridScrollViewNumberOfItems:self];
-    numberOfRows = ceil((float)numberOfItems / numberOfColumns);
     
-    horizontalItemPadding = (numberOfColumns == 0 ? 0 : floor(self.frame.size.width - (itemSize.width * numberOfColumns)) / (numberOfColumns - 1));
+    if (itemSize.width == 0) {
+        resolvedNumberOfColumns = numberOfColumns;
+        resolvedHorizontalItemPadding = horizontalItemPadding;
+        resolvedItemWidth = (self.frame.size.width - (horizontalItemPadding * (resolvedNumberOfColumns - 1))) / resolvedNumberOfColumns;
+    } else {
+        resolvedNumberOfColumns = (numberOfColumns == 0 ? (self.frame.size.width + horizontalItemPadding) / (itemSize.width + horizontalItemPadding) : numberOfColumns);
+        resolvedHorizontalItemPadding = (resolvedNumberOfColumns == 0 ? 0 : floor(self.frame.size.width - (itemSize.width * resolvedNumberOfColumns)) / (resolvedNumberOfColumns - 1));
+        resolvedItemWidth = itemSize.width;
+    }
+    
+    numberOfRows = ceil((float)numberOfItems / resolvedNumberOfColumns);
     
     // Remove all existing visible views
     for (UIView *view in visibleViews) {
@@ -266,6 +277,20 @@
     if ([gridDelegate respondsToSelector:@selector(scrollViewDidScrollToTop:)]) {
         [gridDelegate scrollViewDidScrollToTop:scrollView]; 
     }
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    GridScrollView *scrollView = [[GridScrollView allocWithZone:zone] init];
+    scrollView.frame = self.frame;
+    scrollView.numberOfColumns = self.numberOfColumns;
+    scrollView.itemSize = self.itemSize;
+    scrollView.verticalItemPadding = self.verticalItemPadding;
+    scrollView.gridDelegate = self.gridDelegate;
+    
+    return scrollView;
 }
 
 @end

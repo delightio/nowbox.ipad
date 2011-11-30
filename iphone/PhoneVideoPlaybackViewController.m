@@ -11,6 +11,7 @@
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
+#import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -150,6 +151,8 @@
 	// create movie view
 	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, screenWidth, 320.0f)];
 	movieView.alpha = 0.0f;
+    movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
 	dblTapRcgr.numberOfTapsRequired = 2;
@@ -248,7 +251,22 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
-	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+	return YES;
+}
+
+- (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
+        topLevelContainerView.frame = CGRectMake(0, 0, 320, 240);
+        gridController.view.frame = CGRectMake(0, 240, 320, 240);
+        gridController.view.alpha = 1;
+    } else {
+        topLevelContainerView.frame = self.view.bounds;
+        gridController.view.frame = self.view.bounds;
+    }
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [self updateViewsForInterfaceOrientation:toInterfaceOrientation];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -270,7 +288,8 @@
 
 - (void)dealloc {
 	[launchController release];
-	
+	[gridController release];
+    
 	[loadedControlView release];
 	[movieDetailViewArray release];
 	[currentChannel release];
@@ -358,6 +377,11 @@
     // Start monitoring for tooltips
 //    [[ToolTipController sharedToolTipController] startTimer];
 //    [[ToolTipController sharedToolTipController] setDelegate:self];
+    
+    gridController = [[GridController alloc] init];
+    gridController.delegate = self;
+    [self.view addSubview:gridController.view];
+    [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
 
 #pragma mark Playback data structure
@@ -1236,6 +1260,7 @@
 	loadedControlView.hidden = NO;
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
+        gridController.view.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
 	}];
@@ -1400,6 +1425,24 @@
 //    
 //    return self.view;
 //}
+
+#pragma mark - GridControllerDelegate
+
+- (void)gridController:(GridController *)aGridController didSelectChannel:(NMChannel *)channel
+{
+    [self setCurrentChannel:channel startPlaying:YES];
+    
+    if (UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) {
+        [UIView animateWithInteractiveDuration:0.3 animations:^{
+            aGridController.view.alpha = 0;
+        }];
+    }
+}
+
+- (void)gridController:(GridController *)gridController didSelectVideo:(NMVideo *)video
+{
+    [self playVideo:video];
+}
 
 #pragma mark Debug
 

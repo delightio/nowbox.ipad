@@ -10,10 +10,14 @@
 
 @protocol GridScrollViewDelegate;
 
-@interface GridScrollView : UIScrollView <UIScrollViewDelegate> {
+@interface GridScrollView : UIScrollView <UIScrollViewDelegate, NSCopying> {
     NSUInteger numberOfItems;
     NSUInteger numberOfRows;
-    CGFloat horizontalItemPadding;
+    
+    // If itemSize.width == 0, item width is auto. Otherwise, horizontal item padding is auto.
+    CGFloat resolvedItemWidth;
+    CGFloat resolvedHorizontalItemPadding;
+    NSUInteger resolvedNumberOfColumns;
     
     NSMutableSet *visibleViews;
     NSMutableSet *recycledViews;
@@ -21,6 +25,7 @@
 
 @property (nonatomic, assign) NSUInteger numberOfColumns;
 @property (nonatomic, assign) CGSize itemSize;
+@property (nonatomic, assign) CGFloat horizontalItemPadding;
 @property (nonatomic, assign) CGFloat verticalItemPadding;
 @property (nonatomic, assign) IBOutlet id<GridScrollViewDelegate> gridDelegate;
 

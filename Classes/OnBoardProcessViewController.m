@@ -235,6 +235,7 @@
     channelsView.backgroundColor = [UIColor clearColor];
         
     categoryGrid.itemSize = CGSizeMake(265, 96);
+    channelsScrollView.itemSize = CGSizeMake(260, 90);
     channelsScrollView.verticalItemPadding = 18;
     
     // Sort the categories by sort order
