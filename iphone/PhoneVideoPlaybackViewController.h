@@ -18,7 +18,8 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
-#import "GridNavigationController.h"
+#import "SizableNavigationController.h"
+#import "GridController.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -57,9 +58,6 @@ enum {
 	BOOL isAspectFill;
 //	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
-	CGFloat screenWidth;
-	CGRect fullScreenRect;//, splitViewRect;
-//	CGRect topLeftRect;
 	
 	CGFloat currentXOffset;
 	NSUInteger numberOfVideos;
@@ -72,7 +70,7 @@ enum {
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
 	LaunchController * launchController;
-    GridNavigationController * gridNavigationController;
+    SizableNavigationController * gridNavigationController;
 
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;

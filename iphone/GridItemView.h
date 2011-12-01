@@ -17,5 +17,6 @@
 @property (nonatomic, retain) IBOutlet NMCachedImageView *thumbnail;
 @property (nonatomic, retain) IBOutlet UILabel *titleLabel;
 @property (nonatomic, assign) NSUInteger index;
+@property (nonatomic, assign) BOOL playing;
 
 @end

@@ -101,8 +101,6 @@
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
-	screenWidth = 480.0f;
-	fullScreenRect = CGRectMake(0.0f, 0.0f, 480.0f, 320.0f);
 	
 	// channel switching header
 	CGRect theFrame;
@@ -113,7 +111,7 @@
 	[self resetChannelHeaderView:YES];
 	
 	theFrame = nextChannelHeaderView.frame;
-	theFrame.origin.y = theFrame.size.height + fullScreenRect.size.height;
+	theFrame.origin.y = theFrame.size.height + topLevelContainerView.frame.size.height;
 	nextChannelHeaderView.frame = theFrame;
 	[channelSwitchingScrollView addSubview:nextChannelHeaderView];
 	[self resetChannelHeaderView:NO];
@@ -136,9 +134,9 @@
 		[movieDetailViewArray addObject:self.loadedMovieDetailView];
 		theFrame = loadedMovieDetailView.frame;
 		theFrame.origin.y = 0.0f;
-		theFrame.origin.x = -(screenWidth + NM_MOVIE_VIEW_GAP_FLOAT);
-		theFrame.size.width = screenWidth;
-		theFrame.size.height = 320.0f;
+		theFrame.origin.x = -(topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT);
+		theFrame.size.width = topLevelContainerView.frame.size.width;
+		theFrame.size.height = topLevelContainerView.frame.size.height;
 		loadedMovieDetailView.frame = theFrame;
 		loadedMovieDetailView.alpha = 0.0f;
 		[controlScrollView addSubview:loadedMovieDetailView];
@@ -149,7 +147,7 @@
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, screenWidth, 320.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height)];
 	movieView.alpha = 0.0f;
     movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
@@ -166,7 +164,7 @@
 	[dblTapRcgr release];
 	
 	[controlScrollView addSubview:movieView];
-	controlScrollView.frame = CGRectMake(0.0f, 0.0f, 480.0f + NM_MOVIE_VIEW_GAP_FLOAT, 320.0f);
+	controlScrollView.frame = CGRectMake(0.0f, 0.0f, topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
 	channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
 	[channelSwitchingScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
 
@@ -256,14 +254,23 @@
 
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-        topLevelContainerView.frame = CGRectMake(0, 0, 320, 240);
-        gridNavigationController.view.frame = CGRectMake(0, 240, 320, 240);
+        topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height / 2);
+        gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height / 2, self.view.bounds.size.width, self.view.bounds.size.height / 2);
         gridNavigationController.view.alpha = 1;
     } else {
         topLevelContainerView.frame = self.view.bounds;
         gridNavigationController.view.frame = self.view.bounds;
         gridNavigationController.view.alpha = 0;
     }
+    
+    // Update video positions in scroll view
+    CGRect lastRect = topLevelContainerView.bounds;
+    for (UIView *view in movieDetailViewArray) {
+        view.frame = CGRectOffset(lastRect, lastRect.size.width, 0);
+        lastRect = view.frame;
+    }
+    controlScrollView.contentSize = CGSizeMake((CGFloat)( (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP) * playbackModelController.numberOfVideos), topLevelContainerView.frame.size.height);
+
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -382,7 +389,8 @@
     GridController *gridController = [[GridController alloc] init];
     gridController.delegate = self;
     gridController.managedObjectContext = self.managedObjectContext;
-    gridNavigationController = [[GridNavigationController alloc] initWithRootGridController:gridController];
+    gridNavigationController = [[SizableNavigationController alloc] initWithRootViewController:gridController];
+    gridNavigationController.playbackModelController = playbackModelController;
     [gridController release];
     
     [self.view addSubview:gridNavigationController.view];
@@ -678,7 +686,7 @@
 	[UIView animateWithDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
-		currentXOffset += screenWidth + NM_MOVIE_VIEW_GAP_FLOAT;
+		currentXOffset += topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT;
 		// scroll to next video
 		// translate the movie view
 		[UIView animateWithDuration:0.5f animations:^{
@@ -743,7 +751,7 @@
 	}
 	theDetailView.video = ctrl.nextVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
+	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
@@ -762,7 +770,7 @@
 	}
 	theDetailView.video = ctrl.previousVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
+	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
@@ -781,7 +789,7 @@
 	}
 	theDetailView.video = ctrl.currentVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
+	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
 #endif
@@ -797,8 +805,8 @@
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
 
-	controlScrollView.contentSize = CGSizeMake((CGFloat)( (480 + NM_MOVIE_VIEW_GAP) * totalNum), 320.0f);
-	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * (480 + NM_MOVIE_VIEW_GAP));
+	controlScrollView.contentSize = CGSizeMake((CGFloat)( (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP) * totalNum), topLevelContainerView.frame.size.height);
+	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
 			// update offset
@@ -1145,7 +1153,7 @@
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
 	// reduce alpha of the playback view
-	movieView.alpha = (screenWidth - dx) / screenWidth;
+	movieView.alpha = (topLevelContainerView.frame.size.width - dx) / topLevelContainerView.frame.size.width;
 }
 
 - (void)delayedChangeChannelSwitchingScrollViewOffset {
@@ -1154,11 +1162,11 @@
 	switch (channelSwitchStatus) {
 		case ChannelSwitchNext:
 			chnObj = [nowboxTaskController.dataController nextChannel:currentChannel];
-			yOff = fullScreenRect.size.height;
+			yOff = topLevelContainerView.frame.size.height;
 			break;
 		case ChannelSwitchPrevious:
 			chnObj = [nowboxTaskController.dataController previousChannel:currentChannel];
-			yOff = -fullScreenRect.size.height;
+			yOff = -topLevelContainerView.frame.size.height;
 			break;
 			
 		default:
@@ -1184,7 +1192,7 @@
 			// Released above the header
 			channelSwitchStatus = ChannelSwitchPrevious;
 			// push the view down
-			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(320.0f, 0.0f, 0.0f, 0.0f);
+			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(topLevelContainerView.frame.size.height, 0.0f, 0.0f, 0.0f);
 			scrollView.scrollEnabled = NO;
 			[self stopVideo];
 			[self performSelector:@selector(delayedChangeChannelSwitchingScrollViewOffset) withObject:nil afterDelay:0.0f];
@@ -1192,7 +1200,7 @@
 		} else if ( yOff >= REFRESH_HEADER_HEIGHT ) {
 			channelSwitchStatus = ChannelSwitchNext;
 			// push the view down
-			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 320.0f, 0.0f);
+			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, topLevelContainerView.frame.size.height, 0.0f);
 			scrollView.scrollEnabled = NO;
 			[self stopVideo];
 			[self performSelector:@selector(delayedChangeChannelSwitchingScrollViewOffset) withObject:nil afterDelay:0.0f];
@@ -1216,7 +1224,7 @@
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset += screenWidth + NM_MOVIE_VIEW_GAP_FLOAT;
+		currentXOffset += topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT;
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
@@ -1229,7 +1237,7 @@
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset -= screenWidth + NM_MOVIE_VIEW_GAP_FLOAT;
+		currentXOffset -= topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT;
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
 			[playbackModelController moveToPreviousVideo];

@@ -14,6 +14,7 @@
 @synthesize thumbnail;
 @synthesize titleLabel;
 @synthesize index;
+@synthesize playing;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -37,18 +38,32 @@
     [super dealloc];
 }
 
-- (void)setHighlighted:(BOOL)highlighted
+- (void)updateBackgroundColor
 {
-    if (highlighted) {
+    if (self.highlighted) {
         contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+    } else if (playing) {
+        contentView.backgroundColor = [UIColor colorWithRed:0.9 green:0.9 blue:0.3 alpha:0.7];
     } else {
         contentView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     }
 }
 
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted:highlighted];
+    [self updateBackgroundColor];
+}
+
 - (void)unhighlight
 {
     [self setHighlighted:NO];
+}
+
+- (void)setPlaying:(BOOL)aPlaying
+{
+    playing = aPlaying;
+    [self updateBackgroundColor];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event

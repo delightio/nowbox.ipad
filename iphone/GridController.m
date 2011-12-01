@@ -7,12 +7,11 @@
 //
 
 #import "GridController.h"
-#import "GridNavigationController.h"
+#import "SizableNavigationController.h"
 #import "GridItemView.h"
 
 @implementation GridController
 
-@synthesize view;
 @synthesize gridView;
 @synthesize backButton;
 @synthesize titleLabel;
@@ -23,21 +22,8 @@
 @synthesize navigationController;
 @synthesize delegate;
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        [[NSBundle mainBundle] loadNibNamed:@"GridController" owner:self options:nil];
-        gridView.itemSize = CGSizeMake(104, 70);
-        gridView.horizontalItemPadding = 2;
-        gridView.numberOfColumns = 0;        
-    }
-    return self;
-}
-
 - (void)dealloc
 {
-    [view release];
     [gridView release];
     [backButton release];
     [titleLabel release];
@@ -73,6 +59,31 @@
     }
 }
 
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    gridView.itemSize = CGSizeMake(104, 70);
+    gridView.horizontalItemPadding = 2;
+    gridView.numberOfColumns = 0;        
+}
+
+- (void)viewDidUnload
+{
+    self.gridView = nil;
+    self.backButton = nil;
+    self.titleLabel = nil;
+
+    [super viewDidUnload];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [gridView reloadData];
+}
+
 #pragma mark - Actions
 
 - (IBAction)itemPressed:(id)sender
@@ -92,14 +103,14 @@
         gridController.currentChannel = channel;
         gridController.managedObjectContext = self.managedObjectContext;
         gridController.delegate = self.delegate;
-        [navigationController pushGridController:gridController];
+        [navigationController pushViewController:gridController];
         [gridController release];
     }       
 }
 
 - (IBAction)backButtonPressed:(id)sender
 {
-    [navigationController popGridController];
+    [navigationController popViewController];
 }
 
 #pragma mark - GridScrollViewDelegate
@@ -119,17 +130,19 @@
     
     itemView.index = index;
     itemView.highlighted = NO;
-    
+
     if (currentChannel) {
         // We're on the videos page
         NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         [itemView.thumbnail setImageForVideoThumbnail:video];
         itemView.titleLabel.text = video.title;
+        itemView.playing = (navigationController.playbackModelController.currentVideo == video);
     } else {
         // We're on the channels page
         NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
         itemView.titleLabel.text = channel.title;
         [itemView.thumbnail setImageForChannel:channel];
+        itemView.playing = (navigationController.playbackModelController.channel == channel);
     }
 
     return itemView;

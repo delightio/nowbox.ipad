@@ -12,11 +12,10 @@
 #import "NMVideo.h"
 
 @protocol GridControllerDelegate;
-@class GridNavigationController;
+@class SizableNavigationController;
 
-@interface GridController : NSObject <GridScrollViewDelegate, NSFetchedResultsControllerDelegate>
+@interface GridController : UIViewController <GridScrollViewDelegate, NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, retain) IBOutlet UIView *view;
 @property (nonatomic, retain) IBOutlet GridScrollView *gridView;
 @property (nonatomic, retain) IBOutlet UIButton *backButton;
 @property (nonatomic, retain) IBOutlet UILabel *titleLabel;
@@ -24,7 +23,7 @@
 @property (nonatomic, retain) NMVideo *currentVideo;
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, assign) GridNavigationController *navigationController;
+@property (nonatomic, assign) SizableNavigationController *navigationController;
 @property (nonatomic, assign) id<GridControllerDelegate> delegate;
 
 - (IBAction)itemPressed:(id)sender;
