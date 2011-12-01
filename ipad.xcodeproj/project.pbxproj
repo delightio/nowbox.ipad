@@ -365,7 +365,7 @@
 		83852143145A34000047B7E0 /* BugSense-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "BugSense-iOS.framework"; path = "Libraries/BugSense-iOS.framework"; sourceTree = "<group>"; };
 		83852145145A34100047B7E0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		83857ACD145B7F87002FFB0B /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
-		838668101486FB0D0038F86A /* SizableNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = SizableNavigationController.h; sourceTree = "<group>"; };
+		838668101486FB0D0038F86A /* SizableNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SizableNavigationController.h; sourceTree = "<group>"; };
 		838668111486FB0D0038F86A /* SizableNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SizableNavigationController.m; sourceTree = "<group>"; };
 		8386681414870B0F0038F86A /* GridItemView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GridItemView.xib; sourceTree = "<group>"; };
 		83866816148719290038F86A /* GridItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridItemView.h; sourceTree = "<group>"; };

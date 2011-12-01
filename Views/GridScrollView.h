@@ -10,8 +10,9 @@
 
 @protocol GridScrollViewDelegate;
 
-@interface GridScrollView : UIScrollView <UIScrollViewDelegate, NSCopying> {
+@interface GridScrollView : UIScrollView <UIScrollViewDelegate> {
     NSUInteger numberOfItems;
+    NSUInteger numberOfItemsDelta;
     NSUInteger numberOfRows;
     
     // If itemSize.width == 0, item width is auto. Otherwise, horizontal item padding is auto.
@@ -31,6 +32,11 @@
 
 - (void)reloadData;
 - (UIView *)dequeueReusableSubview;
+- (void)insertItemAtIndex:(NSUInteger)index;
+- (void)deleteItemAtIndex:(NSUInteger)index;
+- (void)updateItemAtIndex:(NSUInteger)index;
+- (void)beginUpdates;
+- (void)endUpdates;
 
 @end
 

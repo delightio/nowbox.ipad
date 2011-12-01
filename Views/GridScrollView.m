@@ -101,10 +101,51 @@
     [self reloadData];
 }
 
+- (CGRect)frameForIndex:(NSUInteger)index
+{
+    NSUInteger row = index / resolvedNumberOfColumns;
+    NSUInteger column = index % resolvedNumberOfColumns;
+    
+    return CGRectMake(round(column * (resolvedItemWidth + resolvedHorizontalItemPadding)), 
+                      round(row * (itemSize.height + verticalItemPadding)), 
+                      resolvedItemWidth, 
+                      itemSize.height);
+}
+
+- (void)addViewAtIndex:(NSUInteger)index
+{
+    UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:index];
+    view.frame = [self frameForIndex:index];
+    view.tag = index;
+    [self insertSubview:view atIndex:0];
+    [visibleViews addObject:view];       
+}
+
+- (BOOL)removeViewAtIndex:(NSUInteger)index
+{
+    UIView *viewToRemove = nil;
+    for (UIView *view in visibleViews) {
+        if (view.tag == index) {
+            viewToRemove = view;
+            break;
+        }
+    }
+    
+    if (viewToRemove) {
+        [recycledViews addObject:viewToRemove];
+        [viewToRemove removeFromSuperview];
+        [visibleViews removeObject:viewToRemove];
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+
+    // Recalculate visible row range
     NSInteger firstVisibleRow = INT_MAX;
     NSInteger lastVisibleRow = INT_MIN;
     CGFloat topY = 0;
@@ -145,11 +186,7 @@
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
             NSUInteger index = (lastVisibleRow * resolvedNumberOfColumns + column);
             if (index < numberOfItems) {            
-                UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:index];
-                view.frame = CGRectMake(round(column * (resolvedItemWidth + resolvedHorizontalItemPadding)), bottomY, resolvedItemWidth, itemSize.height);
-                view.tag = index;
-                [self insertSubview:view atIndex:0];
-                [visibleViews addObject:view];                
+                [self addViewAtIndex:index];
             }
         }
         bottomY += itemSize.height + verticalItemPadding;
@@ -161,11 +198,7 @@
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
             NSUInteger index = (firstVisibleRow * resolvedNumberOfColumns + column);            
             if (index < numberOfItems) {
-                UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:index];
-                view.frame = CGRectMake(round(column * (resolvedItemWidth + resolvedHorizontalItemPadding)), topY, resolvedItemWidth, itemSize.height);
-                view.tag = index;
-                [self insertSubview:view atIndex:0];
-                [visibleViews addObject:view];
+                [self addViewAtIndex:index];
             }
         }
     }    
@@ -174,7 +207,7 @@
 - (void)reloadData
 {
     numberOfItems = [gridDelegate gridScrollViewNumberOfItems:self];
-    
+
     if (itemSize.width == 0) {
         resolvedNumberOfColumns = numberOfColumns;
         resolvedHorizontalItemPadding = horizontalItemPadding;
@@ -208,6 +241,75 @@
     }
     
     return recycledView;
+}
+
+- (void)beginUpdates
+{
+    numberOfItemsDelta = 0;
+}
+
+- (void)endUpdates
+{
+    numberOfItems += numberOfItemsDelta;
+    numberOfRows = ceil((float)numberOfItems / resolvedNumberOfColumns);    
+    self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding);    
+}
+
+- (void)insertItemAtIndex:(NSUInteger)index
+{
+    NSInteger indexToRemove = -1;
+    if (index < numberOfItems) {
+        // Shift other views down
+        for (UIView *view in visibleViews) {
+            if (view.tag >= index) {
+                view.frame = [self frameForIndex:++view.tag];
+                
+                if (view.frame.origin.y > self.contentOffset.y + self.frame.size.height) {
+                    indexToRemove = view.tag;
+                }
+            }
+        }
+    }
+    
+    [self addViewAtIndex:index];
+    
+    // Remove the view that got shifted below the screen
+    if (indexToRemove >= 0) {
+        [self removeViewAtIndex:indexToRemove];
+    }
+    
+    numberOfItemsDelta++;
+}
+
+- (void)deleteItemAtIndex:(NSUInteger)index
+{
+    [self removeViewAtIndex:index];
+
+    // Shift other views up
+    NSInteger lastVisibleIndex = -1;
+    for (UIView *view in visibleViews) {
+        if (view.tag > index) {
+            view.frame = [self frameForIndex:--view.tag];
+            
+            if (view.tag > lastVisibleIndex) {
+                lastVisibleIndex = view.tag;
+            }
+        }
+    }
+    
+    numberOfItemsDelta--;
+
+    // Might need to add a view to the end of the last visible column
+    if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < (numberOfItems + numberOfItemsDelta)) {
+        [self addViewAtIndex:lastVisibleIndex + 1];
+    }
+}
+
+- (void)updateItemAtIndex:(NSUInteger)index
+{
+    if ([self removeViewAtIndex:index]) {
+        [self addViewAtIndex:index];
+    }
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -277,20 +379,6 @@
     if ([gridDelegate respondsToSelector:@selector(scrollViewDidScrollToTop:)]) {
         [gridDelegate scrollViewDidScrollToTop:scrollView]; 
     }
-}
-
-#pragma mark - NSCopying
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    GridScrollView *scrollView = [[GridScrollView allocWithZone:zone] init];
-    scrollView.frame = self.frame;
-    scrollView.numberOfColumns = self.numberOfColumns;
-    scrollView.itemSize = self.itemSize;
-    scrollView.verticalItemPadding = self.verticalItemPadding;
-    scrollView.gridDelegate = self.gridDelegate;
-    
-    return scrollView;
 }
 
 @end

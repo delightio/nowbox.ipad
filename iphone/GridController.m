@@ -196,9 +196,35 @@
     return fetchedResultsController;
 }    
 
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [gridView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath 
+{    
+    switch(type) {
+        case NSFetchedResultsChangeInsert: 
+            [gridView insertItemAtIndex:newIndexPath.row];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [gridView deleteItemAtIndex:indexPath.row];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [gridView updateItemAtIndex:indexPath.row];
+            break;
+        case NSFetchedResultsChangeMove:
+            [gridView deleteItemAtIndex:indexPath.row];
+            [gridView insertItemAtIndex:newIndexPath.row];
+            break;
+    }
+}
+
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
-    [gridView reloadData];
+    [gridView endUpdates];
 }
 
 @end
