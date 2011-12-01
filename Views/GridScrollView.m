@@ -114,7 +114,7 @@
     NSMutableSet *viewsToRemove = [[NSMutableSet alloc] init];
     for (UIView *view in visibleViews) {
         if (CGRectIntersectsRect(view.frame, CGRectMake(0, self.contentOffset.y, self.frame.size.width, self.frame.size.height))) {
-            NSInteger row = view.tag / numberOfColumns;
+            NSInteger row = view.tag / resolvedNumberOfColumns;
             
             // Keep the view
             if (row < firstVisibleRow) {

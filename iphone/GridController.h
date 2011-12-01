@@ -10,25 +10,25 @@
 #import "GridScrollView.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
-#import "NMDataController.h"
 
 @protocol GridControllerDelegate;
+@class GridNavigationController;
 
-@interface GridController : NSObject <GridScrollViewDelegate, NSFetchedResultsControllerDelegate> {
-
-}
+@interface GridController : NSObject <GridScrollViewDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, retain) IBOutlet UIView *view;
 @property (nonatomic, retain) IBOutlet GridScrollView *gridView;
+@property (nonatomic, retain) IBOutlet UIButton *backButton;
+@property (nonatomic, retain) IBOutlet UILabel *titleLabel;
 @property (nonatomic, retain) NMChannel *currentChannel;
 @property (nonatomic, retain) NMVideo *currentVideo;
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, assign) GridNavigationController *navigationController;
 @property (nonatomic, assign) id<GridControllerDelegate> delegate;
 
-- (void)pushToChannel:(NMChannel *)channel;
-- (void)pushToVideo:(NMVideo *)video;
-- (void)pop;
+- (IBAction)itemPressed:(id)sender;
+- (IBAction)backButtonPressed:(id)sender;
 
 @end
 

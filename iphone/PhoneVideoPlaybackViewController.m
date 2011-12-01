@@ -257,11 +257,12 @@
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         topLevelContainerView.frame = CGRectMake(0, 0, 320, 240);
-        gridController.view.frame = CGRectMake(0, 240, 320, 240);
-        gridController.view.alpha = 1;
+        gridNavigationController.view.frame = CGRectMake(0, 240, 320, 240);
+        gridNavigationController.view.alpha = 1;
     } else {
         topLevelContainerView.frame = self.view.bounds;
-        gridController.view.frame = self.view.bounds;
+        gridNavigationController.view.frame = self.view.bounds;
+        gridNavigationController.view.alpha = 0;
     }
 }
 
@@ -288,7 +289,7 @@
 
 - (void)dealloc {
 	[launchController release];
-	[gridController release];
+	[gridNavigationController release];
     
 	[loadedControlView release];
 	[movieDetailViewArray release];
@@ -378,10 +379,13 @@
 //    [[ToolTipController sharedToolTipController] startTimer];
 //    [[ToolTipController sharedToolTipController] setDelegate:self];
     
-    gridController = [[GridController alloc] init];
+    GridController *gridController = [[GridController alloc] init];
     gridController.delegate = self;
     gridController.managedObjectContext = self.managedObjectContext;
-    [self.view addSubview:gridController.view];
+    gridNavigationController = [[GridNavigationController alloc] initWithRootGridController:gridController];
+    [gridController release];
+    
+    [self.view addSubview:gridNavigationController.view];
     [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
 
@@ -1261,7 +1265,7 @@
 	loadedControlView.hidden = NO;
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
-        gridController.view.alpha = 1.0f;
+        gridNavigationController.view.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
 	}];
@@ -1429,20 +1433,20 @@
 
 #pragma mark - GridControllerDelegate
 
-- (void)gridController:(GridController *)aGridController didSelectChannel:(NMChannel *)channel
+- (void)gridController:(GridController *)gridController didSelectChannel:(NMChannel *)channel
 {
     [self setCurrentChannel:channel startPlaying:YES];
-    
-    if (UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) {
-        [UIView animateWithInteractiveDuration:0.3 animations:^{
-            aGridController.view.alpha = 0;
-        }];
-    }
 }
 
 - (void)gridController:(GridController *)gridController didSelectVideo:(NMVideo *)video
 {
     [self playVideo:video];
+    
+    if (UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) {
+        [UIView animateWithInteractiveDuration:0.3 animations:^{
+            gridNavigationController.view.alpha = 0;
+        }];
+    }
 }
 
 #pragma mark Debug

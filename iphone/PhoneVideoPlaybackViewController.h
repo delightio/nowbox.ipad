@@ -18,7 +18,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
-#import "GridController.h"
+#import "GridNavigationController.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -72,7 +72,7 @@ enum {
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
 	LaunchController * launchController;
-    GridController * gridController;
+    GridNavigationController * gridNavigationController;
 
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;

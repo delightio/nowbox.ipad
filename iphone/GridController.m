@@ -7,17 +7,20 @@
 //
 
 #import "GridController.h"
-#import "NMTaskQueueController.h"
-#import "UIView+InteractiveAnimation.h"
+#import "GridNavigationController.h"
+#import "GridItemView.h"
 
 @implementation GridController
 
 @synthesize view;
 @synthesize gridView;
+@synthesize backButton;
+@synthesize titleLabel;
 @synthesize currentChannel;
 @synthesize currentVideo;
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext;
+@synthesize navigationController;
 @synthesize delegate;
 
 - (id)init
@@ -25,10 +28,9 @@
     self = [super init];
     if (self) {
         [[NSBundle mainBundle] loadNibNamed:@"GridController" owner:self options:nil];
-        gridView.itemSize = CGSizeMake(100, 50);
-        gridView.numberOfColumns = 0;
-        
-        self.currentChannel = nil;
+        gridView.itemSize = CGSizeMake(104, 70);
+        gridView.horizontalItemPadding = 2;
+        gridView.numberOfColumns = 0;        
     }
     return self;
 }
@@ -37,36 +39,14 @@
 {
     [view release];
     [gridView release];
+    [backButton release];
+    [titleLabel release];
     [currentChannel release];
     [currentVideo release];
     [fetchedResultsController release];
     [managedObjectContext release];
     
     [super dealloc];
-}
-
-- (void)setCurrentChannel:(NMChannel *)aCurrentChannel
-{
-    if (currentChannel != aCurrentChannel) {
-        [currentChannel release];
-        currentChannel = [aCurrentChannel retain];
-    }
-    
-    self.currentVideo = nil;
-    
-    [gridView reloadData];
-}
-
-- (void)setCurrentVideo:(NMVideo *)aCurrentVideo
-{    
-    if (currentVideo != aCurrentVideo) {
-        [currentVideo release];
-        currentVideo = [aCurrentVideo retain];
-    }
-    
-    if (currentVideo) {
-        [gridView reloadData];
-    }
 }
 
 - (void)setManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
@@ -79,58 +59,47 @@
     [gridView reloadData];
 }
 
-#pragma mark - Navigation
-
-- (void)slideGridForward:(BOOL)forward
+- (void)setCurrentChannel:(NMChannel *)aCurrentChannel
 {
-    GridScrollView *newGridView = [[gridView copy] autorelease];
-    newGridView.frame = CGRectOffset(gridView.frame, (forward ? 1 : -1) * gridView.frame.size.width, 0);
-    [view addSubview:newGridView];
-     
-    [UIView animateWithInteractiveDuration:0.5
-                                animations:^{
-                                    newGridView.frame = gridView.frame;
-                                    gridView.frame = CGRectOffset(gridView.frame, (forward ? -1 : 1) * gridView.frame.size.width, 0);
-                                }
-                                completion:^(BOOL finished){
-                                    [gridView removeFromSuperview];
-                                    self.gridView = newGridView;
-                                }];    
-}
-
-- (void)pushToChannel:(NMChannel *)channel
-{
-    [fetchedResultsController release];
-    fetchedResultsController = nil;
-
-    self.currentChannel = channel;
-    [self slideGridForward:YES];
-}
-
-- (void)pushToVideo:(NMVideo *)video
-{
-    [fetchedResultsController release];
-    fetchedResultsController = nil;
+    if (currentChannel != aCurrentChannel) {
+        [currentChannel release];
+        currentChannel = [aCurrentChannel retain];
+    }
     
-    if (currentVideo) {
-        self.currentVideo = video;
-        [self slideGridForward:YES];
+    if (currentChannel) {
+        titleLabel.text = currentChannel.title;
     } else {
-        self.currentVideo = video;
-        [gridView reloadData];
+        titleLabel.text = @"Channels";
     }
 }
 
-- (void)pop
+#pragma mark - Actions
+
+- (IBAction)itemPressed:(id)sender
 {
-    // Go back a level
-    if (currentVideo) {
-        self.currentVideo = nil;
-    } else if (currentChannel) {
-        self.currentChannel = nil;
-    }
+    NSInteger index = [sender index];
     
-    [self slideGridForward:NO];
+    if (currentChannel) {
+        // We're on the videos page
+        NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        [delegate gridController:self didSelectVideo:video];
+    } else {
+        // We're on the channels page
+        NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        [delegate gridController:self didSelectChannel:channel];
+        
+        GridController *gridController = [[GridController alloc] init];
+        gridController.currentChannel = channel;
+        gridController.managedObjectContext = self.managedObjectContext;
+        gridController.delegate = self.delegate;
+        [navigationController pushGridController:gridController];
+        [gridController release];
+    }       
+}
+
+- (IBAction)backButtonPressed:(id)sender
+{
+    [navigationController popGridController];
 }
 
 #pragma mark - GridScrollViewDelegate
@@ -142,42 +111,28 @@
 
 - (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
 {
-    UIButton *button = (UIButton *)[gridScrollView dequeueReusableSubview];
-    if (!button) {
-        button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    GridItemView *itemView = (GridItemView *)[gridScrollView dequeueReusableSubview];
+    if (!itemView) {
+        itemView = [[GridItemView alloc] initWithFrame:CGRectMake(0, 0, gridScrollView.itemSize.width, gridScrollView.itemSize.height)];
+        [itemView addTarget:self action:@selector(itemPressed:) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    button.tag = index;
+    itemView.index = index;
+    itemView.highlighted = NO;
     
     if (currentChannel) {
         // We're on the videos page
         NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-        [button setTitle:video.title forState:UIControlStateNormal];
+        [itemView.thumbnail setImageForVideoThumbnail:video];
+        itemView.titleLabel.text = video.title;
     } else {
         // We're on the channels page
         NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-        [button setTitle:channel.title forState:UIControlStateNormal];        
+        itemView.titleLabel.text = channel.title;
+        [itemView.thumbnail setImageForChannel:channel];
     }
 
-    return button;
-}
-
-- (void)buttonPressed:(id)sender
-{
-    NSInteger index = [sender tag];
-    
-    if (currentChannel) {
-        // We're on the videos page
-        NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-        [delegate gridController:self didSelectVideo:video];
-        [self pushToVideo:video];
-    } else {
-        // We're on the channels page
-        NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-        [delegate gridController:self didSelectChannel:channel];
-        [self pushToChannel:channel];
-    }       
+    return itemView;
 }
 
 #pragma mark - NSFetchedResultsController
