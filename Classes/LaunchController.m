@@ -102,7 +102,7 @@
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[self checkUpdateChannels];
 	}
-    
+
     [taskQueueController issueGetFeaturedCategories];
 }
 

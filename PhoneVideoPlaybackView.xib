@@ -39,7 +39,7 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="714552435">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">306</int>
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="IBUIScrollView" id="412700657">
 								<reference key="NSNextResponder" ref="714552435"/>
@@ -51,7 +51,6 @@
 										<string key="NSFrameSize">{480, 320}</string>
 										<reference key="NSSuperview" ref="412700657"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:206</string>
 										<bool key="IBUIClipsSubviews">YES</bool>
 										<bool key="IBUIMultipleTouchEnabled">YES</bool>
@@ -104,7 +103,7 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUILabel" id="708199110">
 						<reference key="NSNextResponder" ref="373417106"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">274</int>
 						<string key="NSFrameSize">{480, 21}</string>
 						<reference key="NSSuperview" ref="373417106"/>
 						<reference key="NSWindow"/>
@@ -141,11 +140,10 @@
 					</object>
 					<object class="IBUIActivityIndicatorView" id="683855051">
 						<reference key="NSNextResponder" ref="373417106"/>
-						<int key="NSvFlags">-2147483356</int>
+						<int key="NSvFlags">-2147483347</int>
 						<string key="NSFrame">{{92, 1}, {20, 20}}</string>
 						<reference key="NSSuperview" ref="373417106"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:1030</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -168,7 +166,7 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUILabel" id="59139731">
 						<reference key="NSNextResponder" ref="691935452"/>
-						<int key="NSvFlags">292</int>
+						<int key="NSvFlags">274</int>
 						<string key="NSFrameSize">{480, 22}</string>
 						<reference key="NSSuperview" ref="691935452"/>
 						<reference key="NSWindow"/>
@@ -192,11 +190,10 @@
 					</object>
 					<object class="IBUIActivityIndicatorView" id="823685504">
 						<reference key="NSNextResponder" ref="691935452"/>
-						<int key="NSvFlags">-2147483356</int>
+						<int key="NSvFlags">-2147483347</int>
 						<string key="NSFrame">{{92, 1}, {20, 20}}</string>
 						<reference key="NSSuperview" ref="691935452"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:1030</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>

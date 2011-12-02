@@ -111,7 +111,7 @@
 	[self resetChannelHeaderView:YES];
 	
 	theFrame = nextChannelHeaderView.frame;
-	theFrame.origin.y = theFrame.size.height + topLevelContainerView.frame.size.height;
+	theFrame.origin.y = topLevelContainerView.frame.size.height;
 	nextChannelHeaderView.frame = theFrame;
 	[channelSwitchingScrollView addSubview:nextChannelHeaderView];
 	[self resetChannelHeaderView:NO];
@@ -139,6 +139,7 @@
 		theFrame.size.height = topLevelContainerView.frame.size.height;
 		loadedMovieDetailView.frame = theFrame;
 		loadedMovieDetailView.alpha = 0.0f;
+        loadedMovieDetailView.tag = i;
 		[controlScrollView addSubview:loadedMovieDetailView];
 		self.loadedMovieDetailView = nil;
 		// movie detail view doesn't need to respond to autoresize
@@ -262,15 +263,38 @@
         gridNavigationController.view.frame = self.view.bounds;
         gridNavigationController.view.alpha = 0;
     }
+	
+    // Update scroll view sizes / content offsets
+    channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
     
-    // Update video positions in scroll view
-    CGRect lastRect = topLevelContainerView.bounds;
-    for (UIView *view in movieDetailViewArray) {
-        view.frame = CGRectOffset(lastRect, lastRect.size.width, 0);
-        lastRect = view.frame;
-    }
+    controlScrollView.frame = CGRectMake(0.0f, 0.0f, topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
     controlScrollView.contentSize = CGSizeMake((CGFloat)( (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP) * playbackModelController.numberOfVideos), topLevelContainerView.frame.size.height);
+    currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
+    controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
+    
+    // Update detail view positions
+    for (UIView *view in movieDetailViewArray) {
+        view.frame = CGRectMake(view.tag * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP), 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height);
+    }
+    
+    // Update controls / movie position
+	CGRect theFrame = loadedControlView.frame;
+	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
+	loadedControlView.frame = theFrame;
 
+	theFrame = movieView.frame;
+	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
+	movieView.frame = theFrame;
+    
+    // Update "pull to switch" positions
+    theFrame = nextChannelHeaderView.frame;
+	theFrame.origin.y = topLevelContainerView.frame.size.height;
+    theFrame.size.width = topLevelContainerView.frame.size.width;
+	nextChannelHeaderView.frame = theFrame;
+    
+    theFrame = previousChannelHeaderView.frame;
+    theFrame.size.width = topLevelContainerView.frame.size.width;
+    previousChannelHeaderView.frame = theFrame;
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -758,6 +782,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
+    theDetailView.tag = ctrl.nextIndexPath.row;
+    
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
@@ -777,6 +803,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
+    theDetailView.tag = ctrl.previousIndexPath.row;
+    
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
@@ -796,6 +824,8 @@
 	CGRect theFrame = theDetailView.frame;
 	theFrame.origin.x = xOffset;
 	theDetailView.frame = theFrame;
+    theDetailView.tag = ctrl.currentIndexPath.row;
+    
 	// when scrolling is inflight, do not issue the URL resolution request. Playback View Controller will call "advanceToNextVideo" later on which will trigger sending of resolution request.
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }

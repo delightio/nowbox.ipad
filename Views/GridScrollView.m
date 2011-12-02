@@ -218,7 +218,7 @@
         resolvedItemWidth = itemSize.width;
     }
     
-    numberOfRows = ceil((float)numberOfItems / resolvedNumberOfColumns);
+    numberOfRows = (resolvedNumberOfColumns == 0 ? 0 : ceil((float)numberOfItems / resolvedNumberOfColumns));
     
     // Remove all existing visible views
     for (UIView *view in visibleViews) {
@@ -227,7 +227,7 @@
     }
     [visibleViews removeAllObjects];
 
-    self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding);
+    self.contentSize = CGSizeMake(self.frame.size.width, (numberOfRows == 0 ? 0 : numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding));
     self.contentOffset = CGPointMake(0, -self.contentInset.top);
     [self setNeedsLayout];
 }
