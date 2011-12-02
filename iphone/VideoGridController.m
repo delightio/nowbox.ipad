@@ -42,6 +42,7 @@
     if (currentChannel != aCurrentChannel) {
         [currentChannel release];
         currentChannel = [aCurrentChannel retain];
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:currentChannel];
     }    
     
     self.titleLabel.text = currentChannel.title;

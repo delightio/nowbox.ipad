@@ -1443,7 +1443,7 @@
 
 - (void)gridController:(GridController *)gridController didSelectChannel:(NMChannel *)channel
 {
-    [self setCurrentChannel:channel startPlaying:YES];
+
 }
 
 - (void)gridController:(GridController *)gridController didSelectVideo:(NMVideo *)video
