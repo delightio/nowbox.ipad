@@ -124,7 +124,7 @@
 {
     GridItemView *itemView = (GridItemView *)[gridScrollView dequeueReusableSubview];
     if (!itemView) {
-        itemView = [[GridItemView alloc] initWithFrame:CGRectMake(0, 0, gridScrollView.itemSize.width, gridScrollView.itemSize.height)];
+        itemView = [[[GridItemView alloc] initWithFrame:CGRectMake(0, 0, gridScrollView.itemSize.width, gridScrollView.itemSize.height)] autorelease];
         [itemView addTarget:self action:@selector(itemPressed:) forControlEvents:UIControlEventTouchUpInside];
     }
     
