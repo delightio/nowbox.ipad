@@ -8,7 +8,7 @@
 
 #import "GridController.h"
 
-@interface VideoGridController : GridController {
+@interface VideoGridController : GridController <UIActionSheetDelegate> {
     BOOL isLoadingNewVideos;
 }
 

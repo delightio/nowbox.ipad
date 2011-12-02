@@ -12,7 +12,7 @@
 
 @interface GridScrollView : UIScrollView <UIScrollViewDelegate> {
     NSUInteger numberOfItems;
-    NSUInteger numberOfItemsDelta;
+    NSInteger numberOfItemsDelta;
     NSUInteger numberOfRows;
     
     // If itemSize.width == 0, item width is auto. Otherwise, horizontal item padding is auto.

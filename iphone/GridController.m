@@ -13,6 +13,7 @@
 
 @synthesize gridView;
 @synthesize backButton;
+@synthesize actionButton;
 @synthesize titleLabel;
 @synthesize managedObjectContext;
 @synthesize navigationController;
@@ -22,6 +23,7 @@
 {
     [gridView release];
     [backButton release];
+    [actionButton release];
     [titleLabel release];
     [managedObjectContext release];
     
@@ -53,6 +55,7 @@
 {
     self.gridView = nil;
     self.backButton = nil;
+    self.actionButton = nil;
     self.titleLabel = nil;
 
     [super viewDidUnload];
@@ -62,7 +65,8 @@
 {
     [super viewWillAppear:animated];
     
-    self.backButton.hidden = ([navigationController.viewControllers objectAtIndex:0] == self);
+    backButton.hidden = ([navigationController.viewControllers objectAtIndex:0] == self);
+    actionButton.hidden = ![self conformsToProtocol:@protocol(UIActionSheetDelegate)];
     
     CGPoint contentOffset = gridView.contentOffset;
     [gridView reloadData];
@@ -74,6 +78,11 @@
 - (IBAction)backButtonPressed:(id)sender
 {
     [navigationController popViewController];
+}
+
+- (IBAction)actionButtonPressed:(id)sender
+{
+
 }
 
 #pragma mark - GridScrollViewDelegate

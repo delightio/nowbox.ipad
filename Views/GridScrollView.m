@@ -300,7 +300,7 @@
     numberOfItemsDelta--;
 
     // Might need to add a view to the end of the last visible column
-    if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < (numberOfItems + numberOfItemsDelta)) {
+    if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < numberOfItems + numberOfItemsDelta) {
         [self addViewAtIndex:lastVisibleIndex + 1];
     }
 }

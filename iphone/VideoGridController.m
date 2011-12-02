@@ -65,6 +65,18 @@
     [self.delegate gridController:self didSelectVideo:video];
 }
 
+- (IBAction)actionButtonPressed:(id)sender
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe"), nil];
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    [actionSheet showInView:self.view];
+    [actionSheet release];
+}
+
 #pragma mark - GridScrollViewDelegate
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
@@ -159,6 +171,25 @@
     }
     
     return fetchedResultsController;
-}    
+}   
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            if ([currentChannel.nm_subscribed integerValue] > 0) {
+                // Unsubscribe
+                [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:currentChannel];
+            } else {
+                // Subscribe
+                [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:currentChannel];                
+            }
+            break;
+        default:
+            break;
+    }
+}
 
 @end
