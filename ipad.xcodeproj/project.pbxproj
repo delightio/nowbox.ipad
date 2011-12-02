@@ -65,6 +65,8 @@
 		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		8381548C148856B1003F2CA4 /* VideoGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548B148856B1003F2CA4 /* VideoGridController.m */; };
 		838154901488588D003F2CA4 /* ChannelGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548F1488588D003F2CA4 /* ChannelGridController.m */; };
+		8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381549114885CFD003F2CA4 /* grid-channels-plus.png */; };
+		838154951488612A003F2CA4 /* CategoryGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 838154941488612A003F2CA4 /* CategoryGridController.m */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */ = {isa = PBXBuildFile; fileRef = 8383BD551473A111002956C4 /* onboard-social-footer.png */; };
@@ -360,6 +362,9 @@
 		8381548B148856B1003F2CA4 /* VideoGridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoGridController.m; sourceTree = "<group>"; };
 		8381548E1488588D003F2CA4 /* ChannelGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelGridController.h; sourceTree = "<group>"; };
 		8381548F1488588D003F2CA4 /* ChannelGridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelGridController.m; sourceTree = "<group>"; };
+		8381549114885CFD003F2CA4 /* grid-channels-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grid-channels-plus.png"; sourceTree = "<group>"; };
+		838154931488612A003F2CA4 /* CategoryGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryGridController.h; sourceTree = "<group>"; };
+		838154941488612A003F2CA4 /* CategoryGridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryGridController.m; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
@@ -754,6 +759,8 @@
 				8381548F1488588D003F2CA4 /* ChannelGridController.m */,
 				8381548A148856B1003F2CA4 /* VideoGridController.h */,
 				8381548B148856B1003F2CA4 /* VideoGridController.m */,
+				838154931488612A003F2CA4 /* CategoryGridController.h */,
+				838154941488612A003F2CA4 /* CategoryGridController.m */,
 				83866816148719290038F86A /* GridItemView.h */,
 				83866817148719290038F86A /* GridItemView.m */,
 			);
@@ -934,6 +941,7 @@
 				22A19756140D792900DE074E /* channel-video-status-hot.png */,
 				22A19759140D7AAA00DE074E /* channel-video-status-fav.png */,
 				2275AD5014214867003C3FFC /* channel-video-status-watch-later.png */,
+				8381549114885CFD003F2CA4 /* grid-channels-plus.png */,
 				A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */,
 				A92E3E7D14040E4000B30313 /* internal-channel-history.png */,
 				A92E3E7E14040E4000B30313 /* internal-channel-queue.png */,
@@ -1438,6 +1446,7 @@
 				83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */,
 				83E99A6C1485BA3B000E704D /* GridController.xib in Resources */,
 				8386681514870B0F0038F86A /* GridItemView.xib in Resources */,
+				8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1516,6 +1525,7 @@
 				83866818148719290038F86A /* GridItemView.m in Sources */,
 				8381548C148856B1003F2CA4 /* VideoGridController.m in Sources */,
 				838154901488588D003F2CA4 /* ChannelGridController.m in Sources */,
+				838154951488612A003F2CA4 /* CategoryGridController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

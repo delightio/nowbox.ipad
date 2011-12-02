@@ -1,36 +1,26 @@
 //
-//  VideoGridController.m
+//  CategoryGridController.m
 //  ipad
 //
 //  Created by Chris Haugli on 12/1/11.
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 
-#import "VideoGridController.h"
+#import "CategoryGridController.h"
 #import "GridItemView.h"
 #import "SizableNavigationController.h"
+#import "ChannelGridController.h"
+#import "NMCategory.h"
 
-@implementation VideoGridController
+@implementation CategoryGridController
 
-@synthesize currentChannel;
 @synthesize fetchedResultsController;
 
 - (void)dealloc
 {
-    [currentChannel release];
     [fetchedResultsController release];
-
-    [super dealloc];
-}
-
-- (void)setCurrentChannel:(NMChannel *)aCurrentChannel
-{
-    if (currentChannel != aCurrentChannel) {
-        [currentChannel release];
-        currentChannel = [aCurrentChannel retain];
-    }    
     
-    self.titleLabel.text = currentChannel.title;
+    [super dealloc];
 }
 
 #pragma mark - View lifecycle
@@ -38,7 +28,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.titleLabel.text = currentChannel.title;
+    self.titleLabel.text = @"Categories";
 }
 
 #pragma mark - Actions
@@ -46,8 +36,15 @@
 - (IBAction)itemPressed:(id)sender
 {
     NSInteger index = [sender index];
-    NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    [self.delegate gridController:self didSelectVideo:video];
+    
+    NMCategory *category = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    
+    ChannelGridController *gridController = [[ChannelGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+    gridController.managedObjectContext = self.managedObjectContext;
+    gridController.delegate = self.delegate;
+    gridController.categoryFilter = category;
+    [self.navigationController pushViewController:gridController];
+    [gridController release];
 }
 
 #pragma mark - GridScrollViewDelegate
@@ -68,11 +65,10 @@
     itemView.index = index;
     itemView.highlighted = NO;
     
-    NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    [itemView.thumbnail setImageForVideoThumbnail:video];
-    itemView.titleLabel.text = video.title;
-    itemView.playing = (self.navigationController.playbackModelController.currentVideo == video);
-    
+    NMCategory *category = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    itemView.titleLabel.text = category.title;
+    [itemView.thumbnail setImageForCategory:category];
+
     return itemView;
 }
 
@@ -88,17 +84,14 @@
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         
-        [fetchRequest setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error < %@", currentChannel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
-        [fetchRequest setFetchBatchSize:5];
-        
+        [fetchRequest setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:self.managedObjectContext]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_id > 0"]];
+        [fetchRequest setFetchBatchSize:20];
+
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-        NSSortDescriptor *timestampDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
-        NSArray *sortDescriptors = [NSArray arrayWithObjects:timestampDescriptor, sortDescriptor, nil];
-        [fetchRequest setSortDescriptors:sortDescriptors];
-        [timestampDescriptor release];
+        [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         [sortDescriptor release];
-            
+        
         fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         fetchedResultsController.delegate = self;
         [fetchRequest release];

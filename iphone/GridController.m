@@ -60,7 +60,9 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    CGPoint contentOffset = gridView.contentOffset;
     [gridView reloadData];
+    gridView.contentOffset = contentOffset;
 }
 
 #pragma mark - Actions

@@ -10,16 +10,28 @@
 #import "GridItemView.h"
 #import "SizableNavigationController.h"
 #import "VideoGridController.h"
+#import "CategoryGridController.h"
 
 @implementation ChannelGridController
 
 @synthesize fetchedResultsController;
+@synthesize categoryFilter;
 
 - (void)dealloc
 {
     [fetchedResultsController release];
+    [categoryFilter release];
     
     [super dealloc];
+}
+
+- (void)setCategoryFilter:(NMCategory *)aCategoryFilter
+{
+    if (categoryFilter != aCategoryFilter) {
+        [categoryFilter release];
+        categoryFilter = [aCategoryFilter retain];
+        self.titleLabel.text = categoryFilter.title;
+    }
 }
 
 #pragma mark - View lifecycle
@@ -27,7 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.titleLabel.text = @"Channels";
+    self.titleLabel.text = (categoryFilter ? categoryFilter.title : @"Channels");
 }
 
 #pragma mark - Actions
@@ -36,11 +48,18 @@
 {
     NSInteger index = [sender index];
     
-    NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    [self.delegate gridController:self didSelectChannel:channel];
+    GridController *gridController;
     
-    VideoGridController *gridController = [[VideoGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
-    gridController.currentChannel = channel;
+    if (!categoryFilter && index >= [self gridScrollViewNumberOfItems:self.gridView] - 1) {
+        gridController = [[CategoryGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+    } else {
+        NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        [self.delegate gridController:self didSelectChannel:channel];
+        
+        gridController = [[VideoGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+        ((VideoGridController *)gridController).currentChannel = channel;
+    }
+    
     gridController.managedObjectContext = self.managedObjectContext;
     gridController.delegate = self.delegate;
     [self.navigationController pushViewController:gridController];
@@ -51,7 +70,8 @@
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    NSUInteger numberOfItems = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    return (categoryFilter ? numberOfItems : numberOfItems + 1);
 }
 
 - (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
@@ -65,12 +85,19 @@
     itemView.index = index;
     itemView.highlighted = NO;
     
-    // We're on the channels page
-    NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    itemView.titleLabel.text = channel.title;
-    [itemView.thumbnail setImageForChannel:channel];
-    itemView.playing = (self.navigationController.playbackModelController.channel == channel);
-
+    if (!categoryFilter && index == [self gridScrollViewNumberOfItems:gridScrollView] - 1) {
+        // + button
+        itemView.titleLabel.hidden = YES;
+        itemView.thumbnail.image = [UIImage imageNamed:@"grid-channels-plus.png"];
+        itemView.playing = NO;
+    } else {
+        NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        itemView.titleLabel.hidden = NO;
+        itemView.titleLabel.text = channel.title;
+        [itemView.thumbnail setImageForChannel:channel];
+        itemView.playing = (self.navigationController.playbackModelController.channel == channel);
+    }
+    
     return itemView;
 }
 
@@ -87,7 +114,11 @@
         [fetchRequest setReturnsObjectsAsFaults:NO];
         
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];	
+        if (categoryFilter) {
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ANY categories.nm_id == %@ AND nm_hidden == NO", categoryFilter.nm_id]];	
+        } else {
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];	            
+        }
         [fetchRequest setFetchBatchSize:20];
         
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];

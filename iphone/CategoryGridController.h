@@ -1,5 +1,5 @@
 //
-//  ChannelGridController.h
+//  CategoryGridController.h
 //  ipad
 //
 //  Created by Chris Haugli on 12/1/11.
@@ -8,11 +8,8 @@
 
 #import "GridController.h"
 
-@interface ChannelGridController : GridController
+@interface CategoryGridController : GridController
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) NMCategory *categoryFilter;
-
-- (IBAction)itemPressed:(id)sender;
 
 @end
