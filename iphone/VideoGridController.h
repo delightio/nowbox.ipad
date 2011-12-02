@@ -8,7 +8,9 @@
 
 #import "GridController.h"
 
-@interface VideoGridController : GridController
+@interface VideoGridController : GridController {
+    BOOL isLoadingNewVideos;
+}
 
 @property (nonatomic, retain) NMChannel *currentChannel;
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;

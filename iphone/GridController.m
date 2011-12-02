@@ -46,7 +46,7 @@
     
     gridView.itemSize = CGSizeMake(104, 70);
     gridView.horizontalItemPadding = 2;
-    gridView.numberOfColumns = 0;        
+    gridView.numberOfColumns = 0;            
 }
 
 - (void)viewDidUnload
@@ -60,6 +60,10 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
+    self.backButton.hidden = ([navigationController.viewControllers objectAtIndex:0] == self);
+    
     CGPoint contentOffset = gridView.contentOffset;
     [gridView reloadData];
     gridView.contentOffset = contentOffset;

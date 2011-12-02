@@ -28,7 +28,6 @@
         if ([viewController isKindOfClass:[GridController class]]) {
             GridController *gridController = (GridController *)viewController;
             gridController.navigationController = self;
-            gridController.backButton.hidden = YES;
         }
         
         _viewControllers = [[NSMutableArray alloc] initWithObjects:viewController, nil];

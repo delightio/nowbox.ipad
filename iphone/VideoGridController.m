@@ -15,8 +15,22 @@
 @synthesize currentChannel;
 @synthesize fetchedResultsController;
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];        
+    }
+    
+    return self;
+}
+
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [currentChannel release];
     [fetchedResultsController release];
 
@@ -74,6 +88,39 @@
     itemView.playing = (self.navigationController.playbackModelController.currentVideo == video);
     
     return itemView;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (!isLoadingNewVideos && scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - 20) {
+        isLoadingNewVideos = YES;
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:currentChannel];
+    }
+}
+
+#pragma mark - Notifications
+
+- (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification 
+{
+    NSDictionary *info = [aNotification userInfo];
+	NMChannel *channel = [info objectForKey:@"channel"];
+    
+    if (channel && [channel isEqual:currentChannel] ) {
+		NSInteger numRec = [[info objectForKey:@"num_video_received"] integerValue];
+		if (numRec && [[info objectForKey:@"num_video_added"] integerValue] == 0 && numRec == [[info objectForKey:@"num_video_requested"] integerValue]) {
+			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+		} else {
+            isLoadingNewVideos = NO;
+		}
+    }
+}
+
+- (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification 
+{
+	NMChannel *channel = [[aNotification userInfo] objectForKey:@"channel"];
+    if (channel && [channel isEqual:currentChannel] ) {
+        isLoadingNewVideos = NO;
+    }
 }
 
 #pragma mark - NSFetchedResultsController
