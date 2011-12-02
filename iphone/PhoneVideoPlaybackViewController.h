@@ -19,7 +19,7 @@
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
 #import "SizableNavigationController.h"
-#import "GridController.h"
+#import "ChannelGridController.h"
 
 @class NMVideo;
 @class NMTaskQueueController;

@@ -29,7 +29,6 @@
             GridController *gridController = (GridController *)viewController;
             gridController.navigationController = self;
             gridController.backButton.hidden = YES;
-            gridController.currentChannel = nil;
         }
         
         _viewControllers = [[NSMutableArray alloc] initWithObjects:viewController, nil];

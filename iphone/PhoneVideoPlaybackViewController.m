@@ -386,7 +386,7 @@
 //    [[ToolTipController sharedToolTipController] startTimer];
 //    [[ToolTipController sharedToolTipController] setDelegate:self];
     
-    GridController *gridController = [[GridController alloc] init];
+    ChannelGridController *gridController = [[ChannelGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
     gridController.delegate = self;
     gridController.managedObjectContext = self.managedObjectContext;
     gridNavigationController = [[SizableNavigationController alloc] initWithRootViewController:gridController];
