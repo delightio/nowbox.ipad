@@ -96,6 +96,7 @@
 		838F280814720B2A00935D5A /* share-button-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F280714720B2A00935D5A /* share-button-post.png */; };
 		838F281B14722A7800935D5A /* onboard-divider-shadow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281914722A7800935D5A /* onboard-divider-shadow-down.png */; };
 		838F281C14722A7800935D5A /* onboard-divider-shadow-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */; };
+		83BE2E8D1489AD6300C407B7 /* ShareView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83BE2E8C1489AD6300C407B7 /* ShareView~iphone.xib */; };
 		83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */; };
 		83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A14146DEC13008393F1 /* onboard-splash-button.png */; };
 		83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A19146DF107008393F1 /* onboard-button-next.png */; };
@@ -400,6 +401,7 @@
 		838F280714720B2A00935D5A /* share-button-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-button-post.png"; sourceTree = "<group>"; };
 		838F281914722A7800935D5A /* onboard-divider-shadow-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-down.png"; sourceTree = "<group>"; };
 		838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-up.png"; sourceTree = "<group>"; };
+		83BE2E8C1489AD6300C407B7 /* ShareView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "ShareView~iphone.xib"; sourceTree = "<group>"; };
 		83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-new-indicator.png"; sourceTree = "<group>"; };
 		83D21A14146DEC13008393F1 /* onboard-splash-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button.png"; sourceTree = "<group>"; };
 		83D21A19146DF107008393F1 /* onboard-button-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next.png"; sourceTree = "<group>"; };
@@ -1193,6 +1195,7 @@
 				221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */,
 				A9A641DD1462065F0032EFE1 /* PhoneVideoPlaybackView.xib */,
 				83F8E2DF1468C4B40051D990 /* ShareView.xib */,
+				83BE2E8C1489AD6300C407B7 /* ShareView~iphone.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -1447,6 +1450,7 @@
 				83E99A6C1485BA3B000E704D /* GridController.xib in Resources */,
 				8386681514870B0F0038F86A /* GridItemView.xib in Resources */,
 				8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */,
+				83BE2E8D1489AD6300C407B7 /* ShareView~iphone.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

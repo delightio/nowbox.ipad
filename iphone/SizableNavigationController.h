@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "VideoPlaybackModelController.h"
 
+@class PhoneVideoPlaybackViewController;
+
 @interface SizableNavigationController : NSObject {
     NSMutableArray *_viewControllers;
 }
@@ -17,6 +19,7 @@
 @property (nonatomic, readonly, retain) UIViewController *visibleViewController;
 @property (nonatomic, readonly, retain) NSArray *viewControllers;
 @property (nonatomic, assign) VideoPlaybackModelController *playbackModelController;
+@property (nonatomic, assign) PhoneVideoPlaybackViewController *playbackViewController;
 
 - (id)initWithRootViewController:(UIViewController *)viewController;
 - (void)pushViewController:(UIViewController *)viewController;

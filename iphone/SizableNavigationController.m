@@ -9,12 +9,14 @@
 #import "SizableNavigationController.h"
 #import "UIView+InteractiveAnimation.h"
 #import "GridController.h"
+#import "PhoneVideoPlaybackViewController.h"
 
 @implementation SizableNavigationController
 
 @synthesize view;
 @synthesize visibleViewController;
 @synthesize playbackModelController;
+@synthesize playbackViewController;
 
 - (id)initWithRootViewController:(UIViewController *)viewController
 {

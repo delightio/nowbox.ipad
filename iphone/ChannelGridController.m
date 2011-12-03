@@ -32,7 +32,6 @@
         categoryFilter = [aCategoryFilter retain];
         self.titleLabel.text = categoryFilter.title;
         
-        NSLog(@"last refresh was %f", [categoryFilter.nm_last_refresh timeIntervalSinceNow]);
         if ([categoryFilter.nm_last_refresh timeIntervalSinceNow] < -60.0f) {
             [[NMTaskQueueController sharedTaskQueueController] issueGetChannelsForCategory:categoryFilter];
         }

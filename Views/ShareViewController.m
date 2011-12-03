@@ -96,43 +96,49 @@
     // Hide shadow flicker when resizing
     float oldShadowOpacity = superview.layer.shadowOpacity;
     
-    // Make view taller so login page fits
-    [UIView animateWithDuration:0.3
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         superview.layer.shadowOpacity = 0;                                 
-                         superview.bounds = CGRectMake(0, 0, 500, 525);
-                         
-                         UIInterfaceOrientation statusBarOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-                         
-                         CGRect frame = superview.frame;
-                         frame.origin.x = (statusBarOrientation == UIInterfaceOrientationLandscapeRight ? [[UIScreen mainScreen] bounds].size.width - frame.size.width - 20 : 20);
-                         superview.frame = frame;
-                     }
-                     completion:^(BOOL finished){
-                         superview.layer.shadowOpacity = oldShadowOpacity;
-                         
-                         // Go to Twitter/FB login page
-                         SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
-                         
-                         NMSocialLoginType loginType;
-                         NSString *analyticsEvent;
-                         
-                         if (shareMode == ShareModeTwitter) {
-                             loginType = NMLoginTwitterType;
-                             analyticsEvent = AnalyticsEventStartTwitterLogin;
-                         } else {
-                             loginType = NMLoginFacebookType;
-                             analyticsEvent = AnalyticsEventStartFacebookLogin;
+    void (^completion)(BOOL) = ^(BOOL finished){
+        superview.layer.shadowOpacity = oldShadowOpacity;
+        
+        // Go to Twitter/FB login page
+        SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
+        
+        NMSocialLoginType loginType;
+        NSString *analyticsEvent;
+        
+        if (shareMode == ShareModeTwitter) {
+            loginType = NMLoginTwitterType;
+            analyticsEvent = AnalyticsEventStartTwitterLogin;
+        } else {
+            loginType = NMLoginFacebookType;
+            analyticsEvent = AnalyticsEventStartFacebookLogin;
+        }
+        
+        loginController.loginType = loginType;
+        [self.navigationController pushViewController:loginController animated:YES];
+        [loginController release];
+        
+        [[MixpanelAPI sharedAPI] track:analyticsEvent properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+    };
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        // Make view taller so login page fits
+        [UIView animateWithDuration:0.3
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^{
+                             superview.layer.shadowOpacity = 0;                                 
+                             superview.bounds = CGRectMake(0, 0, 500, 525);
+                             
+                             UIInterfaceOrientation statusBarOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+                             
+                             CGRect frame = superview.frame;
+                             frame.origin.x = (statusBarOrientation == UIInterfaceOrientationLandscapeRight ? [[UIScreen mainScreen] bounds].size.width - frame.size.width - 20 : 20);
+                             superview.frame = frame;
                          }
-                         
-                         loginController.loginType = loginType;
-                         [self.navigationController pushViewController:loginController animated:YES];
-                         [loginController release];
-                         
-                         [[MixpanelAPI sharedAPI] track:analyticsEvent properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
-                     }];  
+                         completion:completion];  
+    } else {
+        completion(NO);
+    }
 }
 
 #pragma mark - View lifecycle
@@ -175,7 +181,7 @@
         autoPost = NO;
     }
     
-    if (!viewPushedByNavigationController) {
+    if (!viewPushedByNavigationController || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         viewPushedByNavigationController = YES;
     } else {
         [UIView animateWithDuration:0.3
@@ -227,7 +233,11 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    return UIInterfaceOrientationIsLandscape(toInterfaceOrientation);
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return UIInterfaceOrientationIsLandscape(toInterfaceOrientation);
+    } else {
+        return YES;
+    }
 }
 
 #pragma mark - Actions
@@ -288,7 +298,10 @@
                                                       otherButtonTitles:@"Log In", nil];
             [alertView show];
             [alertView release];
-            [messageText resignFirstResponder];
+            
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                [messageText resignFirstResponder];
+            }
         }        
     }
 }

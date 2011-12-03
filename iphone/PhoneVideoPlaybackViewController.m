@@ -415,6 +415,7 @@
     gridController.managedObjectContext = self.managedObjectContext;
     gridNavigationController = [[SizableNavigationController alloc] initWithRootViewController:gridController];
     gridNavigationController.playbackModelController = playbackModelController;
+    gridNavigationController.playbackViewController = self;
     [gridController release];
     
     [self.view addSubview:gridNavigationController.view];
@@ -501,6 +502,11 @@
 	// update the interface if necessary
 	//	[movieView setActivityIndicationHidden:NO animated:NO];
 //	[self updateRibbonButtons];
+    
+    // Update highlighted channel in grid
+    if ([gridNavigationController.visibleViewController isKindOfClass:[ChannelGridController class]]) {
+        [((ChannelGridController *)gridNavigationController.visibleViewController).gridView reloadData];
+    }
 }
 
 - (NMVideo *)currentVideo {
@@ -553,7 +559,7 @@
 - (void)startLoadingChannel:(BOOL)isPrev {
 	if ( isPrev ) {
 		[previousChannelActivityView startAnimating];
-		previousChannelSwitchingLabel.text = @"Switch to previous channel...";
+		previousChannelSwitchingLabel.text = @"Switching to previous channel...";
 	} else {
 		[nextChannelActivityView startAnimating];
 		nextChannelSwitchingLabel.text = @"Switching to next channel...";
@@ -1384,90 +1390,9 @@
 }
 
 # pragma mark Gestures
-//- (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
-//	switch (sender.state) {
-//		case UIGestureRecognizerStateCancelled:
-//			controlScrollView.scrollEnabled = YES;
-//			break;
-//			
-//		case UIGestureRecognizerStateChanged:
-//		{
-//			if ( sender.velocity < -1.8 && sender.scale < 0.8 ) {
-//				detectedPinchAction = NM_SHOULD_TRANSIT_SPLIT_VIEW;
-//			} else if ( sender.velocity > 2.0 && sender.scale > 1.2 ) {
-//				detectedPinchAction = NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW;
-//			}
-//			break;
-//		}
-//		case UIGestureRecognizerStateRecognized:
-//		{
-//			CGRect theFrame = channelController.panelView.frame;
-//			BOOL panelHidden = YES;
-//			if ( theFrame.origin.y < 768.0 ) {
-//				// assume the panel is visible
-//				panelHidden = NO;
-//			}
-//			
-//			if ( ( panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_SPLIT_VIEW ) || ( !panelHidden && detectedPinchAction == NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW ) ) {
-//				[self toggleChannelPanel:sender.view];
-//			}
-//			controlScrollView.scrollEnabled = YES;
-//			break;
-//		}
-//			
-//		default:
-//			break;
-//	}
-//}
-
-#pragma mark - ToolTipControllerDelegate
-
-//- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
-//    if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-//        // Don't show share tip if user is already logged in
-//        if (NM_USER_TWITTER_CHANNEL_ID || NM_USER_FACEBOOK_CHANNEL_ID) {
-//            return NO;
-//        }
-//    } else if ([tooltip.name hasPrefix:@"SwipeTip"] && sender) {
-//        // Don't show swipe tip until next video is ready to play
-//        pendingToolTip = tooltip;
-//        return NO;
-//    }
-//    
-//    return loadedControlView.playbackMode == NMHalfScreenMode;
-//}
-//
-//- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender {
-//    
-//    if ([tooltip.name isEqualToString:@"BadVideoTip"]) {
-//        // We want to position this one relative to the cell
-//        UITableView *channelTable = channelController.tableView;
-//        
-//        tooltip.center = CGPointMake(floor([sender frame].size.height / 2), -24);
-//        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
-//        
-//        // Keep tooltip within screen bounds, and avoid subpixel text rendering (blurrier)
-//        CGPoint center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
-//                                     MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
-//        center.x = floor(center.x);
-//        center.y = floor(center.y);
-//        if ((NSInteger) center.x % 2 == 1) {
-//            center.x++;
-//        }
-//        if ((NSInteger) center.y % 2 == 1) {
-//            center.y++;
-//        }
-//        tooltip.center = center;
-//    } else if ([tooltip.name isEqualToString:@"ChannelManagementTip"]) {
-//        tooltip.target = channelController;
-//        tooltip.action = @selector(showChannelManagementView:);
-//    } else if ([tooltip.name isEqualToString:@"ShareButtonTip"]) {
-//        tooltip.target = channelController;
-//        tooltip.action = @selector(showChannelManagementView:);        
-//    }
-//    
-//    return self.view;
-//}
+- (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
+    
+}
 
 #pragma mark - GridControllerDelegate
 

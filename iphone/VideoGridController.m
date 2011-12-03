@@ -9,6 +9,9 @@
 #import "VideoGridController.h"
 #import "GridItemView.h"
 #import "SizableNavigationController.h"
+#import "ShareViewController.h"
+#import "NMControlsView.h"
+#import "PhoneVideoPlaybackViewController.h"
 
 @implementation VideoGridController
 
@@ -67,11 +70,25 @@
 
 - (IBAction)actionButtonPressed:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe"), nil];
+    NMVideo *video = self.navigationController.playbackModelController.currentVideo;
+
+    UIActionSheet *actionSheet;
+    if (self.navigationController.playbackModelController.channel == currentChannel) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe"),
+                                                                   ([video.nm_watch_later integerValue] > 0 ? @"Remove from Queue" : @"Watch Later"),
+                                                                      ([video.nm_favorite integerValue] > 0 ? @"Unfavorite" : @"Share"), nil];
+    } else {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe"), nil];        
+    }
+    
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showInView:self.view];
     [actionSheet release];
@@ -179,14 +196,33 @@
 {
     switch (buttonIndex) {
         case 0:
-            if ([currentChannel.nm_subscribed integerValue] > 0) {
-                // Unsubscribe
-                [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:currentChannel];
+            // Unsubscribe / subscribe
+            [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:([currentChannel.nm_subscribed integerValue] == 0) channel:currentChannel];
+            break;
+        case 1: {
+            // Watch Later
+            NMVideo *video = self.navigationController.playbackModelController.currentVideo;
+            [[NMTaskQueueController sharedTaskQueueController] issueEnqueue:([video.nm_watch_later integerValue] == 0) video:video];
+            break;
+        }
+        case 2: {
+            // Share
+            NMVideo *video = self.navigationController.playbackModelController.currentVideo;            
+            NMControlsView *controlsView = self.navigationController.playbackViewController.loadedControlView;
+            
+            if ([video.nm_favorite integerValue] == 0) {
+                ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" bundle:[NSBundle mainBundle] video:video duration:controlsView.duration elapsedSeconds:controlsView.timeElapsed];
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:shareController];
+                navigationController.navigationBar.barStyle = UIBarStyleBlack;
+                [self.navigationController.playbackViewController presentModalViewController:navigationController animated:YES];
+
+                [shareController release];
+                [navigationController release];
             } else {
-                // Subscribe
-                [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:currentChannel];                
+                [[NMTaskQueueController sharedTaskQueueController] issueShare:NO video:video duration:controlsView.duration elapsedSeconds:controlsView.timeElapsed];
             }
             break;
+        }
         default:
             break;
     }
