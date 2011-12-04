@@ -613,8 +613,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 	}
 	// get a free view
-	for (NMMovieDetailView * theView in movieDetailViewArray) {
+	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
 		if ( theView.video == nil ) {
+			return theView;
+		}
+	}
+	// check if any of the video is marked as error
+	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
+		if ( theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+			[self reclaimMovieDetailViewForVideo:theView.video];
 			return theView;
 		}
 	}
@@ -623,9 +630,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo {
+	if ( vdo == nil ) return;
 	NMMovieDetailView * theView = vdo.nm_movie_detail_view;
 	vdo.nm_movie_detail_view = nil;
 	theView.video = nil;
+	[theView restoreThumbnailView];
+	[theView setActivityViewHidden:YES];
 }
 
 
@@ -773,6 +783,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[UIView animateWithInteractiveDuration:0.5f animations:^{
 			controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 		}];
+		[self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
@@ -803,11 +814,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
 	// removeAllItems cannot always remove all items. This happens when there's bad videos during resolution. To avoid movie detail view problem, we reclaim the view again
-	for (NMMovieDetailView * dtlView in movieDetailViewArray) {
-		if ( dtlView.video ) {
-			dtlView.video = nil;
-		}
-	}
+	[self resetAllMovieDetailViews];
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
@@ -1291,12 +1298,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		didSkippedVideo = YES;
 		currentXOffset += 1024.0f;
 		// return the movie detail view
-		[self reclaimMovieDetailViewForVideo:playbackModelController.currentVideo];
+		[self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
 			
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
@@ -1308,7 +1314,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset -= 1024.0f;
-		[self reclaimMovieDetailViewForVideo:playbackModelController.currentVideo];
+		[self reclaimMovieDetailViewForVideo:playbackModelController.nextVideo];
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
 			[playbackModelController moveToPreviousVideo];
@@ -1316,7 +1322,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
-			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
             
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}

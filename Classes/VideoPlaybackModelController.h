@@ -19,6 +19,9 @@
  When changes happen in Core Data, the FRC delegate method in VideoPlaybackModelControllerDelegate is called. To invoke related interface change in the delegate object, this method is called.
  */
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum;
+/*!
+ 
+ */
 - (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
@@ -40,6 +43,7 @@
 	NMVideo * currentVideo, * nextVideo, * nextNextVideo, * previousVideo;
 	BOOL rowCountHasChanged;
 	BOOL changeSessionUpdateCount;
+	NSUInteger changeSessionVideoCount;
 	NSUInteger numberOfVideos;
 	
 	NMChannel * channel;
