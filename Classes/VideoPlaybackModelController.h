@@ -98,4 +98,7 @@
  */
 - (void)setVideo:(NMVideo *)aVideo;
 
+// index path management
+- (void)updateIndexPathsForChangeType:(NSFetchedResultsChangeType)type;
+
 @end

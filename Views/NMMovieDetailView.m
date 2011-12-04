@@ -93,7 +93,6 @@
 		titleLabel.frame = titleDefaultFrame;
 		descriptionLabel.frame = descriptionDefaultFrame;
 		otherInfoLabel.center = otherInfoDefaultPosition;
-		self.alpha = 0.0f;
 		return;
 	} else {
 		NSLog(@"movie detail view did nothing");
@@ -138,7 +137,6 @@
 		descriptionLabel.text = @"";
 	}
 	
-	if ( self.alpha == 0.0f ) self.alpha = 1.0f;
 }
 
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx {
