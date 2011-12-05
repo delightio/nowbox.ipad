@@ -932,6 +932,29 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 }
 
+- (void)shouldRevertNextNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	[movieView.player resolveAndQueueVideo:ctrl.nextNextVideo];
+}
+
+- (void)shouldRevertNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	[movieView.player resolveAndQueueVideo:ctrl.nextVideo];
+}
+
+- (void)shouldRevertPreviousVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	[movieView.player resolveAndQueueVideo:ctrl.previousVideo];
+}
+
+- (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	// request the player to resolve the video again
+	[movieView.player resolveAndQueueVideo:ctrl.currentVideo];
+	// lock the playback view?
+	
+	// show thumbnail and loading indicator
+	shouldFadeOutVideoThumbnail = YES;
+	[self showActivityLoader];
+	[self.currentVideo.nm_movie_detail_view restoreThumbnailView];
+}
+
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
 
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {

@@ -60,6 +60,19 @@
 	return i;
 }
 
+- (void)setNm_direct_url_expiry:(NSInteger)anInt {
+	[self willChangeValueForKey:@"nm_direct_url_expiry"];
+	nm_direct_url_expiry = anInt;
+	[self didChangeValueForKey:@"nm_direct_url_expiry"];
+}
+
+- (NSInteger)nm_direct_url_expiry {
+	[self willAccessValueForKey:@"nm_direct_url_expiry"];
+	NSInteger i = nm_direct_url_expiry;
+	[self didAccessValueForKey:@"nm_direct_url_expiry"];
+	return i;
+}
+
 - (void)willSave {
 	[self setPrimitiveValue:[NSNumber numberWithInteger:nm_playback_status] forKey:@"nm_playback_status"];
 	[super willSave];

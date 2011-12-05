@@ -27,6 +27,12 @@
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 
+// video refresh - happened when CDN link expire
+- (void)shouldRevertNextNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
+- (void)shouldRevertNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
+- (void)shouldRevertPreviousVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
+- (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
+
 @end
 
 
@@ -96,6 +102,10 @@
  Return list of videos that should be buffered in the queue player. The queue video player should enqueue the videos in the order specified in the returned array.
  */
 - (NSArray *)videosForBuffering;
+/*!
+ Check if the direct URL to videos has expired or not. If so, refresh them.
+ */
+- (void)refreshDirectURLToBufferedVideos;
 
 /*!
  Set the video for playback.

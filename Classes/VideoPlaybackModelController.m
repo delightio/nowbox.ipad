@@ -349,6 +349,26 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	return [theArray count] ? theArray : nil;
 }
 
+- (void)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
+	NSInteger vdoTime = vdo.nm_direct_url_expiry;
+	if ( vdoTime < curTime ) {
+		// the video link has expired
+		vdo.nm_error = [NSNumber numberWithInteger:0];
+		vdo.nm_playback_status = NMVideoQueueStatusNone;
+		vdo.nm_direct_sd_url = nil;
+		vdo.nm_direct_url = nil;
+	}
+}
+
+- (void)refreshDirectURLToBufferedVideos {
+	NSInteger curTime = (NSInteger)[[NSDate dateWithTimeIntervalSince1970:0.0] timestamp];
+	
+	NSInteger vdoTime = currentVideo.nm_direct_url_expiry;
+	if ( vdoTime < curTime ) {
+		// the video link has expired
+		
+	}
+}
 
 #pragma mark Notification handlers
 
