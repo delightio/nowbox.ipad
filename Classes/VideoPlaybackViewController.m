@@ -940,15 +940,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
 
-- (void)shouldRevertPreviousVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
-	[movieView.player resolveAndQueueVideo:ctrl.previousVideo];
-}
-
 - (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	[self stopVideo];
 	// request the player to resolve the video again
-	[movieView.player resolveAndQueueVideo:ctrl.currentVideo];
+	[movieView.player refreshItemFromIndex:0];
 	// lock the playback view?
-	
+	controlScrollView.scrollEnabled = NO;
 	// show thumbnail and loading indicator
 	shouldFadeOutVideoThumbnail = YES;
 	[self showActivityLoader];

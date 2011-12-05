@@ -30,7 +30,6 @@
 // video refresh - happened when CDN link expire
 - (void)shouldRevertNextNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
 - (void)shouldRevertNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
-- (void)shouldRevertPreviousVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
 - (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
 
 @end
@@ -113,6 +112,6 @@
 - (void)setVideo:(NMVideo *)aVideo;
 
 // index path management
-- (void)updateIndexPathsForChangeType:(NSFetchedResultsChangeType)type;
+//- (void)updateIndexPathsForChangeType:(NSFetchedResultsChangeType)type;
 
 @end

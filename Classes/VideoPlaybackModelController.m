@@ -349,24 +349,28 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	return [theArray count] ? theArray : nil;
 }
 
-- (void)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
+- (BOOL)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
 	NSInteger vdoTime = vdo.nm_direct_url_expiry;
-	if ( vdoTime < curTime ) {
+	if ( vdoTime - 10 < curTime ) {
 		// the video link has expired
 		vdo.nm_error = [NSNumber numberWithInteger:0];
 		vdo.nm_playback_status = NMVideoQueueStatusNone;
 		vdo.nm_direct_sd_url = nil;
 		vdo.nm_direct_url = nil;
+		return YES;
 	}
+	return NO;
 }
 
 - (void)refreshDirectURLToBufferedVideos {
 	NSInteger curTime = (NSInteger)[[NSDate dateWithTimeIntervalSince1970:0.0] timestamp];
-	
-	NSInteger vdoTime = currentVideo.nm_direct_url_expiry;
-	if ( vdoTime < curTime ) {
-		// the video link has expired
-		
+	if ( [self checkDirectURLExpiryForVideo:currentVideo currentTime:curTime] ) {
+		// the direct link of current video has expired.
+		[dataDelegate shouldRevertCurrentVideoToNewStateForController:self];
+	} else if ( [self checkDirectURLExpiryForVideo:nextVideo currentTime:curTime] ) {
+		[dataDelegate shouldRevertNextVideoToNewStateForController:self];
+	} else if ( [self checkDirectURLExpiryForVideo:nextNextVideo currentTime:curTime] ) {
+		[dataDelegate shouldRevertNextNextVideoToNewStateForController:self];
 	}
 }
 
