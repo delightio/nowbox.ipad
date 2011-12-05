@@ -46,10 +46,8 @@
 		<string>tooltip-watch-later.png</string>
 		<key>DisplayText</key>
 		<string>Video added to your Watch Later channel.</string>
-		<key>DisplayTextEdgeInsetsLeft</key>
-		<integer>0</integer>
 		<key>DisplayTextEdgeInsetsTop</key>
-		<integer>11</integer>
+		<integer>6</integer>
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>WatchLaterTap</key>
