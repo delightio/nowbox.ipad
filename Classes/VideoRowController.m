@@ -139,7 +139,7 @@
     if (cell) {
         [panelController.recycledVideoCells removeObject:cell];
     } else {
-        cell = [[PanelVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[[PanelVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell
