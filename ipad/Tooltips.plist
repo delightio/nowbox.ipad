@@ -30,5 +30,33 @@
 		<key>InvalidationCriteria</key>
 		<dict/>
 	</dict>
+	<key>WatchLaterTip</key>
+	<dict>
+		<key>CenterX</key>
+		<integer>0</integer>
+		<key>CenterY</key>
+		<integer>0</integer>
+		<key>KeepCountsOnRestart</key>
+		<false/>
+		<key>ResetCountsOnDisplay</key>
+		<true/>
+		<key>AutoHideInSeconds</key>
+		<integer>2</integer>
+		<key>ImageFile</key>
+		<string>tooltip-watch-later.png</string>
+		<key>DisplayText</key>
+		<string>Video added to your Watch Later channel.</string>
+		<key>DisplayTextEdgeInsetsLeft</key>
+		<integer>0</integer>
+		<key>DisplayTextEdgeInsetsTop</key>
+		<integer>11</integer>
+		<key>ValidationCriteria</key>
+		<dict>
+			<key>WatchLaterTap</key>
+			<integer>1</integer>
+		</dict>
+		<key>InvalidationCriteria</key>
+		<dict/>
+	</dict>
 </dict>
 </plist>
