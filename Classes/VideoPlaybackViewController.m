@@ -1568,6 +1568,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
+    
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    if (![vdo.nm_watch_later boolValue]) {
+        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:sender];
+    }
+
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
     
@@ -1660,6 +1666,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark - ToolTipControllerDelegate
 
 - (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
+    if ([tooltip.name isEqualToString:@"WatchLaterTip"]) {
+        return YES;
+    }
+    
     return loadedControlView.playbackMode == NMHalfScreenMode;
 }
 
@@ -1673,18 +1683,26 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
         
         // Keep tooltip within screen bounds, and avoid subpixel text rendering (blurrier)
-        CGPoint center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
+        tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
                                      MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
-        center.x = floor(center.x);
-        center.y = floor(center.y);
-        if ((NSInteger) center.x % 2 == 1) {
-            center.x++;
-        }
-        if ((NSInteger) center.y % 2 == 1) {
-            center.y++;
-        }
-        tooltip.center = center;
+
+    } else if ([tooltip.name isEqualToString:@"WatchLaterTip"]) {// && loadedControlView.playbackMode == NMFullScreenPlaybackMode) {
+//        tooltip.center = CGPointMake(tooltip.center.x, 65);
+        tooltip.center = CGPointMake(floor([sender frame].size.width / 2) - 126, 64);
+        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];        
     }
+    
+    // Avoid non-integer / odd positions to avoid subpixel rendering (blurry text)
+    CGPoint center = tooltip.center;
+    center.x = floor(center.x);
+    center.y = floor(center.y);
+    if ((NSInteger) center.x % 2 == 1) {
+        center.x++;
+    }
+    if ((NSInteger) center.y % 2 == 1) {
+        center.y++;
+    }
+    tooltip.center = center;
     
     return self.view;
 }
