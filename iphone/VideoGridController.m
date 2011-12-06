@@ -82,7 +82,7 @@
     [actionSheet addButtonWithTitle:([video.nm_watch_later integerValue] > 0 ? @"Remove from Queue" : @"Watch Later")];
     [actionSheet addButtonWithTitle:([video.nm_favorite integerValue] > 0 ? @"Unfavorite" : @"Share")];
     
-    if (currentChannel != dataController.myQueueChannel) {
+    if (currentChannel != dataController.myQueueChannel && currentChannel != dataController.favoriteVideoChannel) {
         if (currentChannel == dataController.userFacebookStreamChannel || currentChannel == dataController.userTwitterStreamChannel) {
             [actionSheet addButtonWithTitle:@"Log Out"];            
         } else {
