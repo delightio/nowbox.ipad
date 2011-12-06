@@ -284,6 +284,8 @@
 
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
+    theFrame.size.width = topLevelContainerView.frame.size.width;
+    theFrame.size.height = topLevelContainerView.frame.size.height;
 	movieView.frame = theFrame;
     
     // Update "pull to switch" positions
@@ -639,6 +641,8 @@
 	// update the movie view too
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
+    theFrame.size.width = topLevelContainerView.frame.size.width;
+    theFrame.size.height = topLevelContainerView.frame.size.height;
 	movieView.frame = theFrame;
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
@@ -1189,7 +1193,7 @@
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
 	// reduce alpha of the playback view
-	movieView.alpha = (topLevelContainerView.frame.size.width - dx) / topLevelContainerView.frame.size.width;
+	movieView.alpha = (topLevelContainerView.frame.size.width - dx) / topLevelContainerView.frame.size.width;    
 }
 
 - (void)delayedChangeChannelSwitchingScrollViewOffset {
