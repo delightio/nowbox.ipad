@@ -44,7 +44,7 @@
 							<object class="IBUIButton" id="123777448">
 								<reference key="NSNextResponder" ref="268506222"/>
 								<int key="NSvFlags">276</int>
-								<string key="NSFrame">{{4, 6}, {62, 34}}</string>
+								<string key="NSFrame">{{4, 5}, {62, 34}}</string>
 								<reference key="NSSuperview" ref="268506222"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1069853574"/>
@@ -63,7 +63,7 @@
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MC41AA</bytes>
 								</object>
-								<object class="NSCustomResource" key="IBUINormalBackgroundImage">
+								<object class="NSCustomResource" key="IBUINormalBackgroundImage" id="549918441">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">onboard-button-settingup.png</string>
 								</object>
@@ -115,7 +115,7 @@
 							<object class="IBUIButton" id="801936912">
 								<reference key="NSNextResponder" ref="268506222"/>
 								<int key="NSvFlags">289</int>
-								<string key="NSFrame">{{270, 3}, {45, 37}}</string>
+								<string key="NSFrame">{{266, 5}, {50, 34}}</string>
 								<reference key="NSSuperview" ref="268506222"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="173834110"/>
@@ -134,6 +134,7 @@
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">button-action.png</string>
 								</object>
+								<reference key="IBUINormalBackgroundImage" ref="549918441"/>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
 									<int key="type">2</int>
 									<double key="pointSize">15</double>
@@ -159,7 +160,7 @@
 					<object class="IBUIScrollView" id="173834110">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{1, 44}, {318, 416}}</string>
+						<string key="NSFrame">{{1, 45}, {318, 415}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -410,7 +411,7 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="button-action.png">{37, 31}</string>
+			<string key="button-action.png">{24, 16}</string>
 			<string key="onboard-button-settingup.png">{235, 61}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>

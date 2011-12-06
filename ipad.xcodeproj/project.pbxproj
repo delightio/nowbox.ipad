@@ -78,6 +78,7 @@
 		8386681514870B0F0038F86A /* GridItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8386681414870B0F0038F86A /* GridItemView.xib */; };
 		83866818148719290038F86A /* GridItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83866817148719290038F86A /* GridItemView.m */; };
 		8389F68F148DA310002165A2 /* button-action.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F68E148DA30F002165A2 /* button-action.png */; };
+		8389F692148DA68D002165A2 /* button-action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F691148DA68D002165A2 /* button-action@2x.png */; };
 		838F27D51471949000935D5A /* onboard-social-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D21471949000935D5A /* onboard-social-facebook.png */; };
 		838F27D61471949000935D5A /* onboard-social-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D31471949000935D5A /* onboard-social-twitter.png */; };
 		838F27D71471949000935D5A /* onboard-social-youtube.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D41471949000935D5A /* onboard-social-youtube.png */; };
@@ -384,6 +385,7 @@
 		83866816148719290038F86A /* GridItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridItemView.h; sourceTree = "<group>"; };
 		83866817148719290038F86A /* GridItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridItemView.m; sourceTree = "<group>"; };
 		8389F68E148DA30F002165A2 /* button-action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-action.png"; sourceTree = "<group>"; };
+		8389F691148DA68D002165A2 /* button-action@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-action@2x.png"; sourceTree = "<group>"; };
 		838F27D21471949000935D5A /* onboard-social-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-facebook.png"; sourceTree = "<group>"; };
 		838F27D31471949000935D5A /* onboard-social-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-twitter.png"; sourceTree = "<group>"; };
 		838F27D41471949000935D5A /* onboard-social-youtube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-youtube.png"; sourceTree = "<group>"; };
@@ -927,6 +929,7 @@
 				A9F4966013D2E83400A56F50 /* playback_background_pattern.png */,
 				A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */,
 				8389F68E148DA30F002165A2 /* button-action.png */,
+				8389F691148DA68D002165A2 /* button-action@2x.png */,
 				A98C241113D38C030061A594 /* button-like-active.png */,
 				A98C241213D38C030061A594 /* button-like.png */,
 				A9E3C05F1471AECB005C976F /* button-logout-background.png */,
@@ -1455,6 +1458,7 @@
 				8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */,
 				83BE2E8D1489AD6300C407B7 /* ShareView~iphone.xib in Resources */,
 				8389F68F148DA310002165A2 /* button-action.png in Resources */,
+				8389F692148DA68D002165A2 /* button-action@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
