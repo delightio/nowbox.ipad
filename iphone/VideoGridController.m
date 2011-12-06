@@ -194,6 +194,10 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    if (buttonIndex == actionSheet.numberOfButtons - 1) {
+        return;
+    }
+    
     switch (buttonIndex) {
         case 0:
             // Unsubscribe / subscribe
