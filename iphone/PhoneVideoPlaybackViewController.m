@@ -1155,11 +1155,13 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	if ( scrollView == channelSwitchingScrollView ) {
+        scrollingNotFromUser = NO;        
 		return;
 	}
 	
 	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
+    
 	if ( NM_RUNNING_IOS_5 ) {
 		[UIView animateWithDuration:0.25f animations:^{
 			ribbonView.alpha = 0.15;
@@ -1177,6 +1179,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if ( scrollView == channelSwitchingScrollView ) {
+        if (scrollingNotFromUser) return;
+        
 		CGFloat yOff = scrollView.contentOffset.y;
 		if (yOff < -REFRESH_HEADER_HEIGHT ) {
 			previousChannelSwitchingLabel.text = @"Release to switch channel";
@@ -1235,6 +1239,7 @@
 			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(topLevelContainerView.frame.size.height, 0.0f, 0.0f, 0.0f);
 			scrollView.scrollEnabled = NO;
 			[self stopVideo];
+            scrollingNotFromUser = YES;
 			[self performSelector:@selector(delayedChangeChannelSwitchingScrollViewOffset) withObject:nil afterDelay:0.0f];
 			[self startLoadingChannel:YES];
 		} else if ( yOff >= REFRESH_HEADER_HEIGHT ) {
@@ -1243,6 +1248,7 @@
 			channelSwitchingScrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, topLevelContainerView.frame.size.height, 0.0f);
 			scrollView.scrollEnabled = NO;
 			[self stopVideo];
+            scrollingNotFromUser = YES;            
 			[self performSelector:@selector(delayedChangeChannelSwitchingScrollViewOffset) withObject:nil afterDelay:0.0f];
 			[self startLoadingChannel:NO];
 		}
@@ -1295,6 +1301,12 @@
 		ribbonView.alpha = 1.0f;
 	}];
 	ribbonView.userInteractionEnabled = YES;
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    if (scrollView == channelSwitchingScrollView) {
+        scrollingNotFromUser = NO;
+    }
 }
 
 #pragma mark Gesture delegate methods

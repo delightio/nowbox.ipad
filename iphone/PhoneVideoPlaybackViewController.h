@@ -93,6 +93,7 @@ enum {
 	NMStyleUtility * styleUtility;
     
     ToolTip *pendingToolTip;    
+    BOOL scrollingNotFromUser;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
