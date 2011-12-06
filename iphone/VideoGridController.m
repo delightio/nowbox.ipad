@@ -71,25 +71,28 @@
 - (IBAction)actionButtonPressed:(id)sender
 {
     NMVideo *video = self.navigationController.playbackModelController.currentVideo;
+    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                             delegate:self
+                                                    cancelButtonTitle:nil
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:nil];
 
-    UIActionSheet *actionSheet;
-    if (self.navigationController.playbackModelController.channel == currentChannel) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                  delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:nil
-                                         otherButtonTitles:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe"),
-                                                                   ([video.nm_watch_later integerValue] > 0 ? @"Remove from Queue" : @"Watch Later"),
-                                                                      ([video.nm_favorite integerValue] > 0 ? @"Unfavorite" : @"Share"), nil];
-    } else {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                  delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:nil
-                                         otherButtonTitles:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe"), nil];        
+    [actionSheet addButtonWithTitle:([video.nm_watch_later integerValue] > 0 ? @"Remove from Queue" : @"Watch Later")];
+    [actionSheet addButtonWithTitle:([video.nm_favorite integerValue] > 0 ? @"Unfavorite" : @"Share")];
+    
+    if (currentChannel != dataController.myQueueChannel) {
+        if (currentChannel == dataController.userFacebookStreamChannel || currentChannel == dataController.userTwitterStreamChannel) {
+            [actionSheet addButtonWithTitle:@"Log Out"];            
+        } else {
+            [actionSheet addButtonWithTitle:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe")];
+        }
     }
     
-    actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    [actionSheet addButtonWithTitle:@"Cancel"];
+    [actionSheet setCancelButtonIndex:actionSheet.numberOfButtons - 1];
+    [actionSheet setActionSheetStyle:UIActionSheetStyleBlackOpaque];
     [actionSheet showInView:self.view];
     [actionSheet release];
 }
@@ -199,17 +202,13 @@
     }
     
     switch (buttonIndex) {
-        case 0:
-            // Unsubscribe / subscribe
-            [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:([currentChannel.nm_subscribed integerValue] == 0) channel:currentChannel];
-            break;
-        case 1: {
+        case 0: {
             // Watch Later
             NMVideo *video = self.navigationController.playbackModelController.currentVideo;
             [[NMTaskQueueController sharedTaskQueueController] issueEnqueue:([video.nm_watch_later integerValue] == 0) video:video];
             break;
         }
-        case 2: {
+        case 1: {
             // Share
             NMVideo *video = self.navigationController.playbackModelController.currentVideo;            
             NMControlsView *controlsView = self.navigationController.playbackViewController.loadedControlView;
@@ -225,6 +224,11 @@
             } else {
                 [[NMTaskQueueController sharedTaskQueueController] issueShare:NO video:video duration:controlsView.duration elapsedSeconds:controlsView.timeElapsed];
             }
+            break;
+        }
+        case 2: {
+            // Unsubscribe / subscribe
+            [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:([currentChannel.nm_subscribed integerValue] == 0) channel:currentChannel];
             break;
         }
         default:
