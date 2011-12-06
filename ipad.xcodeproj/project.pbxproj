@@ -79,6 +79,7 @@
 		83866818148719290038F86A /* GridItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83866817148719290038F86A /* GridItemView.m */; };
 		8389F68F148DA310002165A2 /* button-action.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F68E148DA30F002165A2 /* button-action.png */; };
 		8389F692148DA68D002165A2 /* button-action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F691148DA68D002165A2 /* button-action@2x.png */; };
+		8389F694148DBAC6002165A2 /* VideoControlView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */; };
 		838F27D51471949000935D5A /* onboard-social-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D21471949000935D5A /* onboard-social-facebook.png */; };
 		838F27D61471949000935D5A /* onboard-social-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D31471949000935D5A /* onboard-social-twitter.png */; };
 		838F27D71471949000935D5A /* onboard-social-youtube.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D41471949000935D5A /* onboard-social-youtube.png */; };
@@ -386,6 +387,7 @@
 		83866817148719290038F86A /* GridItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridItemView.m; sourceTree = "<group>"; };
 		8389F68E148DA30F002165A2 /* button-action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-action.png"; sourceTree = "<group>"; };
 		8389F691148DA68D002165A2 /* button-action@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-action@2x.png"; sourceTree = "<group>"; };
+		8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "VideoControlView~iphone.xib"; sourceTree = "<group>"; };
 		838F27D21471949000935D5A /* onboard-social-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-facebook.png"; sourceTree = "<group>"; };
 		838F27D31471949000935D5A /* onboard-social-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-twitter.png"; sourceTree = "<group>"; };
 		838F27D41471949000935D5A /* onboard-social-youtube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-youtube.png"; sourceTree = "<group>"; };
@@ -1185,6 +1187,7 @@
 			children = (
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
+				8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
@@ -1459,6 +1462,7 @@
 				83BE2E8D1489AD6300C407B7 /* ShareView~iphone.xib in Resources */,
 				8389F68F148DA310002165A2 /* button-action.png in Resources */,
 				8389F692148DA68D002165A2 /* button-action@2x.png in Resources */,
+				8389F694148DBAC6002165A2 /* VideoControlView~iphone.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

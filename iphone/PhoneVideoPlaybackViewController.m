@@ -287,6 +287,7 @@
     theFrame.size.width = topLevelContainerView.frame.size.width;
     theFrame.size.height = topLevelContainerView.frame.size.height;
 	movieView.frame = theFrame;
+    loadedControlView.frame = theFrame;
     
     // Update "pull to switch" positions
     theFrame = nextChannelHeaderView.frame;
@@ -644,6 +645,7 @@
     theFrame.size.width = topLevelContainerView.frame.size.width;
     theFrame.size.height = topLevelContainerView.frame.size.height;
 	movieView.frame = theFrame;
+    
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
@@ -1342,6 +1344,7 @@
 //	UIView * v = (UIView *)sender;
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
+        gridNavigationController.view.alpha = 1.0f;        
 	} completion:^(BOOL finished) {
 		if ( finished ) {
 			loadedControlView.hidden = YES;
