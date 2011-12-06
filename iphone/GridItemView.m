@@ -7,6 +7,7 @@
 //
 
 #import "GridItemView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation GridItemView
 
@@ -25,6 +26,9 @@
         contentView.frame = self.bounds;
         contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:contentView];
+        
+        self.layer.masksToBounds = YES;
+        self.layer.cornerRadius = 5;
     }
     return self;
 }
