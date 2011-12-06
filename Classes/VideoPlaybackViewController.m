@@ -81,6 +81,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize loadedMovieDetailView;
 @synthesize appDelegate;
 @synthesize launchModeActive;
+@synthesize playbackModelController;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -615,6 +616,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// get a free view
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
 		if ( theView.video == nil ) {
+			theView.hidden = NO;
 			return theView;
 		}
 	}
@@ -622,6 +624,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
 		if ( theView.video.nm_playback_status == NMVideoQueueStatusError ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
+			theView.hidden = NO;
 			return theView;
 		}
 	}
@@ -636,6 +639,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	theView.video = nil;
 	[theView restoreThumbnailView];
 	[theView setActivityViewHidden:YES];
+	theView.hidden = YES;
 }
 
 
@@ -933,11 +937,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)shouldRevertNextNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
-	[movieView.player resolveAndQueueVideo:ctrl.nextNextVideo];
+	[movieView.player refreshItemFromIndex:2];
+	[playbackModelController.nextNextVideo.nm_movie_detail_view restoreThumbnailView];
 }
 
 - (void)shouldRevertNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
-	[movieView.player resolveAndQueueVideo:ctrl.nextVideo];
+	[movieView.player refreshItemFromIndex:1];
+	[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
 }
 
 - (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {

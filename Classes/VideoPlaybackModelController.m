@@ -351,7 +351,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (BOOL)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
 	NSInteger vdoTime = vdo.nm_direct_url_expiry;
-	if ( vdoTime - 10 < curTime ) {
+	if ( vdoTime && vdoTime - 10 < curTime ) {
 		// the video link has expired
 		vdo.nm_error = [NSNumber numberWithInteger:0];
 		vdo.nm_playback_status = NMVideoQueueStatusNone;
@@ -362,7 +362,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	return NO;
 }
 
-- (void)refreshDirectURLToBufferedVideos {
+- (BOOL)refreshDirectURLToBufferedVideos {
+	BOOL needRefresh = YES;
 	NSInteger curTime = (NSInteger)[[NSDate dateWithTimeIntervalSince1970:0.0] timestamp];
 	if ( [self checkDirectURLExpiryForVideo:currentVideo currentTime:curTime] ) {
 		// the direct link of current video has expired.
@@ -371,7 +372,10 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		[dataDelegate shouldRevertNextVideoToNewStateForController:self];
 	} else if ( [self checkDirectURLExpiryForVideo:nextNextVideo currentTime:curTime] ) {
 		[dataDelegate shouldRevertNextNextVideoToNewStateForController:self];
+	} else {
+		needRefresh = NO;
 	}
+	return needRefresh;
 }
 
 #pragma mark Notification handlers

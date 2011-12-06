@@ -104,7 +104,7 @@
 /*!
  Check if the direct URL to videos has expired or not. If so, refresh them.
  */
-- (void)refreshDirectURLToBufferedVideos;
+- (BOOL)refreshDirectURLToBufferedVideos;
 
 /*!
  Set the video for playback.

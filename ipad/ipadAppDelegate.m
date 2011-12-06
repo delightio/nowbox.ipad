@@ -283,10 +283,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 			[tqc issueSyncRequest];
 		}
 	}
-	// init core data
-	
-	// show the UI
-	
+	// refresh video
+	[viewController.playbackModelController refreshDirectURLToBufferedVideos];
     
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];

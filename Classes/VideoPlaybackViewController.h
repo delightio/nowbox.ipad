@@ -99,6 +99,7 @@
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 @property (nonatomic) BOOL launchModeActive;
+@property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;
 
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;
