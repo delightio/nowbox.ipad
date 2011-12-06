@@ -115,7 +115,7 @@
 							<object class="IBUIButton" id="801936912">
 								<reference key="NSNextResponder" ref="268506222"/>
 								<int key="NSvFlags">289</int>
-								<string key="NSFrame">{{261, 3}, {52, 37}}</string>
+								<string key="NSFrame">{{270, 3}, {45, 37}}</string>
 								<reference key="NSSuperview" ref="268506222"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="173834110"/>
@@ -132,7 +132,7 @@
 								<reference key="IBUINormalTitleShadowColor" ref="968569393"/>
 								<object class="NSCustomResource" key="IBUINormalImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">airplay.png</string>
+									<string key="NSResourceName">button-action.png</string>
 								</object>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
 									<int key="type">2</int>
@@ -410,7 +410,7 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="airplay.png">{60, 40}</string>
+			<string key="button-action.png">{37, 31}</string>
 			<string key="onboard-button-settingup.png">{235, 61}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>
