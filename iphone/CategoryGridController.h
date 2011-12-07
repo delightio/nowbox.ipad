@@ -11,5 +11,6 @@
 @interface CategoryGridController : GridController
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) NSString *lastSearchQuery;
 
 @end

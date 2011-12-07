@@ -12,6 +12,7 @@
 @implementation GridController
 
 @synthesize gridView;
+@synthesize searchBar;
 @synthesize backButton;
 @synthesize actionButton;
 @synthesize titleLabel;
@@ -22,6 +23,7 @@
 - (void)dealloc
 {
     [gridView release];
+    [searchBar release];
     [backButton release];
     [actionButton release];
     [titleLabel release];
@@ -48,12 +50,13 @@
     
     gridView.itemSize = CGSizeMake(104, 70);
     gridView.horizontalItemPadding = 2;
-    gridView.numberOfColumns = 0;            
+    gridView.numberOfColumns = 0;        
 }
 
 - (void)viewDidUnload
 {
     self.gridView = nil;
+    self.searchBar = nil;
     self.backButton = nil;
     self.actionButton = nil;
     self.titleLabel = nil;
@@ -67,10 +70,11 @@
     
     backButton.hidden = ([navigationController.viewControllers objectAtIndex:0] == self);
     actionButton.hidden = ![self conformsToProtocol:@protocol(UIActionSheetDelegate)];
-    
-    CGPoint contentOffset = gridView.contentOffset;
-    [gridView reloadData];
-    gridView.contentOffset = contentOffset;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [searchBar resignFirstResponder];
 }
 
 #pragma mark - Actions
@@ -82,7 +86,7 @@
 
 - (IBAction)actionButtonPressed:(id)sender
 {
-
+    // To be implemented by subclasses
 }
 
 #pragma mark - GridScrollViewDelegate
@@ -128,6 +132,20 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
     [gridView endUpdates];
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
+{
+    [aSearchBar setShowsCancelButton:YES animated:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
+{
+    searchBar.text = @"";
+    [aSearchBar resignFirstResponder];
+    [aSearchBar setShowsCancelButton:NO animated:YES];
 }
 
 @end

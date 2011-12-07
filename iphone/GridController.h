@@ -14,9 +14,10 @@
 @protocol GridControllerDelegate;
 @class SizableNavigationController;
 
-@interface GridController : UIViewController <GridScrollViewDelegate, NSFetchedResultsControllerDelegate>
+@interface GridController : UIViewController <GridScrollViewDelegate, NSFetchedResultsControllerDelegate, UISearchBarDelegate>
 
 @property (nonatomic, retain) IBOutlet GridScrollView *gridView;
+@property (nonatomic, retain) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, retain) IBOutlet UIButton *backButton;
 @property (nonatomic, retain) IBOutlet UIButton *actionButton;
 @property (nonatomic, retain) IBOutlet UILabel *titleLabel;

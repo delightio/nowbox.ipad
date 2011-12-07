@@ -24,5 +24,6 @@
 - (id)initWithRootViewController:(UIViewController *)viewController;
 - (void)pushViewController:(UIViewController *)viewController;
 - (void)popViewController;
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
 
 @end

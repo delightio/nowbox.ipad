@@ -28,9 +28,11 @@
 @property (nonatomic, assign) CGSize itemSize;
 @property (nonatomic, assign) CGFloat horizontalItemPadding;
 @property (nonatomic, assign) CGFloat verticalItemPadding;
+@property (nonatomic, retain) IBOutlet UIView *headerView;
 @property (nonatomic, assign) IBOutlet id<GridScrollViewDelegate> gridDelegate;
 
 - (void)reloadData;
+- (void)reloadDataKeepOffset:(BOOL)offset;
 - (UIView *)dequeueReusableSubview;
 - (void)insertItemAtIndex:(NSUInteger)index;
 - (void)deleteItemAtIndex:(NSUInteger)index;

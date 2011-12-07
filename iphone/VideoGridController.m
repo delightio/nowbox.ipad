@@ -13,6 +13,9 @@
 #import "NMControlsView.h"
 #import "PhoneVideoPlaybackViewController.h"
 
+#define kDefaultPredicate @"channel == %@ AND nm_error < %@"
+#define kFilteredPredicate @"channel == %@ AND nm_error < %@ AND title CONTAINS[cd] %@"
+
 @implementation VideoGridController
 
 @synthesize currentChannel;
@@ -57,6 +60,7 @@
 {
     [super viewDidLoad];
     self.titleLabel.text = currentChannel.title;
+    self.searchBar.placeholder = @"Search videos";
 }
 
 #pragma mark - Actions
@@ -124,7 +128,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
+{    
     if (!isLoadingNewVideos && scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - 20) {
         isLoadingNewVideos = YES;
         [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:currentChannel];
@@ -169,7 +173,7 @@
         [fetchRequest setReturnsObjectsAsFaults:NO];
         
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error < %@", currentChannel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:kDefaultPredicate, currentChannel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
         [fetchRequest setFetchBatchSize:5];
         
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
@@ -192,6 +196,21 @@
     
     return fetchedResultsController;
 }   
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    [NSFetchedResultsController deleteCacheWithName:nil];
+    [self.fetchedResultsController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:(searchText.length > 0 ? kFilteredPredicate : kDefaultPredicate), currentChannel, [NSNumber numberWithInteger:NMErrorDequeueVideo], searchText]];	            
+    
+    NSError *error = nil;
+    if (![fetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    [self.gridView reloadDataKeepOffset:YES];
+}
 
 #pragma mark - UIActionSheetDelegate
 

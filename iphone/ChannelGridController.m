@@ -12,6 +12,11 @@
 #import "VideoGridController.h"
 #import "CategoryGridController.h"
 
+#define kDefaultCategoryPredicate @"ANY categories.nm_id == %@ AND nm_hidden == NO"
+#define kDefaultSubscribedPredicate @"nm_subscribed > 0 AND nm_hidden == NO"
+#define kFilteredCategoryPredicate @"ANY categories.nm_id == %@ AND nm_hidden == NO AND title CONTAINS[cd] %@"
+#define kFilteredSubscribedPredicate @"nm_subscribed > 0 AND nm_hidden == NO AND title CONTAINS[cd] %@"
+
 @implementation ChannelGridController
 
 @synthesize fetchedResultsController;
@@ -44,6 +49,7 @@
 {
     [super viewDidLoad];
     self.titleLabel.text = (categoryFilter ? categoryFilter.title : @"Channels");
+    self.searchBar.placeholder = @"Search channels";    
 }
 
 #pragma mark - Actions
@@ -119,9 +125,9 @@
         
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext]];
         if (categoryFilter) {
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"ANY categories.nm_id == %@ AND nm_hidden == NO", categoryFilter.nm_id]];	
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:kDefaultCategoryPredicate, categoryFilter.nm_id]];	
         } else {
-            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];	            
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:kDefaultSubscribedPredicate]];	            
         }
         [fetchRequest setFetchBatchSize:20];
         
@@ -142,5 +148,25 @@
     
     return fetchedResultsController;
 }    
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    [NSFetchedResultsController deleteCacheWithName:nil];
+    
+    if (categoryFilter) {
+        [self.fetchedResultsController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:(searchText.length > 0 ? kFilteredCategoryPredicate : kDefaultCategoryPredicate), categoryFilter.nm_id, searchText]];
+    } else {
+        [self.fetchedResultsController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:(searchText.length > 0 ? kFilteredSubscribedPredicate : kDefaultSubscribedPredicate), searchText]];	            
+    }    
+    
+    NSError *error = nil;
+    if (![fetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    [self.gridView reloadDataKeepOffset:YES];
+}
 
 @end

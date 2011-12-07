@@ -300,6 +300,10 @@
     previousChannelHeaderView.frame = theFrame;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [gridNavigationController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [self updateViewsForInterfaceOrientation:toInterfaceOrientation];
 }

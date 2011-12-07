@@ -14,6 +14,7 @@
 @synthesize itemSize;
 @synthesize horizontalItemPadding;
 @synthesize verticalItemPadding;
+@synthesize headerView;
 @synthesize gridDelegate;
 
 - (void)setup
@@ -60,6 +61,7 @@
 {
     [visibleViews release];
     [recycledViews release];
+    [headerView release];
     
     [super dealloc];
 }
@@ -98,7 +100,26 @@
 - (void)setFrame:(CGRect)frame
 {
     [super setFrame:frame];
-    [self reloadData];
+    [self reloadDataKeepOffset:YES];
+}
+
+- (void)setHeaderView:(UIView *)aHeaderView
+{
+    if (headerView != aHeaderView) {
+        [headerView release];
+        headerView = [aHeaderView retain];
+    }
+
+    CGRect frame = headerView.frame;
+    frame.origin.x = 0;
+    frame.origin.y = -self.contentInset.top;
+    frame.size.width = self.frame.size.width;
+    headerView.frame = frame;
+    
+    self.contentSize = CGSizeMake(self.contentSize.width, self.contentSize.height + headerView.frame.size.height);
+    self.contentOffset = CGPointMake(0, headerView.frame.size.height - self.contentInset.top);
+    
+    [self addSubview:headerView];
 }
 
 - (CGRect)frameForIndex:(NSUInteger)index
@@ -107,7 +128,7 @@
     NSUInteger column = index % resolvedNumberOfColumns;
     
     return CGRectMake(round(column * (resolvedItemWidth + resolvedHorizontalItemPadding)), 
-                      round(row * (itemSize.height + verticalItemPadding)), 
+                      round(row * (itemSize.height + verticalItemPadding)) + (headerView ? headerView.frame.size.height : 0), 
                       resolvedItemWidth, 
                       itemSize.height);
 }
@@ -148,7 +169,7 @@
     // Recalculate visible row range
     NSInteger firstVisibleRow = INT_MAX;
     NSInteger lastVisibleRow = INT_MIN;
-    CGFloat topY = 0;
+    CGFloat topY = (headerView ? headerView.frame.size.height : 0);
     CGFloat bottomY = 0;
     
     // Can we remove any views?
@@ -204,7 +225,7 @@
     }    
 }
 
-- (void)reloadData
+- (void)reloadDataKeepOffset:(BOOL)keepOffset
 {
     numberOfItems = [gridDelegate gridScrollViewNumberOfItems:self];
 
@@ -227,9 +248,18 @@
     }
     [visibleViews removeAllObjects];
 
-    self.contentSize = CGSizeMake(self.frame.size.width, (numberOfRows == 0 ? 0 : numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding));
-    self.contentOffset = CGPointMake(0, -self.contentInset.top);
+    self.contentSize = CGSizeMake(self.frame.size.width, (numberOfRows == 0 ? 0 : numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding) + (headerView ? headerView.frame.size.height : 0));
+    
+    if (!keepOffset) {
+        self.contentOffset = CGPointMake(0, (headerView ? headerView.frame.size.height - self.contentInset.top : -self.contentInset.top));
+    }
+    
     [self setNeedsLayout];
+}
+
+- (void)reloadData
+{
+    [self reloadDataKeepOffset:NO];
 }
 
 - (UIView *)dequeueReusableSubview
@@ -252,7 +282,8 @@
 {
     numberOfItems += numberOfItemsDelta;
     numberOfRows = ceil((float)numberOfItems / resolvedNumberOfColumns);    
-    self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding);    
+    
+    self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding + (headerView ? headerView.frame.size.height : 0));   
 }
 
 - (void)insertItemAtIndex:(NSUInteger)index

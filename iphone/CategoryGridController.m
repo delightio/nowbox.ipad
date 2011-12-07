@@ -10,17 +10,51 @@
 #import "GridItemView.h"
 #import "SizableNavigationController.h"
 #import "ChannelGridController.h"
+#import "VideoGridController.h"
 #import "NMCategory.h"
+#import "Analytics.h"
+
+#define kDefaultPredicate @"nm_id > 0"
 
 @implementation CategoryGridController
 
 @synthesize fetchedResultsController;
+@synthesize lastSearchQuery;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidSearchNotification:) name:NMDidSearchChannelsNotification object:nil];
+    }
+    
+    return self;
+}
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [fetchedResultsController release];
+    [lastSearchQuery release];
     
     [super dealloc];
+}
+
+- (void)performSearchWithText:(NSString *)searchText
+{
+    // Don't search for the same thing twice in a row (can happen if user presses Search button)
+    if ([self.lastSearchQuery isEqualToString:searchText]) return;
+    
+    NMTaskQueueController *ctrl = [NMTaskQueueController sharedTaskQueueController];
+    [ctrl.dataController clearSearchResultCache];
+    if ([searchText length] > 0) {
+        NSLog(@"issuing search for text %@", searchText);
+        [ctrl issueChannelSearchForKeyword:searchText];
+        
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventPerformSearch properties:[NSDictionary dictionaryWithObject:searchText forKey:AnalyticsPropertySearchQuery]];
+        self.lastSearchQuery = searchText;
+    }
 }
 
 #pragma mark - View lifecycle
@@ -29,6 +63,10 @@
 {
     [super viewDidLoad];
     self.titleLabel.text = @"Categories";
+    self.searchBar.placeholder = @"Search channels";    
+    
+    self.searchBar.hidden = NO;
+    self.gridView.headerView = self.searchBar;
 }
 
 #pragma mark - Actions
@@ -37,12 +75,21 @@
 {
     NSInteger index = [sender index];
     
-    NMCategory *category = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    id object = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    GridController *gridController;
     
-    ChannelGridController *gridController = [[ChannelGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+    if ([object isKindOfClass:[NMCategory class]]) {
+        NMCategory *category = (NMCategory *)object;
+        gridController = [[ChannelGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+        ((ChannelGridController *)gridController).categoryFilter = category;        
+    } else {
+        NMChannel *channel = (NMChannel *)object;
+        gridController = [[VideoGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+        ((VideoGridController *)gridController).currentChannel = channel;
+    }
+    
     gridController.managedObjectContext = self.managedObjectContext;
     gridController.delegate = self.delegate;
-    gridController.categoryFilter = category;
     [self.navigationController pushViewController:gridController];
     [gridController release];
 }
@@ -65,9 +112,17 @@
     itemView.index = index;
     itemView.highlighted = NO;
     
-    NMCategory *category = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    itemView.titleLabel.text = category.title;
-    [itemView.thumbnail setImageForCategory:category];
+    id object = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    
+    if ([object isKindOfClass:[NMCategory class]]) {
+        NMCategory *category = (NMCategory *)object;
+        itemView.titleLabel.text = category.title;
+        [itemView.thumbnail setImageForCategory:category];
+    } else {
+        NMChannel *channel = (NMChannel *)object;
+        itemView.titleLabel.text = channel.title;
+        [itemView.thumbnail setImageForChannel:channel];
+    }
 
     return itemView;
 }
@@ -85,7 +140,7 @@
         [fetchRequest setReturnsObjectsAsFaults:NO];
         
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_id > 0"]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:kDefaultPredicate]];
         [fetchRequest setFetchBatchSize:20];
 
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
@@ -105,5 +160,55 @@
     
     return fetchedResultsController;
 }    
+
+#pragma mark - Notifications
+
+-(void)clearSearchResults {
+    NMTaskQueueController *ctrl = [NMTaskQueueController sharedTaskQueueController];
+	[ctrl.dataController clearSearchResultCache];
+    self.lastSearchQuery = nil;
+}
+
+- (void)handleDidSearchNotification:(NSNotification *)aNotification {    
+    NSString *searchText = self.searchBar.text;
+    NSString *keyword = [[aNotification userInfo] objectForKey:@"keyword"];
+    NSLog(@"got results for keyword: %@", keyword);
+    
+    if ([keyword isEqualToString:searchText]) {        
+        // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
+        [self.searchBar resignFirstResponder];
+        self.searchBar.text = searchText;
+        [self.gridView reloadDataKeepOffset:YES];
+    } else {
+        // These are not the search results we're looking for
+        [self clearSearchResults];
+    }    
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [self clearSearchResults];
+    [NSFetchedResultsController deleteCacheWithName:nil];
+    
+    if (searchText.length > 0) {
+        [self.fetchedResultsController.fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext]];
+        [self.fetchedResultsController.fetchRequest setPredicate:[[NMTaskQueueController sharedTaskQueueController].dataController searchResultsPredicate]];
+        
+        [self performSelector:@selector(performSearchWithText:) withObject:searchText afterDelay:1.0];        
+    } else {
+        [self.fetchedResultsController.fetchRequest setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:self.managedObjectContext]];        
+        [self.fetchedResultsController.fetchRequest setPredicate:[NSPredicate predicateWithFormat:kDefaultPredicate]];	            
+    }
+    
+    NSError *error = nil;
+    if (![fetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    [self.gridView reloadDataKeepOffset:YES];
+}
 
 @end
