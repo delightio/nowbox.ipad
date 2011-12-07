@@ -956,6 +956,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	shouldFadeOutVideoThumbnail = YES;
 	[self showActivityLoader];
 	[self.currentVideo.nm_movie_detail_view restoreThumbnailView];
+	movieView.alpha = 0.0f;
 }
 
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
@@ -1061,6 +1062,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( !NM_AIRPLAY_ACTIVE ) {
 		[self stopVideo];
 	}
+	//Debug: set the video link to expire
+//	playbackModelController.currentVideo.nm_direct_url_expiry = (NSInteger)[[NSDate dateWithTimeIntervalSinceNow:-1000.0] timeIntervalSince1970];
 }
 
 - (void)handleChannelManagementNotification:(NSNotification *)aNotification {
