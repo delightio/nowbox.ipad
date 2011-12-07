@@ -364,7 +364,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (BOOL)refreshDirectURLToBufferedVideos {
 	BOOL needRefresh = YES;
-	NSInteger curTime = (NSInteger)[[NSDate dateWithTimeIntervalSince1970:0.0] timestamp];
+	NSInteger curTime = (NSInteger)[[NSDate dateWithTimeIntervalSinceNow:0.0] timeIntervalSince1970];
 	if ( [self checkDirectURLExpiryForVideo:currentVideo currentTime:curTime] ) {
 		// the direct link of current video has expired.
 		[dataDelegate shouldRevertCurrentVideoToNewStateForController:self];
