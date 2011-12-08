@@ -162,6 +162,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDeauthNotification:) name:NMDidDeauthorizeUserNotification object:nil];
+    [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
     
     if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
         [nowboxTaskController addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
@@ -242,6 +243,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 													  [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
 													  [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube,
 													  nil]];
+}
+
+- (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification {
+    massUpdate = YES;
 }
 
 #pragma mark Target-action methods
@@ -939,8 +944,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     if (controller == categoryFetchedResultsController) {
         [categoriesTableView beginUpdates];
-    } else if (selectedIndex == 0) {
-		[channelsTableView beginUpdates];
+    } else if (selectedIndex == 0 && !massUpdate) {
+        [channelsTableView beginUpdates];
     }
 }
 
@@ -958,7 +963,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 [categoriesTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
                 break;
         }
-    } else if (selectedIndex == 0) {
+    } else if (selectedIndex == 0 && !massUpdate) {
 		switch(type) {
 			case NSFetchedResultsChangeInsert:
 				[channelsTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -1000,7 +1005,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                 [categoriesTableView reloadData];
                 break;
         }
-    } else if (selectedIndex == 0) {
+    } else if (selectedIndex == 0 && !massUpdate) {
 		// Map section 0 in core data to section 1 in table
 		newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:2];
 		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:2];
@@ -1031,7 +1036,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     if (controller == categoryFetchedResultsController) {
         [categoriesTableView endUpdates];
     } else if (selectedIndex == 0) {
-		[channelsTableView endUpdates];
+        if (massUpdate) {
+            [channelsTableView reloadData];
+            massUpdate = NO;
+        } else {
+            [channelsTableView endUpdates];
+        }
     }
 }
 

@@ -60,6 +60,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handlePlayNewlySubscribedChannelNotification:) name:NMShouldPlayNewlySubscribedChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
 
 	// channel view is launched in split view configuration. set content inset
 	tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
@@ -519,13 +520,17 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [tableView beginUpdates];
+    if (!massUpdate) {
+        [tableView beginUpdates];
+    }
 }
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
+    if (massUpdate) return;
+
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -541,6 +546,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
+    
+    if (massUpdate) return;
     
     switch(type) {
             
@@ -596,7 +603,12 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [tableView endUpdates];
+    if (massUpdate) {
+        [tableView reloadData];
+        massUpdate = NO;
+    } else {
+        [tableView endUpdates];
+    }
 }
 
 
@@ -666,6 +678,10 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     highlightedChannel = [newVideo channel];
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:[newVideo channel]];
     [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+}
+
+- (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification {
+    massUpdate = YES;
 }
 
 @end
