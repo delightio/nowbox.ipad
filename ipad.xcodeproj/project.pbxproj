@@ -747,6 +747,21 @@
 			path = NSData_Base64;
 			sourceTree = "<group>";
 		};
+		838106021491779E00B3FCE5 /* iPhone */ = {
+			isa = PBXGroup;
+			children = (
+				A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */,
+				838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */,
+				A9A641DD1462065F0032EFE1 /* PhoneVideoPlaybackView.xib */,
+				83BE2E8C1489AD6300C407B7 /* ShareView~iphone.xib */,
+				83E99A6B1485BA3B000E704D /* GridController.xib */,
+				8386681414870B0F0038F86A /* GridItemView.xib */,
+				8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */,
+			);
+			name = iPhone;
+			path = iphone;
+			sourceTree = "<group>";
+		};
 		83EF90CA148433D000ED7993 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -767,9 +782,6 @@
 				A9A641DB146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m */,
 				838105E0149153CC00B3FCE5 /* PhoneLaunchController.h */,
 				838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */,
-				A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */,
-				83E99A6B1485BA3B000E704D /* GridController.xib */,
-				8386681414870B0F0038F86A /* GridItemView.xib */,
 				838668101486FB0D0038F86A /* SizableNavigationController.h */,
 				838668111486FB0D0038F86A /* SizableNavigationController.m */,
 				83E99A671485A469000E704D /* GridController.h */,
@@ -1198,9 +1210,9 @@
 		A97050A213438F980022BF2C /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				838106021491779E00B3FCE5 /* iPhone */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
-				8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */,
 				A93584CE139EE96D0009A264 /* ChannelPanelView.xib */,
 				A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */,
 				A9E2A93B13F6602200807C17 /* ChannelManagementView.xib */,
@@ -1211,14 +1223,11 @@
 				A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */,
 				A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */,
 				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
-				838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */,
 				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
 				83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */,
 				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
 				221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */,
-				A9A641DD1462065F0032EFE1 /* PhoneVideoPlaybackView.xib */,
 				83F8E2DF1468C4B40051D990 /* ShareView.xib */,
-				83BE2E8C1489AD6300C407B7 /* ShareView~iphone.xib */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
