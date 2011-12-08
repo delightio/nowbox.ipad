@@ -53,6 +53,8 @@
 	// subscription related image
 	UIImage * channelSubscribedIcon, * channelSubscribedBackgroundImage;
 	UIImage * channelNotSubscribedIcon, * channelNotSubscribedBackgroundImage;
+    
+    BOOL massUpdate;
 }
 
 @property (retain, nonatomic) IBOutlet CategoriesOrientedTableView *categoriesTableView;
