@@ -177,6 +177,7 @@
     if ([keyword isEqualToString:searchText]) {        
         // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
         [self.searchBar resignFirstResponder];
+        [self.searchBar setShowsCancelButton:NO animated:YES];
         self.searchBar.text = searchText;
         [self.gridView reloadDataKeepOffset:YES];
     } else {
