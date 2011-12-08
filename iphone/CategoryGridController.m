@@ -26,6 +26,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidSearchNotification:) name:NMDidSearchChannelsNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidFailSearchChannelsNotification:) name:NMDidFailSearchChannelsNotification object:nil];
     }
     
     return self;
@@ -46,6 +47,8 @@
     // Don't search for the same thing twice in a row (can happen if user presses Search button)
     if ([self.lastSearchQuery isEqualToString:searchText]) return;
     
+    [self.activityIndicator startAnimating];
+    
     NMTaskQueueController *ctrl = [NMTaskQueueController sharedTaskQueueController];
     [ctrl.dataController clearSearchResultCache];
     if ([searchText length] > 0) {
@@ -62,7 +65,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.titleLabel.text = @"Categories";
+    self.titleLabel.text = @"Add Channels";
     self.searchBar.placeholder = @"Search channels";    
     
     self.searchBar.hidden = NO;
@@ -173,17 +176,22 @@
     NSString *searchText = self.searchBar.text;
     NSString *keyword = [[aNotification userInfo] objectForKey:@"keyword"];
     NSLog(@"got results for keyword: %@", keyword);
-    
+
     if ([keyword isEqualToString:searchText]) {        
         // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
         [self.searchBar resignFirstResponder];
         [self.searchBar setShowsCancelButton:NO animated:YES];
         self.searchBar.text = searchText;
         [self.gridView reloadDataKeepOffset:YES];
+        [self.activityIndicator stopAnimating];
     } else {
         // These are not the search results we're looking for
         [self clearSearchResults];
     }    
+}
+
+- (void)handleDidFailSearchChannelsNotification:(NSNotification *)aNotification {
+    [self.activityIndicator stopAnimating];
 }
 
 #pragma mark - UISearchBarDelegate

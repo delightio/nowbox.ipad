@@ -16,6 +16,7 @@
 @synthesize backButton;
 @synthesize actionButton;
 @synthesize titleLabel;
+@synthesize activityIndicator;
 @synthesize managedObjectContext;
 @synthesize navigationController;
 @synthesize delegate;
@@ -27,6 +28,7 @@
     [backButton release];
     [actionButton release];
     [titleLabel release];
+    [activityIndicator release];
     [managedObjectContext release];
     
     [super dealloc];
@@ -60,6 +62,7 @@
     self.backButton = nil;
     self.actionButton = nil;
     self.titleLabel = nil;
+    self.activityIndicator = nil;
 
     [super viewDidUnload];
 }
