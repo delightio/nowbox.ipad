@@ -17,7 +17,7 @@
 		<key>ImageFile</key>
 		<string>tooltip-bad-video.png</string>
 		<key>DisplayText</key>
-		<string>The video is not available</string>
+		<string>This video is not available.</string>
 		<key>DisplayTextEdgeInsetsLeft</key>
 		<integer>26</integer>
 		<key>DisplayTextEdgeInsetsBottom</key>
