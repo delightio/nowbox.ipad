@@ -14,7 +14,6 @@
 @interface LaunchController : NSObject <OnBoardProcessViewControllerDelegate> {
 	UIView * view;
     IBOutlet UIButton * progressLabel;
-	IBOutlet UIImageView * logoImageView;
 	BOOL appFirstLaunch;
 	BOOL launchProcessStuck;
 	BOOL ignoreThumbnailDownloadIndex;
@@ -29,6 +28,7 @@
 
 @property (nonatomic, assign) VideoPlaybackBaseViewController * viewController;
 @property (nonatomic, retain) IBOutlet UIView * view;
+@property (nonatomic, retain) IBOutlet UIImageView * logoImageView;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView * activityIndicator;
 @property (nonatomic, retain) NSString * lastFailNotificationName;
 @property (nonatomic, retain) NMChannel * channel;

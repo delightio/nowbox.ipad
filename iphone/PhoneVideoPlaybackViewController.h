@@ -24,7 +24,7 @@
 @class NMVideo;
 @class NMTaskQueueController;
 @class ipadAppDelegate;
-@class LaunchController;
+@class PhoneLaunchController;
 
 enum {
 	ChannelSwitchNone,
@@ -69,7 +69,7 @@ enum {
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
-	LaunchController * launchController;
+	PhoneLaunchController * launchController;
     SizableNavigationController * gridNavigationController;
 
     BOOL shouldResumePlayingVideoAfterTransition;

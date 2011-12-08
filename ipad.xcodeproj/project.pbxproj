@@ -62,6 +62,8 @@
 		837E904E14587FA3009F32DD /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904614587FA3009F32DD /* NSData+MPBase64.m */; };
 		837E904F14587FA3009F32DD /* MixpanelAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904814587FA3009F32DD /* MixpanelAPI.m */; };
 		837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904A14587FA3009F32DD /* MixpanelEvent.m */; };
+		838105E2149153CC00B3FCE5 /* PhoneLaunchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */; };
+		838105E514916AF600B3FCE5 /* LaunchView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */; };
 		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		8381548C148856B1003F2CA4 /* VideoGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548B148856B1003F2CA4 /* VideoGridController.m */; };
 		838154901488588D003F2CA4 /* ChannelGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548F1488588D003F2CA4 /* ChannelGridController.m */; };
@@ -362,6 +364,9 @@
 		837E904814587FA3009F32DD /* MixpanelAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelAPI.m; sourceTree = "<group>"; };
 		837E904914587FA3009F32DD /* MixpanelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelEvent.h; sourceTree = "<group>"; };
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
+		838105E0149153CC00B3FCE5 /* PhoneLaunchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneLaunchController.h; sourceTree = "<group>"; };
+		838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneLaunchController.m; sourceTree = "<group>"; };
+		838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "LaunchView~iphone.xib"; sourceTree = "<group>"; };
 		83810ADE1464A633003D3F76 /* GridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridScrollView.h; sourceTree = "<group>"; };
 		83810ADF1464A633003D3F76 /* GridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridScrollView.m; sourceTree = "<group>"; };
 		8381548A148856B1003F2CA4 /* VideoGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoGridController.h; sourceTree = "<group>"; };
@@ -760,6 +765,8 @@
 			children = (
 				A9A641DA146205CC0032EFE1 /* PhoneVideoPlaybackViewController.h */,
 				A9A641DB146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m */,
+				838105E0149153CC00B3FCE5 /* PhoneLaunchController.h */,
+				838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */,
 				A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */,
 				83E99A6B1485BA3B000E704D /* GridController.xib */,
 				8386681414870B0F0038F86A /* GridItemView.xib */,
@@ -1204,6 +1211,7 @@
 				A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */,
 				A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */,
 				A9A73FA413A73A3D005D9013 /* LaunchView.xib */,
+				838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */,
 				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
 				83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */,
 				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
@@ -1471,6 +1479,7 @@
 				8389F694148DBAC6002165A2 /* VideoControlView~iphone.xib in Resources */,
 				8393DDDC149065990031399A /* Default-Landscape~iphone.png in Resources */,
 				8393DDDD149065990031399A /* Default~iphone.png in Resources */,
+				838105E514916AF600B3FCE5 /* LaunchView~iphone.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1550,6 +1559,7 @@
 				8381548C148856B1003F2CA4 /* VideoGridController.m in Sources */,
 				838154901488588D003F2CA4 /* ChannelGridController.m in Sources */,
 				838154951488612A003F2CA4 /* CategoryGridController.m in Sources */,
+				838105E2149153CC00B3FCE5 /* PhoneLaunchController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

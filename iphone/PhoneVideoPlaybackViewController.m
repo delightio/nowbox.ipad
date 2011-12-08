@@ -10,7 +10,7 @@
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
-#import "LaunchController.h"
+#import "PhoneLaunchController.h"
 #import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
@@ -237,7 +237,7 @@
 	[pinRcr release];
 	
 	// create the launch view
-	launchController = [[LaunchController alloc] init];
+	launchController = [[PhoneLaunchController alloc] init];
 	launchController.viewController = self;
 	[[NSBundle mainBundle] loadNibNamed:@"LaunchView" owner:launchController options:nil];
 	[self showLaunchView];
@@ -263,6 +263,8 @@
         gridNavigationController.view.frame = self.view.bounds;
         gridNavigationController.view.alpha = 0;
     }
+    
+    [launchController updateViewForInterfaceOrientation:interfaceOrientation];
 	
     // Update scroll view sizes / content offsets
     channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;

@@ -31,6 +31,7 @@
 @implementation LaunchController
 @synthesize view;
 @synthesize activityIndicator;
+@synthesize logoImageView;
 @synthesize viewController;
 @synthesize lastFailNotificationName;
 @synthesize channel;
@@ -40,6 +41,7 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[view release];
     [activityIndicator release];
+    [logoImageView release];
 	[channel release];
 	[thumbnailVideoIndex release];
 	[resolutionVideoIndex release];
