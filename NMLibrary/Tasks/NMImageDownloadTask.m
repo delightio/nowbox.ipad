@@ -168,7 +168,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		case NMCommandGetChannelThumbnail:
 			return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
 		case NMCommandGetCategoryThumbnail:
-			return [NSString stringWithFormat:@"@_@", targetID, [httpResponse suggestedFilename]];
+			return [NSString stringWithFormat:@"cat_%@", targetID, [httpResponse suggestedFilename]];
 			
 		default:
 			break;
@@ -224,7 +224,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 				channel.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
 				
-			NMCommandGetCategoryThumbnail:
+			case NMCommandGetCategoryThumbnail:
 				category.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
 				

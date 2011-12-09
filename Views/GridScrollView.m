@@ -13,6 +13,8 @@
 @synthesize numberOfColumns;
 @synthesize itemSize;
 @synthesize verticalItemPadding;
+@synthesize shadowTopView;
+@synthesize shadowBottomView;
 @synthesize gridDelegate;
 
 - (void)setup
@@ -58,6 +60,8 @@
 {
     [visibleViews release];
     [recycledViews release];
+    [shadowTopView release];
+    [shadowBottomView release];
     
     [super dealloc];
 }
@@ -185,7 +189,9 @@
 
     self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding);
     self.contentOffset = CGPointMake(0, -self.contentInset.top);
-    [self setNeedsLayout];
+    
+    // To update shadow alphas and layout subviews
+    [self scrollViewDidScroll:self];
 }
 
 - (UIView *)dequeueReusableSubview
@@ -206,6 +212,9 @@
     if ([gridDelegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
         [gridDelegate scrollViewDidScroll:scrollView];
     }
+    
+    shadowTopView.alpha = MIN(1, MAX(0, scrollView.contentOffset.y / 10));
+    shadowBottomView.alpha = MIN(1, MAX(0, (scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.frame.size.height)) / 10));
     
     [self setNeedsLayout];
 }

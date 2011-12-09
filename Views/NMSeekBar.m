@@ -130,17 +130,26 @@
 #pragma mark UIControl
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
 	CGPoint thePoint = [touch locationInView:self];
-	if ( [nubLayer hitTest:thePoint] ) {
-		return YES;
-	}
-	return NO;
+    
+    // Since nub is small, accept a touch area bigger than the nub
+    CGRect largerNub = CGRectMake(nubLayer.frame.origin.x - nubLayer.frame.size.width * 2,
+                                  nubLayer.frame.origin.y - nubLayer.frame.size.height,
+                                  nubLayer.frame.size.width * 5,
+                                  nubLayer.frame.size.height * 3);
+                                           
+    if (CGRectContainsPoint(largerNub, thePoint)) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	if ( !self.tracking ) return;
 	UITouch * aTouch = [touches anyObject];
 	CGPoint thePoint = [aTouch locationInView:self];
-	if ( thePoint.x > self.bounds.size.width || thePoint.x < 0.0f ) return;
+//	if ( thePoint.x > self.bounds.size.width || thePoint.x < 0.0f ) return;
+    if (thePoint.x > self.bounds.size.width) thePoint.x = self.bounds.size.width;
+    if (thePoint.x < 0.0f) thePoint.x = 0.0f;
 	
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
@@ -148,6 +157,16 @@
 	[CATransaction commit];
 	currentTime = (NSInteger)(thePoint.x / widthPerSec);
 	[self sendActionsForControlEvents:UIControlEventValueChanged];
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+{
+    // Accept a region slightly outside this view to give us a larger hit area for the nub
+    if (point.x > -10 && point.y > -10 && point.x < self.bounds.size.width + 10 && point.y < self.bounds.size.height + 10) {
+        return YES;
+    }
+    
+    return [super pointInside:point withEvent:event];
 }
 
 /*

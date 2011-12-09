@@ -37,6 +37,7 @@ typedef enum {
     NSInteger highlightedVideoIndex;
     NMChannel *highlightedChannel;
 	NMPlaybackViewModeType displayMode;
+    BOOL massUpdate;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
