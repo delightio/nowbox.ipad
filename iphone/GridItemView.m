@@ -95,7 +95,10 @@
     if (CGRectContainsPoint(self.bounds, [touch locationInView:self])) {
         [self sendActionsForControlEvents:UIControlEventTouchUpInside];
         [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(unhighlight) userInfo:nil repeats:NO];
+    } else {
+        [self setHighlighted:NO];
     }
+    
     touching = NO;
 }
 

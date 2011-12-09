@@ -166,6 +166,8 @@
 {
     [super layoutSubviews];
 
+    if (updating) return;
+    
     // Recalculate visible row range
     NSInteger firstVisibleRow = INT_MAX;
     NSInteger lastVisibleRow = INT_MIN;
@@ -276,6 +278,7 @@
 - (void)beginUpdates
 {
     numberOfItemsDelta = 0;
+    updating = YES;
 }
 
 - (void)endUpdates
@@ -284,6 +287,8 @@
     numberOfRows = ceil((float)numberOfItems / resolvedNumberOfColumns);    
     
     self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding + (headerView ? headerView.frame.size.height : 0));   
+    
+    updating = NO;
 }
 
 - (void)insertItemAtIndex:(NSUInteger)index
@@ -303,7 +308,8 @@
     }
     
     [self addViewAtIndex:index];
-    
+    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
+
     // Remove the view that got shifted below the screen
     if (indexToRemove >= 0) {
         [self removeViewAtIndex:indexToRemove];
@@ -329,9 +335,11 @@
     }
     
     numberOfItemsDelta--;
-
+    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
+    
     // Might need to add a view to the end of the last visible column
     if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < numberOfItems + numberOfItemsDelta) {
+        NSLog(@"adding view!!");
         [self addViewAtIndex:lastVisibleIndex + 1];
     }
 }

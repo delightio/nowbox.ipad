@@ -64,6 +64,7 @@
 		837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904A14587FA3009F32DD /* MixpanelEvent.m */; };
 		838105E2149153CC00B3FCE5 /* PhoneLaunchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */; };
 		838105E514916AF600B3FCE5 /* LaunchView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */; };
+		8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381062A1491B6D600B3FCE5 /* TestGridController.m */; };
 		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		8381548C148856B1003F2CA4 /* VideoGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548B148856B1003F2CA4 /* VideoGridController.m */; };
 		838154901488588D003F2CA4 /* ChannelGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548F1488588D003F2CA4 /* ChannelGridController.m */; };
@@ -367,6 +368,8 @@
 		838105E0149153CC00B3FCE5 /* PhoneLaunchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneLaunchController.h; sourceTree = "<group>"; };
 		838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneLaunchController.m; sourceTree = "<group>"; };
 		838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "LaunchView~iphone.xib"; sourceTree = "<group>"; };
+		838106291491B6D600B3FCE5 /* TestGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestGridController.h; sourceTree = "<group>"; };
+		8381062A1491B6D600B3FCE5 /* TestGridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGridController.m; sourceTree = "<group>"; };
 		83810ADE1464A633003D3F76 /* GridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridScrollView.h; sourceTree = "<group>"; };
 		83810ADF1464A633003D3F76 /* GridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridScrollView.m; sourceTree = "<group>"; };
 		8381548A148856B1003F2CA4 /* VideoGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoGridController.h; sourceTree = "<group>"; };
@@ -792,6 +795,8 @@
 				8381548B148856B1003F2CA4 /* VideoGridController.m */,
 				838154931488612A003F2CA4 /* CategoryGridController.h */,
 				838154941488612A003F2CA4 /* CategoryGridController.m */,
+				838106291491B6D600B3FCE5 /* TestGridController.h */,
+				8381062A1491B6D600B3FCE5 /* TestGridController.m */,
 				83866816148719290038F86A /* GridItemView.h */,
 				83866817148719290038F86A /* GridItemView.m */,
 			);
@@ -1569,6 +1574,7 @@
 				838154901488588D003F2CA4 /* ChannelGridController.m in Sources */,
 				838154951488612A003F2CA4 /* CategoryGridController.m in Sources */,
 				838105E2149153CC00B3FCE5 /* PhoneLaunchController.m in Sources */,
+				8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

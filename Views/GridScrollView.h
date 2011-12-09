@@ -22,6 +22,8 @@
     
     NSMutableSet *visibleViews;
     NSMutableSet *recycledViews;
+    
+    BOOL updating;
 }
 
 @property (nonatomic, assign) NSUInteger numberOfColumns;

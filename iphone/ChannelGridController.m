@@ -52,6 +52,12 @@
     self.searchBar.placeholder = @"Search channels";    
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.gridView reloadDataKeepOffset:YES]; // In case selected channel changed
+}
+
 #pragma mark - Actions
 
 - (IBAction)itemPressed:(id)sender
