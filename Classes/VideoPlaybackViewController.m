@@ -986,10 +986,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	didPlayToEnd = YES;
 	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
 	dispatch_async(dispatch_get_main_queue(), ^{
-		if ( playbackModelController.nextVideo == nil ) {
-			// finish up playing the whole channel
-			didPlayToEnd = NO;
-		} else {
+		if (playbackModelController.nextVideo) {
 			[self showNextVideo:YES];
 		}
 	});
