@@ -130,10 +130,17 @@
 #pragma mark UIControl
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
 	CGPoint thePoint = [touch locationInView:self];
-	if ( [nubLayer hitTest:thePoint] ) {
-		return YES;
-	}
-	return NO;
+    
+    // Since nub is small, accept a touch slightly outside of the nub
+    CGRect largerNub = CGRectMake(nubLayer.frame.origin.x - nubLayer.frame.size.width,
+                                  nubLayer.frame.origin.y - nubLayer.frame.size.height / 2,
+                                  nubLayer.frame.size.width * 3,
+                                  nubLayer.frame.size.height * 2);
+                                           
+    if (CGRectContainsPoint(largerNub, thePoint)) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
