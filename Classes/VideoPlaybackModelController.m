@@ -481,11 +481,15 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 	changeSessionUpdateCount = YES;
-	id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-	changeSessionVideoCount = [sectionInfo numberOfObjects];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+	if ( changeSessionUpdateCount ) {
+		changeSessionVideoCount = NO;
+		// count the number of rows left. We MUST do the count here. Not in controllerWillChangeContent. Core Data have NOT modified the database yet in "controllerWillChangeContent"
+		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
+		changeSessionVideoCount = [sectionInfo numberOfObjects];
+	}
 	switch (type) {
 		case NSFetchedResultsChangeDelete:
 		{
@@ -638,7 +642,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		}
 	}
 	rowCountHasChanged = NO;
-	changeSessionUpdateCount = NO;
 }
 
 #pragma mark Debug message
