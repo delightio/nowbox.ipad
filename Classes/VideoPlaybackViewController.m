@@ -1557,10 +1557,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                                video.title, AnalyticsPropertyVideoName, 
                                                                                video.nm_id, AnalyticsPropertyVideoId,
-                                                                               nil]];
+                                                                               nil]];        
     }
-    
-    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1683,10 +1681,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
                                      MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
 
-    } else if ([tooltip.name isEqualToString:@"WatchLaterTip"]) {// && loadedControlView.playbackMode == NMFullScreenPlaybackMode) {
-//        tooltip.center = CGPointMake(tooltip.center.x, 65);
-        tooltip.center = CGPointMake(floor([sender frame].size.width / 2) - 126, 64);
-        tooltip.center = [sender convertPoint:tooltip.center toView:self.view];        
     }
     
     // Avoid non-integer / odd positions to avoid subpixel rendering (blurry text)
