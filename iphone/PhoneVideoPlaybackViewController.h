@@ -118,6 +118,7 @@ enum {
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
 - (void)launchPlayVideo:(NMVideo *)aVideo;
+- (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
 // launch view / onboard process
 //- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;

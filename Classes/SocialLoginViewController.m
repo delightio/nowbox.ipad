@@ -87,8 +87,11 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
-	return YES;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    } else {
+        return UIInterfaceOrientationIsPortrait(interfaceOrientation);
+    }
 }
 
 - (void)dealloc {

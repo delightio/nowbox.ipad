@@ -236,7 +236,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         return UIInterfaceOrientationIsLandscape(toInterfaceOrientation);
     } else {
-        return YES;
+        return UIInterfaceOrientationIsPortrait(toInterfaceOrientation);
     }
 }
 

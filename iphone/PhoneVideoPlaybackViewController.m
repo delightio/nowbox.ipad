@@ -243,6 +243,11 @@
 	[self showLaunchView];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self playCurrentVideo];
