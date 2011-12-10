@@ -516,13 +516,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
-	[UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionTransitionNone
-                     animations:^{
+	[UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionTransitionNone animations:^{
                          movieView.alpha = 1.0f;
                      } completion:^(BOOL finished) {
-                         //		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
                          [loadedControlView setControlsHidden:NO animated:YES];
-                         //		}
                      }];
 }
 
@@ -1226,7 +1223,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( (!playFirstVideoOnLaunchWhenReady || forceStopByUser) && theRate > 0.0 ) {
 			[self stopVideo];
 			[loadedControlView setPlayButtonStateForRate:0.0f];
-		} else {
+		} else if ( !didPlayToEnd ) {
 			[loadedControlView setPlayButtonStateForRate:theRate];
 		}
 	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT ) {
@@ -1542,7 +1539,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
-	loadedControlView.hidden = NO;
 	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
@@ -1558,13 +1554,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)controlsViewTouchUp:(id)sender {
-//	UIView * v = (UIView *)sender;
 	[UIView animateWithInteractiveDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
-	} completion:^(BOOL finished) {
-		if ( finished ) {
-			loadedControlView.hidden = YES;
-		}
 	}];
 }
 
