@@ -1196,7 +1196,8 @@
 //		[launchController dimProgressLabel];
 //	}
 //	[self hideControlView];
-	[loadedControlView setControlsHidden:YES animated:YES];
+    
+    [loadedControlView setControlsHidden:YES animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1433,9 +1434,12 @@
     
     if (gridShowing) {
         gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
-        gridNavigationController.view.alpha = 0;        
+        gridNavigationController.view.alpha = 0;  
     }
-    
+
+    controlScrollView.scrollEnabled = !gridShowing;
+    channelSwitchingScrollView.scrollEnabled = !gridShowing;
+
     [UIView animateWithInteractiveDuration:0.3
                                 animations:^{
                                     if (gridShowing) {
@@ -1467,6 +1471,11 @@
 - (void)gridController:(GridController *)gridController didSelectVideo:(NMVideo *)video
 {
     [self playVideo:video];
+    
+    if (gridShowing && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        // Hide grid
+        [self toggleGrid:nil];
+    }
 }
 
 #pragma mark Debug
