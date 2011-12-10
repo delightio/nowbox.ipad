@@ -14,7 +14,7 @@
 #import "NMTaskQueueController.h"
 
 #define NM_NUMBER_OF_VIDEOS_PER_PAGE_IPAD 5
-#define NM_NUMBER_OF_VIDEOS_PER_PAGE_IPHONE 9
+#define NM_NUMBER_OF_VIDEOS_PER_PAGE_IPHONE 12
 #define NM_NUMBER_OF_VIDEOS_PER_PAGE	(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? NM_NUMBER_OF_VIDEOS_PER_PAGE_IPAD : NM_NUMBER_OF_VIDEOS_PER_PAGE_IPHONE)
 
 NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
