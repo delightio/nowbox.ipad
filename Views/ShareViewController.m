@@ -12,6 +12,7 @@
 #import "NMTaskQueueController.h"
 #import "NMDataType.h"
 #import "Analytics.h"
+#import "ToolTipController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
 
@@ -379,10 +380,16 @@
     if ([alertView numberOfButtons] == 1) {
         if (alertView.tag >= 0) {
             [self cancelButtonPressed:nil];
+            [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];
         }
     } else if (buttonIndex == 1) {
         [self showLoginPage];
     }
 }
-            
+
+- (void)delayedNotifyShareVideo
+{
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventSharedVideo sender:nil];    
+}
+
 @end

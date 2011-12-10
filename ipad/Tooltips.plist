@@ -33,9 +33,9 @@
 	<key>WatchLaterTip</key>
 	<dict>
 		<key>CenterX</key>
-		<integer>0</integer>
+		<integer>512</integer>
 		<key>CenterY</key>
-		<integer>0</integer>
+		<integer>384</integer>
 		<key>KeepCountsOnRestart</key>
 		<false/>
 		<key>ResetCountsOnDisplay</key>
@@ -45,12 +45,50 @@
 		<key>ImageFile</key>
 		<string>tooltip-watch-later.png</string>
 		<key>DisplayText</key>
-		<string>Video added to your Watch Later channel.</string>
+		<string>ADDED TO WATCH LATER CHANNEL</string>
 		<key>DisplayTextEdgeInsetsTop</key>
-		<integer>6</integer>
+		<integer>54</integer>
+		<key>DisplayTextEdgeInsetsLeft</key>
+		<string>24</string>
+		<key>DisplayTextEdgeInsetsRight</key>
+		<string>24</string>
+		<key>DisplayTextShadowHidden</key>
+		<true/>
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>WatchLaterTap</key>
+			<integer>1</integer>
+		</dict>
+		<key>InvalidationCriteria</key>
+		<dict/>
+	</dict>
+	<key>FavoriteTap</key>
+	<dict>
+		<key>CenterX</key>
+		<integer>512</integer>
+		<key>CenterY</key>
+		<integer>384</integer>
+		<key>KeepCountsOnRestart</key>
+		<false/>
+		<key>ResetCountsOnDisplay</key>
+		<true/>
+		<key>AutoHideInSeconds</key>
+		<integer>2</integer>
+		<key>ImageFile</key>
+		<string>tooltip-favorite.png</string>
+		<key>DisplayText</key>
+		<string>ADDED TO FAVORITES CHANNEL</string>
+		<key>DisplayTextEdgeInsetsTop</key>
+		<integer>54</integer>
+		<key>DisplayTextEdgeInsetsLeft</key>
+		<string>24</string>
+		<key>DisplayTextEdgeInsetsRight</key>
+		<string>24</string>
+		<key>DisplayTextShadowHidden</key>
+		<true/>
+		<key>ValidationCriteria</key>
+		<dict>
+			<key>SharedVideo</key>
 			<integer>1</integer>
 		</dict>
 		<key>InvalidationCriteria</key>

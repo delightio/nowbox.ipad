@@ -61,10 +61,10 @@ static ToolTipController *toolTipController = nil;
             if (useSavedCounts) {
                 savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kChannelManagementTapCountKey];
             }
-        } else if ([criteriaName isEqualToString:@"FavoriteTap"]) {
-            criteria.eventType = ToolTipEventFavoriteTap;
+        } else if ([criteriaName isEqualToString:@"SharedVideo"]) {
+            criteria.eventType = ToolTipEventSharedVideo;
             if (useSavedCounts) {
-                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kFavoriteTapCountKey];
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kSharedVideoTapCountKey];
             }
         } else if ([criteriaName isEqualToString:@"WatchLaterTap"]) {
             criteria.eventType = ToolTipEventWatchLaterTap;
@@ -111,6 +111,7 @@ static ToolTipController *toolTipController = nil;
                                                          [[propertyDict objectForKey:@"DisplayTextEdgeInsetsLeft"] floatValue], 
                                                          [[propertyDict objectForKey:@"DisplayTextEdgeInsetsBottom"] floatValue], 
                                                          [[propertyDict objectForKey:@"DisplayTextEdgeInsetsRight"] floatValue]);
+        toolTip.displayTextShadowHidden = [[propertyDict objectForKey:@"DisplayTextShadowHidden"] boolValue];
         toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
         toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
         toolTip.invalidatesToolTip = [propertyDict objectForKey:@"InvalidatesToolTip"];
@@ -269,7 +270,7 @@ static ToolTipController *toolTipController = nil;
         case ToolTipEventVideoTap:              key = kVideoTapCountKey; break;
         case ToolTipEventBadVideoTap:           key = kBadVideoTapCountKey; break;
         case ToolTipEventChannelManagementTap:  key = kChannelManagementTapCountKey; break;
-        case ToolTipEventFavoriteTap:           key = kFavoriteTapCountKey; break;
+        case ToolTipEventSharedVideo:           key = kSharedVideoCountKey; break;
         case ToolTipEventWatchLaterTap:         key = kWatchLaterCountKey; break;
         case ToolTipEventChannelListScroll:     key = kChannelListScrollCountKey; break;
         default: break;
@@ -311,8 +312,10 @@ static ToolTipController *toolTipController = nil;
 
     if (tooltip.displayText) {
         [tooltipButton.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
-        [tooltipButton.titleLabel setShadowColor:[UIColor darkGrayColor]];
+        [tooltipButton.titleLabel setShadowColor:(tooltip.displayTextShadowHidden ? [UIColor clearColor] : [UIColor darkGrayColor])];
         [tooltipButton.titleLabel setShadowOffset:CGSizeMake(0, 1)];
+        [tooltipButton.titleLabel setLineBreakMode:UILineBreakModeWordWrap];
+        [tooltipButton.titleLabel setTextAlignment:UITextAlignmentCenter];
         [tooltipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [tooltipButton setTitle:tooltip.displayText forState:UIControlStateNormal];
         [tooltipButton setTitleEdgeInsets:tooltip.displayTextEdgeInsets];
@@ -389,7 +392,7 @@ static ToolTipController *toolTipController = nil;
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kBadVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelManagementTapCountKey];
-    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kFavoriteTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kSharedVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kWatchLaterTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelListScrollCountKey];
     [userDefaults synchronize];

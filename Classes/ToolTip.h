@@ -16,7 +16,7 @@ typedef enum {
     ToolTipEventVideoTap,
     ToolTipEventBadVideoTap,
     ToolTipEventChannelManagementTap,
-    ToolTipEventFavoriteTap,
+    ToolTipEventSharedVideo,
     ToolTipEventWatchLaterTap,
     ToolTipEventChannelListScroll
 } ToolTipEventType;
@@ -52,6 +52,9 @@ typedef enum {
 
 // Define how the display text should be positioned
 @property (nonatomic, assign) UIEdgeInsets displayTextEdgeInsets;
+
+// Should there be text shadow?
+@property (nonatomic, assign) BOOL displayTextShadowHidden;
 
 // The time interval after which the tooltip should automatically hide. If 0, never auto-hide.
 @property (nonatomic, assign) NSTimeInterval autoHideInSeconds;
