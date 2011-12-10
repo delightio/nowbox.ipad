@@ -19,10 +19,18 @@
  When changes happen in Core Data, the FRC delegate method in VideoPlaybackModelControllerDelegate is called. To invoke related interface change in the delegate object, this method is called.
  */
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum;
+/*!
+ 
+ */
 - (void)didLoadNextNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl;
+
+// video refresh - happened when CDN link expire
+- (void)shouldRevertNextNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
+- (void)shouldRevertNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
+- (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl;
 
 @end
 
@@ -40,6 +48,7 @@
 	NMVideo * currentVideo, * nextVideo, * nextNextVideo, * previousVideo;
 	BOOL rowCountHasChanged;
 	BOOL changeSessionUpdateCount;
+	NSUInteger changeSessionVideoCount;
 	NSUInteger numberOfVideos;
 	
 	NMChannel * channel;
@@ -92,10 +101,17 @@
  Return list of videos that should be buffered in the queue player. The queue video player should enqueue the videos in the order specified in the returned array.
  */
 - (NSArray *)videosForBuffering;
+/*!
+ Check if the direct URL to videos has expired or not. If so, refresh them.
+ */
+- (BOOL)refreshDirectURLToBufferedVideos;
 
 /*!
  Set the video for playback.
  */
 - (void)setVideo:(NMVideo *)aVideo;
+
+// index path management
+//- (void)updateIndexPathsForChangeType:(NSFetchedResultsChangeType)type;
 
 @end
