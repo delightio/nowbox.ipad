@@ -349,14 +349,18 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	return [theArray count] ? theArray : nil;
 }
 
+- (void)revertVideoToNewState:(NMVideo *)vdo {
+	vdo.nm_error = [NSNumber numberWithInteger:0];
+	vdo.nm_playback_status = NMVideoQueueStatusNone;
+	vdo.nm_direct_sd_url = nil;
+	vdo.nm_direct_url = nil;
+}
+
 - (BOOL)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
 	NSInteger vdoTime = vdo.nm_direct_url_expiry;
 	if ( vdoTime && vdoTime - 10 < curTime ) {
 		// the video link has expired
-		vdo.nm_error = [NSNumber numberWithInteger:0];
-		vdo.nm_playback_status = NMVideoQueueStatusNone;
-		vdo.nm_direct_sd_url = nil;
-		vdo.nm_direct_url = nil;
+		[self revertVideoToNewState:vdo];
 		return YES;
 	}
 	return NO;
@@ -366,9 +370,20 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	BOOL needRefresh = YES;
 	NSInteger curTime = (NSInteger)[[NSDate dateWithTimeIntervalSinceNow:0.0] timeIntervalSince1970];
 	if ( [self checkDirectURLExpiryForVideo:currentVideo currentTime:curTime] ) {
+		// if the first video is expired, we flush the whole playback queue.
+		if ( nextVideo ) {
+			[self revertVideoToNewState:nextVideo];
+			if ( nextNextVideo ) {
+				[self revertVideoToNewState:nextNextVideo];
+			}
+		}
 		// the direct link of current video has expired.
 		[dataDelegate shouldRevertCurrentVideoToNewStateForController:self];
 	} else if ( [self checkDirectURLExpiryForVideo:nextVideo currentTime:curTime] ) {
+		// flush remain of other video in the queue
+		if ( nextNextVideo ) {
+			[self revertVideoToNewState:nextNextVideo];
+		}
 		[dataDelegate shouldRevertNextVideoToNewStateForController:self];
 	} else if ( [self checkDirectURLExpiryForVideo:nextNextVideo currentTime:curTime] ) {
 		[dataDelegate shouldRevertNextNextVideoToNewStateForController:self];
