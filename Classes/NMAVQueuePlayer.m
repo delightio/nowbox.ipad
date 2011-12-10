@@ -196,6 +196,9 @@
 	for (NMAVPlayerItem * theItem in items) {
 		vdo = [theItem.nmVideo retain];
 		[self removeItem:theItem];
+		// when removing a video item from the queue player, queue player will change the "current item". i.e. triggering the KVO method.
+		// We need to reset the status of the video object again here.
+		vdo.nm_playback_status  = NMVideoQueueStatusNone;
 		[self performSelector:@selector(requestResolveVideo:) withObject:vdo afterDelay:0.25];
 		[vdo release];
 	}
