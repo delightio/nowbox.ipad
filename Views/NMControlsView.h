@@ -38,8 +38,8 @@
 	IBOutlet UIButton * channelViewButton;
 	IBOutlet UILabel * durationLabel;
 	IBOutlet UILabel * currentTimeLabel;
-	IBOutlet UIView * controlContainerView;
 	IBOutlet UIView * progressContainerView;
+    NMAirPlayContainerView * airPlayContainerView;
 	MPVolumeView * volumeView;
 	// top bar
 //	IBOutlet UILabel * channelNameLabel;
@@ -52,6 +52,7 @@
 	IBOutlet UIButton * segmentChannelButton;
 	UIButton * favoriteButton;
 	UIButton * watchLaterButton;
+    
 	// segment width
 	CGFloat channelDefaultWidth, authorDefaultWidth;
 	CGFloat channelTitleDefaultWidth, authorTitleDefaultWidth;
@@ -92,10 +93,13 @@
 @property (nonatomic, retain) UIButton * seekBubbleButton;
 @property (nonatomic, assign) IBOutlet UIButton * favoriteButton;
 @property (nonatomic, assign) IBOutlet UIButton * watchLaterButton;
+@property (nonatomic, assign) IBOutlet UIView * controlContainerView;
+
 //@property (nonatomic, readonly) IBOutlet UIView * channelBackgroundView;
 //@property (nonatomic, readonly) IBOutlet UIView * authorBackgroundView;
 
 @property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
+@property (retain, nonatomic) IBOutlet UIButton *toggleGridButton;
 @property (nonatomic, assign) BOOL isSeeking;
 
 //- (void)addTarget:(id)atarget action:(SEL)anAction;
@@ -112,5 +116,6 @@
 
 // bubble
 - (void)updateSeekBubbleLocation;
+- (void)setToggleGridButtonHidden:(BOOL)hidden;
 
 @end

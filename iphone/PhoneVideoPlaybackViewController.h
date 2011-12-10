@@ -94,6 +94,8 @@ enum {
     
     ToolTip *pendingToolTip;    
     BOOL scrollingNotFromUser;
+    
+    BOOL gridShowing;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -114,6 +116,7 @@ enum {
 - (IBAction)seekPlaybackProgress:(id)sender;
 - (IBAction)touchDownProgressBar:(id)sender;
 - (IBAction)touchUpProgressBar:(id)sender;
+- (IBAction)toggleGrid:(id)sender;
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;

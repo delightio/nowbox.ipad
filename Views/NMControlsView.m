@@ -25,6 +25,7 @@
 
 @implementation NMControlsView
 @synthesize airPlayIndicatorView;
+@synthesize toggleGridButton;
 
 @synthesize controlDelegate;
 @synthesize duration, timeElapsed;
@@ -32,6 +33,7 @@
 @synthesize controlsHidden, timeRangeBuffered;
 @synthesize seekBubbleButton, isSeeking;
 @synthesize favoriteButton, watchLaterButton;
+@synthesize controlContainerView;
 @synthesize playbackMode=playbackMode_;
 
 - (void)awakeFromNib {
@@ -81,18 +83,19 @@
 		
 		theRect.origin.x += theRect.size.width;
 		theRect.size.width = 60.0f;
-		NMAirPlayContainerView * theView = [[NMAirPlayContainerView alloc] initWithFrame:theRect];
-		theView.controlsView = self;
-		theView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-		[controlContainerView addSubview:theView];
+        
+		airPlayContainerView = [[NMAirPlayContainerView alloc] initWithFrame:theRect];
+		airPlayContainerView.controlsView = self;
+		airPlayContainerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+		[controlContainerView addSubview:airPlayContainerView];
 		
 		volumeView = [[MPVolumeView alloc] init];
 		[volumeView setShowsVolumeSlider:NO];
 		[volumeView sizeToFit];
 		volumeView.center = CGPointMake(26.5f, 18.0f);
-		[theView addSubview:volumeView];
+		[airPlayContainerView addSubview:volumeView];
 		
-		[theView release];
+		[airPlayContainerView release];
 	} else {
 		videoTitleLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
 	}
@@ -108,6 +111,7 @@
 	[lastVideoMessage release];
 	[volumeView release];
     [airPlayIndicatorView release];
+    [toggleGridButton release];
     [super dealloc];
 }
 
@@ -378,6 +382,24 @@
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {
 	progressSlider.bufferTime = (aRange.start.value + aRange.duration.value) / aRange.duration.timescale;
+}
+
+- (void)setToggleGridButtonHidden:(BOOL)hidden {
+    if (toggleGridButton.hidden == hidden) return;
+    
+    CGRect progressFrame = progressContainerView.frame;
+    CGRect airPlayFrame = airPlayContainerView.frame;
+    if (hidden) {
+        progressFrame.size.width += toggleGridButton.frame.size.width;
+        airPlayFrame.origin.x += toggleGridButton.frame.size.width;
+    } else {
+        progressFrame.size.width -= toggleGridButton.frame.size.width;        
+        airPlayFrame.origin.x -= toggleGridButton.frame.size.width;
+    }    
+    progressContainerView.frame = progressFrame;
+    airPlayContainerView.frame = airPlayFrame;
+    
+    toggleGridButton.hidden = hidden;
 }
 
 #pragma mark Gesture delegate

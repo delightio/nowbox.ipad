@@ -262,11 +262,20 @@
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height / 2);
         gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height / 2, self.view.bounds.size.width, self.view.bounds.size.height / 2);
-        gridNavigationController.view.alpha = 1;
+        gridNavigationController.view.alpha = 1.0f;
+        [loadedControlView setToggleGridButtonHidden:YES];   
+		[loadedControlView setControlsHidden:YES animated:NO];                
     } else {
         topLevelContainerView.frame = self.view.bounds;
-        gridNavigationController.view.frame = self.view.bounds;
-        gridNavigationController.view.alpha = 0;
+        if (!gridShowing) {
+            gridNavigationController.view.alpha = 0.0f;
+            gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);                        
+        } else {
+            gridNavigationController.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
+        }
+        gridNavigationController.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
+        [loadedControlView setToggleGridButtonHidden:NO];
+		[loadedControlView setControlsHidden:NO animated:NO];        
     }
     
     [launchController updateViewForInterfaceOrientation:interfaceOrientation];
@@ -432,7 +441,7 @@
     gridNavigationController.playbackViewController = self;
     [gridController release];
     
-    [self.view addSubview:gridNavigationController.view];
+    [self.view insertSubview:gridNavigationController.view belowSubview:controlScrollView];
     [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
 
@@ -623,7 +632,7 @@
 			didSkippedVideo = NO;
 //			[movieView setActivityIndicationHidden:YES animated:YES];
 		}
-		if ( showMovieControlTimestamp > 0 ) {
+		if ( showMovieControlTimestamp > 0 && (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) || !gridShowing)) {
 			// check if it's time to auto hide control
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
 				// we should hide
@@ -1338,7 +1347,6 @@
 	loadedControlView.hidden = NO;
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
-        gridNavigationController.view.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
 	}];
@@ -1353,9 +1361,10 @@
 
 - (void)controlsViewTouchUp:(id)sender {
 //	UIView * v = (UIView *)sender;
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) && gridShowing) return;
+    
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
-        gridNavigationController.view.alpha = 1.0f;        
 	} completion:^(BOOL finished) {
 		if ( finished ) {
 			loadedControlView.hidden = YES;
@@ -1419,6 +1428,30 @@
 	lastTimeElapsed = showMovieControlTimestamp;
 }
 
+- (IBAction)toggleGrid:(id)sender {
+    gridShowing = !gridShowing;
+    
+    if (gridShowing) {
+        gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
+        gridNavigationController.view.alpha = 0;        
+    }
+    
+    [UIView animateWithInteractiveDuration:0.3
+                                animations:^{
+                                    if (gridShowing) {
+                                        gridNavigationController.view.frame = CGRectOffset(gridNavigationController.view.frame, 0, -self.view.bounds.size.height);
+                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-collapse.png"] forState:UIControlStateNormal];
+                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-collapse-active.png"] forState:UIControlStateHighlighted];
+                                        gridNavigationController.view.alpha = 1;                                                
+                                    } else {
+                                        gridNavigationController.view.frame = CGRectOffset(gridNavigationController.view.frame, 0, self.view.bounds.size.height);
+                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand.png"] forState:UIControlStateNormal];
+                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand-active.png"] forState:UIControlStateHighlighted];
+                                        gridNavigationController.view.alpha = 0;                                                                                        
+                                    }                                    
+                                }];
+}
+
 # pragma mark Gestures
 - (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
     
@@ -1434,12 +1467,6 @@
 - (void)gridController:(GridController *)gridController didSelectVideo:(NMVideo *)video
 {
     [self playVideo:video];
-    
-    if (UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) {
-        [UIView animateWithInteractiveDuration:0.3 animations:^{
-            gridNavigationController.view.alpha = 0;
-        }];
-    }
 }
 
 #pragma mark Debug
