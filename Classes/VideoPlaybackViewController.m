@@ -1710,23 +1710,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         tooltip.center = CGPointMake(floor([sender frame].size.height / 2), -24);
         tooltip.center = [sender convertPoint:tooltip.center toView:self.view];
         
-        // Keep tooltip within screen bounds, and avoid subpixel text rendering (blurrier)
+        // Keep tooltip within screen bounds
         tooltip.center = CGPointMake(MAX(MIN(tooltip.center.x, channelTable.frame.size.width - 128), 196),
                                      MAX(channelController.panelView.frame.origin.y, tooltip.center.y));
 
     }
-    
-    // Avoid non-integer / odd positions to avoid subpixel rendering (blurry text)
-    CGPoint center = tooltip.center;
-    center.x = floor(center.x);
-    center.y = floor(center.y);
-    if ((NSInteger) center.x % 2 == 1) {
-        center.x++;
-    }
-    if ((NSInteger) center.y % 2 == 1) {
-        center.y++;
-    }
-    tooltip.center = center;
     
     return self.view;
 }

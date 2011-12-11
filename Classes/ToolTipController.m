@@ -310,15 +310,21 @@ static ToolTipController *toolTipController = nil;
     [tooltipButton setFrame:CGRectMake(0, 0, tooltipImage.size.width, tooltipImage.size.height)];
     [tooltipButton setCenter:tooltip.center];
 
+    // Force tooltips to render on pixel grid to avoid blurriness
+    CGPoint center = tooltipButton.center;
+    center.x = floor(center.x) + (((NSInteger)tooltipButton.frame.size.width) % 2 == 0 ? 0.0f : 0.5f);
+    center.y = floor(center.y) + (((NSInteger)tooltipButton.frame.size.height) % 2 == 0 ? 0.0f : 0.5f);
+    tooltipButton.center = center;
+    
     if (tooltip.displayText) {
         [tooltipButton.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
-        [tooltipButton.titleLabel setShadowColor:(tooltip.displayTextShadowHidden ? [UIColor clearColor] : [UIColor darkGrayColor])];
-        [tooltipButton.titleLabel setShadowOffset:CGSizeMake(0, 1)];
+        [tooltipButton.titleLabel setShadowOffset:(tooltip.displayTextShadowHidden ? CGSizeMake(0, 0) : CGSizeMake(0, 1))];
         [tooltipButton.titleLabel setLineBreakMode:UILineBreakModeWordWrap];
         [tooltipButton.titleLabel setTextAlignment:UITextAlignmentCenter];
         [tooltipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [tooltipButton setTitle:tooltip.displayText forState:UIControlStateNormal];
         [tooltipButton setTitleEdgeInsets:tooltip.displayTextEdgeInsets];
+        [tooltipButton setTitleShadowColor:(tooltip.displayTextShadowHidden ? [UIColor clearColor] : [UIColor darkGrayColor]) forState:UIControlStateNormal];
     }
     
     if (tooltip.target && tooltip.action) {
