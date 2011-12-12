@@ -44,6 +44,8 @@
 
 #define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
 #define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
+#define NM_IPAD_SCREEN_WIDTH									1044.0f
+#define NM_IPAD_SCREEN_WIDTH_INT								1044
 
 BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
@@ -104,8 +106,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
-	fullScreenRect = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
-	splitViewRect = CGRectMake(0.0f, 0.0f, 1024.0f, 380.0f);
+	fullScreenRect = CGRectMake(0.0f, 0.0f, NM_IPAD_SCREEN_WIDTH, 768.0f);
+	splitViewRect = CGRectMake(0.0f, 0.0f, NM_IPAD_SCREEN_WIDTH, 380.0f);
 	topLeftRect = CGRectMake(0.0f, 0.0f, 200.0f, 200.0f);
 	
 	// ribbon view
@@ -778,7 +780,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView animateWithInteractiveDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
-		currentXOffset += 1024.0f;
+		currentXOffset += NM_IPAD_SCREEN_WIDTH;
 		// scroll to next video
 		// translate the movie view
 		[UIView animateWithInteractiveDuration:0.5f animations:^{
@@ -861,7 +863,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	theDetailView.video = ctrl.nextVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * 1024);
+	CGFloat xOffset = (CGFloat)(ctrl.nextIndexPath.row * NM_IPAD_SCREEN_WIDTH_INT);
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
@@ -880,7 +882,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	theDetailView.video = ctrl.previousVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * 1024);
+	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * NM_IPAD_SCREEN_WIDTH_INT);
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
@@ -899,7 +901,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	theDetailView.video = ctrl.currentVideo;
 	
-	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * 1024);
+	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * NM_IPAD_SCREEN_WIDTH_INT);
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
 #endif
@@ -915,8 +917,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
 
-	controlScrollView.contentSize = CGSizeMake((CGFloat)(1024 * totalNum), 380.0f);
-	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * 1024);
+	controlScrollView.contentSize = CGSizeMake((CGFloat)(NM_IPAD_SCREEN_WIDTH_INT * totalNum), 380.0f);
+	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * NM_IPAD_SCREEN_WIDTH_INT);
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
 			// update offset
@@ -1301,7 +1303,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	CGFloat dx;
 	dx = ABS(currentXOffset - scrollView.contentOffset.x);
 	// reduce alpha of the playback view
-	movieView.alpha = (1024.0 - dx) / 1024.0;
+	movieView.alpha = (NM_IPAD_SCREEN_WIDTH - dx) / NM_IPAD_SCREEN_WIDTH;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -1319,7 +1321,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset += 1024.0f;
+		currentXOffset += NM_IPAD_SCREEN_WIDTH;
 		// return the movie detail view
 		[self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
@@ -1336,7 +1338,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( scrollView.contentOffset.x < currentXOffset ) {
 		[self stopVideo];
 		didSkippedVideo = YES;
-		currentXOffset -= 1024.0f;
+		currentXOffset -= NM_IPAD_SCREEN_WIDTH;
 		[self reclaimMovieDetailViewForVideo:playbackModelController.nextVideo];
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
