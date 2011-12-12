@@ -187,7 +187,9 @@
 		infoContainerView.hidden = NO;
 		bitmapShadow.hidden = NO;
 	}*/
-	blackLayer.frame = thumbnailContainerView.frame;
+	CGRect theFrame = thumbnailContainerView.frame;
+	theFrame.size.width = 1044.0f;
+	blackLayer.frame = theFrame;
 }
 
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
