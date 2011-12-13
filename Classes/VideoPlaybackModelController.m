@@ -8,7 +8,6 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "VideoPlaybackModelController.h"
-#import "NMMovieDetailView.h"
 #import "NMVideo.h"
 #import "NMChannel.h"
 
@@ -94,20 +93,9 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		// return
 	}
 	
-	// untether NMVideo object from movie detail view object
-	if ( previousVideo ) {
-		previousVideo.nm_movie_detail_view.video = nil;
-		previousVideo.nm_movie_detail_view = nil;
-	}
 	if ( currentVideo ) {
 		// mark the current video as "played"
 		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
-		currentVideo.nm_movie_detail_view.video = nil;
-		currentVideo.nm_movie_detail_view = nil;
-	}
-	if ( nextVideo ) {
-		nextVideo.nm_movie_detail_view.video = nil;
-		nextVideo.nm_movie_detail_view = nil;
 	}
 	self.previousVideo = nil;
 	self.previousIndexPath = nil;
@@ -206,20 +194,9 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		// user tapped the next next video which should be buffered in queue player.
 	}
 	
-	// untether NMVideo object from movie detail view object
-	if ( previousVideo ) {
-		previousVideo.nm_movie_detail_view.video = nil;
-		previousVideo.nm_movie_detail_view = nil;
-	}
 	if ( currentVideo ) {
 		// mark the current video as "played"
 		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
-		currentVideo.nm_movie_detail_view.video = nil;
-		currentVideo.nm_movie_detail_view = nil;
-	}
-	if ( nextVideo ) {
-		nextVideo.nm_movie_detail_view.video = nil;
-		nextVideo.nm_movie_detail_view = nil;
 	}
 	self.previousVideo = nil;
 	self.previousIndexPath = nil;
@@ -295,10 +272,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		return NO;
 	}
 	
-	// we can advance forward
-	NMMovieDetailView * detailView = self.previousVideo.nm_movie_detail_view;
-	detailView.video = nil;
-	self.previousVideo.nm_movie_detail_view = nil;
 	// purge next video path
 	self.previousIndexPath = currentIndexPath;
 	self.currentIndexPath = nextIndexPath;
@@ -338,12 +311,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	self.nextNextVideo = nextVideo;
 	
 	// move next video
-	NMMovieDetailView * detailView = nil;
-	if ( nextVideo ) {
-		detailView = nextVideo.nm_movie_detail_view;
-		detailView.video = nil;
-		nextVideo.nm_movie_detail_view = nil;
-	}
 	self.nextIndexPath = currentIndexPath;
 	self.nextVideo = currentVideo;
 	
@@ -382,6 +349,49 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	return [theArray count] ? theArray : nil;
 }
 
+- (void)revertVideoToNewState:(NMVideo *)vdo {
+	vdo.nm_error = [NSNumber numberWithInteger:0];
+	vdo.nm_playback_status = NMVideoQueueStatusNone;
+	vdo.nm_direct_sd_url = nil;
+	vdo.nm_direct_url = nil;
+}
+
+- (BOOL)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
+	NSInteger vdoTime = vdo.nm_direct_url_expiry;
+	if ( vdoTime && vdoTime - 10 < curTime ) {
+		// the video link has expired
+		[self revertVideoToNewState:vdo];
+		return YES;
+	}
+	return NO;
+}
+
+- (BOOL)refreshDirectURLToBufferedVideos {
+	BOOL needRefresh = YES;
+	NSInteger curTime = (NSInteger)[[NSDate dateWithTimeIntervalSinceNow:0.0] timeIntervalSince1970];
+	if ( [self checkDirectURLExpiryForVideo:currentVideo currentTime:curTime] ) {
+		// if the first video is expired, we flush the whole playback queue.
+		if ( nextVideo ) {
+			[self revertVideoToNewState:nextVideo];
+			if ( nextNextVideo ) {
+				[self revertVideoToNewState:nextNextVideo];
+			}
+		}
+		// the direct link of current video has expired.
+		[dataDelegate shouldRevertCurrentVideoToNewStateForController:self];
+	} else if ( [self checkDirectURLExpiryForVideo:nextVideo currentTime:curTime] ) {
+		// flush remain of other video in the queue
+		if ( nextNextVideo ) {
+			[self revertVideoToNewState:nextNextVideo];
+		}
+		[dataDelegate shouldRevertNextVideoToNewStateForController:self];
+	} else if ( [self checkDirectURLExpiryForVideo:nextNextVideo currentTime:curTime] ) {
+		[dataDelegate shouldRevertNextNextVideoToNewStateForController:self];
+	} else {
+		needRefresh = NO;
+	}
+	return needRefresh;
+}
 
 #pragma mark Notification handlers
 
@@ -489,12 +499,11 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-	static NSUInteger theCount = 0;
 	if ( changeSessionUpdateCount ) {
-		// just get the count once is enough
-		changeSessionUpdateCount = NO;
+		changeSessionVideoCount = NO;
+		// count the number of rows left. We MUST do the count here. Not in controllerWillChangeContent. Core Data have NOT modified the database yet in "controllerWillChangeContent"
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-		theCount = [sectionInfo numberOfObjects];
+		changeSessionVideoCount = [sectionInfo numberOfObjects];
 	}
 	switch (type) {
 		case NSFetchedResultsChangeDelete:
@@ -502,16 +511,15 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			rowCountHasChanged = YES;
 			NMVideo * fetchedVideo;
 			if ( [indexPath isEqual:currentIndexPath] ) {
-				if ( indexPath.row < theCount ) {
+				if ( indexPath.row < changeSessionVideoCount ) {
 					// reset the movie detail view
-					currentVideo.nm_movie_detail_view.video = nil;
 					self.currentVideo = [controller objectAtIndexPath:indexPath];
 					NSLog(@"FRC delete case - current video - %@", self.currentVideo.title);
 					// info the delegate about the current video change
 					[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 					
 					// do NOT use nextIndexPath to check the condition
-					if ( indexPath.row + 1 < theCount ) {
+					if ( indexPath.row + 1 < changeSessionVideoCount ) {
 						self.nextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 						fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
 						if ( nextVideo != fetchedVideo ) {
@@ -521,7 +529,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 						}
 						
 						// do NOT use nextNextIndexPath to check the condition
-						if ( indexPath.row + 2 < theCount ) {
+						if ( indexPath.row + 2 < changeSessionVideoCount ) {
 							self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 2 inSection:0];
 							fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
 							if ( nextNextVideo != fetchedVideo ) {
@@ -550,11 +558,10 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					self.nextNextIndexPath = nil;
 				}
 			} else if ( [indexPath isEqual:nextIndexPath] ) {
-				if ( nextIndexPath.row < theCount ) {
-					nextVideo.nm_movie_detail_view.video = nil;
+				if ( nextIndexPath.row < changeSessionVideoCount ) {
 					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
 					[dataDelegate didLoadNextVideoManagedObjectForController:self];
-					if ( indexPath.row + 1 < theCount ) {
+					if ( indexPath.row + 1 < changeSessionVideoCount ) {
 						self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 						fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
 						if ( fetchedVideo != nextNextVideo ) {
@@ -573,7 +580,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					self.nextNextIndexPath = nil;
 				}
 			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
-				if ( nextNextIndexPath.row < theCount ) {
+				if ( nextNextIndexPath.row < changeSessionVideoCount ) {
 					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 					[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
 					// no need to set movie detail view for next next video
@@ -587,7 +594,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		}
 		case NSFetchedResultsChangeUpdate:
 		case NSFetchedResultsChangeMove:
-			rowCountHasChanged = NO;
 			break;
 			
 		case NSFetchedResultsChangeInsert:
@@ -602,14 +608,14 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 				
 				// insert the next and next next video in this call too. If subsequent call for indexPath of next or next next video happens, we will not insert the same video again. 
-				if ( nextIndexPath == nil && newIndexPath.row + 1 < theCount ) {
+				if ( nextIndexPath == nil && newIndexPath.row + 1 < changeSessionVideoCount ) {
 					// check if we should add tne next video too
 					self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
 					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
 					[dataDelegate didLoadNextVideoManagedObjectForController:self];
 				}
 				
-				if ( nextNextIndexPath == nil && newIndexPath.row + 2 < theCount ) {
+				if ( nextNextIndexPath == nil && newIndexPath.row + 2 < changeSessionVideoCount ) {
 					self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
 					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 					[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
@@ -620,7 +626,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				self.nextVideo = (NMVideo *)anObject;
 				[dataDelegate didLoadNextVideoManagedObjectForController:self];
 				
- 				if ( nextNextIndexPath == nil && newIndexPath.row + 1 < theCount ) {
+ 				if ( nextNextIndexPath == nil && newIndexPath.row + 1 < changeSessionVideoCount ) {
 					self.nextNextIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row + 1 inSection:0];
 					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 					[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
@@ -650,7 +656,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			[nowboxTaskController issueGetMoreVideoForChannel:channel];
 		}
 	}
-	changeSessionUpdateCount = NO;
+	rowCountHasChanged = NO;
 }
 
 #pragma mark Debug message

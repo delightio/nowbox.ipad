@@ -15,6 +15,7 @@
 	NSString * externalID;
 	NSString * directURLString;
 	NSString * directSDURLString;
+	NSInteger expiryTime;
 }
 
 @property (nonatomic, retain) NMVideo * video;
