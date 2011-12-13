@@ -47,6 +47,8 @@
 #define NM_IPAD_SCREEN_WIDTH									1044.0f
 #define NM_IPAD_SCREEN_WIDTH_INT								1044
 
+#define NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP         (60.0f * 40)
+
 BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 @interface VideoPlaybackViewController (PrivateMethods)
@@ -1032,11 +1034,20 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"did play notification: %p", [aNotification object]);
 #endif
 	didPlayToEnd = YES;
-	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if (playbackModelController.nextVideo) {
+    
+    void (^completion)(void) = ^{
+        if (playbackModelController.nextVideo) {
 			[self showNextVideo:YES];
 		}
+    };
+    
+	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
+	dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self shouldShowRateUsReminder] && [(ipadAppDelegate *)appDelegate timeOnAppSinceInstall] > NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP) {
+            [self showRateUsReminderCompletion:completion];
+        } else {
+            completion();
+        }
 	});
 }
 
@@ -1693,6 +1704,27 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 }
 
+#pragma mark - Rate Us reminder
+
+- (BOOL)shouldShowRateUsReminder {
+    return (!NM_RATE_US_REMINDER_SHOWN && !launchModeActive);
+}
+
+- (void)showRateUsReminderCompletion:(void (^)(void))completion {
+    [alertCompletion release];
+    alertCompletion = [completion copy];
+    
+    NM_RATE_US_REMINDER_SHOWN = YES;
+    [[NSUserDefaults standardUserDefaults] setBool:NM_RATE_US_REMINDER_SHOWN forKey:NM_RATE_US_REMINDER_SHOWN_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Looks like you're enjoying NOWBOX. Would you mind rating us on the App Store? It won't take very long. Thanks for your support!" delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Rate", nil];
+    [alertView show];
+    [alertView release];
+    
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogShown];
+}
+
 #pragma mark - ToolTipControllerDelegate
 
 - (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
@@ -1719,6 +1751,23 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     }
     
     return self.view;
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertCompletion) {
+        alertCompletion();
+        [alertCompletion release]; alertCompletion = nil;
+    }
+    
+    if (buttonIndex == 1) {
+        // Rate the app
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=464416202"]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogAccepted];        
+    } else { 
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogRejected];
+    }
 }
 
 #pragma mark Debug

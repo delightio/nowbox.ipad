@@ -40,6 +40,8 @@ NSString * const NM_SESSION_ID_KEY			= @"NM_SESSION_ID_KEY";
 NSString * const NM_FIRST_LAUNCH_KEY		= @"NM_FIRST_LAUNCH_KEY";
 NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
 NSString * const NM_SESSION_COUNT_KEY		= @"NM_SESSION_COUNT_KEY";
+NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY = @"NM_TIME_ON_APP_SINCE_INSTALL_KEY";
+NSString * const NM_RATE_US_REMINDER_SHOWN_KEY = @"NM_RATE_US_REMINDER_SHOWN_KEY";
 // setting view
 NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
@@ -75,6 +77,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  @"", NM_USER_TOKEN_KEY,
 	  @"", NM_USER_YOUTUBE_USER_NAME_KEY,
 	  dDate, NM_USER_TOKEN_EXPIRY_DATE_KEY,
+      zeroNum, NM_TIME_ON_APP_SINCE_INSTALL_KEY,
+      noNum, NM_RATE_US_REMINDER_SHOWN_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
@@ -163,12 +167,19 @@ NSInteger NM_LAST_CHANNEL_ID;
                                        [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
+    lastTimeOnAppSinceInstall = [userDefaults floatForKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];    
     appStartTime = sessionStartTime;
     
     dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
     [self updateMixpanelProperties];
     [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(updateMixpanelProperties) userInfo:nil repeats:YES];
+}
+
+- (NSTimeInterval)timeOnAppSinceInstall
+{
+    NSTimeInterval timeOnAppSinceInstall = lastTimeOnAppSinceInstall + ([[NSDate date] timeIntervalSince1970] - sessionStartTime);
+    return timeOnAppSinceInstall;
 }
 
 #pragma mark Application Lifecycle
@@ -243,6 +254,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	// release core data
 	
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_LAST_SESSION_DATE];
+    [[NSUserDefaults standardUserDefaults] setFloat:[self timeOnAppSinceInstall] forKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];
+    
 	// cancel tasks
 //	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
 	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
@@ -288,6 +301,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
+    lastTimeOnAppSinceInstall = [[NSUserDefaults standardUserDefaults] floatForKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];
     [self updateMixpanelProperties];
     NSTimeInterval elapsedTotalTime = [[NSDate date] timeIntervalSince1970] - appStartTime;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 

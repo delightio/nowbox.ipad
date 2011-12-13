@@ -20,6 +20,8 @@ extern NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY;
 extern NSString * const NM_USER_YOUTUBE_USER_NAME_KEY;
 extern NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY;
+extern NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY;
+extern NSString * const NM_RATE_US_REMINDER_SHOWN_KEY;
 extern NSString * const NM_VIDEO_QUALITY_KEY;
 //extern NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
@@ -52,6 +54,7 @@ extern NSString * const NM_LAST_SOCIAL_NETWORK;
     MixpanelAPI *mixpanel;
     NSTimeInterval appStartTime;
     NSTimeInterval sessionStartTime;
+    NSTimeInterval lastTimeOnAppSinceInstall;
     NSDateFormatter *dateFormatter;
 }
 
@@ -67,5 +70,6 @@ extern NSString * const NM_LAST_SOCIAL_NETWORK;
 - (void)saveContext;
 - (void)saveChannelID:(NSNumber *)chnNum;
 - (void)saveCurrentVideoList:(NSArray *)vdoIDs;
+- (NSTimeInterval)timeOnAppSinceInstall;
 
 @end

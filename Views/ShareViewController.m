@@ -13,6 +13,7 @@
 #import "NMDataType.h"
 #import "Analytics.h"
 #import "ToolTipController.h"
+#import "VideoPlaybackViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
 
@@ -47,6 +48,9 @@
         [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
+        
+        NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+        firstShare = [dataController.favoriteVideoChannel.nm_hidden boolValue];
     }
     return self;
 }
@@ -379,8 +383,19 @@
 {
     if ([alertView numberOfButtons] == 1) {
         if (alertView.tag >= 0) {
-            [self cancelButtonPressed:nil];
-            [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];
+            void (^completion)(void) = ^{
+                [self cancelButtonPressed:nil];
+                [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
+            };
+
+            VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
+            
+            // Show "rate us" reminder the second time a user adds a video to the favorites
+            if ([playbackController shouldShowRateUsReminder] && !firstShare) {
+                [playbackController showRateUsReminderCompletion:completion];
+            } else {
+                completion();
+            }
         }
     } else if (buttonIndex == 1) {
         [self showLoginPage];
@@ -389,7 +404,7 @@
 
 - (void)delayedNotifyShareVideo
 {
-    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventSharedVideo sender:nil];    
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventSharedVideo sender:nil];
 }
 
 @end

@@ -18,6 +18,9 @@
 #define AnalyticsEventAppEnterForeground @"App Enter Foreground"
 #define AnalyticsEventAppEnterBackground @"App Enter Background"
 #define AnalyticsEventPresentTooltip @"Present Tooltip"
+#define AnalyticsEventRateUsDialogShown @"Rate Us Dialog Shown"
+#define AnalyticsEventRateUsDialogAccepted @"Rate Us Dialog Accepted"
+#define AnalyticsEventRateUsDialogRejected @"Rate Us Dialog Rejected"
 
 // Channel panel events
 #define AnalyticsEventShowSettings @"Show Settings"

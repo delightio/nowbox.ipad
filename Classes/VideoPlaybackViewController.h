@@ -31,7 +31,7 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate, UIAlertViewDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIView * ribbonView;
@@ -88,6 +88,7 @@
 	NMStyleUtility * styleUtility;
     
     ToolTip *pendingToolTip;
+    void (^alertCompletion)(void);
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
@@ -133,6 +134,9 @@
 // launch view / onboard process
 //- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;
 - (void)showPlaybackView;
+
+- (BOOL)shouldShowRateUsReminder;
+- (void)showRateUsReminderCompletion:(void (^)(void))completion;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer;
