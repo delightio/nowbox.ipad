@@ -1199,6 +1199,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update the player interface to indicate that Airplay has been enabled
 			[movieView hideAirPlayIndicatorView:NO];
 			NM_AIRPLAY_ACTIVE = YES;
+            
+            // Disable idle timer so that the app doesn't go to sleep
+            [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+            
 			// Apple TV does not send remote event back to app. No need to implement for now.
 			// receive remote event
 //			[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -1207,6 +1211,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// remove the interface indication
 			[movieView hideAirPlayIndicatorView:YES];
 			NM_AIRPLAY_ACTIVE = NO;
+            
+            [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
 			// Apple TV does not send remote event back to app. No need to implement for now.
 //			[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 //			[self resignFirstResponder];
