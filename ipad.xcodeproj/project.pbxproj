@@ -112,6 +112,9 @@
 		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
 		83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2DC1468C3720051D990 /* ShareViewController.m */; };
 		83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83F8E2DF1468C4B40051D990 /* ShareView.xib */; };
+		83FF558614981A2E00E0CE95 /* DeepSleepPreventer.m in Sources */ = {isa = PBXBuildFile; fileRef = 83FF558514981A2E00E0CE95 /* DeepSleepPreventer.m */; };
+		83FF558914981FE900E0CE95 /* silent.wav in Resources */ = {isa = PBXBuildFile; fileRef = 83FF558814981FE900E0CE95 /* silent.wav */; };
+		83FF558B1498210100E0CE95 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83FF558A1498210100E0CE95 /* AudioToolbox.framework */; };
 		A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A903D8551450ABA900FC7B28 /* channel-title-background.png */; };
 		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
@@ -409,6 +412,10 @@
 		83F8E2DB1468C3720051D990 /* ShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareViewController.h; path = ../Views/ShareViewController.h; sourceTree = "<group>"; };
 		83F8E2DC1468C3720051D990 /* ShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareViewController.m; path = ../Views/ShareViewController.m; sourceTree = "<group>"; };
 		83F8E2DF1468C4B40051D990 /* ShareView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareView.xib; sourceTree = "<group>"; };
+		83FF558414981A2E00E0CE95 /* DeepSleepPreventer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeepSleepPreventer.h; sourceTree = "<group>"; };
+		83FF558514981A2E00E0CE95 /* DeepSleepPreventer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeepSleepPreventer.m; sourceTree = "<group>"; };
+		83FF558814981FE900E0CE95 /* silent.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = silent.wav; sourceTree = "<group>"; };
+		83FF558A1498210100E0CE95 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
 		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
 		A903D8551450ABA900FC7B28 /* channel-title-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-title-background.png"; sourceTree = "<group>"; };
@@ -625,6 +632,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83FF558B1498210100E0CE95 /* AudioToolbox.framework in Frameworks */,
 				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */,
 				83852144145A34000047B7E0 /* BugSense-iOS.framework in Frameworks */,
@@ -759,6 +767,7 @@
 		A925013F134385BF001759F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				83FF558A1498210100E0CE95 /* AudioToolbox.framework */,
 				83852145145A34100047B7E0 /* CoreLocation.framework */,
 				83852143145A34000047B7E0 /* BugSense-iOS.framework */,
 				A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */,
@@ -798,6 +807,7 @@
 				A925014D134385BF001759F5 /* main.m */,
 				A93350B21417A15C00F47CDD /* KeychainAccessGroups.plist */,
 				83E0466D144F4EA900C91525 /* Tooltips.plist */,
+				83FF558814981FE900E0CE95 /* silent.wav */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -847,6 +857,8 @@
 				83F8E2DC1468C3720051D990 /* ShareViewController.m */,
 				A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */,
 				A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */,
+				83FF558414981A2E00E0CE95 /* DeepSleepPreventer.h */,
+				83FF558514981A2E00E0CE95 /* DeepSleepPreventer.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1395,6 +1407,7 @@
 				838668071486F63B0038F86A /* onboard-category-icon-background-selected.png in Resources */,
 				8389F680148D61B2002165A2 /* tooltip-watch-later.png in Resources */,
 				8381626A1492F4380084C516 /* tooltip-favorite.png in Resources */,
+				83FF558914981FE900E0CE95 /* silent.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1466,6 +1479,7 @@
 				83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */,
 				83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */,
 				83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */,
+				83FF558614981A2E00E0CE95 /* DeepSleepPreventer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

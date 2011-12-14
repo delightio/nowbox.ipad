@@ -13,6 +13,7 @@
 #import "ipadAppDelegate.h"
 #import "LaunchController.h"
 #import "Analytics.h"
+#import "DeepSleepPreventer.h"
 #import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
@@ -443,9 +444,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		forceStopByUser = NO;
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
 		[movieView.player play];
+        if (NM_AIRPLAY_ACTIVE) {
+            [[DeepSleepPreventer sharedInstance] startPreventSleep];
+        }
 	} else {
 		forceStopByUser = YES;
 		[movieView.player pause];
+        [[DeepSleepPreventer sharedInstance] stopPreventSleep];        
 	}
 }
 
@@ -1200,8 +1205,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView hideAirPlayIndicatorView:NO];
 			NM_AIRPLAY_ACTIVE = YES;
             
-            // Disable idle timer so that the app doesn't go to sleep
-            [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+            [[DeepSleepPreventer sharedInstance] startPreventSleep];
+            
             
 			// Apple TV does not send remote event back to app. No need to implement for now.
 			// receive remote event
@@ -1212,7 +1217,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieView hideAirPlayIndicatorView:YES];
 			NM_AIRPLAY_ACTIVE = NO;
             
-            [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+            [[DeepSleepPreventer sharedInstance] stopPreventSleep];            
 
 			// Apple TV does not send remote event back to app. No need to implement for now.
 //			[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
