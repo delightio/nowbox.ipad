@@ -86,6 +86,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize appDelegate;
 @synthesize launchModeActive;
 @synthesize playbackModelController;
+@synthesize ratingsURL;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -214,6 +215,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
 	// channel
 	[defaultNotificationCenter addObserver:self selector:@selector(handleGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleDidGetInfoNotification:) name:NMDidCheckUpdateNotification object:nil];
 
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -267,6 +269,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
 //    [temporaryDisabledGestures release];
+    [ratingsURL release];
+    
 	[super dealloc];
 }
 
@@ -1043,7 +1047,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     
 	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
 	dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self shouldShowRateUsReminder] && [(ipadAppDelegate *)appDelegate timeOnAppSinceInstall] > NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP) {
+        if ([self shouldShowRateUsReminder] && [(ipadAppDelegate *)appDelegate timeOnAppSinceInstall] > NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP * (NM_RATE_US_REMINDER_DEFER_COUNT + 1)) {
             [self showRateUsReminderCompletion:completion];
         } else {
             completion();
@@ -1142,6 +1146,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// dequeued a video successfully
 		[self animateWatchLaterButtonsToActive];
 	}
+}
+
+- (void)handleDidGetInfoNotification:(NSNotification *)aNotification {
+    NSDictionary *userInfo = [aNotification userInfo];    
+    NSArray *links = [userInfo objectForKey:@"links"];
+    for (NSDictionary *link in links) {
+        if ([[link objectForKey:@"rel"] isEqualToString:@"ratings"]) {
+            self.ratingsURL = [NSURL URLWithString:[link objectForKey:@"url"]];
+        }
+    }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -1714,7 +1728,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark - Rate Us reminder
 
 - (BOOL)shouldShowRateUsReminder {
-    return (!NM_RATE_US_REMINDER_SHOWN && !launchModeActive);
+    return (!NM_RATE_US_REMINDER_SHOWN && !launchModeActive && ratingsURL);
 }
 
 - (void)showRateUsReminderCompletion:(void (^)(void))completion {
@@ -1725,7 +1739,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     [[NSUserDefaults standardUserDefaults] setBool:NM_RATE_US_REMINDER_SHOWN forKey:NM_RATE_US_REMINDER_SHOWN_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Looks like you're enjoying NOWBOX. Would you mind rating us on the App Store? It won't take very long. Thanks for your support!" delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Rate", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Rate NOWBOX" message:@"Thank you for using NOWBOX! We hope you're enjoying it. We'd love for you to rate us on the App Store--it will only take a minute." delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Rate NOWBOX", @"Remind Me Later", nil];
     [alertView show];
     [alertView release];
     
@@ -1768,12 +1782,29 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         [alertCompletion release]; alertCompletion = nil;
     }
     
-    if (buttonIndex == 1) {
-        // Rate the app
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=464416202"]];
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogAccepted];        
-    } else { 
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogRejected];
+    NSLog(@"%i %@", buttonIndex, [alertView buttonTitleAtIndex:buttonIndex]);
+    switch (buttonIndex) {
+        case 0: {
+            // No thanks
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogRejected];
+            break;
+        }
+        case 1: {
+            // Rate the app
+            [[UIApplication sharedApplication] openURL:ratingsURL];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogAccepted];        
+            break;
+        }
+        case 2: {
+            // Remind me later
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogDeferred];
+            
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults setBool:NO forKey:NM_RATE_US_REMINDER_SHOWN_KEY];
+            [userDefaults setInteger:++NM_RATE_US_REMINDER_DEFER_COUNT forKey:NM_RATE_US_REMINDER_DEFER_COUNT_KEY];
+            [userDefaults synchronize];
+            break;
+        }
     }
 }
 

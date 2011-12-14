@@ -21,6 +21,7 @@
 #define AnalyticsEventRateUsDialogShown @"Rate Us Dialog Shown"
 #define AnalyticsEventRateUsDialogAccepted @"Rate Us Dialog Accepted"
 #define AnalyticsEventRateUsDialogRejected @"Rate Us Dialog Rejected"
+#define AnalyticsEventRateUsDialogDeferred @"Rate Us Dialog Deferred"
 
 // Channel panel events
 #define AnalyticsEventShowSettings @"Show Settings"
