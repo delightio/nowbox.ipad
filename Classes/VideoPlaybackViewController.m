@@ -68,6 +68,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)resetAllMovieDetailViews;
 - (NMMovieDetailView *)dequeueReusableMovieDetailView;
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo;
+- (void)cleanUpBadVideosMovieDetailView;
 
 // debug message
 - (void)printDebugMessage:(NSString *)str;
@@ -617,15 +618,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// get a free view
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
 		if ( theView.video == nil ) {
-			theView.hidden = NO;
+			theView.alpha = 1.0f;
 			return theView;
 		}
 	}
 	// check if any of the video is marked as error
+	// this for-loop does NOT guarantee to run. Sometimes, we can get free movie detail view even if there's movie detail view occupied by bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
 		if ( theView.video.nm_playback_status == NMVideoQueueStatusError ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
-			theView.hidden = NO;
+			theView.alpha = 1.0f;
 			return theView;
 		}
 	}
@@ -636,13 +638,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo {
 	if ( vdo == nil ) return;
 	NMMovieDetailView * theView = vdo.nm_movie_detail_view;
+	if ( theView == nil ) return;
 	vdo.nm_movie_detail_view = nil;
 	theView.video = nil;
 	[theView restoreThumbnailView];
 	[theView setActivityViewHidden:YES];
-	theView.hidden = YES;
+	theView.alpha = 0.0f;
 }
 
+- (void)cleanUpBadVideosMovieDetailView {
+	// it's possible that some bad videos still occupy a movie detail view. We need to make sure all movie detail views are not associated to any bad videos.
+	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
+		if ( theView.video && theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+			[self reclaimMovieDetailViewForVideo:theView.video];
+		}
+	}
+}
 
 #pragma mark Ribbon management
 
@@ -934,6 +945,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		} else {
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		}
+		[self cleanUpBadVideosMovieDetailView];
 	}
 }
 
