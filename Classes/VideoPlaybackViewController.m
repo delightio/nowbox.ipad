@@ -279,7 +279,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)showPlaybackView {
 	if ( launchModeActive ) {
-		controlScrollView.scrollEnabled = NO;
+//		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
 		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
@@ -576,7 +576,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			}
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
-			controlScrollView.scrollEnabled = YES;
+//			controlScrollView.scrollEnabled = YES;
 			[self configureControlViewForVideo:[self playerCurrentVideo]];
 			[self playCurrentVideo];
 			break;
@@ -777,7 +777,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	//if ( aEndOfVideo ) {
 	// disable interface scrolling
 	// will activate again on "currentItem" change kvo notification
-	controlScrollView.scrollEnabled = NO;
+//	controlScrollView.scrollEnabled = NO;
 	// fade out the view
 	[UIView animateWithInteractiveDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
@@ -952,7 +952,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// request the player to resolve the video again
 	[movieView.player refreshItemFromIndex:0];
 	// lock the playback view?
-	controlScrollView.scrollEnabled = NO;
+//	controlScrollView.scrollEnabled = NO;
 	// show thumbnail and loading indicator
 	shouldFadeOutVideoThumbnail = YES;
 	[self showActivityLoader];
@@ -1183,7 +1183,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25];
 		
 		if ( didPlayToEnd ) {
-			controlScrollView.scrollEnabled = YES;
+//			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
 		}
 		if ( playbackModelController.currentVideo ) {
@@ -1327,7 +1327,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
-	scrollView.scrollEnabled = NO;
+//	scrollView.scrollEnabled = NO;
 #endif
 }
 
@@ -1381,11 +1381,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Gesture delegate methods
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-//	NSLog(@"should begin gesture: %d", !scrollBeyondThreshold);
-//	if ( !scrollBeyondThreshold ) {
-//		controlScrollView.scrollEnabled = NO;
-//	}
-//	return !scrollBeyondThreshold;
 	controlScrollView.scrollEnabled = NO;
 	return YES;
 }
