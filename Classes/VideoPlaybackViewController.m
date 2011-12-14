@@ -608,7 +608,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieDetailViewArray addObject:self.loadedMovieDetailView];
 			theFrame = loadedMovieDetailView.frame;
 			theFrame.origin.y = 0.0f;
-			theFrame.origin.x = -1024.0f;
+			theFrame.origin.x = -NM_IPAD_SCREEN_WIDTH;
 			loadedMovieDetailView.frame = theFrame;
 			[controlScrollView insertSubview:loadedMovieDetailView belowSubview:movieView];
 			self.loadedMovieDetailView = nil;
