@@ -50,6 +50,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 - (void)dealloc {
 	[channelDetailViewController release];
     [myChannelsFetchedResultsController release];
+    [containerView release];
     [categoriesTableView release];
     [channelsTableView release];
     [activityIndicator release];
