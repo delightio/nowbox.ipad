@@ -77,11 +77,11 @@
 			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 		}
 	} else {
+		[playbackDelegate player:self stopObservingPlayerItem:curItem];
+		curItem.nmVideo.nm_player_item = nil;
+		curItem.nmVideo = nil;
+		[self advanceToNextItem];
 		if ( aVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-			[playbackDelegate player:self stopObservingPlayerItem:curItem];
-			curItem.nmVideo.nm_player_item = nil;
-			curItem.nmVideo = nil;
-			[self advanceToNextItem];
 			[self play];
 		} else {
 			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
