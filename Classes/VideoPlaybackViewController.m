@@ -241,10 +241,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
+    // FIXME: Can't call super since it may unload all our views (e.g. if memory warning occurs during onboard process).
+    // This view controller assumes viewDidLoad will only be called once and breaks otherwise.
 }
 
 
