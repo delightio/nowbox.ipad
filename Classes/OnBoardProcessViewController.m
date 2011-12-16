@@ -339,6 +339,7 @@
 {
     if (![sender isSelected]) {
         [self loginToSocialNetworkWithType:NMLoginYouTubeType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
 
@@ -346,6 +347,7 @@
 {
     if (![sender isSelected]) {    
         [self loginToSocialNetworkWithType:NMLoginFacebookType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
 
@@ -353,6 +355,7 @@
 {
     if (![sender isSelected]) {    
         [self loginToSocialNetworkWithType:NMLoginTwitterType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];                
     }
 }
 
