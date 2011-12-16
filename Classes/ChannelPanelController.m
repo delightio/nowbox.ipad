@@ -71,6 +71,9 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [tableView release];
 	[containerViewPool release];
 	[panelView release];
 	[managedObjectContext_ release];
@@ -275,7 +278,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	htView.tableController.channel = theChannel;
 	htView.tableController.indexInTable = [indexPath row];
 	htView.tableController.isLoadingNewContent = NO;
-    
+    htView.tableController.panelController = self;
     
     // rather than reload, should let the table take care of redraw
     
