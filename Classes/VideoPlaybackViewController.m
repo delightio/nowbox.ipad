@@ -1342,7 +1342,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 	// this is for preventing user from flicking continuous. user has to flick through video one by one. scrolling will enable again in "scrollViewDidEndDecelerating"
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
-//	scrollView.scrollEnabled = NO;
+	scrollView.scrollEnabled = NO;
 #endif
 }
 
@@ -1383,9 +1383,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
             
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
-	} else {
-		scrollView.scrollEnabled = YES;
 	}
+	scrollView.scrollEnabled = YES;
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
 	[UIView animateWithInteractiveDuration:0.25f animations:^{
