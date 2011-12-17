@@ -194,7 +194,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     [self setupMixpanel];
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
                                                userDictionary:nil 
-                                              sendImmediately:NO];
+                                              sendImmediately:YES];
     
 	// detect version
 	if ( kCFCoreFoundationVersionNumber > 550.58f ) {
