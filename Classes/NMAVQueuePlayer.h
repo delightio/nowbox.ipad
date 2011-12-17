@@ -43,5 +43,6 @@
  */
 - (void)resolveAndQueueVideos:(NSArray *)vidAy;
 - (void)resolveAndQueueVideo:(NMVideo *)vid;
+- (void)refreshItemFromIndex:(NSUInteger)idx;
 
 @end

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="11C74" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="878" systemVersion="11C74" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_last_refresh" optional="YES" attributeType="Date" syncable="YES"/>
@@ -56,6 +56,7 @@
         <attribute name="nm_did_play" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
         <attribute name="nm_direct_sd_url" optional="YES" attributeType="String"/>
         <attribute name="nm_direct_url" optional="YES" transient="YES" attributeType="String"/>
+        <attribute name="nm_direct_url_expiry" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_favorite" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -87,7 +88,7 @@
         <element name="NMChannel" positionX="288" positionY="-207" width="153" height="375"/>
         <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
         <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="195"/>
-        <element name="NMVideo" positionX="297" positionY="306" width="128" height="360"/>
+        <element name="NMVideo" positionX="297" positionY="306" width="128" height="375"/>
         <element name="NMVideoDetail" positionX="520" positionY="444" width="128" height="150"/>
     </elements>
 </model>

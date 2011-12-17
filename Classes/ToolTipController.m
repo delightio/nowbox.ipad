@@ -61,11 +61,16 @@ static ToolTipController *toolTipController = nil;
             if (useSavedCounts) {
                 savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kChannelManagementTapCountKey];
             }
-        } else if ([criteriaName isEqualToString:@"FavoriteTap"]) {
-            criteria.eventType = ToolTipEventFavoriteTap;
+        } else if ([criteriaName isEqualToString:@"SharedVideo"]) {
+            criteria.eventType = ToolTipEventSharedVideo;
             if (useSavedCounts) {
-                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kFavoriteTapCountKey];
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kSharedVideoTapCountKey];
             }
+        } else if ([criteriaName isEqualToString:@"WatchLaterTap"]) {
+            criteria.eventType = ToolTipEventWatchLaterTap;
+            if (useSavedCounts) {
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kWatchLaterTapCountKey];
+            }            
         } else if ([criteriaName isEqualToString:@"ChannelListScroll"]) {
             criteria.eventType = ToolTipEventChannelListScroll;
             if (useSavedCounts) {
@@ -106,6 +111,7 @@ static ToolTipController *toolTipController = nil;
                                                          [[propertyDict objectForKey:@"DisplayTextEdgeInsetsLeft"] floatValue], 
                                                          [[propertyDict objectForKey:@"DisplayTextEdgeInsetsBottom"] floatValue], 
                                                          [[propertyDict objectForKey:@"DisplayTextEdgeInsetsRight"] floatValue]);
+        toolTip.displayTextShadowHidden = [[propertyDict objectForKey:@"DisplayTextShadowHidden"] boolValue];
         toolTip.imageFile = [propertyDict objectForKey:@"ImageFile"];
         toolTip.autoHideInSeconds = [[propertyDict objectForKey:@"AutoHideInSeconds"] floatValue];
         toolTip.invalidatesToolTip = [propertyDict objectForKey:@"InvalidatesToolTip"];
@@ -264,7 +270,8 @@ static ToolTipController *toolTipController = nil;
         case ToolTipEventVideoTap:              key = kVideoTapCountKey; break;
         case ToolTipEventBadVideoTap:           key = kBadVideoTapCountKey; break;
         case ToolTipEventChannelManagementTap:  key = kChannelManagementTapCountKey; break;
-        case ToolTipEventFavoriteTap:           key = kFavoriteTapCountKey; break;
+        case ToolTipEventSharedVideo:           key = kSharedVideoCountKey; break;
+        case ToolTipEventWatchLaterTap:         key = kWatchLaterCountKey; break;
         case ToolTipEventChannelListScroll:     key = kChannelListScrollCountKey; break;
         default: break;
     }
@@ -303,13 +310,21 @@ static ToolTipController *toolTipController = nil;
     [tooltipButton setFrame:CGRectMake(0, 0, tooltipImage.size.width, tooltipImage.size.height)];
     [tooltipButton setCenter:tooltip.center];
 
+    // Force tooltips to render on pixel grid to avoid blurriness
+    CGPoint center = tooltipButton.center;
+    center.x = floor(center.x) + (((NSInteger)tooltipButton.frame.size.width) % 2 == 0 ? 0.0f : 0.5f);
+    center.y = floor(center.y) + (((NSInteger)tooltipButton.frame.size.height) % 2 == 0 ? 0.0f : 0.5f);
+    tooltipButton.center = center;
+    
     if (tooltip.displayText) {
         [tooltipButton.titleLabel setFont:[UIFont boldSystemFontOfSize:14]];
-        [tooltipButton.titleLabel setShadowColor:[UIColor darkGrayColor]];
-        [tooltipButton.titleLabel setShadowOffset:CGSizeMake(0, 1)];
+        [tooltipButton.titleLabel setShadowOffset:(tooltip.displayTextShadowHidden ? CGSizeMake(0, 0) : CGSizeMake(0, 1))];
+        [tooltipButton.titleLabel setLineBreakMode:UILineBreakModeWordWrap];
+        [tooltipButton.titleLabel setTextAlignment:UITextAlignmentCenter];
         [tooltipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [tooltipButton setTitle:tooltip.displayText forState:UIControlStateNormal];
         [tooltipButton setTitleEdgeInsets:tooltip.displayTextEdgeInsets];
+        [tooltipButton setTitleShadowColor:(tooltip.displayTextShadowHidden ? [UIColor clearColor] : [UIColor darkGrayColor]) forState:UIControlStateNormal];
     }
     
     if (tooltip.target && tooltip.action) {
@@ -383,7 +398,8 @@ static ToolTipController *toolTipController = nil;
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kBadVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelManagementTapCountKey];
-    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kFavoriteTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kSharedVideoTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kWatchLaterTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelListScrollCountKey];
     [userDefaults synchronize];
     

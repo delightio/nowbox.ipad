@@ -7,6 +7,7 @@
 //
 
 #import "OnBoardProcessViewController.h"
+#import "OnBoardProcessCategoryView.h"
 #import "OnBoardProcessChannelView.h"
 #import "SocialLoginViewController.h"
 #import "NMTaskQueueController.h"
@@ -42,8 +43,6 @@
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
 @synthesize channelsScrollView;
-@synthesize shadowDownView;
-@synthesize shadowUpView;
 @synthesize featuredCategories;
 @synthesize selectedCategoryIndexes;
 @synthesize subscribedChannels;
@@ -98,8 +97,6 @@
     [proceedToChannelsButton release];    
     [channelsView release];
     [channelsScrollView release];
-    [shadowDownView release];
-    [shadowUpView release];
     [featuredCategories release];
     [selectedCategoryIndexes release];
     
@@ -249,6 +246,10 @@
     
     currentView = splashView;
     
+    // Preload the categories view so that we can start downloading category icons
+    categoriesView.frame = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
+    [self.view addSubview:categoriesView];
+    
     [[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
 }
 
@@ -267,8 +268,6 @@
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
-    self.shadowDownView = nil;
-    self.shadowUpView = nil;
     self.featuredCategories = nil;
     self.settingUpView = nil;
     self.proceedToChannelsButton = nil;
@@ -282,7 +281,7 @@
     
     slideInView.frame = CGRectOffset(slideInView.frame, 0, 200);
     [UIView animateWithDuration:0.5
-                          delay:0.5
+                          delay:1.5
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          slideInView.frame = CGRectOffset(slideInView.frame, 0, -200);                         
@@ -301,8 +300,8 @@
 
 - (IBAction)categorySelected:(id)sender
 {
-	UIButton * categoryButton = (UIButton *)sender;
-    NSUInteger index = [categoryButton.superview tag];
+	UIButton *categoryButton = (UIButton *)sender;
+    NSUInteger index = [categoryButton tag];
     if ([selectedCategoryIndexes containsIndex:index]) {
         [categoryButton setSelected:NO];
         [selectedCategoryIndexes removeIndex:index];
@@ -340,6 +339,7 @@
 {
     if (![sender isSelected]) {
         [self loginToSocialNetworkWithType:NMLoginYouTubeType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
 
@@ -347,6 +347,7 @@
 {
     if (![sender isSelected]) {    
         [self loginToSocialNetworkWithType:NMLoginFacebookType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
 
@@ -354,6 +355,7 @@
 {
     if (![sender isSelected]) {    
         [self loginToSocialNetworkWithType:NMLoginTwitterType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];                
     }
 }
 
@@ -493,9 +495,6 @@
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
     [channelsScrollView reloadData];      
-    
-    // Set shadow alpha
-    [self scrollViewDidScroll:channelsScrollView];
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
@@ -571,49 +570,24 @@
         // Categories
         NMCategory *category = [featuredCategories objectAtIndex:index];
         
-		UIView * categoryView = [gridScrollView dequeueReusableSubview];
-		UIButton * categoryButton;
-		NMCachedImageView * categoryThumbnail;
+		OnBoardProcessCategoryView *categoryView = (OnBoardProcessCategoryView *)[gridScrollView dequeueReusableSubview];
         if (!categoryView) {
-			categoryView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-            categoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-			categoryButton.tag = 1001;
-            [categoryButton addTarget:self action:@selector(categorySelected:) forControlEvents:UIControlEventTouchUpInside];
-            [categoryButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-            [categoryButton setBackgroundImage:[UIImage imageNamed:@"onboard-category-background-default.png"] forState:UIControlStateNormal];
-            [categoryButton setBackgroundImage:[UIImage imageNamed:@"onboard-category-background-selected.png"] forState:UIControlStateSelected];
-//            [categoryButton setImage:[UIImage imageNamed:@"onboard-category-icon.png"] forState:UIControlStateNormal];
-//            [categoryButton setImageEdgeInsets:UIEdgeInsetsMake(0, 18, 2, 0)];
-            [categoryButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 68, 2, 0)];            
-            [categoryButton setTitleColor:[UIColor colorWithRed:76/255.0 green:77/255.0 blue:74/255.0 alpha:1] forState:UIControlStateNormal];
-            [categoryButton setTitleColor:[UIColor colorWithRed:76/255.0 green:77/255.0 blue:74/255.0 alpha:1] forState:UIControlStateSelected];
-            [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-            [categoryButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted | UIControlStateSelected];
-            [categoryButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            [categoryButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
-            [categoryButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted | UIControlStateSelected];
-            [categoryButton.titleLabel setShadowOffset:CGSizeMake(0, 1)];
+			categoryView = [[[OnBoardProcessCategoryView alloc] init] autorelease];
+            [categoryView.button addTarget:self action:@selector(categorySelected:) forControlEvents:UIControlEventTouchUpInside];
+            [categoryView.button setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted | UIControlStateSelected];
+            [categoryView.button setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted | UIControlStateSelected];
             
             UIFont *font = [UIFont fontWithName:@"Futura-CondensedMedium" size:20.0];
             if (!font) {
                 font = [UIFont fontWithName:@"Futura-Medium" size:18.0];
             }
-            [categoryButton.titleLabel setFont:font];
-			categoryButton.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-			[categoryView addSubview:categoryButton];
-			// thumbnail image
-			categoryThumbnail = [[NMCachedImageView alloc] initWithFrame:CGRectMake(18.0f, 26.0f, 40.0f, 40.0f)];
-			categoryThumbnail.tag = 1002;
-			categoryView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-			[categoryView addSubview:categoryThumbnail];
-        } else {
-			categoryButton = (UIButton *)[categoryView viewWithTag:1001];
-			categoryThumbnail = (NMCachedImageView *)[categoryView viewWithTag:1002];
-		}
+            [categoryView.button.titleLabel setFont:font];
+        }
         
-        [categoryButton setTitle:[category.title uppercaseString] forState:UIControlStateNormal];
-        [categoryButton setSelected:[selectedCategoryIndexes containsIndex:index]];
-		[categoryThumbnail setImageForCategory:category];
+        [categoryView.button setTag:index];
+        [categoryView.button setTitle:[category.title uppercaseString] forState:UIControlStateNormal];
+        [categoryView.button setSelected:[selectedCategoryIndexes containsIndex:index]];
+		[categoryView.thumbnailImage setImageForCategory:category];
         
         return categoryView;
         
@@ -632,12 +606,6 @@
         
         return channelView;        
     }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    shadowDownView.alpha = MIN(1, MAX(0, scrollView.contentOffset.y / 10));
-    shadowUpView.alpha = MIN(1, MAX(0, (scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.frame.size.height)) / 10));
 }
 
 @end

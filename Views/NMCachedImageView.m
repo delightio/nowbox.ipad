@@ -7,6 +7,7 @@
 //
 
 #import "NMCachedImageView.h"
+#import "UIImage+Tint.h"
 
 @implementation NMCachedImageView
 @synthesize downloadTask;
@@ -15,6 +16,7 @@
 @synthesize video;
 @synthesize videoDetail;
 @synthesize previewThumbnail;
+@synthesize adjustsImageOnHighlight;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
 	self = [super initWithCoder:aDecoder];
@@ -120,6 +122,14 @@
 - (void)setImageForCategory:(NMCategory *)cat {
 	self.category = cat;
 	[cacheController setImageForCategory:cat imageView:self];
+}
+
+- (void)setImage:(UIImage *)image {
+    [super setImage:image];
+    
+    if (self.adjustsImageOnHighlight) {
+        self.highlightedImage = [image tintedImageUsingColor:[UIColor colorWithWhite:0.0 alpha:0.4]];
+    }
 }
 
 - (void)cancelDownload {

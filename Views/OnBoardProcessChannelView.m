@@ -43,24 +43,6 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setupWithExistingFrame:YES];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self setupWithExistingFrame:NO];
-    }
-    return self;
-}
-
 - (void)dealloc
 {
     [contentView release];
