@@ -43,8 +43,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	displayMode = NMHalfScreenMode;
     highlightedVideoIndex = -1;
 	
-#ifndef DEBUG_PLAYER_NAVIGATION
-	filterButton.hidden = YES;
+#ifdef DEBUG_PANEL_ENABLED
+	filterButton.hidden = NO;
 #endif
     
 	styleUtility = [NMStyleUtility sharedStyleUtility];
@@ -117,7 +117,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 
 #pragma mark Target action methods
 - (IBAction)showFeatureDebugView:(id)sender {
-#ifdef DEBUG_PLAYER_NAVIGATION
+#ifdef DEBUG_PANEL_ENABLED
 	FeatureDebugViewController * featureCtrl = [[FeatureDebugViewController alloc] initWithNibName:@"FeatureDebugView" bundle:nil];
 	featureCtrl.selectedChannel = videoViewController.currentChannel;
 	featureCtrl.playbackViewController = videoViewController;

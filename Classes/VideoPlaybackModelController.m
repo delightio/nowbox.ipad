@@ -509,6 +509,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		case NSFetchedResultsChangeDelete:
 		{
 			rowCountHasChanged = YES;
+			NSLog(@"FRC delete case - current: %d arg: %d", currentIndexPath.row, indexPath.row);
 			NMVideo * fetchedVideo;
 			if ( [indexPath isEqual:currentIndexPath] ) {
 				if ( indexPath.row < changeSessionVideoCount ) {
