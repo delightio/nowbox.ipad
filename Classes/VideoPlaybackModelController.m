@@ -592,9 +592,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
-			} else if ( [indexPath isEqual:previousIndexPath] ) {
-				// do nothing
-			} else if ( [indexPath compare:currentIndexPath] == NSOrderedDescending ) {
+			} else if ( [indexPath compare:currentIndexPath] == NSOrderedAscending ) {
 				// save the smallest possible indexPath
 				if ( smallestIndexPath == nil || [indexPath compare:smallestIndexPath] == NSOrderedAscending ) {
 					self.smallestIndexPath = indexPath;
@@ -660,7 +658,41 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	if ( rowCountHasChanged ) {
 		if ( smallestIndexPath ) {
 			// we need to update the view
-			NSLog(@"we should updated view");
+			// reset the movie detail view
+			self.currentVideo = [controller objectAtIndexPath:smallestIndexPath];
+			self.currentIndexPath = smallestIndexPath;
+			// info the delegate about the current video change
+			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
+			
+			// do NOT use nextIndexPath to check the condition
+			if ( smallestIndexPath.row + 1 < changeSessionVideoCount ) {
+				self.nextIndexPath = [NSIndexPath indexPathForRow:smallestIndexPath.row + 1 inSection:0];
+				NMVideo * fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
+				if ( nextVideo != fetchedVideo ) {
+					self.nextVideo = fetchedVideo;
+					// do not reset nextVideo's detail view. cos we don't have enough info here to determine nextVideo is invalid
+					[dataDelegate didLoadNextVideoManagedObjectForController:self];
+				}
+				
+				// do NOT use nextNextIndexPath to check the condition
+				if ( smallestIndexPath.row + 2 < changeSessionVideoCount ) {
+					self.nextNextIndexPath = [NSIndexPath indexPathForRow:smallestIndexPath.row + 2 inSection:0];
+					fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
+					if ( nextNextVideo != fetchedVideo ) {
+						self.nextNextVideo = fetchedVideo;
+						[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
+					}
+				} else {
+					self.nextNextVideo = nil;
+					self.nextNextIndexPath = nil;
+				}
+			} else {
+				self.nextVideo = nil;
+				self.nextIndexPath = nil;
+				
+				self.nextNextVideo = nil;
+				self.nextNextIndexPath = nil;
+			}
 		}
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 		numberOfVideos = [sectionInfo numberOfObjects];
