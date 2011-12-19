@@ -42,9 +42,9 @@
 
 @interface VideoPlaybackModelController : NSObject <NSFetchedResultsControllerDelegate> {
 	// core data operation
-    NSIndexPath * currentIndexPath;
+    NSIndexPath * currentIndexPath, * previousIndexPath;
 	NSIndexPath * nextIndexPath, * nextNextIndexPath;
-	NSIndexPath * previousIndexPath;
+	NSIndexPath * smallestIndexPath;
 	NMVideo * currentVideo, * nextVideo, * nextNextVideo, * previousVideo;
 	BOOL rowCountHasChanged;
 	BOOL changeSessionUpdateCount;
@@ -69,6 +69,7 @@
 @property (nonatomic, retain) NSIndexPath * nextIndexPath;
 @property (nonatomic, retain) NSIndexPath * nextNextIndexPath;
 @property (nonatomic, retain) NSIndexPath * previousIndexPath;
+@property (nonatomic, retain) NSIndexPath * smallestIndexPath;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 

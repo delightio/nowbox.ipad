@@ -26,6 +26,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 @implementation VideoPlaybackModelController
 
 @synthesize currentIndexPath, previousIndexPath, nextIndexPath, nextNextIndexPath;
+@synthesize smallestIndexPath;
 @synthesize currentVideo, nextVideo, nextNextVideo, previousVideo;
 @synthesize channel, dataDelegate, numberOfVideos;
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext;
@@ -61,6 +62,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	[nextNextIndexPath release];
 	[previousVideo release];
 	[previousIndexPath release];
+	[smallestIndexPath release];
 	[fetchedResultsController_ release];
 	[managedObjectContext release];
 	[super dealloc];
@@ -496,6 +498,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 	changeSessionUpdateCount = YES;
+	self.smallestIndexPath = nil;
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
@@ -589,6 +592,13 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
+			} else if ( [indexPath isEqual:previousIndexPath] ) {
+				// do nothing
+			} else if ( [indexPath compare:currentIndexPath] == NSOrderedDescending ) {
+				// save the smallest possible indexPath
+				if ( smallestIndexPath == nil || [indexPath compare:smallestIndexPath] == NSOrderedAscending ) {
+					self.smallestIndexPath = indexPath;
+				}
 			}
 			// issue reset Movie detail view
 			break;
@@ -648,6 +658,10 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	if ( rowCountHasChanged ) {
+		if ( smallestIndexPath ) {
+			// we need to update the view
+			NSLog(@"we should updated view");
+		}
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 		numberOfVideos = [sectionInfo numberOfObjects];
 		[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
