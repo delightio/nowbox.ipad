@@ -177,6 +177,10 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:26810];
 }
 
+- (IBAction)printCommandIndexPool:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] debugPrintCommandPoolStatus];
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

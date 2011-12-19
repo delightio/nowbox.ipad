@@ -70,4 +70,6 @@
 - (void)cancelSearchTasks;
 - (void)forceCancelAllTasks;
 
+- (void)debugPrintCommandPoolStatus;
+
 @end

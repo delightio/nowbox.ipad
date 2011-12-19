@@ -116,6 +116,14 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 //	return b;
 //}
 
+- (void)debugPrintCommandPoolStatus {
+	NSLog(@"======\nCommand index status");
+	[commandIndexPool enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		NSLog(@"%d", idx);
+	}];
+	NSLog(@"======");
+}
+
 #pragma mark Connection management
 - (void)addNewConnectionForTasks:(NSArray *)tasks {
 	[pendingTaskBufferLock lock];

@@ -307,9 +307,6 @@
 		authorBackgroundView.frame = theRect;
 		// author image
 		[authorImageView setImageForAuthorThumbnail:aVideo.detail];
-#ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"author image: %@", aVideo.detail.author_thumbnail_uri);
-#endif
 	}
 	
 	titleDiff = theRect.size.width + theRect.origin.x;

@@ -140,9 +140,11 @@
 	if ( [self canInsertItem:anItem afterItem:cItem] ) {
 		[playbackDelegate player:self observePlayerItem:anItem];
 		[self insertItem:anItem afterItem:cItem];
-		[self advanceToNextItem];
+		if ( cItem ) {
+			[self advanceToNextItem];
+		}
 		[self play];
-		if ( [self canInsertItem:cItem afterItem:self.currentItem] ) {
+		if ( cItem && [self canInsertItem:cItem afterItem:self.currentItem] ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
 			NMAVPlayerItem * vidItem = (NMAVPlayerItem *)anItem;
 			NSLog(@"revertPreviousItem: re-insert original item back to the queue player: %@", vidItem.nmVideo.title);
@@ -154,11 +156,7 @@
 			if ( [allItems count] == 4 ) {
 				[self removeItem:[allItems objectAtIndex:3]];
 			}
-		} else {
-#ifdef DEBUG_PLAYER_NAVIGATION
-			NSLog(@"CANNOT insert back");
-#endif
-		}
+		} 
 	}
 	[cItem release];
 	return insertStatus;
