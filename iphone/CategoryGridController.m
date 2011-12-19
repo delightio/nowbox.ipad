@@ -11,6 +11,8 @@
 #import "SizableNavigationController.h"
 #import "ChannelGridController.h"
 #import "VideoGridController.h"
+#import "SocialLoginViewController.h"
+#import "YouTubeAccountStatusViewController.h"
 #import "NMCategory.h"
 #import "Analytics.h"
 
@@ -25,8 +27,11 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidSearchNotification:) name:NMDidSearchChannelsNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidFailSearchChannelsNotification:) name:NMDidFailSearchChannelsNotification object:nil];
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(handleDidSearchNotification:) name:NMDidSearchChannelsNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailSearchChannelsNotification:) name:NMDidFailSearchChannelsNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidVerifyUserNotification:) name:NMDidVerifyUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailVerifyUserNotification:) name:NMDidFailVerifyUserNotification object:nil];
     }
     
     return self;
@@ -77,31 +82,133 @@
 - (IBAction)itemPressed:(id)sender
 {
     NSInteger index = [sender index];
+    UIViewController *modalController = nil;
+    GridController *gridController = nil;
     
-    id object = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    GridController *gridController;
-    
-    if ([object isKindOfClass:[NMCategory class]]) {
-        NMCategory *category = (NMCategory *)object;
-        gridController = [[ChannelGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
-        ((ChannelGridController *)gridController).categoryFilter = category;        
-    } else {
-        NMChannel *channel = (NMChannel *)object;
-        gridController = [[VideoGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
-        ((VideoGridController *)gridController).currentChannel = channel;
+    switch (index) {
+        case 0: {
+            // YouTube
+            if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
+                // Logged in
+                modalController = [[YouTubeAccountStatusViewController alloc] initWithStyle:UITableViewStyleGrouped];
+            } else {
+                // Not logged in
+                modalController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
+                ((SocialLoginViewController *)modalController).loginType = NMLoginYouTubeType;                
+            }
+            break;
+        }
+        case 1: {
+            // Facebook
+            if (NM_USER_FACEBOOK_CHANNEL_ID != 0) {
+                // Logged in
+                gridController = [[VideoGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+                ((VideoGridController *)gridController).currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.userFacebookStreamChannel;
+            } else {
+                // Not logged in
+                modalController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
+                ((SocialLoginViewController *)modalController).loginType = NMLoginFacebookType;
+            }
+            break;
+        }
+        case 2: {
+            // Twitter
+            if (NM_USER_TWITTER_CHANNEL_ID != 0) {
+                // Logged in
+                gridController = [[VideoGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+                ((VideoGridController *)gridController).currentChannel = [NMTaskQueueController sharedTaskQueueController].dataController.userTwitterStreamChannel;
+            } else {
+                // Not logged in
+                modalController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
+                ((SocialLoginViewController *)modalController).loginType = NMLoginTwitterType;                
+            }
+            break;
+        }
+        default: {
+            // Category
+            id object = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index-3 inSection:0]];    
+            if ([object isKindOfClass:[NMCategory class]]) {
+                NMCategory *category = (NMCategory *)object;
+                gridController = [[ChannelGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+                ((ChannelGridController *)gridController).categoryFilter = category;        
+            } else {
+                NMChannel *channel = (NMChannel *)object;
+                gridController = [[VideoGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
+                ((VideoGridController *)gridController).currentChannel = channel;
+            }            
+            break;
+        }
     }
     
-    gridController.managedObjectContext = self.managedObjectContext;
-    gridController.delegate = self.delegate;
-    [self.navigationController pushViewController:gridController];
-    [gridController release];
+    // Present the new view controller
+    if (gridController) {
+        gridController.managedObjectContext = self.managedObjectContext;
+        gridController.delegate = self.delegate;    
+        [self.navigationController pushViewController:gridController];
+        [gridController release];
+    } else if (modalController) {
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:modalController];
+        navigationController.navigationBar.barStyle = UIBarStyleBlack;
+        modalController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissModalViewController)] autorelease];
+        [self.navigationController.playbackViewController presentModalViewController:navigationController animated:YES];
+        [modalController release];
+        [navigationController release];
+    }
+}
+
+- (void)dismissModalViewController
+{
+    [self.navigationController.playbackViewController dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark - Notifications
+
+- (void)handleDidVerifyUserNotification:(NSNotification *)aNotification 
+{
+    [self dismissModalViewController];
+}
+
+- (void)handleDidFailVerifyUserNotification:(NSNotification *)aNotification 
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
+    [self dismissModalViewController];
+}
+
+-(void)clearSearchResults {
+    NMTaskQueueController *ctrl = [NMTaskQueueController sharedTaskQueueController];
+	[ctrl.dataController clearSearchResultCache];
+    self.lastSearchQuery = nil;
+}
+
+- (void)handleDidSearchNotification:(NSNotification *)aNotification {    
+    NSString *searchText = self.searchBar.text;
+    NSString *keyword = [[aNotification userInfo] objectForKey:@"keyword"];
+    NSLog(@"got results for keyword: %@", keyword);
+    
+    if ([keyword isEqualToString:searchText]) {        
+        // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
+        [self.searchBar resignFirstResponder];
+        [self.searchBar setShowsCancelButton:NO animated:YES];
+        self.searchBar.text = searchText;
+        [self.gridView reloadDataKeepOffset:YES];
+        [self.activityIndicator stopAnimating];
+    } else {
+        // These are not the search results we're looking for
+        [self clearSearchResults];
+    }    
+}
+
+- (void)handleDidFailSearchChannelsNotification:(NSNotification *)aNotification {
+    [self.activityIndicator stopAnimating];
 }
 
 #pragma mark - GridScrollViewDelegate
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 3;
 }
 
 - (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
@@ -115,16 +222,44 @@
     itemView.index = index;
     itemView.highlighted = NO;
     
-    id object = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    
-    if ([object isKindOfClass:[NMCategory class]]) {
-        NMCategory *category = (NMCategory *)object;
-        itemView.titleLabel.text = category.title;
-        [itemView.thumbnail setImageForCategory:category];
-    } else {
-        NMChannel *channel = (NMChannel *)object;
-        itemView.titleLabel.text = channel.title;
-        [itemView.thumbnail setImageForChannel:channel];
+    switch (index) {
+        case 0: {
+            // YouTube
+            itemView.titleLabel.text = @"YouTube";
+            itemView.thumbnail.image = [UIImage imageNamed:@"social-youtube.png"];
+            break;   
+        }
+            
+        case 1: {
+            // Facebook
+            itemView.titleLabel.text = @"Facebook";
+            itemView.thumbnail.image = [UIImage imageNamed:@"social-facebook.png"];
+            break;
+        }
+        
+        case 2: {
+            // Twitter
+            itemView.titleLabel.text = @"Twitter";            
+            itemView.thumbnail.image = [UIImage imageNamed:@"social-twitter.png"];
+            break;
+        }
+            
+        default: {
+            // Category
+            id object = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index-3 inSection:0]];
+            
+            if ([object isKindOfClass:[NMCategory class]]) {
+                NMCategory *category = (NMCategory *)object;
+                itemView.titleLabel.text = category.title;
+                [itemView.thumbnail setImageForCategory:category];
+            } else {
+                NMChannel *channel = (NMChannel *)object;
+                itemView.titleLabel.text = channel.title;
+                [itemView.thumbnail setImageForChannel:channel];
+            }
+            
+            break;
+        }
     }
 
     return itemView;
@@ -163,36 +298,6 @@
     
     return fetchedResultsController;
 }    
-
-#pragma mark - Notifications
-
--(void)clearSearchResults {
-    NMTaskQueueController *ctrl = [NMTaskQueueController sharedTaskQueueController];
-	[ctrl.dataController clearSearchResultCache];
-    self.lastSearchQuery = nil;
-}
-
-- (void)handleDidSearchNotification:(NSNotification *)aNotification {    
-    NSString *searchText = self.searchBar.text;
-    NSString *keyword = [[aNotification userInfo] objectForKey:@"keyword"];
-    NSLog(@"got results for keyword: %@", keyword);
-
-    if ([keyword isEqualToString:searchText]) {        
-        // Hide the keyboard, but avoid autocomplete messing with our query after it's done!
-        [self.searchBar resignFirstResponder];
-        [self.searchBar setShowsCancelButton:NO animated:YES];
-        self.searchBar.text = searchText;
-        [self.gridView reloadDataKeepOffset:YES];
-        [self.activityIndicator stopAnimating];
-    } else {
-        // These are not the search results we're looking for
-        [self clearSearchResults];
-    }    
-}
-
-- (void)handleDidFailSearchChannelsNotification:(NSNotification *)aNotification {
-    [self.activityIndicator stopAnimating];
-}
 
 #pragma mark - UISearchBarDelegate
 
