@@ -107,7 +107,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	currentXOffset = 0.0f;
-	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
 	fullScreenRect = CGRectMake(0.0f, 0.0f, NM_IPAD_SCREEN_WIDTH, 768.0f);
 	splitViewRect = CGRectMake(0.0f, 0.0f, NM_IPAD_SCREEN_WIDTH, 380.0f);
@@ -126,7 +125,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(0.0f, 20.0f, 640.0f, 360.0f)];
 	movieView.alpha = 0.0f;
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
@@ -515,11 +514,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
+	theFrame.origin.x = currentXOffset;
 	loadedControlView.frame = theFrame;
 	// update the movie view too
-	theFrame = movieView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
 	[UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionTransitionNone animations:^{
                          movieView.alpha = 1.0f;
@@ -1426,10 +1423,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView setAnimationDelegate:self];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
-		movieXOffset = 0.0f;
+//		movieXOffset = 0.0f;
 		//MARK: not sure if we still need to show/hide status bar
 		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		// fade in detail view
 		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:NO];
@@ -1450,12 +1447,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES];
-		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		// fade out detail view
 		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:YES];
 		// reset offset value
-		movieXOffset = 0.0f;
+//		movieXOffset = 0.0f;
 		ribbonView.alpha = 0.0f;
 		// slide out
 		theFrame.origin.y = 768.0;
