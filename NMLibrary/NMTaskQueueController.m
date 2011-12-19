@@ -38,6 +38,7 @@ NSInteger NM_VIDEO_QUALITY					= 0;
 NSNumber * NM_SESSION_ID					= nil;
 BOOL NM_WIFI_REACHABLE						= YES;
 BOOL NM_RATE_US_REMINDER_SHOWN              = NO;
+NSInteger NM_RATE_US_REMINDER_DEFER_COUNT   = 0;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
 NSString * const NMShowErrorAlertNotification = @"NMShowErrorAlertNotification";

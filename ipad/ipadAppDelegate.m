@@ -42,6 +42,7 @@ NSString * const NM_LAST_CHANNEL_ID_KEY		= @"NM_LAST_CHANNEL_ID_KEY";
 NSString * const NM_SESSION_COUNT_KEY		= @"NM_SESSION_COUNT_KEY";
 NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY = @"NM_TIME_ON_APP_SINCE_INSTALL_KEY";
 NSString * const NM_RATE_US_REMINDER_SHOWN_KEY = @"NM_RATE_US_REMINDER_SHOWN_KEY";
+NSString * const NM_RATE_US_REMINDER_DEFER_COUNT_KEY = @"NM_RATE_US_REMINDER_DEFER_COUNT_KEY";
 // setting view
 NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
@@ -79,6 +80,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  dDate, NM_USER_TOKEN_EXPIRY_DATE_KEY,
       zeroNum, NM_TIME_ON_APP_SINCE_INSTALL_KEY,
       noNum, NM_RATE_US_REMINDER_SHOWN_KEY,
+      zeroNum, NM_RATE_US_REMINDER_DEFER_COUNT_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
@@ -167,7 +169,6 @@ NSInteger NM_LAST_CHANNEL_ID;
                                        [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
-    lastTimeOnAppSinceInstall = [userDefaults floatForKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];    
     appStartTime = sessionStartTime;
     
     dateFormatter = [[NSDateFormatter alloc] init];
@@ -178,7 +179,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (NSTimeInterval)timeOnAppSinceInstall
 {
-    NSTimeInterval timeOnAppSinceInstall = lastTimeOnAppSinceInstall + ([[NSDate date] timeIntervalSince1970] - sessionStartTime);
+    NSTimeInterval timeOnAppSinceInstall = lastTimeOnAppSinceInstall + ([[NSDate date] timeIntervalSince1970] - activeStartTime);
+    NSLog(@"time on app since install: %f", timeOnAppSinceInstall);
     return timeOnAppSinceInstall;
 }
 
@@ -192,7 +194,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     [self setupMixpanel];
     [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
                                                userDictionary:nil 
-                                              sendImmediately:NO];
+                                              sendImmediately:YES];
     
 	// detect version
 	if ( kCFCoreFoundationVersionNumber > 550.58f ) {
@@ -233,14 +235,6 @@ NSInteger NM_LAST_CHANNEL_ID;
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-	/*
-	 Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-	 Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-	 */
-}
-
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
 	/*
@@ -253,9 +247,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	// release core data
 	
-	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_LAST_SESSION_DATE];
-    [[NSUserDefaults standardUserDefaults] setFloat:[self timeOnAppSinceInstall] forKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];
-    
 	// cancel tasks
 //	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
 	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
@@ -301,7 +292,6 @@ NSInteger NM_LAST_CHANNEL_ID;
     
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
-    lastTimeOnAppSinceInstall = [[NSUserDefaults standardUserDefaults] floatForKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];
     [self updateMixpanelProperties];
     NSTimeInterval elapsedTotalTime = [[NSDate date] timeIntervalSince1970] - appStartTime;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
@@ -309,11 +299,17 @@ NSInteger NM_LAST_CHANNEL_ID;
 	stopShowingError = NO;
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_LAST_SESSION_DATE];
+    [[NSUserDefaults standardUserDefaults] setFloat:[self timeOnAppSinceInstall] forKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-	/*
-	 Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-	 */
+    activeStartTime = [[NSDate date] timeIntervalSince1970];    
+    lastTimeOnAppSinceInstall = [[NSUserDefaults standardUserDefaults] floatForKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

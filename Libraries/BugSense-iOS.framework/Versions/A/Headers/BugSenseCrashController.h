@@ -1,4 +1,5 @@
 /*
+ 
  BugSenseCrashController.h
  BugSense-iOS
  
@@ -25,28 +26,18 @@
  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  OTHER DEALINGS IN THE SOFTWARE.
  
- Author:
- Nick Toumpelis (Ocean Road Software)
+ Author: Nick Toumpelis, nick@bugsense.com
  
  */
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+UIKIT_EXTERN @interface BugSenseCrashController : NSObject
 
-UIKIT_EXTERN @interface BugSenseCrashController : NSObject {
-    NSString *_APIKey;
-    NSDictionary *_userDictionary;
-    BOOL _immediately;
-    
-    BOOL _operationCompleted;
-}
++ (BugSenseCrashController *) sharedInstanceWithBugSenseAPIKey:(NSString *)APIKey;
 
-+ (BugSenseCrashController *) sharedInstanceWithBugSenseAPIKey:(NSString *)bugSenseAPIKey;
-
-+ (BugSenseCrashController *) sharedInstanceWithBugSenseAPIKey:(NSString *)bugSenseAPIKey 
++ (BugSenseCrashController *) sharedInstanceWithBugSenseAPIKey:(NSString *)APIKey 
                                                 userDictionary:(NSDictionary *)userDictionary;
 
-+ (BugSenseCrashController *) sharedInstanceWithBugSenseAPIKey:(NSString *)bugSenseAPIKey 
++ (BugSenseCrashController *) sharedInstanceWithBugSenseAPIKey:(NSString *)APIKey 
                                                 userDictionary:(NSDictionary *)userDictionary
                                                sendImmediately:(BOOL)immediately;
 

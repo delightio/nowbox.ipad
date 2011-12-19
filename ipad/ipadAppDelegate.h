@@ -22,6 +22,7 @@ extern NSString * const NM_USER_YOUTUBE_USER_NAME_KEY;
 extern NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY;
 extern NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY;
 extern NSString * const NM_RATE_US_REMINDER_SHOWN_KEY;
+extern NSString * const NM_RATE_US_REMINDER_DEFER_COUNT_KEY;
 extern NSString * const NM_VIDEO_QUALITY_KEY;
 //extern NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
@@ -52,10 +53,12 @@ extern NSString * const NM_LAST_SOCIAL_NETWORK;
     
     // Analytics
     MixpanelAPI *mixpanel;
-    NSTimeInterval appStartTime;
-    NSTimeInterval sessionStartTime;
-    NSTimeInterval lastTimeOnAppSinceInstall;
+    NSTimeInterval appStartTime;        // When the app was launched
+    NSTimeInterval sessionStartTime;    // When the app last became the foreground app
+    NSTimeInterval activeStartTime;     // When the app last became active
     NSDateFormatter *dateFormatter;
+    
+    NSTimeInterval lastTimeOnAppSinceInstall;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
