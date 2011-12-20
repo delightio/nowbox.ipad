@@ -14,6 +14,10 @@
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_NMVIDEO_CACHE_SIZE				5
 
+#define NM_MODEL_CURRENT_VIDEO_MASK			0x04
+#define NM_MODEL_NEXT_VIDEO_MASK			0x02
+#define NM_MODEL_NEXT_NEXT_VIDEO_MASK		0x01
+
 static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideoNotification";
 
@@ -25,9 +29,10 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 @implementation VideoPlaybackModelController
 
-@synthesize currentIndexPath, previousIndexPath, nextIndexPath, nextNextIndexPath;
-@synthesize smallestIndexPath;
-@synthesize currentVideo, nextVideo, nextNextVideo, previousVideo;
+@synthesize currentIndexPath, previousIndexPath;
+@synthesize nextIndexPath, nextNextIndexPath;
+@synthesize currentVideo, nextVideo;
+@synthesize nextNextVideo, previousVideo;
 @synthesize channel, dataDelegate, numberOfVideos;
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext;
 @synthesize debugMessageView;
@@ -62,7 +67,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	[nextNextIndexPath release];
 	[previousVideo release];
 	[previousIndexPath release];
-	[smallestIndexPath release];
 	[fetchedResultsController_ release];
 	[managedObjectContext release];
 	[super dealloc];
@@ -497,8 +501,10 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+	NSLog(@"////// will change content //////");
 	changeSessionUpdateCount = YES;
-	self.smallestIndexPath = nil;
+	deletedOlderVideos = NO;
+	videoEncounteredBitArray = 0;
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
@@ -523,7 +529,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 					
 					// do NOT use nextIndexPath to check the condition
-					if ( indexPath.row + 1 < changeSessionVideoCount ) {
+					if ( ( videoEncounteredBitArray & NM_MODEL_NEXT_VIDEO_MASK ) == 0 && indexPath.row + 1 < changeSessionVideoCount ) {
 						self.nextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 						fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
 						if ( nextVideo != fetchedVideo ) {
@@ -533,7 +539,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 						}
 						
 						// do NOT use nextNextIndexPath to check the condition
-						if ( indexPath.row + 2 < changeSessionVideoCount ) {
+						if ( ( videoEncounteredBitArray & NM_MODEL_NEXT_NEXT_VIDEO_MASK ) == 0 && indexPath.row + 2 < changeSessionVideoCount ) {
 							self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 2 inSection:0];
 							fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
 							if ( nextNextVideo != fetchedVideo ) {
@@ -561,11 +567,13 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
-			} else if ( [indexPath isEqual:nextIndexPath] ) {
+				// marked as handled everything
+				videoEncounteredBitArray = NM_MODEL_CURRENT_VIDEO_MASK | NM_MODEL_NEXT_VIDEO_MASK | NM_MODEL_NEXT_NEXT_VIDEO_MASK;
+			} else if ( [indexPath isEqual:nextIndexPath] && ( videoEncounteredBitArray & NM_MODEL_NEXT_VIDEO_MASK ) == 0 ) {
 				if ( nextIndexPath.row < changeSessionVideoCount ) {
 					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
 					[dataDelegate didLoadNextVideoManagedObjectForController:self];
-					if ( indexPath.row + 1 < changeSessionVideoCount ) {
+					if ( ( videoEncounteredBitArray & NM_MODEL_NEXT_NEXT_VIDEO_MASK ) == 0 && indexPath.row + 1 < changeSessionVideoCount ) {
 						self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
 						fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
 						if ( fetchedVideo != nextNextVideo ) {
@@ -583,7 +591,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
-			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
+				videoEncounteredBitArray = NM_MODEL_NEXT_VIDEO_MASK | NM_MODEL_NEXT_NEXT_VIDEO_MASK;
+			} else if ( [indexPath isEqual:nextNextIndexPath] && ( videoEncounteredBitArray & NM_MODEL_NEXT_NEXT_VIDEO_MASK ) == 0 ) {
 				if ( nextNextIndexPath.row < changeSessionVideoCount ) {
 					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
 					[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
@@ -592,21 +601,24 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					self.nextNextVideo = nil;
 					self.nextNextIndexPath = nil;
 				}
+				videoEncounteredBitArray = NM_MODEL_NEXT_NEXT_VIDEO_MASK;
 			} else if ( [indexPath compare:currentIndexPath] == NSOrderedAscending ) {
-				// save the smallest possible indexPath
-				if ( smallestIndexPath == nil || [indexPath compare:smallestIndexPath] == NSOrderedAscending ) {
-					self.smallestIndexPath = indexPath;
-				}
+				// flag that we have encountered some older videos
+				deletedOlderVideos = YES;
 			}
 			// issue reset Movie detail view
 			break;
 		}
 		case NSFetchedResultsChangeUpdate:
+			NSLog(@"Changed, old idx: %d, new idx: %d", indexPath.row, newIndexPath.row);
+			break;
 		case NSFetchedResultsChangeMove:
+			NSLog(@"Moved, old idx: %d, new idx: %d", indexPath.row, newIndexPath.row);
 			break;
 			
 		case NSFetchedResultsChangeInsert:
 		{
+			NSLog(@"Inserted, old idx: %d, new idx: %d", indexPath.row, newIndexPath.row);
 			rowCountHasChanged = YES;
 //			NMVideo * vid = (NMVideo *)anObject;
 //			vid.nm_sort_order = [NSNumber numberWithInteger:newIndexPath.row];
@@ -656,43 +668,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	if ( rowCountHasChanged ) {
-		if ( smallestIndexPath ) {
-			// we need to update the view
-			// reset the movie detail view
-			self.currentVideo = [controller objectAtIndexPath:smallestIndexPath];
-			self.currentIndexPath = smallestIndexPath;
-			// info the delegate about the current video change
-			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
-			
-			// do NOT use nextIndexPath to check the condition
-			if ( smallestIndexPath.row + 1 < changeSessionVideoCount ) {
-				self.nextIndexPath = [NSIndexPath indexPathForRow:smallestIndexPath.row + 1 inSection:0];
-				NMVideo * fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
-				if ( nextVideo != fetchedVideo ) {
-					self.nextVideo = fetchedVideo;
-					// do not reset nextVideo's detail view. cos we don't have enough info here to determine nextVideo is invalid
-					[dataDelegate didLoadNextVideoManagedObjectForController:self];
-				}
-				
-				// do NOT use nextNextIndexPath to check the condition
-				if ( smallestIndexPath.row + 2 < changeSessionVideoCount ) {
-					self.nextNextIndexPath = [NSIndexPath indexPathForRow:smallestIndexPath.row + 2 inSection:0];
-					fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
-					if ( nextNextVideo != fetchedVideo ) {
-						self.nextNextVideo = fetchedVideo;
-						[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
-					}
-				} else {
-					self.nextNextVideo = nil;
-					self.nextNextIndexPath = nil;
-				}
-			} else {
-				self.nextVideo = nil;
-				self.nextIndexPath = nil;
-				
-				self.nextNextVideo = nil;
-				self.nextNextIndexPath = nil;
-			}
+		if ( deletedOlderVideos ) {
+			NSLog(@"deleted older videos");
 		}
 		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
 		numberOfVideos = [sectionInfo numberOfObjects];

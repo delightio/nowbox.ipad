@@ -44,8 +44,9 @@
 	// core data operation
     NSIndexPath * currentIndexPath, * previousIndexPath;
 	NSIndexPath * nextIndexPath, * nextNextIndexPath;
-	NSIndexPath * smallestIndexPath;
 	NMVideo * currentVideo, * nextVideo, * nextNextVideo, * previousVideo;
+	NSInteger videoEncounteredBitArray;
+	BOOL deletedOlderVideos;
 	BOOL rowCountHasChanged;
 	BOOL changeSessionUpdateCount;
 	NSUInteger changeSessionVideoCount;
@@ -69,7 +70,6 @@
 @property (nonatomic, retain) NSIndexPath * nextIndexPath;
 @property (nonatomic, retain) NSIndexPath * nextNextIndexPath;
 @property (nonatomic, retain) NSIndexPath * previousIndexPath;
-@property (nonatomic, retain) NSIndexPath * smallestIndexPath;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 
