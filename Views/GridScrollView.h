@@ -32,6 +32,8 @@
 @property (nonatomic, assign) CGFloat horizontalItemPadding;
 @property (nonatomic, assign) CGFloat verticalItemPadding;
 @property (nonatomic, retain) IBOutlet UIView *headerView;
+@property (nonatomic, retain) IBOutlet UIView *shadowTopView;
+@property (nonatomic, retain) IBOutlet UIView *shadowBottomView;
 @property (nonatomic, assign) IBOutlet id<GridScrollViewDelegate> gridDelegate;
 
 - (void)reloadData;

@@ -15,6 +15,8 @@
 @synthesize horizontalItemPadding;
 @synthesize verticalItemPadding;
 @synthesize headerView;
+@synthesize shadowTopView;
+@synthesize shadowBottomView;
 @synthesize gridDelegate;
 
 - (void)setup
@@ -62,6 +64,8 @@
     [visibleViews release];
     [recycledViews release];
     [headerView release];
+    [shadowTopView release];
+    [shadowBottomView release];
     
     [super dealloc];
 }
@@ -359,6 +363,9 @@
     if ([gridDelegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
         [gridDelegate scrollViewDidScroll:scrollView];
     }
+    
+    shadowTopView.alpha = MIN(1, MAX(0, scrollView.contentOffset.y / 10));
+    shadowBottomView.alpha = MIN(1, MAX(0, (scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.frame.size.height)) / 10));
     
     [self setNeedsLayout];
 }

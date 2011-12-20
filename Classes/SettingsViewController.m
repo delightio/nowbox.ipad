@@ -39,11 +39,21 @@
 	self.title = @"Settings";
 	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)] autorelease];
 	
-	UILabel * footerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 320.0f, 68.0f)];
+    NSString *apiURL;
+    CGRect footerLabelFrame;
+#ifdef DEBUG
+    apiURL = [NSString stringWithFormat:@"\n\nAPI URL: %@", NM_BASE_URL];
+    footerLabelFrame = CGRectMake(0.0f, 0.0f, 320.0f, 104.0f);
+#else
+    apiURL = @"";
+    footerLabelFrame = CGRectMake(0.0f, 0.0f, 320.0f, 68.0f);
+#endif
+    
+	UILabel * footerLabel = [[UILabel alloc] initWithFrame:footerLabelFrame];
 	footerLabel.backgroundColor = [NMStyleUtility sharedStyleUtility].clearColor;
 	footerLabel.numberOfLines = 0;
 	footerLabel.textAlignment = UITextAlignmentCenter;
-	footerLabel.text = [NSString stringWithFormat:@"© 2011 Pipely Inc.\nVersion: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID];
+	footerLabel.text = [NSString stringWithFormat:@"© 2011 Pipely Inc.\nVersion: %@\nUser ID: %d%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID, apiURL];
 	self.tableView.tableFooterView = footerLabel;
 	[footerLabel release];
 	// set the current User ID

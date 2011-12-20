@@ -39,5 +39,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 extern NSString * const NMBeginNewSessionNotification;
 extern BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO;
 extern BOOL NM_AIRPLAY_ACTIVE;
+extern BOOL NM_RATE_US_REMINDER_SHOWN;
+extern NSInteger NM_RATE_US_REMINDER_DEFER_COUNT;
 
 #endif

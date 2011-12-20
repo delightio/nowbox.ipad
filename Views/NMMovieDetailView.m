@@ -107,7 +107,6 @@
 		titleLabel.frame = titleDefaultFrame;
 		descriptionLabel.frame = descriptionDefaultFrame;
 		otherInfoLabel.center = otherInfoDefaultPosition;
-		self.alpha = 0.0f;
 		return;
 	} else {
 		NSLog(@"movie detail view did nothing");
@@ -152,7 +151,6 @@
 		descriptionLabel.text = @"";
 	}
 	
-	if ( self.alpha == 0.0f ) self.alpha = 1.0f;
 }
 
 - (void)fadeOutThumbnailView:(id)sender context:(void *)ctx {
@@ -201,7 +199,9 @@
 		infoContainerView.hidden = NO;
 		bitmapShadow.hidden = NO;
 	}*/
-	blackLayer.frame = thumbnailContainerView.frame;
+	CGRect theFrame = thumbnailContainerView.frame;
+	theFrame.size.width = 1044.0f;
+	blackLayer.frame = theFrame;
 }
 
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {

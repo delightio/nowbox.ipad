@@ -44,6 +44,8 @@
 
 #define REFRESH_HEADER_HEIGHT 80.0f
 
+#define NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP         (60.0f * 40)
+
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx;
@@ -59,6 +61,11 @@
 
 - (NMVideo *)playerCurrentVideo;
 - (void)showLaunchView;
+
+// Movie detail view management
+- (void)resetAllMovieDetailViews;
+- (NMMovieDetailView *)dequeueReusableMovieDetailView;
+- (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo;
 
 // channel switching method
 - (void)resetChannelHeaderView:(BOOL)isPrev;
@@ -79,6 +86,8 @@
 @synthesize appDelegate;
 @synthesize previousChannelHeaderView;
 @synthesize nextChannelHeaderView;
+@synthesize playbackModelController;
+@synthesize ratingsURL;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*
@@ -126,25 +135,6 @@
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
 
-	// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
-	NSBundle * mb = [NSBundle mainBundle];
-	movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
-	for (NSInteger i = 0; i < 3; i++) {
-		[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
-		[movieDetailViewArray addObject:self.loadedMovieDetailView];
-		theFrame = loadedMovieDetailView.frame;
-		theFrame.origin.y = 0.0f;
-		theFrame.origin.x = -(topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT);
-		theFrame.size.width = topLevelContainerView.frame.size.width;
-		theFrame.size.height = topLevelContainerView.frame.size.height;
-		loadedMovieDetailView.frame = theFrame;
-		loadedMovieDetailView.alpha = 0.0f;
-        loadedMovieDetailView.tag = i;
-		[controlScrollView addSubview:loadedMovieDetailView];
-		self.loadedMovieDetailView = nil;
-		// movie detail view doesn't need to respond to autoresize
-	}
-
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
@@ -174,7 +164,7 @@
 	
 	// pre-load control view
 	// load the nib
-	[mb loadNibNamed:@"VideoControlView" owner:self options:nil];
+	[[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
 //	// top left corner gesture recognizer
 //	UITapGestureRecognizer * topLeftRcgr = [[UITapGestureRecognizer alloc] initWithTarget:@selector() action:self];
 //	topLeftRcgr.
@@ -233,6 +223,7 @@
     [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
     [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
     [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleDidGetInfoNotification:) name:NMDidCheckUpdateNotification object:nil];
 
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
@@ -364,6 +355,8 @@
 //    [temporaryDisabledGestures release];
     [previousChannelHeaderView release];
     [nextChannelHeaderView release];
+    [ratingsURL release];
+
 	[super dealloc];
 }
 
@@ -499,6 +492,9 @@
 - (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag {
 	if ( currentChannel ) {
 		if ( currentChannel != chnObj ) {
+            // report event
+			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+            
 			// clear all task related to the previous channel
 			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
@@ -510,16 +506,16 @@
 		currentChannel = [chnObj retain];
 	}
 	if ( chnObj == nil ) {
-		for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-			theDetailView.video = nil;
-		}
+		[self resetAllMovieDetailViews];
 		
 		[loadedControlView resetView];
 		return;	// return if the channel object is nil
 	}
 	
+    [loadedControlView resetView];
 	// flush video player
 	[movieView.player removeAllItems];
+	[self resetAllMovieDetailViews];     
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:chnObj.nm_id];
 	
@@ -531,14 +527,7 @@
 
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
-//	NSArray * vidAy = [playbackModelController videosForBuffering];
-//	if ( vidAy ) {
-//		[movieView.player resolveAndQueueVideos:vidAy];
-//	}
-	
-	// update the interface if necessary
-	//	[movieView setActivityIndicationHidden:NO animated:NO];
-//	[self updateRibbonButtons];
+	chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;    
     
     // Update highlighted channel in grid
     if ([gridNavigationController.visibleViewController isKindOfClass:[ChannelGridController class]]) {
@@ -683,20 +672,8 @@
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
-//		if ( loadedControlView.playbackMode == NMHalfScreenMode ) {
-			[loadedControlView setControlsHidden:NO animated:YES];
-//		}
+        [loadedControlView setControlsHidden:NO animated:YES];
 	}];
-}
-
-- (NMMovieDetailView *)getFreeMovieDetailView {
-	NMMovieDetailView * detailView = nil;
-	for (detailView in movieDetailViewArray) {
-		if ( detailView.video == nil ) {
-			break;
-		}
-	}
-	return detailView;
 }
 
 //- (void)hideControlView {
@@ -717,10 +694,6 @@
 		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
 			// show the top bar with animation
 			[loadedControlView setTopBarHidden:NO animated:NO];
-			// hide all movie detail view
-//			for (NMMovieDetailView * theDetailView in movieDetailViewArray) {
-//				theDetailView.hidden = YES;
-//			}
 			[self configureDetailViewForContext:ctxInt];
 			ribbonView.hidden = YES;
 			break;
@@ -733,6 +706,67 @@
 		default:
 			break;
 	}
+}
+
+#pragma mark Movie detail view management
+- (void)resetAllMovieDetailViews {
+	for (NMMovieDetailView * theView in movieDetailViewArray) {
+		if ( theView.video ) {
+			[self reclaimMovieDetailViewForVideo:theView.video];
+		}
+	}
+}
+
+- (NMMovieDetailView *)dequeueReusableMovieDetailView {
+	// obtain a free view
+	CGRect theFrame;
+	NSBundle * mb = [NSBundle mainBundle];
+	if ( movieDetailViewArray == nil ) {
+		// we need to load a few detail view
+		// pre-load the movie detail view. we need to cache 3 of them so that user can see the current, next and previous movie detail with smooth scrolling transition
+		movieDetailViewArray = [[NSMutableArray alloc] initWithCapacity:3];
+		for (NSInteger i = 0; i < 3; i++) {
+			[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
+			[movieDetailViewArray addObject:self.loadedMovieDetailView];
+            theFrame = loadedMovieDetailView.frame;
+            theFrame.origin.y = 0.0f;
+            theFrame.origin.x = -(topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT);
+            theFrame.size.width = topLevelContainerView.frame.size.width;
+            theFrame.size.height = topLevelContainerView.frame.size.height;
+            loadedMovieDetailView.frame = theFrame;
+            loadedMovieDetailView.tag = i;
+			[controlScrollView insertSubview:loadedMovieDetailView belowSubview:movieView];
+			self.loadedMovieDetailView = nil;
+			// movie detail view doesn't need to respond to autoresize
+		}
+	}
+	// get a free view
+	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
+		if ( theView.video == nil ) {
+			theView.hidden = NO;
+			return theView;
+		}
+	}
+	// check if any of the video is marked as error
+	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
+		if ( theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+			[self reclaimMovieDetailViewForVideo:theView.video];
+			theView.hidden = NO;
+			return theView;
+		}
+	}
+	NSLog(@"Problem!! can't get a free movie detail view");
+	return nil;
+}
+
+- (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo {
+	if ( vdo == nil ) return;
+	NMMovieDetailView * theView = vdo.nm_movie_detail_view;
+	vdo.nm_movie_detail_view = nil;
+	theView.video = nil;
+	[theView restoreThumbnailView];
+	[theView setActivityViewHidden:YES];
+	theView.hidden = YES;
 }
 
 #pragma mark Video queuing
@@ -762,6 +796,7 @@
 		[UIView animateWithDuration:0.5f animations:^{
 			controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 		}];
+        [self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
@@ -778,6 +813,7 @@
 	[self stopVideo];
 	// flush the video player
 	[movieView.player removeAllItems];	// optimize for skipping to next or next-next video. Do not call this method those case
+	[self resetAllMovieDetailViews]; 
 	didSkippedVideo = YES;
 
 	// save the channel ID to user defaults
@@ -816,7 +852,7 @@
 	// update the movie detail view frame
 	NMMovieDetailView * theDetailView = ctrl.nextVideo.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
-		theDetailView = [self getFreeMovieDetailView];
+		theDetailView = [self dequeueReusableMovieDetailView];
 		ctrl.nextVideo.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.nextVideo;
@@ -837,7 +873,7 @@
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
 	NMMovieDetailView * theDetailView = ctrl.previousVideo.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
-		theDetailView = [self getFreeMovieDetailView];
+		theDetailView = [self dequeueReusableMovieDetailView];
 		ctrl.previousVideo.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.previousVideo;
@@ -858,7 +894,7 @@
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
 	NMMovieDetailView * theDetailView = ctrl.currentVideo.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
-		theDetailView = [self getFreeMovieDetailView];
+		theDetailView = [self dequeueReusableMovieDetailView];
 		ctrl.currentVideo.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.currentVideo;
@@ -897,6 +933,29 @@
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5f];
 		}
 	}
+}
+
+- (void)shouldRevertNextNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	[movieView.player refreshItemFromIndex:2];
+	[playbackModelController.nextNextVideo.nm_movie_detail_view restoreThumbnailView];
+}
+
+- (void)shouldRevertNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	[movieView.player refreshItemFromIndex:1];
+	[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
+}
+
+- (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
+	[self stopVideo];
+	// request the player to resolve the video again
+	[movieView.player refreshItemFromIndex:0];
+	// lock the playback view?
+	controlScrollView.scrollEnabled = NO;
+	// show thumbnail and loading indicator
+	shouldFadeOutVideoThumbnail = YES;
+	[self showActivityLoader];
+	[self.currentVideo.nm_movie_detail_view restoreThumbnailView];
+	movieView.alpha = 0.0f;
 }
 
 #pragma mark NMAVQueuePlayerPlaybackDelegate methods
@@ -977,15 +1036,22 @@
 	NSLog(@"did play notification: %@", [aNotification name]);
 #endif
 	didPlayToEnd = YES;
-	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if ( playbackModelController.nextVideo == nil ) {
-			// finish up playing the whole channel
-			didPlayToEnd = NO;
-		} else {
+    
+    void (^completion)(void) = ^{
+        if (playbackModelController.nextVideo) {
 			[self showNextVideo:YES];
 		}
+    };
+    
+	// according to documentation, AVPlayerItemDidPlayToEndTimeNotification is not guaranteed to be fired from the main thread.
+	dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self shouldShowRateUsReminder] && [(ipadAppDelegate *)appDelegate timeOnAppSinceInstall] > NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP * (NM_RATE_US_REMINDER_DEFER_COUNT + 1)) {
+            [self showRateUsReminderCompletion:completion];
+        } else {
+            completion();
+        }
 	});
+
 }
 
 - (void)handleApplicationDidBecomeActiveNotification:(NSNotification *)aNotification {
@@ -996,6 +1062,14 @@
 	if ( item ) {
 		[nowboxTaskController issueSendViewEventForVideo:item.nmVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	}
+}
+
+- (void)handleApplicationDidEnterBackgroundNotification:(NSNotification *)aNotification {
+	if ( !NM_AIRPLAY_ACTIVE ) {
+		[self stopVideo];
+	}
+	//Debug: set the video link to expire
+    //	playbackModelController.currentVideo.nm_direct_url_expiry = (NSInteger)[[NSDate dateWithTimeIntervalSinceNow:-1000.0] timeIntervalSince1970];
 }
 
 - (void)handleChannelManagementNotification:(NSNotification *)aNotification {
@@ -1049,6 +1123,16 @@
 	}
 }
 
+- (void)handleDidGetInfoNotification:(NSNotification *)aNotification {
+    NSDictionary *userInfo = [aNotification userInfo];    
+    NSArray *links = [userInfo objectForKey:@"links"];
+    for (NSDictionary *link in links) {
+        if ([[link objectForKey:@"rel"] isEqualToString:@"ratings"]) {
+            self.ratingsURL = [NSURL URLWithString:[link objectForKey:@"url"]];
+        }
+    }
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	NSInteger c = (NSInteger)context;
 //	CMTime t;
@@ -1099,6 +1183,10 @@
 			// update the player interface to indicate that Airplay has been enabled
 			[movieView hideAirPlayIndicatorView:NO];
 			NM_AIRPLAY_ACTIVE = YES;
+            
+            // Disable idle timer so that the app doesn't go to sleep
+            [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+            
 			// Apple TV does not send remote event back to app. No need to implement for now.
 			// receive remote event
 //			[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -1107,6 +1195,9 @@
 			// remove the interface indication
 			[movieView hideAirPlayIndicatorView:YES];
 			NM_AIRPLAY_ACTIVE = NO;
+                        
+            [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
+
 			// Apple TV does not send remote event back to app. No need to implement for now.
 //			[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 //			[self resignFirstResponder];
@@ -1132,7 +1223,7 @@
 		if ( (!playFirstVideoOnLaunchWhenReady || forceStopByUser) && theRate > 0.0 ) {
 			[self stopVideo];
 			[loadedControlView setPlayButtonStateForRate:0.0f];
-		} else {
+		} else if ( !didPlayToEnd ) {
 			[loadedControlView setPlayButtonStateForRate:theRate];
 		}
 	} else if ( c == NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT ) {
@@ -1308,11 +1399,14 @@
 		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset += topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT;
+		// return the movie detail view
+		[self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
 			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
-			[playbackModelController.previousVideo.nm_movie_detail_view restoreThumbnailView];
-		}
+            
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];		
+        }
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
 			NSLog(@"can't move to next video. no video!!");
@@ -1321,13 +1415,15 @@
 		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset -= topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT;
+		[self reclaimMovieDetailViewForVideo:playbackModelController.nextVideo];        
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
 			[playbackModelController moveToPreviousVideo];
 			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
-			[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
+            
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	} else {
 		scrollView.scrollEnabled = YES;
@@ -1359,7 +1455,6 @@
 
 #pragma mark Target-action methods
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
-	loadedControlView.hidden = NO;
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
@@ -1383,7 +1478,6 @@
         loadedControlView.toggleGridButton.userInteractionEnabled = NO;
 	} completion:^(BOOL finished) {
 		if ( finished ) {
-			loadedControlView.hidden = YES;
             loadedControlView.toggleGridButton.userInteractionEnabled = YES;
 		}
 	}];
@@ -1392,12 +1486,16 @@
 - (IBAction)addVideoToFavorite:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
 	[nowboxTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-    
-//    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:sender];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
+    
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    if (![vdo.nm_watch_later boolValue]) {
+        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:sender];
+    }
+    
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 }
 
@@ -1544,6 +1642,61 @@
 - (void)keyboardWillChangeFrame:(NSNotification *)notification
 {
     [self resizeViewForKeyboardUserInfo:[notification userInfo]];
+}
+
+#pragma mark - Rate Us reminder
+
+- (BOOL)shouldShowRateUsReminder {
+    return (!NM_RATE_US_REMINDER_SHOWN && !launchModeActive && ratingsURL);
+}
+
+- (void)showRateUsReminderCompletion:(void (^)(void))completion {
+    [alertCompletion release];
+    alertCompletion = [completion copy];
+    
+    NM_RATE_US_REMINDER_SHOWN = YES;
+    [[NSUserDefaults standardUserDefaults] setBool:NM_RATE_US_REMINDER_SHOWN forKey:NM_RATE_US_REMINDER_SHOWN_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Rate NOWBOX" message:@"Thank you for using NOWBOX! We hope you're enjoying it. We'd love for you to rate us on the App Store--it will only take a minute." delegate:self cancelButtonTitle:@"No Thanks" otherButtonTitles:@"Rate NOWBOX", @"Remind Me Later", nil];
+    [alertView show];
+    [alertView release];
+    
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogShown];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertCompletion) {
+        alertCompletion();
+        [alertCompletion release]; alertCompletion = nil;
+    }
+    
+    NSLog(@"%i %@", buttonIndex, [alertView buttonTitleAtIndex:buttonIndex]);
+    switch (buttonIndex) {
+        case 0: {
+            // No thanks
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogRejected];
+            break;
+        }
+        case 1: {
+            // Rate the app
+            [[UIApplication sharedApplication] openURL:ratingsURL];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogAccepted];        
+            break;
+        }
+        case 2: {
+            // Remind me later
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventRateUsDialogDeferred];
+            
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults setBool:NO forKey:NM_RATE_US_REMINDER_SHOWN_KEY];
+            [userDefaults setInteger:++NM_RATE_US_REMINDER_DEFER_COUNT forKey:NM_RATE_US_REMINDER_DEFER_COUNT_KEY];
+            [userDefaults synchronize];
+            break;
+        }
+    }
 }
 
 #pragma mark - GridControllerDelegate

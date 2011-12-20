@@ -21,6 +21,7 @@
 @synthesize imageFile;
 @synthesize displayText;
 @synthesize displayTextEdgeInsets;
+@synthesize displayTextShadowHidden;
 @synthesize autoHideInSeconds;
 @synthesize invalidatesToolTip;
 @synthesize target;

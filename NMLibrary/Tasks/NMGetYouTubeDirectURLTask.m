@@ -107,85 +107,27 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	NSUInteger dlen, dsdlen;
 	dlen = [directURLString length];
 	dsdlen = [directSDURLString length];
+	NSString * urlStr = directURLString;
 	if ( dlen == 0 && dsdlen == 0 ) {
 		// error - we can't find the direct URL to video
 		encountersErrorDuringProcessing = YES;
 		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Cannot locate any video stream", @"reason", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", video, @"target_object", nil];
 	} else if ( dlen == 0 && dsdlen ) {
 		self.directURLString = directSDURLString;
+		urlStr = directSDURLString;
 	} else if ( dlen && dsdlen == 0 ) {
 		self.directSDURLString = directURLString;
 	}
-	/*} else {
-		if ( httpStatusCode >= 400 && httpStatusCode < 500 ) {
-			// error in the youtube call
-			// parse the XML document <code></code>, <internalReason></internalReason>
-			NSString * xmlStr = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
-			// look for <code> </code>
-			NSRange beginRange = [xmlStr rangeOfString:@"<code>"];
-			NSRange endRange = [xmlStr rangeOfString:@"</code>"];
-			NSString * reason = nil;
-			if ( !beginRange.location == NSNotFound && !endRange.location == NSNotFound ) {
-				reason = [xmlStr substringWithRange:NSMakeRange(beginRange.location + beginRange.length, endRange.location - beginRange.location - beginRange.length)];
-			}
-			if ( reason ) {
-				self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", reason, @"reason", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", nil];
-			} else if ( [xmlStr rangeOfString:@"Device token expired"].location != NSNotFound ) {
-				self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorDeviceTokenExpired], @"error_code", @"Device token expired", @"reason", nil];
-			} else {
-				self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", nil];
-			}
-			encountersErrorDuringProcessing = YES;
-			return;
+	// parse with regular expressing
+	if ( dlen || dsdlen ) {
+		NSError *error = nil;
+		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(?<=expire\\=)\\d+" options:NSRegularExpressionCaseInsensitive error:&error];
+		NSRange rng = [regex rangeOfFirstMatchInString:urlStr options:0 range:NSMakeRange(0, [urlStr length])];
+		if ( rng.location != NSNotFound ) {
+			// we have the expiry timestamp
+			expiryTime = (NSUInteger)[[urlStr substringWithRange:rng] integerValue];
 		}
-		NSDictionary * dict = [buffer objectFromJSONData];
-		
-		NSArray * mediaContents = [dict valueForKeyPath:@"entry.media$group.media$content"];
-		if ( mediaContents == nil || [mediaContents count] == 0 ) {
-			// no data
-			encountersErrorDuringProcessing = YES;
-			NSDictionary * ytStateDict = [dict valueForKeyPath:@"entry.app$control.yt$state"];
-			if ( ytStateDict ) {
-				self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorYouTubeAPIError], @"error_code", [ytStateDict objectForKey:@"reasonCode"], @"reason", nil];
-			} else {
-				self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", nil];
-			}
-			return;
-		}
-		// get the MP4 link
-		NSString * mp4URLString = nil;
-		NSInteger ytFormat = 0;
-		for (NSDictionary * vdoDict in mediaContents) {
-			if ( [[vdoDict objectForKey:@"type"] isEqual:@"video/mp4"] ) {
-				ytFormat = [[vdoDict objectForKey:@"yt$format"] integerValue];
-				switch (ytFormat) {
-					case 3:
-						self.directSDURLString = [vdoDict objectForKey:@"url"];
-						break;
-					case 8:
-						self.directURLString = [vdoDict objectForKey:@"url"];
-						break;
-					default:
-						mp4URLString = [vdoDict objectForKey:@"url"];
-						break;
-				}
-			}
-		}
-		
-		if ( ytFormat == 0 ) {
-			// can't find the MP4 URL
-			encountersErrorDuringProcessing = YES;
-			self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", [NSNumber numberWithInteger:NMErrorNoSupportedVideoFormat], @"error_code", nil];
-			return;
-		}
-		
-		if ( directSDURLString == nil ) {
-			self.directSDURLString = mp4URLString;
-		}
-		if ( directURLString == nil ) {
-			self.directURLString = directSDURLString;
-		}
-	}*/
+	}
 
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"resolved URL for %@: %@", self.targetID, [directURLString length] ? @"Y" : [NSString stringWithFormat:@"N - %d", encountersErrorDuringProcessing]);
@@ -207,6 +149,8 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	} else {
 		video.nm_direct_url = directURLString;
 		video.nm_direct_sd_url = directSDURLString;
+		video.nm_direct_url_expiry = expiryTime;
+		video.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 	}
 	return NO;
 }

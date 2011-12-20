@@ -191,6 +191,32 @@
 	
 }
 
+- (void)refreshPlayerItems:(NSArray *)items {
+	NMVideo * vdo;
+	for (NMAVPlayerItem * theItem in items) {
+		vdo = [theItem.nmVideo retain];
+		[self removeItem:theItem];
+		// when removing a video item from the queue player, queue player will change the "current item". i.e. triggering the KVO method.
+		// We need to reset the status of the video object again here.
+		vdo.nm_playback_status  = NMVideoQueueStatusNone;
+		[self performSelector:@selector(requestResolveVideo:) withObject:vdo afterDelay:0.25];
+		[vdo release];
+	}
+}
+
+- (void)refreshItemFromIndex:(NSUInteger)idx {
+	NSArray * allItems = [self items];
+	NSUInteger c = [allItems count];
+	if ( idx >= c ) {
+		return;
+	}
+	if ( idx == 0 ) {
+		[self refreshPlayerItems:allItems];
+	} else {
+		[self refreshPlayerItems:[allItems subarrayWithRange:NSMakeRange(idx, c - idx)]];
+	}
+}
+
 - (void)queueVideo:(NMVideo *)vid {
 	/*!
 	 check if we should queue video when we model controller informs about direct URL resolved. Similar operation is carried when user flick the screen.

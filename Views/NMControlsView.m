@@ -255,7 +255,7 @@
 
 - (void)updateSeekBubbleLocation {
 	CGPoint thePoint = seekBubbleButton.center;
-	thePoint.x = progressSlider.nubPosition.x + sliderRect.origin.x;
+	thePoint.x = progressSlider.nubPosition.x + sliderRect.origin.x - 1;
 	seekBubbleButton.center = thePoint;
 }
 

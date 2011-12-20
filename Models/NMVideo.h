@@ -20,6 +20,7 @@
 	NMAVPlayerItem * nm_player_item;
 	NMMovieDetailView * nm_movie_detail_view;
 	NSInteger nm_playback_status;
+	NSInteger nm_direct_url_expiry;
 }
 
 @property (nonatomic, retain) NSString * external_id;
@@ -31,6 +32,7 @@
 @property (nonatomic, retain) NSNumber * nm_watch_later;
 @property (nonatomic, retain) NSNumber * nm_did_play;
 @property (nonatomic, retain) NSString * nm_direct_url;
+@property (nonatomic, assign) NSInteger nm_direct_url_expiry;
 @property (nonatomic, retain) NSString * nm_direct_sd_url;
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_retry_count;

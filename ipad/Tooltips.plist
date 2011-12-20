@@ -17,7 +17,7 @@
 		<key>ImageFile</key>
 		<string>tooltip-bad-video.png</string>
 		<key>DisplayText</key>
-		<string>The video is not available</string>
+		<string>This video is not available.</string>
 		<key>DisplayTextEdgeInsetsLeft</key>
 		<integer>26</integer>
 		<key>DisplayTextEdgeInsetsBottom</key>
@@ -25,6 +25,70 @@
 		<key>ValidationCriteria</key>
 		<dict>
 			<key>BadVideoTap</key>
+			<integer>1</integer>
+		</dict>
+		<key>InvalidationCriteria</key>
+		<dict/>
+	</dict>
+	<key>WatchLaterTip</key>
+	<dict>
+		<key>CenterX</key>
+		<integer>512</integer>
+		<key>CenterY</key>
+		<integer>384</integer>
+		<key>KeepCountsOnRestart</key>
+		<false/>
+		<key>ResetCountsOnDisplay</key>
+		<true/>
+		<key>AutoHideInSeconds</key>
+		<integer>2</integer>
+		<key>ImageFile</key>
+		<string>tooltip-watch-later.png</string>
+		<key>DisplayText</key>
+		<string>ADDED TO WATCH LATER CHANNEL</string>
+		<key>DisplayTextEdgeInsetsTop</key>
+		<integer>54</integer>
+		<key>DisplayTextEdgeInsetsLeft</key>
+		<string>24</string>
+		<key>DisplayTextEdgeInsetsRight</key>
+		<string>24</string>
+		<key>DisplayTextShadowHidden</key>
+		<true/>
+		<key>ValidationCriteria</key>
+		<dict>
+			<key>WatchLaterTap</key>
+			<integer>1</integer>
+		</dict>
+		<key>InvalidationCriteria</key>
+		<dict/>
+	</dict>
+	<key>FavoriteTip</key>
+	<dict>
+		<key>CenterX</key>
+		<integer>512</integer>
+		<key>CenterY</key>
+		<integer>384</integer>
+		<key>KeepCountsOnRestart</key>
+		<false/>
+		<key>ResetCountsOnDisplay</key>
+		<true/>
+		<key>AutoHideInSeconds</key>
+		<integer>2</integer>
+		<key>ImageFile</key>
+		<string>tooltip-favorite.png</string>
+		<key>DisplayText</key>
+		<string>ADDED TO FAVORITES CHANNEL</string>
+		<key>DisplayTextEdgeInsetsTop</key>
+		<integer>54</integer>
+		<key>DisplayTextEdgeInsetsLeft</key>
+		<string>24</string>
+		<key>DisplayTextEdgeInsetsRight</key>
+		<string>24</string>
+		<key>DisplayTextShadowHidden</key>
+		<true/>
+		<key>ValidationCriteria</key>
+		<dict>
+			<key>SharedVideo</key>
 			<integer>1</integer>
 		</dict>
 		<key>InvalidationCriteria</key>

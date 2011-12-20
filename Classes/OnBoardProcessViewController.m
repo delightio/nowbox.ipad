@@ -43,8 +43,6 @@
 @synthesize proceedToChannelsButton;
 @synthesize channelsView;
 @synthesize channelsScrollView;
-@synthesize shadowDownView;
-@synthesize shadowUpView;
 @synthesize featuredCategories;
 @synthesize selectedCategoryIndexes;
 @synthesize subscribedChannels;
@@ -99,8 +97,6 @@
     [proceedToChannelsButton release];    
     [channelsView release];
     [channelsScrollView release];
-    [shadowDownView release];
-    [shadowUpView release];
     [featuredCategories release];
     [selectedCategoryIndexes release];
     
@@ -273,8 +269,6 @@
     self.infoView = nil;
     self.channelsView = nil;
     self.channelsScrollView = nil;
-    self.shadowDownView = nil;
-    self.shadowUpView = nil;
     self.featuredCategories = nil;
     self.settingUpView = nil;
     self.proceedToChannelsButton = nil;
@@ -346,6 +340,7 @@
 {
     if (![sender isSelected]) {
         [self loginToSocialNetworkWithType:NMLoginYouTubeType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
 
@@ -353,6 +348,7 @@
 {
     if (![sender isSelected]) {    
         [self loginToSocialNetworkWithType:NMLoginFacebookType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
 
@@ -360,6 +356,7 @@
 {
     if (![sender isSelected]) {    
         [self loginToSocialNetworkWithType:NMLoginTwitterType];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];                
     }
 }
 
@@ -499,9 +496,6 @@
     self.subscribedChannels = [allSubscribedChannels filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type != 1"]];
     
     [channelsScrollView reloadData];      
-    
-    // Set shadow alpha
-    [self scrollViewDidScroll:channelsScrollView];
 }
 
 - (void)handleLaunchFailNotification:(NSNotification *)aNotification 
@@ -613,12 +607,6 @@
         
         return channelView;        
     }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    shadowDownView.alpha = MIN(1, MAX(0, scrollView.contentOffset.y / 10));
-    shadowUpView.alpha = MIN(1, MAX(0, (scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.frame.size.height)) / 10));
 }
 
 @end

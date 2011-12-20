@@ -12,6 +12,8 @@
 #import "NMTaskQueueController.h"
 #import "NMDataType.h"
 #import "Analytics.h"
+#import "ToolTipController.h"
+#import "VideoPlaybackViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
 
@@ -46,6 +48,9 @@
         [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
+        
+        NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+        firstShare = [dataController.favoriteVideoChannel.nm_hidden boolValue];
     }
     return self;
 }
@@ -324,14 +329,19 @@
 
 - (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:[NSString stringWithFormat:@"Your message was successfully %@.", (shareMode == ShareModeFacebook ? @"posted" : @"tweeted")]
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    alertView.tag = 0;
-    [alertView show];
-    [alertView release];
+    void (^completion)(void) = ^{
+        [self cancelButtonPressed:nil];
+        [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
+    };
+    
+    VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
+    
+    // Show "rate us" reminder the second time a user adds a video to the favorites
+    if ([playbackController shouldShowRateUsReminder] && !firstShare) {
+        [playbackController showRateUsReminderCompletion:completion];
+    } else {
+        completion();
+    }
     
     progressView.hidden = YES;
     [shareButton setEnabled:YES];
@@ -389,13 +399,14 @@
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if ([alertView numberOfButtons] == 1) {
-        if (alertView.tag >= 0) {
-            [self cancelButtonPressed:nil];
-        }
-    } else if (buttonIndex == 1) {
+    if (buttonIndex == 1) {
         [self showLoginPage];
     }
 }
-            
+
+- (void)delayedNotifyShareVideo
+{
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventSharedVideo sender:nil];
+}
+
 @end

@@ -93,7 +93,9 @@ enum {
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
     
-    ToolTip *pendingToolTip;    
+    ToolTip *pendingToolTip; 
+    void (^alertCompletion)(void);
+
     BOOL scrollingNotFromUser;
     
     BOOL gridShowing;
@@ -103,6 +105,8 @@ enum {
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
+@property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;
+@property (nonatomic, retain) NSURL *ratingsURL;
 @property (retain, nonatomic) IBOutlet UIView *previousChannelHeaderView;
 @property (retain, nonatomic) IBOutlet UIView *nextChannelHeaderView;
 
@@ -127,6 +131,9 @@ enum {
 // launch view / onboard process
 //- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;
 - (void)showPlaybackView;
+
+- (BOOL)shouldShowRateUsReminder;
+- (void)showRateUsReminderCompletion:(void (^)(void))completion;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer;

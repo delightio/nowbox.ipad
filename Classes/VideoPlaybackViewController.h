@@ -32,7 +32,7 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate> {
+@interface VideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate, UIAlertViewDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIView * ribbonView;
@@ -86,6 +86,7 @@
 	NMStyleUtility * styleUtility;
     
     ToolTip *pendingToolTip;
+    void (^alertCompletion)(void);
 }
 
 @property (nonatomic, readonly) NMVideo * currentVideo;
@@ -94,6 +95,8 @@
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
+@property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;
+@property (nonatomic, retain) NSURL *ratingsURL;
 
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)toggleChannelPanel:(id)sender;
@@ -122,6 +125,9 @@
 - (void)playVideo:(NMVideo *)aVideo;
 - (void)launchPlayVideo:(NMVideo *)aVideo;
 
+
+- (BOOL)shouldShowRateUsReminder;
+- (void)showRateUsReminderCompletion:(void (^)(void))completion;
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer;

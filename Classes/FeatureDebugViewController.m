@@ -174,7 +174,7 @@
 - (IBAction)getDebugChannel:(id)sender {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelWithIDNotification object:nil];
 	// get debug channel
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:2258];
+	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:26810];
 }
 
 - (IBAction)checkUpdate:(id)sender {

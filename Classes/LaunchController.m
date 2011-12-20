@@ -76,6 +76,8 @@
 	NM_USER_YOUTUBE_USER_NAME = [[userDefaults stringForKey:NM_USER_YOUTUBE_USER_NAME_KEY] retain];
 //	NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
+    NM_RATE_US_REMINDER_SHOWN = [userDefaults boolForKey:NM_RATE_US_REMINDER_SHOWN_KEY];
+    NM_RATE_US_REMINDER_DEFER_COUNT = [userDefaults integerForKey:NM_RATE_US_REMINDER_DEFER_COUNT_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
 	taskQueueController = [NMTaskQueueController sharedTaskQueueController];
@@ -208,19 +210,12 @@
 		lblStr = @"Service is down";
 	}
 
-	if ( [notName isEqualToString:NMDidFailCreateUserNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];        
-	} else if ( [notName isEqualToString:NMDidFailGetChannelsNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];  
-	} else if ( [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];  
-    } else if ( [notName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
-		[progressLabel setTitle:lblStr forState:UIControlStateNormal];
-        [activityIndicator stopAnimating];
-    } else if ( [notName isEqualToString:NMDidFailCheckUpdateNotification] ) {
+	if ([notName isEqualToString:NMDidFailCreateUserNotification] ||
+        [notName isEqualToString:NMDidFailGetChannelsNotification] ||
+        [notName isEqualToString:NMDidFailGetChannelVideoListNotification] ||
+        [notName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ||
+        [notName isEqualToString:NMDidFailCheckUpdateNotification]) {
+        
         progressLabel.hidden = NO;
         [progressLabel setTitle:lblStr forState:UIControlStateNormal];
         [activityIndicator stopAnimating];
@@ -379,8 +374,14 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
 }
 
 - (void)handleDidCheckUpdateNotification:(NSNotification *)aNotification {
-    NSDictionary *userInfo = [aNotification userInfo];
-    self.updateURL = [NSURL URLWithString:[[userInfo objectForKey:@"link"] objectForKey:@"url"]];
+    NSDictionary *userInfo = [aNotification userInfo];    
+    NSArray *links = [userInfo objectForKey:@"links"];
+    for (NSDictionary *link in links) {
+        if ([[link objectForKey:@"rel"] isEqualToString:@"latest"]) {
+            self.updateURL = [NSURL URLWithString:[link objectForKey:@"url"]];
+        }
+    }
+    
     NSString *currentVersion = [userInfo objectForKey:@"current_version"];
     NSString *minimumVersion = [userInfo objectForKey:@"minimum_version"];
     NSString *localVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
