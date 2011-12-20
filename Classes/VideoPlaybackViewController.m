@@ -1747,7 +1747,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark - ToolTipControllerDelegate
 
 - (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender {
-    if ([tooltip.name isEqualToString:@"WatchLaterTip"]) {
+    if ([tooltip.name isEqualToString:@"WatchLaterTip"] || [tooltip.name isEqualToString:@"FavoriteTip"]) {
         return YES;
     }
     

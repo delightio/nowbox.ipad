@@ -62,7 +62,7 @@
 		<key>InvalidationCriteria</key>
 		<dict/>
 	</dict>
-	<key>FavoriteTap</key>
+	<key>FavoriteTip</key>
 	<dict>
 		<key>CenterX</key>
 		<integer>512</integer>
