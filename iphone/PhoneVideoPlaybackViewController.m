@@ -262,18 +262,15 @@
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height / 2);
         gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height / 2, self.view.bounds.size.width, self.view.bounds.size.height / 2);
-        gridNavigationController.view.alpha = 1.0f;
         [loadedControlView setToggleGridButtonHidden:YES];   
 		[loadedControlView setControlsHidden:YES animated:NO];                
     } else {
         topLevelContainerView.frame = self.view.bounds;
         if (!gridShowing) {
-            gridNavigationController.view.alpha = 0.0f;
             gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);                        
         } else {
             gridNavigationController.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
         }
-        gridNavigationController.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
         [loadedControlView setToggleGridButtonHidden:NO];
 		[loadedControlView setControlsHidden:NO animated:NO];        
     }
@@ -1434,9 +1431,11 @@
 - (IBAction)toggleGrid:(id)sender {
     gridShowing = !gridShowing;
     
+    // Keep controls view showing a little longer
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+
     if (gridShowing) {
         gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
-        gridNavigationController.view.alpha = 1.0f;
     }
 
     controlScrollView.scrollEnabled = !gridShowing;
