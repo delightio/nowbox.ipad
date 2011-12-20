@@ -71,7 +71,8 @@ enum {
 	BOOL playFirstVideoOnLaunchWhenReady;
 	PhoneLaunchController * launchController;
     SizableNavigationController * gridNavigationController;
-
+    UIView * gridNavigationContainer;
+    
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;
 	BOOL forceStopByUser;

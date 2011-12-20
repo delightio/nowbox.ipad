@@ -261,16 +261,23 @@
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height / 2);
-        gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height / 2, self.view.bounds.size.width, self.view.bounds.size.height / 2);
+        
+        gridNavigationContainer.frame = CGRectMake(0, self.view.bounds.size.height / 2, self.view.bounds.size.width, self.view.bounds.size.height / 2);
+        gridNavigationController.view.frame = gridNavigationContainer.bounds;
+        gridNavigationContainer.alpha = 1.0f;
+        
         [loadedControlView setToggleGridButtonHidden:YES];   
 		[loadedControlView setControlsHidden:YES animated:NO];                
     } else {
         topLevelContainerView.frame = self.view.bounds;
         if (!gridShowing) {
-            gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);                        
+            gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);      
+            gridNavigationContainer.alpha = 0.0f;
         } else {
             gridNavigationController.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
+            gridNavigationContainer.alpha = 1.0f;
         }
+        gridNavigationContainer.frame = gridNavigationController.view.bounds;
         [loadedControlView setToggleGridButtonHidden:NO];
 		[loadedControlView setControlsHidden:NO animated:NO];        
     }
@@ -341,7 +348,7 @@
 - (void)dealloc {
 	[launchController release];
 	[gridNavigationController release];
-    
+    [gridNavigationContainer release];
 	[loadedControlView release];
 	[movieDetailViewArray release];
 	[currentChannel release];
@@ -438,7 +445,13 @@
     gridNavigationController.playbackViewController = self;
     [gridController release];
     
-    [self.view insertSubview:gridNavigationController.view belowSubview:controlScrollView];
+    gridNavigationContainer = [[UIView alloc] initWithFrame:gridController.view.frame];
+    gridNavigationContainer.backgroundColor = [UIColor clearColor];
+    gridNavigationContainer.clipsToBounds = YES;
+    gridNavigationContainer.autoresizesSubviews = YES;
+    [gridNavigationContainer addSubview:gridNavigationController.view];
+    [self.view addSubview:gridNavigationContainer];
+    
     [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
 
@@ -1436,10 +1449,8 @@
 
     if (gridShowing) {
         gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
+        gridNavigationContainer.alpha = 1.0f;
     }
-
-    controlScrollView.scrollEnabled = !gridShowing;
-    channelSwitchingScrollView.scrollEnabled = !gridShowing;
 
     [UIView animateWithInteractiveDuration:0.3
                                 animations:^{
@@ -1452,6 +1463,14 @@
                                         [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand.png"] forState:UIControlStateNormal];
                                         [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand-active.png"] forState:UIControlStateHighlighted];
                                     }                                    
+                                }
+                                completion:^(BOOL finished){
+                                    if (!gridShowing) {
+                                        gridNavigationContainer.alpha = 0.0f;
+                                    }
+                                    
+                                    controlScrollView.scrollEnabled = !gridShowing;
+                                    channelSwitchingScrollView.scrollEnabled = !gridShowing;
                                 }];
 }
 
