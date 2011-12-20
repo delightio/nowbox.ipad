@@ -308,7 +308,7 @@
     }
     
     [self addViewAtIndex:index];
-    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
+//    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
 
     // Remove the view that got shifted below the screen
     if (indexToRemove >= 0) {
@@ -335,7 +335,7 @@
     }
     
     numberOfItemsDelta--;
-    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
+//    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
     
     // Might need to add a view to the end of the last visible column
     if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < numberOfItems + numberOfItemsDelta) {

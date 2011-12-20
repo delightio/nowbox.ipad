@@ -226,21 +226,21 @@
         case 0: {
             // YouTube
             itemView.titleLabel.text = @"YouTube";
-            itemView.thumbnail.image = [UIImage imageNamed:@"social-youtube.png"];
+            [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-youtube.png"]];
             break;   
         }
             
         case 1: {
             // Facebook
             itemView.titleLabel.text = @"Facebook";
-            itemView.thumbnail.image = [UIImage imageNamed:@"social-facebook.png"];
+            [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-facebook.png"]];
             break;
         }
         
         case 2: {
             // Twitter
             itemView.titleLabel.text = @"Twitter";            
-            itemView.thumbnail.image = [UIImage imageNamed:@"social-twitter.png"];
+            [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-twitter.png"]];
             break;
         }
             

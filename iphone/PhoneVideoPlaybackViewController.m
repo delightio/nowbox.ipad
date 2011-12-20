@@ -1366,9 +1366,11 @@
     
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
+        loadedControlView.toggleGridButton.userInteractionEnabled = NO;
 	} completion:^(BOOL finished) {
 		if ( finished ) {
 			loadedControlView.hidden = YES;
+            loadedControlView.toggleGridButton.userInteractionEnabled = YES;
 		}
 	}];
 }
@@ -1434,7 +1436,7 @@
     
     if (gridShowing) {
         gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
-        gridNavigationController.view.alpha = 0;  
+        gridNavigationController.view.alpha = 1.0f;
     }
 
     controlScrollView.scrollEnabled = !gridShowing;
@@ -1446,12 +1448,10 @@
                                         gridNavigationController.view.frame = CGRectOffset(gridNavigationController.view.frame, 0, -self.view.bounds.size.height);
                                         [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-collapse.png"] forState:UIControlStateNormal];
                                         [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-collapse-active.png"] forState:UIControlStateHighlighted];
-                                        gridNavigationController.view.alpha = 1;                                                
                                     } else {
                                         gridNavigationController.view.frame = CGRectOffset(gridNavigationController.view.frame, 0, self.view.bounds.size.height);
                                         [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand.png"] forState:UIControlStateNormal];
                                         [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand-active.png"] forState:UIControlStateHighlighted];
-                                        gridNavigationController.view.alpha = 0;                                                                                        
                                     }                                    
                                 }];
 }

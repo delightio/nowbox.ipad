@@ -32,6 +32,7 @@
 - (void)setImageForVideoThumbnail:(NMVideo *)vdo;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (void)setImageForCategory:(NMCategory *)cat;
+- (void)setImageDirectly:(UIImage *)image;
 
 - (void)delayedIssueChannelImageDownloadRequest;
 - (void)delayedIssueAuthorImageDownloadRequest;

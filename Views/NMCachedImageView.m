@@ -58,15 +58,26 @@
 */
 
 #pragma mark Notification handler
-- (void)handleImageDownloadNotification:(NSNotification *)aNotification {
+- (void)handleImageDownloadNotification:(NSNotification *)aNotification {	
+    NMTask * theTask = [aNotification object];
+    id target = [[aNotification userInfo] objectForKey:@"target_object"];
+    
 #ifdef DEBUG_IMAGE_CACHE
-	NSLog(@"download notification");
-	NMTask * theTask = [aNotification object];
+    NSLog(@"download notification");
 	if ( theTask.command == NMCommandGetVideoThumbnail ) {
-		NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
-		NSLog(@"\tdownloaded thumbnail for video: %@", vdo.title);
-	}
+		NSLog(@"\tdownloaded thumbnail for video: %@", [target title]);
+    }
 #endif
+
+    if ((theTask.command == NMCommandGetChannelThumbnail && target != channel)
+        || (theTask.command == NMCommandGetVideoThumbnail && target != video)
+        || (theTask.command == NMCommandGetAuthorThumbnail && target != videoDetail)
+        || (theTask.command == NMCommandGetPreviewThumbnail && target != previewThumbnail)
+        || (theTask.command == NMCommandGetCategoryThumbnail && target != category)) {
+        // This is not the image download we wanted
+        return;
+    }
+    
 	// update the view
 	NSDictionary * userInfo = [aNotification userInfo];
 	self.image = [userInfo objectForKey:@"image"];
@@ -95,38 +106,57 @@
 }
 
 #pragma mark Setter
+
+- (void)clearAssociatedObjects {
+    self.channel = nil;
+    self.video = nil;
+    self.videoDetail = nil;
+    self.previewThumbnail = nil;
+    self.category = nil;
+}
+
 - (void)setImageForChannel:(NMChannel *)chn {
+    [self clearAssociatedObjects];
 	self.channel = chn;
 	// check if there's local cache
 	[cacheController setImageForChannel:chn imageView:self];
 }
 
 - (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl {
+    [self clearAssociatedObjects];
 	self.videoDetail = dtl;
 	// check if there's local cache
 	[cacheController setImageForAuthor:dtl imageView:self];
 }
 
 - (void)setImageForVideoThumbnail:(NMVideo *)vdo {
+    [self clearAssociatedObjects];    
 	self.video = vdo;
 	// check if there's local cache
 	[cacheController setImageForVideo:vdo imageView:self];
 }
 
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv {
+    [self clearAssociatedObjects];    
 	self.previewThumbnail = pv;
 	// check if there's local cache
 	[cacheController setImageForPreviewThumbnail:pv imageView:self];
 }
 
 - (void)setImageForCategory:(NMCategory *)cat {
+    [self clearAssociatedObjects];    
 	self.category = cat;
 	[cacheController setImageForCategory:cat imageView:self];
 }
 
+- (void)setImageDirectly:(UIImage *)image {
+    [self clearAssociatedObjects];
+    [self setImage:image];
+}
+
 - (void)setImage:(UIImage *)image {
     [super setImage:image];
-    
+
     if (self.adjustsImageOnHighlight) {
         self.highlightedImage = [image tintedImageUsingColor:[UIColor colorWithWhite:0.0 alpha:0.4]];
     }

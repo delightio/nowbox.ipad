@@ -104,7 +104,7 @@
     if (!categoryFilter && index == [self gridScrollViewNumberOfItems:gridScrollView] - 1) {
         // + button
         itemView.titleLabel.hidden = YES;
-        itemView.thumbnail.image = [UIImage imageNamed:@"grid-channels-plus.png"];
+        [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"grid-channels-plus.png"]];
         itemView.playing = NO;
     } else {
         NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
