@@ -24,6 +24,7 @@
     NSMutableSet *recycledViews;
     
     BOOL updating;
+    BOOL replacing;
 }
 
 @property (nonatomic, assign) NSUInteger numberOfColumns;

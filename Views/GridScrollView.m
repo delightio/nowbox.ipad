@@ -338,17 +338,18 @@
 //    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
     
     // Might need to add a view to the end of the last visible column
-    if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < numberOfItems + numberOfItemsDelta) {
-        NSLog(@"adding view!!");
+    if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < numberOfItems + numberOfItemsDelta && !replacing) {
         [self addViewAtIndex:lastVisibleIndex + 1];
     }
 }
 
 - (void)updateItemAtIndex:(NSUInteger)index
 {
+    replacing = YES;
     if ([self removeViewAtIndex:index]) {
         [self addViewAtIndex:index];
     }
+    replacing = NO;
 }
 
 #pragma mark - UIScrollViewDelegate
