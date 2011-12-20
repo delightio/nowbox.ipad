@@ -160,8 +160,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 #else
     mixpanel = [MixpanelAPI sharedAPIWithToken:NM_DEBUG_MIXPANEL_TOKEN];
 #endif
-    
-    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"iPad", AnalyticsPropertyDevice,
+    NSLog(@"model: %@", [[UIDevice currentDevice] model]);
+    [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:[[UIDevice currentDevice] model], AnalyticsPropertyDevice,
                                        [NSNumber numberWithInteger:sessionCount], AnalyticsPropertyVisitNumber, 
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenVideo, 
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, 
