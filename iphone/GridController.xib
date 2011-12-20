@@ -54,7 +54,7 @@
 								<string key="NSReuseIdentifierKey">_NS:260</string>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIBarStyle">1</int>
-								<array class="NSMutableArray" key="IBUIItems"/>
+								<array key="IBUIItems" id="0"/>
 							</object>
 							<object class="IBUIButton" id="123777448">
 								<reference key="NSNextResponder" ref="268506222"/>
@@ -190,6 +190,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBBarStyle">1</int>
 								<object class="IBUITextInputTraits" key="IBTextInputTraits">
+									<int key="IBUIAutocorrectionType">1</int>
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								</object>
 							</object>
@@ -212,10 +213,9 @@
 					<object class="IBUIActivityIndicatorView" id="940680522">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">-2147483347</int>
-						<string key="NSFrame">{{141, 274}, {37, 37}}</string>
+						<string key="NSFrame">{{141, 293}, {37, 37}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:1030</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -330,7 +330,7 @@
 				<array key="orderedObjects">
 					<object class="IBObjectRecord">
 						<int key="objectID">0</int>
-						<array key="object" id="0"/>
+						<reference key="object" ref="0"/>
 						<reference key="children" ref="1000"/>
 						<nil key="parent"/>
 					</object>

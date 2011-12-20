@@ -147,6 +147,8 @@
 
 #pragma mark - Notifications
 
+// FIXME: All this should be in PhoneVideoPlaybackViewController so we don't have to mess around with superviews of superviews
+
 - (void)resizeViewForKeyboardUserInfo:(NSDictionary *)userInfo
 {
     NSValue *sizeValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
@@ -157,18 +159,18 @@
     NSTimeInterval duration = 0;
     [durationValue getValue:&duration];
     
-    CGRect frame = self.view.frame;
+    CGRect frame = self.view.superview.frame;
     frame.origin.y = 0;
     
     if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame.size.height = self.view.superview.frame.size.height - keyboardSize.height;
+        frame.size.height = self.view.superview.superview.frame.size.height - keyboardSize.height;
     } else {
-        frame.size.height = self.view.superview.frame.size.width - keyboardSize.width;
+        frame.size.height = self.view.superview.superview.frame.size.width - keyboardSize.width;
     }
     
     [UIView animateWithDuration:duration
                      animations:^{
-                         self.view.frame = frame;                         
+                         self.view.superview.frame = frame;                         
                      }];    
 }
 
@@ -185,18 +187,18 @@
     NSTimeInterval duration = 0;
     [durationValue getValue:&duration];
     
-    CGRect frame = self.view.frame;
+    CGRect frame = self.view.superview.frame;
     if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame.origin.y = self.view.superview.frame.size.height / 2;
-        frame.size.height = self.view.superview.frame.size.height / 2;
+        frame.origin.y = self.view.superview.superview.frame.size.height / 2;
+        frame.size.height = self.view.superview.superview.frame.size.height / 2;
     } else {
         frame.origin.y = 0;
-        frame.size.height = self.view.superview.frame.size.width;
+        frame.size.height = self.view.superview.superview.frame.size.width;
     }
     
     [UIView animateWithDuration:duration
                      animations:^{
-                         self.view.frame = frame;
+                         self.view.superview.frame = frame;
                      }];
 }
 

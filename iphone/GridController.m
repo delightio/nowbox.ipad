@@ -73,6 +73,7 @@
     
     backButton.hidden = ([navigationController.viewControllers objectAtIndex:0] == self);
     actionButton.hidden = ![self conformsToProtocol:@protocol(UIActionSheetDelegate)];
+    [searchBar setShowsCancelButton:NO animated:NO];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration

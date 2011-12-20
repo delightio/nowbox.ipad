@@ -208,7 +208,12 @@
 
 - (NSUInteger)gridScrollViewNumberOfItems:(GridScrollView *)gridScrollView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 3;
+    NSUInteger numberOfObjects = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    
+    if ([self.searchBar.text length] == 0) {
+        return numberOfObjects + 3;
+    }
+    return numberOfObjects;
 }
 
 - (UIView *)gridScrollView:(GridScrollView *)gridScrollView viewForItemAtIndex:(NSUInteger)index
@@ -222,43 +227,40 @@
     itemView.index = index;
     itemView.highlighted = NO;
     
-    switch (index) {
-        case 0: {
-            // YouTube
-            itemView.titleLabel.text = @"YouTube";
-            [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-youtube.png"]];
-            break;   
-        }
-            
-        case 1: {
-            // Facebook
-            itemView.titleLabel.text = @"Facebook";
-            [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-facebook.png"]];
-            break;
-        }
-        
-        case 2: {
-            // Twitter
-            itemView.titleLabel.text = @"Twitter";            
-            [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-twitter.png"]];
-            break;
-        }
-            
-        default: {
-            // Category
-            id object = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index-3 inSection:0]];
-            
-            if ([object isKindOfClass:[NMCategory class]]) {
-                NMCategory *category = (NMCategory *)object;
-                itemView.titleLabel.text = category.title;
-                [itemView.thumbnail setImageForCategory:category];
-            } else {
-                NMChannel *channel = (NMChannel *)object;
-                itemView.titleLabel.text = channel.title;
-                [itemView.thumbnail setImageForChannel:channel];
+    if ([self.searchBar.text length] == 0 && index <= 2) {
+        switch (index) {
+            case 0: {
+                // YouTube
+                itemView.titleLabel.text = @"YouTube";
+                [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-youtube.png"]];
+                break;   
+            }
+                
+            case 1: {
+                // Facebook
+                itemView.titleLabel.text = @"Facebook";
+                [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-facebook.png"]];
+                break;
             }
             
-            break;
+            case 2: {
+                // Twitter
+                itemView.titleLabel.text = @"Twitter";            
+                [itemView.thumbnail setImageDirectly:[UIImage imageNamed:@"social-twitter.png"]];
+                break;
+            }
+        }
+    } else {
+        if ([self.searchBar.text length] == 0) {
+            // Category
+            NMCategory *category = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index-3 inSection:0]];
+            itemView.titleLabel.text = category.title;
+            [itemView.thumbnail setImageForCategory:category];
+        } else {
+            // Search results
+            NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            itemView.titleLabel.text = channel.title;
+            [itemView.thumbnail setImageForChannel:channel];
         }
     }
 
@@ -305,6 +307,7 @@
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [self clearSearchResults];
+    [self.activityIndicator stopAnimating];
     [NSFetchedResultsController deleteCacheWithName:nil];
     
     if (searchText.length > 0) {
