@@ -230,6 +230,10 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
     
+    [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
+    [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
+    [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+
 	// setup gesture recognizer
 	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
     pinRcr.delegate = self;
@@ -1477,6 +1481,69 @@
 # pragma mark Gestures
 - (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
     
+}
+
+#pragma mark - Keyboard resizing
+
+- (void)resizeViewForKeyboardUserInfo:(NSDictionary *)userInfo
+{
+    NSValue *sizeValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+    NSValue *durationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    
+    CGSize keyboardSize = [sizeValue CGRectValue].size;
+    
+    NSTimeInterval duration = 0;
+    [durationValue getValue:&duration];
+    
+    CGRect frame = gridNavigationContainer.frame;
+    frame.origin.y = 0;
+    
+    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
+        frame.size.height = self.view.frame.size.height - keyboardSize.height;
+    } else {
+        frame.size.height = self.view.frame.size.width - keyboardSize.width;
+    }
+    
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         gridNavigationContainer.frame = frame;
+                         gridNavigationController.view.frame = gridNavigationContainer.bounds;
+                     }];    
+}
+
+- (void)keyboardWillAppear:(NSNotification *)notification
+{
+    [self resizeViewForKeyboardUserInfo:[notification userInfo]];
+}
+
+- (void)keyboardWillDisappear:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    NSValue *durationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    
+    NSTimeInterval duration = 0;
+    [durationValue getValue:&duration];
+    
+    CGRect frame = gridNavigationContainer.frame;
+    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
+        frame.origin.y = self.view.frame.size.height / 2;
+        frame.size.height = self.view.frame.size.height / 2;
+    } else {
+        frame.origin.y = 0;
+        frame.size.height = self.view.frame.size.width;
+    }
+    
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         [self updateViewsForInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
+//                         gridNavigationContainer.frame = frame;
+//                         gridNavigationController.view.frame = gridNavigationContainer.bounds;
+                     }];
+}
+
+- (void)keyboardWillChangeFrame:(NSNotification *)notification
+{
+    [self resizeViewForKeyboardUserInfo:[notification userInfo]];
 }
 
 #pragma mark - GridControllerDelegate

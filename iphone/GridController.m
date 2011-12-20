@@ -79,6 +79,7 @@
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     [searchBar resignFirstResponder];
+    [searchBar setShowsCancelButton:NO animated:NO];
 }
 
 #pragma mark - Actions

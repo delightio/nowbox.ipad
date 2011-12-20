@@ -33,11 +33,7 @@
         }
         
         _viewControllers = [[NSMutableArray alloc] initWithObjects:viewController, nil];
-        visibleViewController = viewController;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+        visibleViewController = viewController;        
     }
     
     return self;
@@ -45,8 +41,6 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-
     [_viewControllers release];
     [view release];
     [visibleViewController release];
@@ -142,69 +136,6 @@
                          visibleViewController = backViewController;
                          [backViewController viewDidAppear:YES];
                      }];
-}
-
-
-#pragma mark - Notifications
-
-// FIXME: All this should be in PhoneVideoPlaybackViewController so we don't have to mess around with superviews of superviews
-
-- (void)resizeViewForKeyboardUserInfo:(NSDictionary *)userInfo
-{
-    NSValue *sizeValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-    NSValue *durationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    
-    CGSize keyboardSize = [sizeValue CGRectValue].size;
-    
-    NSTimeInterval duration = 0;
-    [durationValue getValue:&duration];
-    
-    CGRect frame = self.view.superview.frame;
-    frame.origin.y = 0;
-    
-    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame.size.height = self.view.superview.superview.frame.size.height - keyboardSize.height;
-    } else {
-        frame.size.height = self.view.superview.superview.frame.size.width - keyboardSize.width;
-    }
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         self.view.superview.frame = frame;                         
-                     }];    
-}
-
-- (void)keyboardWillAppear:(NSNotification *)notification
-{
-    [self resizeViewForKeyboardUserInfo:[notification userInfo]];
-}
-
-- (void)keyboardWillDisappear:(NSNotification *)notification
-{
-    NSDictionary *info = [notification userInfo];
-    NSValue *durationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-
-    NSTimeInterval duration = 0;
-    [durationValue getValue:&duration];
-    
-    CGRect frame = self.view.superview.frame;
-    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame.origin.y = self.view.superview.superview.frame.size.height / 2;
-        frame.size.height = self.view.superview.superview.frame.size.height / 2;
-    } else {
-        frame.origin.y = 0;
-        frame.size.height = self.view.superview.superview.frame.size.width;
-    }
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         self.view.superview.frame = frame;
-                     }];
-}
-
-- (void)keyboardWillChangeFrame:(NSNotification *)notification
-{
-    [self resizeViewForKeyboardUserInfo:[notification userInfo]];
 }
 
 @end
