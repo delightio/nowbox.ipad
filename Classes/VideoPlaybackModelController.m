@@ -669,10 +669,33 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	if ( rowCountHasChanged ) {
 		if ( deletedOlderVideos ) {
+			// get the current index path
+			self.currentIndexPath = [controller indexPathForObject:currentVideo];
+			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
+			if ( currentIndexPath.row + 1 < changeSessionVideoCount ) {
+				self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row inSection:0];
+				[dataDelegate didLoadNextVideoManagedObjectForController:self];
+			} else {
+				self.nextIndexPath = nil;
+				self.nextVideo = nil;
+			}
+			if ( currentIndexPath.row + 2 < changeSessionVideoCount ) {
+				self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+				[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
+			} else {
+				self.nextNextIndexPath = nil;
+				self.nextNextVideo = nil;
+			}
+			if ( currentIndexPath.row - 1 > -1 ) {
+				self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
+				[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
+			} else {
+				self.previousIndexPath = nil;
+				self.previousVideo = nil;
+			}
 			NSLog(@"deleted older videos");
 		}
-		id <NSFetchedResultsSectionInfo> sectionInfo = [[controller sections] objectAtIndex:0];
-		numberOfVideos = [sectionInfo numberOfObjects];
+		numberOfVideos = changeSessionVideoCount;
 		[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
 		//TODO: do we need to update the caching variables - currentIndexPath, currentVideo, etc
 		if ( numberOfVideos < 5 ) {
