@@ -59,6 +59,7 @@
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleDidGetChannelNotification:) name:NMDidGetChannelsNotification object:nil];
 	
+	
 	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 	NM_USER_ACCOUNT_ID = [userDefaults integerForKey:NM_USER_ACCOUNT_ID_KEY];
 	NM_USER_WATCH_LATER_CHANNEL_ID = [userDefaults integerForKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
