@@ -937,9 +937,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// move over to the new location
 			[UIView animateWithInteractiveDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
-				CGRect theFrame = movieView.frame;
-				theFrame.origin.x = currentXOffset;
-				movieView.frame = theFrame;
+//				CGRect theFrame = movieView.frame;
+//				theFrame.origin.x = currentXOffset;
+//				movieView.frame = theFrame;
 			} completion:^(BOOL finished) {
 				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 			}];
