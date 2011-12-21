@@ -384,7 +384,7 @@
     [self transitionFromView:socialView toView:infoView];
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
-    if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
+    if (subscribingChannels && [subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
     
