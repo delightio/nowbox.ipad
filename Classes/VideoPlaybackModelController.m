@@ -518,122 +518,66 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		case NSFetchedResultsChangeDelete:
 		{
 			rowCountHasChanged = YES;
-			NSLog(@"FRC delete case - current: %d arg: %d", currentIndexPath.row, indexPath.row);
-			NMVideo * fetchedVideo;
 			if ( [indexPath isEqual:currentIndexPath] ) {
-				if ( indexPath.row < changeSessionVideoCount ) {
-					// reset the movie detail view
-					self.currentVideo = [controller objectAtIndexPath:indexPath];
-					NSLog(@"FRC delete case - current video - %@", self.currentVideo.title);
-					// info the delegate about the current video change
-					[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
-					
-					// do NOT use nextIndexPath to check the condition
-					if ( ( videoEncounteredBitArray & NM_MODEL_NEXT_VIDEO_MASK ) == 0 && indexPath.row + 1 < changeSessionVideoCount ) {
-						self.nextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
-						fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
-						if ( nextVideo != fetchedVideo ) {
-							self.nextVideo = fetchedVideo;
-							// do not reset nextVideo's detail view. cos we don't have enough info here to determine nextVideo is invalid
-							[dataDelegate didLoadNextVideoManagedObjectForController:self];
-						}
-						
-						// do NOT use nextNextIndexPath to check the condition
-						if ( ( videoEncounteredBitArray & NM_MODEL_NEXT_NEXT_VIDEO_MASK ) == 0 && indexPath.row + 2 < changeSessionVideoCount ) {
-							self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 2 inSection:0];
-							fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
-							if ( nextNextVideo != fetchedVideo ) {
-								self.nextNextVideo = fetchedVideo;
-								[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
-							}
-						} else {
-							self.nextNextVideo = nil;
-							self.nextNextIndexPath = nil;
-						}
-					} else {
-						self.nextVideo = nil;
-						self.nextIndexPath = nil;
-						
-						self.nextNextVideo = nil;
-						self.nextNextIndexPath = nil;
-					}
-					// set the previous video
+				if ( currentIndexPath.row >= changeSessionVideoCount ) {
+					self.nextIndexPath = nil;
+					self.nextNextIndexPath = nil;
+					self.currentIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
 					if ( currentIndexPath.row > 0 ) {
-						NSLog(@"fixing the previous video view");
 						self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
-						self.previousVideo = [controller objectAtIndexPath:previousIndexPath];
-						[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
 					} else {
 						self.previousIndexPath = nil;
-						self.previousVideo = nil;
 					}
-				} else {
-					// update current one
-					self.currentIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
-					self.currentVideo = [controller objectAtIndexPath:currentIndexPath];
-					[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
-					// update previous one
-					if ( changeSessionVideoCount > 1 ) {
-						self.previousIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 2 inSection:0];
-						self.previousVideo = [controller objectAtIndexPath:previousIndexPath];
-						[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
-					}
-					
-					self.nextVideo = nil;
-					self.nextIndexPath = nil;
-					
-					self.nextNextVideo = nil;
-					self.nextNextIndexPath = nil;
 				}
-				// marked as handled everything
-				videoEncounteredBitArray = NM_MODEL_PREVIUOS_VIDEO_MASK | NM_MODEL_CURRENT_VIDEO_MASK | NM_MODEL_NEXT_VIDEO_MASK | NM_MODEL_NEXT_NEXT_VIDEO_MASK;
-			} else if ( [indexPath isEqual:nextIndexPath] && ( videoEncounteredBitArray & NM_MODEL_NEXT_VIDEO_MASK ) == 0 ) {
-				if ( nextIndexPath.row < changeSessionVideoCount ) {
-					self.nextVideo = [controller objectAtIndexPath:nextIndexPath];
-					[dataDelegate didLoadNextVideoManagedObjectForController:self];
-					if ( ( videoEncounteredBitArray & NM_MODEL_NEXT_NEXT_VIDEO_MASK ) == 0 && indexPath.row + 1 < changeSessionVideoCount ) {
-						self.nextNextIndexPath = [NSIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
-						fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
-						if ( fetchedVideo != nextNextVideo ) {
-							self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
-							[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
-						}
+			} else if ( [indexPath isEqual:nextIndexPath] ) {
+				if ( nextIndexPath.row >= changeSessionVideoCount ) {
+					self.nextNextIndexPath = nil;
+					
+					if ( changeSessionVideoCount > 1 ) {
+						self.nextIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
 					} else {
-						self.nextNextVideo = nil;
+						self.nextIndexPath = nil;
+					}
+				}
+			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
+				if ( nextNextIndexPath.row >= changeSessionVideoCount ) {
+					if ( changeSessionVideoCount > 2 ) {
+						self.nextNextIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
+					} else {
 						self.nextNextIndexPath = nil;
 					}
-				} else {
-					self.nextVideo = nil;
-					self.nextIndexPath = nil;
-					
-					self.nextNextVideo = nil;
-					self.nextNextIndexPath = nil;
 				}
-				videoEncounteredBitArray |= NM_MODEL_NEXT_VIDEO_MASK | NM_MODEL_NEXT_NEXT_VIDEO_MASK;
-			} else if ( [indexPath isEqual:nextNextIndexPath] && ( videoEncounteredBitArray & NM_MODEL_NEXT_NEXT_VIDEO_MASK ) == 0 ) {
-				if ( nextNextIndexPath.row < changeSessionVideoCount ) {
-					self.nextNextVideo = [controller objectAtIndexPath:nextNextIndexPath];
-					[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
-					// no need to set movie detail view for next next video
-				} else {
-					self.nextNextVideo = nil;
-					self.nextNextIndexPath = nil;
+			} else if ( indexPath.row < currentIndexPath.row ) {
+				if ( previousIndexPath.row <= indexPath.row ) {
+					if ( indexPath.row > 0 ) {
+						if ( indexPath.row - 1 < changeSessionVideoCount ) {
+							self.previousIndexPath = [NSIndexPath indexPathForRow:indexPath.row - 1 inSection:0];
+							self.currentIndexPath = indexPath;
+						} else {
+							self.previousIndexPath = nil;
+							self.currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+						}
+					} else {
+						self.previousIndexPath = nil;
+						self.currentIndexPath = indexPath;
+					}
+					if ( currentIndexPath.row + 1 < changeSessionVideoCount ) {
+						self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
+					} else {
+						self.nextIndexPath = nil;
+					}
+					if ( currentIndexPath.row + 2 < changeSessionVideoCount ) {
+						self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+					} else {
+						self.nextNextIndexPath = nil;
+					}
 				}
-				videoEncounteredBitArray |= NM_MODEL_NEXT_NEXT_VIDEO_MASK;
-			} else if ( [indexPath isEqual:previousIndexPath] && ( videoEncounteredBitArray & NM_MODEL_PREVIUOS_VIDEO_MASK ) == 0 ) {
-				if ( previousIndexPath.row < changeSessionVideoCount ) {
-					self.previousVideo = [controller objectAtIndexPath:previousIndexPath];
-					[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
-				} else {
-					self.previousIndexPath = nil;
-					self.previousVideo = nil;
-				}
-				videoEncounteredBitArray |= NM_MODEL_PREVIUOS_VIDEO_MASK;
-			} else if ( [indexPath compare:currentIndexPath] == NSOrderedAscending ) {
 				// flag that we have encountered some older videos
-				deletedOlderVideos = YES;
+//				deletedOlderVideos = YES;
+//				videoEncounteredBitArray = 0xff;
 			}
 			// issue reset Movie detail view
+			deletedOlderVideos = YES;
 			break;
 		}
 		case NSFetchedResultsChangeUpdate:
@@ -692,32 +636,72 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	if ( rowCountHasChanged ) {
 		if ( deletedOlderVideos ) {
-			// get the current index path
-			self.currentIndexPath = [controller indexPathForObject:currentVideo];
-			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
-			if ( currentIndexPath.row + 1 < changeSessionVideoCount ) {
-				self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row inSection:0];
-				[dataDelegate didLoadNextVideoManagedObjectForController:self];
-			} else {
-				self.nextIndexPath = nil;
-				self.nextVideo = nil;
-			}
-			if ( currentIndexPath.row + 2 < changeSessionVideoCount ) {
-				self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
-				[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
-			} else {
-				self.nextNextIndexPath = nil;
-				self.nextNextVideo = nil;
-			}
-			if ( currentIndexPath.row - 1 > -1 ) {
-				self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
-				self.previousVideo = [controller objectAtIndexPath:previousIndexPath];
+			NMVideo * fetchedVideo;
+			if ( previousIndexPath ) {
+				fetchedVideo = [controller objectAtIndexPath:previousIndexPath];
+				if ( ![fetchedVideo isEqual:previousVideo] ) {
+					self.previousVideo = fetchedVideo;
+					NSLog(@"prev video: %@", fetchedVideo.title);
+				}
 				[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
 			} else {
-				self.previousIndexPath = nil;
 				self.previousVideo = nil;
 			}
-			NSLog(@"deleted older videos");
+			// get the current index path
+			if ( currentIndexPath ) {
+				fetchedVideo = [controller objectAtIndexPath:currentIndexPath];
+				if ( ![fetchedVideo isEqual:currentVideo] ) {
+					self.currentVideo = fetchedVideo;
+					NSLog(@"cur video: %@", fetchedVideo.title);
+				}
+				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
+			} else {
+				self.currentVideo = nil;
+			}
+			if ( nextIndexPath ) {
+				fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
+				if ( ![fetchedVideo isEqual:nextVideo] ) {
+					self.nextVideo = fetchedVideo;
+					NSLog(@"next video: %@", fetchedVideo.title);
+				}
+				[dataDelegate didLoadNextVideoManagedObjectForController:self];
+			} else {
+				self.nextVideo = nil;
+			}
+			if ( nextNextIndexPath ) {
+				fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
+				if ( ![fetchedVideo isEqual:nextNextVideo] ) {
+					self.nextNextVideo = fetchedVideo;
+					NSLog(@"next next video: %@", fetchedVideo.title);
+				}
+				[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
+			} else {
+				self.nextNextVideo = nil;
+			}
+//			self.currentIndexPath = [controller indexPathForObject:currentVideo];
+//			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
+//			if ( currentIndexPath.row + 1 < changeSessionVideoCount ) {
+//				self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row inSection:0];
+//				[dataDelegate didLoadNextVideoManagedObjectForController:self];
+//			} else {
+//				self.nextIndexPath = nil;
+//				self.nextVideo = nil;
+//			}
+//			if ( currentIndexPath.row + 2 < changeSessionVideoCount ) {
+//				self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+//				[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
+//			} else {
+//				self.nextNextIndexPath = nil;
+//				self.nextNextVideo = nil;
+//			}
+//			if ( currentIndexPath.row - 1 > -1 ) {
+//				self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
+//				self.previousVideo = [controller objectAtIndexPath:previousIndexPath];
+//				[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
+//			} else {
+//				self.previousIndexPath = nil;
+//				self.previousVideo = nil;
+//			}
 		}
 		numberOfVideos = changeSessionVideoCount;
 		[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
