@@ -880,8 +880,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
 	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
+	if ( theFrame.origin.x != xOffset ) {
+		theFrame.origin.x = xOffset;
+		theDetailView.frame = theFrame;
+	}
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
@@ -899,8 +901,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
 	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
+	if ( theFrame.origin.x != xOffset ) {
+		theFrame.origin.x = xOffset;
+		theDetailView.frame = theFrame;
+	}
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
@@ -918,8 +922,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
 #endif
 	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
+	if ( theFrame.origin.x != xOffset ) {
+		theFrame.origin.x = xOffset;
+		theDetailView.frame = theFrame;
+	}
 	// when scrolling is inflight, do not issue the URL resolution request. Playback View Controller will call "advanceToNextVideo" later on which will trigger sending of resolution request.
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }
@@ -935,14 +941,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// update offset
 			currentXOffset = newOffset;
 			// move over to the new location
-			[UIView animateWithInteractiveDuration:0.5f animations:^{
+//			[UIView animateWithInteractiveDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
 //				CGRect theFrame = movieView.frame;
 //				theFrame.origin.x = currentXOffset;
 //				movieView.frame = theFrame;
-			} completion:^(BOOL finished) {
+//			} completion:^(BOOL finished) {
 				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
-			}];
+//			}];
 		} else {
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		}

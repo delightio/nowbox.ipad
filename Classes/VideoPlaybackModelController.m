@@ -528,6 +528,13 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 					} else {
 						self.previousIndexPath = nil;
 					}
+				} else {
+					if ( currentIndexPath.row + 1 >= changeSessionVideoCount ) {
+						self.nextIndexPath = nil;
+					}
+					if ( currentIndexPath.row + 2 >= changeSessionVideoCount ) {
+						self.nextNextIndexPath = nil;
+					}
 				}
 			} else if ( [indexPath isEqual:nextIndexPath] ) {
 				if ( nextIndexPath.row >= changeSessionVideoCount ) {
