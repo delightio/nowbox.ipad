@@ -540,15 +540,17 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				if ( nextIndexPath.row >= changeSessionVideoCount ) {
 					self.nextNextIndexPath = nil;
 					
-					if ( changeSessionVideoCount > 1 ) {
+					if ( changeSessionVideoCount > 1 && changeSessionVideoCount - 1 != currentIndexPath.row ) {
 						self.nextIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
 					} else {
 						self.nextIndexPath = nil;
 					}
+				} else if ( nextNextIndexPath.row >= changeSessionVideoCount ) {
+					self.nextNextIndexPath = nil;
 				}
 			} else if ( [indexPath isEqual:nextNextIndexPath] ) {
 				if ( nextNextIndexPath.row >= changeSessionVideoCount ) {
-					if ( changeSessionVideoCount > 2 ) {
+					if ( changeSessionVideoCount > 2 && changeSessionVideoCount - 1 != nextIndexPath.row ) {
 						self.nextNextIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
 					} else {
 						self.nextNextIndexPath = nil;
