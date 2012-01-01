@@ -92,7 +92,7 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 - (NSInteger)commandIndex {
 	if ( targetID ) {
 		NSInteger tid = [self.targetID unsignedIntegerValue];
-		return tid << 6 | command;
+		return (((NSIntegerMax >> 6 ) & tid) << 6) | command;
 	}
 	return (NSUInteger)command;
 }

@@ -191,7 +191,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	NSNumber *key;
 	BOOL didRunOutResource = NO;
 	NSMutableArray * rmTaskAy = nil;
-	NSUInteger taskIdx;
+	NSInteger taskIdx;
 	[pendingTaskBufferLock lock];
 	for (theTask in pendingTaskBuffer) {
 		if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {

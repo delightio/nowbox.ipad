@@ -86,6 +86,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 - (NSInteger)commandIndex {
 	if ( targetID ) {
 		NSInteger tid = [self.targetID integerValue];
+		// clean up the upper 9 bit
+		tid = (NSIntegerMax >> 9) & tid;
 		return tid << 9 | eventType << 6 | command;
 	}
 	return (NSUInteger)command;
