@@ -41,11 +41,11 @@
 @property (nonatomic, retain) NSString * originalImagePath;
 @property (nonatomic, retain) NSHTTPURLResponse * httpResponse;
 
-+ (NSUInteger)commandIndexForCategory:(NMCategory *)cat;
-+ (NSUInteger)commandIndexForChannel:(NMChannel *)chn;
-+ (NSUInteger)commandIndexForAuthor:(NMVideoDetail *)dtl;
-+ (NSUInteger)commandIndexForVideo:(NMVideo *)vdo;
-+ (NSUInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv;
++ (NSInteger)commandIndexForCategory:(NMCategory *)cat;
++ (NSInteger)commandIndexForChannel:(NMChannel *)chn;
++ (NSInteger)commandIndexForAuthor:(NMVideoDetail *)dtl;
++ (NSInteger)commandIndexForVideo:(NMVideo *)vdo;
++ (NSInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 
 - (id)initWithCategory:(NMCategory *)cat;
 - (id)initWithChannel:(NMChannel *)chn;

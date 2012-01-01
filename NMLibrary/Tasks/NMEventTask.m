@@ -83,10 +83,10 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	[super dealloc];
 }
 
-- (NSUInteger)commandIndex {
+- (NSInteger)commandIndex {
 	if ( targetID ) {
-		NSUInteger tid = [self.targetID unsignedIntegerValue];
-		return tid << 9 | eventType << 6 | (NSUInteger)command;
+		NSInteger tid = [self.targetID integerValue];
+		return tid << 9 | eventType << 6 | command;
 	}
 	return (NSUInteger)command;
 }

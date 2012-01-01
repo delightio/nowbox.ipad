@@ -26,29 +26,29 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 @synthesize image, video, videoDetail;
 @synthesize externalID, previewThumbnail;
 
-+ (NSUInteger)commandIndexForCategory:(NMCategory *)cat {
-	NSUInteger tid = [cat.nm_id unsignedIntegerValue];
-	return tid << 6 | (NSUInteger)NMCommandGetCategoryThumbnail;
++ (NSInteger)commandIndexForCategory:(NMCategory *)cat {
+	NSInteger tid = [cat.nm_id unsignedIntegerValue];
+	return tid << 6 | NMCommandGetCategoryThumbnail;
 }
 
-+ (NSUInteger)commandIndexForChannel:(NMChannel *)chn {
-	NSUInteger tid = [chn.nm_id unsignedIntegerValue];
-	return tid << 6 | (NSUInteger)NMCommandGetChannelThumbnail;
++ (NSInteger)commandIndexForChannel:(NMChannel *)chn {
+	NSInteger tid = [chn.nm_id unsignedIntegerValue];
+	return tid << 6 | NMCommandGetChannelThumbnail;
 }
 
-+ (NSUInteger)commandIndexForAuthor:(NMVideoDetail *)dtl {
-	NSUInteger tid = [dtl.author_id unsignedIntegerValue];
-	return tid << 6 | (NSUInteger)NMCommandGetAuthorThumbnail;
++ (NSInteger)commandIndexForAuthor:(NMVideoDetail *)dtl {
+	NSInteger tid = [dtl.author_id unsignedIntegerValue];
+	return tid << 6 | NMCommandGetAuthorThumbnail;
 }
 
-+ (NSUInteger)commandIndexForVideo:(NMVideo *)vdo {
-	NSUInteger tid = [vdo.nm_id unsignedIntegerValue];
-	return tid << 6 | (NSUInteger)NMCommandGetVideoThumbnail;
++ (NSInteger)commandIndexForVideo:(NMVideo *)vdo {
+	NSInteger tid = [vdo.nm_id unsignedIntegerValue];
+	return tid << 6 | NMCommandGetVideoThumbnail;
 }
 
-+ (NSUInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv {
-	NSUInteger tid = [pv.nm_id unsignedIntegerValue];
-	return tid << 6 | (NSUInteger)NMCommandGetPreviewThumbnail;
++ (NSInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv {
+	NSInteger tid = [pv.nm_id unsignedIntegerValue];
+	return tid << 6 | NMCommandGetPreviewThumbnail;
 }
 
 - (id)initWithCategory:(NMCategory *)cat {
