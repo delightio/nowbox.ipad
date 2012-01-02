@@ -931,13 +931,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum {
+#ifdef DEBUG_PLAYBACK_QUEUE
 	NSLog(@"current total num videos: %d", totalNum);
+#endif
 
 	controlScrollView.contentSize = CGSizeMake((CGFloat)(NM_IPAD_SCREEN_WIDTH_INT * totalNum), 380.0f);
 	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * NM_IPAD_SCREEN_WIDTH_INT);
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
+#ifdef DEBUG_PLAYBACK_QUEUE
 			NSLog(@"current idx: %d video: %@", playbackModelController.currentIndexPath.row, playbackModelController.currentVideo.title);
+#endif
 			// update offset
 			currentXOffset = newOffset;
 			// move over to the new location
