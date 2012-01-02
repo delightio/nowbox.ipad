@@ -506,7 +506,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 		NMGetYouTubeDirectURLTask * uTask = (NMGetYouTubeDirectURLTask *)theTask;
 		NSLog(@"video: %@ %@", uTask.video.title, uTask.video.nm_id);
 	}
-	if ( [theTask.buffer length] < 200 ) {
+	if ( [theTask.buffer length] < 256 ) {
 		NSString *str = [[NSString alloc] initWithData:theTask.buffer encoding:NSUTF8StringEncoding];
 		NSLog(@"%@", str);
 		[str release];
