@@ -98,7 +98,7 @@
 
 - (void)revertToVideo:(NMVideo *)aVideo {
 //	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	if ( aVideo.nm_playback_status < NMVideoQueueStatusResolvingDirectURL ) {
+	if ( aVideo.nm_playback_status <= NMVideoQueueStatusResolvingDirectURL ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
 		NSLog(@"revertToVideo: %@ - cancel and delay call", aVideo.title);
 #endif
