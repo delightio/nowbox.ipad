@@ -1358,6 +1358,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	scrollView.scrollEnabled = NO;
 #endif
+	// If user scrolls too fast, "scrollViewDidEndDecelerating:" may not be called. This happens when "decelerate" argument in this method is NO.
+	if ( decelerate == NO ) {
+		scrollView.scrollEnabled = YES;
+		NMVideoPlaybackViewIsScrolling = NO;
+	}
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -1730,6 +1735,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 			
 		default:
+			NSLog(@"Gesture state: %d", sender.state);
 			break;
 	}
 }
