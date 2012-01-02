@@ -77,6 +77,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 }
 
 - (void)dealloc {
+	[resultDictionary release];
 	[channelID release];
 	[channel release];
 	[video release];
