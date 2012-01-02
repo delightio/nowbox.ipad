@@ -35,6 +35,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 - (id)init {
 	self = [super init];
 	commandIndexPool = [[NSMutableIndexSet alloc] init];
+	pendingDeleteCommandIndexPool = [[NSMutableIndexSet alloc] init];
 //	activeChannelThumbnailDownloadSet = [[NSMutableSet alloc] init];
 	taskPool = [[NSMutableDictionary alloc] init];
 	connectionPool = [[NSMutableDictionary alloc] init];
@@ -65,6 +66,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 - (void)dealloc {
 	isDone = YES;
 	[commandIndexPool release];
+	[pendingDeleteCommandIndexPool release];
 //	[activeChannelThumbnailDownloadSet release];
 	[defaultCenter release];
 	[taskPool release];
@@ -196,11 +198,13 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	for (theTask in pendingTaskBuffer) {
 		if ( theTask.state == NMTaskExecutionStateWaitingInConnectionQueue ) {
 			taskIdx = [theTask commandIndex];
-			if ( [commandIndexPool containsIndex:taskIdx] ) {
+			// pendingDeleteCommandIndexPool - delete an item only once. This avoids the case where same 2 tasks, both not executed yet, are deleted all together.
+			if ( [commandIndexPool containsIndex:taskIdx] && ![pendingDeleteCommandIndexPool containsIndex:taskIdx] ) {
 				// remove the task without performing it
 				if ( rmTaskAy == nil ) {
 					rmTaskAy = [NSMutableArray arrayWithCapacity:2];
 				}
+				[pendingDeleteCommandIndexPool addIndex:taskIdx];
 				[rmTaskAy addObject:theTask];
 #ifdef DEBUG_CONNECTION_CONTROLLER
 				NSLog(@"Network Controller: command repeated. Discard Task: %d", taskIdx);
@@ -234,6 +238,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	}
 	// remove these commands
 	if ( rmTaskAy ) [pendingTaskBuffer removeObjectsInArray:rmTaskAy];
+	[pendingDeleteCommandIndexPool removeAllIndexes];
 	[pendingTaskBufferLock unlock];
 	return didRunOutResource;
 }

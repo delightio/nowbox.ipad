@@ -32,7 +32,7 @@
 	NSInteger numberOfConnections, maxNumberOfConnection;
 	NSMutableArray *connectionDateLog;
 	
-	NSMutableIndexSet * commandIndexPool;
+	NSMutableIndexSet * commandIndexPool, * pendingDeleteCommandIndexPool;
 	
 	NSDate * errorWindowStartDate;
 	BOOL tokenRenewMode;
