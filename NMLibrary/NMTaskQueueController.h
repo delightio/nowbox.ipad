@@ -122,5 +122,8 @@
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 
+// Debug task queue status
+- (void)debugPrintCommandPoolStatus;
+
 - (void)cancelAllTasks;
 @end

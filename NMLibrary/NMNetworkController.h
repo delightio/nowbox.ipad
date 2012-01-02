@@ -32,7 +32,7 @@
 	NSInteger numberOfConnections, maxNumberOfConnection;
 	NSMutableArray *connectionDateLog;
 	
-	NSMutableIndexSet * commandIndexPool;
+	NSMutableIndexSet * commandIndexPool, * pendingDeleteCommandIndexPool;
 	
 	NSDate * errorWindowStartDate;
 	BOOL tokenRenewMode;
@@ -69,5 +69,7 @@
 - (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj;
 - (void)cancelSearchTasks;
 - (void)forceCancelAllTasks;
+
+- (void)debugPrintCommandPoolStatus;
 
 @end

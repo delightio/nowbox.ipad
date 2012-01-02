@@ -180,7 +180,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (NSTimeInterval)timeOnAppSinceInstall
 {
     NSTimeInterval timeOnAppSinceInstall = lastTimeOnAppSinceInstall + ([[NSDate date] timeIntervalSince1970] - activeStartTime);
-    NSLog(@"time on app since install: %f", timeOnAppSinceInstall);
+//    NSLog(@"time on app since install: %f", timeOnAppSinceInstall);
     return timeOnAppSinceInstall;
 }
 
