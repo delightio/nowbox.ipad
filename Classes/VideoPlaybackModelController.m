@@ -522,7 +522,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				if ( currentIndexPath.row >= changeSessionVideoCount ) {
 					self.nextIndexPath = nil;
 					self.nextNextIndexPath = nil;
-					self.currentIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
+					if ( changeSessionVideoCount ) self.currentIndexPath = [NSIndexPath indexPathForRow:changeSessionVideoCount - 1 inSection:0];
+					else self.currentIndexPath = nil;
 					if ( currentIndexPath.row > 0 ) {
 						self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
 					} else {
@@ -645,12 +646,12 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 	if ( rowCountHasChanged ) {
 		if ( deletedOlderVideos ) {
+			// delay delete in this "did change content" method. This avoid all the hiccups when handling delete on-the-fly.
 			NMVideo * fetchedVideo;
 			if ( previousIndexPath ) {
 				fetchedVideo = [controller objectAtIndexPath:previousIndexPath];
 				if ( ![fetchedVideo isEqual:previousVideo] ) {
 					self.previousVideo = fetchedVideo;
-					NSLog(@"prev video: %@", fetchedVideo.title);
 				}
 				[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
 			} else {
@@ -661,7 +662,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				fetchedVideo = [controller objectAtIndexPath:currentIndexPath];
 				if ( ![fetchedVideo isEqual:currentVideo] ) {
 					self.currentVideo = fetchedVideo;
-					NSLog(@"cur video: %@", fetchedVideo.title);
 				}
 				[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 			} else {
@@ -671,7 +671,6 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				fetchedVideo = [controller objectAtIndexPath:nextIndexPath];
 				if ( ![fetchedVideo isEqual:nextVideo] ) {
 					self.nextVideo = fetchedVideo;
-					NSLog(@"next video: %@", fetchedVideo.title);
 				}
 				[dataDelegate didLoadNextVideoManagedObjectForController:self];
 			} else {
@@ -681,36 +680,11 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 				fetchedVideo = [controller objectAtIndexPath:nextNextIndexPath];
 				if ( ![fetchedVideo isEqual:nextNextVideo] ) {
 					self.nextNextVideo = fetchedVideo;
-					NSLog(@"next next video: %@", fetchedVideo.title);
 				}
 				[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
 			} else {
 				self.nextNextVideo = nil;
 			}
-//			self.currentIndexPath = [controller indexPathForObject:currentVideo];
-//			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
-//			if ( currentIndexPath.row + 1 < changeSessionVideoCount ) {
-//				self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row inSection:0];
-//				[dataDelegate didLoadNextVideoManagedObjectForController:self];
-//			} else {
-//				self.nextIndexPath = nil;
-//				self.nextVideo = nil;
-//			}
-//			if ( currentIndexPath.row + 2 < changeSessionVideoCount ) {
-//				self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
-//				[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
-//			} else {
-//				self.nextNextIndexPath = nil;
-//				self.nextNextVideo = nil;
-//			}
-//			if ( currentIndexPath.row - 1 > -1 ) {
-//				self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
-//				self.previousVideo = [controller objectAtIndexPath:previousIndexPath];
-//				[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
-//			} else {
-//				self.previousIndexPath = nil;
-//				self.previousVideo = nil;
-//			}
 		}
 		numberOfVideos = changeSessionVideoCount;
 		[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
