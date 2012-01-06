@@ -9,6 +9,7 @@
 #import "LaunchController.h"
 #import "VideoPlaybackViewController.h"
 #import "NMLibrary.h"
+#import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import "UIView+InteractiveAnimation.h"
 
@@ -162,9 +163,11 @@
 		}
 	}
     
+    NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];
+    [Crittercism setUsername:userNameTag];
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];    
+    [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
 }
 
 #pragma mark Notification
@@ -431,8 +434,10 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     [userDefaults setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
     [userDefaults synchronize];
     
+    NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];
+    [Crittercism setUsername:userNameTag];
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
     [[MixpanelAPI sharedAPI] track:@"$born"];
     [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
     

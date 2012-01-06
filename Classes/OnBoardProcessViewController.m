@@ -16,6 +16,7 @@
 #import "NMCategory.h"
 #import "NMChannel.h"
 #import "Analytics.h"
+#import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
@@ -431,11 +432,12 @@
             }];
         }
         
+        NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];
+        [Crittercism setUsername:userNameTag];
         [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-        [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+        [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
         [[MixpanelAPI sharedAPI] track:@"$born"];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
-        
     }
 }
 
