@@ -47,8 +47,26 @@
 	if ( item && [self canInsertItem:item afterItem:nil] ) {
 		[playbackDelegate player:self observePlayerItem:item];
 		
+		NSLog(@"insertVideoToEndOfQueue: %@", vid.title);
 		[self insertItem:item afterItem:nil];
 		vid.nm_playback_status = NMVideoQueueStatusQueued;
+	}
+}
+
+- (void)insertVideo:(NMVideo *)vid afterItem:(NMAVPlayerItem *)anItem {
+	NSLog(@"insertVideo afterItem");
+	// insert the video and delete the item
+	NMAVPlayerItem * targetItem = vid.nm_player_item;
+	if ( targetItem == nil ) {
+		targetItem = [vid createPlayerItem];
+	}
+	if ( [self canInsertItem:targetItem afterItem:anItem] ) {
+		// insert after anItem
+		[playbackDelegate player:self stopObservingPlayerItem:anItem];
+		[playbackDelegate player:self observePlayerItem:targetItem];
+		[self insertItem:targetItem afterItem:anItem];
+		[self removeItem:anItem];
+		NSLog(@"\tinserted");
 	}
 }
 
@@ -228,6 +246,8 @@
 	NMVideo * otherVideo;
 	NMAVPlayerItem * thePlayerItem = nil;
 	
+	NSLog(@"queueVideo: %@ %d", vid.title, c);
+	
 	switch (c) {
 		case 0:
 		{
@@ -278,7 +298,15 @@
 				thePlayerItem = [queuedItems objectAtIndex:0];
 				if ( ![thePlayerItem.nmVideo isEqual:vid] ) {
 					// we need to queue this video
-					[self advanceToVideo:vid];
+					[self insertVideo:vid afterItem:thePlayerItem];
+//					[self advanceToVideo:vid];
+					// check if other videos make sense of not.
+					thePlayerItem = [queuedItems objectAtIndex:1];
+					if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
+//						[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
+//						[self removeItem:thePlayerItem];
+						[self insertVideo:[playbackDelegate nextVideoForPlayer:self] afterItem:thePlayerItem];
+					}
 				} else {
 
 				// we wanna play the current video while there's already videos in the queue. This indicates user has scrolled back to the previous video
@@ -302,7 +330,27 @@
 				thePlayerItem = [queuedItems objectAtIndex:0];
 				if ( ![thePlayerItem.nmVideo isEqual:vid] ) {
 					// we need to queue this video
-					[self advanceToVideo:vid];
+					[self insertVideo:vid afterItem:thePlayerItem];
+//					[self advanceToVideo:vid];
+					// check if other videos make sense of not.
+					thePlayerItem = [queuedItems objectAtIndex:1];
+					if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
+//						[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
+//						[self removeItem:thePlayerItem];
+						[self insertVideo:[playbackDelegate nextVideoForPlayer:self] afterItem:thePlayerItem];
+						thePlayerItem = [queuedItems objectAtIndex:2];
+						if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
+//							[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
+//							[self removeItem:thePlayerItem];
+							[self insertVideo:[playbackDelegate nextNextVideoForPlayer:self] afterItem:thePlayerItem];
+						}
+					} else {
+						thePlayerItem = [queuedItems objectAtIndex:2];
+						if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
+							[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
+							[self removeItem:thePlayerItem];
+						}
+					}
 				} else {
 					NMAVPlayerItem * otherItem = [queuedItems objectAtIndex:1];
 					if ( otherItem.nmVideo != [playbackDelegate nextNextVideoForPlayer:self] ) {
@@ -314,6 +362,8 @@
 					[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 					[self removeItem:otherItem];
 				}
+			} else {
+				NSLog(@"not doing anything for case 3");
 			}
 			break;
 		}
