@@ -185,7 +185,7 @@
 	CGRect theFrame = playbackViewController.movieView.frame;
 	CGFloat alpha = playbackViewController.movieView.alpha;
 	NMAVQueuePlayer * thePlayer = playbackViewController.movieView.player;
-	NSLog(@"movie view info: %f %f no. of videos: %d", theFrame.origin.x, alpha, [thePlayer.items count]);
+	NSLog(@"movie view info: %f %f scroll view: %f no. of videos: %d", theFrame.origin.x, alpha, playbackViewController.controlScrollView.contentOffset.x, [thePlayer.items count]);
 }
 
 - (IBAction)checkUpdate:(id)sender {
