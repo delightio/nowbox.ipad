@@ -251,6 +251,7 @@
 		}
 		case 1:
 		{
+			// target video is current video
 			if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 				// check if the currently playing video is the video we wanna play
 				thePlayerItem = [queuedItems objectAtIndex:0];

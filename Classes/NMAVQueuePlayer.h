@@ -15,6 +15,7 @@
 @protocol NMAVQueuePlayerPlaybackDelegate <NSObject>
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid;
+- (NMVideo *)previousVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 - (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 - (NMVideo *)nextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;
 - (NMVideo *)nextNextVideoForPlayer:(NMAVQueuePlayer *)aPlayer;

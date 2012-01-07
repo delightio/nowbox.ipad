@@ -83,6 +83,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize controlScrollView;
+@synthesize movieView;
 @synthesize loadedMovieDetailView;
 @synthesize appDelegate;
 @synthesize launchModeActive;
@@ -1029,6 +1030,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     }
 }
 
+- (NMVideo *)previousVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
+	return playbackModelController.previousVideo;
+}
+
 - (NMVideo *)currentVideoForPlayer:(NMAVQueuePlayer *)aPlayer {
 	return playbackModelController.currentVideo;
 }
@@ -1214,7 +1219,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		showMovieControlTimestamp = 1;
 		
 		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25];
-		
+		CGRect theFrame = movieView.frame;
+		NSLog(@"movie view position in item change: %f %f", theFrame.origin.x, theFrame.origin.y);
 		if ( didPlayToEnd ) {
 //			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
@@ -1364,8 +1370,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 	// If user scrolls too fast, "scrollViewDidEndDecelerating:" may not be called. This happens when "decelerate" argument in this method is NO.
 	if ( decelerate == NO ) {
-		scrollView.scrollEnabled = YES;
-		NMVideoPlaybackViewIsScrolling = NO;
+		[self scrollViewDidEndDecelerating:scrollView];
+//		scrollView.scrollEnabled = YES;
+//		NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
@@ -1395,6 +1402,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[self stopVideo];
 		didSkippedVideo = YES;
 		currentXOffset -= NM_IPAD_SCREEN_WIDTH;
+		NSLog(@"offset value: %f real: %f", currentXOffset, scrollView.contentOffset.x);
 		[self reclaimMovieDetailViewForVideo:playbackModelController.nextVideo];
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
