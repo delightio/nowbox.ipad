@@ -374,7 +374,7 @@
 }
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {
-	progressSlider.bufferTime = (aRange.start.value + aRange.duration.value) / aRange.duration.timescale;
+	progressSlider.bufferTime = (NSInteger)CMTimeGetSeconds(CMTimeAdd(aRange.start, aRange.duration));
 }
 
 #pragma mark Gesture delegate

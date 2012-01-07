@@ -257,6 +257,7 @@
 				thePlayerItem = [queuedItems objectAtIndex:0];
 				if ( ![thePlayerItem.nmVideo isEqual:vid] ) {
 					// we need to queue this video
+					[self insertVideoToEndOfQueue:vid];
 					[self advanceToVideo:vid];
 				}
 			} else if ( [vid isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
