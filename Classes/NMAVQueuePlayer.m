@@ -47,14 +47,12 @@
 	if ( item && [self canInsertItem:item afterItem:nil] ) {
 		[playbackDelegate player:self observePlayerItem:item];
 		
-		NSLog(@"insertVideoToEndOfQueue: %@", vid.title);
 		[self insertItem:item afterItem:nil];
 		vid.nm_playback_status = NMVideoQueueStatusQueued;
 	}
 }
 
 - (void)insertVideo:(NMVideo *)vid afterItem:(NMAVPlayerItem *)anItem {
-	NSLog(@"insertVideo afterItem");
 	// insert the video and delete the item
 	NMAVPlayerItem * targetItem = vid.nm_player_item;
 	if ( targetItem == nil ) {
@@ -246,8 +244,6 @@
 	NMVideo * otherVideo;
 	NMAVPlayerItem * thePlayerItem = nil;
 	
-	NSLog(@"queueVideo: %@ %d", vid.title, c);
-	
 	switch (c) {
 		case 0:
 		{
@@ -362,8 +358,6 @@
 					[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 					[self removeItem:otherItem];
 				}
-			} else {
-				NSLog(@"not doing anything for case 3");
 			}
 			break;
 		}
