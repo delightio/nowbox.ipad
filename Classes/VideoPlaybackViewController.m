@@ -83,6 +83,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize controlScrollView;
+@synthesize movieView;
 @synthesize loadedMovieDetailView;
 @synthesize appDelegate;
 @synthesize launchModeActive;
@@ -508,7 +509,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"configure control view for: %@, %@", aVideo.title, aVideo.nm_id);
+	NSLog(@"configure control view for: %@, %@, %f", aVideo.title, aVideo.nm_id, currentXOffset);
 #endif
 	[loadedControlView resetView];
 	if ( aVideo ) {
@@ -947,9 +948,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			// move over to the new location
 //			[UIView animateWithInteractiveDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
-//				CGRect theFrame = movieView.frame;
-//				theFrame.origin.x = currentXOffset;
-//				movieView.frame = theFrame;
+			CGRect theFrame = movieView.frame;
+			theFrame.origin.x = currentXOffset;
+			movieView.frame = theFrame;
+			loadedControlView.frame = theFrame;
 //			} completion:^(BOOL finished) {
 				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 //			}];
@@ -1364,8 +1366,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 	// If user scrolls too fast, "scrollViewDidEndDecelerating:" may not be called. This happens when "decelerate" argument in this method is NO.
 	if ( decelerate == NO ) {
-		scrollView.scrollEnabled = YES;
-		NMVideoPlaybackViewIsScrolling = NO;
+		[self scrollViewDidEndDecelerating:scrollView];
+//		scrollView.scrollEnabled = YES;
+//		NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 

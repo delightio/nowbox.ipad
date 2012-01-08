@@ -88,6 +88,9 @@
 	NMSeekBarLayoutLayer * theLayer = (NMSeekBarLayoutLayer *)self.layer;
 	CGRect theRect = theLayer.progressLayer.bounds;
 	theRect.size.width = roundf(widthPerSec * ((CGFloat)cTime));
+	if ( theRect.size.width > self.bounds.size.width ) {
+		theRect.size.width = self.bounds.size.width - 2.0f;
+	}
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.progressLayer.bounds = theRect;
@@ -101,6 +104,9 @@
 	NMSeekBarLayoutLayer * theLayer = (NMSeekBarLayoutLayer *)self.layer;
 	CGRect theRect = theLayer.bufferLayer.bounds;
 	theRect.size.width = roundf(widthPerSec * ((CGFloat)bTime));
+	if ( theRect.size.width > self.bounds.size.width ) {
+		theRect.size.width = self.bounds.size.width - 2.0f;
+	}
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.bufferLayer.bounds = theRect;

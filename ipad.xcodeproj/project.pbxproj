@@ -1623,7 +1623,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = ipad/KeychainAccessGroups.plist;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: So Hok Chun (KYU6R3935G)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: So Hok Chun (KYU6R3935G)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1632,14 +1633,21 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_PANEL_ENABLED,
+					DEBUG_PLAYBACK_NETWORK_CALL,
+					DEBUG_PLAYER_NAVIGATION,
+					DEBUG_SKIP_ONBOARD_PROCESS,
+					DEBUG_USE_STAGING_SERVER,
+				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "7C6C927D-B968-4168-9A8B-3D1F5FCE3D55";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7C6C927D-B968-4168-9A8B-3D1F5FCE3D55";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1681,6 +1689,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_PLAYER_NAVIGATION,
+					DEBUG_USE_STAGING_SERVER,
 					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 				);
