@@ -644,7 +644,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		numFiles = [fileDictAy count];
 		// get the items to delete
 		for (NSInteger i = 0; i < numFiles - maxFileCount; i++) {
-			[fileManager removeItemAtPath:[dirPath stringByAppendingPathComponent:[fileDictAy objectAtIndex:i]] error:NULL];
+			[fileManager removeItemAtPath:[dirPath stringByAppendingPathComponent:[[fileDictAy objectAtIndex:i] objectForKey:fNameKey]] error:NULL];
 		}
 	}
 }

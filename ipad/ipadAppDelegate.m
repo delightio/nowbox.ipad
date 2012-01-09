@@ -11,12 +11,14 @@
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
 #import "ToolTipController.h"
-#import <BugSense-iOS/BugSenseCrashController.h>
+#import "Crittercism.h"
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
 #define NM_DEBUG_MIXPANEL_TOKEN @"79ed82e53930d8f41c4e87f7084d9158"
 #define NM_PROD_MIXPANEL_TOKEN @"e447bed162e427230f5356bc987a5e16"
-#define NM_BUGSENSE_TOKEN @"775bf5eb"
+#define NM_CRITTERCISM_APP_ID @"4f0736d2b093151a900000e7"
+#define NM_CRITTERCISM_OAUTH_KEY @"4f0736d2b093151a900000e7jgodwobq"
+#define NM_CRITTERCISM_OAUTH_SECRET @"epms3z2y0tg1lzq6hbrpw8icgjtfnvvj"
 
 // user data
 NSString * const NM_USER_ACCOUNT_ID_KEY		= @"NM_USER_ACCOUNT_ID_KEY";
@@ -192,9 +194,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 
     // Enable analytics and crash reporting
     [self setupMixpanel];
-    [BugSenseCrashController sharedInstanceWithBugSenseAPIKey:NM_BUGSENSE_TOKEN 
-                                               userDictionary:nil 
-                                              sendImmediately:YES];
+    [Crittercism initWithAppID:NM_CRITTERCISM_APP_ID
+                        andKey:NM_CRITTERCISM_OAUTH_KEY
+                     andSecret:NM_CRITTERCISM_OAUTH_SECRET
+         andMainViewController:viewController];
     
 	// detect version
 	if ( kCFCoreFoundationVersionNumber > 550.58f ) {
