@@ -316,14 +316,19 @@
 
 - (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:[NSString stringWithFormat:@"Your message was successfully %@.", (shareMode == ShareModeFacebook ? @"posted" : @"tweeted")]
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    alertView.tag = 0;
-    [alertView show];
-    [alertView release];
+    void (^completion)(void) = ^{
+        [self cancelButtonPressed:nil];
+        [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
+    };
+    
+    VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
+    
+    // Show "rate us" reminder the second time a user adds a video to the favorites
+    if ([playbackController shouldShowRateUsReminder] && !firstShare) {
+        [playbackController showRateUsReminderCompletion:completion];
+    } else {
+        completion();
+    }
     
     progressView.hidden = YES;
     [shareButton setEnabled:YES];
@@ -381,23 +386,7 @@
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if ([alertView numberOfButtons] == 1) {
-        if (alertView.tag >= 0) {
-            void (^completion)(void) = ^{
-                [self cancelButtonPressed:nil];
-                [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
-            };
-
-            VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
-            
-            // Show "rate us" reminder the second time a user adds a video to the favorites
-            if ([playbackController shouldShowRateUsReminder] && !firstShare) {
-                [playbackController showRateUsReminderCompletion:completion];
-            } else {
-                completion();
-            }
-        }
-    } else if (buttonIndex == 1) {
+    if (buttonIndex == 1) {
         [self showLoginPage];
     }
 }
