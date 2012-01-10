@@ -51,8 +51,8 @@
     BOOL enableLockToEdge;
 	
 	// subscription related image
-	UIImage * channelSubscribedIcon, * channelSubscribedBackgroundImage;
-	UIImage * channelNotSubscribedIcon, * channelNotSubscribedBackgroundImage;
+	UIImage * channelSubscribedIcon, * channelSubscribedButtonImage, * channelSubscribedBackgroundImage;
+	UIImage * channelNotSubscribedIcon, * channelNotSubscribedButtonImage, * channelNotSubscribedBackgroundImage;
     
     BOOL massUpdate;
 }
@@ -72,8 +72,10 @@
 @property (nonatomic, retain) UIColor * sectionTitleColor;
 @property (nonatomic, retain) UIFont * sectionTitleFont;
 @property (nonatomic, retain) UIImage * channelSubscribedIcon;
+@property (nonatomic, retain) UIImage * channelSubscribedButtonImage;
 @property (nonatomic, retain) UIImage * channelSubscribedBackgroundImage;
 @property (nonatomic, retain) UIImage * channelNotSubscribedIcon;
+@property (nonatomic, retain) UIImage * channelNotSubscribedButtonImage;
 @property (nonatomic, retain) UIImage * channelNotSubscribedBackgroundImage;
 
 -(float)categoryCellWidthFromString:(NSString *)text;

@@ -162,10 +162,12 @@
     UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
     if ([chn.nm_subscribed boolValue]) {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
+        [buttonView setBackgroundImage:[UIImage imageNamed:@"find-channel-subscribed-button"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
         newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
     } else {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
+        [buttonView setBackgroundImage:[UIImage imageNamed:@"find-channel-not-subscribed-button"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-normal"]];
         newChannelIndicator.hidden = YES;        
     }
@@ -173,7 +175,6 @@
     UIActivityIndicatorView *actView;
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView setAlpha:0];
-    [buttonView setAlpha:1];
     
     return cell;
     
@@ -416,10 +417,12 @@
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView startAnimating];
     
+    UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
+
     [UIView animateWithInteractiveDuration:0.3
                      animations:^{
                          [actView setAlpha:1];
-                         [sender setAlpha:0];
+                         [buttonView setImage:nil forState:UIControlStateNormal];                         
                      }
                      completion:^(BOOL finished) {
                      }];
