@@ -90,6 +90,10 @@
 											<int key="NSColorSpace">3</int>
 											<bytes key="NSWhite">MC41AA</bytes>
 										</object>
+										<object class="NSCustomResource" key="IBUIHighlightedImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">button-share-active.png</string>
+										</object>
 										<object class="NSCustomResource" key="IBUINormalImage">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">button-share.png</string>
@@ -988,12 +992,14 @@
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>button-like.png</string>
+				<string>button-share-active.png</string>
 				<string>button-share.png</string>
 				<string>button-watch-later.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{46, 40}</string>
+				<string>{27, 32}</string>
 				<string>{14, 20}</string>
 				<string>{46, 40}</string>
 			</object>
