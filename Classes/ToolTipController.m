@@ -71,6 +71,11 @@ static ToolTipController *toolTipController = nil;
             if (useSavedCounts) {
                 savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kWatchLaterTapCountKey];
             }            
+        } else if ([criteriaName isEqualToString:@"FavoriteTap"]) {
+            criteria.eventType = ToolTipEventFavoriteTap;
+            if (useSavedCounts) {
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kFavoriteTapCountKey];
+            }
         } else if ([criteriaName isEqualToString:@"ChannelListScroll"]) {
             criteria.eventType = ToolTipEventChannelListScroll;
             if (useSavedCounts) {
@@ -272,6 +277,7 @@ static ToolTipController *toolTipController = nil;
         case ToolTipEventChannelManagementTap:  key = kChannelManagementTapCountKey; break;
         case ToolTipEventSharedVideo:           key = kSharedVideoCountKey; break;
         case ToolTipEventWatchLaterTap:         key = kWatchLaterCountKey; break;
+        case ToolTipEventFavoriteTap:           key = kFavoriteCountKey; break;
         case ToolTipEventChannelListScroll:     key = kChannelListScrollCountKey; break;
         default: break;
     }

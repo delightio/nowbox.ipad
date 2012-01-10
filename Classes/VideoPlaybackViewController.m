@@ -17,7 +17,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
-
 #define NM_PLAYER_STATUS_CONTEXT				100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT			101
 #define NM_PLAYBACK_BUFFER_EMPTY_CONTEXT		102
@@ -1155,14 +1154,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         return;
     }
     
-	// do nth if the video object is nil
-	if ( vidObj == nil ) return;
-	
-	if ( ([name isEqualToString:NMDidShareVideoNotification] || [name isEqualToString:NMDidPostSharingNotification]) && [playbackModelController.currentVideo isEqual:vidObj] ) {
+	if ( [name isEqualToString:NMDidShareVideoNotification] ) {
+		// favorited a video successfully, animate the icon to appropriate state
 		[self animateFavoriteButtonsToActive];
-	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:nil];        
+    } else if ( [name isEqualToString:NMDidPostSharingNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+        // shared a video
+        [self animateFavoriteButtonsToActive];
+    } else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// queued a video successfully, animate the icon to appropriate state
 		[self animateWatchLaterButtonsToActive];
+        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:nil];
 	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// dequeued a video successfully
 		[self animateWatchLaterButtonsToActive];
@@ -1611,51 +1613,39 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}];
 }
 
+- (IBAction)shareVideo:(id)sender {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Share Video" 
+                                                             delegate:self
+                                                    cancelButtonTitle:nil
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"Email", @"Twitter", @"Facebook", nil];
+        
+    CGPoint point = [ribbonView convertPoint:shareButton.center toView:self.view];
+    [actionSheet showFromRect:CGRectMake(point.x, ribbonView.frame.origin.y + ribbonView.frame.size.height + 1, 0, 0)
+                       inView:self.view animated:YES];
+}
+
 - (IBAction)addVideoToFavorite:(id)sender {
     NMVideo *video = playbackModelController.currentVideo;
+
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
     
-    if ([video.nm_favorite boolValue]) {
-        // Unfavorite video
-        [nowboxTaskController issueShare:NO video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnfavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                               video.title, AnalyticsPropertyVideoName, 
-                                                                               video.nm_id, AnalyticsPropertyVideoId,
-                                                                               nil]];
-    } else {
-        // Share video
-        ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
-                                                                                     bundle:[NSBundle mainBundle] 
-                                                                                      video:video
-                                                                                   duration:loadedControlView.duration 
-                                                                             elapsedSeconds:loadedControlView.timeElapsed];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
-        navController.modalPresentationStyle = UIModalPresentationPageSheet;
-        [navController.navigationBar setBarStyle:UIBarStyleBlack];
-        [self presentModalViewController:navController animated:YES];
-        navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
-        
-        CGRect frame = navController.view.superview.frame;
-        frame.origin.y = 40;
-        navController.view.superview.frame = frame;
-
-        [shareController release];
-        [navController release];
-                
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                               video.title, AnalyticsPropertyVideoName, 
-                                                                               video.nm_id, AnalyticsPropertyVideoId,
-                                                                               nil]];        
+    [nowboxTaskController issueShare:![video.nm_favorite boolValue] video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+    if (![video.nm_favorite boolValue]) {
+        [self animateFavoriteButtonsToInactive];
     }
+
+    [[MixpanelAPI sharedAPI] track:([video.nm_favorite boolValue] ? AnalyticsEventUnfavoriteVideo : AnalyticsEventFavoriteVideo)
+                        properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                    video.title, AnalyticsPropertyVideoName, 
+                                    video.nm_id, AnalyticsPropertyVideoId,
+                                    nil]];        
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
     
     showMovieControlTimestamp = loadedControlView.timeElapsed;
-    if (![vdo.nm_watch_later boolValue]) {
-        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:sender];
-    }
 
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
@@ -1830,7 +1820,90 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     }
 }
 
-#pragma mark Debug
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    [actionSheet release];
+    
+    NMVideo *video = playbackModelController.currentVideo;
+    
+    if (buttonIndex == 0) {
+        // Email share
+        [[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
+
+        MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
+		composeController.mailComposeDelegate = self;
+		[composeController setSubject:video.title];
+		[composeController setMessageBody:[NSString stringWithFormat:@"Hey, I'm watching &quot;%@&quot; on NOWBOX and thought you might like it:<br><br><a href=\"http://nowbox.com/videos/%@\">http://nowbox.com/videos/%@</a>", video.title, video.nm_id, video.nm_id] isHTML:YES];
+        [composeController setModalPresentationStyle:UIModalPresentationFormSheet];
+		[self presentModalViewController:composeController animated:YES];
+		[composeController release];
+    
+    } else if (buttonIndex > 0) {
+        // Twitter / Facebook share
+        ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
+                                                                                     bundle:[NSBundle mainBundle] 
+                                                                                      video:video
+                                                                                  shareMode:(buttonIndex == 1 ? ShareModeTwitter : ShareModeFacebook)
+                                                                                   duration:loadedControlView.duration 
+                                                                             elapsedSeconds:loadedControlView.timeElapsed];
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
+        navController.modalPresentationStyle = UIModalPresentationPageSheet;
+        [navController.navigationBar setBarStyle:UIBarStyleBlack];
+        [self presentModalViewController:navController animated:YES];
+
+        // Hack to make the modal view controller bigger
+        navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
+        CGRect frame = navController.view.superview.frame;
+        frame.origin.y = 40;
+        navController.view.superview.frame = frame;
+        
+        [shareController release];
+        [navController release];
+    }
+    
+    NSString *shareType = nil;
+    switch (buttonIndex) {
+        case 0: shareType = @"Email"; break;
+        case 1: shareType = @"Twitter"; break;
+        case 2: shareType = @"Facebook"; break;
+    }
+    if (shareType) {
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventShowShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                                 video.title, AnalyticsPropertyVideoName, 
+                                                                                 video.nm_id, AnalyticsPropertyVideoId,
+                                                                                 shareType, AnalyticsPropertyShareType,
+                                                                                 nil]];
+    }
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error 
+{
+    NSString *eventName;
+    if (result == MFMailComposeResultCancelled) {
+        eventName = AnalyticsEventCancelShareDialog;
+    } else if (result == MFMailComposeResultFailed) {
+        eventName = AnalyticsEventShareFailed;
+    } else {
+        eventName = AnalyticsEventCompleteShareDialog;
+    }
+
+    NMVideo *video = playbackModelController.currentVideo;
+    [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
+                                                                        video.title, AnalyticsPropertyVideoName, 
+                                                                        video.nm_id, AnalyticsPropertyVideoId,
+                                                                        @"Email", AnalyticsPropertyShareType,
+                                                                        nil]];  
+    
+    [self dismissModalViewControllerAnimated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementDidDisappearNotification object:self];
+}
+
+#pragma mark - Debug
 
 #ifdef DEBUG_PLAYER_NAVIGATION
 - (NMAVQueuePlayer *)getQueuePlayer {

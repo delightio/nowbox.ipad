@@ -17,6 +17,7 @@ typedef enum {
     ToolTipEventBadVideoTap,
     ToolTipEventChannelManagementTap,
     ToolTipEventSharedVideo,
+    ToolTipEventFavoriteTap,
     ToolTipEventWatchLaterTap,
     ToolTipEventChannelListScroll
 } ToolTipEventType;

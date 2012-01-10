@@ -26,24 +26,22 @@
 @synthesize shareMode;
 @synthesize messageText;
 @synthesize characterCountLabel;
-@synthesize facebookButton;
-@synthesize twitterButton;
 @synthesize shareButton;
 @synthesize progressView;
 @synthesize video;
 @synthesize duration;
 @synthesize elapsedSeconds;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil video:(NMVideo *)aVideo duration:(NSInteger)aDuration elapsedSeconds:(NSInteger)anElapsedSeconds
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil video:(NMVideo *)aVideo shareMode:(ShareMode)aShareMode duration:(NSInteger)aDuration elapsedSeconds:(NSInteger)anElapsedSeconds
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = @"Message";
         self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed:)] autorelease];
         self.video = aVideo;
+        self.shareMode = aShareMode;
         self.duration = aDuration;
         self.elapsedSeconds = anElapsedSeconds;
-        
+
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
@@ -51,6 +49,11 @@
         
         NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
         firstShare = [dataController.favoriteVideoChannel.nm_hidden boolValue];
+        
+        self.navigationItem.backBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Message"
+                                                                                  style:UIBarButtonItemStyleBordered
+                                                                                 target:nil
+                                                                                 action:nil] autorelease];
     }
     return self;
 }
@@ -61,8 +64,6 @@
     
     [messageText release];
     [characterCountLabel release];
-    [facebookButton release];
-    [twitterButton release];
     [shareButton release];
     [progressView release];
     [video release];
@@ -73,24 +74,17 @@
 - (void)setShareMode:(ShareMode)aShareMode
 {
     shareMode = aShareMode;
-    
-    NSString *defaultFacebookText = [NSString stringWithFormat:kDefaultFacebookText, video.title];
-    NSString *defaultTwitterText = [NSString stringWithFormat:kDefaultTwitterText, video.title];
-    
+
     if (shareMode == ShareModeFacebook) {
+        self.title = @"Facebook";
         [shareButton setTitle:@"POST" forState:UIControlStateNormal];
         characterCountLabel.hidden = YES;
-        
-        if (video && ([messageText.text isEqualToString:defaultTwitterText] || [messageText.text length] == 0)) {
-            messageText.text = defaultFacebookText;
-        }
+        messageText.text = [NSString stringWithFormat:kDefaultFacebookText, video.title];            
     } else {
+        self.title = @"Twitter";
         [shareButton setTitle:@"TWEET" forState:UIControlStateNormal];
         characterCountLabel.hidden = NO;
-        
-        if (video && ([messageText.text isEqualToString:defaultFacebookText] || [messageText.text length] == 0)) {
-            messageText.text = defaultTwitterText;
-        }
+        messageText.text = [NSString stringWithFormat:kDefaultTwitterText, video.title];            
     }
 }
 
@@ -120,6 +114,7 @@
                          
                          // Go to Twitter/FB login page
                          SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
+                         loginController.navigationItem.backBarButtonItem.title = @"Back";
                          
                          NMSocialLoginType loginType;
                          NSString *analyticsEvent;
@@ -146,11 +141,8 @@
 {
     [super viewDidLoad];    
     
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    self.shareMode = [userDefaults integerForKey:NM_LAST_SOCIAL_NETWORK];   
-    [facebookButton setSelected:(shareMode == ShareModeFacebook)];
-    [twitterButton setSelected:(shareMode == ShareModeTwitter)];
-    
+    [self setShareMode:shareMode];
+
     progressView.layer.cornerRadius = 15.0;
     progressView.layer.masksToBounds = NO;
     
@@ -202,15 +194,6 @@
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setInteger:shareMode forKey:NM_LAST_SOCIAL_NETWORK];
-    [userDefaults synchronize];
-    
-    [super viewWillDisappear:animated];
-}
-
 - (void)viewDidDisappear:(BOOL)animated 
 {
 	[super viewDidDisappear:animated];
@@ -223,8 +206,6 @@
 {
     self.messageText = nil;
     self.characterCountLabel = nil;
-    self.facebookButton = nil;
-    self.twitterButton = nil;
     self.progressView = nil;
     
     [super viewDidUnload];
@@ -239,8 +220,13 @@
 
 - (IBAction)cancelButtonPressed:(id)sender
 {
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventCancelShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.title, AnalyticsPropertyVideoName, 
+                                                                               video.nm_id, AnalyticsPropertyVideoId,
+                                                                               (shareMode == ShareModeTwitter ? @"Twitter" : @"Facebook"), AnalyticsPropertyShareType,
+                                                                               nil]];
+
     viewPushedByNavigationController = NO;
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissModalViewControllerAnimated:YES];    
 }
 
 - (IBAction)shareButtonPressed:(id)sender
@@ -298,20 +284,6 @@
     }
 }
 
-- (IBAction)facebookButtonPressed:(id)sender
-{
-    self.shareMode = ShareModeFacebook;
-    [facebookButton setSelected:YES];
-    [twitterButton setSelected:NO];
-}
-
-- (IBAction)twitterButtonPressed:(id)sender
-{
-    self.shareMode = ShareModeTwitter;
-    [facebookButton setSelected:NO];
-    [twitterButton setSelected:YES];    
-}
-
 #pragma mark - Notifications
 
 - (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
@@ -332,6 +304,11 @@
     
     progressView.hidden = YES;
     [shareButton setEnabled:YES];
+    
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.title, AnalyticsPropertyVideoName, 
+                                                                             video.nm_id, AnalyticsPropertyVideoId,
+                                                                             (shareMode == ShareModeTwitter ? @"Twitter" : @"Facebook"), AnalyticsPropertyShareType,
+                                                                             nil]];
 }
 
 - (void)handleDidFailShareVideoNotification:(NSNotification *)aNotification 
@@ -361,6 +338,11 @@
     
     progressView.hidden = YES;
     [shareButton setEnabled:YES];
+    
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShareFailed properties:[NSDictionary dictionaryWithObjectsAndKeys:video.title, AnalyticsPropertyVideoName, 
+                                                                         video.nm_id, AnalyticsPropertyVideoId,
+                                                                         (shareMode == ShareModeTwitter ? @"Twitter" : @"Facebook"), AnalyticsPropertyShareType,
+                                                                         nil]];
 }
 
 - (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification 
