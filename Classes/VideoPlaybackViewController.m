@@ -1148,16 +1148,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// check it's the current, previous or next video
 	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
 	NSString * name = [aNotification name];
-
-    if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] ) {
-		[self updateFavoriteButton];
-        return;
-    }
     
 	if ( [name isEqualToString:NMDidShareVideoNotification] ) {
 		// favorited a video successfully, animate the icon to appropriate state
 		[self animateFavoriteButtonsToActive];
         [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:nil];        
+    } else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] ) {
+        // unfavorited a video
+        [self animateFavoriteButtonsToActive];
     } else if ( [name isEqualToString:NMDidPostSharingNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
         // shared a video
         [self animateFavoriteButtonsToActive];
@@ -1631,9 +1629,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     showMovieControlTimestamp = loadedControlView.timeElapsed;
     
     [nowboxTaskController issueShare:![video.nm_favorite boolValue] video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-    if (![video.nm_favorite boolValue]) {
-        [self animateFavoriteButtonsToInactive];
-    }
+    [self animateFavoriteButtonsToInactive];
 
     [[MixpanelAPI sharedAPI] track:([video.nm_favorite boolValue] ? AnalyticsEventUnfavoriteVideo : AnalyticsEventFavoriteVideo)
                         properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
