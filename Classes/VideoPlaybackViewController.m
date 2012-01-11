@@ -1831,7 +1831,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
 		composeController.mailComposeDelegate = self;
 		[composeController setSubject:video.title];
-		[composeController setMessageBody:[NSString stringWithFormat:@"<a href=\"http://nowbox.com/videos/%@\">http://nowbox.com/videos/%@</a>", video.nm_id, video.nm_id] isHTML:YES];
+		[composeController setMessageBody:[NSString stringWithFormat:@"<a href=\"http://www.youtube.com/watch?v=%@\">http://www.youtube.com/watch?v=%@</a>", video.external_id, video.external_id] isHTML:YES];
         [composeController setModalPresentationStyle:UIModalPresentationFormSheet];
 		[self presentModalViewController:composeController animated:YES];
 		[composeController release];
