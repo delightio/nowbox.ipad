@@ -177,6 +177,17 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:26810];
 }
 
+- (IBAction)printCommandIndexPool:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] debugPrintCommandPoolStatus];
+}
+
+- (IBAction)printMovieViewInfo:(id)sender {
+	CGRect theFrame = playbackViewController.movieView.frame;
+	CGFloat alpha = playbackViewController.movieView.alpha;
+	NMAVQueuePlayer * thePlayer = playbackViewController.movieView.player;
+	NSLog(@"movie view info: %f %f scroll view: %f no. of videos: %d", theFrame.origin.x, alpha, playbackViewController.controlScrollView.contentOffset.x, [thePlayer.items count]);
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

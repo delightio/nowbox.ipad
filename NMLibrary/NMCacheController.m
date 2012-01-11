@@ -185,7 +185,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	
 	if ( [dtlObj.author_thumbnail_uri length] ) {
 		// check if there's already an existing task requesting the image
-		NSUInteger idxNum = [NMImageDownloadTask commandIndexForAuthor:dtlObj];
+		NSInteger idxNum = [NMImageDownloadTask commandIndexForAuthor:dtlObj];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
 		
 		// cancel previous delayed method
@@ -250,7 +250,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	// check if the channel contains a uri
 	if ( [chn.thumbnail_uri length] ) {
 		// check if there's already an existing task requesting the image
-		NSUInteger idxNum = [NMImageDownloadTask commandIndexForChannel:chn];
+		NSInteger idxNum = [NMImageDownloadTask commandIndexForChannel:chn];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
 		
 		// cancel previous delayed method
@@ -316,7 +316,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	// check if the channel contains a uri
 	if ( [cat.thumbnail_uri length] ) {
 		// check if there's already an existing task requesting the image
-		NSUInteger idxNum = [NMImageDownloadTask commandIndexForCategory:cat];
+		NSInteger idxNum = [NMImageDownloadTask commandIndexForCategory:cat];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
 		
 		// cancel previous delayed method
@@ -382,7 +382,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	}
 	if ( [vdo.thumbnail_uri length] ) {
 		// check if there's already an existing task requesting the image
-		NSUInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
+		NSInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
 		// no delay download in video thumbnail. therefore, there's no need to cancel previous perform request
 		if ( task ) {
@@ -436,7 +436,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	}
 	// check if the PV contains valid uri
 	if ( [pv.thumbnail_uri length] ) {
-		NSUInteger idxNum = [NMImageDownloadTask commandIndexForPreviewThumbnail:pv];
+		NSInteger idxNum = [NMImageDownloadTask commandIndexForPreviewThumbnail:pv];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
 		// image view used for showing preview thumbnail does not support delayed call
 		if ( task ) {
@@ -475,7 +475,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowboxTaskController issueGetThumbnailForChannel:chn];
-		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
 	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
@@ -488,7 +488,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowboxTaskController issueGetThumbnailForCategory:cat];
-		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
 	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
@@ -501,7 +501,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowboxTaskController issueGetThumbnailForAuthor:dtl];
-		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
 	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
@@ -514,7 +514,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
 		task = [nowboxTaskController issueGetThumbnailForVideo:vdo];
-		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
 	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
@@ -531,7 +531,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	if ( task == nil ) {
 		task = [nowboxTaskController issueGetPreviewThumbnail:pv];
 		if ( task ) {
-			[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithUnsignedInteger:[task commandIndex]]];
+			[commandIndexTaskMap setObject:task forKey:[NSNumber numberWithInteger:[task commandIndex]]];
 #ifdef DEBUG_IMAGE_CACHE
 			NSLog(@"preview thumbnail download - new command index: %d", [task commandIndex]);
 #endif
@@ -549,7 +549,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
 	NMImageDownloadTask * theTask = [aNotification object];
 	NSManagedObject * obj = [[aNotification userInfo] objectForKey:@"target_object"];
-	[commandIndexTaskMap removeObjectForKey:[NSNumber numberWithUnsignedInteger:[theTask commandIndex]]];
+	[commandIndexTaskMap removeObjectForKey:[NSNumber numberWithInteger:[theTask commandIndex]]];
 	// update the cache
 	NSString * path = nil;
 	switch (theTask.command) {
@@ -582,7 +582,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 
 - (void)handleImageDownloadFailedNotification:(NSNotification *)aNotification {
 	NMImageDownloadTask * theTask = [aNotification object];
-	[commandIndexTaskMap removeObjectForKey:[NSNumber numberWithUnsignedInteger:[theTask commandIndex]]];
+	[commandIndexTaskMap removeObjectForKey:[NSNumber numberWithInteger:[theTask commandIndex]]];
 }
 
 #pragma mark save downloaded image
@@ -644,7 +644,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		numFiles = [fileDictAy count];
 		// get the items to delete
 		for (NSInteger i = 0; i < numFiles - maxFileCount; i++) {
-			[fileManager removeItemAtPath:[dirPath stringByAppendingPathComponent:[fileDictAy objectAtIndex:i]] error:NULL];
+			[fileManager removeItemAtPath:[dirPath stringByAppendingPathComponent:[[fileDictAy objectAtIndex:i] objectForKey:fNameKey]] error:NULL];
 		}
 	}
 }

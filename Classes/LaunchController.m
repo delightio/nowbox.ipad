@@ -9,6 +9,7 @@
 #import "LaunchController.h"
 #import "VideoPlaybackBaseViewController.h"
 #import "NMLibrary.h"
+#import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import "UIView+InteractiveAnimation.h"
 
@@ -97,6 +98,8 @@
     if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {
         [nc addObserver:self selector:@selector(handleDidGetFeaturedCategoriesNotification:) name:NMDidGetFeaturedCategoriesNotification object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedCategoriesNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetFeaturedChannelsNotification:) name:NMDidGetFeaturedChannelsForCategories object:nil];
+        [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedChannelsForCategories object:nil];        
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
 
@@ -162,9 +165,11 @@
 		}
 	}
     
+    NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];
+    [Crittercism setUsername:userNameTag];
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];    
+    [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
 }
 
 #pragma mark Notification
@@ -174,11 +179,11 @@
     if (NM_SKIP_ONBOARD_PROCESS) {
         // For debugging - create user here rather than going via onboard process
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self selector:@selector(handleDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleSkipOnboardDidCreateUserNotification:) name:NMDidCreateUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailCreateUserNotification object:nil];
-        [nc addObserver:self selector:@selector(handleDidGetFeaturedChannelsNotification:) name:NMDidGetFeaturedChannelsForCategories object:nil];
+        [nc addObserver:self selector:@selector(handleSkipOnboardDidGetFeaturedChannelsNotification:) name:NMDidGetFeaturedChannelsForCategories object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetFeaturedChannelsForCategories object:nil];
-        [nc addObserver:self selector:@selector(handleDidSubscribeNotification:) name:NMDidSubscribeChannelNotification object:nil];
+        [nc addObserver:self selector:@selector(handleSkipOnboardDidSubscribeNotification:) name:NMDidSubscribeChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailSubscribeChannelNotification object:nil];
 
         [[NMTaskQueueController sharedTaskQueueController] issueCreateUser];
@@ -275,19 +280,21 @@
 	}
 }
 
-- (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
-    if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {        
+- (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification {
+    if (!thumbnailVideoIndex) {
         NSNotificationCenter * dn = [NSNotificationCenter defaultCenter];
         [dn addObserver:self selector:@selector(handleVideoThumbnailReadyNotification:) name:NMDidDownloadImageNotification object:nil];
         [dn addObserver:self selector:@selector(handleDidResolveURLNotification:) name:NMDidGetYouTubeDirectURLNotification object:nil];
         // listen to notification of getting videos. check if the channel is empty. if so, move to the next channel. this avoids first launch from hanging in there because the first channel has no video
         [dn addObserver:self selector:@selector(handleDidGetVideoNotification:) name:NMDidGetChannelVideoListNotification object:nil];
         
-        if (!thumbnailVideoIndex) {
-            thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
-            resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
-        }
-        
+        thumbnailVideoIndex = [[NSMutableIndexSet alloc] init];
+        resolutionVideoIndex = [[NSMutableIndexSet alloc] init];
+    }
+}
+
+- (void)handleDidGetChannelNotification:(NSNotification *)aNotification {
+    if ( NM_ALWAYS_SHOW_ONBOARD_PROCESS || appFirstLaunch ) {        
         // assign the channel to playback view controller
         self.channel = [taskQueueController.dataController lastSessionChannel];
         // no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
@@ -305,7 +312,6 @@
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
 	[resolutionVideoIndex addIndex:[vdo.nm_id unsignedIntegerValue]];
 	NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
-    NSLog(@"resolved URL for %i, looking for %i", [vdo.nm_id unsignedIntegerValue], cIdx);
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
 		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
@@ -325,7 +331,6 @@
 		// store all indexes. the order of downloading video thumbnail is not guaranteed. need to check against all indexes downloaded. 
 		[thumbnailVideoIndex addIndex:[targetVdo.nm_id unsignedIntegerValue]];
 		NSUInteger cIdx = [viewController.currentVideo.nm_id unsignedIntegerValue];
-        NSLog(@"got thumbnail for %i, looking for %i", [targetVdo.nm_id unsignedIntegerValue], cIdx);
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
 			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
                 if (NM_SKIP_ONBOARD_PROCESS) {
@@ -340,7 +345,7 @@
 
 - (void)handleDidGetVideoNotification:(NSNotification *)aNotification {
 	NSDictionary * info = [aNotification userInfo];
-	if ( [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
+	if ([[info objectForKey:@"channel"] isEqual:channel] && [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
 		self.channel = [taskQueueController.dataController channelNextTo:channel];
 		[viewController setCurrentChannel:channel startPlaying:NO];
 	}
@@ -419,7 +424,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
 
 #pragma mark - Skip onboard process notifications
 
-- (void)handleDidCreateUserNotification:(NSNotification *)aNotification {
+- (void)handleSkipOnboardDidCreateUserNotification:(NSNotification *)aNotification {
     [self beginNewSession];
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -429,8 +434,10 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     [userDefaults setInteger:NM_USER_HISTORY_CHANNEL_ID forKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
     [userDefaults synchronize];
     
+    NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];
+    [Crittercism setUsername:userNameTag];
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-    [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+    [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
     [[MixpanelAPI sharedAPI] track:@"$born"];
     [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
     
@@ -438,7 +445,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[NMTaskQueueController sharedTaskQueueController].dataController.categories];
 }
 
-- (void)handleDidGetFeaturedChannelsNotification:(NSNotification *)aNotification {
+- (void)handleSkipOnboardDidGetFeaturedChannelsNotification:(NSNotification *)aNotification {
     // Got a list of featured channels, subscribe to some of them
     NSArray *channels = [[aNotification userInfo] objectForKey:@"channels"];
     subscribingChannels = [[NSMutableSet alloc] init];
@@ -454,7 +461,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     }
 }
 
-- (void)handleDidSubscribeNotification:(NSNotification *)aNotification {
+- (void)handleSkipOnboardDidSubscribeNotification:(NSNotification *)aNotification {
     NMChannel *aChannel = [[aNotification userInfo] objectForKey:@"channel"];
     [subscribingChannels removeObject:aChannel];
     

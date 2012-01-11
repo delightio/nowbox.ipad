@@ -68,6 +68,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)resetAllMovieDetailViews;
 - (NMMovieDetailView *)dequeueReusableMovieDetailView;
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo;
+- (void)cleanUpBadVideosMovieDetailView;
 
 // debug message
 - (void)printDebugMessage:(NSString *)str;
@@ -81,6 +82,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize channelController;
 @synthesize loadedControlView;
 @synthesize controlScrollView;
+@synthesize movieView;
 @synthesize appDelegate;
 @synthesize playbackModelController;
 @synthesize ratingsURL;
@@ -104,7 +106,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	currentXOffset = 0.0f;
-	movieXOffset = 0.0f;
 	showMovieControlTimestamp = -1;
 	fullScreenRect = CGRectMake(0.0f, 0.0f, NM_IPAD_SCREEN_WIDTH, 768.0f);
 	splitViewRect = CGRectMake(0.0f, 0.0f, NM_IPAD_SCREEN_WIDTH, 380.0f);
@@ -123,7 +124,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 20.0f, 640.0f, 360.0f)];
+	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(0.0f, 20.0f, 640.0f, 360.0f)];
 	movieView.alpha = 0.0f;
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
@@ -278,7 +279,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)showPlaybackView {
 	if ( launchModeActive ) {
-		controlScrollView.scrollEnabled = NO;
+//		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
 		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
@@ -505,7 +506,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"configure control view for: %@, %@", aVideo.title, aVideo.nm_id);
+	NSLog(@"configure control view for: %@, %@, %f", aVideo.title, aVideo.nm_id, currentXOffset);
 #endif
 	[loadedControlView resetView];
 	if ( aVideo ) {
@@ -513,11 +514,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
+	theFrame.origin.x = currentXOffset;
 	loadedControlView.frame = theFrame;
 	// update the movie view too
-	theFrame = movieView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
 	[UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionTransitionNone animations:^{
                          movieView.alpha = 1.0f;
@@ -575,7 +574,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //			}
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
-			controlScrollView.scrollEnabled = YES;
+//			controlScrollView.scrollEnabled = YES;
 			[self configureControlViewForVideo:[self playerCurrentVideo]];
 			[self playCurrentVideo];
 			break;
@@ -606,7 +605,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 			[movieDetailViewArray addObject:self.loadedMovieDetailView];
 			theFrame = loadedMovieDetailView.frame;
 			theFrame.origin.y = 0.0f;
-			theFrame.origin.x = -1024.0f;
+			theFrame.origin.x = -NM_IPAD_SCREEN_WIDTH;
 			loadedMovieDetailView.frame = theFrame;
 			[controlScrollView insertSubview:loadedMovieDetailView belowSubview:movieView];
 			self.loadedMovieDetailView = nil;
@@ -616,15 +615,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// get a free view
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
 		if ( theView.video == nil ) {
-			theView.hidden = NO;
+			theView.alpha = 1.0f;
 			return theView;
 		}
 	}
 	// check if any of the video is marked as error
+	// this for-loop does NOT guarantee to run. Sometimes, we can get free movie detail view even if there's movie detail view occupied by bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
 		if ( theView.video.nm_playback_status == NMVideoQueueStatusError ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
-			theView.hidden = NO;
+			theView.alpha = 1.0f;
 			return theView;
 		}
 	}
@@ -635,13 +635,22 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo {
 	if ( vdo == nil ) return;
 	NMMovieDetailView * theView = vdo.nm_movie_detail_view;
+	if ( theView == nil ) return;
 	vdo.nm_movie_detail_view = nil;
 	theView.video = nil;
 	[theView restoreThumbnailView];
 	[theView setActivityViewHidden:YES];
-	theView.hidden = YES;
+	theView.alpha = 0.0f;
 }
 
+- (void)cleanUpBadVideosMovieDetailView {
+	// it's possible that some bad videos still occupy a movie detail view. We need to make sure all movie detail views are not associated to any bad videos.
+	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
+		if ( theView.video && theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+			[self reclaimMovieDetailViewForVideo:theView.video];
+		}
+	}
+}
 
 #pragma mark Ribbon management
 
@@ -776,7 +785,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	//if ( aEndOfVideo ) {
 	// disable interface scrolling
 	// will activate again on "currentItem" change kvo notification
-	controlScrollView.scrollEnabled = NO;
+//	controlScrollView.scrollEnabled = NO;
 	// fade out the view
 	[UIView animateWithInteractiveDuration:0.75f animations:^(void) {
 		movieView.alpha = 0.0f;
@@ -869,8 +878,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"offset of next MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
 	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
+	if ( theFrame.origin.x != xOffset ) {
+		theFrame.origin.x = xOffset;
+		theDetailView.frame = theFrame;
+	}
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.nextVideo];
 }
@@ -888,8 +899,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
 #endif
 	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
+	if ( theFrame.origin.x != xOffset ) {
+		theFrame.origin.x = xOffset;
+		theDetailView.frame = theFrame;
+	}
 	// resolve the URL
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.previousVideo];
 }
@@ -907,14 +920,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
 #endif
 	CGRect theFrame = theDetailView.frame;
-	theFrame.origin.x = xOffset;
-	theDetailView.frame = theFrame;
+	if ( theFrame.origin.x != xOffset ) {
+		theFrame.origin.x = xOffset;
+		theDetailView.frame = theFrame;
+	}
 	// when scrolling is inflight, do not issue the URL resolution request. Playback View Controller will call "advanceToNextVideo" later on which will trigger sending of resolution request.
 	if ( !NMVideoPlaybackViewIsScrolling ) [movieView.player resolveAndQueueVideo:ctrl.currentVideo];
 }
 
 - (void)controller:(VideoPlaybackModelController *)ctrl didUpdateVideoListWithTotalNumberOfVideo:(NSUInteger)totalNum {
-#ifdef DEBUG_PLAYER_NAVIGATION
+#ifdef DEBUG_PLAYBACK_QUEUE
 	NSLog(@"current total num videos: %d", totalNum);
 #endif
 
@@ -922,17 +937,25 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	CGFloat newOffset = (CGFloat)(playbackModelController.currentIndexPath.row * NM_IPAD_SCREEN_WIDTH_INT);
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
+#ifdef DEBUG_PLAYBACK_QUEUE
+			NSLog(@"current idx: %d video: %@", playbackModelController.currentIndexPath.row, playbackModelController.currentVideo.title);
+#endif
 			// update offset
 			currentXOffset = newOffset;
 			// move over to the new location
-			[UIView animateWithInteractiveDuration:0.5f animations:^{
+//			[UIView animateWithInteractiveDuration:0.5f animations:^{
 				controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
-			} completion:^(BOOL finished) {
+			CGRect theFrame = movieView.frame;
+			theFrame.origin.x = currentXOffset;
+			movieView.frame = theFrame;
+			loadedControlView.frame = theFrame;
+//			} completion:^(BOOL finished) {
 				[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
-			}];
+//			}];
 		} else {
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		}
+		[self cleanUpBadVideosMovieDetailView];
 	}
 }
 
@@ -951,7 +974,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// request the player to resolve the video again
 	[movieView.player refreshItemFromIndex:0];
 	// lock the playback view?
-	controlScrollView.scrollEnabled = NO;
+//	controlScrollView.scrollEnabled = NO;
 	// show thumbnail and loading indicator
 	shouldFadeOutVideoThumbnail = YES;
 	[self showActivityLoader];
@@ -1192,7 +1215,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		[self performSelector:@selector(showActivityLoader) withObject:nil afterDelay:1.25];
 		
 		if ( didPlayToEnd ) {
-			controlScrollView.scrollEnabled = YES;
+//			controlScrollView.scrollEnabled = YES;
 			didPlayToEnd = NO;
 		}
 		if ( playbackModelController.currentVideo ) {
@@ -1338,6 +1361,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	scrollView.scrollEnabled = NO;
 #endif
+	// If user scrolls too fast, "scrollViewDidEndDecelerating:" may not be called. This happens when "decelerate" argument in this method is NO.
+	if ( decelerate == NO ) {
+		[self scrollViewDidEndDecelerating:scrollView];
+//		scrollView.scrollEnabled = YES;
+//		NMVideoPlaybackViewIsScrolling = NO;
+	}
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -1377,9 +1406,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
             
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
-	} else {
-		scrollView.scrollEnabled = YES;
 	}
+	scrollView.scrollEnabled = YES;
 	NMVideoPlaybackViewIsScrolling = NO;
 	// ribbon fade in transition
 	[UIView animateWithInteractiveDuration:0.25f animations:^{
@@ -1390,11 +1418,6 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Gesture delegate methods
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-//	NSLog(@"should begin gesture: %d", !scrollBeyondThreshold);
-//	if ( !scrollBeyondThreshold ) {
-//		controlScrollView.scrollEnabled = NO;
-//	}
-//	return !scrollBeyondThreshold;
 	controlScrollView.scrollEnabled = NO;
 	return YES;
 }
@@ -1426,10 +1449,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[UIView setAnimationDelegate:self];
 	if ( panelHidden ) {
 		// slide in the channel view with animation
-		movieXOffset = 0.0f;
+//		movieXOffset = 0.0f;
 		//MARK: not sure if we still need to show/hide status bar
 		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-		viewRect = CGRectMake(movieView.frame.origin.x + movieXOffset, 20.0f, 640.0f, 360.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		// fade in detail view
 		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:NO];
@@ -1450,12 +1473,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else {
 		// slide out the channel view
 		[[UIApplication sharedApplication] setStatusBarHidden:YES];
-		viewRect = CGRectMake(movieView.frame.origin.x - movieXOffset, 0.0f, 1024.0f, 768.0f);
+		viewRect = CGRectMake(movieView.frame.origin.x, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		// fade out detail view
 		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:YES];
 		// reset offset value
-		movieXOffset = 0.0f;
+//		movieXOffset = 0.0f;
 		ribbonView.alpha = 0.0f;
 		// slide out
 		theFrame.origin.y = 768.0;
@@ -1716,6 +1739,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 			
 		default:
+			NSLog(@"Gesture state: %d", sender.state);
 			break;
 	}
 }

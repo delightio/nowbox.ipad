@@ -77,16 +77,19 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 }
 
 - (void)dealloc {
+	[resultDictionary release];
 	[channelID release];
 	[channel release];
 	[video release];
 	[super dealloc];
 }
 
-- (NSUInteger)commandIndex {
+- (NSInteger)commandIndex {
 	if ( targetID ) {
-		NSUInteger tid = [self.targetID unsignedIntegerValue];
-		return tid << 9 | eventType << 6 | (NSUInteger)command;
+		NSInteger tid = [self.targetID integerValue];
+		// clean up the upper 9 bit
+		tid = (NSIntegerMax >> 9) & tid;
+		return tid << 9 | eventType << 6 | command;
 	}
 	return (NSUInteger)command;
 }

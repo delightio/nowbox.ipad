@@ -193,33 +193,37 @@
 }
 
 - (void)resetLayoutAfterPinchedForFullScreen:(BOOL)isFullScreen {
+	CGRect theFrame = thumbnailContainerView.frame;
 	if ( isFullScreen ) {
 		infoContainerView.hidden = YES;
+		theFrame.size.width = 1044.0f;
 	} /*else {
 		infoContainerView.hidden = NO;
 		bitmapShadow.hidden = NO;
 	}*/
-	CGRect theFrame = thumbnailContainerView.frame;
-	theFrame.size.width = 1044.0f;
 	blackLayer.frame = theFrame;
 }
 
 - (void)configureMovieThumbnailForFullScreen:(BOOL)isFullScreen {
+	CGRect theFrame;
 	if ( isFullScreen ) {
 		infoContainerView.hidden = YES;
 		infoContainerView.alpha = 0.0f;
 		infoContainerView.center = CGPointMake(1216.0f, 190.0f);
 //		bitmapShadow.position = CGPointMake(1034.0f, 190.0f);
 		// resize view
-		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
+		theFrame = CGRectMake(0.0f, 0.0f, 1024.0f, 768.0f);
+		thumbnailContainerView.frame = theFrame;
+		theFrame.size.width = 1044.0f;
 	} else {
 		infoContainerView.hidden = NO;
 		infoContainerView.alpha = 1.0f;
 		infoContainerView.center = CGPointMake(832.0f, 190.0f);
 //		bitmapShadow.position = CGPointMake(650.0f, 190.0f);
-		thumbnailContainerView.frame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
+		theFrame = CGRectMake(0.0f, 0.0f, 640.0f, 380.0f);
+		thumbnailContainerView.frame = theFrame;
 	}
-	blackLayer.frame = thumbnailContainerView.frame;
+	blackLayer.frame = theFrame;
 }
 
 - (void)setActivityViewHidden:(BOOL)aflag {

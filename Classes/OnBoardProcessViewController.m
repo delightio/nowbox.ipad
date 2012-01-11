@@ -16,6 +16,7 @@
 #import "NMCategory.h"
 #import "NMChannel.h"
 #import "Analytics.h"
+#import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
@@ -385,7 +386,7 @@
     [self transitionFromView:socialView toView:infoView];
     
     // If YouTube sync enabled, wait for it to finish or timeout. Otherwise we can get the subscribed channels directly.
-    if ([subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
+    if (subscribingChannels && [subscribingChannels count] == 0 && (!NM_USER_YOUTUBE_SYNC_ACTIVE || youtubeSynced)) {
         [[NMTaskQueueController sharedTaskQueueController] issueGetSubscribedChannels];
     }
     
@@ -432,11 +433,12 @@
             }];
         }
         
+        NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];
+        [Crittercism setUsername:userNameTag];
         [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
-        [[MixpanelAPI sharedAPI] setNameTag:[NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID]];
+        [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
         [[MixpanelAPI sharedAPI] track:@"$born"];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
-        
     }
 }
 

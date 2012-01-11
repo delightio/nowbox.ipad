@@ -311,9 +311,6 @@
 		authorBackgroundView.frame = theRect;
 		// author image
 		[authorImageView setImageForAuthorThumbnail:aVideo.detail];
-#ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"author image: %@", aVideo.detail.author_thumbnail_uri);
-#endif
 	}
 	
 	titleDiff = theRect.size.width + theRect.origin.x;
@@ -381,7 +378,7 @@
 }
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {
-	progressSlider.bufferTime = (aRange.start.value + aRange.duration.value) / aRange.duration.timescale;
+	progressSlider.bufferTime = (NSInteger)CMTimeGetSeconds(CMTimeAdd(aRange.start, aRange.duration));
 }
 
 - (void)setToggleGridButtonHidden:(BOOL)hidden {

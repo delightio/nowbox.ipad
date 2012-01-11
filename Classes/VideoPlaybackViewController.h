@@ -47,8 +47,6 @@
 	
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
-//	BOOL scrollBeyondThreshold;
-	CGFloat movieXOffset;
 	CGRect fullScreenRect, splitViewRect;
 	CGRect topLeftRect;
 	
@@ -93,6 +91,7 @@
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
+@property (nonatomic, readonly) NMMovieView * movieView;
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 @property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;
@@ -125,6 +124,9 @@
 - (void)playVideo:(NMVideo *)aVideo;
 - (void)launchPlayVideo:(NMVideo *)aVideo;
 
+
+- (BOOL)shouldShowRateUsReminder;
+- (void)showRateUsReminderCompletion:(void (^)(void))completion;
 
 - (BOOL)shouldShowRateUsReminder;
 - (void)showRateUsReminderCompletion:(void (^)(void))completion;

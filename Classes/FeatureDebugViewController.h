@@ -31,5 +31,7 @@
 - (IBAction)getSubscribedChannels:(id)sender;
 - (IBAction)syncRequest:(id)sender;
 - (IBAction)getDebugChannel:(id)sender;
+- (IBAction)printCommandIndexPool:(id)sender;
+- (IBAction)printMovieViewInfo:(id)sender;
 
 @end

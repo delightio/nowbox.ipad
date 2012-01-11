@@ -42,10 +42,11 @@
 
 @interface VideoPlaybackModelController : NSObject <NSFetchedResultsControllerDelegate> {
 	// core data operation
-    NSIndexPath * currentIndexPath;
+    NSIndexPath * currentIndexPath, * previousIndexPath;
 	NSIndexPath * nextIndexPath, * nextNextIndexPath;
-	NSIndexPath * previousIndexPath;
 	NMVideo * currentVideo, * nextVideo, * nextNextVideo, * previousVideo;
+	NSInteger videoEncounteredBitArray;
+	BOOL deletedOlderVideos;
 	BOOL rowCountHasChanged;
 	BOOL changeSessionUpdateCount;
 	NSUInteger changeSessionVideoCount;

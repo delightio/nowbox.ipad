@@ -89,10 +89,10 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 	return encountersErrorDuringProcessing;
 }
 
-- (NSUInteger)commandIndex {
+- (NSInteger)commandIndex {
 	if ( targetID ) {
-		NSUInteger tid = [self.targetID unsignedIntegerValue];
-		return tid << 6 | (NSUInteger)command;
+		NSInteger tid = [self.targetID unsignedIntegerValue];
+		return (((NSIntegerMax >> 6 ) & tid) << 6) | command;
 	}
 	return (NSUInteger)command;
 }
