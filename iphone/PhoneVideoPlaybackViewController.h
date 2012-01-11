@@ -41,7 +41,7 @@ enum {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
-	IBOutlet UIView * ribbonView;
+//	IBOutlet UIView * ribbonView;
 	IBOutlet UIButton * favoriteButton;
 	IBOutlet UIButton * watchLaterButton;
 	IBOutlet UILabel * previousChannelSwitchingLabel;
@@ -69,6 +69,7 @@ enum {
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
+    BOOL videoWasPaused;
 	PhoneLaunchController * launchController;
     SizableNavigationController * gridNavigationController;
     UIView * gridNavigationContainer;
