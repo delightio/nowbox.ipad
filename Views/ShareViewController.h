@@ -18,6 +18,7 @@ typedef enum {
     BOOL viewPushedByNavigationController;
     BOOL autoPost;
     BOOL firstShare;
+    BOOL videoAlreadyFavorited;
 }
 
 @property (nonatomic, assign) ShareMode shareMode;

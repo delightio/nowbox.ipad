@@ -49,6 +49,7 @@
         
         NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
         firstShare = [dataController.favoriteVideoChannel.nm_hidden boolValue];
+        videoAlreadyFavorited = [aVideo.nm_favorite boolValue];
         
         self.navigationItem.backBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Message"
                                                                                   style:UIBarButtonItemStyleBordered
@@ -290,7 +291,10 @@
 {
     void (^completion)(void) = ^{
         [self cancelButtonPressed:nil];
-        [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
+        
+        if (!videoAlreadyFavorited) {
+            [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
+        }
     };
     
     VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
@@ -375,7 +379,7 @@
 
 - (void)delayedNotifyShareVideo
 {
-    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventSharedVideo sender:nil];
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:nil];                
 }
 
 @end
