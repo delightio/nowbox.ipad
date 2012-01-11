@@ -96,8 +96,8 @@
 							</object>
 							<object class="IBUILabel" id="679655678">
 								<reference key="NSNextResponder" ref="39451577"/>
-								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{81, 9}, {394, 25}}</string>
+								<int key="NSvFlags">290</int>
+								<string key="NSFrame">{{81, 9}, {318, 25}}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="112317138"/>
@@ -134,8 +134,8 @@
 							</object>
 							<object class="IBUILabel" id="112317138">
 								<reference key="NSNextResponder" ref="39451577"/>
-								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{81, 30}, {376, 25}}</string>
+								<int key="NSvFlags">290</int>
+								<string key="NSFrame">{{81, 30}, {318, 25}}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="822524542"/>
@@ -181,8 +181,8 @@
 							</object>
 							<object class="IBUIButton" id="822524542">
 								<reference key="NSNextResponder" ref="39451577"/>
-								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{465, 19}, {26, 27}}</string>
+								<int key="NSvFlags">289</int>
+								<string key="NSFrame">{{407, 10}, {103, 45}}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="809480226"/>
@@ -192,13 +192,17 @@
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
+								<double key="IBUIImageEdgeInsets.top">1</double>
+								<double key="IBUIImageEdgeInsets.bottom">0.0</double>
+								<double key="IBUIImageEdgeInsets.left">0.0</double>
+								<double key="IBUIImageEdgeInsets.right">66</double>
 								<object class="NSColor" key="IBUIHighlightedTitleColor">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MQA</bytes>
 								</object>
 								<object class="NSColor" key="IBUINormalTitleColor">
 									<int key="NSColorSpace">1</int>
-									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+									<bytes key="NSRGB">MC4yNDMxMzcyNTQ5IDAuMjQzMTM3MjU0OSAwLjI0MzEzNzI1NDkAA</bytes>
 								</object>
 								<object class="NSColor" key="IBUINormalTitleShadowColor">
 									<int key="NSColorSpace">3</int>
@@ -208,20 +212,24 @@
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">find-channel-not-subscribed-icon.png</string>
 								</object>
+								<object class="NSCustomResource" key="IBUINormalBackgroundImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">find-channel-not-subscribed-button.png</string>
+								</object>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
-									<int key="type">2</int>
-									<double key="pointSize">15</double>
+									<int key="type">1</int>
+									<double key="pointSize">13</double>
 								</object>
 								<object class="NSFont" key="IBUIFont">
-									<string key="NSName">Helvetica-Bold</string>
-									<double key="NSSize">15</double>
+									<string key="NSName">Helvetica</string>
+									<double key="NSSize">13</double>
 									<int key="NSfFlags">16</int>
 								</object>
 							</object>
 							<object class="IBUIActivityIndicatorView" id="809480226">
 								<reference key="NSNextResponder" ref="39451577"/>
-								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{467, 22}, {20, 20}}</string>
+								<int key="NSvFlags">289</int>
+								<string key="NSFrame">{{415, 23}, {20, 20}}</string>
 								<reference key="NSSuperview" ref="39451577"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
@@ -426,6 +434,7 @@
 					<string>11.IBPluginDependency</string>
 					<string>12.IBPluginDependency</string>
 					<string>13.IBPluginDependency</string>
+					<string>13.IBUIButtonInspectorSelectedEdgeInsetMetadataKey</string>
 					<string>20.IBPluginDependency</string>
 					<string>24.IBPluginDependency</string>
 					<string>3.CustomClassName</string>
@@ -445,6 +454,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<real value="2"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>FindChannelTableCell</string>
@@ -598,6 +608,7 @@
 				<string>channel-thumbnail-frame.png</string>
 				<string>find-channel-list-highlighted.png</string>
 				<string>find-channel-list-normal.png</string>
+				<string>find-channel-not-subscribed-button.png</string>
 				<string>find-channel-not-subscribed-icon.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
@@ -606,7 +617,8 @@
 				<string>{48, 48}</string>
 				<string>{1, 65}</string>
 				<string>{1, 65}</string>
-				<string>{27, 27}</string>
+				<string>{103, 45}</string>
+				<string>{23, 23}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>

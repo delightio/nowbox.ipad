@@ -38,8 +38,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 @synthesize sectionTitleBackgroundImage;
 @synthesize sectionTitleColor;
 @synthesize sectionTitleFont;
-@synthesize channelSubscribedIcon, channelSubscribedBackgroundImage;
-@synthesize channelNotSubscribedIcon, channelNotSubscribedBackgroundImage;
+@synthesize channelSubscribedIcon, channelSubscribedButtonImage, channelSubscribedBackgroundImage;
+@synthesize channelNotSubscribedIcon, channelNotSubscribedButtonImage, channelNotSubscribedBackgroundImage;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
 	self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -63,8 +63,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	[sectionTitleColor release];
 	[sectionTitleFont release];
 	[countFormatter release];
-	[channelSubscribedIcon release], [channelSubscribedBackgroundImage release];
-	[channelNotSubscribedIcon release], [channelNotSubscribedBackgroundImage release];
+	[channelSubscribedIcon release], [channelSubscribedButtonImage release], [channelSubscribedBackgroundImage release];
+	[channelNotSubscribedIcon release], [channelNotSubscribedButtonImage release], [channelNotSubscribedBackgroundImage release];
     [super dealloc];
 }
 
@@ -121,8 +121,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	self.sectionTitleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:11.0f];
 
 	self.channelSubscribedIcon = [UIImage imageNamed:@"find-channel-subscribed-icon"];
+    self.channelSubscribedButtonImage = [UIImage imageNamed:@"find-channel-subscribed-button"];
 	self.channelSubscribedBackgroundImage = [UIImage imageNamed:@"find-channel-list-subscribed"];
 	self.channelNotSubscribedIcon = [UIImage imageNamed:@"find-channel-not-subscribed-icon"];
+    self.channelNotSubscribedButtonImage = [UIImage imageNamed:@"find-channel-not-subscribed-button"];
 	self.channelNotSubscribedBackgroundImage = [UIImage imageNamed:@"find-channel-list-normal"];
 	
     NSIndexPath *indexPath=[NSIndexPath indexPathForRow:0 inSection:0];
@@ -461,7 +463,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
             UIActivityIndicatorView *actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
             [actView setAlpha:0];
-            [buttonView setAlpha:1];
 
             UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
             newChannelIndicator.hidden = YES;
@@ -471,16 +472,18 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					titleLbl.text = NM_USER_YOUTUBE_USER_NAME;
 					detailLbl.text = @"YouTube sync is currently active";
 					[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+                    [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];
 					[backgroundView setImage:channelSubscribedBackgroundImage];  
                     
                     if (nowboxTaskController.syncInProgress) {
                         [actView setAlpha:1];
-                        [buttonView setAlpha:0];
+                        [buttonView setImage:nil forState:UIControlStateNormal];
                     }
 				} else {
 					titleLbl.text = @"YouTube";
 					detailLbl.text = @"Sync your Subscriptions, Favorites and Watch Later videos";
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+					[buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 				}
 				[thumbnailView cancelDownload];
@@ -496,9 +499,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[thumbnailView setImageForChannel:chn];
 							if ([chn.nm_subscribed boolValue]) {
 								[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+                                [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];                                
 								[backgroundView setImage:channelSubscribedBackgroundImage];
 							} else {
 								[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+                                [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
                             
@@ -507,6 +512,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							titleLbl.text = @"Twitter";
 							detailLbl.text = @"Sign in to watch videos from people you follow on Twitter";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+                            [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
 							[thumbnailView cancelDownload];
 							thumbnailView.image = [UIImage imageNamed:@"social-twitter"];
@@ -523,9 +529,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							backgroundView = (UIImageView *)[cell viewWithTag:14];
 							if ([chn.nm_subscribed boolValue]) {
 								[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+                                [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];                                
 								[backgroundView setImage:channelSubscribedBackgroundImage];
 							} else {
 								[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+                                [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
                             
@@ -534,6 +542,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							titleLbl.text = @"Facebook";
 							detailLbl.text = @"Sign in to watch videos from your Facebook friends";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+                            [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
 							[thumbnailView cancelDownload];
 							thumbnailView.image = [UIImage imageNamed:@"social-facebook"];
@@ -562,10 +571,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
         if ([chn.nm_subscribed boolValue]) {
             [buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+            [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];            
             [backgroundView setImage:channelSubscribedBackgroundImage];
             newChannelIndicator.hidden = ![chn.nm_is_new boolValue];            
         } else {
             [buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
+            [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
             [backgroundView setImage:channelNotSubscribedBackgroundImage];
             newChannelIndicator.hidden = YES;            
         }
@@ -588,7 +599,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         UIActivityIndicatorView *actView;
         actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
         [actView setAlpha:0];
-        [buttonView setAlpha:1];
               
         return cell;
 	}
@@ -1076,7 +1086,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         [UIView animateWithInteractiveDuration:0.3
                          animations:^{
                              [actView setAlpha:1];
-                             [buttonView setAlpha:0];
+                             [buttonView setImage:nil forState:UIControlStateNormal];
                          }
                          completion:^(BOOL finished) {
                          }];
@@ -1100,10 +1110,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
     [actView startAnimating];
     
+    UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
+
     [UIView animateWithInteractiveDuration:0.3
                      animations:^{
                          [actView setAlpha:1];
-                         [sender setAlpha:0];
+                         [buttonView setImage:nil forState:UIControlStateNormal];                         
                      }
                      completion:^(BOOL finished) {
                      }];

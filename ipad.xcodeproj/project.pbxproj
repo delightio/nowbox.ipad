@@ -177,6 +177,8 @@
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
+		83E348BE14BBD0E4002A376E /* find-channel-not-subscribed-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E348BC14BBD0E4002A376E /* find-channel-not-subscribed-button.png */; };
+		83E348BF14BBD0E4002A376E /* find-channel-subscribed-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E348BD14BBD0E4002A376E /* find-channel-subscribed-button.png */; };
 		83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */; };
 		83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */; };
 		83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C8148433B900ED7993 /* UIImage+Tint.m */; };
@@ -552,6 +554,8 @@
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
 		83E0466F144F79EC00C91525 /* tooltip-bad-video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-bad-video.png"; sourceTree = "<group>"; };
+		83E348BC14BBD0E4002A376E /* find-channel-not-subscribed-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-not-subscribed-button.png"; sourceTree = "<group>"; };
+		83E348BD14BBD0E4002A376E /* find-channel-subscribed-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-subscribed-button.png"; sourceTree = "<group>"; };
 		83EF90C214841F0200ED7993 /* OnBoardProcessCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessCategoryView.h; sourceTree = "<group>"; };
 		83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessCategoryView.m; sourceTree = "<group>"; };
 		83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessCategoryView.xib; sourceTree = "<group>"; };
@@ -1237,7 +1241,9 @@
 				8381B646145F6B0600696110 /* find-channel-list-highlighted.png */,
 				22ADF9DE13FBC3E3003CF27E /* find-channel-list-subscribed.png */,
 				22ADF9DF13FBC3E5003CF27E /* find-channel-not-subscribed-icon.png */,
+				83E348BC14BBD0E4002A376E /* find-channel-not-subscribed-button.png */,
 				22ADF9E013FBC3E7003CF27E /* find-channel-subscribed-icon.png */,
+				83E348BD14BBD0E4002A376E /* find-channel-subscribed-button.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1729,6 +1735,8 @@
 				838879D214B7739400566002 /* CrittercismDescriptionViewController.xib in Resources */,
 				838879D314B7739400566002 /* CrittercismRootViewController.xib in Resources */,
 				838879D414B7739400566002 /* CrittercismViewController.xib in Resources */,
+				83E348BE14BBD0E4002A376E /* find-channel-not-subscribed-button.png in Resources */,
+				83E348BF14BBD0E4002A376E /* find-channel-subscribed-button.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
