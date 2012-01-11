@@ -17,7 +17,6 @@ typedef enum {
 @interface ShareViewController : UIViewController <UITextViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate> {
     BOOL viewPushedByNavigationController;
     BOOL autoPost;
-    BOOL firstShare;
     BOOL videoAlreadyFavorited;
 }
 

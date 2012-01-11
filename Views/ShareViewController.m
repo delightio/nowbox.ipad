@@ -48,7 +48,6 @@
         [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
         
         NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
-        firstShare = [dataController.favoriteVideoChannel.nm_hidden boolValue];
         videoAlreadyFavorited = [aVideo.nm_favorite boolValue];
         
         self.navigationItem.backBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Message"
@@ -299,8 +298,12 @@
     
     VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
     
-    // Show "rate us" reminder the second time a user adds a video to the favorites
-    if ([playbackController shouldShowRateUsReminder] && !firstShare) {
+    // Show "rate us" reminder after the second time a user shares a video
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setInteger:++NM_SHARE_COUNT forKey:NM_SHARE_COUNT_KEY];
+    [userDefaults synchronize];
+    
+    if ([playbackController shouldShowRateUsReminder] && NM_SHARE_COUNT == 2) {
         [playbackController showRateUsReminderCompletion:completion];
     } else {
         completion();
