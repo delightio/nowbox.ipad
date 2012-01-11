@@ -780,6 +780,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		
 		return;
 	}
+    
+    [shareVideoActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+
 	// send tracking event
 	NMVideo * theVideo = [self playerCurrentVideo];
 	[nowboxTaskController issueSendViewEventForVideo:theVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
@@ -1612,15 +1615,27 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (IBAction)shareVideo:(id)sender {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Share Video" 
-                                                             delegate:self
-                                                    cancelButtonTitle:nil
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Email", @"Twitter", @"Facebook", nil];
-        
+    shareVideoActionSheet = [[UIActionSheet alloc] initWithTitle:@"Share Video" 
+                                                        delegate:self
+                                               cancelButtonTitle:nil
+                                          destructiveButtonTitle:nil
+                                               otherButtonTitles:@"Email", @"Twitter", @"Facebook", nil];
+    
+    // Show action sheet originating from share button
     CGPoint point = [ribbonView convertPoint:shareButton.center toView:self.view];
-    [actionSheet showFromRect:CGRectMake(point.x, ribbonView.frame.origin.y + ribbonView.frame.size.height + 1, 0, 0)
-                       inView:self.view animated:YES];
+    CGFloat y;
+    if (loadedControlView.playbackMode == NMHalfScreenMode) {
+        y = ribbonView.frame.origin.y + ribbonView.frame.size.height + 1;
+    } else {
+        y = loadedControlView.topbarContainerView.frame.origin.y + loadedControlView.topbarContainerView.frame.size.height + 1;
+        
+        // Keep controls visible, since ribbon is part of controls
+        loadedControlView.alpha = 1.0f;
+        showMovieControlTimestamp = -1;
+    }
+
+    [shareVideoActionSheet showFromRect:CGRectMake(point.x, y, 0, 0)
+                                 inView:self.view animated:YES];
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
@@ -1821,6 +1836,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     [actionSheet release];
+    shareVideoActionSheet = nil;
     
     NMVideo *video = playbackModelController.currentVideo;
     
@@ -1873,6 +1889,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
                                                                                  shareType, AnalyticsPropertyShareType,
                                                                                  nil]];
     }
+    
+    // Hide the controls
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
 }
 
 #pragma mark - MFMailComposeViewControllerDelegate

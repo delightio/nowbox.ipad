@@ -87,6 +87,7 @@
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
     
+    UIActionSheet *shareVideoActionSheet;
     ToolTip *pendingToolTip;
     void (^alertCompletion)(void);
 }

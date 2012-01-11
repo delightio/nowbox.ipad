@@ -47,7 +47,6 @@
         [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
         
-        NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
         videoAlreadyFavorited = [aVideo.nm_favorite boolValue];
         
         self.navigationItem.backBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Message"
