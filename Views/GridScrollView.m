@@ -144,6 +144,8 @@
     view.tag = index;
     [self insertSubview:view atIndex:0];
     [visibleViews addObject:view];       
+    
+    NSLog(@"adding view at index %i: visible view count %i, recycled view count %i", index, [visibleViews count] - 1, [recycledViews count] + 1);
 }
 
 - (BOOL)removeViewAtIndex:(NSUInteger)index
@@ -155,12 +157,16 @@
             break;
         }
     }
-    
+ 
     if (viewToRemove) {
+        NSLog(@"removing view at index %i: visible view count %i, recycled view count %i", index, [visibleViews count] - 1, [recycledViews count] + 1);
+
         [recycledViews addObject:viewToRemove];
         [viewToRemove removeFromSuperview];
         [visibleViews removeObject:viewToRemove];
         return YES;
+    } else {
+        NSLog(@"tried to remove view at index %i but couldn't", index);
     }
     
     return NO;
@@ -181,9 +187,9 @@
     // Can we remove any views?
     NSMutableSet *viewsToRemove = [[NSMutableSet alloc] init];
     for (UIView *view in visibleViews) {
-        if (CGRectIntersectsRect(view.frame, CGRectMake(0, self.contentOffset.y, self.frame.size.width, self.frame.size.height))) {
-            NSInteger row = view.tag / resolvedNumberOfColumns;
-            
+        NSInteger row = view.tag / resolvedNumberOfColumns;
+
+        if (CGRectIntersectsRect(view.frame, CGRectMake(0, self.contentOffset.y, self.frame.size.width, self.frame.size.height))) {            
             // Keep the view
             if (row < firstVisibleRow) {
                 firstVisibleRow = row;
@@ -198,6 +204,11 @@
             [recycledViews addObject:view];
             [view removeFromSuperview];
             [viewsToRemove addObject:view];
+            
+            if ([visibleViews count] - [viewsToRemove count] == 0) {
+                // We've removed all visible subviews - user is scrolling very fast
+                // FIXME: Right now this causes ALL VIEWS above the current scroll position to be re-added at once, leading to memory problems.
+            }
         }
     }
     [visibleViews minusSet:viewsToRemove];
@@ -209,10 +220,11 @@
     
     // Do we need to add any views?    
     while ((lastVisibleRow == -1) || (bottomY < self.contentOffset.y + self.frame.size.height && lastVisibleRow < numberOfRows - 1)) {
+//        NSLog(@"bottomY: %f", bottomY);        
         lastVisibleRow++;
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
             NSUInteger index = (lastVisibleRow * resolvedNumberOfColumns + column);
-            if (index < numberOfItems) {            
+            if (index < numberOfItems) {        
                 [self addViewAtIndex:index];
             }
         }
@@ -220,6 +232,7 @@
     }
 
     while (topY > self.contentOffset.y && firstVisibleRow > 0) {
+//        NSLog(@"topY: %f", topY);
         firstVisibleRow--;
         topY -= itemSize.height + verticalItemPadding;
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
@@ -297,6 +310,15 @@
 
 - (void)insertItemAtIndex:(NSUInteger)index
 {
+    numberOfItemsDelta++;
+
+    // If the item will not be visible, we don't need to do anything. Will be added once the user scrolls.
+    CGRect frame = [self frameForIndex:index];
+    if (frame.origin.y > self.contentOffset.y + self.frame.size.height ||
+        frame.origin.y + frame.size.height < self.contentOffset.y) {
+        return;
+    }
+    
     NSInteger indexToRemove = -1;
     if (index < numberOfItems) {
         // Shift other views down
@@ -312,18 +334,24 @@
     }
     
     [self addViewAtIndex:index];
-//    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
 
     // Remove the view that got shifted below the screen
     if (indexToRemove >= 0) {
         [self removeViewAtIndex:indexToRemove];
-    }
-    
-    numberOfItemsDelta++;
+    }    
 }
 
 - (void)deleteItemAtIndex:(NSUInteger)index
 {
+    numberOfItemsDelta--;
+
+    // If the item is not currently visible, we don't need to do anything. It was already deleted.
+    CGRect frame = [self frameForIndex:index];
+    if (frame.origin.y > self.contentOffset.y + self.frame.size.height ||
+        frame.origin.y + frame.size.height < self.contentOffset.y) {
+        return;
+    }    
+    
     [self removeViewAtIndex:index];
 
     // Shift other views up
@@ -337,10 +365,7 @@
             }
         }
     }
-    
-    numberOfItemsDelta--;
-//    NSLog(@"number of subviews: %i, visible: %i", [[self subviews] count], [visibleViews count]);
-    
+        
     // Might need to add a view to the end of the last visible column
     if (lastVisibleIndex >= 0 && lastVisibleIndex + 1 < numberOfItems + numberOfItemsDelta && !replacing) {
         [self addViewAtIndex:lastVisibleIndex + 1];
@@ -349,6 +374,13 @@
 
 - (void)updateItemAtIndex:(NSUInteger)index
 {
+    // If the item is not visible, we don't need to do anything. Will be updated once the user scrolls.
+    CGRect frame = [self frameForIndex:index];
+    if (frame.origin.y > self.contentOffset.y + self.frame.size.height ||
+        frame.origin.y + frame.size.height < self.contentOffset.y) {
+        return;
+    }
+    
     replacing = YES;
     if ([self removeViewAtIndex:index]) {
         [self addViewAtIndex:index];

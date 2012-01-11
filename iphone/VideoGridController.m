@@ -143,13 +143,8 @@
 	NMChannel *channel = [info objectForKey:@"channel"];
     
     if (channel && [channel isEqual:currentChannel] ) {
-		NSInteger numRec = [[info objectForKey:@"num_video_received"] integerValue];
-		if (numRec && [[info objectForKey:@"num_video_added"] integerValue] == 0 && numRec == [[info objectForKey:@"num_video_requested"] integerValue]) {
-			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-		} else {
-            isLoadingNewVideos = NO;
-		}
-    }
+        isLoadingNewVideos = NO;
+    }    
 }
 
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification 
