@@ -485,7 +485,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		CMTime t = [movieView.player currentTime];
 		NSInteger sec = 0;
 		if ( t.flags & kCMTimeFlags_Valid ) {
-			sec = t.value / t.timescale;
+			sec = (NSInteger)CMTimeGetSeconds(t);
 			loadedControlView.timeElapsed = sec;
 		}
 		if ( didSkippedVideo ) {
