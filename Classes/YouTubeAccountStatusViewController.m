@@ -152,6 +152,7 @@
             } else {
                 cell.detailTextLabel.text = @"Waiting for Server";
             }
+            [fmt release];
 			break;
 		}	
 		default:

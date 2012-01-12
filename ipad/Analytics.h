@@ -54,6 +54,10 @@
 #define AnalyticsEventStartYouTubeLogin @"Start YouTube Login"
 #define AnalyticsEventCompleteYouTubeLogin @"Complete YouTube Login"
 #define AnalyticsEventYouTubeLoginFailed @"YouTube Login Failed"
+#define AnalyticsEventShowShareDialog @"Show Share Dialog"
+#define AnalyticsEventCancelShareDialog @"Cancel Share Dialog"
+#define AnalyticsEventCompleteShareDialog @"Complete Share Dialog"
+#define AnalyticsEventShareFailed @"Share Failed"
 
 /*********************************************
  *                PROPERTIES                 *
@@ -81,4 +85,4 @@
 #define AnalyticsPropertyFullScreenVideo @"Full Screen Video"
 #define AnalyticsPropertyFullScreenChannelPanel @"Full Screen Channel Panel"
 #define AnalyticsPropertyTooltipName @"Tooltip Name"
-
+#define AnalyticsPropertyShareType @"Share Type"

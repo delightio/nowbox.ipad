@@ -39,6 +39,7 @@ NSNumber * NM_SESSION_ID					= nil;
 BOOL NM_WIFI_REACHABLE						= YES;
 BOOL NM_RATE_US_REMINDER_SHOWN              = NO;
 NSInteger NM_RATE_US_REMINDER_DEFER_COUNT   = 0;
+NSInteger NM_SHARE_COUNT                    = 0;
 
 NSString * const NMBeginNewSessionNotification = @"NMBeginNewSessionNotification";
 NSString * const NMShowErrorAlertNotification = @"NMShowErrorAlertNotification";
@@ -523,10 +524,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTasks:taskAy];
 }
 
-- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
-	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
-//	task.duration = vdur;
+- (void)issueShareEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
+	//	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueMakeFavorite:(BOOL)isFav video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:(isFav ? NMEventFavorite : NMEventUnfavorite) forVideo:aVideo];
+	//	task.duration = vdur;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];

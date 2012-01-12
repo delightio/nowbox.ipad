@@ -32,6 +32,7 @@
 @synthesize controlsHidden, timeRangeBuffered;
 @synthesize seekBubbleButton, isSeeking;
 @synthesize favoriteButton, watchLaterButton;
+@synthesize topbarContainerView;
 @synthesize playbackMode=playbackMode_;
 
 - (void)awakeFromNib {

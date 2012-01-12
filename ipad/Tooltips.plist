@@ -88,7 +88,7 @@
 		<true/>
 		<key>ValidationCriteria</key>
 		<dict>
-			<key>SharedVideo</key>
+			<key>FavoriteTap</key>
 			<integer>1</integer>
 		</dict>
 		<key>InvalidationCriteria</key>

@@ -16,6 +16,7 @@
 #import "NMAVPlayerItem.h"
 #import "ToolTipController.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import <MessageUI/MessageUI.h>
 #import "NMStyleUtility.h"
 
 @class NMVideo;
@@ -31,10 +32,11 @@
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate, UIAlertViewDelegate> {
+@interface VideoPlaybackViewController : UIViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, ToolTipControllerDelegate, UIAlertViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIView * ribbonView;
+    IBOutlet UIButton * shareButton;
 	IBOutlet UIButton * favoriteButton;
 	IBOutlet UIButton * watchLaterButton;
 	NMMovieView * movieView;
@@ -85,6 +87,7 @@
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
     
+    UIActionSheet *shareVideoActionSheet;
     ToolTip *pendingToolTip;
     void (^alertCompletion)(void);
 }
@@ -107,6 +110,7 @@
 - (IBAction)toggleChannelPanelFullScreen:(id)sender;
 - (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
 // movie detail view actions
+- (IBAction)shareVideo:(id)sender;
 - (IBAction)addVideoToFavorite:(id)sender;
 - (IBAction)addVideoToQueue:(id)sender;
 // seeking

@@ -23,6 +23,7 @@ extern NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY;
 extern NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY;
 extern NSString * const NM_RATE_US_REMINDER_SHOWN_KEY;
 extern NSString * const NM_RATE_US_REMINDER_DEFER_COUNT_KEY;
+extern NSString * const NM_SHARE_COUNT_KEY;
 extern NSString * const NM_VIDEO_QUALITY_KEY;
 //extern NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
@@ -34,7 +35,6 @@ extern NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY;
 extern NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY;
 extern NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY;
 extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
-extern NSString * const NM_LAST_SOCIAL_NETWORK;
 
 @class VideoPlaybackViewController;
 @class LaunchViewController;
