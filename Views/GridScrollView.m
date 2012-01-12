@@ -137,15 +137,26 @@
                       itemSize.height);
 }
 
+- (BOOL)indexIsVisible:(NSUInteger)index
+{
+    CGRect frame = [self frameForIndex:index];
+    if (frame.origin.y > self.contentOffset.y + self.frame.size.height ||
+        frame.origin.y + frame.size.height < self.contentOffset.y) {
+        return NO;
+    }    
+    
+    return YES;
+}
+
 - (void)addViewAtIndex:(NSUInteger)index
 {
+    if (![self indexIsVisible:index]) return;
+    
     UIView *view = [gridDelegate gridScrollView:self viewForItemAtIndex:index];
     view.frame = [self frameForIndex:index];
     view.tag = index;
     [self insertSubview:view atIndex:0];
     [visibleViews addObject:view];       
-    
-    NSLog(@"adding view at index %i: visible view count %i, recycled view count %i", index, [visibleViews count] - 1, [recycledViews count] + 1);
 }
 
 - (BOOL)removeViewAtIndex:(NSUInteger)index
@@ -159,14 +170,10 @@
     }
  
     if (viewToRemove) {
-        NSLog(@"removing view at index %i: visible view count %i, recycled view count %i", index, [visibleViews count] - 1, [recycledViews count] + 1);
-
         [recycledViews addObject:viewToRemove];
         [viewToRemove removeFromSuperview];
         [visibleViews removeObject:viewToRemove];
         return YES;
-    } else {
-        NSLog(@"tried to remove view at index %i but couldn't", index);
     }
     
     return NO;
@@ -220,7 +227,6 @@
     
     // Do we need to add any views?    
     while ((lastVisibleRow == -1) || (bottomY < self.contentOffset.y + self.frame.size.height && lastVisibleRow < numberOfRows - 1)) {
-//        NSLog(@"bottomY: %f", bottomY);        
         lastVisibleRow++;
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
             NSUInteger index = (lastVisibleRow * resolvedNumberOfColumns + column);
@@ -232,7 +238,6 @@
     }
 
     while (topY > self.contentOffset.y && firstVisibleRow > 0) {
-//        NSLog(@"topY: %f", topY);
         firstVisibleRow--;
         topY -= itemSize.height + verticalItemPadding;
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
@@ -313,11 +318,7 @@
     numberOfItemsDelta++;
 
     // If the item will not be visible, we don't need to do anything. Will be added once the user scrolls.
-    CGRect frame = [self frameForIndex:index];
-    if (frame.origin.y > self.contentOffset.y + self.frame.size.height ||
-        frame.origin.y + frame.size.height < self.contentOffset.y) {
-        return;
-    }
+    if (![self indexIsVisible:index]) return;
     
     NSInteger indexToRemove = -1;
     if (index < numberOfItems) {
@@ -346,11 +347,7 @@
     numberOfItemsDelta--;
 
     // If the item is not currently visible, we don't need to do anything. It was already deleted.
-    CGRect frame = [self frameForIndex:index];
-    if (frame.origin.y > self.contentOffset.y + self.frame.size.height ||
-        frame.origin.y + frame.size.height < self.contentOffset.y) {
-        return;
-    }    
+    if (![self indexIsVisible:index]) return;
     
     [self removeViewAtIndex:index];
 
@@ -375,11 +372,7 @@
 - (void)updateItemAtIndex:(NSUInteger)index
 {
     // If the item is not visible, we don't need to do anything. Will be updated once the user scrolls.
-    CGRect frame = [self frameForIndex:index];
-    if (frame.origin.y > self.contentOffset.y + self.frame.size.height ||
-        frame.origin.y + frame.size.height < self.contentOffset.y) {
-        return;
-    }
+    if (![self indexIsVisible:index]) return;
     
     replacing = YES;
     if ([self removeViewAtIndex:index]) {
