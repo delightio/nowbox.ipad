@@ -77,6 +77,7 @@
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
     NM_RATE_US_REMINDER_SHOWN = [userDefaults boolForKey:NM_RATE_US_REMINDER_SHOWN_KEY];
     NM_RATE_US_REMINDER_DEFER_COUNT = [userDefaults integerForKey:NM_RATE_US_REMINDER_DEFER_COUNT_KEY];
+    NM_SHARE_COUNT = [userDefaults integerForKey:NM_SHARE_COUNT_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
 	taskQueueController = [NMTaskQueueController sharedTaskQueueController];

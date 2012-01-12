@@ -17,6 +17,7 @@
 #define kChannelManagementTapCountKey @"NMChannelManagementTapCount"
 #define kSharedVideoTapCountKey @"NMSharedVideoCount"
 #define kWatchLaterTapCountKey @"NMWatchLaterTapCount"
+#define kFavoriteTapCountKey @"NMFavoriteTapCount"
 #define kChannelListScrollCountKey @"NMChannelListScrollCount"
 
 @protocol ToolTipControllerDelegate;

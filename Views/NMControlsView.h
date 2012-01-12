@@ -94,6 +94,7 @@
 @property (nonatomic, assign) IBOutlet UIButton * watchLaterButton;
 //@property (nonatomic, readonly) IBOutlet UIView * channelBackgroundView;
 //@property (nonatomic, readonly) IBOutlet UIView * authorBackgroundView;
+@property (nonatomic, assign) IBOutlet UIView * topbarContainerView;
 
 @property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
 @property (nonatomic, assign) BOOL isSeeking;
