@@ -206,11 +206,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// event
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
     [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidPostSharingNotification object:nil];
+    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailShareVideoNotification object:nil];
     [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailPostSharingNotification object:nil];    
+    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailFavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
@@ -1150,15 +1152,17 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
 	NSString * name = [aNotification name];
 
-    if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] ) {
-		[self updateFavoriteButton];
-        return;
-    }
+//    if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] ) {
+//		[self updateFavoriteButton];
+//        return;
+//    }
     
 	// do nth if the video object is nil
 	if ( vidObj == nil ) return;
 	
-	if ( ([name isEqualToString:NMDidShareVideoNotification] || [name isEqualToString:NMDidPostSharingNotification]) && [playbackModelController.currentVideo isEqual:vidObj] ) {
+	if ( [name isEqualToString:NMDidFavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
+		[self animateFavoriteButtonsToActive];
+	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		[self animateFavoriteButtonsToActive];
 	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
 		// queued a video successfully, animate the icon to appropriate state
@@ -1614,39 +1618,30 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (IBAction)addVideoToFavorite:(id)sender {
     NMVideo *video = playbackModelController.currentVideo;
     
-    if ([video.nm_favorite boolValue]) {
-        // Unfavorite video
-        [nowboxTaskController issueShare:NO video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventUnfavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                               video.title, AnalyticsPropertyVideoName, 
-                                                                               video.nm_id, AnalyticsPropertyVideoId,
-                                                                               nil]];
-    } else {
+	BOOL isFav = [video.nm_favorite boolValue];
+	[nowboxTaskController issueMakeFavorite:!isFav video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	[self animateFavoriteButtonsToInactive];
+	
+	[[MixpanelAPI sharedAPI] track:isFav ? AnalyticsEventUnfavoriteVideo : AnalyticsEventUnfavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, video.title, AnalyticsPropertyVideoName, video.nm_id, AnalyticsPropertyVideoId, nil]];
         // Share video
-        ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
-                                                                                     bundle:[NSBundle mainBundle] 
-                                                                                      video:video
-                                                                                   duration:loadedControlView.duration 
-                                                                             elapsedSeconds:loadedControlView.timeElapsed];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
-        navController.modalPresentationStyle = UIModalPresentationPageSheet;
-        [navController.navigationBar setBarStyle:UIBarStyleBlack];
-        [self presentModalViewController:navController animated:YES];
-        navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
-        
-        CGRect frame = navController.view.superview.frame;
-        frame.origin.y = 40;
-        navController.view.superview.frame = frame;
-
-        [shareController release];
-        [navController release];
+//        ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" 
+//                                                                                     bundle:[NSBundle mainBundle] 
+//                                                                                      video:video
+//                                                                                   duration:loadedControlView.duration 
+//                                                                             elapsedSeconds:loadedControlView.timeElapsed];
+//        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:shareController];
+//        navController.modalPresentationStyle = UIModalPresentationPageSheet;
+//        [navController.navigationBar setBarStyle:UIBarStyleBlack];
+//        [self presentModalViewController:navController animated:YES];
+//        navController.view.superview.bounds = CGRectMake(0, 0, 500, 325);
+//        
+//        CGRect frame = navController.view.superview.frame;
+//        frame.origin.y = 40;
+//        navController.view.superview.frame = frame;
+//
+//        [shareController release];
+//        [navController release];
                 
-        [[MixpanelAPI sharedAPI] track:AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                               video.title, AnalyticsPropertyVideoName, 
-                                                                               video.nm_id, AnalyticsPropertyVideoId,
-                                                                               nil]];        
-    }
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1660,10 +1655,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
     
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                          playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
-                                                                          playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
-                                                                          nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, nil]];
 }
 
 // seek bar

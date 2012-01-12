@@ -25,6 +25,9 @@ NSString * const NMDidFailUnsubscribeChannelNotification = @"NMDidFailUnsubscrib
 NSString * const NMWillShareVideoNotification = @"NMWillShareVideoNotification";
 NSString * const NMDidShareVideoNotification = @"NMDidShareVideoNotification";
 NSString * const NMDidFailShareVideoNotification = @"NMDidFailShareVideoNotification";
+NSString * const NMWillFavoriteVideoNotification = @"NMWillFavoriteVideoNotification";
+NSString * const NMDidFavoriteVideoNotification = @"NMDidFavoriteVideoNotification";
+NSString * const NMDidFailFavoriteVideoNotification = @"NMDidFailFavoriteVideoNotification";
 NSString * const NMWillUnfavoriteVideoNotification = @"NMWillUnfavoriteVideoNotification";
 NSString * const NMDidUnfavoriteVideoNotification = @"NMDidUnfavoriteVideoNotification";
 NSString * const NMDidFailUnfavoriteVideoNotification = @"NMDidFailUnfavoriteVideoNotification";
@@ -113,6 +116,10 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			break;
 		case NMEventShare:
 			evtStr = @"share";
+			executeSaveActionOnError = YES;
+			break;
+		case NMEventFavorite:
+			evtStr = @"favorite";
 			executeSaveActionOnError = YES;
 			break;
 		case NMEventUnfavorite:
@@ -233,6 +240,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return YES;
 		}
 		case NMEventShare:
+		case NMEventFavorite:
 		{
 			newVideo = [ctrl duplicateVideo:video];
 			newVideo.channel = ctrl.favoriteVideoChannel;
@@ -276,6 +284,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return NMWillEnqueueVideoNotification;
 		case NMEventShare:
 			return NMWillShareVideoNotification;
+		case NMEventFavorite:
+			return NMWillFavoriteVideoNotification;
 		case NMEventUnfavorite:
 			return NMWillUnfavoriteVideoNotification;
 			
@@ -297,6 +307,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return NMDidEnqueueVideoNotification;
 		case NMEventShare:
 			return NMDidShareVideoNotification;
+		case NMEventFavorite:
+			return NMDidFavoriteVideoNotification;
 		case NMEventUnfavorite:
 			return NMDidUnfavoriteVideoNotification;
 			
@@ -318,6 +330,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			return NMDidFailEnqueueVideoNotification;
 		case NMEventShare:
 			return NMDidFailShareVideoNotification;
+		case NMEventFavorite:
+			return NMDidFailFavoriteVideoNotification;
 		case NMEventUnfavorite:
 			return NMDidFailUnfavoriteVideoNotification;
 			
@@ -335,10 +349,10 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			break;
 			
 		case NMEventEnqueue:
-//		case NMEventShare:
+		case NMEventFavorite:
 			return [NSDictionary dictionaryWithObject:video forKey:@"video"];
 		case NMEventDequeue:
-//		case NMEventUnfavorite:
+		case NMEventUnfavorite:
 			if ( ![video isDeleted] ) {
 				return [NSDictionary dictionaryWithObject:video forKey:@"video"];
 			}

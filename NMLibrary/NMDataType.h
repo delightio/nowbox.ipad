@@ -72,6 +72,7 @@ typedef enum {
 	NMEventEnqueue,
 	NMEventDequeue,
 	NMEventShare,
+	NMEventFavorite,
 	NMEventUnfavorite,
 	NMEventView,
 	NMEventExamine,
@@ -184,6 +185,9 @@ extern NSString * const NMDidFailUnsubscribeChannelNotification;
 extern NSString * const NMWillShareVideoNotification;
 extern NSString * const NMDidShareVideoNotification;
 extern NSString * const NMDidFailShareVideoNotification;
+extern NSString * const NMWillFavoriteVideoNotification;
+extern NSString * const NMDidFavoriteVideoNotification;
+extern NSString * const NMDidFailFavoriteVideoNotification;
 extern NSString * const NMWillUnfavoriteVideoNotification;
 extern NSString * const NMDidUnfavoriteVideoNotification;
 extern NSString * const NMDidFailUnfavoriteVideoNotification;

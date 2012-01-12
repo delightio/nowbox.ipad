@@ -523,10 +523,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTasks:taskAy];
 }
 
-- (void)issueShare:(BOOL)share video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
-	NMEventType t = share ? NMEventShare : NMEventUnfavorite;
-	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
-//	task.duration = vdur;
+- (void)issueShareEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
+	//	task.duration = vdur;
+	task.elapsedSeconds = sec;
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueMakeFavorite:(BOOL)isFav video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
+	NMEventTask * task = [[NMEventTask alloc] initWithEventType:(isFav ? NMEventFavorite : NMEventUnfavorite) forVideo:aVideo];
+	//	task.duration = vdur;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
