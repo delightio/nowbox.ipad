@@ -126,12 +126,14 @@
 
     // round the subscribers count to nearest thousand, don't if not subscribers
     NSInteger subCount = [channel.subscriber_count integerValue];
+    NSString *videosString = ([channel.video_count integerValue] == 1 ? @"video" : @"videos");
+    NSString *subscribersString = (subCount == 1 ? @"subscriber" : @"subscribers");
     if ( subCount > 1000 ) {
-        metricLabel.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", channel.video_count, [countFormatter stringFromNumber:channel.subscriber_count]];
+        metricLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@", channel.video_count, videosString, [countFormatter stringFromNumber:channel.subscriber_count], subscribersString];
     } else if ( subCount == 0 ) {
-        metricLabel.text = [NSString stringWithFormat:@"%@ videos", channel.video_count];
+        metricLabel.text = [NSString stringWithFormat:@"%@ %@", channel.video_count, videosString];
     } else {
-        metricLabel.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", channel.video_count, channel.subscriber_count];
+        metricLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@", channel.video_count, videosString, channel.subscriber_count, subscribersString];
     }
     
     unsubscribeButton.enabled = YES;

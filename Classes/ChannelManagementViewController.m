@@ -494,7 +494,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						if ( NM_USER_TWITTER_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
 							titleLbl.text = chn.title;
-							detailLbl.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
+							detailLbl.text = [NSString stringWithFormat:@"%@ %@", chn.video_count, ([chn.video_count integerValue] == 1 ? @"video" : @"videos")];
 							
 							[thumbnailView setImageForChannel:chn];
 							if ([chn.nm_subscribed boolValue]) {
@@ -523,7 +523,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 							titleLbl.text = chn.title;
-							detailLbl.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
+							detailLbl.text = [NSString stringWithFormat:@"%@ %@", chn.video_count, ([chn.video_count integerValue] == 1 ? @"video" : @"videos")];
 							[thumbnailView setImageForChannel:chn];
 							buttonView = (UIButton *)[cell viewWithTag:11];
 							backgroundView = (UIImageView *)[cell viewWithTag:14];
@@ -588,12 +588,14 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         label = (UILabel *)[cell viewWithTag:13];
 		// round the subscribers count to nearest thousand, don't if not subscribers
 		NSInteger subCount = [chn.subscriber_count integerValue];
+        NSString *videosString = ([chn.video_count integerValue] == 1 ? @"video" : @"videos");
+        NSString *subscribersString = (subCount == 1 ? @"subscriber" : @"subscribers");
 		if ( subCount > 1000 ) {
-			label.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", chn.video_count, [countFormatter stringFromNumber:chn.subscriber_count]];
+			label.text = [NSString stringWithFormat:@"%@ %@, %@ %@", chn.video_count, videosString, [countFormatter stringFromNumber:chn.subscriber_count], subscribersString];
 		} else if ( subCount == 0 ) {
-			label.text = [NSString stringWithFormat:@"%@ videos", chn.video_count];
+			label.text = [NSString stringWithFormat:@"%@ %@", chn.video_count, videosString];
 		} else {
-			label.text = [NSString stringWithFormat:@"%@ videos, %@ subscribers", chn.video_count, chn.subscriber_count];
+			label.text = [NSString stringWithFormat:@"%@ %@, %@ %@", chn.video_count, videosString, chn.subscriber_count, subscribersString];
 		}
         
         UIActivityIndicatorView *actView;
