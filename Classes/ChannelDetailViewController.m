@@ -260,7 +260,7 @@
 	if ( cpv == nil ) {
 		thumbnailScrollView.contentSize = CGSizeZero;
 	} else {
-		thumbnailScrollView.contentSize = CGSizeMake((NM_THUMBNAIL_PADDING + cpv.bounds.size.width) * (CGFloat)i, thumbnailScrollView.bounds.size.height);
+		thumbnailScrollView.contentSize = CGSizeMake((NM_THUMBNAIL_PADDING + cpv.bounds.size.width) * (CGFloat)[vdoThumbnails count], thumbnailScrollView.bounds.size.height);
 	}
 }
 
