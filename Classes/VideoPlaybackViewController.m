@@ -1625,13 +1625,13 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     CGPoint point = [ribbonView convertPoint:shareButton.center toView:self.view];
     CGFloat y;
     if (loadedControlView.playbackMode == NMFullScreenPlaybackMode) {
-        y = loadedControlView.topbarContainerView.frame.origin.y + loadedControlView.topbarContainerView.frame.size.height + 1;
+        y = loadedControlView.topbarContainerView.frame.origin.y + loadedControlView.topbarContainerView.frame.size.height - 8;
         
         // Keep controls visible, since ribbon is part of controls
         loadedControlView.alpha = 1.0f;
         showMovieControlTimestamp = -1;
     } else {
-        y = ribbonView.frame.origin.y + ribbonView.frame.size.height + 1;
+        y = ribbonView.frame.origin.y + ribbonView.frame.size.height - 12;
     }
     
     [shareVideoActionSheet showFromRect:CGRectMake(point.x, y, 0, 0)
