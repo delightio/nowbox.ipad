@@ -19,7 +19,7 @@
 
 #define kMaxTwitterCharacters 119
 #define kDefaultFacebookText @"Watching \"%@\""
-#define kDefaultTwitterText @"Watching \"%@\" on @NOWBOX"
+#define kDefaultTwitterText @"Watching \"%@\""
 
 @implementation ShareViewController
 
