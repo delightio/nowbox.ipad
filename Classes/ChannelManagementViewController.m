@@ -481,7 +481,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                     }
 				} else {
 					titleLbl.text = @"YouTube";
-					detailLbl.text = @"Sync your Subscriptions, Favorites and Watch Later videos";
+					detailLbl.text = @"Sync your subscriptions, favorites and queue";
 					[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
 					[buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 					[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
@@ -510,7 +510,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                             newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Twitter";
-							detailLbl.text = @"Sign in to watch videos from people you follow on Twitter";
+							detailLbl.text = @"Watch videos shared by people you follow";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
                             [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                        
@@ -540,7 +540,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                             newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Facebook";
-							detailLbl.text = @"Sign in to watch videos from your Facebook friends";
+							detailLbl.text = @"Watch videos shared by Facebook friends";
 							[buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
                             [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
 							[backgroundView setImage:channelNotSubscribedBackgroundImage];                                                
