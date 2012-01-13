@@ -1892,6 +1892,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark - MFMailComposeViewControllerDelegate
 
+- (void)delayedShowEmailShareNotification
+{
+    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareEmail sender:nil];        
+}
+
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error 
 {
     NSString *eventName;
@@ -1900,7 +1905,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     } else if (result == MFMailComposeResultFailed) {
         eventName = AnalyticsEventShareFailed;
     } else {
+        // Sent or saved as draft - consider it to be complete
         eventName = AnalyticsEventCompleteShareDialog;
+        
+        if (result == MFMailComposeResultSent) {
+            [self performSelector:@selector(delayedShowEmailShareNotification) withObject:nil afterDelay:0.5];
+        }
     }
 
     NMVideo *video = playbackModelController.currentVideo;

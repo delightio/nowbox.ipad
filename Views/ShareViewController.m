@@ -289,10 +289,7 @@
 {
     void (^completion)(void) = ^{
         [self cancelButtonPressed:nil];
-        
-        if (!videoAlreadyFavorited) {
-            [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
-        }
+        [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
     };
     
     VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
@@ -381,7 +378,16 @@
 
 - (void)delayedNotifyShareVideo
 {
-    [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:nil];                
+    switch (shareMode) {
+        case ShareModeFacebook:
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareFacebook sender:nil];        
+            break;
+        case ShareModeTwitter:
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareTwitter sender:nil];        
+            break;
+        default:
+            break;
+    }
 }
 
 @end

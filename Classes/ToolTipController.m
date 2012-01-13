@@ -61,11 +61,6 @@ static ToolTipController *toolTipController = nil;
             if (useSavedCounts) {
                 savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kChannelManagementTapCountKey];
             }
-        } else if ([criteriaName isEqualToString:@"SharedVideo"]) {
-            criteria.eventType = ToolTipEventSharedVideo;
-            if (useSavedCounts) {
-                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kSharedVideoTapCountKey];
-            }
         } else if ([criteriaName isEqualToString:@"WatchLaterTap"]) {
             criteria.eventType = ToolTipEventWatchLaterTap;
             if (useSavedCounts) {
@@ -76,6 +71,21 @@ static ToolTipController *toolTipController = nil;
             if (useSavedCounts) {
                 savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kFavoriteTapCountKey];
             }
+        } else if ([criteriaName isEqualToString:@"ShareEmail"]) {
+            criteria.eventType = ToolTipEventShareEmail;
+            if (useSavedCounts) {
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kShareEmailCountKey];
+            }
+        } else if ([criteriaName isEqualToString:@"ShareFacebook"]) {
+            criteria.eventType = ToolTipEventShareFacebook;
+            if (useSavedCounts) {
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kShareFacebookCountKey];
+            }
+        } else if ([criteriaName isEqualToString:@"ShareTwitter"]) {
+            criteria.eventType = ToolTipEventShareTwitter;
+            if (useSavedCounts) {
+                savedElapsedCount = [[NSUserDefaults standardUserDefaults] objectForKey:kShareTwitterCountKey];
+            }            
         } else if ([criteriaName isEqualToString:@"ChannelListScroll"]) {
             criteria.eventType = ToolTipEventChannelListScroll;
             if (useSavedCounts) {
@@ -275,7 +285,9 @@ static ToolTipController *toolTipController = nil;
         case ToolTipEventVideoTap:              key = kVideoTapCountKey; break;
         case ToolTipEventBadVideoTap:           key = kBadVideoTapCountKey; break;
         case ToolTipEventChannelManagementTap:  key = kChannelManagementTapCountKey; break;
-        case ToolTipEventSharedVideo:           key = kSharedVideoCountKey; break;
+        case ToolTipEventShareEmail:            key = kShareEmailCountKey; break;
+        case ToolTipEventShareFacebook:         key = kShareFacebookCountKey; break;
+        case ToolTipEventShareTwitter:          key = kShareTwitterCountKey; break;
         case ToolTipEventWatchLaterTap:         key = kWatchLaterCountKey; break;
         case ToolTipEventFavoriteTap:           key = kFavoriteCountKey; break;
         case ToolTipEventChannelListScroll:     key = kChannelListScrollCountKey; break;
@@ -404,7 +416,9 @@ static ToolTipController *toolTipController = nil;
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kBadVideoTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelManagementTapCountKey];
-    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kSharedVideoTapCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kShareEmailCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kShareFacebookCountKey];
+    [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kShareTwitterCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kWatchLaterTapCountKey];
     [userDefaults setObject:[NSNumber numberWithInt:0] forKey:kChannelListScrollCountKey];
     [userDefaults synchronize];
