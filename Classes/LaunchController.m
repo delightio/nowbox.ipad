@@ -395,7 +395,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
          && compareVersions(localVersion, currentVersion) == NSOrderedAscending) {
         // Optional update
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Update Available" 
-                                                            message:@"Hey! A new version of NOWBOX is available. Would you like to update now?" 
+                                                            message:@"A new version of NOWBOX is available. Would you like to update now?" 
                                                            delegate:self 
                                                   cancelButtonTitle:@"Later"
                                                   otherButtonTitles:@"Download", nil];
@@ -407,7 +407,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     } else if (compareVersions(localVersion, minimumVersion) == NSOrderedAscending) {
         // Mandatory update
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Update Required" 
-                                                            message:@"Hey! You need to get the latest version of NOWBOX to continue using the app." 
+                                                            message:@"You need to get the latest version of NOWBOX to continue using the app." 
                                                            delegate:self 
                                                   cancelButtonTitle:@"Leave"
                                                   otherButtonTitles:@"Download", nil];        
