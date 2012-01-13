@@ -53,9 +53,21 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
     
+    // Set up gesture recognizers
     UIPanGestureRecognizer *panningGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(customPanning:)] autorelease];
     panningGesture.delegate = self;
     [tableView addGestureRecognizer:panningGesture];
+    
+    UITapGestureRecognizer *doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+    doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+    [scrollToTopArea addGestureRecognizer:doubleTapGestureRecognizer];
+    [doubleTapGestureRecognizer release];
+    
+    UITapGestureRecognizer *singleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    singleTapGestureRecognizer.numberOfTapsRequired = 1;
+    [singleTapGestureRecognizer requireGestureRecognizerToFail:doubleTapGestureRecognizer];
+    [scrollToTopArea addGestureRecognizer:singleTapGestureRecognizer];
+    [singleTapGestureRecognizer release];
     
     NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handlePlayNewlySubscribedChannelNotification:) name:NMShouldPlayNewlySubscribedChannelNotification object:nil];
@@ -173,10 +185,6 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventChannelManagementTap sender:sender];
     
     [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelManagement properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
-}
-
-- (IBAction)scrollToTop:(id)sender {
-    [tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
 }
 
 - (void)queueColumnView:(UIView *)vw {
@@ -614,8 +622,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     }
 }
 
+# pragma mark - Gesture recognizers
 
-# pragma mark swipe gestures
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     // override default tableview panning gesture
@@ -651,6 +659,17 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         default:
             break;
     }
+}
+
+- (void)handleSingleTap:(UITapGestureRecognizer *)sender {
+    // Scroll to top
+    [tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+}
+
+- (void)handleDoubleTap:(UITapGestureRecognizer *)sender {
+    // Scroll to current channel
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
+    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 
 #pragma mark play newly subscribed channel
