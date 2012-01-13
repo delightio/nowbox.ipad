@@ -175,9 +175,9 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelManagement properties:[NSDictionary dictionaryWithObjectsAndKeys:highlightedChannel.title, AnalyticsPropertyChannelName, nil]];
 }
 
-//- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-//	[popoverController release];
-//}
+- (IBAction)scrollToTop:(id)sender {
+    [tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+}
 
 - (void)queueColumnView:(UIView *)vw {
     if ([containerViewPool count] >= NM_CONTAINER_VIEW_POOL_SIZE) {

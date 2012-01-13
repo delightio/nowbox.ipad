@@ -58,6 +58,7 @@ typedef enum {
 - (IBAction)toggleTableEditMode:(id)sender;
 - (IBAction)showSettingsView:(id)sender;
 - (IBAction)showChannelManagementView:(id)sender;
+- (IBAction)scrollToTop:(id)sender;
 
 -(void)customPanning:(UIPanGestureRecognizer *)sender;
 -(NSInteger)highlightedChannelIndex;
