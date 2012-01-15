@@ -14,7 +14,7 @@
 
 @interface NMNetworkController : NSObject {
 	NSMutableDictionary * connectionPool;
-	NSMutableDictionary * taskPool;
+//	NSMutableDictionary * taskPool;
 	NSMutableArray * pendingTaskBuffer;
 	NSLock * pendingTaskBufferLock;
 	
