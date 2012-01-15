@@ -8,10 +8,12 @@
 
 #import "NMNetworkController.h"
 #import "NMDataController.h"
+#import "NMURLConnection.h"
 #import "NMDataType.h"
 #ifdef DEBUG_CONNECTION_CONTROLLER
 #import "NMVideo.h"
 #endif
+#import "FBConnect.h"
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
 NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
@@ -221,7 +223,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				theTask.state = NMTaskExecutionStateConnectionActive;
 				theTask.sequenceLog = taskLogCount++;
 				request = [theTask URLRequest];
-				conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+				conn = [[NMURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
 				key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
 				[connectionPool setObject:conn forKey:key];
 				[taskPool setObject:theTask forKey:key];
@@ -561,4 +563,13 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[pendingTaskBufferLock unlock];
 }
 
+#pragma mark Facebook request
+- (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
+}
+
+- (void)request:(FBRequest *)request didLoad:(id)result {
+}
+
+- (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
+}
 @end

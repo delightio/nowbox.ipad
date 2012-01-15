@@ -46,6 +46,9 @@ NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY = @"NM_TIME_ON_APP_SINCE_INSTA
 NSString * const NM_RATE_US_REMINDER_SHOWN_KEY = @"NM_RATE_US_REMINDER_SHOWN_KEY";
 NSString * const NM_RATE_US_REMINDER_DEFER_COUNT_KEY = @"NM_RATE_US_REMINDER_DEFER_COUNT_KEY";
 NSString * const NM_SHARE_COUNT_KEY         = @"NM_SHARE_COUNT_KEY";
+// Facebook token
+NSString * const NM_FACEBOOK_ACCESS_TOKEN_KEY = @"FBAccessTokenKey";
+NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY = @"FBExpirationDateKey";
 // setting view
 NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
@@ -64,6 +67,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 @synthesize viewController;
 //@synthesize launchViewController;
 @synthesize managedObjectContext=managedObjectContext_;
+@synthesize facebook;
 
 + (void)initialize {
 	NSNumber * yesNum = [NSNumber numberWithBool:YES];
@@ -191,7 +195,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     userDefaults = [NSUserDefaults standardUserDefaults];
-
+	
     // Enable analytics and crash reporting
     [self setupMixpanel];
     [Crittercism initWithAppID:NM_CRITTERCISM_APP_ID
@@ -324,6 +328,45 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 */
 	[self saveCurrentVideoList:[viewController markPlaybackCheckpoint]];
 	[self saveContext];
+}
+
+// Pre 4.2 support
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return [facebook handleOpenURL:url]; 
+}
+
+// For 4.2+ support
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [facebook handleOpenURL:url]; 
+}
+
+#pragma mark Facebook
+
+- (Facebook *)facebook {
+	if ( facebook == nil ) {
+		facebook = [[Facebook alloc] initWithAppId:@"190577807707530" andDelegate:self];
+		if ([userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY] 
+			&& [userDefaults objectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY]) {
+			facebook.accessToken = [userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
+			facebook.expirationDate = [userDefaults objectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
+		}
+	}
+	return facebook;
+}
+
+- (void)fbDidLogin {
+    [userDefaults setObject:[facebook accessToken] forKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
+    [userDefaults setObject:[facebook expirationDate] forKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
+    [userDefaults synchronize];
+}
+
+- (void) fbDidLogout {
+    // Remove saved authorization information if it exists
+    if ([userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY]) {
+        [userDefaults removeObjectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
+        [userDefaults removeObjectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
+        [userDefaults synchronize];
+    }
 }
 
 #pragma mark User Defaults

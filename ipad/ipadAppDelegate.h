@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Analytics.h"
+#import "FBConnect.h"
 
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
 extern NSString * const NM_LAST_SESSION_DATE;
@@ -39,12 +40,13 @@ extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 @class VideoPlaybackViewController;
 @class LaunchViewController;
 
-@interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
+@interface ipadAppDelegate : NSObject <UIApplicationDelegate, FBSessionDelegate> {
 	VideoPlaybackViewController *viewController;
 //	LaunchViewController *launchViewController;
 //	UINavigationController * navigationViewController;
 
 @private
+	Facebook * facebook;
 	BOOL stopShowingError;
 	NSUserDefaults * userDefaults;
     NSManagedObjectContext *managedObjectContext_;
@@ -63,12 +65,12 @@ extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet VideoPlaybackViewController * viewController;
-//@property (nonatomic, retain) IBOutlet LaunchViewController * launchViewController;
-//@property (nonatomic, retain) IBOutlet UINavigationController * navigationViewController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
+@property (nonatomic, readonly) Facebook * facebook;
 
 - (void)saveContext;
 - (void)saveChannelID:(NSNumber *)chnNum;

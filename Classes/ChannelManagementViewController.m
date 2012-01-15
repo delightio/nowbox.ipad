@@ -18,6 +18,7 @@
 #import "YouTubeAccountStatusViewController.h"
 #import "Analytics.h"
 #import "UIView+InteractiveAnimation.h"
+#import "ipadAppDelegate.h"
 
 NSString * const NMChannelManagementWillAppearNotification = @"NMChannelManagementWillAppearNotification";
 NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManagementDidDisappearNotification";
@@ -754,13 +755,21 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
-							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-							socialCtrl.loginType = NMLoginFacebookType;
-							[self.navigationController pushViewController:socialCtrl animated:YES];
-							[socialCtrl release];
-							
-							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
-							
+//							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+//							socialCtrl.loginType = NMLoginFacebookType;
+//							[self.navigationController pushViewController:socialCtrl animated:YES];
+//							[socialCtrl release];
+//							
+//							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
+							ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+							if (![appDel.facebook isSessionValid]) {
+								NSArray *permissions = [[NSArray alloc] initWithObjects:
+														@"publish_stream", 
+														@"read_stream",
+														nil];
+								[appDel.facebook authorize:permissions];
+								[permissions release];
+							}
 							return;
 						}
 					}
