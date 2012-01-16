@@ -116,6 +116,7 @@
         if (cell == nil) {
             [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
             cell = loadingCell;
+            [cell setLoadingCell:YES];
             self.loadingCell = nil;
         }
         [cell setHidden:!isLoadingNewContent];
@@ -182,7 +183,7 @@
 		[cell setIsPlayingVideo:NO];
 	}
     
-    [cell setFirstCell:([anIndexPath row] == 0)];
+    [cell setLastCell:(anIndexPath.row == [self tableView:aTableView numberOfRowsInSection:anIndexPath.section] - 2)];
     
     return cell;
 }
