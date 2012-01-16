@@ -199,6 +199,8 @@
 		A90F2203143F643F006B298D /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = A90F2202143F643F006B298D /* style.css */; };
 		A90F2205143F6CAF006B298D /* FacebookLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A90F2204143F6CAF006B298D /* FacebookLoading.html */; };
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
+		A9128C7414C3D98B00A3861D /* NMParseFacebookFeedTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */; };
+		A9128C7514C3D98B00A3861D /* NMParseFacebookFeedTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A925014B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250149134385BF001759F5 /* InfoPlist.strings */; };
@@ -602,6 +604,8 @@
 		A90F2202143F643F006B298D /* style.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		A90F2204143F6CAF006B298D /* FacebookLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = FacebookLoading.html; sourceTree = "<group>"; };
 		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
+		A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMParseFacebookFeedTask.h; sourceTree = "<group>"; };
+		A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMParseFacebookFeedTask.m; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1389,6 +1393,8 @@
 				A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */,
 				A9B9FBF51473D97200953E40 /* NMUserSynchronizeTask.h */,
 				A9B9FBF61473D97200953E40 /* NMUserSynchronizeTask.m */,
+				A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */,
+				A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1526,6 +1532,7 @@
 				A96BB8B21468AA31004B93ED /* NMPostSharingTask.h in Headers */,
 				A9B9FBF71473D97200953E40 /* NMUserSynchronizeTask.h in Headers */,
 				A9E285EB14C300A700B4AB5C /* NMURLConnection.h in Headers */,
+				A9128C7414C3D98B00A3861D /* NMParseFacebookFeedTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1949,6 +1956,7 @@
 				A96BB8B31468AA31004B93ED /* NMPostSharingTask.m in Sources */,
 				A9B9FBF81473D97200953E40 /* NMUserSynchronizeTask.m in Sources */,
 				A9E285EC14C300A700B4AB5C /* NMURLConnection.m in Sources */,
+				A9128C7514C3D98B00A3861D /* NMParseFacebookFeedTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

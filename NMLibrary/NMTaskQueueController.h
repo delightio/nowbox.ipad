@@ -123,6 +123,9 @@
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 
+// Facebook
+- (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
+
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
 

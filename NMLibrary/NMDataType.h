@@ -34,7 +34,6 @@ typedef enum {
 	NMCommandEditUserSettings,
 	NMCommandUserSynchronize,
 	NMCommandGetToken,
-//	NMCommandEditUser,
 	NMCommandPollUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
@@ -48,6 +47,7 @@ typedef enum {
 	NMCommandGetPreviewThumbnail,
 	NMCommandCheckUpdate,
 	NMCommandPostSharing,
+	NMCommandParseFacebookFeed,
 } NMCommand;
 
 typedef enum {

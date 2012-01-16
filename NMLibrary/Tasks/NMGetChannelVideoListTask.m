@@ -79,17 +79,6 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	return mdict;
 }
 
-//- (id)initWithChannel:(NMChannel *)aChn {
-//	self = [super init];
-//	command = NMCommandGetChannelVideoList;
-//	self.channel = aChn;
-//	self.channelName = aChn.title;
-//	self.targetID = aChn.nm_id;
-//	self.urlString = aChn.resource_uri;
-//	totalNumberOfRows = 0;
-//	return self;
-//}
-
 - (id)initGetMoreVideoForChannel:(NMChannel *)aChn {
 	self = [super init];
 	command = NMCommandGetMoreVideoForChannel;

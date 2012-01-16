@@ -16,6 +16,8 @@
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 #import "Reachability.h"
+#import "ipadAppDelegate.h"
+#import "FBConnect.h"
 
 #define NM_USER_SYNC_CHECK_TIMER_INTERVAL	60.0
 #define NM_USER_POLLING_TIMER_INTERVAL		5.0
@@ -577,6 +579,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo {
 	NMEventType t = shouldQueue ? NMEventEnqueue : NMEventDequeue;
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:t forVideo:aVideo];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
+	ipadAppDelegate * appDel = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
+	NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj facebookProxy:appDel.facebook];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

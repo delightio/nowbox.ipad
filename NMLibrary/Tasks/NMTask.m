@@ -83,12 +83,12 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 	return NO;
 }
 
-- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict {
-	NSNumber * c = [dict valueForKeyPath:@"status.code"];
-	encountersErrorDuringProcessing = ( c == nil || [c integerValue] );
-	return encountersErrorDuringProcessing;
-}
-
+//- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict {
+//	NSNumber * c = [dict valueForKeyPath:@"status.code"];
+//	encountersErrorDuringProcessing = ( c == nil || [c integerValue] );
+//	return encountersErrorDuringProcessing;
+//}
+//
 - (NSInteger)commandIndex {
 	if ( targetID ) {
 		NSInteger tid = [self.targetID unsignedIntegerValue];

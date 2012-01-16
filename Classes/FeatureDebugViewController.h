@@ -33,5 +33,6 @@
 - (IBAction)getDebugChannel:(id)sender;
 - (IBAction)printCommandIndexPool:(id)sender;
 - (IBAction)printMovieViewInfo:(id)sender;
+- (IBAction)parseFacebookFeed:(id)sender;
 
 @end

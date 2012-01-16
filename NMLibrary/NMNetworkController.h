@@ -8,13 +8,14 @@
 
 #import "NMTaskType.h"
 #import "NMChannel.h"
+#import "FBConnect.h"
 
 
 @class NMDataController;
 
-@interface NMNetworkController : NSObject {
-	NSMutableDictionary * connectionPool;
-//	NSMutableDictionary * taskPool;
+@interface NMNetworkController : NSObject <FBRequestDelegate> {
+	NSMutableSet * connectionPool;
+	NSMutableSet * facebookConnectionPool;
 	NSMutableArray * pendingTaskBuffer;
 	NSLock * pendingTaskBufferLock;
 	

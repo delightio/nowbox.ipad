@@ -42,6 +42,7 @@ static const NSTimeInterval kTimeoutInterval = 180.0;
             responseText = _responseText,
             state = _state,
             error = _error;
+@synthesize task = _task;
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // class public
 

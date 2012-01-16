@@ -25,3 +25,4 @@
 #import "NMPollUserTask.h"
 #import "NMDeauthorizeUserTask.h"
 #import "NMUserSynchronizeTask.h"
+#import "NMParseFacebookFeedTask.h"
