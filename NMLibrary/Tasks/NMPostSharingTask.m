@@ -59,18 +59,19 @@ NSString * const NMDidFailPostSharingNotification = @"NMDidFailPostSharingNotifi
 	// the server returns a result dictionary. but the app doesn't need it for now.
 }
 
-- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	NMVideo * newVideo = [ctrl duplicateVideo:video];
-	newVideo.channel = ctrl.favoriteVideoChannel;
-	newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
-	NSNumber * yesNum = [NSNumber numberWithBool:YES];
-	newVideo.nm_favorite = yesNum;
-	// mark the flag
-	[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_favorite"];
-	// show/hide channel
-	[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
-	return YES;
-}
+// not adding video shared to Favorites channel
+//- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+//	NMVideo * newVideo = [ctrl duplicateVideo:video];
+//	newVideo.channel = ctrl.favoriteVideoChannel;
+//	newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
+//	NSNumber * yesNum = [NSNumber numberWithBool:YES];
+//	newVideo.nm_favorite = yesNum;
+//	// mark the flag
+//	[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_favorite"];
+//	// show/hide channel
+//	[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
+//	return YES;
+//}
 
 - (NSString *)willLoadNotificationName {
 	return NMWillPostSharingNotification;
