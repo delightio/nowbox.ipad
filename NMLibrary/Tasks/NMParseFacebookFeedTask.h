@@ -18,11 +18,12 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) Facebook * facebook;
 @property (nonatomic, retain) NSString * nextPageURLString;
+@property (nonatomic, retain) NSMutableArray * youTubeExternalIDArray;
+
++ (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 
 - (id)initWithChannel:(NMChannel *)chn facebookProxy:(Facebook *)fbObj;
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl;
 - (void)setParsedObjectsForResult:(id)result;
-
-- (BOOL)isYouTubeLink:(NSString *)urlStr;
 
 @end

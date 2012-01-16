@@ -567,6 +567,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 
 #pragma mark Facebook request
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
+	NSLog(@"facebook call received response");
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result {
@@ -596,6 +597,14 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
+	NSLog(@"facebook call failed");
+ 	NMParseFacebookFeedTask * fbTask = (NMParseFacebookFeedTask *)request.task;
+   // release the connection, and the data object
+	[commandIndexPool removeIndex:[fbTask commandIndex]];
+	// remove task
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer removeObject:fbTask];
+	[pendingTaskBufferLock unlock];
 	[facebookConnectionPool removeObject:request];
 }
 @end

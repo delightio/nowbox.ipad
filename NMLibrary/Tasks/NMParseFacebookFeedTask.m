@@ -11,17 +11,14 @@
 #import "NMChannel.h"
 #import "FBConnect.h"
 
-static NSRegularExpression * youtubeLinkRegExp = nil;
+static NSArray * youTubeRegexArray = nil;
 
 @implementation NMParseFacebookFeedTask
 
 @synthesize channel = _channel;
 @synthesize facebook = _facebook;
 @synthesize nextPageURLString = _nextPageURLString;
-
-+ (void)initialize {
-	youtubeLinkRegExp = [[NSRegularExpression alloc] initWithPattern:@"\\youtube\\.com/watch\\" options:NSRegularExpressionCaseInsensitive error:nil];
-}
+@synthesize youTubeExternalIDArray = _youTubeExternalIDArray;
 
 - (id)initWithChannel:(NMChannel *)chn facebookProxy:(Facebook *)fbObj {
 	self = [super init];
@@ -49,12 +46,23 @@ static NSRegularExpression * youtubeLinkRegExp = nil;
 	if ( feedAy == nil || [feedAy count] == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[feedAy count]];
+	_youTubeExternalIDArray = [[NSMutableArray alloc] initWithCapacity:[feedAy count]];
+	NSString * extID = nil;
 	for (NSDictionary * theDict in feedAy) {
 		// process the contents in the array
-		if ( [[theDict objectForKey:@"type"] isEqual:@"video"] && [self isYouTubeLink:[theDict objectForKey:@"link"]] ) {
-			// this is a youtube link. we should do sth
+		if ( [[theDict objectForKey:@"type"] isEqual:@"video"] ) {
+			extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[theDict objectForKey:@"link"]];
+			// this is a youtube link. save the data
+			NSLog(@"video name: %@ %@", [theDict objectForKey:@"name"], extID);
+			[_youTubeExternalIDArray addObject:extID];
 			[parsedObjects addObject:theDict];
 		}
+	}
+	if ( [parsedObjects count] == 0 ) {
+		[parsedObjects release];
+		[_youTubeExternalIDArray release];
+		parsedObjects = nil;
+		_youTubeExternalIDArray = nil;
 	}
 	self.nextPageURLString = [result valueForKeyPath:@"feed.data.paging.next"];
 	NSLog(@"result %@", result);
@@ -68,9 +76,25 @@ static NSRegularExpression * youtubeLinkRegExp = nil;
 	return YES;
 }
 
-- (BOOL)isYouTubeLink:(NSString *)urlStr {
++ (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr {
 	if ( urlStr == nil ) return NO;
-	return [youtubeLinkRegExp numberOfMatchesInString:urlStr options:0 range:NSMakeRange(0, [urlStr length])] > 0;
+	if ( youTubeRegexArray == nil ) {
+		youTubeRegexArray = [[NSArray alloc] initWithObjects:
+							 [NSRegularExpression regularExpressionWithPattern:@"youtube\\.com/watch\\?v=([\\w-]+)" options:NSRegularExpressionCaseInsensitive error:nil],
+							 [NSRegularExpression regularExpressionWithPattern:@"youtu\\.be/([\\w-]+)" options:NSRegularExpressionCaseInsensitive error:nil],
+							 [NSRegularExpression regularExpressionWithPattern:@"y2u\\.be/([\\w-]+)" options:NSRegularExpressionCaseInsensitive error:nil],
+							 nil];
+	}
+	NSString * extID = nil;
+	NSTextCheckingResult * result = nil;
+	for (NSRegularExpression * regex in youTubeRegexArray) {
+		result = [regex firstMatchInString:urlStr options:0 range:NSMakeRange(0, [urlStr length])];
+		if ( result && [result numberOfRanges] > 1) {
+			extID = [urlStr substringWithRange:[result rangeAtIndex:1]];
+			break;
+		}
+	}
+	return extID;
 }
 
 @end
