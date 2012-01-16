@@ -1918,6 +1918,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error 
 {
+    NMVideo *video = playbackModelController.currentVideo;
+
     NSString *eventName;
     if (result == MFMailComposeResultCancelled) {
         eventName = AnalyticsEventCancelShareDialog;
@@ -1929,10 +1931,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         
         if (result == MFMailComposeResultSent) {
             [self performSelector:@selector(delayedShowEmailShareNotification) withObject:nil afterDelay:0.5];
+            [nowboxTaskController issueShareEventForVideo:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
         }
     }
 
-    NMVideo *video = playbackModelController.currentVideo;
     [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                         video.title, AnalyticsPropertyVideoName, 
                                                                         video.nm_id, AnalyticsPropertyVideoId,
