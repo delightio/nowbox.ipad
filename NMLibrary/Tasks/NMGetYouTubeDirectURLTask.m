@@ -16,15 +16,49 @@ NSString * const NMWillGetYouTubeDirectURLNotification = @"NMWillGetYouTubeDirec
 NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectURLNotification";
 NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTubeDirectURLNotification";
 
+static NSNumberFormatter * viewCountFormatter = nil;
+static NSDateFormatter * timeCreatedFormatter = nil;
+
 @implementation NMGetYouTubeDirectURLTask
 
 @synthesize video, externalID;
 @synthesize directSDURLString, directURLString;
 
++ (id)dateFromTimeCreatedString:(NSString *)dateStr {
+	if ( dateStr == nil || [dateStr length] == 0 ) return [NSNull null];
+	if ( timeCreatedFormatter == nil ) {
+		timeCreatedFormatter = [[NSDateFormatter alloc] init];
+		[timeCreatedFormatter setDateFormat:@"MMM dd, yyyy"];
+		[timeCreatedFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+	}
+	return [timeCreatedFormatter dateFromString:dateStr];
+}
+
++ (id)numberFromViewCountString:(NSString *)cntStr {
+	if ( cntStr == nil || [cntStr length] == 0 ) return [NSNull null];
+	if ( viewCountFormatter == nil ) {
+		viewCountFormatter = [[NSNumberFormatter alloc] init];
+	}
+	return [viewCountFormatter numberFromString:cntStr];
+}
+
 - (id)initWithVideo:(NMVideo *)vdo {
 	self = [super init];
 	
 	command = NMCommandGetYouTubeDirectURL;
+	self.video = vdo;
+	self.externalID = vdo.external_id;
+	self.targetID = vdo.nm_id;
+	// the task saveProcessedDataInController: method will still be executed when there's resolution error
+	executeSaveActionOnError = YES;
+	
+	return self;
+}
+
+- (id)initGetInfoForVideo:(NMVideo *)vdo {
+	self = [super init];
+	
+	command = NMCommandGetYouTubeDirectURLAndInfo;
 	self.video = vdo;
 	self.externalID = vdo.external_id;
 	self.targetID = vdo.nm_id;
@@ -45,24 +79,11 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr;
 	NSMutableURLRequest * theRequest;
-//	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
-		urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?ajax=1&layout=tablet&tsp=1&v=%@", externalID];
-		theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
-		[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
-		[theRequest setValue:@"en-us" forHTTPHeaderField:@"Accept-Language"];
-		[theRequest setValue:NMYouTubeMobileBrowserAgent forHTTPHeaderField:@"User-Agent"];
-//	} else {
-//		urlStr = [NSString stringWithFormat:@"http://gdata.youtube.com/feeds/api/videos/%@?alt=json&format=2,3,8,9", externalID];
-//		theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
-//		
-//		[theRequest setValue:NMYouTubeUserAgent forHTTPHeaderField:@"User-Agent"];
-//		[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
-//		[theRequest setValue:@"en-us,en;q=0.5" forHTTPHeaderField:@"Accept-Language"];
-//		[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
-//		[theRequest setValue:@"ytapi-apple-ipad" forHTTPHeaderField:@"X-GData-Client"];
-//		// iPad 2 - iOS 5 beta 7
-//		[theRequest setValue:@"AIwbFAQnQEpiZxQ0Payjh_yBYxYpu1_blFsXxw4CuiDFAFczVD-1N2Ibmo6k-8zezbXMO36Dt6Y1lUmeAtA21Hd1vIcywt9l4M4rEfe7xA-nGB4ASOC8T_-2IO6yUs3hMJXjKwdtlrOy2-WBbSq50MYSZaq3D3FIsnlo04fSlooMK0PxhCckM1k" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
-//	}
+	urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?ajax=1&layout=tablet&tsp=1&v=%@", externalID];
+	theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+	[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
+	[theRequest setValue:@"en-us" forHTTPHeaderField:@"Accept-Language"];
+	[theRequest setValue:NMYouTubeMobileBrowserAgent forHTTPHeaderField:@"User-Agent"];
 	[theRequest setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
 
 	return theRequest;
@@ -75,7 +96,6 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		self.errorInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NMErrorNoData] forKey:@"error_code"];
 		return;
 	}
-//	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
 	NSString * resultString = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	// remove odd begin pattern in the JSON source from YouTube
 	NSString * cleanResultStr =[resultString stringByReplacingOccurrencesOfString:@")]}'" withString:@"" options:0 range:NSMakeRange(0, 5)];
@@ -101,6 +121,15 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		encountersErrorDuringProcessing = YES;
 		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"reason", [NSNumber numberWithInteger:NMErrorNoData], @"error_code", video, @"target_object", nil];
 		return;
+	}
+	if ( command == NMCommandGetYouTubeDirectURLAndInfo ) {
+		// save extra informaiton
+		NSDictionary * srcVdoDict = [contentDict objectForKey:@"video"];
+		NSMutableDictionary * theVdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
+		[theVdoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
+		[theVdoDict setObject:[srcVdoDict objectForKey:@"time_created_text"] forKey:@"published_at"];
+		[theVdoDict setObject:[srcVdoDict objectForKey:@"view_count"] forKey:@"view_count"];
+		[theVdoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
@@ -138,6 +167,9 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	if ( command == NMCommandGetYouTubeDirectURLAndInfo ) {
+		// 
+	}
 	if ( encountersErrorDuringProcessing ) {
 		NSLog(@"direct URL resolution failed: %@", video.title);
 		video.nm_direct_url = nil;

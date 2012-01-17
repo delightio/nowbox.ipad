@@ -24,5 +24,7 @@
 @property (nonatomic, retain) NSString * directSDURLString;
 
 - (id)initWithVideo:(NMVideo *)vdo;
++ (id)dateFromTimeCreatedString:(NSString *)dateStr;
++ (id)numberFromViewCountString:(NSString *)cntStr;
 
 @end
