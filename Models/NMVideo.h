@@ -1,20 +1,19 @@
 //
 //  NMVideo.h
-//  Nowmov
+//  ipad
 //
-//  Created by Bill So on 10/03/2011.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Created by Bill So on 18/1/12.
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMChannel;
-@class NMVideoDetail;
+@class NMChannel, NMVideoDetail, NMAuthor;
 @class NMAVPlayerItem;
 @class NMMovieDetailView;
 
-@interface NMVideo :  NSManagedObject  
-{
+@interface NMVideo : NSManagedObject {
 //	NSInteger nm_playback_status;
 	
 	NMAVPlayerItem * nm_player_item;
@@ -23,29 +22,29 @@
 	NSInteger nm_direct_url_expiry;
 }
 
-@property (nonatomic, retain) NSString * external_id;
 @property (nonatomic, retain) NSNumber * duration;
-@property (nonatomic, retain) NSDate * published_at;
-@property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) NSNumber * view_count;
-@property (nonatomic, retain) NSNumber * nm_favorite;
-@property (nonatomic, retain) NSNumber * nm_watch_later;
+@property (nonatomic, retain) NSString * external_id;
 @property (nonatomic, retain) NSNumber * nm_did_play;
-@property (nonatomic, retain) NSString * nm_direct_url;
-@property (nonatomic, assign) NSInteger nm_direct_url_expiry;
 @property (nonatomic, retain) NSString * nm_direct_sd_url;
+@property (nonatomic, retain) NSString * nm_direct_url;
+@property (nonatomic) NSInteger nm_direct_url_expiry;
 @property (nonatomic, retain) NSNumber * nm_error;
+@property (nonatomic, retain) NSNumber * nm_favorite;
+@property (nonatomic, retain) NSNumber * nm_id;
+@property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSNumber * nm_retry_count;
 @property (nonatomic, retain) NSNumber * nm_session_id;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSString * nm_thumbnail_file_name;
-@property (nonatomic) NSInteger nm_playback_status;
-@property (nonatomic, retain) NSString * source;
-@property (nonatomic, retain) NSNumber * nm_id;
-@property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) NSNumber * nm_watch_later;
+@property (nonatomic, retain) NSDate * published_at;
+@property (nonatomic, retain) NSNumber * source;
 @property (nonatomic, retain) NSString * thumbnail_uri;
-
-@property (nonatomic, retain) NMVideoDetail * detail;
+@property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSNumber * view_count;
+@property (nonatomic, retain) NSSet *channels;
+@property (nonatomic, retain) NMVideoDetail *detail;
+@property (nonatomic, retain) NMAuthor *author;
 
 @property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
 @property (nonatomic, assign) NMMovieDetailView * nm_movie_detail_view;
@@ -57,8 +56,12 @@
 
 @end
 
-@interface NMVideo (CoreDataAccessors)
+@interface NMVideo (CoreDataGeneratedAccessors)
 
+- (void)addChannelsObject:(NMChannel *)value;
+- (void)removeChannelsObject:(NMChannel *)value;
+- (void)addChannels:(NSSet *)values;
+- (void)removeChannels:(NSSet *)values;
 - (NSString *)primitiveNm_direct_url;
 - (NSString *)primitiveNm_direct_sd_url;
 

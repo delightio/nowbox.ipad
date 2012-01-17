@@ -1,9 +1,9 @@
-// 
-//  NMVideo.m
-//  Nowmov
 //
-//  Created by Bill So on 10/03/2011.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  NMVideo.m
+//  ipad
+//
+//  Created by Bill So on 18/1/12.
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
 #import "NMVideo.h"
@@ -12,29 +12,32 @@
 #import "NMVideoDetail.h"
 #import "NMAVPlayerItem.h"
 
-@implementation NMVideo 
 
+@implementation NMVideo
+
+@dynamic duration;
 @dynamic external_id;
-@dynamic published_at;
-@dynamic title;
-@dynamic view_count;
-@dynamic nm_favorite;
-@dynamic nm_watch_later;
 @dynamic nm_did_play;
-@dynamic nm_direct_url;
 @dynamic nm_direct_sd_url;
-@dynamic nm_sort_order;
+@dynamic nm_direct_url;
+@dynamic nm_direct_url_expiry;
 @dynamic nm_error;
+@dynamic nm_favorite;
+@dynamic nm_id;
 @dynamic nm_playback_status;
 @dynamic nm_retry_count;
 @dynamic nm_session_id;
+@dynamic nm_sort_order;
 @dynamic nm_thumbnail_file_name;
+@dynamic nm_watch_later;
+@dynamic published_at;
 @dynamic source;
-@dynamic nm_id;
-@dynamic channel;
 @dynamic thumbnail_uri;
-@dynamic duration;
+@dynamic title;
+@dynamic view_count;
+@dynamic channels;
 @dynamic detail;
+@dynamic author;
 
 @synthesize nm_player_item;
 @synthesize nm_movie_detail_view;

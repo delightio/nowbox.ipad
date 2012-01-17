@@ -2,8 +2,8 @@
 //  NMChannel.h
 //  ipad
 //
-//  Created by Bill So on 8/31/11.
-//  Copyright (c) 2011 Pipely Inc. All rights reserved.
+//  Created by Bill So on 18/1/12.
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

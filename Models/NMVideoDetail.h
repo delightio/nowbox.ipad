@@ -2,8 +2,8 @@
 //  NMVideoDetail.h
 //  ipad
 //
-//  Created by Bill So on 27/06/2011.
-//  Copyright (c) 2011 Pipely Inc. All rights reserved.
+//  Created by Bill So on 18/1/12.
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,15 +11,9 @@
 
 @class NMVideo;
 
-@interface NMVideoDetail : NSManagedObject {
-@private
-}
-@property (nonatomic, retain) NSNumber * author_id;
-@property (nonatomic, retain) NSString * author_username;
-@property (nonatomic, retain) NSString * author_profile_uri;
-@property (nonatomic, retain) NSString * author_thumbnail_uri;
-@property (nonatomic, retain) NSString * nm_author_thumbnail_file_name;
+@interface NMVideoDetail : NSManagedObject
+
 @property (nonatomic, retain) NSString * nm_description;
-@property (nonatomic, retain) NMVideo * video;
+@property (nonatomic, retain) NMVideo *video;
 
 @end

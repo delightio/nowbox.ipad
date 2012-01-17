@@ -106,6 +106,11 @@ typedef enum {
 	NMLoginYouTubeType,
 } NMSocialLoginType;
 
+typedef enum {
+	NMVideoSourceYouTube		= 1,
+	NMVideoSourceVimeo,
+} NMVideoSourceType;
+
 extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
 // Notifications
