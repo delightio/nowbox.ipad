@@ -236,6 +236,7 @@
 		A93D353D14076B9600C8A73F /* airplay-tv-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = A93D353C14076B9600C8A73F /* airplay-tv-indicator.png */; };
 		A93E6BD31402966300B06191 /* airplay.png in Resources */ = {isa = PBXBuildFile; fileRef = A93E6BD21402966200B06191 /* airplay.png */; };
 		A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */; };
+		A942908314C5C53D00107BE8 /* Nowmov.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A942908014C5C53D00107BE8 /* Nowmov.xcdatamodeld */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
 		A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
@@ -250,7 +251,6 @@
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
 		A970508513438F860022BF2C /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A970503213438F860022BF2C /* Icon.png */; };
 		A970508D13438F860022BF2C /* NMVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A970503D13438F860022BF2C /* NMVideo.m */; };
-		A970508E13438F860022BF2C /* Nowmov.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A970503E13438F860022BF2C /* Nowmov.xcdatamodel */; };
 		A970509C13438F860022BF2C /* VideoPlaybackView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A970505D13438F860022BF2C /* VideoPlaybackView.xib */; };
 		A97050A4134392FA0022BF2C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050A3134392FA0022BF2C /* CoreData.framework */; };
 		A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050CF134398DD0022BF2C /* AVFoundation.framework */; };
@@ -652,6 +652,8 @@
 		A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NMDeauthorizeUserTask.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A941BD9213A41EA800BB3BE0 /* NMAVPlayerItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAVPlayerItem.h; sourceTree = "<group>"; };
 		A941BD9313A41EA800BB3BE0 /* NMAVPlayerItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAVPlayerItem.m; sourceTree = "<group>"; };
+		A942908114C5C53D00107BE8 /* Nowmov2.xcdatamodel */ = {isa = PBXFileReference; path = Nowmov2.xcdatamodel; sourceTree = "<group>"; };
+		A942908214C5C53D00107BE8 /* Nowmov.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Nowmov.xcdatamodel; sourceTree = "<group>"; };
 		A9452BC61415E75E00056361 /* NMFileExistsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFileExistsCache.h; sourceTree = "<group>"; };
 		A9452BC71415E75E00056361 /* NMFileExistsCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFileExistsCache.m; sourceTree = "<group>"; };
 		A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackModelController.h; sourceTree = "<group>"; };
@@ -669,7 +671,6 @@
 		A970503213438F860022BF2C /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		A970503C13438F860022BF2C /* NMVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideo.h; sourceTree = "<group>"; };
 		A970503D13438F860022BF2C /* NMVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideo.m; sourceTree = "<group>"; };
-		A970503E13438F860022BF2C /* Nowmov.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Nowmov.xcdatamodel; sourceTree = "<group>"; };
 		A970504013438F860022BF2C /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		A970504113438F860022BF2C /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		A970504213438F860022BF2C /* NMDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMDataController.h; sourceTree = "<group>"; };
@@ -1309,7 +1310,7 @@
 			children = (
 				A970503C13438F860022BF2C /* NMVideo.h */,
 				A970503D13438F860022BF2C /* NMVideo.m */,
-				A970503E13438F860022BF2C /* Nowmov.xcdatamodel */,
+				A942908014C5C53D00107BE8 /* Nowmov.xcdatamodeld */,
 				A99FB6D1140EE30700689040 /* NMPreviewThumbnail.h */,
 				A99FB6D2140EE30700689040 /* NMPreviewThumbnail.m */,
 				A90425FE140E2EEC0028B972 /* NMChannel.h */,
@@ -1855,7 +1856,6 @@
 				A9250151134385BF001759F5 /* ipadAppDelegate.m in Sources */,
 				A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */,
 				A970508D13438F860022BF2C /* NMVideo.m in Sources */,
-				A970508E13438F860022BF2C /* Nowmov.xcdatamodel in Sources */,
 				A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */,
 				A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */,
 				A941BD9413A41EA800BB3BE0 /* NMAVPlayerItem.m in Sources */,
@@ -1922,6 +1922,7 @@
 				A9E285E114C2D3C300B4AB5C /* SBJsonBase.m in Sources */,
 				A9E285E214C2D3C300B4AB5C /* SBJsonParser.m in Sources */,
 				A9E285E314C2D3C300B4AB5C /* SBJsonWriter.m in Sources */,
+				A942908314C5C53D00107BE8 /* Nowmov.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2237,6 +2238,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A942908014C5C53D00107BE8 /* Nowmov.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A942908114C5C53D00107BE8 /* Nowmov2.xcdatamodel */,
+				A942908214C5C53D00107BE8 /* Nowmov.xcdatamodel */,
+			);
+			currentVersion = A942908114C5C53D00107BE8 /* Nowmov2.xcdatamodel */;
+			path = Nowmov.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = A9250133134385BF001759F5 /* Project object */;
 }

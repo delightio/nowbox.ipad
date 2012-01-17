@@ -18,7 +18,6 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize channel = _channel;
 @synthesize facebook = _facebook;
 @synthesize nextPageURLString = _nextPageURLString;
-@synthesize youTubeExternalIDArray = _youTubeExternalIDArray;
 
 - (id)initWithChannel:(NMChannel *)chn facebookProxy:(Facebook *)fbObj {
 	self = [super init];
@@ -46,23 +45,19 @@ static NSArray * youTubeRegexArray = nil;
 	if ( feedAy == nil || [feedAy count] == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[feedAy count]];
-	_youTubeExternalIDArray = [[NSMutableArray alloc] initWithCapacity:[feedAy count]];
 	NSString * extID = nil;
 	for (NSDictionary * theDict in feedAy) {
 		// process the contents in the array
 		if ( [[theDict objectForKey:@"type"] isEqual:@"video"] ) {
 			extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[theDict objectForKey:@"link"]];
-			// this is a youtube link. save the data
+			// we just need the external ID
 			NSLog(@"video name: %@ %@", [theDict objectForKey:@"name"], extID);
-			[_youTubeExternalIDArray addObject:extID];
-			[parsedObjects addObject:theDict];
+			[parsedObjects addObject:extID];
 		}
 	}
 	if ( [parsedObjects count] == 0 ) {
 		[parsedObjects release];
-		[_youTubeExternalIDArray release];
 		parsedObjects = nil;
-		_youTubeExternalIDArray = nil;
 	}
 	self.nextPageURLString = [result valueForKeyPath:@"feed.data.paging.next"];
 	NSLog(@"result %@", result);

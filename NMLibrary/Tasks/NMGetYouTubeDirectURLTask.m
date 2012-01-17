@@ -38,6 +38,8 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	if ( cntStr == nil || [cntStr length] == 0 ) return [NSNull null];
 	if ( viewCountFormatter == nil ) {
 		viewCountFormatter = [[NSNumberFormatter alloc] init];
+		[viewCountFormatter setPositiveFormat:@"#,###"];
+		[viewCountFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
 	}
 	return [viewCountFormatter numberFromString:cntStr];
 }
@@ -123,12 +125,13 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 		return;
 	}
 	if ( command == NMCommandGetYouTubeDirectURLAndInfo ) {
+		// create video and author
 		// save extra informaiton
 		NSDictionary * srcVdoDict = [contentDict objectForKey:@"video"];
 		NSMutableDictionary * theVdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
 		[theVdoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
-		[theVdoDict setObject:[srcVdoDict objectForKey:@"time_created_text"] forKey:@"published_at"];
-		[theVdoDict setObject:[srcVdoDict objectForKey:@"view_count"] forKey:@"view_count"];
+		[theVdoDict setObject:[NMGetYouTubeDirectURLTask dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
+		[theVdoDict setObject:[NMGetYouTubeDirectURLTask numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
 		[theVdoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];

@@ -18,7 +18,6 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) Facebook * facebook;
 @property (nonatomic, retain) NSString * nextPageURLString;
-@property (nonatomic, retain) NSMutableArray * youTubeExternalIDArray;
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 
