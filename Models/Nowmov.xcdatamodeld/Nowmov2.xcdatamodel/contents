@@ -89,16 +89,16 @@
         <attribute name="nm_session_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="channel" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="videos" inverseEntity="NMChannel" syncable="YES"/>
-        <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="channels" inverseEntity="NMVideo" syncable="YES"/>
+        <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMVideo" inverseName="channels" inverseEntity="NMVideo" syncable="YES"/>
     </entity>
     <elements>
-        <element name="NMAuthor" positionX="88" positionY="315" width="128" height="135"/>
-        <element name="NMCategory" positionX="18" positionY="54" width="128" height="150"/>
+        <element name="NMAuthor" positionX="7" positionY="342" width="128" height="135"/>
+        <element name="NMCategory" positionX="90" positionY="-204" width="128" height="150"/>
         <element name="NMChannel" positionX="288" positionY="-207" width="153" height="375"/>
-        <element name="NMChannelDetail" positionX="495" positionY="-0" width="128" height="75"/>
-        <element name="NMPreviewThumbnail" positionX="522" positionY="117" width="128" height="195"/>
+        <element name="NMChannelDetail" positionX="88" positionY="15" width="128" height="75"/>
+        <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMVideo" positionX="297" positionY="306" width="128" height="375"/>
-        <element name="NMVideoDetail" positionX="520" positionY="444" width="128" height="150"/>
-        <element name="NMVideoInfo" positionX="117" positionY="234" width="128" height="105"/>
+        <element name="NMVideoDetail" positionX="7" positionY="522" width="128" height="150"/>
+        <element name="NMVideoInfo" positionX="585" positionY="201" width="128" height="105"/>
     </elements>
 </model>

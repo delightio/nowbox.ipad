@@ -10,6 +10,7 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "NMVideoInfo.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
@@ -52,7 +53,6 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		[mdict setObject:[dict objectForKey:theKey] forKey:theKey];
 	}
 	[mdict setObject:[dict objectForKey:@"id"] forKey:@"nm_id"];
-	[mdict setObject:NM_SESSION_ID forKey:@"nm_session_id"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
 	NSString * thumbURL = [dict objectForKey:@"thumbnail_uri"];
 	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
@@ -65,17 +65,17 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 + (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict {
 	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:4];
-	[mdict setObject:[dict valueForKeyPath:@"author.id"] forKey:@"author_id"];
-	[mdict setObject:[dict valueForKeyPath:@"author.username"] forKey:@"author_username"];
-	[mdict setObject:[dict valueForKeyPath:@"author.profile_uri"] forKey:@"author_profile_uri"];
+//	[mdict setObject:[dict valueForKeyPath:@"author.id"] forKey:@"author_id"];
+//	[mdict setObject:[dict valueForKeyPath:@"author.username"] forKey:@"author_username"];
+//	[mdict setObject:[dict valueForKeyPath:@"author.profile_uri"] forKey:@"author_profile_uri"];
 	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
 	// author thumbnail
-	NSString * thumbURL = [dict valueForKeyPath:@"author.thumbnail_uri"];
-	if ( thumbURL == nil || [thumbURL isEqual:@""] ) {
-		[mdict setObject:[NSNull null] forKey:@"author_thumbnail_uri"];
-	} else {
-		[mdict setObject:thumbURL forKey:@"author_thumbnail_uri"];
-	}
+//	NSString * thumbURL = [dict valueForKeyPath:@"author.thumbnail_uri"];
+//	if ( thumbURL == nil || [thumbURL isEqual:@""] ) {
+//		[mdict setObject:[NSNull null] forKey:@"author_thumbnail_uri"];
+//	} else {
+//		[mdict setObject:thumbURL forKey:@"author_thumbnail_uri"];
+//	}
 	return mdict;
 }
 
@@ -148,21 +148,24 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSMutableDictionary * dict;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
+	NMVideoInfo * infoObj;
 	NSUInteger vidCount = 0;
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
-	NSNumber * yesNum = [NSNumber numberWithBool:YES];
 	for (dict in parsedObjects) {
 		vidObj = [ctrl insertNewVideo];
-		[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
 		[vidObj setValuesForKeysWithDictionary:dict];
 		if ( isFavoriteChannel ) {
-			vidObj.nm_favorite = yesNum;
+			vidObj.nm_favorite = (NSNumber *)kCFBooleanTrue;
 		}
 		if ( isWatchLaterChannel ) {
-			vidObj.nm_watch_later = yesNum;
+			vidObj.nm_watch_later = (NSNumber *)kCFBooleanTrue;
 		}
-		// channel
-		[vidObj addChannelsObject:channel];
+		// channel-video
+		infoObj = [ctrl insertNewVideoInfo];
+		infoObj.channel = channel;
+		infoObj.video = vidObj;
+		infoObj.nm_session_id = NM_SESSION_ID;
+		infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
 		// video detail
 		dtlObj = [ctrl insertNewVideoDetail];
 		dict = [parsedDetailObjects objectAtIndex:vidCount];
@@ -180,6 +183,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSMutableDictionary * dict;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
+	NMVideoInfo * infoObj;
 	NSUInteger idx = [channel.videos count];
 	NSUInteger vidCount = 0;
 	// insert video but do not insert duplicate item
@@ -204,9 +208,12 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				if ( isWatchLaterChannel ) {
 					vidObj.nm_watch_later = yesNum;
 				}
-				// channel
-				[vidObj addChannelsObject:channel];
-				//[channel addVideosObject:vidObj];
+				// channel-video
+				infoObj = [ctrl insertNewVideoInfo];
+				infoObj.channel = channel;
+				infoObj.video = vidObj;
+				infoObj.nm_session_id = NM_SESSION_ID;
+				infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
 				// video detail
 				dtlObj = [ctrl insertNewVideoDetail];
 				dict = [parsedDetailObjects objectAtIndex:vidCount];

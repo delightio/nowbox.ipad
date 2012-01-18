@@ -217,6 +217,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			//add video to "watch later" channel
 			videoRelation = [ctrl relateChannel:ctrl.myQueueChannel withVideo:video];
 			videoRelation.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel sessionOnly:NO] + 1];
+			videoRelation.nm_session_id = NM_SESSION_ID;
 			video.nm_watch_later = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
 			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
@@ -225,13 +226,9 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventDequeue:
 		{
 			// get the video from Watch Later channel
+			video.nm_watch_later = (NSNumber *)kCFBooleanFalse;
 			//remove video to "watch later" channel
-			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.myQueueChannel];
-			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
-			theVdo.channel = nil;
-//			video.nm_error = [NSNumber numberWithInteger:NMErrorDequeueVideo];
-			// update the original video object
-			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_watch_later"];
+			[ctrl unrelateChannel:ctrl.myQueueChannel withVideo:video];
 			// show/hide channel
 			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
@@ -239,26 +236,19 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventShare:
 		case NMEventFavorite:
 		{
-			newVideo = [ctrl duplicateVideo:video];
-			newVideo.channel = ctrl.favoriteVideoChannel;
-			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
-			NSNumber * yesNum = [NSNumber numberWithBool:YES];
-			newVideo.nm_favorite = yesNum;
-			// mark the flag
-			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_favorite"];
+			videoRelation = [ctrl relateChannel:ctrl.favoriteVideoChannel withVideo:video];
+			videoRelation.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
+			videoRelation.nm_session_id = NM_SESSION_ID;
+			video.nm_favorite = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
 			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;
 		}
 		case NMEventUnfavorite:
 		{
+			video.nm_favorite = (NSNumber *)kCFBooleanFalse;
 			// remove video
-			NMVideo * theVdo = [ctrl video:video inChannel:ctrl.favoriteVideoChannel];
-			theVdo.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
-			theVdo.channel = nil;
-//			video.nm_error = [NSNumber numberWithInteger:NMErrorUnfavoriteVideo];
-			// update the original video object
-			[ctrl batchUpdateVideoWithID:video.nm_id forValue:[NSNumber numberWithBool:NO] key:@"nm_favorite"];
+			[ctrl unrelateChannel:ctrl.favoriteVideoChannel withVideo:video];
 			// show/hide channel
 			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;

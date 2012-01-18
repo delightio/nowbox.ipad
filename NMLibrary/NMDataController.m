@@ -21,6 +21,7 @@ NSString * const NMChannelDetailEntityName = @"NMChannelDetail";
 NSString * const NMPreviewThumbnailEntityName = @"NMPreviewThumbnail";
 NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
+NSString * const NMVideoInfoEntityName = @"NMVideoInfo";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 
@@ -784,6 +785,14 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return [result count] ? [result objectAtIndex:0] : nil;
 }
 
+- (NMVideoInfo *)relateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
+	return nil;
+}
+
+- (void)unrelateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
+	
+}
+
 //- (NMVideo *)duplicateVideo:(NMVideo *)srcVideo {
 //	NMVideo * dupVideo = [self insertNewVideo];
 //	NMVideoDetail * dupDtl = [self insertNewVideoDetail];
@@ -826,6 +835,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (NMVideoDetail *)insertNewVideoDetail {
 	NMVideoDetail * vid = (NMVideoDetail *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoDetailEntityName inManagedObjectContext:managedObjectContext];
 	return vid;
+}
+
+- (NMVideoInfo *)insertNewVideoInfo {
+	NMVideoInfo * info = (NMVideoInfo *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoInfoEntityName inManagedObjectContext:managedObjectContext];
+	return info;
 }
 
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn {

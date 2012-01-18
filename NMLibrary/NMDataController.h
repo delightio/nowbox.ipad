@@ -108,9 +108,11 @@
 - (NSArray *)previewsForChannel:(NMChannel *)chnObj;
 // video
 - (NMVideo *)video:(NMVideo *)vid inChannel:(NMChannel *)chnObj;
-- (NMVideoInfo *)relateChannel:(NMChannel *)chnOgj withVideo:(NMVideo *)vid;
+- (NMVideoInfo *)relateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid;
+- (void)unrelateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid;
 //- (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;
+- (NMVideoInfo *)insertNewVideoInfo;
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
 - (NMVideo *)videoForID:(NSNumber *)vid;

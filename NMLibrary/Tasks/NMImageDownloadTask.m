@@ -260,7 +260,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 - (NSDictionary *)userInfo {
 	switch (command) {
 		case NMCommandGetAuthorThumbnail:
-			return [NSDictionary dictionaryWithObjectsAndKeys:videoDetail, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
+			return [NSDictionary dictionaryWithObjectsAndKeys:author, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
 			
 		case NMCommandGetChannelThumbnail:
 			return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];

@@ -26,7 +26,7 @@ NSString * const NMDidFailPostSharingNotification = @"NMDidFailPostSharingNotifi
 	command = NMCommandPostSharing;
 	self.video = v;
 	self.targetID = v.nm_id;
-	self.channelID = v.channel.nm_id;
+//	self.channelID = v.channel..nm_id;
 	service = aType;
 	return self;
 }

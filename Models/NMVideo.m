@@ -26,8 +26,6 @@
 @dynamic nm_id;
 @dynamic nm_playback_status;
 @dynamic nm_retry_count;
-@dynamic nm_session_id;
-@dynamic nm_sort_order;
 @dynamic nm_thumbnail_file_name;
 @dynamic nm_watch_later;
 @dynamic published_at;
