@@ -1862,7 +1862,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
 		composeController.mailComposeDelegate = self;
 		[composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.title]];
-		[composeController setMessageBody:[NSString stringWithFormat:@"I just found a video on NOWBOX that I want to share with you.<br>Watch it here:<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"320\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPad with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", url, video.nm_id, video.thumbnail_uri, url, video.nm_id, video.title, videoDescription] isHTML:YES];
+		[composeController setMessageBody:[NSString stringWithFormat:@"I just found a video on NOWBOX that I want to share with you.<br><br>Watch it here:<br><a href=\"%@%@\"><img src=\"%@\" width=\"320\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPad with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", url, video.nm_id, video.thumbnail_uri, url, video.nm_id, video.title, videoDescription] isHTML:YES];
         [composeController setModalPresentationStyle:UIModalPresentationFormSheet];
 		[self presentModalViewController:composeController animated:YES];
 		[composeController release];
