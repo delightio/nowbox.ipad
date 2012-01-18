@@ -14,6 +14,7 @@
 #import "NMChannel.h"
 #import "NMChannelDetail.h"
 #import "NMVideo.h"
+#import "NMAuthor.h"
 #import "NMVideoDetail.h"
 #import "NMImageDownloadTask.h"
 

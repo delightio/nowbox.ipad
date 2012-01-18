@@ -15,6 +15,7 @@
 @class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
+@class NMAuthor;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
 @class Reachability;
@@ -105,7 +106,7 @@
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
-- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj;
+- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMAuthor *)anAuthor;
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo;
 /*
  Refresh channels which user has subscribed but set hidden by the app. A channel is set hidden if it's a user/stream channel and it has no video.

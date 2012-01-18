@@ -162,7 +162,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			vidObj.nm_watch_later = yesNum;
 		}
 		// channel
-		vidObj.channel = channel;
+		[vidObj addChannelsObject:channel];
 		// video detail
 		dtlObj = [ctrl insertNewVideoDetail];
 		dict = [parsedDetailObjects objectAtIndex:vidCount];
@@ -205,7 +205,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 					vidObj.nm_watch_later = yesNum;
 				}
 				// channel
-				vidObj.channel = channel;
+				[vidObj addChannelsObject:channel];
 				//[channel addVideosObject:vidObj];
 				// video detail
 				dtlObj = [ctrl insertNewVideoDetail];

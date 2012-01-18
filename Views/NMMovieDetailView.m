@@ -117,7 +117,7 @@
 	
 	// author info
 	[authorThumbnailView setImageForAuthorThumbnail:dtlObj];
-	authorLabel.text = dtlObj.author_username;
+	authorLabel.text = aVideo.author.username;
 	
 	// movie thumbnail
 	thumbnailContainerView.alpha = 1.0f;

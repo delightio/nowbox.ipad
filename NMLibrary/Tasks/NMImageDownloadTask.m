@@ -13,6 +13,7 @@
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "NMAuthor.h"
 
 NSString * const NMWillDownloadImageNotification = @"NMWillDownloadImageNotification";
 NSString * const NMDidDownloadImageNotification = @"NMDidDownloadImageNotification";
@@ -23,7 +24,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 @synthesize category;
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
-@synthesize image, video, videoDetail;
+@synthesize image, video, author;
 @synthesize externalID, previewThumbnail;
 
 + (NSInteger)commandIndexForCategory:(NMCategory *)cat {
@@ -36,8 +37,8 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return tid << 6 | NMCommandGetChannelThumbnail;
 }
 
-+ (NSInteger)commandIndexForAuthor:(NMVideoDetail *)dtl {
-	NSInteger tid = [dtl.author_id unsignedIntegerValue];
++ (NSInteger)commandIndexForAuthor:(NMAuthor *)anAuthor {
+	NSInteger tid = [anAuthor.nm_id unsignedIntegerValue];
 	return tid << 6 | NMCommandGetAuthorThumbnail;
 }
 
@@ -79,14 +80,14 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return self;
 }
 
-- (id)initWithAuthor:(NMVideoDetail *)dtl {
+- (id)initWithAuthor:(NMAuthor *)anAuthor {
 	self = [super init];
 	
 	cacheController = [NMCacheController sharedCacheController];
-	self.imageURLString = dtl.author_thumbnail_uri;
-	self.originalImagePath = dtl.nm_author_thumbnail_file_name;
-	self.videoDetail = dtl;
-	self.targetID = dtl.author_id;
+	self.imageURLString = anAuthor.thumbnail_uri;
+	self.originalImagePath = anAuthor.nm_thumbnail_file_name;
+	self.author = anAuthor;
+	self.targetID = anAuthor.nm_id;
 	command = NMCommandGetAuthorThumbnail;
 	retainCount = 1;
 	
@@ -145,7 +146,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	[category release];
 	[channel release];
 	[video release];
-	[videoDetail release];
+	[author release];
 	[externalID release];
 	[super dealloc];
 }
@@ -217,7 +218,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	if ( originalImagePath == nil ) {
 		switch (command) {
 			case NMCommandGetAuthorThumbnail:
-				videoDetail.nm_author_thumbnail_file_name = [self suggestedFilename];
+				author.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
 				
 			case NMCommandGetChannelThumbnail:

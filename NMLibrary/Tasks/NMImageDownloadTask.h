@@ -13,6 +13,7 @@
 @class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
+@class NMAuthor;
 @class NMCacheController;
 
 @interface NMImageDownloadTask : NMTask {
@@ -20,7 +21,7 @@
 	NSString * originalImagePath;
 	NMCategory * category;
 	NMChannel * channel;
-	NMVideoDetail * videoDetail;
+	NMAuthor * author;
 	NMVideo * video;
 	NMPreviewThumbnail * previewThumbnail;
 	NSString * externalID;
@@ -34,7 +35,7 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMPreviewThumbnail * previewThumbnail;
 @property (nonatomic, retain) NMVideo * video;
-@property (nonatomic, retain) NMVideoDetail * videoDetail;
+@property (nonatomic, retain) NMAuthor * author;
 @property (nonatomic, retain) NSString * imageURLString;
 @property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) UIImage * image;
@@ -43,13 +44,13 @@
 
 + (NSInteger)commandIndexForCategory:(NMCategory *)cat;
 + (NSInteger)commandIndexForChannel:(NMChannel *)chn;
-+ (NSInteger)commandIndexForAuthor:(NMVideoDetail *)dtl;
++ (NSInteger)commandIndexForAuthor:(NMAuthor *)anAuthor;
 + (NSInteger)commandIndexForVideo:(NMVideo *)vdo;
 + (NSInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 
 - (id)initWithCategory:(NMCategory *)cat;
 - (id)initWithChannel:(NMChannel *)chn;
-- (id)initWithAuthor:(NMVideoDetail *)dtl;
+- (id)initWithAuthor:(NMAuthor *)anAuthor;
 - (id)initWithVideoThumbnail:(NMVideo *)vdo;
 - (id)initWithPreviewThumbnail:(NMPreviewThumbnail *)pv;
 

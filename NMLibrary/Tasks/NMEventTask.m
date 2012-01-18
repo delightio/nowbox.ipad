@@ -10,6 +10,7 @@
 #import "NMDataController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMVideoInfo.h"
 #import "NMCategory.h"
 
 NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
@@ -174,7 +175,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	NMVideo * newVideo = nil;
+	NMVideoInfo * videoRelation = nil;
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{
@@ -214,13 +215,9 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventEnqueue:
 		{
 			//add video to "watch later" channel
-			newVideo = [ctrl duplicateVideo:video];
-			newVideo.channel = ctrl.myQueueChannel;
-			newVideo.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel sessionOnly:NO] + 1];
-			NSNumber * yesNum = [NSNumber numberWithBool:YES];
-			newVideo.nm_watch_later = yesNum;
-			// mark the flag
-			[ctrl batchUpdateVideoWithID:video.nm_id forValue:yesNum key:@"nm_watch_later"];
+			videoRelation = [ctrl relateChannel:ctrl.myQueueChannel withVideo:video];
+			videoRelation.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel sessionOnly:NO] + 1];
+			video.nm_watch_later = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
 			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;

@@ -15,6 +15,7 @@
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "NMAuthor.h"
 #import "Reachability.h"
 #import "ipadAppDelegate.h"
 #import "FBConnect.h"
@@ -441,10 +442,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj {
+- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMAuthor *)anAuthor {
 	NMImageDownloadTask * task = nil;
-	if ( dtlObj.author_thumbnail_uri ) {
-		task = [[NMImageDownloadTask alloc] initWithAuthor:dtlObj];
+	if ( anAuthor.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithAuthor:anAuthor];
 		[networkController addNewConnectionForTask:task];
 		[task autorelease];
 	}

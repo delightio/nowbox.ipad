@@ -14,6 +14,7 @@
 @class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
+@class NMVideoInfo;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -107,7 +108,8 @@
 - (NSArray *)previewsForChannel:(NMChannel *)chnObj;
 // video
 - (NMVideo *)video:(NMVideo *)vid inChannel:(NMChannel *)chnObj;
-- (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
+- (NMVideoInfo *)relateChannel:(NMChannel *)chnOgj withVideo:(NMVideo *)vid;
+//- (NMVideo *)duplicateVideo:(NMVideo *)srcVideo;
 - (NMVideo *)insertNewVideo;
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;

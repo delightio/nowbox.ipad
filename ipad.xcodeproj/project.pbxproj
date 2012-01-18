@@ -273,6 +273,7 @@
 		A98C241B13D38C3C0061A594 /* channel-toolbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241A13D38C3C0061A594 /* channel-toolbar-background.png */; };
 		A98C241D13D399D70061A594 /* ribbon.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241C13D399D70061A594 /* ribbon.png */; };
 		A991188A13E759E20067E987 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A991188913E759E20067E987 /* SettingsViewController.m */; };
+		A992827914C6F1A900406A77 /* NMVideoInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A992827814C6F1A900406A77 /* NMVideoInfo.m */; };
 		A9976EFD13BB355200B06DFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A9976F0613BB35AD00B06DFF /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504113438F860022BF2C /* JSONKit.m */; };
 		A9976F0713BB35AD00B06DFF /* NMDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504313438F860022BF2C /* NMDataController.m */; };
@@ -732,6 +733,8 @@
 		A98C241C13D399D70061A594 /* ribbon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ribbon.png; sourceTree = "<group>"; };
 		A991188813E759E20067E987 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		A991188913E759E20067E987 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		A992827714C6F1A900406A77 /* NMVideoInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMVideoInfo.h; sourceTree = "<group>"; };
+		A992827814C6F1A900406A77 /* NMVideoInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMVideoInfo.m; sourceTree = "<group>"; };
 		A9976EFC13BB355200B06DFF /* libNMLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNMLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9976F0013BB355200B06DFF /* NMLibrary-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMLibrary-Prefix.pch"; sourceTree = "<group>"; };
 		A99BA0A813A7540B0010F202 /* VideoRowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowController.h; sourceTree = "<group>"; };
@@ -1326,6 +1329,8 @@
 				A9D19B2A140E274E008CF101 /* NMChannelDetail.m */,
 				A9E4B01513F3EA6F00DAE368 /* NMCategory.h */,
 				A9E4B01613F3EA6F00DAE368 /* NMCategory.m */,
+				A992827714C6F1A900406A77 /* NMVideoInfo.h */,
+				A992827814C6F1A900406A77 /* NMVideoInfo.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1929,6 +1934,7 @@
 				A942908914C5D38600107BE8 /* NMVideoDetail.m in Sources */,
 				A942908C14C5D38600107BE8 /* NMAuthor.m in Sources */,
 				A942908F14C5D38600107BE8 /* NMChannel.m in Sources */,
+				A992827914C6F1A900406A77 /* NMVideoInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

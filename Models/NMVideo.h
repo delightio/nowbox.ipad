@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMChannel, NMVideoDetail, NMAuthor;
+@class NMVideoDetail, NMAuthor, NMVideoInfo;
 @class NMAVPlayerItem;
 @class NMMovieDetailView;
 
@@ -33,8 +33,6 @@
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic) NSInteger nm_playback_status;
 @property (nonatomic, retain) NSNumber * nm_retry_count;
-@property (nonatomic, retain) NSNumber * nm_session_id;
-@property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSString * nm_thumbnail_file_name;
 @property (nonatomic, retain) NSNumber * nm_watch_later;
 @property (nonatomic, retain) NSDate * published_at;
@@ -58,8 +56,8 @@
 
 @interface NMVideo (CoreDataGeneratedAccessors)
 
-- (void)addChannelsObject:(NMChannel *)value;
-- (void)removeChannelsObject:(NMChannel *)value;
+- (void)addChannelsObject:(NMVideoInfo *)value;
+- (void)removeChannelsObject:(NMVideoInfo *)value;
 - (void)addChannels:(NSSet *)values;
 - (void)removeChannels:(NSSet *)values;
 - (NSString *)primitiveNm_direct_url;
