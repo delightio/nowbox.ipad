@@ -10,8 +10,7 @@
 #import <CoreData/CoreData.h>
 
 @class NMVideoDetail, NMAuthor, NMVideo;
-@class NMAVPlayerItem;
-@class NMMovieDetailView;
+@class NMMovieDetailView, NMAVPlayerItem;
 
 @interface NMConcreteVideo : NSManagedObject {
 //	NSInteger nm_playback_status;
@@ -47,17 +46,12 @@
 @property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
 @property (nonatomic, assign) NMMovieDetailView * nm_movie_detail_view;
 
-/*!
- Create a new player item. The caller of this method owns the object. The caller takes full ownership of this object.
- */
-- (NMAVPlayerItem *)createPlayerItem;
-
 @end
 
-@interface NMVideo (CoreDataGeneratedAccessors)
+@interface NMConcreteVideo (CoreDataGeneratedAccessors)
 
-- (void)addChannelsObject:(NMVideo *)value;
-- (void)removeChannelsObject:(NMVideo *)value;
+- (void)addChannelsObject:(NMConcreteVideo *)value;
+- (void)removeChannelsObject:(NMConcreteVideo *)value;
 - (void)addChannels:(NSSet *)values;
 - (void)removeChannels:(NSSet *)values;
 - (NSString *)primitiveNm_direct_url;

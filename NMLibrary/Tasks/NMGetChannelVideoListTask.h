@@ -15,7 +15,7 @@
 	NMChannel * channel;
 	NSString * channelName;
 	NSString * urlString;
-	NSMutableArray * parsedDetailObjects;
+	NSMutableArray * parsedDetailObjects, * parsedAuthorObjects;
 	BOOL newChannel;
 	NSUInteger numberOfVideoAdded, totalNumberOfRows;
 	NSUInteger numberOfRowsFromServer;
@@ -36,5 +36,6 @@
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict;
 + (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict;
++ (NSMutableDictionary *)normalizeAuthorDictionary:(NSDictionary *)dict;
 
 @end

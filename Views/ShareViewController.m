@@ -47,7 +47,7 @@
         [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
         [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
         
-        videoAlreadyFavorited = [aVideo.nm_favorite boolValue];
+        videoAlreadyFavorited = [aVideo.video.nm_favorite boolValue];
         
         self.navigationItem.backBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Message"
                                                                                   style:UIBarButtonItemStyleBordered
@@ -78,12 +78,12 @@
         self.title = @"Facebook";
         [shareButton setTitle:@"POST" forState:UIControlStateNormal];
         characterCountLabel.hidden = YES;
-        messageText.text = [NSString stringWithFormat:kDefaultFacebookText, video.title];            
+        messageText.text = [NSString stringWithFormat:kDefaultFacebookText, video.video.title];            
     } else {
         self.title = @"Twitter";
         [shareButton setTitle:@"TWEET" forState:UIControlStateNormal];
         characterCountLabel.hidden = NO;
-        messageText.text = [NSString stringWithFormat:kDefaultTwitterText, video.title];            
+        messageText.text = [NSString stringWithFormat:kDefaultTwitterText, video.video.title];            
     }
 }
 
@@ -219,8 +219,8 @@
 
 - (IBAction)cancelButtonPressed:(id)sender
 {
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventCancelShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.title, AnalyticsPropertyVideoName, 
-                                                                               video.nm_id, AnalyticsPropertyVideoId,
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventCancelShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                               video.video.nm_id, AnalyticsPropertyVideoId,
                                                                                (shareMode == ShareModeTwitter ? @"Twitter" : @"Facebook"), AnalyticsPropertyShareType,
                                                                                nil]];
 
@@ -308,8 +308,8 @@
     progressView.hidden = YES;
     [shareButton setEnabled:YES];
     
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.title, AnalyticsPropertyVideoName, 
-                                                                             video.nm_id, AnalyticsPropertyVideoId,
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                             video.video.nm_id, AnalyticsPropertyVideoId,
                                                                              (shareMode == ShareModeTwitter ? @"Twitter" : @"Facebook"), AnalyticsPropertyShareType,
                                                                              nil]];
 }
@@ -342,8 +342,8 @@
     progressView.hidden = YES;
     [shareButton setEnabled:YES];
     
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventShareFailed properties:[NSDictionary dictionaryWithObjectsAndKeys:video.title, AnalyticsPropertyVideoName, 
-                                                                         video.nm_id, AnalyticsPropertyVideoId,
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventShareFailed properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                         video.video.nm_id, AnalyticsPropertyVideoId,
                                                                          (shareMode == ShareModeTwitter ? @"Twitter" : @"Facebook"), AnalyticsPropertyShareType,
                                                                          nil]];
 }

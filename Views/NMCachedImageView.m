@@ -14,7 +14,8 @@
 @synthesize category;
 @synthesize channel;
 @synthesize video;
-@synthesize videoDetail;
+@synthesize author;
+//@synthesize videoDetail;
 @synthesize previewThumbnail;
 @synthesize adjustsImageOnHighlight;
 
@@ -44,7 +45,7 @@
 	[category release];
 	[channel release];
 	[video release];
-	[videoDetail release];
+	[author release];
 	[previewThumbnail release];
 	[super dealloc];
 }
@@ -87,7 +88,7 @@
 }
 
 - (void)delayedIssueAuthorImageDownloadRequest {
-	self.downloadTask = [cacheController downloadImageForAuthor:videoDetail imageView:self];
+	self.downloadTask = [cacheController downloadImageForAuthor:author imageView:self];
 }
 
 - (void)delayedIssueVideoImageDownloadRequest {
@@ -101,10 +102,10 @@
 	[cacheController setImageForChannel:chn imageView:self];
 }
 
-- (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl {
-	self.videoDetail = dtl;
+- (void)setImageForAuthorThumbnail:(NMAuthor *)anAuthor {
+	self.author = anAuthor;
 	// check if there's local cache
-	[cacheController setImageForAuthor:dtl imageView:self];
+	[cacheController setImageForAuthor:anAuthor imageView:self];
 }
 
 - (void)setImageForVideoThumbnail:(NMVideo *)vdo {

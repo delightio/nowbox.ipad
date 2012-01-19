@@ -10,7 +10,7 @@
 #import "NMDataController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
-#import "NMVideo.h"
+#import "NMConcreteVideo.h"
 #import "NMCategory.h"
 
 NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
@@ -56,7 +56,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	command = NMCommandSendEvent;
 	self.video = v;
 	// grab values in the video object to be used in the thread
-	self.targetID = v.nm_id;
+	self.targetID = v.video.nm_id;
 	self.channelID = [video valueForKeyPath:@"channel.nm_id"];
 	eventType = evtType;
 	
@@ -218,7 +218,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			videoRelation = [ctrl relateChannel:ctrl.myQueueChannel withVideo:video];
 			videoRelation.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.myQueueChannel sessionOnly:NO] + 1];
 			videoRelation.nm_session_id = NM_SESSION_ID;
-			video.nm_watch_later = (NSNumber *)kCFBooleanTrue;
+			video.video.nm_watch_later = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
 			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
@@ -226,7 +226,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		case NMEventDequeue:
 		{
 			// get the video from Watch Later channel
-			video.nm_watch_later = (NSNumber *)kCFBooleanFalse;
+			video.video.nm_watch_later = (NSNumber *)kCFBooleanFalse;
 			//remove video to "watch later" channel
 			[ctrl unrelateChannel:ctrl.myQueueChannel withVideo:video];
 			// show/hide channel
@@ -239,14 +239,14 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			videoRelation = [ctrl relateChannel:ctrl.favoriteVideoChannel withVideo:video];
 			videoRelation.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxVideoSortOrderInChannel:ctrl.favoriteVideoChannel sessionOnly:NO] + 1];
 			videoRelation.nm_session_id = NM_SESSION_ID;
-			video.nm_favorite = (NSNumber *)kCFBooleanTrue;
+			video.video.nm_favorite = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
 			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;
 		}
 		case NMEventUnfavorite:
 		{
-			video.nm_favorite = (NSNumber *)kCFBooleanFalse;
+			video.video.nm_favorite = (NSNumber *)kCFBooleanFalse;
 			// remove video
 			[ctrl unrelateChannel:ctrl.favoriteVideoChannel withVideo:video];
 			// show/hide channel

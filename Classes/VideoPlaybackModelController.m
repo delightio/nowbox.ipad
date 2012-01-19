@@ -102,7 +102,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	
 	if ( currentVideo ) {
 		// mark the current video as "played"
-		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
+		currentVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 	}
 	self.previousVideo = nil;
 	self.previousIndexPath = nil;
@@ -131,7 +131,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 			
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-			NSLog(@"last viewed title: %@", self.currentVideo.title);
+			NSLog(@"last viewed title: %@", self.currentVideo.video.title);
 #endif
 			// init the playhead. sth similar to initializePlayHead
 			if ( currentIndexPath.row + 1 < numberOfVideos ) {
@@ -203,7 +203,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	
 	if ( currentVideo ) {
 		// mark the current video as "played"
-		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
+		currentVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 	}
 	self.previousVideo = nil;
 	self.previousIndexPath = nil;
@@ -357,14 +357,14 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 }
 
 - (void)revertVideoToNewState:(NMVideo *)vdo {
-	vdo.nm_error = [NSNumber numberWithInteger:0];
-	vdo.nm_playback_status = NMVideoQueueStatusNone;
-	vdo.nm_direct_sd_url = nil;
-	vdo.nm_direct_url = nil;
+	vdo.video.nm_error = [NSNumber numberWithInteger:0];
+	vdo.video.nm_playback_status = NMVideoQueueStatusNone;
+	vdo.video.nm_direct_sd_url = nil;
+	vdo.video.nm_direct_url = nil;
 }
 
 - (BOOL)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
-	NSInteger vdoTime = vdo.nm_direct_url_expiry;
+	NSInteger vdoTime = vdo.video.nm_direct_url_expiry;
 	if ( vdoTime && vdoTime - 10 < curTime ) {
 		// the video link has expired
 		[self revertVideoToNewState:vdo];

@@ -7,7 +7,6 @@
 //
 
 #import "NMConcreteVideo.h"
-#import "NMDataType.h"
 #import "NMChannel.h"
 #import "NMVideoDetail.h"
 #import "NMAVPlayerItem.h"
@@ -77,27 +76,6 @@
 - (void)willSave {
 	[self setPrimitiveValue:[NSNumber numberWithInteger:nm_playback_status] forKey:@"nm_playback_status"];
 	[super willSave];
-}
-
-- (NMAVPlayerItem *)createPlayerItem {
-	if ( self.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
-//		NSString * urlStr = NM_USE_HIGH_QUALITY_VIDEO ? [self primitiveNm_direct_url] : [self primitiveNm_direct_sd_url];
-		NSString * urlStr;
-		if ( (NM_VIDEO_QUALITY == NMVideoQualityAutoSelect && NM_WIFI_REACHABLE) || NM_VIDEO_QUALITY == NMVideoQualityAlwaysHD ) {
-			// use HD
-			urlStr = [self primitiveNm_direct_url];
-		} else {
-			// usd SD
-			urlStr = [self primitiveNm_direct_sd_url];
-		}
-		if ( urlStr && ![urlStr isEqualToString:@""] ) {
-			NMAVPlayerItem * item = [[NMAVPlayerItem alloc] initWithURL:[NSURL URLWithString:urlStr]];
-			item.nmVideo = self;
-			self.nm_player_item = item;
-			return [item autorelease];
-		}
-	}
-	return nil;
 }
 
 @end

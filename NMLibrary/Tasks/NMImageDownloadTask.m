@@ -44,7 +44,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 + (NSInteger)commandIndexForVideo:(NMVideo *)vdo {
-	NSInteger tid = [vdo.nm_id unsignedIntegerValue];
+	NSInteger tid = [vdo.video.nm_id unsignedIntegerValue];
 	return tid << 6 | NMCommandGetVideoThumbnail;
 }
 
@@ -99,7 +99,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self = [super init];
 	
 	cacheController = [NMCacheController sharedCacheController];
-	self.imageURLString = vdo.thumbnail_uri;
+	self.imageURLString = vdo.video.thumbnail_uri;
 	// we do not store the image in cache for now.
 	// self.originalImagePath = nil;
 	self.video = vdo;
@@ -231,7 +231,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 				break;
 				
 			case NMCommandGetVideoThumbnail:
-				video.nm_thumbnail_file_name = [self suggestedFilename];
+				video.video.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
 				
 			case NMCommandGetPreviewThumbnail:

@@ -14,7 +14,7 @@
 @class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
-@class NMVideo;
+@class NMConcreteVideo;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;

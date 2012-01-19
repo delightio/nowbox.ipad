@@ -10,6 +10,7 @@
 #import "NMDataController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
 
 NSString * const NMWillPostSharingNotification = @"NMWillPostSharingNotification";
 NSString * const NMDidPostSharingNotification = @"NMDidPostSharingNotification";
@@ -25,7 +26,7 @@ NSString * const NMDidFailPostSharingNotification = @"NMDidFailPostSharingNotifi
 	self = [super init];
 	command = NMCommandPostSharing;
 	self.video = v;
-	self.targetID = v.nm_id;
+	self.targetID = v.video.nm_id;
 //	self.channelID = v.channel..nm_id;
 	service = aType;
 	return self;
