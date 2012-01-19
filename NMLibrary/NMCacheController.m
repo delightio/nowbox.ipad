@@ -362,8 +362,8 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSLog(@"running cache controller logic for %@", vdo.title);
 #endif
 	// check if the file exists
-	if ( [vdo.nm_thumbnail_file_name length] ) {
-		NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
+	if ( [vdo.video.nm_thumbnail_file_name length] ) {
+		NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.video.nm_thumbnail_file_name];
 		NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
 		if ( t == NMFileExistsNotCached ) {
 			BOOL ex = [fileManager fileExistsAtPath:fPath];
@@ -380,7 +380,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			}
 		}
 	}
-	if ( [vdo.thumbnail_uri length] ) {
+	if ( [vdo.video.thumbnail_uri length] ) {
 		// check if there's already an existing task requesting the image
 		NSInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];

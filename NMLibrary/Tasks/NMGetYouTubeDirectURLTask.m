@@ -8,6 +8,7 @@
 
 #import "NMGetYouTubeDirectURLTask.h"
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
 
 static NSString * const NMYouTubeUserAgent = @"Apple iPad v5.0 YouTube v1.0.0.9A5288d";
 static NSString * const NMYouTubeMobileBrowserAgent = @"Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3";
@@ -49,8 +50,8 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	
 	command = NMCommandGetYouTubeDirectURL;
 	self.video = vdo;
-	self.externalID = vdo.external_id;
-	self.targetID = vdo.nm_id;
+	self.externalID = vdo.video.external_id;
+	self.targetID = vdo.video.nm_id;
 	// the task saveProcessedDataInController: method will still be executed when there's resolution error
 	executeSaveActionOnError = YES;
 	
@@ -160,17 +161,18 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	if ( command == NMCommandGetYouTubeDirectURLAndInfo ) {
 		// 
 	}
+	NMConcreteVideo * targetVideo = video.video;
 	if ( encountersErrorDuringProcessing ) {
-		NSLog(@"direct URL resolution failed: %@", video.title);
-		video.nm_direct_url = nil;
-		video.nm_direct_sd_url = nil;
-		video.nm_error = [self.errorInfo objectForKey:@"error_code"];
-		video.nm_playback_status = NMVideoQueueStatusError;
+		NSLog(@"direct URL resolution failed: %@", targetVideo.title);
+		targetVideo.nm_direct_url = nil;
+		targetVideo.nm_direct_sd_url = nil;
+		targetVideo.nm_error = [self.errorInfo objectForKey:@"error_code"];
+		targetVideo.nm_playback_status = NMVideoQueueStatusError;
 	} else {
-		video.nm_direct_url = directURLString;
-		video.nm_direct_sd_url = directSDURLString;
-		video.nm_direct_url_expiry = expiryTime;
-		video.nm_playback_status = NMVideoQueueStatusDirectURLReady;
+		targetVideo.nm_direct_url = directURLString;
+		targetVideo.nm_direct_sd_url = directSDURLString;
+		targetVideo.nm_direct_url_expiry = expiryTime;
+		targetVideo.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 	}
 	return NO;
 }

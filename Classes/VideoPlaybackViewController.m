@@ -285,7 +285,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( launchModeActive ) {
 //		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
-		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
+		playbackModelController.currentVideo.video.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
 
 		shouldFadeOutVideoThumbnail = YES;
@@ -333,7 +333,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Playback data structure
 
 - (NSArray *)markPlaybackCheckpoint {
-	NMVideo * theVideo = [self playerCurrentVideo];
+	NMVideo * vdo = [self playerCurrentVideo];
+	NMConcreteVideo * theVideo = vdo.video;
 	// theVideo is null if there's no video playing (say, when there's no network connection)
 	if ( theVideo == nil ) return nil;
 	CMTime aTime = movieView.player.currentTime;
@@ -345,15 +346,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	currentChannel.nm_last_vid = theVideo.nm_id;
 	NSMutableArray * vdoAy = [NSMutableArray arrayWithCapacity:4];
 	[vdoAy addObject:theVideo.nm_id];
-	theVideo = playbackModelController.previousVideo;
+	theVideo = playbackModelController.previousVideo.video;
 	if ( theVideo ) {
 		[vdoAy addObject:theVideo.nm_id];
 	}
-	theVideo = playbackModelController.nextVideo;
+	theVideo = playbackModelController.nextVideo.video;
 	if ( theVideo ) {
 		[vdoAy addObject:theVideo.nm_id];
 	}
-	theVideo = playbackModelController.nextNextVideo;
+	theVideo = playbackModelController.nextNextVideo.video;
 	if ( theVideo ) {
 		[vdoAy addObject:theVideo.nm_id];
 	}
@@ -414,8 +415,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //	[self updateRibbonButtons];
     
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                       playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
-                                                                       playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                       playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, 
+                                                                       playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId,
                                                                        @"player", AnalyticsPropertySender, 
                                                                        @"auto", AnalyticsPropertyAction, 
                                                                        [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
@@ -454,7 +455,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)showActivityLoader {
-	[self.currentVideo.nm_movie_detail_view setActivityViewHidden:NO];
+	[self.currentVideo.video.nm_movie_detail_view setActivityViewHidden:NO];
 }
 
 #pragma mark NMControlsView delegate methods
@@ -510,7 +511,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"configure control view for: %@, %@, %f", aVideo.title, aVideo.nm_id, currentXOffset);
+	NSLog(@"configure control view for: %@, %@, %f", aVideo.video.title, aVideo.video.nm_id, currentXOffset);
 #endif
 	[loadedControlView resetView];
 	if ( aVideo ) {
@@ -626,7 +627,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// check if any of the video is marked as error
 	// this for-loop does NOT guarantee to run. Sometimes, we can get free movie detail view even if there's movie detail view occupied by bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
-		if ( theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
 			theView.alpha = 1.0f;
 			return theView;
@@ -638,9 +639,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo {
 	if ( vdo == nil ) return;
-	NMMovieDetailView * theView = vdo.nm_movie_detail_view;
+	NMMovieDetailView * theView = vdo.video.nm_movie_detail_view;
 	if ( theView == nil ) return;
-	vdo.nm_movie_detail_view = nil;
+	vdo.video.nm_movie_detail_view = nil;
 	theView.video = nil;
 	[theView restoreThumbnailView];
 	[theView setActivityViewHidden:YES];
@@ -650,7 +651,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)cleanUpBadVideosMovieDetailView {
 	// it's possible that some bad videos still occupy a movie detail view. We need to make sure all movie detail views are not associated to any bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
-		if ( theView.video && theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+		if ( theView.video && theView.video.video.nm_playback_status == NMVideoQueueStatusError ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
 		}
 	}
@@ -677,7 +678,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	favoriteButton.userInteractionEnabled = YES;
 	loadedControlView.favoriteButton.userInteractionEnabled = YES;
 	
-	if ( [vdo.nm_favorite boolValue] ) {
+	if ( [vdo.video.nm_favorite boolValue] ) {
 		// update image
 		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateNormal];
 		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateHighlighted];
@@ -708,7 +709,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	watchLaterButton.userInteractionEnabled = YES;
 	loadedControlView.watchLaterButton.userInteractionEnabled = YES;
 	
-	if ( [vdo.nm_watch_later boolValue] ) {
+	if ( [vdo.video.nm_watch_later boolValue] ) {
 		// update image
 		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateNormal];
 		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateHighlighted];
@@ -805,14 +806,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}];
 		[self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
-			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
+			playbackModelController.previousVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
             
             [self updateRibbonButtons];
             
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
-                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
                                                                                @"auto", AnalyticsPropertyAction, 
                                                                                [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
@@ -876,7 +877,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	NMMovieDetailView * theDetailView = ctrl.nextVideo.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
 		theDetailView = [self dequeueReusableMovieDetailView];
-		ctrl.nextVideo.nm_movie_detail_view = theDetailView;
+		ctrl.nextVideo.video.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.nextVideo;
 	
@@ -894,10 +895,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
-	NMMovieDetailView * theDetailView = ctrl.previousVideo.nm_movie_detail_view;
+	NMMovieDetailView * theDetailView = ctrl.previousVideo.video.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
 		theDetailView = [self dequeueReusableMovieDetailView];
-		ctrl.previousVideo.nm_movie_detail_view = theDetailView;
+		ctrl.previousVideo.video.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.previousVideo;
 	

@@ -7,7 +7,7 @@
 //
 
 #import "NMVideoDetail.h"
-#import "NMVideo.h"
+#import "NMConcreteVideo.h"
 
 
 @implementation NMVideoDetail

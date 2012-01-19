@@ -10,7 +10,7 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
-#import "NMVideoInfo.h"
+#import "NMConcreteVideo.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
@@ -146,31 +146,31 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 - (void)insertAllVideosInController:(NMDataController *)ctrl {
 	NSMutableDictionary * dict;
-	NMVideo * vidObj;
+	NMConcreteVideo * realVidObj;
 	NMVideoDetail * dtlObj;
-	NMVideoInfo * infoObj;
+	NMVideo * infoObj;
 	NSUInteger vidCount = 0;
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
 	for (dict in parsedObjects) {
-		vidObj = [ctrl insertNewVideo];
-		[vidObj setValuesForKeysWithDictionary:dict];
+		realVidObj = [ctrl insertNewConcreteVideo];
+		[realVidObj setValuesForKeysWithDictionary:dict];
 		if ( isFavoriteChannel ) {
-			vidObj.nm_favorite = (NSNumber *)kCFBooleanTrue;
+			realVidObj.nm_favorite = (NSNumber *)kCFBooleanTrue;
 		}
 		if ( isWatchLaterChannel ) {
-			vidObj.nm_watch_later = (NSNumber *)kCFBooleanTrue;
+			realVidObj.nm_watch_later = (NSNumber *)kCFBooleanTrue;
 		}
 		// channel-video
-		infoObj = [ctrl insertNewVideoInfo];
+		infoObj = [ctrl insertNewVideo];
 		infoObj.channel = channel;
-		infoObj.video = vidObj;
+		infoObj.video = realVidObj;
 		infoObj.nm_session_id = NM_SESSION_ID;
 		infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
 		// video detail
 		dtlObj = [ctrl insertNewVideoDetail];
 		dict = [parsedDetailObjects objectAtIndex:vidCount];
 		[dtlObj setValuesForKeysWithDictionary:dict];
-		dtlObj.video = vidObj;
+		dtlObj.video = realVidObj;
 		
 		vidCount++;
 	}
@@ -183,7 +183,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSMutableDictionary * dict;
 	NMVideo * vidObj;
 	NMVideoDetail * dtlObj;
-	NMVideoInfo * infoObj;
+	NMVideo * infoObj;
 	NSUInteger idx = [channel.videos count];
 	NSUInteger vidCount = 0;
 	// insert video but do not insert duplicate item

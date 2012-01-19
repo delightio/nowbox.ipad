@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMCategory, NMChannelDetail, NMPreviewThumbnail, NMVideoInfo;
+@class NMCategory, NMChannelDetail, NMPreviewThumbnail, NMVideo;
 
 @interface NMChannel : NSManagedObject {
 	NSNumber * nm_populated;
@@ -54,8 +54,8 @@
 - (void)addPreviewThumbnails:(NSSet *)values;
 - (void)removePreviewThumbnails:(NSSet *)values;
 
-- (void)addVideosObject:(NMVideoInfo *)value;
-- (void)removeVideosObject:(NMVideoInfo *)value;
+- (void)addVideosObject:(NMVideo *)value;
+- (void)removeVideosObject:(NMVideo *)value;
 - (void)addVideos:(NSSet *)values;
 - (void)removeVideos:(NSSet *)values;
 

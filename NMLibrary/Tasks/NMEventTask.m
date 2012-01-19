@@ -10,7 +10,7 @@
 #import "NMDataController.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
-#import "NMVideoInfo.h"
+#import "NMVideo.h"
 #import "NMCategory.h"
 
 NSString * const NMDidFailSendEventNotification = @"NMDidFailSendEventNotification";
@@ -175,7 +175,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	NMVideoInfo * videoRelation = nil;
+	NMVideo * videoRelation = nil;
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{

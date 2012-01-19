@@ -232,7 +232,7 @@ extern NSString * const NMCategoryEntityName;
 extern NSString * const NMChannelEntityName;
 extern NSString * const NMVideoEntityName;
 extern NSString * const NMVideoDetailEntityName;
-extern NSString * const NMVideoInfoEntityName;
+extern NSString * const NMConcreteVideoEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;

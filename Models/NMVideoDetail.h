@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMVideo;
+@class NMConcreteVideo;
 
 @interface NMVideoDetail : NSManagedObject
 
 @property (nonatomic, retain) NSString * nm_description;
-@property (nonatomic, retain) NMVideo *video;
+@property (nonatomic, retain) NMConcreteVideo *video;
 
 @end

@@ -94,8 +94,8 @@
         senderStr = @"channelpanel_channelcolumn";
     }
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:channel.title, AnalyticsPropertyChannelName, 
-                                                                       theVideo.title, AnalyticsPropertyVideoName, 
-                                                                       theVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                       theVideo.video.title, AnalyticsPropertyVideoName, 
+                                                                       theVideo.video.nm_id, AnalyticsPropertyVideoId,
                                                                        senderStr, AnalyticsPropertySender, 
                                                                        @"tap", AnalyticsPropertyAction,
                                                                        [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
@@ -143,12 +143,13 @@
     }
     
     // Configure the cell
-    NMVideo *theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
+    NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row] inSection:0]];
+	NMConcreteVideo * theVideo = vdo.video;
     NMDataController *dataCtrl = [NMTaskQueueController sharedTaskQueueController].dataController;
     
-    BOOL isVideoPlayable = ([[theVideo nm_error] intValue] == 0) && (theVideo.nm_playback_status >= 0);
-    BOOL isVideoFavorited = (([[theVideo nm_favorite] intValue] == 1) && ([theVideo channel] != [dataCtrl favoriteVideoChannel]));
-    BOOL isVideoQueued = (([[theVideo nm_watch_later] intValue] == 1) && ([theVideo channel] != [dataCtrl myQueueChannel]));
+    BOOL isVideoPlayable = ([theVideo.nm_error integerValue] == 0) && (theVideo.nm_playback_status >= 0);
+    BOOL isVideoFavorited = ([theVideo.nm_favorite boolValue] && ![vdo.channel isEqual:[dataCtrl favoriteVideoChannel]]);
+    BOOL isVideoQueued = ([theVideo.nm_watch_later boolValue] && ![vdo.channel isEqual:[dataCtrl myQueueChannel]]);
 
     if (!isVideoPlayable) {
         [cell setState:PanelVideoCellStateUnplayable];
@@ -171,7 +172,7 @@
     
     if ([anIndexPath row] > 0) {
         NMVideo *prevVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row]-1 inSection:0]];
-        [cell setSessionStartCell:([[theVideo nm_session_id] intValue] != [[prevVideo nm_session_id] intValue])];
+        [cell setSessionStartCell:([vdo.nm_session_id integerValue] != [prevVideo.nm_session_id integerValue])];
     } else {
         [cell setSessionStartCell:NO];
     }
@@ -200,10 +201,10 @@
 
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
 
-    if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
+    if ([theVideo.video.duration integerValue] <= kShortVideoLengthSeconds) {
         return kShortVideoCellWidth;
     }
-    else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
+    else if ([theVideo.video.duration integerValue] <= kMediumVideoLengthSeconds) {
         return kMediumVideoCellWidth;
     }
     else {

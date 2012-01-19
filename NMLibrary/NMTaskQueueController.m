@@ -15,6 +15,7 @@
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "NMConcreteVideo.h"
 #import "NMAuthor.h"
 #import "Reachability.h"
 #import "ipadAppDelegate.h"
@@ -495,7 +496,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo {
 	NMImageDownloadTask * task = nil;
-	if ( vdo.thumbnail_uri ) {
+	if ( vdo.video.thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithVideoThumbnail:vdo];
 		[networkController addNewConnectionForTask:task];
 		[task autorelease];

@@ -12,6 +12,7 @@
 #import "NMChannel.h"
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
 #import "NMVideoDetail.h"
 #import "NMAuthor.h"
 
@@ -102,8 +103,8 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	// we do not store the image in cache for now.
 	// self.originalImagePath = nil;
 	self.video = vdo;
-	self.targetID = vdo.nm_id;
-	self.externalID = vdo.external_id;
+	self.targetID = vdo.video.nm_id;
+	self.externalID = vdo.video.external_id;
 	command = NMCommandGetVideoThumbnail;
 	retainCount = 1;
 

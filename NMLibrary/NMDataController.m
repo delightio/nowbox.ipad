@@ -11,6 +11,7 @@
 #import "NMCategory.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
 #import "NMVideoDetail.h"
 #import "NMGetChannelVideoListTask.h"
 
@@ -21,7 +22,7 @@ NSString * const NMChannelDetailEntityName = @"NMChannelDetail";
 NSString * const NMPreviewThumbnailEntityName = @"NMPreviewThumbnail";
 NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
-NSString * const NMVideoInfoEntityName = @"NMVideoInfo";
+NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 
@@ -153,10 +154,10 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		[request setReturnsObjectsAsFaults:NO];
 		result = [managedObjectContext executeFetchRequest:request error:nil];
 		for (NMVideo * vid in result) {
-			if ( [vid.nm_error integerValue] == 0 ) {
-				vid.nm_playback_status = 0;
-				vid.nm_direct_url = nil;
-				vid.nm_direct_sd_url = nil;
+			if ( [vid.video.nm_error integerValue] == 0 ) {
+				vid.video.nm_playback_status = 0;
+				vid.video.nm_direct_url = nil;
+				vid.video.nm_direct_sd_url = nil;
 			}
 		}
 		[request release];
@@ -776,7 +777,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	if ( vid == nil || chnObj == nil ) return nil;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_id == %@", chnObj, vid.nm_id]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_id == %@", chnObj, vid.video.nm_id]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
@@ -785,7 +786,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return [result count] ? [result objectAtIndex:0] : nil;
 }
 
-- (NMVideoInfo *)relateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
+- (NMVideo *)relateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
 	return nil;
 }
 
@@ -837,8 +838,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return vid;
 }
 
-- (NMVideoInfo *)insertNewVideoInfo {
-	NMVideoInfo * info = (NMVideoInfo *)[NSEntityDescription insertNewObjectForEntityForName:NMVideoInfoEntityName inManagedObjectContext:managedObjectContext];
+- (NMConcreteVideo *)insertNewConcreteVideo {
+	NMConcreteVideo * info = (NMConcreteVideo *)[NSEntityDescription insertNewObjectForEntityForName:NMConcreteVideoEntityName inManagedObjectContext:managedObjectContext];
 	return info;
 }
 
