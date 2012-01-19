@@ -63,8 +63,11 @@ static NSArray * youTubeRegexArray = nil;
 	NSLog(@"result %@", result);
 }
 
+- (void)processDownloadedDataInBuffer {
+	
+}
+
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	// title, nm_session_id, external_id, type
 	return YES;
 }
 

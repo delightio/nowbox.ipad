@@ -57,19 +57,6 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	return self;
 }
 
-- (id)initGetInfoForVideo:(NMVideo *)vdo {
-	self = [super init];
-	
-	command = NMCommandGetYouTubeDirectURLAndInfo;
-	self.video = vdo;
-	self.externalID = vdo.external_id;
-	self.targetID = vdo.nm_id;
-	// the task saveProcessedDataInController: method will still be executed when there's resolution error
-	executeSaveActionOnError = YES;
-	
-	return self;
-}
-
 - (void)dealloc {
 	[video release];
 	[externalID release];
