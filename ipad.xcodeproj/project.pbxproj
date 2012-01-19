@@ -69,6 +69,8 @@
 		8381626A1492F4380084C516 /* tooltip-favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = 838162691492F4380084C516 /* tooltip-favorite.png */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
+		8381D71A14C7BFB90041DC8D /* ScreenCaptureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381D71914C7BFB90041DC8D /* ScreenCaptureView.m */; };
+		8381D71C14C7C0730041DC8D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8381D71B14C7C0730041DC8D /* CoreVideo.framework */; };
 		8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */ = {isa = PBXBuildFile; fileRef = 8383BD551473A111002956C4 /* onboard-social-footer.png */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
@@ -435,6 +437,9 @@
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
+		8381D71814C7BFB90041DC8D /* ScreenCaptureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScreenCaptureView.h; path = Libraries/ScreenCapture/ScreenCaptureView.h; sourceTree = "<group>"; };
+		8381D71914C7BFB90041DC8D /* ScreenCaptureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScreenCaptureView.m; path = Libraries/ScreenCapture/ScreenCaptureView.m; sourceTree = "<group>"; };
+		8381D71B14C7C0730041DC8D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		8383BD551473A111002956C4 /* onboard-social-footer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-footer.png"; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
 		83844041144DE51E007C99A2 /* PanelVideoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelVideoCell.m; sourceTree = "<group>"; };
@@ -794,6 +799,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8381D71C14C7C0730041DC8D /* CoreVideo.framework in Frameworks */,
 				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */,
 				A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */,
@@ -872,6 +878,15 @@
 				837E904614587FA3009F32DD /* NSData+MPBase64.m */,
 			);
 			path = NSData_Base64;
+			sourceTree = "<group>";
+		};
+		8381D71314C7A99F0041DC8D /* ScreenCapture */ = {
+			isa = PBXGroup;
+			children = (
+				8381D71814C7BFB90041DC8D /* ScreenCaptureView.h */,
+				8381D71914C7BFB90041DC8D /* ScreenCaptureView.m */,
+			);
+			name = ScreenCapture;
 			sourceTree = "<group>";
 		};
 		8388793514B7739400566002 /* CrittercismSDK */ = {
@@ -1016,6 +1031,7 @@
 				A970501813438F860022BF2C /* Images */,
 				A970503913438F860022BF2C /* Models */,
 				A970503F13438F860022BF2C /* NMLibrary */,
+				8381D71314C7A99F0041DC8D /* ScreenCapture */,
 				A970505E13438F860022BF2C /* Views */,
 				A9250146134385BF001759F5 /* ipad */,
 				837E903914587F43009F32DD /* Libraries */,
@@ -1036,6 +1052,7 @@
 		A925013F134385BF001759F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8381D71B14C7C0730041DC8D /* CoreVideo.framework */,
 				83852145145A34100047B7E0 /* CoreLocation.framework */,
 				A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */,
 				A9DB20CA1348B8980018AA4A /* MessageUI.framework */,
@@ -1828,6 +1845,7 @@
 				83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */,
 				83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */,
 				83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */,
+				8381D71A14C7BFB90041DC8D /* ScreenCaptureView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1929,6 +1947,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = MIXPANEL_PROD;
+				HEADER_SEARCH_PATHS = "Libraries/**";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2006,6 +2025,7 @@
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_USE_STAGING_SERVER,
 				);
+				HEADER_SEARCH_PATHS = "Libraries/**";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2037,6 +2057,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = MIXPANEL_PROD;
+				HEADER_SEARCH_PATHS = "Libraries/**";
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

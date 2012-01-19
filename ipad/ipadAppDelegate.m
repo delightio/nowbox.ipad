@@ -233,8 +233,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	self.window.rootViewController = viewController;
 	[self.window makeKeyAndVisible];
 	
-	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
-    
+//	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
+  	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:NULL];  
     return YES;
 }
 
