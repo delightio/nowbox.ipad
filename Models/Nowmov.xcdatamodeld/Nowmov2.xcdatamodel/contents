@@ -6,7 +6,7 @@
         <attribute name="profile_uri" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbnail_uri" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
-        <relationship name="videos" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="author" inverseEntity="NMConcreteVideo" syncable="YES"/>
+        <relationship name="videos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="author" inverseEntity="NMConcreteVideo" syncable="YES"/>
     </entity>
     <entity name="NMCategory" representedClassName="NMCategory">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
@@ -96,9 +96,9 @@
         <element name="NMCategory" positionX="90" positionY="-204" width="128" height="150"/>
         <element name="NMChannel" positionX="288" positionY="-207" width="153" height="375"/>
         <element name="NMChannelDetail" positionX="88" positionY="15" width="128" height="75"/>
-        <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMConcreteVideo" positionX="261" positionY="270" width="128" height="360"/>
-        <element name="NMVideoDetail" positionX="7" positionY="522" width="128" height="150"/>
+        <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMVideo" positionX="529" positionY="156" width="128" height="105"/>
+        <element name="NMVideoDetail" positionX="7" positionY="522" width="128" height="150"/>
     </elements>
 </model>

@@ -30,6 +30,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @implementation NMDataController
 @synthesize managedObjectContext;
 @synthesize channelEntityDescription, videoEntityDescription;
+@synthesize authorEntityDescription;
 @synthesize categories, categoryCacheDictionary;
 @synthesize subscribedChannels;
 @synthesize internalSearchCategory;
@@ -78,6 +79,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[internalSubscribedChannelsCategory release];
 	[internalYouTubeCategory release];
 	[channelEntityDescription release], [videoEntityDescription release];
+	[authorEntityDescription release];
 	[super dealloc];
 }
 
@@ -90,10 +92,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		managedObjectContext = [context retain];
 		self.channelEntityDescription = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
 		self.videoEntityDescription = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext];
+		self.authorEntityDescription = [NSEntityDescription entityForName:NMAuthorEntityName inManagedObjectContext:managedObjectContext];
 	} else {
 		managedObjectContext = nil;
 		self.channelEntityDescription = nil;
 		self.videoEntityDescription = nil;
+		self.authorEntityDescription = nil;
 	}
 }
 
@@ -1011,7 +1015,16 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 #pragma mark Author
 - (NMAuthor *)authorForID:(NSNumber *)authID {
-	return nil;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:authID forKey:@"OBJECT_ID"]]];
+	[request setEntity:authorEntityDescription];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	NMAuthor * theAuthor = nil;
+	if ( result && [result count] ) {
+		theAuthor = [result objectAtIndex:0];
+	}
+	[request release];
+	return theAuthor;
 }
 
 - (NMAuthor *)insertNewAuthor {

@@ -103,6 +103,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	[parsedDetailObjects release];
 	[parsedAuthorObjects release];
 	[authorMOCache release];
+	[authorCache release];
 	[urlString release];
 	[super dealloc];
 }
@@ -206,9 +207,9 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			NSDictionary * dict = [authorCache objectForKey:authID];
 			theAuthor = [ctrl insertNewAuthor];
 			[theAuthor setValuesForKeysWithDictionary:dict];
-			// add author object to the cache
-			[authorMOCache setObject:theAuthor forKey:authID];
 		}
+		// add author object to the cache
+		[authorMOCache setObject:theAuthor forKey:authID];
 	}
 	return theAuthor;
 }

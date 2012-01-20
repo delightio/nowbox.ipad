@@ -31,7 +31,7 @@
 	NSPredicate * concreteVideoForIDPredicateTemplate;
 	
 	// entity object
-	NSEntityDescription * channelEntityDescription, * videoEntityDescription;
+	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription;
 	
 	// Core data query cache. Cache recent core data search result. The cache is for reducing number of database access round trips. Simple cache policy - first in first out.
 	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
@@ -57,6 +57,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSEntityDescription * channelEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
+@property (nonatomic, retain) NSEntityDescription * authorEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NMChannel * userTwitterStreamChannel;
 @property (nonatomic, retain) NMChannel * userFacebookStreamChannel;
