@@ -12,7 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #define kScaleFactor 0.5f
-#define kFrameRate 1.0f
+#define kFrameRate 2.0f
 #define kBitRate 500.0*1024.0
 #define kGrayScale NO
 
@@ -156,8 +156,21 @@
 }
 
 //static int frameCount = 0;            //debugging
-- (void) drawRect:(CGRect)rect {    
-    NSDate* start = [NSDate date];
+
+- (void)takeScreenshot
+{
+    if (!processing) {
+        [self performSelectorInBackground:@selector(takeScreenshotInCurrentThread) withObject:nil];
+    } else {
+        NSLog(@"frame rate too high to keep up. dropping frame");
+    }
+}
+
+- (void)takeScreenshotInCurrentThread
+{
+    if (!_recording) return;
+    
+    processing = YES;
     CGContextRef context = [self createBitmapContextOfSize:CGSizeMake(self.frame.size.width * kScaleFactor, self.frame.size.height * kScaleFactor)];
     
     //not sure why this is necessary...image renders upside-down and mirrored
@@ -174,28 +187,22 @@
     
     self.currentScreen = background;
     
-/*    //debugging
-    if (frameCount < 600) {
-          NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
-          NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
-          [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
-          frameCount++;
-    }*/
+    /*    //debugging
+     if (frameCount < 600) {
+     NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
+     NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
+     [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
+     frameCount++;
+     }*/
     
     //NOTE:  to record a scrollview while it is scrolling you need to implement your UIScrollViewDelegate such that it calls
     //       'setNeedsDisplay' on the ScreenCaptureView.
     if (_recording) {
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-    }
+    }    
     
-    float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
-    float delayRemaining = (1.0 / self.frameRate) - processingSeconds;
-    
-//    CGContextRelease(context);
-    
-    //redraw at the specified framerate
-    [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
+    processing = NO;
 }
                                         
 - (NSURL*) tempFileURL {
@@ -289,6 +296,8 @@
             result = [self setUpWriter];
             startedAt = [[NSDate date] retain];
             _recording = true;
+            
+            screenshotTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/kFrameRate target:self selector:@selector(takeScreenshot) userInfo:nil repeats:YES];
         }
     }
     
@@ -299,6 +308,7 @@
     @synchronized(self) {
         if (_recording) {
             _recording = false;
+            [screenshotTimer invalidate]; screenshotTimer = nil;            
             [self completeRecordingSession];
         }
     }

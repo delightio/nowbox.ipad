@@ -54,6 +54,9 @@
     BOOL _recording;
     NSDate* startedAt;
     void* bitmapData;
+    BOOL processing;
+    
+    NSTimer *screenshotTimer;
 }
 
 //for recording video
