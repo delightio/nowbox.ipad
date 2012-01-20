@@ -12,7 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #define kScaleFactor 0.5f
-#define kFrameRate 10.0f
+#define kFrameRate 1.0f
 #define kBitRate 500.0*1024.0
 #define kGrayScale NO
 
@@ -164,21 +164,23 @@
     CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, self.frame.size.height * kScaleFactor);
     CGContextConcatCTM(context, flipVertical);
     
+    NSLog(@"start taking screenshot");
     [self.layer renderInContext:context];
     
     CGImageRef cgImage = CGBitmapContextCreateImage(context);
     UIImage* background = [UIImage imageWithCGImage: cgImage];
     CGImageRelease(cgImage);
- 
+    NSLog(@"stop taking screenshot");
+    
     self.currentScreen = background;
     
-    //debugging
-    //if (frameCount < 40) {
-    //      NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
-    //      NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
-    //      [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
-    //      frameCount++;
-    //}
+/*    //debugging
+    if (frameCount < 600) {
+          NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
+          NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
+          [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
+          frameCount++;
+    }*/
     
     //NOTE:  to record a scrollview while it is scrolling you need to implement your UIScrollViewDelegate such that it calls
     //       'setNeedsDisplay' on the ScreenCaptureView.
