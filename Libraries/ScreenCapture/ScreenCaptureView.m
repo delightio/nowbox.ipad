@@ -11,6 +11,11 @@
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
+#define kScaleFactor 0.5f
+#define kFrameRate 10.0f
+#define kBitRate 500.0*1024.0
+#define kGrayScale NO
+
 @interface ScreenCaptureView(Private)
 - (void) writeVideoFrameAtTime:(CMTime)time;
 @end
@@ -23,7 +28,7 @@
     // Initialization code
     self.clearsContextBeforeDrawing = YES;
     self.currentScreen = nil;
-    self.frameRate = 10.0f;     // frames per seconds
+    self.frameRate = kFrameRate;     // frames per seconds
     _recording = false;
     videoWriter = nil;
     videoWriterInput = nil;
@@ -118,9 +123,9 @@
     int             bitmapByteCount;
     int             bitmapBytesPerRow;
     
-    bitmapBytesPerRow   = (size.width * 4);
+    bitmapBytesPerRow   = (kGrayScale ? size.width : size.width * 4);
     bitmapByteCount     = (bitmapBytesPerRow * size.height);
-    colorSpace = CGColorSpaceCreateDeviceRGB();
+    colorSpace = (kGrayScale ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
     
     if (bitmapData != NULL) {
         free(bitmapData);
@@ -137,7 +142,7 @@
                                      8,      // bits per component
                                      bitmapBytesPerRow,
                                      colorSpace,
-                                     kCGImageAlphaNoneSkipFirst);
+                                     (kGrayScale ? kCGImageAlphaNone : kCGImageAlphaNoneSkipFirst));
     
     CGContextSetAllowsAntialiasing(context,NO);
     if (context== NULL) {
@@ -151,14 +156,12 @@
 }
 
 //static int frameCount = 0;            //debugging
-- (void) drawRect:(CGRect)rect {
-    [super drawRect:rect];
-    
+- (void) drawRect:(CGRect)rect {    
     NSDate* start = [NSDate date];
-    CGContextRef context = [self createBitmapContextOfSize:self.frame.size];
+    CGContextRef context = [self createBitmapContextOfSize:CGSizeMake(self.frame.size.width * kScaleFactor, self.frame.size.height * kScaleFactor)];
     
     //not sure why this is necessary...image renders upside-down and mirrored
-    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, self.frame.size.height);
+    CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, self.frame.size.height * kScaleFactor);
     CGContextConcatCTM(context, flipVertical);
     
     [self.layer renderInContext:context];
@@ -166,7 +169,7 @@
     CGImageRef cgImage = CGBitmapContextCreateImage(context);
     UIImage* background = [UIImage imageWithCGImage: cgImage];
     CGImageRelease(cgImage);
-    
+ 
     self.currentScreen = background;
     
     //debugging
@@ -187,7 +190,7 @@
     float processingSeconds = [[NSDate date] timeIntervalSinceDate:start];
     float delayRemaining = (1.0 / self.frameRate) - processingSeconds;
     
-    CGContextRelease(context);
+//    CGContextRelease(context);
     
     //redraw at the specified framerate
     [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:delayRemaining > 0.0 ? delayRemaining : 0.01];
@@ -214,13 +217,13 @@
     
     //Configure video
     NSDictionary* videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
-                                           [NSNumber numberWithDouble:1024.0*1024.0], AVVideoAverageBitRateKey,
+                                           [NSNumber numberWithDouble:kBitRate], AVVideoAverageBitRateKey,
                                            nil ];
     
     NSDictionary* videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                    AVVideoCodecH264, AVVideoCodecKey,
-                                   [NSNumber numberWithInt:self.frame.size.width], AVVideoWidthKey,
-                                   [NSNumber numberWithInt:self.frame.size.height], AVVideoHeightKey,
+                                   [NSNumber numberWithInt:self.frame.size.width * kScaleFactor], AVVideoWidthKey,
+                                   [NSNumber numberWithInt:self.frame.size.height * kScaleFactor], AVVideoHeightKey,
                                    videoCompressionProps, AVVideoCompressionPropertiesKey,
                                    nil];
     
@@ -229,7 +232,7 @@
     NSParameterAssert(videoWriterInput);
     videoWriterInput.expectsMediaDataInRealTime = YES;
     NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                      [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey, nil];
+                                         [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey, nil];
     
     avAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:videoWriterInput sourcePixelBufferAttributes:bufferAttributes] retain];
     
