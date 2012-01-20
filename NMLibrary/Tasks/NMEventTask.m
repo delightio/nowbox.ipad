@@ -220,7 +220,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			videoRelation.nm_session_id = NM_SESSION_ID;
 			video.video.nm_watch_later = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
-			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
+			if ( [ctrl.myQueueChannel.nm_hidden boolValue] ) ctrl.myQueueChannel.nm_hidden = (NSNumber *)kCFBooleanFalse;
+//			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
 		}
 		case NMEventDequeue:
@@ -241,7 +242,8 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			videoRelation.nm_session_id = NM_SESSION_ID;
 			video.video.nm_favorite = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
-			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
+			if ( [ctrl.favoriteVideoChannel.nm_hidden boolValue] ) ctrl.favoriteVideoChannel.nm_hidden = (NSNumber *)kCFBooleanFalse;
+//			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;
 		}
 		case NMEventUnfavorite:
