@@ -92,7 +92,6 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
 	currentPage = [aChn.nm_current_page integerValue];
-	totalNumberOfRows = 0;
 	return self;
 }
 
@@ -149,60 +148,57 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	
 }
 
-- (void)insertAllVideosInController:(NMDataController *)ctrl {
-	NSMutableDictionary * dict;
-	NMConcreteVideo * realVidObj;
-	NMVideoDetail * dtlObj;
-	NMVideo * infoObj;
-	NSUInteger vidCount = 0;
-	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
-	for (dict in parsedObjects) {
-		realVidObj = [ctrl insertNewConcreteVideo];
-		[realVidObj setValuesForKeysWithDictionary:dict];
-		if ( isFavoriteChannel ) {
-			realVidObj.nm_favorite = (NSNumber *)kCFBooleanTrue;
-		}
-		if ( isWatchLaterChannel ) {
-			realVidObj.nm_watch_later = (NSNumber *)kCFBooleanTrue;
-		}
-		// channel-video
-		infoObj = [ctrl insertNewVideo];
-		infoObj.channel = channel;
-		infoObj.video = realVidObj;
-		infoObj.nm_session_id = NM_SESSION_ID;
-		infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
-		// video detail
-		dtlObj = [ctrl insertNewVideoDetail];
-		dict = [parsedDetailObjects objectAtIndex:vidCount];
-		[dtlObj setValuesForKeysWithDictionary:dict];
-		dtlObj.video = realVidObj;
-		
-		vidCount++;
-	}
-	channel.nm_hidden = [NSNumber numberWithBool:NO];
-	numberOfVideoAdded = [parsedObjects count];
-	totalNumberOfRows = numberOfVideoAdded + [channel.videos count];
-}
+//- (void)insertAllVideosInController:(NMDataController *)ctrl {
+//	NSMutableDictionary * dict;
+//	NMConcreteVideo * realVidObj;
+//	NMVideoDetail * dtlObj;
+//	NMVideo * infoObj;
+//	NSUInteger vidCount = 0;
+//	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
+//	for (dict in parsedObjects) {
+//		realVidObj = [ctrl insertNewConcreteVideo];
+//		[realVidObj setValuesForKeysWithDictionary:dict];
+//		if ( isFavoriteChannel ) {
+//			realVidObj.nm_favorite = (NSNumber *)kCFBooleanTrue;
+//		}
+//		if ( isWatchLaterChannel ) {
+//			realVidObj.nm_watch_later = (NSNumber *)kCFBooleanTrue;
+//		}
+//		// channel-video
+//		infoObj = [ctrl insertNewVideo];
+//		infoObj.channel = channel;
+//		infoObj.video = realVidObj;
+//		infoObj.nm_session_id = NM_SESSION_ID;
+//		infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
+//		// video detail
+//		dtlObj = [ctrl insertNewVideoDetail];
+//		dict = [parsedDetailObjects objectAtIndex:vidCount];
+//		[dtlObj setValuesForKeysWithDictionary:dict];
+//		dtlObj.video = realVidObj;
+//		
+//		vidCount++;
+//	}
+//	channel.nm_hidden = [NSNumber numberWithBool:NO];
+//	numberOfVideoAdded = [parsedObjects count];
+//	totalNumberOfRows = numberOfVideoAdded + [channel.videos count];
+//}
 
 - (void)insertOnlyNewVideosInController:(NMDataController *)ctrl {
 	NSMutableDictionary * dict;
 	NMConcreteVideo * realVidObj;
 	NMVideoDetail * dtlObj;
 	NMVideo * infoObj;
-	NSUInteger idx = [channel.videos count];
+//	NSUInteger idx = [channel.videos count];
 	NSUInteger vidCount = 0;
 	// insert video but do not insert duplicate item
-	if ( idx ) {
-		NSMutableIndexSet * idIndexSet = [NSMutableIndexSet indexSet];
-		NSSet * theVideos = channel.videos;
-		for (realVidObj in theVideos) {
-			[idIndexSet addIndex:[realVidObj.nm_id unsignedIntegerValue]];
-		}
-		numberOfVideoAdded = 0;
-		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
-		NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
-		for (dict in parsedObjects) {
-			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"nm_id"] unsignedIntegerValue]] ) {
+	numberOfVideoAdded = 0;
+	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
+	NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
+	
+	for (dict in parsedObjects) {
+		switch ( [ctrl videoExistsWithID:[dict objectForKey:@"nm_id"] channel:channel targetVideo:&realVidObj] ) {
+			case NMVideoDoesNotExist:
+				// create video and concrete video
 				numberOfVideoAdded++;
 				realVidObj = [ctrl insertNewConcreteVideo];
 				[realVidObj setValuesForKeysWithDictionary:dict];
@@ -223,20 +219,35 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				dict = [parsedDetailObjects objectAtIndex:vidCount];
 				[dtlObj setValuesForKeysWithDictionary:dict];
 				dtlObj.video = realVidObj;
-				//vidObj.detail = dtlObj;
-			} else {
-				// update the view count
+				break;
+				
+			case NMVideoExistsButNotInChannel:
+				// create video object only
+				numberOfVideoAdded++;
+				if ( isFavoriteChannel ) {
+					realVidObj.nm_favorite = yesNum;
+				}
+				if ( isWatchLaterChannel ) {
+					realVidObj.nm_watch_later = yesNum;
+				}
+				// channel-video
+				infoObj = [ctrl insertNewVideo];
+				infoObj.channel = channel;
+				infoObj.video = realVidObj;
+				infoObj.nm_session_id = NM_SESSION_ID;
+				infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
+				break;
+				
+			default:
+				// just update the view count
 				realVidObj.view_count = [dict objectForKey:@"view_count"];
-				// do NOT update the session ID
-			}
-			vidCount++;
+				break;
 		}
-		totalNumberOfRows = numberOfVideoAdded + idx;
-		if ( numberOfVideoAdded ) {
-			channel.nm_hidden = [NSNumber numberWithBool:NO];
-		}
-	} else {
-		[self insertAllVideosInController:ctrl];
+		vidCount++;
+	}
+//	totalNumberOfRows = numberOfVideoAdded + idx;
+	if ( numberOfVideoAdded ) {
+		channel.nm_hidden = [NSNumber numberWithBool:NO];
 	}
 }
 

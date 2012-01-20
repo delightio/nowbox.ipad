@@ -971,6 +971,38 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return theOrder;
 }
 
+- (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo {
+	*outRealVdo = nil;
+	// check whether the video exists in the given channel
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@""]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	NMVideoExistenceCheckResult checkResult = NMVideoDoesNotExist;
+	if ( result && [result count] ) {
+		BOOL vdoInChn = NO;
+		NMVideo * vdo = nil;
+		// check whether the video is in the channel
+		for (vdo in result) {
+			if ( [vdo.channel isEqual:chn] ) {
+				// video already exists in the current channel
+				vdoInChn = YES;
+				break;
+			}
+		}
+		if ( vdoInChn ) {
+			checkResult = NMVideoExistsAndInChannel;
+		} else {
+			*outRealVdo = vdo.video;
+			// video exists but not in "chn" channel. We just need to create the NMVideo object.
+			checkResult = NMVideoExistsButNotInChannel;
+		}
+	}
+	// should return a result object which contains the video object (if necessary) and the comparison result
+	return checkResult;
+}
+
 #pragma mark Data parsing
 - (void)createDataParsingOperationForTask:(NMTask *)atask {
 	NSInvocationOperation * op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseAndProcessData:) object:atask];

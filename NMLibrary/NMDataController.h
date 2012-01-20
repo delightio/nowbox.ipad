@@ -80,10 +80,12 @@
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
 // search
 - (void)clearSearchResultCache;
+
 // category
 - (NMCategory *)insertNewCategoryForID:(NSNumber *)catID;
 - (NMCategory *)categoryForID:(NSNumber *)catID;
 - (void)batchDeleteCategories:(NSArray *)catAy;
+
 // channels
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
 - (NMChannelDetail *)insertNewChannelDetail;
@@ -104,8 +106,10 @@
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NMChannel *)channelNextTo:(NMChannel *)anotherChannel;
 - (void)clearChannelCache;
+
 // channel detail
 - (NSArray *)previewsForChannel:(NMChannel *)chnObj;
+
 // video
 - (NMVideo *)video:(NMVideo *)vid inChannel:(NMChannel *)chnObj;
 - (NMVideo *)relateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid;
@@ -122,5 +126,6 @@
 - (void)deleteVideoWithID:(NSNumber *)vid fromChannel:(NMChannel *)chn;
 - (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey;
 - (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag;
+- (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 
 @end

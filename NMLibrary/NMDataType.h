@@ -111,6 +111,12 @@ typedef enum {
 	NMVideoSourceVimeo,
 } NMVideoSourceType;
 
+typedef enum {
+	NMVideoDoesNotExist,
+	NMVideoExistsAndInChannel,
+	NMVideoExistsButNotInChannel,
+} NMVideoExistenceCheckResult;
+
 extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
 // Notifications

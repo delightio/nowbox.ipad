@@ -17,7 +17,7 @@
 	NSString * urlString;
 	NSMutableArray * parsedDetailObjects, * parsedAuthorObjects;
 	BOOL newChannel;
-	NSUInteger numberOfVideoAdded, totalNumberOfRows;
+	NSUInteger numberOfVideoAdded;
 	NSUInteger numberOfRowsFromServer;
 	NSUInteger currentPage;
 	BOOL isFavoriteChannel, isWatchLaterChannel;
