@@ -554,7 +554,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSString * path = nil;
 	switch (theTask.command) {
 		case NMCommandGetAuthorThumbnail:
-			path = [authorThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_author_thumbnail_file_name"]];
+			path = [authorThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
 			break;
 			
 		case NMCommandGetChannelThumbnail:
@@ -562,7 +562,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			break;
 			
 		case NMCommandGetVideoThumbnail:
-			path = [videoThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
+			path = [videoThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKeyPath:@"video.nm_thumbnail_file_name"]];
 			break;
 			
 		case NMCommandGetPreviewThumbnail:

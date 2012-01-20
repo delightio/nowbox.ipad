@@ -15,6 +15,7 @@
 @class NMVideo;
 @class NMVideoDetail;
 @class NMConcreteVideo;
+@class NMAuthor;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -27,6 +28,7 @@
 	NSPredicate * channelPredicateTemplate;
 	NSPredicate * channelAndSessionPredicateTemplate;
 	NSPredicate * cachedChannelsPredicate;
+	NSPredicate * concreteVideoForIDPredicateTemplate;
 	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription;
@@ -127,5 +129,9 @@
 - (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey;
 - (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag;
 - (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
+
+// author
+- (NMAuthor *)authorForID:(NSNumber *)authID;
+- (NMAuthor *)insertNewAuthor;
 
 @end

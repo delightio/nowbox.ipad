@@ -454,9 +454,11 @@ NSInteger NM_LAST_CHANNEL_ID;
     if (managedObjectModel_ != nil) {
         return managedObjectModel_;
     }
-    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"mom"];
-    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
-    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
+//    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"mom"];
+//    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
+//    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
+//    return managedObjectModel_;
+    managedObjectModel_ = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
     return managedObjectModel_;
 }
 

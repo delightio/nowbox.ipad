@@ -16,6 +16,7 @@
 	NSString * channelName;
 	NSString * urlString;
 	NSMutableArray * parsedDetailObjects, * parsedAuthorObjects;
+	NSMutableDictionary * authorCache, * authorMOCache;
 	BOOL newChannel;
 	NSUInteger numberOfVideoAdded;
 	NSUInteger numberOfRowsFromServer;

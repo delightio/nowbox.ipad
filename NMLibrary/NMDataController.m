@@ -23,6 +23,7 @@ NSString * const NMPreviewThumbnailEntityName = @"NMPreviewThumbnail";
 NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
+NSString * const NMAuthorEntityName = @"NMAuthor";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 
@@ -50,6 +51,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID AND channel == $CHANNEL"] retain];
 	channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
 	channelAndSessionPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND nm_session_id == $SESSION_ID"] retain];
+	concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.nm_id = $OBJECT_ID"] retain];
 
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
@@ -69,6 +71,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[videoInChannelPredicateTemplate release];
 	[channelPredicateTemplate release];
 	[channelAndSessionPredicateTemplate release];
+	[concreteVideoForIDPredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
@@ -868,7 +871,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// fetch last video played
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND channel.nm_last_vid == nm_id AND nm_error == 0", chn]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND channel.nm_last_vid == video.nm_id AND video.nm_error == 0", chn]];
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideo * vidObj = nil;
 	if ( [results count] ) {
@@ -976,7 +979,9 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// check whether the video exists in the given channel
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@""]];
+	[request setPredicate:[concreteVideoForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideoExistenceCheckResult checkResult = NMVideoDoesNotExist;
@@ -999,8 +1004,18 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 			checkResult = NMVideoExistsButNotInChannel;
 		}
 	}
+	[request release];
 	// should return a result object which contains the video object (if necessary) and the comparison result
 	return checkResult;
+}
+
+#pragma mark Author
+- (NMAuthor *)authorForID:(NSNumber *)authID {
+	return nil;
+}
+
+- (NMAuthor *)insertNewAuthor {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMAuthorEntityName inManagedObjectContext:managedObjectContext];
 }
 
 #pragma mark Data parsing

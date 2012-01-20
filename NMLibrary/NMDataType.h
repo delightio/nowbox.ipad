@@ -239,6 +239,7 @@ extern NSString * const NMChannelEntityName;
 extern NSString * const NMVideoEntityName;
 extern NSString * const NMVideoDetailEntityName;
 extern NSString * const NMConcreteVideoEntityName;
+extern NSString * const NMAuthorEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;

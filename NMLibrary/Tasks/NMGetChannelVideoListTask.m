@@ -11,6 +11,7 @@
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 #import "NMConcreteVideo.h"
+#import "NMAuthor.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
@@ -33,7 +34,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {
-		sharedVideoDirectJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"duration", @"source", @"external_id", @"view_count", nil];
+		sharedVideoDirectJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"duration", @"external_id", @"view_count", nil];
 	}
 	
 	return sharedVideoDirectJSONKeys;
@@ -52,6 +53,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	for (NSString * theKey in allKeys) {
 		[mdict setObject:[dict objectForKey:theKey] forKey:theKey];
 	}
+	[mdict setObject:[NSNumber numberWithInteger:NMVideoSourceYouTube] forKey:@"source"];
 	[mdict setObject:[dict objectForKey:@"id"] forKey:@"nm_id"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
 	NSString * thumbURL = [dict objectForKey:@"thumbnail_uri"];
@@ -99,6 +101,8 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	[channelName release];
 	[channel release];
 	[parsedDetailObjects release];
+	[parsedAuthorObjects release];
+	[authorMOCache release];
 	[urlString release];
 	[super dealloc];
 }
@@ -133,16 +137,25 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
 	parsedAuthorObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
+	authorCache = [[NSMutableDictionary alloc] initWithCapacity:4];
 	NSMutableDictionary * mdict;
 //	NSInteger idx = 0;
 	NSDictionary * dict;
+	NSDictionary * authorDict;
+	NSNumber * authorID;
 	for (NSDictionary * parentDict in chVideos) {
 		for (NSString * theKey in parentDict) {
 			dict = [parentDict objectForKey:theKey];
 			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
 			[parsedObjects addObject:mdict];
 			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
-			[parsedAuthorObjects addObject:[NMGetChannelVideoListTask normalizeAuthorDictionary:dict]];
+			authorID = [dict valueForKeyPath:@"author.id"];
+			[parsedAuthorObjects addObject:authorID];
+			authorDict = [authorCache objectForKey:authorID];
+			if ( authorDict == nil ) {
+				// parse the complete author info
+				[authorCache setObject:[NMGetChannelVideoListTask normalizeAuthorDictionary:dict] forKey:authorID];
+			}
 		}
 	}
 	
@@ -183,6 +196,23 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 //	totalNumberOfRows = numberOfVideoAdded + [channel.videos count];
 //}
 
+- (NMAuthor *)prepareAuthorForID:(NSNumber *)authID controller:(NMDataController *)ctrl {
+	NMAuthor * theAuthor = [authorMOCache objectForKey:authID];
+	if ( theAuthor == nil ) {
+		// can't find it in local cache
+		theAuthor = [ctrl authorForID:authID];
+		if ( theAuthor == nil ) {
+			// the author does NOT exist. create a new author
+			NSDictionary * dict = [authorCache objectForKey:authID];
+			theAuthor = [ctrl insertNewAuthor];
+			[theAuthor setValuesForKeysWithDictionary:dict];
+			// add author object to the cache
+			[authorMOCache setObject:theAuthor forKey:authID];
+		}
+	}
+	return theAuthor;
+}
+
 - (void)insertOnlyNewVideosInController:(NMDataController *)ctrl {
 	NSMutableDictionary * dict;
 	NMConcreteVideo * realVidObj;
@@ -194,7 +224,9 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	numberOfVideoAdded = 0;
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
 	NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
-	
+	authorMOCache = [[NSMutableDictionary alloc] initWithCapacity:4];
+	NMAuthor * theAuthor;
+
 	for (dict in parsedObjects) {
 		switch ( [ctrl videoExistsWithID:[dict objectForKey:@"nm_id"] channel:channel targetVideo:&realVidObj] ) {
 			case NMVideoDoesNotExist:
@@ -219,6 +251,9 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				dict = [parsedDetailObjects objectAtIndex:vidCount];
 				[dtlObj setValuesForKeysWithDictionary:dict];
 				dtlObj.video = realVidObj;
+				// hook up with author
+				theAuthor = [self prepareAuthorForID:[parsedAuthorObjects objectAtIndex:vidCount]  controller:ctrl];
+				realVidObj.author = theAuthor;
 				break;
 				
 			case NMVideoExistsButNotInChannel:
