@@ -9,6 +9,12 @@
 #import "NMTask.h"
 #import <Twitter/Twitter.h>
 
-@interface NMParseTwitterFeedTask : NMTask
+@class NMChannel;
+
+@interface NMParseTwitterFeedTask : NMTask 
+
+@property (nonatomic, retain) NMChannel * channel;
+
+- (id)initWithChannel:(NMChannel *)chnObj;
 
 @end

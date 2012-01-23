@@ -6,7 +6,6 @@
 //  Copyright (c) 2011 Pipely Inc. All rights reserved.
 //
 #import "NMLibrary.h"
-#import <Accounts/Accounts.h>
 
 @interface SocialLoginViewController : UIViewController <UIWebViewDelegate> {
 	IBOutlet UIActivityIndicatorView * loadingIndicator;
@@ -14,7 +13,6 @@
 	UIWebView *loginWebView;
 	UIView * progressContainerView;
 	NMSocialLoginType loginType;
-	ACAccountStore * accountStore;
 	
 	NSNotificationCenter * defaultCenter;
     
@@ -25,6 +23,5 @@
 @property (retain, nonatomic) IBOutlet UIWebView *loginWebView;
 @property (nonatomic, retain) IBOutlet UIView * progressContainerView;
 @property (nonatomic, assign) NMSocialLoginType loginType;
-@property (nonatomic, retain) ACAccountStore * accountStore;
 
 @end

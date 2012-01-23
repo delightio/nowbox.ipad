@@ -26,3 +26,4 @@
 #import "NMDeauthorizeUserTask.h"
 #import "NMUserSynchronizeTask.h"
 #import "NMParseFacebookFeedTask.h"
+#import "NMParseTwitterFeedTask.h"

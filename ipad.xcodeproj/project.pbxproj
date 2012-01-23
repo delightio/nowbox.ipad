@@ -243,6 +243,7 @@
 		A94D65CF14CD51700033F661 /* NMParseTwitterFeedTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A94D65CD14CD51700033F661 /* NMParseTwitterFeedTask.h */; };
 		A94D65D014CD51700033F661 /* NMParseTwitterFeedTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D65CE14CD51700033F661 /* NMParseTwitterFeedTask.m */; };
 		A94D65D314CD55280033F661 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D65D214CD55280033F661 /* Twitter.framework */; };
+		A94D65E214CDF54D0033F661 /* TwitterAccountPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D65E114CDF54D0033F661 /* TwitterAccountPickerViewController.m */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
 		A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
@@ -671,6 +672,8 @@
 		A94D65CD14CD51700033F661 /* NMParseTwitterFeedTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMParseTwitterFeedTask.h; sourceTree = "<group>"; };
 		A94D65CE14CD51700033F661 /* NMParseTwitterFeedTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMParseTwitterFeedTask.m; sourceTree = "<group>"; };
 		A94D65D214CD55280033F661 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		A94D65E014CDF54D0033F661 /* TwitterAccountPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterAccountPickerViewController.h; sourceTree = "<group>"; };
+		A94D65E114CDF54D0033F661 /* TwitterAccountPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterAccountPickerViewController.m; sourceTree = "<group>"; };
 		A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackModelController.h; sourceTree = "<group>"; };
 		A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackModelController.m; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
@@ -1183,6 +1186,8 @@
 				83F8E2DC1468C3720051D990 /* ShareViewController.m */,
 				A9E3C04F146DCC4C005C976F /* YouTubeAccountStatusViewController.h */,
 				A9E3C050146DCC4C005C976F /* YouTubeAccountStatusViewController.m */,
+				A94D65E014CDF54D0033F661 /* TwitterAccountPickerViewController.h */,
+				A94D65E114CDF54D0033F661 /* TwitterAccountPickerViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1950,6 +1955,7 @@
 				A942908F14C5D38600107BE8 /* NMChannel.m in Sources */,
 				A992827914C6F1A900406A77 /* NMVideo.m in Sources */,
 				A90C89C414C9E728006DC909 /* NMAuthor.m in Sources */,
+				A94D65E214CDF54D0033F661 /* TwitterAccountPickerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

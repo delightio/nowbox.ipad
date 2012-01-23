@@ -587,9 +587,25 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
 	ipadAppDelegate * appDel = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
-	NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj facebookProxy:appDel.facebook];
-	[networkController addNewConnectionForTask:task];
-	[task release];
+	switch ([chnObj.type integerValue]) {
+		case NMChannelUserTwitterType:
+		{
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+			
+		case NMChannelUserFacebookType:
+		{
+			NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj facebookProxy:appDel.facebook];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}			
+		default:
+			break;
+	}
 }
 
 - (void)cancelAllTasks {

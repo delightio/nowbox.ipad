@@ -7,6 +7,7 @@
 //
 
 #import "NMTask.h"
+#import <Accounts/Accounts.h>
 
 @class NMCategory;
 @class NMChannel;
@@ -29,6 +30,7 @@
 	NSPredicate * channelAndSessionPredicateTemplate;
 	NSPredicate * cachedChannelsPredicate;
 	NSPredicate * concreteVideoForIDPredicateTemplate;
+	NSPredicate * usernamePredicateTemplate;
 	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription;
@@ -91,6 +93,7 @@
 
 // channels
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
+- (NMChannel *)insertChannelWithAccount:(ACAccount *)anAccount;
 - (NMChannelDetail *)insertNewChannelDetail;
 - (NMPreviewThumbnail *)insertNewPreviewThumbnail;
 - (NMChannel *)channelForID:(NSNumber *)chnID;

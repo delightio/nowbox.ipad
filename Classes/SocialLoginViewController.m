@@ -14,7 +14,6 @@
 @implementation SocialLoginViewController
 @synthesize loginWebView, progressContainerView;
 @synthesize loginType;
-@synthesize accountStore;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -68,25 +67,14 @@
 		default:
 			break;
 	}
-	if ( loginType == NMLoginIOS5TwitterType ) {
-		// Create an account type that ensures Twitter accounts are retrieved.
-		ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-		NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
-		if ( [accountsArray count] ) {
-			// show a table view where user can select which accounts they wanna integrate with Nowbox. User can select multiple accounts
-		} else {
-			// show the OAuth view
-		}
-	} else {
-		NSURL * theURL = [[NSBundle mainBundle] URLForResource:filename withExtension:@"html"];
-		[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
-		
-		defaultCenter = [NSNotificationCenter defaultCenter];
-		[defaultCenter addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
-		[defaultCenter addObserver:self selector:@selector(handleLoginFailNotification:) name:NMDidFailVerifyUserNotification object:nil];
-		
-		appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
-	}
+	NSURL * theURL = [[NSBundle mainBundle] URLForResource:filename withExtension:@"html"];
+	[loginWebView loadRequest:[NSURLRequest requestWithURL:theURL]];
+	
+	defaultCenter = [NSNotificationCenter defaultCenter];
+	[defaultCenter addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	[defaultCenter addObserver:self selector:@selector(handleLoginFailNotification:) name:NMDidFailVerifyUserNotification object:nil];
+	
+	appFirstLaunch = [[NSUserDefaults standardUserDefaults] boolForKey:NM_FIRST_LAUNCH_KEY];
 }
 
 - (void)viewDidUnload
@@ -112,7 +100,6 @@
 	}
 	[progressContainerView release];
     [loginWebView release];
-	[accountStore release];
     [super dealloc];
 }
 

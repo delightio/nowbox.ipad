@@ -49,6 +49,7 @@ typedef enum {
 	NMCommandCheckUpdate,
 	NMCommandPostSharing,
 	NMCommandParseFacebookFeed,
+	NMCommandParseTwitterFeed,
 } NMCommand;
 
 typedef enum {
@@ -102,7 +103,6 @@ typedef enum {
 
 typedef enum {
 	NMLoginTwitterType,
-	NMLoginIOS5TwitterType,
 	NMLoginFacebookType,
 	NMLoginYouTubeType,
 } NMSocialLoginType;

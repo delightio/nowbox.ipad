@@ -53,6 +53,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
 	channelAndSessionPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND nm_session_id == $SESSION_ID"] retain];
 	concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.nm_id = $OBJECT_ID"] retain];
+	usernamePredicateTemplate = [[NSPredicate predicateWithFormat:@"username like $USERNAME"] retain];
 
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
@@ -73,6 +74,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[channelPredicateTemplate release];
 	[channelAndSessionPredicateTemplate release];
 	[concreteVideoForIDPredicateTemplate release];
+	[usernamePredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
@@ -359,6 +361,32 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMChannel * channelObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
 	channelObj.nm_id = chnID;
 	return channelObj;
+}
+
+- (NMChannel *)insertChannelWithAccount:(ACAccount *)anAccount {
+	// check if the channel object exists
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[usernamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:anAccount.username forKey:@"USERNAME"]]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	NMChannel * chnObj = nil;
+	if ( result && [result count] ) {
+		chnObj = [result objectAtIndex:0];
+	}
+	if ( chnObj == nil ) {
+		// create the channel object
+		chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+		chnObj.title = anAccount.username;
+		// it's all Twitter account for iOS 5
+		chnObj.type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+		
+		[managedObjectContext save:nil];
+	}
+	[request release];
+	return chnObj;
 }
 
 - (NSArray *)subscribedChannels {

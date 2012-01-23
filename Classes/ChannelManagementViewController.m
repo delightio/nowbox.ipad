@@ -9,6 +9,7 @@
 #import "ChannelManagementViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Accounts/Accounts.h>
+#import <Twitter/Twitter.h>
 #import "CategoriesOrientedTableView.h"
 #import "CategoryCellView.h"
 #import "CategoryTableCell.h"
@@ -16,6 +17,7 @@
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
 #import "SocialLoginViewController.h"
+#import "TwitterAccountPickerViewController.h"
 #import "YouTubeAccountStatusViewController.h"
 #import "Analytics.h"
 #import "UIView+InteractiveAnimation.h"
@@ -751,15 +753,29 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 								// Request access from the user to use their Twitter accounts.
 								[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
 									if(granted) {
-										// pass the account store to Social Login Controller
-										dispatch_async(dispatch_get_main_queue(), ^{
-											socialCtrl.loginType = NMLoginIOS5TwitterType;
-											socialCtrl.accountStore = accountStore;
-											[self.navigationController pushViewController:socialCtrl animated:YES];
-											[socialCtrl release];
-										});
+										if ( [TWTweetComposeViewController canSendTweet] ) {
+											// pass the account store to Social Login Controller
+											dispatch_async(dispatch_get_main_queue(), ^{
+												// user needs to pick which account(s) s/he wanna hook up to
+												TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+												picker.accountStore = accountStore;
+												[self.navigationController pushViewController:picker animated:YES];
+												[picker release];
+											});
+										} else {
+											// process the feed right now
+											dispatch_async(dispatch_get_main_queue(), ^{
+												// create the channel for the twitter account
+//												[nowboxTaskController.dataController 
+												// kick start feed processing
+												[nowboxTaskController issueProcessFeedForChannel:chn];
+											});
+										}
 									} else {
 										// unhighlight the cell
+										dispatch_async(dispatch_get_main_queue(), ^{
+											[tableView deselectRowAtIndexPath:indexPath animated:YES];
+										});
 									}
 								}];
 							} else {
