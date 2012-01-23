@@ -240,6 +240,9 @@
 		A942908614C5D38500107BE8 /* NMConcreteVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A942908514C5D38500107BE8 /* NMConcreteVideo.m */; };
 		A942908914C5D38600107BE8 /* NMVideoDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A942908814C5D38600107BE8 /* NMVideoDetail.m */; };
 		A942908F14C5D38600107BE8 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A942908E14C5D38600107BE8 /* NMChannel.m */; };
+		A94D65CF14CD51700033F661 /* NMParseTwitterFeedTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A94D65CD14CD51700033F661 /* NMParseTwitterFeedTask.h */; };
+		A94D65D014CD51700033F661 /* NMParseTwitterFeedTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D65CE14CD51700033F661 /* NMParseTwitterFeedTask.m */; };
+		A94D65D314CD55280033F661 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D65D214CD55280033F661 /* Twitter.framework */; };
 		A94D67F813A2A768003FC68F /* VideoPlaybackModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */; };
 		A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250144134385BF001759F5 /* CoreGraphics.framework */; };
 		A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97050D1134399050022BF2C /* QuartzCore.framework */; };
@@ -664,6 +667,9 @@
 		A942908E14C5D38600107BE8 /* NMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel.m; sourceTree = "<group>"; };
 		A9452BC61415E75E00056361 /* NMFileExistsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFileExistsCache.h; sourceTree = "<group>"; };
 		A9452BC71415E75E00056361 /* NMFileExistsCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFileExistsCache.m; sourceTree = "<group>"; };
+		A94D65CD14CD51700033F661 /* NMParseTwitterFeedTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMParseTwitterFeedTask.h; sourceTree = "<group>"; };
+		A94D65CE14CD51700033F661 /* NMParseTwitterFeedTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMParseTwitterFeedTask.m; sourceTree = "<group>"; };
+		A94D65D214CD55280033F661 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		A94D67F613A2A768003FC68F /* VideoPlaybackModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackModelController.h; sourceTree = "<group>"; };
 		A94D67F713A2A768003FC68F /* VideoPlaybackModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackModelController.m; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
@@ -841,6 +847,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A94D65D314CD55280033F661 /* Twitter.framework in Frameworks */,
 				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */,
 				A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */,
@@ -1058,6 +1065,7 @@
 		A9250131134385BF001759F5 = {
 			isa = PBXGroup;
 			children = (
+				A94D65D214CD55280033F661 /* Twitter.framework */,
 				A97050A213438F980022BF2C /* Interfaces */,
 				A970500F13438F860022BF2C /* Classes */,
 				83EF90CA148433D000ED7993 /* Categories */,
@@ -1406,6 +1414,8 @@
 				A9B9FBF61473D97200953E40 /* NMUserSynchronizeTask.m */,
 				A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */,
 				A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */,
+				A94D65CD14CD51700033F661 /* NMParseTwitterFeedTask.h */,
+				A94D65CE14CD51700033F661 /* NMParseTwitterFeedTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1544,6 +1554,7 @@
 				A9B9FBF71473D97200953E40 /* NMUserSynchronizeTask.h in Headers */,
 				A9E285EB14C300A700B4AB5C /* NMURLConnection.h in Headers */,
 				A9128C7414C3D98B00A3861D /* NMParseFacebookFeedTask.h in Headers */,
+				A94D65CF14CD51700033F661 /* NMParseTwitterFeedTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1970,6 +1981,7 @@
 				A9B9FBF81473D97200953E40 /* NMUserSynchronizeTask.m in Sources */,
 				A9E285EC14C300A700B4AB5C /* NMURLConnection.m in Sources */,
 				A9128C7514C3D98B00A3861D /* NMParseFacebookFeedTask.m in Sources */,
+				A94D65D014CD51700033F661 /* NMParseTwitterFeedTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

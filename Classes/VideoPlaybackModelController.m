@@ -21,6 +21,7 @@
 
 static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideoNotification";
+static NSPredicate * playbackModelFilterPredicate_ = nil;
 
 @interface VideoPlaybackModelController (PrivateMethods)
 
@@ -43,6 +44,13 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		sharedVideoPlaybackModelController_ = [[VideoPlaybackModelController alloc] init];
 	}
 	return sharedVideoPlaybackModelController_;
+}
+
++ (NSPredicate *)playbackModelFilterPredicate {
+	if ( playbackModelFilterPredicate_ == nil ) {
+		playbackModelFilterPredicate_ = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND video.nm_error == 0"] retain];
+	}
+	return playbackModelFilterPredicate_;
 }
 
 - (id)init {
@@ -463,7 +471,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	
 	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
 	// set predicate
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == 0", channel]];
+	[fetchRequest setPredicate:[[VideoPlaybackModelController playbackModelFilterPredicate] predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channel forKey:@"CHANNEL"]]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];
