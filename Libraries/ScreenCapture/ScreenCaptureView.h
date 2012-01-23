@@ -44,7 +44,7 @@
  *
  */
 
-@interface ScreenCaptureView : UIWindow {
+@interface ScreenCaptureView : NSObject {
     //video writing
     AVAssetWriter *videoWriter;
     AVAssetWriterInput *videoWriterInput;

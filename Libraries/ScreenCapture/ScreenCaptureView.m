@@ -14,7 +14,6 @@
 #define kScaleFactor 0.5f
 #define kFrameRate 2.0f
 #define kBitRate 500.0*1024.0
-#define kGrayScale NO
 
 @interface ScreenCaptureView(Private)
 - (void) writeVideoFrameAtTime:(CMTime)time;
@@ -26,7 +25,6 @@
 
 - (void) initialize {
     // Initialization code
-    self.clearsContextBeforeDrawing = YES;
     self.currentScreen = nil;
     self.frameRate = kFrameRate;     // frames per seconds
     _recording = false;
@@ -46,24 +44,8 @@
                                                object:nil];
 }
 
-- (id) initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self initialize];
-    }
-    return self;
-}
-
 - (id) init {
     self = [super init];
-    if (self) {
-        [self initialize];
-    }
-    return self;
-}
-
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
     if (self) {
         [self initialize];
     }
@@ -117,75 +99,78 @@
 
 #pragma mark -
 
-- (CGContextRef) createBitmapContextOfSize:(CGSize) size {
-    CGContextRef    context = NULL;
-    CGColorSpaceRef colorSpace;
-    int             bitmapByteCount;
-    int             bitmapBytesPerRow;
-    
-    bitmapBytesPerRow   = (kGrayScale ? size.width : size.width * 4);
-    bitmapByteCount     = (bitmapBytesPerRow * size.height);
-    colorSpace = (kGrayScale ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
-    
-    if (bitmapData != NULL) {
-        free(bitmapData);
-    }
-    bitmapData = malloc( bitmapByteCount );
-    if (bitmapData == NULL) {
-        fprintf (stderr, "Memory not allocated!");
-        return NULL;
-    }
-    
-    context = CGBitmapContextCreate (bitmapData,
-                                     size.width,
-                                     size.height,
-                                     8,      // bits per component
-                                     bitmapBytesPerRow,
-                                     colorSpace,
-                                     (kGrayScale ? kCGImageAlphaNone : kCGImageAlphaNoneSkipFirst));
-    
-    CGContextSetAllowsAntialiasing(context,NO);
-    if (context== NULL) {
-        free (bitmapData);
-        fprintf (stderr, "Context not created!");
-        return NULL;
-    }
-    CGColorSpaceRelease( colorSpace );
-    
-    return context;
-}
+- (UIImage*)screenshot 
+{
+    // Create a graphics context with the target size
+    // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
+    // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
+    CGSize windowSize = [[UIScreen mainScreen] bounds].size;
+    CGSize imageSize = CGSizeMake(windowSize.width * kScaleFactor, windowSize.height * kScaleFactor);
 
-//static int frameCount = 0;            //debugging
+    if (NULL != UIGraphicsBeginImageContextWithOptions)
+        UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
+    else
+        UIGraphicsBeginImageContext(imageSize);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // Iterate over every window from back to front
+    for (UIWindow *window in [[UIApplication sharedApplication] windows]) 
+    {
+        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen])
+        {
+            
+            // -renderInContext: renders in the coordinate space of the layer,
+            // so we must first apply the layer's geometry to the graphics context
+            CGContextSaveGState(context);
+            // Center the context around the window's anchor point
+            CGContextTranslateCTM(context, [window center].x, [window center].y);
+            // Apply the window's transform about the anchor point
+            CGContextConcatCTM(context, [window transform]);
+            
+            // Offset by the portion of the bounds left of and above the anchor point
+            CGContextTranslateCTM(context,
+                                  -[window bounds].size.width * [[window layer] anchorPoint].x,
+                                  -[window bounds].size.height * [[window layer] anchorPoint].y);
+            
+            CGContextConcatCTM(context, CGAffineTransformMakeScale(kScaleFactor, kScaleFactor));
+            
+            // Render the layer hierarchy to the current context
+            [[window layer] renderInContext:context];
+            
+            // Restore the context
+            CGContextRestoreGState(context);
+        }
+    }
+    
+    // Retrieve the screenshot image
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
 
 - (void)takeScreenshot
 {
     if (!processing) {
         [self performSelectorInBackground:@selector(takeScreenshotInCurrentThread) withObject:nil];
     } else {
-        NSLog(@"frame rate too high to keep up. dropping frame");
+        NSLog(@"Frame rate too high to keep up. Dropping frame.");
     }
 }
+
+
+//static int frameCount = 0;            //debugging
 
 - (void)takeScreenshotInCurrentThread
 {
     if (!_recording) return;
     
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     processing = YES;
-    CGContextRef context = [self createBitmapContextOfSize:CGSizeMake(self.frame.size.width * kScaleFactor, self.frame.size.height * kScaleFactor)];
     
-    //not sure why this is necessary...image renders upside-down and mirrored
-    CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, self.frame.size.height * kScaleFactor);
-    CGContextConcatCTM(context, flipVertical);
-    
-    NSLog(@"start taking screenshot");
-    [self.layer renderInContext:context];
-    
-    CGImageRef cgImage = CGBitmapContextCreateImage(context);
-    UIImage* background = [UIImage imageWithCGImage: cgImage];
-    CGImageRelease(cgImage);
-    NSLog(@"stop taking screenshot");
-    
-    self.currentScreen = background;
+    self.currentScreen = [self screenshot];
     
     /*    //debugging
      if (frameCount < 600) {
@@ -195,12 +180,12 @@
      frameCount++;
      }*/
     
-    //NOTE:  to record a scrollview while it is scrolling you need to implement your UIScrollViewDelegate such that it calls
-    //       'setNeedsDisplay' on the ScreenCaptureView.
     if (_recording) {
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
     }    
+    
+    [pool drain];
     
     processing = NO;
 }
@@ -228,11 +213,10 @@
     NSDictionary* videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
                                            [NSNumber numberWithDouble:kBitRate], AVVideoAverageBitRateKey,
                                            nil ];
-    
     NSDictionary* videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                    AVVideoCodecH264, AVVideoCodecKey,
-                                   [NSNumber numberWithInt:self.frame.size.width * kScaleFactor], AVVideoWidthKey,
-                                   [NSNumber numberWithInt:self.frame.size.height * kScaleFactor], AVVideoHeightKey,
+                                   [NSNumber numberWithInt:[[UIScreen mainScreen] bounds].size.width * kScaleFactor], AVVideoWidthKey,
+                                   [NSNumber numberWithInt:[[UIScreen mainScreen] bounds].size.height * kScaleFactor], AVVideoHeightKey,
                                    videoCompressionProps, AVVideoCompressionPropertiesKey,
                                    nil];
     
@@ -241,7 +225,7 @@
     NSParameterAssert(videoWriterInput);
     videoWriterInput.expectsMediaDataInRealTime = YES;
     NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey, nil];
+                                         [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];                                      
     
     avAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:videoWriterInput sourcePixelBufferAttributes:bufferAttributes] retain];
     

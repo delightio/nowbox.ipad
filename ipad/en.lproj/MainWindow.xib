@@ -146,7 +146,6 @@
 					<string>-2.IBPluginDependency</string>
 					<string>11.CustomClassName</string>
 					<string>11.IBPluginDependency</string>
-					<string>2.CustomClassName</string>
 					<string>2.IBPluginDependency</string>
 					<string>6.CustomClassName</string>
 					<string>6.IBPluginDependency</string>
@@ -159,7 +158,6 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>VideoPlaybackViewController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>ScreenCaptureView</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>ipadAppDelegate</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -565,14 +563,6 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/NMSeekBar.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ScreenCaptureView</string>
-					<string key="superclassName">UIWindow</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ScreenCaptureView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
