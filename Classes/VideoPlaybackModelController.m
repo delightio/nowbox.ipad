@@ -459,7 +459,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"detail", @"video", nil]];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"video.detail", @"video", @"video.author", nil]];
 	
 	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
 	// set predicate
