@@ -8,6 +8,7 @@
 
 #import "ChannelManagementViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <Accounts/Accounts.h>
 #import "CategoriesOrientedTableView.h"
 #import "CategoryCellView.h"
 #import "CategoryTableCell.h"
@@ -739,9 +740,33 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						} else {
 							// login twitter
 							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-							socialCtrl.loginType = NMLoginTwitterType;
-							[self.navigationController pushViewController:socialCtrl animated:YES];
-							[socialCtrl release];
+							if ( NM_RUNNING_IOS_5 ) {
+								// use built-in twitter integration
+								// Create an account store object.
+								ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+								
+								// Create an account type that ensures Twitter accounts are retrieved.
+								ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+								
+								// Request access from the user to use their Twitter accounts.
+								[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
+									if(granted) {
+										// pass the account store to Social Login Controller
+										dispatch_async(dispatch_get_main_queue(), ^{
+											socialCtrl.loginType = NMLoginIOS5TwitterType;
+											socialCtrl.accountStore = accountStore;
+											[self.navigationController pushViewController:socialCtrl animated:YES];
+											[socialCtrl release];
+										});
+									} else {
+										// unhighlight the cell
+									}
+								}];
+							} else {
+								socialCtrl.loginType = NMLoginTwitterType;
+								[self.navigationController pushViewController:socialCtrl animated:YES];
+								[socialCtrl release];
+							}
 							
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							

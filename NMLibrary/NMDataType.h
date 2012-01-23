@@ -102,6 +102,7 @@ typedef enum {
 
 typedef enum {
 	NMLoginTwitterType,
+	NMLoginIOS5TwitterType,
 	NMLoginFacebookType,
 	NMLoginYouTubeType,
 } NMSocialLoginType;
