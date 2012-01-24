@@ -155,13 +155,14 @@
                 for (NSMutableDictionary *touch in pendingTouches) {
                     CGPoint location = [[touch objectForKey:@"location"] CGPointValue];
                     NSInteger decayCount = [[touch objectForKey:@"decayCount"] integerValue];
+                    NSTimeInterval timestamp = [[touch objectForKey:@"timestamp"] floatValue];
                     
                     [touch setObject:[NSNumber numberWithInteger:decayCount+1] forKey:@"decayCount"];
                     if (decayCount > 2) {
                         [objectsToRemove addObject:touch];
                     }
                     
-                    CGContextSetRGBFillColor(context, 0, 0, 255, 0.8 - 0.3*decayCount);
+                    CGContextSetRGBFillColor(context, 0, 0, 255, 1.0 - 0.3*decayCount - (timestamp - CACurrentMediaTime()));
                     CGFloat diameter = 50 - 20*decayCount;
                     CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));          
                 }
@@ -347,22 +348,24 @@
             if(status != 0){
                 //could not get a buffer from the pool
                 NSLog(@"Error creating pixel buffer:  status=%d", status);
-            }
-            // set image data into pixel buffer
-            CVPixelBufferLockBaseAddress( pixelBuffer, 0 );
-            uint8_t* destPixels = CVPixelBufferGetBaseAddress(pixelBuffer);
-            CFDataGetBytes(image, CFRangeMake(0, CFDataGetLength(image)), destPixels);  //XXX:  will work if the pixel buffer is contiguous and has the same bytesPerRow as the input data
-            
-            if(status == 0){
-                BOOL success = [avAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:time];
-                if (!success)
-                    NSLog(@"Warning:  Unable to write buffer to video: %@", videoWriter.error);
+            } else {
+                // set image data into pixel buffer
+                CVPixelBufferLockBaseAddress( pixelBuffer, 0 );
+                uint8_t* destPixels = CVPixelBufferGetBaseAddress(pixelBuffer);
+                CFDataGetBytes(image, CFRangeMake(0, CFDataGetLength(image)), destPixels);  //XXX:  will work if the pixel buffer is contiguous and has the same bytesPerRow as the input data
+                
+                if(status == 0){
+                    BOOL success = [avAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:time];
+                    if (!success)
+                        NSLog(@"Warning:  Unable to write buffer to video: %@", videoWriter.error);
+                }
+                
+                CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
+                CVPixelBufferRelease( pixelBuffer );
             }
             
             //clean up
             [newFrame release];
-            CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
-            CVPixelBufferRelease( pixelBuffer );
             CFRelease(image);
             CGImageRelease(cgImage);
         }
@@ -377,14 +380,16 @@
 {
     @synchronized(self) {
         for (UITouch *touch in [event allTouches]) {
-            CGPoint location = [touch locationInView:touch.window];
-            NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGPoint:location], @"location",
-                                               touch.window, @"window",
-                                               touch.view, @"view",
-                                               [NSNumber numberWithInteger:0], @"decayCount", 
-                                               [NSNumber numberWithFloat:touch.timestamp], @"timestamp",
-                                               nil];
-            [pendingTouches addObject:dictionary];
+            if (touch.timestamp > 0) {
+                CGPoint location = [touch locationInView:touch.window];
+                NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGPoint:location], @"location",
+                                                   touch.window, @"window",
+                                                   touch.view, @"view",
+                                                   [NSNumber numberWithInteger:0], @"decayCount", 
+                                                   [NSNumber numberWithFloat:touch.timestamp], @"timestamp",
+                                                   nil];
+                [pendingTouches addObject:dictionary];
+            }
         }
     }
 }
