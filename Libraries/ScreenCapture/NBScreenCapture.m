@@ -13,7 +13,7 @@
 #import </usr/include/objc/objc-class.h>
 
 #define kScaleFactor 0.5f
-#define kFrameRate 2.0f
+#define kFrameRate 1.0f
 #define kBitRate 500.0*1024.0
 
 @interface NBScreenCapture(Private)
@@ -109,42 +109,54 @@
 
 #pragma mark -
 
+- (CGContextRef) createBitmapContextOfSize:(CGSize) size {
+    CGContextRef    context = NULL;
+    CGColorSpaceRef colorSpace;
+    int             bitmapByteCount;
+    int             bitmapBytesPerRow;
+    
+    bitmapBytesPerRow   = (size.width * 4);
+    bitmapByteCount     = (bitmapBytesPerRow * size.height);
+    colorSpace = CGColorSpaceCreateDeviceRGB();
+    if (bitmapData != NULL) {
+        free(bitmapData);
+    }
+    bitmapData = malloc( bitmapByteCount );
+    if (bitmapData == NULL) {
+        fprintf (stderr, "Memory not allocated!");
+        return NULL;
+    }
+    
+    context = CGBitmapContextCreate (bitmapData,
+                                     size.width,
+                                     size.height,
+                                     8,      // bits per component
+                                     bitmapBytesPerRow,
+                                     colorSpace,
+                                     kCGImageAlphaNoneSkipFirst);
+    
+    CGContextSetAllowsAntialiasing(context,NO);
+    if (context== NULL) {
+        free (bitmapData);
+        fprintf (stderr, "Context not created!");
+        return NULL;
+    }
+    CGColorSpaceRelease( colorSpace );
+    
+    return context;
+}
+
 - (UIImage*)screenshot 
 {
-    // Create a graphics context with the target size
-    // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
-    // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
     CGSize windowSize = [[UIScreen mainScreen] bounds].size;
     CGSize imageSize = CGSizeMake(windowSize.width * kScaleFactor, windowSize.height * kScaleFactor);
-
-    if (NULL != UIGraphicsBeginImageContextWithOptions)
-        UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
-    else
-        UIGraphicsBeginImageContext(imageSize);
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
+    CGContextRef context = [self createBitmapContextOfSize:imageSize];
+        
     // Iterate over every window from back to front
-    for (UIWindow *window in [[UIApplication sharedApplication] windows]) 
-    {
-        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen])
-        {
-            // -renderInContext: renders in the coordinate space of the layer,
-            // so we must first apply the layer's geometry to the graphics context
-            CGContextSaveGState(context);
-            // Center the context around the window's anchor point
-            CGContextTranslateCTM(context, [window center].x, [window center].y);
-            // Apply the window's transform about the anchor point
-            CGContextConcatCTM(context, [window transform]);
-            
-            // Offset by the portion of the bounds left of and above the anchor point
-            CGContextTranslateCTM(context,
-                                  -[window bounds].size.width * [[window layer] anchorPoint].x,
-                                  -[window bounds].size.height * [[window layer] anchorPoint].y);
-            
-            CGContextConcatCTM(context, CGAffineTransformMakeScale(kScaleFactor, kScaleFactor));
-            
-            // Render the layer hierarchy to the current context
+    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
+            CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, imageSize.height);
+            CGContextConcatCTM(context, flipVertical);
             [[window layer] renderInContext:context];
             
             // Draw touch points
@@ -157,7 +169,7 @@
                     
                     // Increase the decay count
                     [touch setObject:[NSNumber numberWithInteger:decayCount+1] forKey:@"decayCount"];
-                    if (decayCount >= 1) {
+                    if (decayCount >= 0) {
                         [objectsToRemove addObject:touch];
                     }
                     
@@ -179,17 +191,15 @@
                 }
                 [pendingTouches removeObjectsInArray:objectsToRemove];
             }
-            
-            // Restore the context
-            CGContextRestoreGState(context);
         }
     }
     
     // Retrieve the screenshot image
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
+    CGImageRef cgImage = CGBitmapContextCreateImage(context);
+    UIImage *image = [UIImage imageWithCGImage:cgImage];
+    CGImageRelease(cgImage);
+    CGContextRelease(context);
+        
     return image;
 }
 
@@ -201,10 +211,10 @@
         NSLog(@"Frame rate too high to keep up.");
     }
     
-    @synchronized(self) {
-        if (_recording) {
-            float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-            NSLog(@"millisElapsed: %f", millisElapsed);
+    if (_recording) {
+        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+        NSLog(@"millisElapsed: %f", millisElapsed);
+        @synchronized(self) {
             [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
         } 
     }
@@ -261,8 +271,6 @@
     //Configure video
     NSDictionary* videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
                                            [NSNumber numberWithDouble:kBitRate], AVVideoAverageBitRateKey,
-                                           [NSNumber numberWithInt:128], AVVideoMaxKeyFrameIntervalKey,
-                                           AVVideoProfileLevelH264Main31, AVVideoProfileLevelKey,
                                            nil ];
     NSDictionary* videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                    AVVideoCodecH264, AVVideoCodecKey,
@@ -276,7 +284,8 @@
     NSParameterAssert(videoWriterInput);
     videoWriterInput.expectsMediaDataInRealTime = YES;
     NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];                                      
+                                         [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey, nil];                                      
+//                                         [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];                                      
     
     avAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:videoWriterInput sourcePixelBufferAttributes:bufferAttributes] retain];
     
