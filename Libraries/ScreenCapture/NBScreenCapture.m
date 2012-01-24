@@ -198,8 +198,8 @@
 {
     if (!_recording) return;
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     processing = YES;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSLog(@"start screenshot");
     @synchronized(self) {
@@ -217,6 +217,7 @@
     
     if (_recording) {
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+        NSLog(@"millisElapsed: %f", millisElapsed);
         [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
     }    
     
@@ -247,6 +248,8 @@
     //Configure video
     NSDictionary* videoCompressionProps = [NSDictionary dictionaryWithObjectsAndKeys:
                                            [NSNumber numberWithDouble:kBitRate], AVVideoAverageBitRateKey,
+                                           [NSNumber numberWithInt:128], AVVideoMaxKeyFrameIntervalKey,
+                                           AVVideoProfileLevelH264Main31, AVVideoProfileLevelKey,
                                            nil ];
     NSDictionary* videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                    AVVideoCodecH264, AVVideoCodecKey,
@@ -347,7 +350,7 @@
             int status = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, avAdaptor.pixelBufferPool, &pixelBuffer);
             if(status != 0){
                 //could not get a buffer from the pool
-                NSLog(@"Error creating pixel buffer:  status=%d", status);
+                NSLog(@"Error creating pixel buffer:  status=%d, pixelBufferPool=%p", status, avAdaptor.pixelBufferPool);
             } else {
                 // set image data into pixel buffer
                 CVPixelBufferLockBaseAddress( pixelBuffer, 0 );

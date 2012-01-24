@@ -236,7 +236,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 //	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
     [[NBScreenCapture alloc] init];
-  	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:NULL];  
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:NULL];  
     return YES;
 }
 
