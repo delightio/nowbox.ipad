@@ -159,9 +159,6 @@
             CGContextConcatCTM(context, flipVertical);
             [[window layer] renderInContext:context];*/
             
-            // -renderInContext: renders in the coordinate space of the layer,
-            // so we must first apply the layer's geometry to the graphics context
-            CGContextSaveGState(context);
             // Center the context around the window's anchor point
             CGContextTranslateCTM(context, [window center].x, [window center].y);
             // Apply the window's transform about the anchor point
@@ -176,13 +173,13 @@
             // Render the layer hierarchy to the current context
             [[window layer] renderInContext:context];
             
-            // Restore the context
-            CGContextRestoreGState(context);
-            
-            
             // Draw touch points
+            NSMutableArray *objectsToRemove = [NSMutableArray array];
+            CGContextSetRGBStrokeColor(context, 0, 0, 255, 0.7);
+            CGContextSetLineWidth(context, 5.0);
+            CGContextSetLineJoin(context, kCGLineJoinRound);
+            
             @synchronized(self) {
-                NSMutableArray *objectsToRemove = [NSMutableArray array];
                 for (NSMutableDictionary *touch in pendingTouches) {
                     CGPoint location = [[touch objectForKey:@"location"] CGPointValue];
                     NSInteger decayCount = [[touch objectForKey:@"decayCount"] integerValue];
@@ -194,24 +191,28 @@
                         [objectsToRemove addObject:touch];
                     }
                     
+                    CGFloat diameter = 30 - 20*decayCount;
                     switch (phase) {
                         case UITouchPhaseBegan:
                             CGContextSetRGBFillColor(context, 0, 255, 0, 0.7);                            
+                            CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));          
+                            CGContextMoveToPoint(context, location.x, location.y);
                             break;
                         case UITouchPhaseEnded:
                         case UITouchPhaseCancelled:
+                            CGContextStrokePath(context);
                             CGContextSetRGBFillColor(context, 255, 0, 0, 0.7); 
+                            CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));                                      
                             break;
                         case UITouchPhaseMoved:
                         case UITouchPhaseStationary:
-                            CGContextSetRGBFillColor(context, 0, 0, 255, 0.7);
+                            CGContextAddLineToPoint(context, location.x, location.y);
                             break;
                     }
-                    CGFloat diameter = 50 - 25*decayCount;
-                    CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));          
                 }
                 [pendingTouches removeObjectsInArray:objectsToRemove];
             }
+            NSLog(@"----");
         }
     }
     
