@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "UIResponder+InterceptTouches.h"
 #import </usr/include/objc/objc-class.h>
 
 #define kScaleFactor 0.5f
@@ -37,7 +36,6 @@
     bitmapData = NULL;
     pendingTouches = [[NSMutableArray alloc] init];
     
-//    Swizzle([UIResponder class], @selector(touchesBegan:withEvent:), @selector(customTouchesBegan:withEvent:));
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
         if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
             object_setClass(window, [NBScreenCapturingWindow class]);
@@ -155,15 +153,28 @@
                 for (NSMutableDictionary *touch in pendingTouches) {
                     CGPoint location = [[touch objectForKey:@"location"] CGPointValue];
                     NSInteger decayCount = [[touch objectForKey:@"decayCount"] integerValue];
-                    NSTimeInterval timestamp = [[touch objectForKey:@"timestamp"] floatValue];
+                    UITouchPhase phase = [[touch objectForKey:@"phase"] intValue];
                     
+                    // Increase the decay count
                     [touch setObject:[NSNumber numberWithInteger:decayCount+1] forKey:@"decayCount"];
-                    if (decayCount > 2) {
+                    if (decayCount >= 1) {
                         [objectsToRemove addObject:touch];
                     }
                     
-                    CGContextSetRGBFillColor(context, 0, 0, 255, 1.0 - 0.3*decayCount - (timestamp - CACurrentMediaTime()));
-                    CGFloat diameter = 50 - 20*decayCount;
+                    switch (phase) {
+                        case UITouchPhaseBegan:
+                            CGContextSetRGBFillColor(context, 0, 255, 0, 0.7);                            
+                            break;
+                        case UITouchPhaseEnded:
+                        case UITouchPhaseCancelled:
+                            CGContextSetRGBFillColor(context, 255, 0, 0, 0.7); 
+                            break;
+                        case UITouchPhaseMoved:
+                        case UITouchPhaseStationary:
+                            CGContextSetRGBFillColor(context, 0, 0, 255, 0.7);
+                            break;
+                    }
+                    CGFloat diameter = 50 - 25*decayCount;
                     CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));          
                 }
                 [pendingTouches removeObjectsInArray:objectsToRemove];
@@ -187,7 +198,15 @@
     if (!processing) {
         [self performSelectorInBackground:@selector(takeScreenshotInCurrentThread) withObject:nil];
     } else {
-        NSLog(@"Frame rate too high to keep up. Dropping frame.");
+        NSLog(@"Frame rate too high to keep up.");
+    }
+    
+    @synchronized(self) {
+        if (_recording) {
+            float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+            NSLog(@"millisElapsed: %f", millisElapsed);
+            [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
+        } 
     }
 }
 
@@ -201,11 +220,11 @@
     processing = YES;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSLog(@"start screenshot");
     @synchronized(self) {
+        NSLog(@"start screenshot");
         self.currentScreen = [self screenshot];
+        NSLog(@"stop screenshot");
     }
-    NSLog(@"stop screenshot");
     
     /*    //debugging
      if (frameCount < 600) {
@@ -214,12 +233,6 @@
      [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
      frameCount++;
      }*/
-    
-    if (_recording) {
-        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-        NSLog(@"millisElapsed: %f", millisElapsed);
-        [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-    }    
     
     [pool drain];
     
@@ -337,10 +350,9 @@
 }
 
 -(void) writeVideoFrameAtTime:(CMTime)time {
-    if (![videoWriterInput isReadyForMoreMediaData]) {
+    if (![videoWriterInput isReadyForMoreMediaData] || !currentScreen) {
         NSLog(@"Not ready for video data");
-    }
-    else {
+    } else {
         @synchronized (self) {
             UIImage* newFrame = [self.currentScreen retain];
             CVPixelBufferRef pixelBuffer = NULL;
@@ -372,9 +384,7 @@
             CFRelease(image);
             CGImageRelease(cgImage);
         }
-        
     }
-    
 }
 
 #pragma mark - NBScreenCapturingWindowDelegate
@@ -385,11 +395,11 @@
         for (UITouch *touch in [event allTouches]) {
             if (touch.timestamp > 0) {
                 CGPoint location = [touch locationInView:touch.window];
+                
+                // UITouch objects seem to get reused. We can't copy or clone them, so create a poor man's touch object using a dictionary.
                 NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGPoint:location], @"location",
-                                                   touch.window, @"window",
-                                                   touch.view, @"view",
                                                    [NSNumber numberWithInteger:0], @"decayCount", 
-                                                   [NSNumber numberWithFloat:touch.timestamp], @"timestamp",
+                                                   [NSNumber numberWithInt:touch.phase], @"phase",
                                                    nil];
                 [pendingTouches addObject:dictionary];
             }

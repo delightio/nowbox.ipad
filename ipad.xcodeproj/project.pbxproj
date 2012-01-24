@@ -72,7 +72,6 @@
 		8381D71A14C7BFB90041DC8D /* NBScreenCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381D71914C7BFB90041DC8D /* NBScreenCapture.m */; };
 		8381D71C14C7C0730041DC8D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8381D71B14C7C0730041DC8D /* CoreVideo.framework */; };
 		8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */ = {isa = PBXBuildFile; fileRef = 8383BD551473A111002956C4 /* onboard-social-footer.png */; };
-		8383C02F14CE013000E5FBE7 /* UIResponder+InterceptTouches.m in Sources */ = {isa = PBXBuildFile; fileRef = 8383C02E14CE013000E5FBE7 /* UIResponder+InterceptTouches.m */; };
 		8383C03314CE20AB00E5FBE7 /* NBScreenCapturingWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 8383C03214CE20AB00E5FBE7 /* NBScreenCapturingWindow.m */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
@@ -443,8 +442,6 @@
 		8381D71914C7BFB90041DC8D /* NBScreenCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBScreenCapture.m; path = Libraries/ScreenCapture/NBScreenCapture.m; sourceTree = "<group>"; };
 		8381D71B14C7C0730041DC8D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		8383BD551473A111002956C4 /* onboard-social-footer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-footer.png"; sourceTree = "<group>"; };
-		8383C02D14CE013000E5FBE7 /* UIResponder+InterceptTouches.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIResponder+InterceptTouches.h"; path = "Libraries/ScreenCapture/UIResponder+InterceptTouches.h"; sourceTree = "<group>"; };
-		8383C02E14CE013000E5FBE7 /* UIResponder+InterceptTouches.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIResponder+InterceptTouches.m"; path = "Libraries/ScreenCapture/UIResponder+InterceptTouches.m"; sourceTree = "<group>"; };
 		8383C03114CE20AB00E5FBE7 /* NBScreenCapturingWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NBScreenCapturingWindow.h; path = Libraries/ScreenCapture/NBScreenCapturingWindow.h; sourceTree = "<group>"; };
 		8383C03214CE20AB00E5FBE7 /* NBScreenCapturingWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NBScreenCapturingWindow.m; path = Libraries/ScreenCapture/NBScreenCapturingWindow.m; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
@@ -891,8 +888,6 @@
 			children = (
 				8381D71814C7BFB90041DC8D /* NBScreenCapture.h */,
 				8381D71914C7BFB90041DC8D /* NBScreenCapture.m */,
-				8383C02D14CE013000E5FBE7 /* UIResponder+InterceptTouches.h */,
-				8383C02E14CE013000E5FBE7 /* UIResponder+InterceptTouches.m */,
 				8383C03114CE20AB00E5FBE7 /* NBScreenCapturingWindow.h */,
 				8383C03214CE20AB00E5FBE7 /* NBScreenCapturingWindow.m */,
 			);
@@ -1856,7 +1851,6 @@
 				83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */,
 				83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */,
 				8381D71A14C7BFB90041DC8D /* NBScreenCapture.m in Sources */,
-				8383C02F14CE013000E5FBE7 /* UIResponder+InterceptTouches.m in Sources */,
 				8383C03314CE20AB00E5FBE7 /* NBScreenCapturingWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
