@@ -1,25 +1,27 @@
 //
-//  ScreenCaptureView.m
+//  NBScreenCapture.m
 //  ipad
 //
 //  Created by Chris Haugli on 1/18/12.
-//  Copyright (c) 2012 Pipely Inc. All rights reserved.
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.Luce Restaurant - San Francisco, CA | OpenTable
 //
 
-#import "ScreenCaptureView.h"
+#import "NBScreenCapture.h"
 #import <QuartzCore/QuartzCore.h>
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "UIResponder+InterceptTouches.h"
+#import </usr/include/objc/objc-class.h>
 
 #define kScaleFactor 0.5f
 #define kFrameRate 2.0f
 #define kBitRate 500.0*1024.0
 
-@interface ScreenCaptureView(Private)
+@interface NBScreenCapture(Private)
 - (void) writeVideoFrameAtTime:(CMTime)time;
 @end
 
-@implementation ScreenCaptureView
+@implementation NBScreenCapture
 
 @synthesize currentScreen, frameRate, captureDelegate;
 
@@ -33,6 +35,15 @@
     avAdaptor = nil;
     startedAt = nil;
     bitmapData = NULL;
+    pendingTouches = [[NSMutableArray alloc] init];
+    
+//    Swizzle([UIResponder class], @selector(touchesBegan:withEvent:), @selector(customTouchesBegan:withEvent:));
+    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
+            object_setClass(window, [NBScreenCapturingWindow class]);
+            [(NBScreenCapturingWindow *)window setDelegate:self];
+        }
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleWillResignActive:) 
@@ -74,6 +85,7 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self cleanupWriter];
+    [pendingTouches release];
     
     [super dealloc];
 }
@@ -119,7 +131,6 @@
     {
         if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen])
         {
-            
             // -renderInContext: renders in the coordinate space of the layer,
             // so we must first apply the layer's geometry to the graphics context
             CGContextSaveGState(context);
@@ -137,6 +148,25 @@
             
             // Render the layer hierarchy to the current context
             [[window layer] renderInContext:context];
+            
+            // Draw touch points
+            @synchronized(self) {
+                NSMutableArray *objectsToRemove = [NSMutableArray array];
+                for (NSMutableDictionary *touch in pendingTouches) {
+                    CGPoint location = [[touch objectForKey:@"location"] CGPointValue];
+                    NSInteger decayCount = [[touch objectForKey:@"decayCount"] integerValue];
+                    
+                    [touch setObject:[NSNumber numberWithInteger:decayCount+1] forKey:@"decayCount"];
+                    if (decayCount > 2) {
+                        [objectsToRemove addObject:touch];
+                    }
+                    
+                    CGContextSetRGBFillColor(context, 0, 0, 255, 0.8 - 0.3*decayCount);
+                    CGFloat diameter = 50 - 20*decayCount;
+                    CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));          
+                }
+                [pendingTouches removeObjectsInArray:objectsToRemove];
+            }
             
             // Restore the context
             CGContextRestoreGState(context);
@@ -170,7 +200,11 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     processing = YES;
     
-    self.currentScreen = [self screenshot];
+    NSLog(@"start screenshot");
+    @synchronized(self) {
+        self.currentScreen = [self screenshot];
+    }
+    NSLog(@"stop screenshot");
     
     /*    //debugging
      if (frameCount < 600) {
@@ -335,6 +369,24 @@
         
     }
     
+}
+
+#pragma mark - NBScreenCapturingWindowDelegate
+
+- (void)screenCapturingWindow:(NBScreenCapturingWindow *)window sendEvent:(UIEvent *)event
+{
+    @synchronized(self) {
+        for (UITouch *touch in [event allTouches]) {
+            CGPoint location = [touch locationInView:touch.window];
+            NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGPoint:location], @"location",
+                                               touch.window, @"window",
+                                               touch.view, @"view",
+                                               [NSNumber numberWithInteger:0], @"decayCount", 
+                                               [NSNumber numberWithFloat:touch.timestamp], @"timestamp",
+                                               nil];
+            [pendingTouches addObject:dictionary];
+        }
+    }
 }
 
 @end

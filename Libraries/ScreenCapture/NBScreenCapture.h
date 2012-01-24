@@ -1,5 +1,5 @@
 //
-//  ScreenCaptureView.h
+//  NBScreenCapture.h
 //  ipad
 //
 //  Created by Chris Haugli on 1/18/12.
@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import "NBScreenCapturingWindow.h"
 
 /**
  * Delegate protocol.  Implement this if you want to receive a notification when the
  * view completes a recording.
  *
- * When a recording is completed, the ScreenCaptureView will notify the delegate, passing
+ * When a recording is completed, the NBScreenCapture will notify the delegate, passing
  * it the path to the created recording file if the recording was successful, or a value
  * of nil if the recording failed/could not be saved.
  */
@@ -22,7 +23,7 @@
 @end
 
 /**
- * ScreenCaptureView, a UIView subclass that periodically samples its current display
+ * NBScreenCapture, a UIView subclass that periodically samples its current display
  * and stores it as a UIImage available through the 'currentScreen' property.  The
  * sample/update rate can be configured (within reason) by setting the 'frameRate'
  * property.
@@ -44,7 +45,7 @@
  *
  */
 
-@interface ScreenCaptureView : NSObject {
+@interface NBScreenCapture : NSObject <NBScreenCapturingWindowDelegate> {
     //video writing
     AVAssetWriter *videoWriter;
     AVAssetWriterInput *videoWriterInput;
@@ -57,6 +58,7 @@
     BOOL processing;
     
     NSTimer *screenshotTimer;
+    NSMutableArray *pendingTouches;
 }
 
 //for recording video
