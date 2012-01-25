@@ -155,7 +155,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = nil;
 	NSTimeInterval t = NM_URL_REQUEST_TIMEOUT;
 	switch (command) {

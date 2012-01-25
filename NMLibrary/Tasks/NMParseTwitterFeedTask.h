@@ -19,6 +19,6 @@
 @property (nonatomic) NSInteger page;
 @property (nonatomic, retain) NSString * sinceID;
 
-- (id)initWithChannel:(NMChannel *)chnObj;
+- (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)anAccount;
 
 @end

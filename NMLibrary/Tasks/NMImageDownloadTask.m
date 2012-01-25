@@ -152,7 +152,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 #ifdef DEBUG_IMAGE_CACHE
 	NSLog(@"Image URL: %@ cmd: %d", imageURLString, command);
 #endif

@@ -33,7 +33,7 @@ NSString * const NMDidFailGetFeaturedCategoriesNotification = @"NMDidFailGetFeat
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = nil;
 	if ( NM_USER_ACCOUNT_ID ) {
 		urlStr = [NSString stringWithFormat:@"http://%@/categories?type=featured&user_id=%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];

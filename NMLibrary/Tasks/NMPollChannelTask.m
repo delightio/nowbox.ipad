@@ -30,7 +30,7 @@ NSString * const NMDidFailPollChannelNotification = @"NMDidFailPollChannelNotifi
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/channels/%@?user_id=%d", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Poll Channel: %@", urlStr);

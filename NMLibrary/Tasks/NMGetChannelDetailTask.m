@@ -35,7 +35,7 @@ NSString * const NMDidFailGetChannelDetailNotification = @"NMDidFailGetChannelDe
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/channels/%@?user_id=%d&inline_videos=5", NM_BASE_URL, targetID, NM_USER_ACCOUNT_ID];
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Get Channel Detail: %@", urlStr);

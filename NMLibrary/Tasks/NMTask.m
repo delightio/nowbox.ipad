@@ -71,7 +71,7 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	return nil;
 }
 

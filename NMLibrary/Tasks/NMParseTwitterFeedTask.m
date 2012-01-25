@@ -14,10 +14,11 @@
 @synthesize page = _page;
 @synthesize sinceID = _sinceID;
 
-- (id)initWithChannel:(NMChannel *)chnObj {
+- (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)anAccount {
 	self = [super init];
 	command = NMCommandParseTwitterFeed;
 	self.channel = chnObj;
+	self.account = anAccount;
 	return self;
 }
 
@@ -26,10 +27,23 @@
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
-	NSDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"include_rts", @"200", @"count", [NSNumber numberWithInteger:_page], @"page", @"since_id", nil];
+- (NSURLRequest *)URLRequest {
+	NSDictionary * params = nil;
+	if ( _sinceID ) {
+		params = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"include_rts", @"200", @"count", [NSNumber numberWithInteger:_page], @"page", _sinceID, @"since_id", nil];
+	} else {
+		params = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"include_rts", @"200", @"count", [NSNumber numberWithInteger:_page], @"page", nil];
+	}
 	TWRequest * twitRequest	= [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/user_timeline.json"] parameters:params requestMethod:TWRequestMethodGET];
-	return nil;
+	NSURLRequest * req = [twitRequest signedURLRequest];
+	[twitRequest release];
+	return req;
+}
+
+- (void)processDownloadedDataInBuffer {
+	if ( [buffer length] == 0 ) return;
+	id obj = [buffer objectFromJSONData];
+	NSLog(@"%@", obj);
 }
 
 @end

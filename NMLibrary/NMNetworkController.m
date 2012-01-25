@@ -189,7 +189,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	if ( tokenRenewMode ) return NO;
 	// for-loop that iterates through all elements. Return YES if we exit running out of network connection resources
 	NMTask *theTask;
-	NSMutableURLRequest *request;
+	NSURLRequest *request;
 	NMURLConnection *conn;
 	BOOL didRunOutResource = NO;
 	NSMutableArray * rmTaskAy = nil;

@@ -28,7 +28,7 @@ NSString * const NMDidFailRequestTokenNotification = @"NMDidFailRequestTokenNoti
 //	return self;
 //}
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = nil;
 	NSMutableURLRequest * request = nil;
 	switch (command) {

@@ -26,7 +26,7 @@ NSString * const NMDidFailPollUserNotification = @"NMDidFailPollUserNotification
 //	[super dealloc];
 //}
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users/%d", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Poll User: %@", urlStr);

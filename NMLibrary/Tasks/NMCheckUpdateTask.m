@@ -30,7 +30,7 @@ NSString * const NMDidFailCheckUpdateNotification = @"NMDidFailCheckUpdateNotifi
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/info?device=%@", NM_BASE_URL, deviceType];
 	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 }

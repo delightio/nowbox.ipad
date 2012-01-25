@@ -108,7 +108,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = nil;
 #ifdef DEBUG_CHANNEL
 	if ( [targetID integerValue] == 999999 ) {

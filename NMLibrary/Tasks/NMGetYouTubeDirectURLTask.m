@@ -66,7 +66,7 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr;
 	NSMutableURLRequest * theRequest;
 	urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?ajax=1&layout=tablet&tsp=1&v=%@", externalID];

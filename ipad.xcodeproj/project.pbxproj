@@ -191,6 +191,7 @@
 		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
 		83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2DC1468C3720051D990 /* ShareViewController.m */; };
 		83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83F8E2DF1468C4B40051D990 /* ShareView.xib */; };
+		A9015DBE14D0527300106776 /* NMPoster.m in Sources */ = {isa = PBXBuildFile; fileRef = A9015DBD14D0527300106776 /* NMPoster.m */; };
 		A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A903D8551450ABA900FC7B28 /* channel-title-background.png */; };
 		A90C89C414C9E728006DC909 /* NMAuthor.m in Sources */ = {isa = PBXBuildFile; fileRef = A90C89C314C9E728006DC909 /* NMAuthor.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
@@ -601,6 +602,8 @@
 		83F8E2DF1468C4B40051D990 /* ShareView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShareView.xib; sourceTree = "<group>"; };
 		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
 		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
+		A9015DBC14D0527300106776 /* NMPoster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPoster.h; sourceTree = "<group>"; };
+		A9015DBD14D0527300106776 /* NMPoster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPoster.m; sourceTree = "<group>"; };
 		A903D8551450ABA900FC7B28 /* channel-title-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-title-background.png"; sourceTree = "<group>"; };
 		A90C89C214C9E728006DC909 /* NMAuthor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAuthor.h; sourceTree = "<group>"; };
 		A90C89C314C9E728006DC909 /* NMAuthor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAuthor.m; sourceTree = "<group>"; };
@@ -1332,6 +1335,8 @@
 			isa = PBXGroup;
 			children = (
 				A942908014C5C53D00107BE8 /* Nowmov.xcdatamodeld */,
+				A9015DBC14D0527300106776 /* NMPoster.h */,
+				A9015DBD14D0527300106776 /* NMPoster.m */,
 				A942908414C5D38500107BE8 /* NMConcreteVideo.h */,
 				A942908514C5D38500107BE8 /* NMConcreteVideo.m */,
 				A942908D14C5D38600107BE8 /* NMChannel.h */,
@@ -1956,6 +1961,7 @@
 				A992827914C6F1A900406A77 /* NMVideo.m in Sources */,
 				A90C89C414C9E728006DC909 /* NMAuthor.m in Sources */,
 				A94D65E214CDF54D0033F661 /* TwitterAccountPickerViewController.m in Sources */,
+				A9015DBE14D0527300106776 /* NMPoster.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2131,7 +2137,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG_SKIP_ONBOARD_PROCESS,
 					DEBUG_PANEL_ENABLED,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_PLAYER_NAVIGATION,

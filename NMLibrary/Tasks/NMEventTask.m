@@ -98,7 +98,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	return (NSUInteger)command;
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * evtStr;
 	switch (eventType) {
 		case NMEventSubscribeChannel:

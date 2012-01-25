@@ -39,7 +39,7 @@ NSString * const NMDidFailPostSharingNotification = @"NMDidFailPostSharingNotifi
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = nil;
 	NSString * ser = (service == NMLoginTwitterType ? @"twitter" : @"facebook");
 	if ( message ) {
