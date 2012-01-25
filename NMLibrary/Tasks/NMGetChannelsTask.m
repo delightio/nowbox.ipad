@@ -490,7 +490,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		case NMCommandGetChannelWithID:
 			return NMDidFailGetChannelWithIDNotification;
 		case NMCommandGetFeaturedChannelsForCategories:
-			return NMDidFailGetFeaturedCategoriesNotification;
+			return NMDidFailGetFeaturedChannelsForCategories;
 		case NMCommandCompareSubscribedChannels:
 			return NMDidFailCompareSubscribedChannelsNotification;
 		default:
