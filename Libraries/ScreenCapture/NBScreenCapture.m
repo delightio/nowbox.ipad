@@ -7,6 +7,7 @@
 //
 
 #import "NBScreenCapture.h"
+#import "UIWindow+InterceptEvents.h"
 #import <QuartzCore/QuartzCore.h>
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
@@ -24,6 +25,15 @@
 
 @synthesize currentScreen, frameRate, captureDelegate;
 
+void Swizzle(Class c, SEL orig, SEL new){
+    Method origMethod = class_getInstanceMethod(c, orig);
+    Method newMethod = class_getInstanceMethod(c, new);
+    if(class_addMethod(c, orig, method_getImplementation(newMethod), method_getTypeEncoding(newMethod)))
+        class_replaceMethod(c, new, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
+    else
+        method_exchangeImplementations(origMethod, newMethod);
+}
+
 - (void) initialize {
     // Initialization code
     self.currentScreen = nil;
@@ -35,14 +45,21 @@
     startedAt = nil;
     bitmapData = NULL;
     pendingTouches = [[NSMutableArray alloc] init];
-    
+
+    // ISA swizzling
+//    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+//        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
+//            object_setClass(window, [NBScreenCapturingWindow class]);
+//            [(NBScreenCapturingWindow *)window setDelegate:self];
+//        }
+//    }
+
+    // Method swizzling
+    Swizzle([UIWindow class], @selector(sendEvent:), @selector(NBsendEvent:));
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
-        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
-            object_setClass(window, [NBScreenCapturingWindow class]);
-            [(NBScreenCapturingWindow *)window setDelegate:self];
-        }
+        [window NBsetDelegate:self];
     }
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleWillResignActive:) 
                                                  name:UIApplicationWillResignActiveNotification

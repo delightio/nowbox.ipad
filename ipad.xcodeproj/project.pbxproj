@@ -190,6 +190,7 @@
 		83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */; };
 		83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */; };
 		83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C8148433B900ED7993 /* UIImage+Tint.m */; };
+		83F1B37C14CF955E00AF428C /* UIWindow+InterceptEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F1B37B14CF955E00AF428C /* UIWindow+InterceptEvents.m */; };
 		83F7C48D14509EF400AD8880 /* ToolTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C48C14509EF400AD8880 /* ToolTip.m */; };
 		83F7C4911450B22700AD8880 /* TouchForwardingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F7C4901450B22700AD8880 /* TouchForwardingView.m */; };
 		83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2DC1468C3720051D990 /* ShareViewController.m */; };
@@ -579,6 +580,8 @@
 		83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessCategoryView.xib; sourceTree = "<group>"; };
 		83EF90C7148433B900ED7993 /* UIImage+Tint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Tint.h"; sourceTree = "<group>"; };
 		83EF90C8148433B900ED7993 /* UIImage+Tint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Tint.m"; sourceTree = "<group>"; };
+		83F1B37A14CF955E00AF428C /* UIWindow+InterceptEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIWindow+InterceptEvents.h"; path = "Libraries/ScreenCapture/UIWindow+InterceptEvents.h"; sourceTree = "<group>"; };
+		83F1B37B14CF955E00AF428C /* UIWindow+InterceptEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIWindow+InterceptEvents.m"; path = "Libraries/ScreenCapture/UIWindow+InterceptEvents.m"; sourceTree = "<group>"; };
 		83F7C48B14509EF400AD8880 /* ToolTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTip.h; sourceTree = "<group>"; };
 		83F7C48C14509EF400AD8880 /* ToolTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTip.m; sourceTree = "<group>"; };
 		83F7C48F1450B22700AD8880 /* TouchForwardingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchForwardingView.h; sourceTree = "<group>"; };
@@ -890,6 +893,8 @@
 				8381D71914C7BFB90041DC8D /* NBScreenCapture.m */,
 				8383C03114CE20AB00E5FBE7 /* NBScreenCapturingWindow.h */,
 				8383C03214CE20AB00E5FBE7 /* NBScreenCapturingWindow.m */,
+				83F1B37A14CF955E00AF428C /* UIWindow+InterceptEvents.h */,
+				83F1B37B14CF955E00AF428C /* UIWindow+InterceptEvents.m */,
 			);
 			name = ScreenCapture;
 			sourceTree = "<group>";
@@ -1852,6 +1857,7 @@
 				83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */,
 				8381D71A14C7BFB90041DC8D /* NBScreenCapture.m in Sources */,
 				8383C03314CE20AB00E5FBE7 /* NBScreenCapturingWindow.m in Sources */,
+				83F1B37C14CF955E00AF428C /* UIWindow+InterceptEvents.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
