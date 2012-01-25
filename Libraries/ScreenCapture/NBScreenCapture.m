@@ -158,7 +158,7 @@
 /*            CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, imageSize.height);
             CGContextConcatCTM(context, flipVertical);
             [[window layer] renderInContext:context];*/
-            
+                        
             // Center the context around the window's anchor point
             CGContextTranslateCTM(context, [window center].x, [window center].y);
             // Apply the window's transform about the anchor point
@@ -178,6 +178,10 @@
             CGContextSetRGBStrokeColor(context, 0, 0, 255, 0.7);
             CGContextSetLineWidth(context, 5.0);
             CGContextSetLineJoin(context, kCGLineJoinRound);
+            CGContextSetAllowsAntialiasing(context, YES);
+            CGPoint lastLocations[8];
+            CGPoint startLocation;
+            NSInteger strokeCount = 0;
             
             @synchronized(self) {
                 for (NSMutableDictionary *touch in pendingTouches) {
@@ -194,25 +198,46 @@
                     CGFloat diameter = 30 - 20*decayCount;
                     switch (phase) {
                         case UITouchPhaseBegan:
-                            CGContextSetRGBFillColor(context, 0, 255, 0, 0.7);                            
-                            CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));          
+                            startLocation = location;
                             CGContextMoveToPoint(context, location.x, location.y);
                             break;
                         case UITouchPhaseEnded:
                         case UITouchPhaseCancelled:
                             CGContextStrokePath(context);
-                            CGContextSetRGBFillColor(context, 255, 0, 0, 0.7); 
-                            CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));                                      
+                            double distance = sqrt((location.y - startLocation.y)*(location.y - startLocation.y) + (location.x - startLocation.x)*(location.x-startLocation.x));
+
+                            if (distance > 10 && strokeCount > 0) {
+                                CGPoint lastLocation = (strokeCount < 8 ? lastLocations[8 - strokeCount] : lastLocations[0]);
+                                double angle = atan2(location.y - lastLocation.y, location.x - lastLocation.x);
+                                NSLog(@"last location: %f, %f.\nCurrent location: %f, %f", lastLocation.y, lastLocation.x, location.y, location.x);
+                                NSLog(@"angle: %.2f, distance: %f", angle * 180 / M_PI, distance);
+
+                                CGContextSetRGBFillColor(context, 0, 0, 255, 1.0); 
+                                CGContextMoveToPoint(context, location.x, location.y);
+                                CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI + M_PI/8), location.y + 50*sin(angle + M_PI + M_PI/8));
+                                CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI - M_PI/8), location.y + 50*sin(angle + M_PI - M_PI/8));
+                                CGContextAddLineToPoint(context, location.x, location.y);
+                                CGContextFillPath(context);
+                            } else {
+                                CGContextSetRGBFillColor(context, 0, 0, 255, 0.7);                                 
+                                CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));                                      
+                            }
                             break;
                         case UITouchPhaseMoved:
                         case UITouchPhaseStationary:
                             CGContextAddLineToPoint(context, location.x, location.y);
+                            for (NSInteger i = 0; i <= 6; i++) {
+                                lastLocations[i] = lastLocations[i+1];
+                            }
+                            lastLocations[7] = location;
+                            strokeCount++;
                             break;
                     }
                 }
                 [pendingTouches removeObjectsInArray:objectsToRemove];
             }
-            NSLog(@"----");
+            
+            CGContextSetAllowsAntialiasing(context, NO);
         }
     }
     
@@ -235,7 +260,6 @@
     
     if (_recording) {
         float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-        NSLog(@"millisElapsed: %f", millisElapsed);
         @synchronized(self) {
             [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
         } 
