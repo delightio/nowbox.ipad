@@ -7,10 +7,12 @@
 //
 
 #import "NMParseTwitterFeedTask.h"
-#import <Twitter/Twitter.h>
 
 @implementation NMParseTwitterFeedTask
 @synthesize channel = _channel;
+@synthesize account = _account;
+@synthesize page = _page;
+@synthesize sinceID = _sinceID;
 
 - (id)initWithChannel:(NMChannel *)chnObj {
 	self = [super init];
@@ -25,7 +27,8 @@
 }
 
 - (NSMutableURLRequest *)URLRequest {
-//	TWRequest * twRequest = ;
+	NSDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"include_rts", @"200", @"count", [NSNumber numberWithInteger:_page], @"page", @"since_id", nil];
+	TWRequest * twitRequest	= [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/user_timeline.json"] parameters:params requestMethod:TWRequestMethodGET];
 	return nil;
 }
 

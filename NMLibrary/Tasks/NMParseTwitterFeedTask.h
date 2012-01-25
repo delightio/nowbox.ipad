@@ -8,12 +8,16 @@
 
 #import "NMTask.h"
 #import <Twitter/Twitter.h>
+#import <Accounts/Accounts.h>
 
 @class NMChannel;
 
 @interface NMParseTwitterFeedTask : NMTask 
 
 @property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) ACAccount * account;
+@property (nonatomic) NSInteger page;
+@property (nonatomic, retain) NSString * sinceID;
 
 - (id)initWithChannel:(NMChannel *)chnObj;
 
