@@ -14,9 +14,9 @@
 #import "NMChannel.h"
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
-#import "NMVideoDetail.h"
 #import "NMConcreteVideo.h"
 #import "NMAuthor.h"
+#import "NMSocialAccount.h"
 #import "Reachability.h"
 #import "ipadAppDelegate.h"
 #import "FBConnect.h"
@@ -587,24 +587,26 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
 	ipadAppDelegate * appDel = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
-	switch ([chnObj.type integerValue]) {
-		case NMChannelUserTwitterType:
-		{
-			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj];
-			[networkController addNewConnectionForTask:task];
-			[task release];
-			break;
+	NMSocialAccount * scAccount = chnObj.socialAccount;
+	if ( scAccount ) {
+		switch ([scAccount.nm_type integerValue]) {
+			case NMChannelUserTwitterType:
+			{
+				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:nil];
+				[networkController addNewConnectionForTask:task];
+				[task release];
+				break;
+			}	
+			case NMChannelUserFacebookType:
+			{
+				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj facebookProxy:appDel.facebook];
+				[networkController addNewConnectionForTask:task];
+				[task release];
+				break;
+			}				
+			default:
+				break;
 		}
-			
-		case NMChannelUserFacebookType:
-		{
-			NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj facebookProxy:appDel.facebook];
-			[networkController addNewConnectionForTask:task];
-			[task release];
-			break;
-		}			
-		default:
-			break;
 	}
 }
 

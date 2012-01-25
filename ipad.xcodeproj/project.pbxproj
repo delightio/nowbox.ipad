@@ -202,6 +202,7 @@
 		A911B95013E15E6800B7BFFF /* playback-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A911B94F13E15E6800B7BFFF /* playback-progress-background.png */; };
 		A9128C7414C3D98B00A3861D /* NMParseFacebookFeedTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */; };
 		A9128C7514C3D98B00A3861D /* NMParseFacebookFeedTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */; };
+		A91A50E814D078C400F41FE4 /* NMSocialAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A50E714D078C400F41FE4 /* NMSocialAccount.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A925014B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250149134385BF001759F5 /* InfoPlist.strings */; };
@@ -616,6 +617,8 @@
 		A911B94F13E15E6800B7BFFF /* playback-progress-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-progress-background.png"; sourceTree = "<group>"; };
 		A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMParseFacebookFeedTask.h; sourceTree = "<group>"; };
 		A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMParseFacebookFeedTask.m; sourceTree = "<group>"; };
+		A91A50E614D078C400F41FE4 /* NMSocialAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSocialAccount.h; sourceTree = "<group>"; };
+		A91A50E714D078C400F41FE4 /* NMSocialAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSocialAccount.m; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1336,6 +1339,8 @@
 			children = (
 				A942908014C5C53D00107BE8 /* Nowmov.xcdatamodeld */,
 				A9015DBC14D0527300106776 /* NMPoster.h */,
+				A91A50E614D078C400F41FE4 /* NMSocialAccount.h */,
+				A91A50E714D078C400F41FE4 /* NMSocialAccount.m */,
 				A9015DBD14D0527300106776 /* NMPoster.m */,
 				A942908414C5D38500107BE8 /* NMConcreteVideo.h */,
 				A942908514C5D38500107BE8 /* NMConcreteVideo.m */,
@@ -1962,6 +1967,7 @@
 				A90C89C414C9E728006DC909 /* NMAuthor.m in Sources */,
 				A94D65E214CDF54D0033F661 /* TwitterAccountPickerViewController.m in Sources */,
 				A9015DBE14D0527300106776 /* NMPoster.m in Sources */,
+				A91A50E814D078C400F41FE4 /* NMSocialAccount.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

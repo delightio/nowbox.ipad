@@ -38,6 +38,7 @@
 @dynamic detail;
 @dynamic previewThumbnails;
 @dynamic videos;
+@dynamic socialAccount;
 
 - (void)awakeFromFetch {
 	didFirstPopulateStatusCheck = NO;
