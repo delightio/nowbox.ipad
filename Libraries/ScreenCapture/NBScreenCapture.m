@@ -180,22 +180,26 @@ void Swizzle(Class c, SEL orig, SEL new){
     // Iterate over every window from back to front
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
         if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
-//            CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, imageSize.height);
-//            CGContextConcatCTM(context, flipVertical);
-                        
+            CGContextSaveGState(context);
+            
             // Center the context around the window's anchor point
-            CGContextTranslateCTM(context, [window center].x, [window center].y);
+            CGContextTranslateCTM(context, 
+                                  [window center].x - imageSize.width * kScaleFactor, 
+                                  [window center].y - imageSize.height * kScaleFactor);
+            
             // Apply the window's transform about the anchor point
-            CGContextConcatCTM(context, [window transform]);
+            CGContextScaleCTM(context, kScaleFactor, -kScaleFactor);
+            CGContextConcatCTM(context, [window transform]);   
+            
             // Offset by the portion of the bounds left of and above the anchor point
             CGContextTranslateCTM(context,
                                   -[window bounds].size.width * [[window layer] anchorPoint].x,
                                   -[window bounds].size.height * [[window layer] anchorPoint].y);
             
-            CGContextConcatCTM(context, CGAffineTransformMake(-kScaleFactor, 0, 0, kScaleFactor, imageSize.width, 0));
-            
             // Render the layer hierarchy to the current context
             [[window layer] renderInContext:context];
+            
+            CGContextRestoreGState(context);
             
             // Draw touch points
             NSMutableArray *objectsToRemove = [NSMutableArray array];
@@ -469,7 +473,7 @@ static NSTimeInterval timeElapsed = 0;
 
 #pragma mark - NBScreenCapturingWindowDelegate
 
-- (void)screenCapturingWindow:(NBScreenCapturingWindow *)window sendEvent:(UIEvent *)event
+- (void)screenCapturingWindow:(UIWindow *)window sendEvent:(UIEvent *)event
 {
     @synchronized(self) {
         for (UITouch *touch in [event allTouches]) {

@@ -17,6 +17,6 @@
 @end
 
 @protocol NBScreenCapturingWindowDelegate <NSObject>
-- (void)screenCapturingWindow:(NBScreenCapturingWindow *)window sendEvent:(UIEvent *)event;
+- (void)screenCapturingWindow:(UIWindow *)window sendEvent:(UIEvent *)event;
 @end
 
