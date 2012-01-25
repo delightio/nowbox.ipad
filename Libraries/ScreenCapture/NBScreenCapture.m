@@ -152,7 +152,15 @@ void Swizzle(Class c, SEL orig, SEL new){
                                      colorSpace,
                                      kCGImageAlphaNoneSkipFirst);
     
-    CGContextSetAllowsAntialiasing(context,NO);
+    CGContextSetAllowsAntialiasing(context, NO);
+    CGContextSetAllowsFontSmoothing(context, NO);
+    CGContextSetAllowsFontSubpixelPositioning(context, NO);
+    CGContextSetAllowsFontSubpixelQuantization(context, NO);
+    CGContextSetShouldAntialias(context, NO);
+    CGContextSetShouldSmoothFonts(context, NO);
+    CGContextSetShouldSubpixelPositionFonts(context, NO);
+    CGContextSetShouldSubpixelQuantizeFonts(context, NO);
+
     if (context== NULL) {
         free (bitmapData);
         fprintf (stderr, "Context not created!");
@@ -172,9 +180,8 @@ void Swizzle(Class c, SEL orig, SEL new){
     // Iterate over every window from back to front
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
         if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
-/*            CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, imageSize.height);
-            CGContextConcatCTM(context, flipVertical);
-            [[window layer] renderInContext:context];*/
+//            CGAffineTransform flipVertical = CGAffineTransformMake(kScaleFactor, 0, 0, -kScaleFactor, 0, imageSize.height);
+//            CGContextConcatCTM(context, flipVertical);
                         
             // Center the context around the window's anchor point
             CGContextTranslateCTM(context, [window center].x, [window center].y);
@@ -184,7 +191,7 @@ void Swizzle(Class c, SEL orig, SEL new){
             CGContextTranslateCTM(context,
                                   -[window bounds].size.width * [[window layer] anchorPoint].x,
                                   -[window bounds].size.height * [[window layer] anchorPoint].y);
-
+            
             CGContextConcatCTM(context, CGAffineTransformMake(-kScaleFactor, 0, 0, kScaleFactor, imageSize.width, 0));
             
             // Render the layer hierarchy to the current context
@@ -195,7 +202,6 @@ void Swizzle(Class c, SEL orig, SEL new){
             CGContextSetRGBStrokeColor(context, 0, 0, 255, 0.7);
             CGContextSetLineWidth(context, 5.0);
             CGContextSetLineJoin(context, kCGLineJoinRound);
-            CGContextSetAllowsAntialiasing(context, YES);
             CGPoint lastLocations[8];
             CGPoint startLocation;
             NSInteger strokeCount = 0;
@@ -252,9 +258,7 @@ void Swizzle(Class c, SEL orig, SEL new){
                     }
                 }
                 [pendingTouches removeObjectsInArray:objectsToRemove];
-            }
-            
-            CGContextSetAllowsAntialiasing(context, NO);
+            }            
         }
     }
     
