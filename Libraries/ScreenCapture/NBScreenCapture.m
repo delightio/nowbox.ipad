@@ -284,7 +284,8 @@ void Swizzle(Class c, SEL orig, SEL new){
 }
 
 
-//static int frameCount = 0;            //debugging
+static int frameCount = 0;            //debugging
+static NSTimeInterval timeElapsed = 0;
 
 - (void)takeScreenshotInCurrentThread
 {
@@ -295,16 +296,20 @@ void Swizzle(Class c, SEL orig, SEL new){
     
     @synchronized(self) {
         NSLog(@"start screenshot");
+        NSTimeInterval start = [[NSDate date] timeIntervalSince1970];
         self.currentScreen = [self screenshot];
+        NSTimeInterval end = [[NSDate date] timeIntervalSince1970];
+        frameCount++;
+        timeElapsed += (end - start);
         NSLog(@"stop screenshot");
     }
+    NSLog(@"%i frames, avg. %f", frameCount, timeElapsed / frameCount);
     
     /*    //debugging
      if (frameCount < 600) {
      NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
      NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
      [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
-     frameCount++;
      }*/
     
     [pool drain];
@@ -348,7 +353,6 @@ void Swizzle(Class c, SEL orig, SEL new){
     videoWriterInput.expectsMediaDataInRealTime = YES;
     NSDictionary* bufferAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                          [NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey, nil];                                      
-//                                         [NSNumber numberWithInt:kCVPixelFormatType_32BGRA], kCVPixelBufferPixelFormatTypeKey, nil];                                      
     
     avAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:videoWriterInput sourcePixelBufferAttributes:bufferAttributes] retain];
     
