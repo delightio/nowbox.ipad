@@ -126,6 +126,7 @@
 
 // Facebook
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
+- (void)issueGetMyFacebookProfile;
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;

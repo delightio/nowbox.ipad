@@ -6,23 +6,17 @@
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "NMTask.h"
+#import "NMFacebookTask.h"
 
 @class NMChannel;
-@class Facebook;
-@class FBRequest;
-@class NMNetworkController;
 
-@interface NMParseFacebookFeedTask : NMTask
+@interface NMParseFacebookFeedTask : NMFacebookTask
 
 @property (nonatomic, retain) NMChannel * channel;
-@property (nonatomic, retain) Facebook * facebook;
 @property (nonatomic, retain) NSString * nextPageURLString;
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 
-- (id)initWithChannel:(NMChannel *)chn facebookProxy:(Facebook *)fbObj;
-- (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl;
-- (void)setParsedObjectsForResult:(id)result;
+- (id)initWithChannel:(NMChannel *)chn;
 
 @end

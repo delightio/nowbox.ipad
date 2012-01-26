@@ -13,9 +13,14 @@
 
 @interface NMSocialAccount : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * nm_identifier;
-@property (nonatomic, retain) NSString * nm_type;
+@property (nonatomic, retain) NSString * first_name;
+@property (nonatomic, retain) NSString * nm_identifier;
+@property (nonatomic, retain) NSDate * nm_last_crawled;
+@property (nonatomic, retain) NSString * nm_since_id;
+@property (nonatomic, retain) NSNumber * nm_type;
+@property (nonatomic, retain) NSString * username;
 @property (nonatomic, retain) NSSet *channels;
+
 @end
 
 @interface NMSocialAccount (CoreDataGeneratedAccessors)

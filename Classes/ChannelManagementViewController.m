@@ -730,6 +730,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				}	
 				case 1:
 				{
+					NMAccountManager * acMgr = [NMAccountManager sharedAccountManager];
 					// reveal the social login view
 					SocialLoginViewController * socialCtrl;
 					if ( indexPath.row == 0 ) {
@@ -789,7 +790,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							return;
 						}
 					} else if ( indexPath.row == 1 ) {
-						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+						if ( acMgr.facebookAuthorized ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 							channelDetailViewController.enableUnsubscribe = YES;
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
@@ -802,14 +803,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 //							[socialCtrl release];
 //							
 //							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
-							ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
-							if (![appDel.facebook isSessionValid]) {
-								NSArray *permissions = [[NSArray alloc] initWithObjects:
-														@"publish_stream", 
-														@"read_stream",
-														nil];
-								[appDel.facebook authorize:permissions];
-								[permissions release];
+							if (![acMgr.facebook isSessionValid]) {
+								[acMgr authorizeFacebook];
 							}
 							return;
 						}

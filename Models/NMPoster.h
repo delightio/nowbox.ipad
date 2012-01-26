@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMVideo;
+@class NMChannel, NMVideo;
 
 @interface NMPoster : NSManagedObject
 
@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSNumber * nm_social_network;
 @property (nonatomic, retain) NSString * nm_user_id;
 @property (nonatomic, retain) NSString * nm_description;
+@property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSSet *videos;
 @end
 

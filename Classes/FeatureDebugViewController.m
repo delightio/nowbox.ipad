@@ -192,6 +192,10 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForChannel:nil];
 }
 
+- (IBAction)getFacebookProfile:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueGetMyFacebookProfile];
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

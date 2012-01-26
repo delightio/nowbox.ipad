@@ -18,7 +18,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol FBRequestDelegate;
-@class NMTask;
+@class NMFacebookTask;
 
 enum {
   kFBRequestStateReady,
@@ -63,7 +63,7 @@ typedef NSUInteger FBRequestState;
  */
 @property(nonatomic,retain) NSMutableDictionary* params;
 @property(nonatomic,retain) NSURLConnection*  connection;
-@property (nonatomic, assign) NMTask * task;
+@property (nonatomic, assign) NMFacebookTask * task;
 @property(nonatomic,retain) NSMutableData* responseText;
 @property(nonatomic,readonly) FBRequestState state;
 

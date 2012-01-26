@@ -67,7 +67,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 @synthesize viewController;
 //@synthesize launchViewController;
 @synthesize managedObjectContext=managedObjectContext_;
-@synthesize facebook;
 
 + (void)initialize {
 	NSNumber * yesNum = [NSNumber numberWithBool:YES];
@@ -88,11 +87,10 @@ NSInteger NM_LAST_CHANNEL_ID;
       zeroNum, NM_RATE_US_REMINDER_DEFER_COUNT_KEY,
       zeroNum, NM_SHARE_COUNT_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
-//	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
 	  yesNum, NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
-          [NSNumber numberWithInteger:0], NM_SESSION_COUNT_KEY,
+	  [NSNumber numberWithInteger:0], NM_SESSION_COUNT_KEY,
 	  yesNum, NM_SHOW_FAVORITE_CHANNEL_KEY,
 	  noNum, NM_ENABLE_PUSH_NOTIFICATION_KEY,
 	  noNum, NM_ENABLE_EMAIL_NOTIFICATION_KEY,
@@ -104,6 +102,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  noNum, NM_USER_YOUTUBE_SYNC_ACTIVE_KEY,
 	  zeroNum, NM_USER_YOUTUBE_LAST_SYNC_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
+	  @"", NM_FACEBOOK_ACCESS_TOKEN_KEY,
+	  dDate, NM_FACEBOOK_EXPIRATION_DATE_KEY,
 	  nil]];
 }
 
@@ -239,6 +239,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
     
+	[[NMAccountManager sharedAccountManager].facebook extendAccessTokenIfNeeded];
     return YES;
 }
 
@@ -332,41 +333,12 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 // Pre 4.2 support
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    return [facebook handleOpenURL:url]; 
+    return [[NMAccountManager sharedAccountManager].facebook handleOpenURL:url]; 
 }
 
 // For 4.2+ support
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    return [facebook handleOpenURL:url]; 
-}
-
-#pragma mark Facebook
-
-- (Facebook *)facebook {
-	if ( facebook == nil ) {
-		facebook = [[Facebook alloc] initWithAppId:@"190577807707530" andDelegate:self];
-		if ([userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY] 
-			&& [userDefaults objectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY]) {
-			facebook.accessToken = [userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
-			facebook.expirationDate = [userDefaults objectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
-		}
-	}
-	return facebook;
-}
-
-- (void)fbDidLogin {
-    [userDefaults setObject:[facebook accessToken] forKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
-    [userDefaults setObject:[facebook expirationDate] forKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
-    [userDefaults synchronize];
-}
-
-- (void) fbDidLogout {
-    // Remove saved authorization information if it exists
-    if ([userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY]) {
-        [userDefaults removeObjectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
-        [userDefaults removeObjectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
-        [userDefaults synchronize];
-    }
+    return [[NMAccountManager sharedAccountManager].facebook handleOpenURL:url]; 
 }
 
 #pragma mark User Defaults

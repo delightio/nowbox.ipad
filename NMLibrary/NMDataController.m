@@ -13,6 +13,7 @@
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
 #import "NMVideoDetail.h"
+#import "NMSocialAccount.h"
 #import "NMGetChannelVideoListTask.h"
 
 
@@ -24,6 +25,7 @@ NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
 NSString * const NMAuthorEntityName = @"NMAuthor";
+NSString * const NMSocialAccountEntityName = @"NMSocialAccount";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 
@@ -1074,6 +1076,23 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (NMAuthor *)insertNewAuthor {
 	return [NSEntityDescription insertNewObjectForEntityForName:NMAuthorEntityName inManagedObjectContext:managedObjectContext];
+}
+
+#pragma mark Social Account
+- (NMSocialAccount *)insertNewSocialAccountWithID:(NSString *)strID {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMSocialAccountEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_identifier like %@", strID]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	NMSocialAccount * acObj = nil;
+	if ( result && [result count] ) {
+		acObj = [result objectAtIndex:0];
+	} else {
+		acObj = [NSEntityDescription insertNewObjectForEntityForName:NMSocialAccountEntityName inManagedObjectContext:managedObjectContext];
+		acObj.nm_identifier = strID;
+	}
+	return acObj;
 }
 
 #pragma mark Data parsing

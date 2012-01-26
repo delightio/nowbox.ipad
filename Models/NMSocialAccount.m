@@ -12,8 +12,12 @@
 
 @implementation NMSocialAccount
 
+@dynamic first_name;
 @dynamic nm_identifier;
+@dynamic nm_last_crawled;
+@dynamic nm_since_id;
 @dynamic nm_type;
+@dynamic username;
 @dynamic channels;
 
 @end

@@ -203,6 +203,22 @@
 		A9128C7414C3D98B00A3861D /* NMParseFacebookFeedTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */; };
 		A9128C7514C3D98B00A3861D /* NMParseFacebookFeedTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */; };
 		A91A50E814D078C400F41FE4 /* NMSocialAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A50E714D078C400F41FE4 /* NMSocialAccount.m */; };
+		A91A50EA14D1712600F41FE4 /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285C414C2D3C300B4AB5C /* Facebook.m */; };
+		A91A50EB14D1713300F41FE4 /* FBDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285C714C2D3C300B4AB5C /* FBDialog.m */; };
+		A91A50EC14D1713800F41FE4 /* FBLoginDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285C914C2D3C300B4AB5C /* FBLoginDialog.m */; };
+		A91A50ED14D1713C00F41FE4 /* FBRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285CB14C2D3C300B4AB5C /* FBRequest.m */; };
+		A91A50EE14D171BF00F41FE4 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285CF14C2D3C300B4AB5C /* NSObject+SBJSON.m */; };
+		A91A50EF14D171BF00F41FE4 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D114C2D3C300B4AB5C /* NSString+SBJSON.m */; };
+		A91A50F014D171BF00F41FE4 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D314C2D3C300B4AB5C /* SBJSON.m */; };
+		A91A50F114D171BF00F41FE4 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D514C2D3C300B4AB5C /* SBJsonBase.m */; };
+		A91A50F214D171BF00F41FE4 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D714C2D3C300B4AB5C /* SBJsonParser.m */; };
+		A91A50F314D171BF00F41FE4 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D914C2D3C300B4AB5C /* SBJsonWriter.m */; };
+		A91A50F614D1720700F41FE4 /* NMAccountManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A91A50F414D1720700F41FE4 /* NMAccountManager.h */; };
+		A91A50F714D1720700F41FE4 /* NMAccountManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A50F514D1720700F41FE4 /* NMAccountManager.m */; };
+		A91A50FE14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A91A50FC14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h */; };
+		A91A50FF14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */; };
+		A91A510214D1A52A00F41FE4 /* NMFacebookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A91A510014D1A52900F41FE4 /* NMFacebookTask.h */; };
+		A91A510314D1A52A00F41FE4 /* NMFacebookTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A925014B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250149134385BF001759F5 /* InfoPlist.strings */; };
@@ -328,16 +344,6 @@
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
-		A9E285DA14C2D3C300B4AB5C /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285C414C2D3C300B4AB5C /* Facebook.m */; };
-		A9E285DB14C2D3C300B4AB5C /* FBDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285C714C2D3C300B4AB5C /* FBDialog.m */; };
-		A9E285DC14C2D3C300B4AB5C /* FBLoginDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285C914C2D3C300B4AB5C /* FBLoginDialog.m */; };
-		A9E285DD14C2D3C300B4AB5C /* FBRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285CB14C2D3C300B4AB5C /* FBRequest.m */; };
-		A9E285DE14C2D3C300B4AB5C /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285CF14C2D3C300B4AB5C /* NSObject+SBJSON.m */; };
-		A9E285DF14C2D3C300B4AB5C /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D114C2D3C300B4AB5C /* NSString+SBJSON.m */; };
-		A9E285E014C2D3C300B4AB5C /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D314C2D3C300B4AB5C /* SBJSON.m */; };
-		A9E285E114C2D3C300B4AB5C /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D514C2D3C300B4AB5C /* SBJsonBase.m */; };
-		A9E285E214C2D3C300B4AB5C /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D714C2D3C300B4AB5C /* SBJsonParser.m */; };
-		A9E285E314C2D3C300B4AB5C /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285D914C2D3C300B4AB5C /* SBJsonWriter.m */; };
 		A9E285EB14C300A700B4AB5C /* NMURLConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E285E914C300A700B4AB5C /* NMURLConnection.h */; };
 		A9E285EC14C300A700B4AB5C /* NMURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285EA14C300A700B4AB5C /* NMURLConnection.m */; };
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
@@ -619,6 +625,12 @@
 		A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMParseFacebookFeedTask.m; sourceTree = "<group>"; };
 		A91A50E614D078C400F41FE4 /* NMSocialAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSocialAccount.h; sourceTree = "<group>"; };
 		A91A50E714D078C400F41FE4 /* NMSocialAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSocialAccount.m; sourceTree = "<group>"; };
+		A91A50F414D1720700F41FE4 /* NMAccountManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAccountManager.h; sourceTree = "<group>"; };
+		A91A50F514D1720700F41FE4 /* NMAccountManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAccountManager.m; sourceTree = "<group>"; };
+		A91A50FC14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetFacebookProfileTask.h; sourceTree = "<group>"; };
+		A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetFacebookProfileTask.m; sourceTree = "<group>"; };
+		A91A510014D1A52900F41FE4 /* NMFacebookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookTask.h; sourceTree = "<group>"; };
+		A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookTask.m; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1385,6 +1397,8 @@
 				A9452BC71415E75E00056361 /* NMFileExistsCache.m */,
 				A9E285E914C300A700B4AB5C /* NMURLConnection.h */,
 				A9E285EA14C300A700B4AB5C /* NMURLConnection.m */,
+				A91A50F414D1720700F41FE4 /* NMAccountManager.h */,
+				A91A50F514D1720700F41FE4 /* NMAccountManager.m */,
 			);
 			path = NMLibrary;
 			sourceTree = "<group>";
@@ -1435,6 +1449,10 @@
 				A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */,
 				A94D65CD14CD51700033F661 /* NMParseTwitterFeedTask.h */,
 				A94D65CE14CD51700033F661 /* NMParseTwitterFeedTask.m */,
+				A91A50FC14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h */,
+				A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */,
+				A91A510014D1A52900F41FE4 /* NMFacebookTask.h */,
+				A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1574,6 +1592,9 @@
 				A9E285EB14C300A700B4AB5C /* NMURLConnection.h in Headers */,
 				A9128C7414C3D98B00A3861D /* NMParseFacebookFeedTask.h in Headers */,
 				A94D65CF14CD51700033F661 /* NMParseTwitterFeedTask.h in Headers */,
+				A91A50F614D1720700F41FE4 /* NMAccountManager.h in Headers */,
+				A91A50FE14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h in Headers */,
+				A91A510214D1A52A00F41FE4 /* NMFacebookTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1949,16 +1970,6 @@
 				83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */,
 				83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */,
 				83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */,
-				A9E285DA14C2D3C300B4AB5C /* Facebook.m in Sources */,
-				A9E285DB14C2D3C300B4AB5C /* FBDialog.m in Sources */,
-				A9E285DC14C2D3C300B4AB5C /* FBLoginDialog.m in Sources */,
-				A9E285DD14C2D3C300B4AB5C /* FBRequest.m in Sources */,
-				A9E285DE14C2D3C300B4AB5C /* NSObject+SBJSON.m in Sources */,
-				A9E285DF14C2D3C300B4AB5C /* NSString+SBJSON.m in Sources */,
-				A9E285E014C2D3C300B4AB5C /* SBJSON.m in Sources */,
-				A9E285E114C2D3C300B4AB5C /* SBJsonBase.m in Sources */,
-				A9E285E214C2D3C300B4AB5C /* SBJsonParser.m in Sources */,
-				A9E285E314C2D3C300B4AB5C /* SBJsonWriter.m in Sources */,
 				A942908314C5C53D00107BE8 /* Nowmov.xcdatamodeld in Sources */,
 				A942908614C5D38500107BE8 /* NMConcreteVideo.m in Sources */,
 				A942908914C5D38600107BE8 /* NMVideoDetail.m in Sources */,
@@ -2004,6 +2015,19 @@
 				A9E285EC14C300A700B4AB5C /* NMURLConnection.m in Sources */,
 				A9128C7514C3D98B00A3861D /* NMParseFacebookFeedTask.m in Sources */,
 				A94D65D014CD51700033F661 /* NMParseTwitterFeedTask.m in Sources */,
+				A91A50EA14D1712600F41FE4 /* Facebook.m in Sources */,
+				A91A50EB14D1713300F41FE4 /* FBDialog.m in Sources */,
+				A91A50EC14D1713800F41FE4 /* FBLoginDialog.m in Sources */,
+				A91A50ED14D1713C00F41FE4 /* FBRequest.m in Sources */,
+				A91A50EE14D171BF00F41FE4 /* NSObject+SBJSON.m in Sources */,
+				A91A50EF14D171BF00F41FE4 /* NSString+SBJSON.m in Sources */,
+				A91A50F014D171BF00F41FE4 /* SBJSON.m in Sources */,
+				A91A50F114D171BF00F41FE4 /* SBJsonBase.m in Sources */,
+				A91A50F214D171BF00F41FE4 /* SBJsonParser.m in Sources */,
+				A91A50F314D171BF00F41FE4 /* SBJsonWriter.m in Sources */,
+				A91A50F714D1720700F41FE4 /* NMAccountManager.m in Sources */,
+				A91A50FF14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m in Sources */,
+				A91A510314D1A52A00F41FE4 /* NMFacebookTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

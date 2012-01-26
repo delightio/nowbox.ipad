@@ -8,6 +8,7 @@
 
 #import "NMParseFacebookFeedTask.h"
 #import "NMNetworkController.h"
+#import "NMAccountManager.h"
 #import "NMChannel.h"
 #import "FBConnect.h"
 
@@ -16,13 +17,11 @@ static NSArray * youTubeRegexArray = nil;
 @implementation NMParseFacebookFeedTask
 
 @synthesize channel = _channel;
-@synthesize facebook = _facebook;
 @synthesize nextPageURLString = _nextPageURLString;
 
-- (id)initWithChannel:(NMChannel *)chn facebookProxy:(Facebook *)fbObj {
+- (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
 	command = NMCommandParseFacebookFeed;
-	self.facebook = fbObj;
 	self.channel = chn;
 	self.targetID = chn.nm_id;
 	return self;
@@ -30,13 +29,12 @@ static NSArray * youTubeRegexArray = nil;
 
 - (void)dealloc {
 	[_channel release];
-	[_facebook release];
 	[_nextPageURLString release];
 	[super dealloc];
 }
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
-	return [_facebook requestWithGraphPath:@"me" andParams:[NSMutableDictionary dictionaryWithObject:@"feed" forKey:@"fields"] andDelegate:ctrl];
+	return [self.facebook requestWithGraphPath:@"me" andParams:[NSMutableDictionary dictionaryWithObject:@"feed" forKey:@"fields"] andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {

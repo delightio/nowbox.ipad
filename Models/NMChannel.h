@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMCategory, NMChannelDetail, NMPreviewThumbnail, NMVideo, NMSocialAccount;
+@class NMCategory, NMChannelDetail, NMPreviewThumbnail, NMPoster, NMVideo, NMSocialAccount;
 
 @interface NMChannel : NSManagedObject {
 	NSNumber * nm_populated;
@@ -40,6 +40,7 @@
 @property (nonatomic, retain) NSSet *previewThumbnails;
 @property (nonatomic, retain) NSSet *videos;
 @property (nonatomic, retain) NMSocialAccount * socialAccount;
+@property (nonatomic, retain) NMPoster * poster;
 
 @end
 

@@ -222,8 +222,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				theTask.sequenceLog = taskLogCount++;
 				switch (theTask.command) {
 					case NMCommandParseFacebookFeed:
+					case NMCommandGetFacebookProfile:
 					{
-						NMParseFacebookFeedTask * fbTask = (NMParseFacebookFeedTask *)theTask;
+						NMFacebookTask * fbTask = (NMFacebookTask *)theTask;
 						FBRequest * fbRequest = [fbTask facebookRequestForController:self];
 						fbRequest.task = fbTask;
 						[facebookConnectionPool addObject:fbRequest];
@@ -572,7 +573,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result {
-	NMParseFacebookFeedTask * fbTask = (NMParseFacebookFeedTask *)request.task;
+	NMFacebookTask * fbTask = request.task;
 	
 	if ( fbTask.state == NMTaskExecutionStateCanceled ) {
 		// release the connection, and the data object
@@ -599,7 +600,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
 	NSLog(@"facebook call failed");
- 	NMParseFacebookFeedTask * fbTask = (NMParseFacebookFeedTask *)request.task;
+ 	NMFacebookTask * fbTask = request.task;
    // release the connection, and the data object
 	[commandIndexPool removeIndex:[fbTask commandIndex]];
 	// remove task

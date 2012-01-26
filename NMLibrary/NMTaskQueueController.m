@@ -78,8 +78,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// handle keyword channel creation
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
-	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
 //	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
@@ -586,7 +586,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
-	ipadAppDelegate * appDel = (ipadAppDelegate *)[[UIApplication sharedApplication] delegate];
 	NMSocialAccount * scAccount = chnObj.socialAccount;
 	if ( scAccount ) {
 		switch ([scAccount.nm_type integerValue]) {
@@ -599,7 +598,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			}	
 			case NMChannelUserFacebookType:
 			{
-				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj facebookProxy:appDel.facebook];
+				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj];
 				[networkController addNewConnectionForTask:task];
 				[task release];
 				break;
@@ -608,6 +607,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 				break;
 		}
 	}
+}
+
+- (void)issueGetMyFacebookProfile {
+	NMGetFacebookProfileTask * task = [[NMGetFacebookProfileTask alloc] initGetMe];
+	[networkController addNewConnectionForTask:task];
+	[task release];
 }
 
 - (void)cancelAllTasks {

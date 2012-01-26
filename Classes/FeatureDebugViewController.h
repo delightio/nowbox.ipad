@@ -34,5 +34,6 @@
 - (IBAction)printCommandIndexPool:(id)sender;
 - (IBAction)printMovieViewInfo:(id)sender;
 - (IBAction)parseFacebookFeed:(id)sender;
+- (IBAction)getFacebookProfile:(id)sender;
 
 @end

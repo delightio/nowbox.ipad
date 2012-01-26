@@ -49,6 +49,7 @@ typedef enum {
 	NMCommandCheckUpdate,
 	NMCommandPostSharing,
 	NMCommandParseFacebookFeed,
+	NMCommandGetFacebookProfile,
 	NMCommandParseTwitterFeed,
 } NMCommand;
 
@@ -234,6 +235,11 @@ extern NSString * const NMDidFailDownloadImageNotification;
 extern NSString * const NMTaskFailNotification;
 extern NSString * const NMDidFailSendEventNotification;
 
+// facebook
+extern NSString * const NMWillGetFacebookProfileNotification;
+extern NSString * const NMDidGetFacebookProfileNotification;
+extern NSString * const NMDidFailGetFacebookProfileNotification;
+
 // Entity names
 extern NSString * const NMCategoryEntityName;
 extern NSString * const NMChannelEntityName;
@@ -241,6 +247,7 @@ extern NSString * const NMVideoEntityName;
 extern NSString * const NMVideoDetailEntityName;
 extern NSString * const NMConcreteVideoEntityName;
 extern NSString * const NMAuthorEntityName;
+extern NSString * const NMSocialAccountEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;

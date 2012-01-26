@@ -40,13 +40,12 @@ extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 @class VideoPlaybackViewController;
 @class LaunchViewController;
 
-@interface ipadAppDelegate : NSObject <UIApplicationDelegate, FBSessionDelegate> {
+@interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
 	VideoPlaybackViewController *viewController;
 //	LaunchViewController *launchViewController;
 //	UINavigationController * navigationViewController;
 
 @private
-	Facebook * facebook;
 	BOOL stopShowingError;
 	NSUserDefaults * userDefaults;
     NSManagedObjectContext *managedObjectContext_;
@@ -69,8 +68,6 @@ extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
-@property (nonatomic, readonly) Facebook * facebook;
 
 - (void)saveContext;
 - (void)saveChannelID:(NSNumber *)chnNum;

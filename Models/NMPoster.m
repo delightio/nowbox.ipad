@@ -16,6 +16,7 @@
 @dynamic nm_social_network;
 @dynamic nm_user_id;
 @dynamic nm_description;
+@dynamic channel;
 @dynamic videos;
 
 @end
