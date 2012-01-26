@@ -29,7 +29,7 @@ static NBScreenCapture *sharedInstance = nil;
 
 @implementation NBScreenCapture
 
-@synthesize currentScreen, frameRate, captureDelegate;
+@synthesize currentScreen, frameRate, privateViews, captureDelegate;
 
 void Swizzle(Class c, SEL orig, SEL new){
     Method origMethod = class_getInstanceMethod(c, orig);
@@ -64,6 +64,16 @@ void Swizzle(Class c, SEL orig, SEL new){
     [sharedInstance resume];
 }
 
++ (void)registerPrivateView:(UIView *)view
+{
+    [sharedInstance.privateViews addObject:view];
+}
+
++ (void)unregisterPrivateView:(UIView *)view
+{
+    [sharedInstance.privateViews removeObject:view];
+}
+
 - (void) initialize {
     // Initialization code
     self.currentScreen = nil;
@@ -75,7 +85,8 @@ void Swizzle(Class c, SEL orig, SEL new){
     startedAt = nil;
     bitmapData = NULL;
     pendingTouches = [[NSMutableArray alloc] init];
-
+    privateViews = [[NSMutableSet alloc] init];
+    
     // ISA swizzling
 //    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
 //        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
@@ -131,6 +142,7 @@ void Swizzle(Class c, SEL orig, SEL new){
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self cleanupWriter];
     [pendingTouches release];
+    [privateViews release];
     
     [super dealloc];
 }
@@ -246,7 +258,7 @@ void Swizzle(Class c, SEL orig, SEL new){
             
             // Draw touch points
             NSMutableArray *objectsToRemove = [NSMutableArray array];
-            CGContextSetRGBStrokeColor(context, 0, 0, 255, 0.7);
+            CGContextSetRGBStrokeColor(context, 0, 0, 1, 0.7);
             CGContextSetLineWidth(context, 5.0);
             CGContextSetLineJoin(context, kCGLineJoinRound);
             CGPoint lastLocations[8];
@@ -282,14 +294,14 @@ void Swizzle(Class c, SEL orig, SEL new){
                                 NSLog(@"last location: %f, %f.\nCurrent location: %f, %f", lastLocation.y, lastLocation.x, location.y, location.x);
                                 NSLog(@"angle: %.2f, distance: %f", angle * 180 / M_PI, distance);
 
-                                CGContextSetRGBFillColor(context, 0, 0, 255, 1.0); 
+                                CGContextSetRGBFillColor(context, 0, 0, 1, 1.0); 
                                 CGContextMoveToPoint(context, location.x, location.y);
                                 CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI + M_PI/8), location.y + 50*sin(angle + M_PI + M_PI/8));
                                 CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI - M_PI/8), location.y + 50*sin(angle + M_PI - M_PI/8));
                                 CGContextAddLineToPoint(context, location.x, location.y);
                                 CGContextFillPath(context);
                             } else {
-                                CGContextSetRGBFillColor(context, 0, 0, 255, 0.7);                                 
+                                CGContextSetRGBFillColor(context, 0, 0, 1, 0.7);                                 
                                 CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));                                      
                             }
                             break;
@@ -306,6 +318,14 @@ void Swizzle(Class c, SEL orig, SEL new){
                 }
                 [pendingTouches removeObjectsInArray:objectsToRemove];
             }         
+            
+            // Black out private views
+            for (UIView *view in privateViews) {
+                if ([view window] == window) {
+                    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+                    CGContextFillRect(context, [view convertRect:view.frame toView:window]);
+                }
+            }
             
             CGContextRestoreGState(context);
         }

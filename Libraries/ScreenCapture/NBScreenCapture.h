@@ -61,15 +61,18 @@
     BOOL processing;
     
     NSTimer *screenshotTimer;
-    NSMutableArray *pendingTouches;
+    NSMutableArray *pendingTouches;    
 }
 
 + (void)start;
 + (void)stop;
 + (void)pause;
 + (void)resume;
++ (void)registerPrivateView:(UIView *)view;
++ (void)unregisterPrivateView:(UIView *)view;
 
 @property(retain) UIImage *currentScreen;
+@property(retain) NSMutableSet *privateViews;
 @property(assign) float frameRate;
 @property(nonatomic, assign) id<ScreenCaptureViewDelegate> captureDelegate;
 
