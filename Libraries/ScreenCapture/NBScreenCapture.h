@@ -53,7 +53,10 @@
     
     //recording state
     BOOL _recording;
+    BOOL _paused;
     NSDate* startedAt;
+    NSTimeInterval pauseStartedAt;
+    NSTimeInterval pauseTime;
     void* bitmapData;
     BOOL processing;
     
@@ -61,12 +64,12 @@
     NSMutableArray *pendingTouches;
 }
 
-//for recording video
-- (bool) startRecording;
-- (void) stopRecording;
++ (void)start;
++ (void)stop;
++ (void)pause;
++ (void)resume;
 
-//for accessing the current screen and adjusting the capture rate, etc.
-@property(retain) UIImage* currentScreen;
+@property(retain) UIImage *currentScreen;
 @property(assign) float frameRate;
 @property(nonatomic, assign) id<ScreenCaptureViewDelegate> captureDelegate;
 

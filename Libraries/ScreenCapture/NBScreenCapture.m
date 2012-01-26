@@ -3,7 +3,7 @@
 //  ipad
 //
 //  Created by Chris Haugli on 1/18/12.
-//  Copyright (c) 2012 Pipely Inc. All rights reserved.Luce Restaurant - San Francisco, CA | OpenTable
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
 #import "NBScreenCapture.h"
@@ -13,12 +13,18 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import </usr/include/objc/objc-class.h>
 
-#define kScaleFactor 0.5f
+#define kScaleFactor 1.0f
 #define kFrameRate 1.0f
 #define kBitRate 500.0*1024.0
 
+static NBScreenCapture *sharedInstance = nil;
+
 @interface NBScreenCapture(Private)
-- (void) writeVideoFrameAtTime:(CMTime)time;
+- (bool)startRecording;
+- (void)pause;
+- (void)resume;
+- (void)stopRecording;
+- (void)writeVideoFrameAtTime:(CMTime)time;
 @end
 
 @implementation NBScreenCapture
@@ -32,6 +38,30 @@ void Swizzle(Class c, SEL orig, SEL new){
         class_replaceMethod(c, new, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
     else
         method_exchangeImplementations(origMethod, newMethod);
+}
+
++ (void)start
+{
+    if (!sharedInstance) {
+        sharedInstance = [[NBScreenCapture alloc] init];
+        [sharedInstance startRecording];
+    }    
+}
+
++ (void)stop
+{
+    [sharedInstance stopRecording];
+    [sharedInstance release]; sharedInstance = nil;
+}
+
++ (void)pause
+{
+    [sharedInstance pause];
+}
+
++ (void)resume
+{
+    [sharedInstance resume];
 }
 
 - (void) initialize {
@@ -113,14 +143,12 @@ void Swizzle(Class c, SEL orig, SEL new){
 
 - (void)handleWillResignActive:(NSNotification *)notification
 {
-    NSLog(@"stop recording");
     [self stopRecording];
     UISaveVideoAtPathToSavedPhotosAlbum([self outputPath], nil, nil, nil);
 }
 
 - (void)handleDidBecomeActive:(NSNotification *)notification
 {
-    NSLog(@"start recording");
     [self startRecording];
 }
 
@@ -171,6 +199,20 @@ void Swizzle(Class c, SEL orig, SEL new){
     return context;
 }
 
+- (UIWindow *)keyboardWindow
+{
+	NSArray *windows = [[UIApplication sharedApplication] windows];
+	for (UIWindow *window in [windows reverseObjectEnumerator]) {
+		for (UIView *view in [window subviews]) {
+			if ([[[view class] description] isEqualToString:@"UIKeyboard"] || [[[view class] description] isEqualToString:@"UIPeripheralHostView"]) {
+				return window;
+			}
+		}
+	}
+	
+	return nil;
+}
+
 - (UIImage*)screenshot 
 {
     CGSize windowSize = [[UIScreen mainScreen] bounds].size;
@@ -184,11 +226,10 @@ void Swizzle(Class c, SEL orig, SEL new){
             
             // Center the context around the window's anchor point
             CGContextTranslateCTM(context, 
-                                  [window center].x - imageSize.width * kScaleFactor, 
-                                  [window center].y - imageSize.height * kScaleFactor);
+                                  [window center].x, 
+                                  [window center].y);
             
             // Apply the window's transform about the anchor point
-            CGContextScaleCTM(context, kScaleFactor, -kScaleFactor);
             CGContextConcatCTM(context, [window transform]);   
             
             // Offset by the portion of the bounds left of and above the anchor point
@@ -196,9 +237,13 @@ void Swizzle(Class c, SEL orig, SEL new){
                                   -[window bounds].size.width * [[window layer] anchorPoint].x,
                                   -[window bounds].size.height * [[window layer] anchorPoint].y);
             
-            // Render the layer hierarchy to the current context
+/*            if (window == [self keyboardWindow]) {
+                NSLog(@"window size: %f x %f", window.frame.size.width, window.frame.size.height);
+                CGContextTranslateCTM(context, window.frame.size.width * kScaleFactor, -128);
+            }*/
+
             [[window layer] renderInContext:context];
-                        
+            
             // Draw touch points
             NSMutableArray *objectsToRemove = [NSMutableArray array];
             CGContextSetRGBStrokeColor(context, 0, 0, 255, 0.7);
@@ -295,29 +340,31 @@ static NSTimeInterval timeElapsed = 0;
     processing = YES;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    @synchronized(self) {
-        NSLog(@"start screenshot");
-        NSTimeInterval start = [[NSDate date] timeIntervalSince1970];
-        self.currentScreen = [self screenshot];
-        NSTimeInterval end = [[NSDate date] timeIntervalSince1970];
-        frameCount++;
-        timeElapsed += (end - start);
-        NSLog(@"stop screenshot");
-    }
-    NSLog(@"%i frames, avg. %f", frameCount, timeElapsed / frameCount);
-    
-    /*    //debugging
-     if (frameCount < 600) {
-     NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
-     NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
-     [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
-     }*/
-    
-    if (_recording) {
-        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+    if (!_paused) {
         @synchronized(self) {
-            [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-        } 
+            NSLog(@"start screenshot");
+            NSTimeInterval start = [[NSDate date] timeIntervalSince1970];
+            self.currentScreen = [self screenshot];
+            NSTimeInterval end = [[NSDate date] timeIntervalSince1970];
+            frameCount++;
+            timeElapsed += (end - start);
+            NSLog(@"stop screenshot");
+        }
+        NSLog(@"%i frames, avg. %f", frameCount, timeElapsed / frameCount);
+        
+        /*    //debugging
+         if (frameCount < 600) {
+         NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
+         NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
+         [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
+         }*/
+        
+        if (_recording) {
+            float millisElapsed = ([[NSDate date] timeIntervalSinceDate:startedAt] - pauseTime) * 1000.0;
+            @synchronized(self) {
+                [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
+            } 
+        }
     }
     
     [pool drain];
@@ -430,6 +477,25 @@ static NSTimeInterval timeElapsed = 0;
             [screenshotTimer invalidate]; screenshotTimer = nil;            
             [self completeRecordingSession];
         }
+    }
+}
+
+- (void)pause
+{
+    if (!_paused) {
+        _paused = YES;
+        pauseStartedAt = [[NSDate date] timeIntervalSince1970];
+    }
+}
+
+- (void)resume
+{
+    if (_paused) {
+        _paused = NO;
+        NSTimeInterval thisPauseTime = [[NSDate date] timeIntervalSince1970] - pauseStartedAt;
+        pauseTime += thisPauseTime;
+        
+        NSLog(@"Resume recording, was paused for %.1f seconds", thisPauseTime);
     }
 }
 
