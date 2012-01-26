@@ -198,9 +198,7 @@ void Swizzle(Class c, SEL orig, SEL new){
             
             // Render the layer hierarchy to the current context
             [[window layer] renderInContext:context];
-            
-            CGContextRestoreGState(context);
-            
+                        
             // Draw touch points
             NSMutableArray *objectsToRemove = [NSMutableArray array];
             CGContextSetRGBStrokeColor(context, 0, 0, 255, 0.7);
@@ -262,7 +260,9 @@ void Swizzle(Class c, SEL orig, SEL new){
                     }
                 }
                 [pendingTouches removeObjectsInArray:objectsToRemove];
-            }            
+            }         
+            
+            CGContextRestoreGState(context);
         }
     }
     
