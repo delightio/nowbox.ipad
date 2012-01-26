@@ -280,14 +280,7 @@ void Swizzle(Class c, SEL orig, SEL new){
     if (!processing) {
         [self performSelectorInBackground:@selector(takeScreenshotInCurrentThread) withObject:nil];
     } else {
-        NSLog(@"Frame rate too high to keep up.");
-    }
-    
-    if (_recording) {
-        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
-        @synchronized(self) {
-            [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
-        } 
+        NSLog(@"Frame rate too high to keep up, skipping frame.");
     }
 }
 
@@ -319,6 +312,13 @@ static NSTimeInterval timeElapsed = 0;
      NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
      [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
      }*/
+    
+    if (_recording) {
+        float millisElapsed = [[NSDate date] timeIntervalSinceDate:startedAt] * 1000.0;
+        @synchronized(self) {
+            [self writeVideoFrameAtTime:CMTimeMake((int)millisElapsed, 1000)];
+        } 
+    }
     
     [pool drain];
     
