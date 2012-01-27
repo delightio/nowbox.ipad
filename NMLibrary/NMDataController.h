@@ -133,6 +133,7 @@
 - (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey;
 - (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag;
 - (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
+- (NMVideo *)insertVideoWithExternalID:(NSString *)anExtID;
 
 // author
 - (NMAuthor *)authorForID:(NSNumber *)authID;

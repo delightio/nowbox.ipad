@@ -1020,6 +1020,10 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return checkResult;
 }
 
+- (NMVideo *)insertVideoWithExternalID:(NSString *)anExtID {
+	
+}
+
 #pragma mark Author
 - (NMAuthor *)authorForID:(NSNumber *)authID {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];

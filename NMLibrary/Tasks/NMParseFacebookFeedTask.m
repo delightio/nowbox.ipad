@@ -7,6 +7,7 @@
 //
 
 #import "NMParseFacebookFeedTask.h"
+#import "NMDataController.h"
 #import "NMNetworkController.h"
 #import "NMAccountManager.h"
 #import "NMChannel.h"
@@ -67,11 +68,14 @@ static NSArray * youTubeRegexArray = nil;
 	NSLog(@"result %@", result);
 }
 
-- (void)processDownloadedDataInBuffer {
-	
-}
-
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	NMVideo * vdo;
+	for (NSDictionary * theDict in parsedObjects) {
+		// check if the video exists
+		vdo = [ctrl insertVideoWithExternalID:[theDict objectForKey:@"external_id"]];
+		// insert person profile
+		
+	}
 	return YES;
 }
 
