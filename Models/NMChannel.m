@@ -37,9 +37,8 @@
 @dynamic categories;
 @dynamic detail;
 @dynamic previewThumbnails;
+@dynamic subscription;
 @dynamic videos;
-@dynamic socialAccount;
-@dynamic poster;
 
 - (void)awakeFromFetch {
 	didFirstPopulateStatusCheck = NO;

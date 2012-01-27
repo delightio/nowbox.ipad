@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 
 @class NMChannel, NMConcreteVideo;
-@class NMPoster, NMAVPlayerItem;
+@class NMPersonProfile, NMAVPlayerItem;
 
 @interface NMVideo : NSManagedObject
 
@@ -18,7 +18,7 @@
 @property (nonatomic, retain) NSNumber * nm_session_id;
 @property (nonatomic, retain) NMConcreteVideo *video;
 @property (nonatomic, retain) NMChannel *channel;
-@property (nonatomic, retain) NMPoster * poster;
+@property (nonatomic, retain) NMPersonProfile * personProfile;
 
 /*!
  Create a new player item. The caller of this method owns the object. The caller takes full ownership of this object.

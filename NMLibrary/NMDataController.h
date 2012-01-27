@@ -17,7 +17,8 @@
 @class NMVideoDetail;
 @class NMConcreteVideo;
 @class NMAuthor;
-@class NMSocialAccount;
+@class NMSubscription;
+@class NMPersonProfile;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -140,6 +141,6 @@
 - (NMAuthor *)insertNewAuthor;
 
 // account
-- (NMSocialAccount *)insertNewSocialAccountWithID:(NSString *)strID;
+- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
 
 @end

@@ -247,7 +247,8 @@ extern NSString * const NMVideoEntityName;
 extern NSString * const NMVideoDetailEntityName;
 extern NSString * const NMConcreteVideoEntityName;
 extern NSString * const NMAuthorEntityName;
-extern NSString * const NMSocialAccountEntityName;
+extern NSString * const NMSubscriptionEntityName;
+extern NSString * const NMPersonProfileEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;

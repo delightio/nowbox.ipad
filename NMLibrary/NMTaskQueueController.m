@@ -16,7 +16,8 @@
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
 #import "NMAuthor.h"
-#import "NMSocialAccount.h"
+#import "NMSubscription.h"
+#import "NMPersonProfile.h"
 #import "Reachability.h"
 #import "ipadAppDelegate.h"
 #import "FBConnect.h"
@@ -586,9 +587,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
-	NMSocialAccount * scAccount = chnObj.socialAccount;
-	if ( scAccount ) {
-		switch ([scAccount.nm_type integerValue]) {
+	NMSubscription * theSubscription = chnObj.subscription;
+	if ( theSubscription ) {
+		switch ([theSubscription.personProfile.nm_type integerValue]) {
 			case NMChannelUserTwitterType:
 			{
 				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:nil];

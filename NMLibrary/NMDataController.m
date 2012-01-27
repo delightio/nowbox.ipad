@@ -13,7 +13,8 @@
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
 #import "NMVideoDetail.h"
-#import "NMSocialAccount.h"
+#import "NMSubscription.h"
+#import "NMPersonProfile.h"
 #import "NMGetChannelVideoListTask.h"
 
 
@@ -25,7 +26,8 @@ NSString * const NMVideoEntityName = @"NMVideo";
 NSString * const NMVideoDetailEntityName = @"NMVideoDetail";
 NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
 NSString * const NMAuthorEntityName = @"NMAuthor";
-NSString * const NMSocialAccountEntityName = @"NMSocialAccount";
+NSString * const NMSubscriptionEntityName = @"NMSubscription";
+NSString * const NMPersonProfileEntityName = @"NMPersonProfile";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 
@@ -1078,21 +1080,23 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return [NSEntityDescription insertNewObjectForEntityForName:NMAuthorEntityName inManagedObjectContext:managedObjectContext];
 }
 
-#pragma mark Social Account
-- (NMSocialAccount *)insertNewSocialAccountWithID:(NSString *)strID {
+#pragma mark Subscription and Profile
+- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:[NSEntityDescription entityForName:NMSocialAccountEntityName inManagedObjectContext:managedObjectContext]];
+	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_identifier like %@", strID]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	NMSocialAccount * acObj = nil;
+	NMPersonProfile * profileObj = nil;
 	if ( result && [result count] ) {
-		acObj = [result objectAtIndex:0];
+		profileObj = [result objectAtIndex:0];
+		*isNewObj = NO;
 	} else {
-		acObj = [NSEntityDescription insertNewObjectForEntityForName:NMSocialAccountEntityName inManagedObjectContext:managedObjectContext];
-		acObj.nm_identifier = strID;
+		profileObj = [NSEntityDescription insertNewObjectForEntityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext];
+		profileObj.nm_user_id = strID;
+		*isNewObj = YES;
 	}
-	return acObj;
+	return profileObj;
 }
 
 #pragma mark Data parsing

@@ -10,7 +10,7 @@
 #import "NMNetworkController.h"
 #import "NMDataController.h"
 #import "FBConnect.h"
-#import "NMSocialAccount.h"
+#import "NMPersonProfile.h"
 
 NSString * const NMWillGetFacebookProfileNotification = @"NMWillGetFacebookProfileNotification";
 NSString * const NMDidGetFacebookProfileNotification = @"NMDidGetFacebookProfileNotification";
@@ -39,7 +39,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 - (void)setParsedObjectsForResult:(id)result {
 	NSLog(@"%@", result);
 	NSMutableDictionary * theDict = [NSMutableDictionary dictionaryWithCapacity:3];
-	[theDict setObject:[result objectForKey:@"id"] forKey:@"nm_identifier"];
+	[theDict setObject:[result objectForKey:@"id"] forKey:@"nm_user_id"];
 	NSString * str = [result objectForKey:@"username"];
 	if ( str ) [theDict setObject:str forKey:@"username"];
 	else [theDict setObject:[NSNull null] forKey:@"username"];
@@ -50,10 +50,15 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	NSString * theID = [_profileDictionary objectForKey:@"nm_identifier"];
-	NMSocialAccount * acObj = [ctrl insertNewSocialAccountWithID:theID];
-	acObj.nm_type = [NSNumber numberWithInteger:NMLoginTwitterType];
-	[acObj setValuesForKeysWithDictionary:_profileDictionary];
+	NSString * theID = [_profileDictionary objectForKey:@"nm_user_id"];
+	BOOL newState;
+	NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithID:theID isNew:&newState];
+	theProfile.nm_type = [NSNumber numberWithInteger:NMLoginTwitterType];
+	[theProfile setValuesForKeysWithDictionary:_profileDictionary];
+	if ( newState ) {
+		// check if we need to create the channel object as well
+		
+	}
 	
 	return NO;
 }
