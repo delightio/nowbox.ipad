@@ -13,7 +13,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import </usr/include/objc/objc-class.h>
 
-#define kScaleFactor 1.0f
+#define kScaleFactor 0.5f
 #define kFrameRate 1.0f
 #define kBitRate 500.0*1024.0
 
@@ -236,23 +236,23 @@ void Swizzle(Class c, SEL orig, SEL new){
         if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
             CGContextSaveGState(context);
             
+            CGContextScaleCTM(context, 1.0, -1.0);
+            CGContextTranslateCTM(context, 0, -imageSize.height);
+
             // Center the context around the window's anchor point
             CGContextTranslateCTM(context, 
                                   [window center].x, 
                                   [window center].y);
             
             // Apply the window's transform about the anchor point
+            CGContextTranslateCTM(context, (imageSize.width - windowSize.width) / 2, (imageSize.height - windowSize.height) / 2);
             CGContextConcatCTM(context, [window transform]);   
+            CGContextScaleCTM(context, kScaleFactor, kScaleFactor);
             
             // Offset by the portion of the bounds left of and above the anchor point
             CGContextTranslateCTM(context,
                                   -[window bounds].size.width * [[window layer] anchorPoint].x,
                                   -[window bounds].size.height * [[window layer] anchorPoint].y);
-            
-/*            if (window == [self keyboardWindow]) {
-                NSLog(@"window size: %f x %f", window.frame.size.width, window.frame.size.height);
-                CGContextTranslateCTM(context, window.frame.size.width * kScaleFactor, -128);
-            }*/
 
             [[window layer] renderInContext:context];
             
@@ -455,7 +455,7 @@ static NSTimeInterval timeElapsed = 0;
     @synchronized(self) {
         BOOL success = [videoWriter finishWriting];
         if (!success) {
-            NSLog(@"finishWriting returned NO");
+            NSLog(@"finishWriting returned NO: %@", [[videoWriter error] localizedDescription]);
         }
         
         [self cleanupWriter];
