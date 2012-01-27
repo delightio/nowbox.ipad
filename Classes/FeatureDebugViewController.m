@@ -189,7 +189,7 @@
 }
 
 - (IBAction)parseFacebookFeed:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForChannel:nil];
+	[[NMTaskQueueController sharedTaskQueueController] issueDebugProcessFeed];
 }
 
 - (IBAction)getFacebookProfile:(id)sender {

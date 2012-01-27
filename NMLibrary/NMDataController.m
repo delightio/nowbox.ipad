@@ -1042,7 +1042,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_identifier like %@", strID]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_user_id like %@", strID]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMPersonProfile * profileObj = nil;
@@ -1059,15 +1059,30 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile {
-	// check if the channel exist
+	NMChannel * chnObj = aProfile.subscription.channel;
+	if ( chnObj == nil ) {
+		// the user channel does not exist. create and subscribe it.
+		chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+		chnObj.type = aProfile.nm_type;
+		chnObj.nm_is_new = (NSNumber *)kCFBooleanTrue;
+		chnObj.title = aProfile.first_name;
+		chnObj.thumbnail_uri = aProfile.picture;
+		// create subscription
+		NMSubscription * subtObj = [NSEntityDescription insertNewObjectForEntityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext];
+		subtObj.channel = chnObj;
+		subtObj.personProfile = aProfile;
+	}
+	return chnObj;
+}
+
+- (NSArray *)subscribedFacebookUserChannels {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"", aProfile.username]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"type == %@", [NSNumber numberWithInteger:NMChannelUserFacebookType]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	if ( result == nil || [result count] == 0 ) {
-		// the user channel does not exist. create and subscribe it.
-	}
+	[request release];
+	return result;
 }
 
 #pragma mark Data parsing

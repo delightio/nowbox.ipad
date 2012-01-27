@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSString * nm_user_id;
 @property (nonatomic, retain) NSString * username;
 @property (nonatomic, retain) NSNumber * nm_type;
+@property (nonatomic, retain) NSString * picture;
 @property (nonatomic, retain) NSString * first_name;
 @property (nonatomic, retain) NSSet *videos;
 @property (nonatomic, retain) NMSubscription *subscription;

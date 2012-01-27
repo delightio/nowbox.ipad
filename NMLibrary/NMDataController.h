@@ -141,5 +141,6 @@
 // Person profile and subscription
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
+- (NSArray *)subscribedFacebookUserChannels;
 
 @end

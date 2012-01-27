@@ -130,6 +130,7 @@
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
+- (void)issueDebugProcessFeed;
 
 - (void)cancelAllTasks;
 @end

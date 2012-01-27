@@ -147,6 +147,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController performSelector:@selector(debugPrintCommandPoolStatus) onThread:networkController.controlThread withObject:nil waitUntilDone:NO];
 }
 
+- (void)issueDebugProcessFeed {
+	NSArray * allFBChannels = [dataController subscribedFacebookUserChannels];
+	for (NMChannel * chn in allFBChannels) {
+		[self issueProcessFeedForChannel:chn];
+	}
+}
+
 #pragma mark Session management
 - (void)beginNewSession:(NSInteger)sid {
 	sessionID = sid;
@@ -587,26 +594,23 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
-	NMSubscription * theSubscription = chnObj.subscription;
-	if ( theSubscription ) {
-		switch ([theSubscription.personProfile.nm_type integerValue]) {
-			case NMChannelUserTwitterType:
-			{
-				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:nil];
-				[networkController addNewConnectionForTask:task];
-				[task release];
-				break;
-			}	
-			case NMChannelUserFacebookType:
-			{
-				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj];
-				[networkController addNewConnectionForTask:task];
-				[task release];
-				break;
-			}				
-			default:
-				break;
-		}
+	switch ([chnObj.type integerValue]) {
+		case NMChannelUserTwitterType:
+		{
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:nil];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}	
+		case NMChannelUserFacebookType:
+		{
+			NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}				
+		default:
+			break;
 	}
 }
 

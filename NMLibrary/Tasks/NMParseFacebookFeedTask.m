@@ -18,6 +18,7 @@ static NSArray * youTubeRegexArray = nil;
 
 @synthesize channel = _channel;
 @synthesize nextPageURLString = _nextPageURLString;
+@synthesize user_id = _user_id;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -28,6 +29,7 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (void)dealloc {
+	[_user_id release];
 	[_channel release];
 	[_nextPageURLString release];
 	[super dealloc];
@@ -48,9 +50,13 @@ static NSArray * youTubeRegexArray = nil;
 		// process the contents in the array
 		if ( [[theDict objectForKey:@"type"] isEqual:@"video"] ) {
 			extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[theDict objectForKey:@"link"]];
-			// we just need the external ID
-			NSLog(@"video name: %@ %@", [theDict objectForKey:@"name"], extID);
-			[parsedObjects addObject:extID];
+			if ( extID ) {
+				// we just need the external ID
+				NSLog(@"video name: %@ %@", [theDict objectForKey:@"name"], extID);
+				[parsedObjects addObject:extID];
+			} else {
+				NSLog(@"not added: %@ %@", [theDict objectForKey:@"name"], [theDict objectForKey:@"link"]);
+			}
 		}
 	}
 	if ( [parsedObjects count] == 0 ) {

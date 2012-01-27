@@ -18,6 +18,7 @@
 @dynamic nm_user_id;
 @dynamic username;
 @dynamic nm_type;
+@dynamic picture;
 @dynamic first_name;
 @dynamic videos;
 @dynamic subscription;
