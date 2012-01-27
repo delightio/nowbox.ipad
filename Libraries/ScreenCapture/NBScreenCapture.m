@@ -12,24 +12,15 @@
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import </usr/include/objc/objc-class.h>
+#import <OpenGLES/EAGL.h>
+#import <OpenGLES/ES1/gl.h>
+#import <OpenGLES/ES1/glext.h>
 
 #define kScaleFactor 0.5f
 #define kFrameRate 1.0f
 #define kBitRate 500.0*1024.0
 
 static NBScreenCapture *sharedInstance = nil;
-
-@interface NBScreenCapture(Private)
-- (bool)startRecording;
-- (void)pause;
-- (void)resume;
-- (void)stopRecording;
-- (void)writeVideoFrameAtTime:(CMTime)time;
-@end
-
-@implementation NBScreenCapture
-
-@synthesize currentScreen, frameRate, privateViews, captureDelegate;
 
 void Swizzle(Class c, SEL orig, SEL new){
     Method origMethod = class_getInstanceMethod(c, orig);
@@ -39,6 +30,27 @@ void Swizzle(Class c, SEL orig, SEL new){
     else
         method_exchangeImplementations(origMethod, newMethod);
 }
+
+@interface NBScreenCapture(Private)
+- (bool)startRecording;
+- (void)pause;
+- (void)resume;
+- (void)stopRecording;
+- (UIImage *)openGLScreenshot:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer;
+- (void)drawTouchMarksInContext:(CGContextRef)context;
+- (void)hidePrivateViewsForWindow:(UIWindow *)window inContext:(CGContextRef)context;
+- (void)writeVideoFrameAtTime:(CMTime)time;
+@end
+
+@implementation NBScreenCapture
+
+@synthesize currentScreen;
+@synthesize frameRate;
+@synthesize privateViews;
+@synthesize openGLViews;
+@synthesize captureDelegate;
+
+#pragma mark - Class methods
 
 + (void)start
 {
@@ -74,8 +86,30 @@ void Swizzle(Class c, SEL orig, SEL new){
     [sharedInstance.privateViews removeObject:view];
 }
 
-- (void) initialize {
-    // Initialization code
++ (void)registerOpenGLView:(UIView *)glView colorRenderBuffer:(GLuint)colorRenderBuffer
+{
+    [sharedInstance.openGLViews addObject:[NSDictionary dictionaryWithObjectsAndKeys:glView, @"view", [NSNumber numberWithInt:colorRenderBuffer], @"colorRenderBuffer", nil]];
+}
+
++ (void)unregisterOpenGLView:(UIView *)glView
+{
+    NSDictionary *dictionaryToRemove = nil;
+    for (NSDictionary *dictionary in sharedInstance.openGLViews) {
+        if ([dictionary objectForKey:@"view"] == glView) {
+            dictionaryToRemove = dictionary;
+            break;
+        }
+    }
+    
+    if (dictionaryToRemove) {
+        [sharedInstance.openGLViews removeObject:dictionaryToRemove];
+    }
+}
+
+#pragma mark -
+
+- (void)initialize 
+{
     self.currentScreen = nil;
     self.frameRate = kFrameRate;     // frames per seconds
     _recording = false;
@@ -86,6 +120,7 @@ void Swizzle(Class c, SEL orig, SEL new){
     bitmapData = NULL;
     pendingTouches = [[NSMutableArray alloc] init];
     privateViews = [[NSMutableSet alloc] init];
+    openGLViews = [[NSMutableSet alloc] init];
     
     // ISA swizzling
 //    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
@@ -111,7 +146,7 @@ void Swizzle(Class c, SEL orig, SEL new){
                                                object:nil];
 }
 
-- (id) init {
+- (id)init {
     self = [super init];
     if (self) {
         [self initialize];
@@ -119,7 +154,7 @@ void Swizzle(Class c, SEL orig, SEL new){
     return self;
 }
 
-- (void) cleanupWriter {
+- (void)cleanupWriter {
     [avAdaptor release];
     avAdaptor = nil;
     
@@ -138,35 +173,27 @@ void Swizzle(Class c, SEL orig, SEL new){
     }
 }
 
-- (void)dealloc {
+- (void)dealloc 
+{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self cleanupWriter];
+    
     [pendingTouches release];
     [privateViews release];
+    [openGLViews release];
     
     [super dealloc];
 }
 
-- (NSString *)outputPath {
+#pragma mark -
+
+- (NSString *)outputPath 
+{
     return [NSString stringWithFormat:@"%@/%@", [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0], @"output.mp4"];
 }
 
-#pragma mark - Notifications
-
-- (void)handleWillResignActive:(NSNotification *)notification
+- (CGContextRef)createBitmapContextOfSize:(CGSize) size 
 {
-    [self stopRecording];
-    UISaveVideoAtPathToSavedPhotosAlbum([self outputPath], nil, nil, nil);
-}
-
-- (void)handleDidBecomeActive:(NSNotification *)notification
-{
-    [self startRecording];
-}
-
-#pragma mark -
-
-- (CGContextRef) createBitmapContextOfSize:(CGSize) size {
     CGContextRef    context = NULL;
     CGColorSpaceRef colorSpace;
     int             bitmapByteCount;
@@ -211,21 +238,7 @@ void Swizzle(Class c, SEL orig, SEL new){
     return context;
 }
 
-- (UIWindow *)keyboardWindow
-{
-	NSArray *windows = [[UIApplication sharedApplication] windows];
-	for (UIWindow *window in [windows reverseObjectEnumerator]) {
-		for (UIView *view in [window subviews]) {
-			if ([[[view class] description] isEqualToString:@"UIKeyboard"] || [[[view class] description] isEqualToString:@"UIPeripheralHostView"]) {
-				return window;
-			}
-		}
-	}
-	
-	return nil;
-}
-
-- (UIImage*)screenshot 
+- (UIImage *)screenshot 
 {
     CGSize windowSize = [[UIScreen mainScreen] bounds].size;
     CGSize imageSize = CGSizeMake(windowSize.width * kScaleFactor, windowSize.height * kScaleFactor);
@@ -236,13 +249,12 @@ void Swizzle(Class c, SEL orig, SEL new){
         if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
             CGContextSaveGState(context);
             
+            // Flip the y-axis since Core Graphics starts with 0 at the bottom
             CGContextScaleCTM(context, 1.0, -1.0);
             CGContextTranslateCTM(context, 0, -imageSize.height);
 
             // Center the context around the window's anchor point
-            CGContextTranslateCTM(context, 
-                                  [window center].x, 
-                                  [window center].y);
+            CGContextTranslateCTM(context, [window center].x, [window center].y);
             
             // Apply the window's transform about the anchor point
             CGContextTranslateCTM(context, (imageSize.width - windowSize.width) / 2, (imageSize.height - windowSize.height) / 2);
@@ -256,76 +268,18 @@ void Swizzle(Class c, SEL orig, SEL new){
 
             [[window layer] renderInContext:context];
             
-            // Draw touch points
-            NSMutableArray *objectsToRemove = [NSMutableArray array];
-            CGContextSetRGBStrokeColor(context, 0, 0, 1, 0.7);
-            CGContextSetLineWidth(context, 5.0);
-            CGContextSetLineJoin(context, kCGLineJoinRound);
-            CGPoint lastLocations[8];
-            CGPoint startLocation;
-            NSInteger strokeCount = 0;
-            
-            @synchronized(self) {
-                for (NSMutableDictionary *touch in pendingTouches) {
-                    CGPoint location = [[touch objectForKey:@"location"] CGPointValue];
-                    NSInteger decayCount = [[touch objectForKey:@"decayCount"] integerValue];
-                    UITouchPhase phase = [[touch objectForKey:@"phase"] intValue];
-                    
-                    // Increase the decay count
-                    [touch setObject:[NSNumber numberWithInteger:decayCount+1] forKey:@"decayCount"];
-                    if (decayCount >= 0) {
-                        [objectsToRemove addObject:touch];
-                    }
-                    
-                    CGFloat diameter = 30 - 20*decayCount;
-                    switch (phase) {
-                        case UITouchPhaseBegan:
-                            startLocation = location;
-                            CGContextMoveToPoint(context, location.x, location.y);
-                            break;
-                        case UITouchPhaseEnded:
-                        case UITouchPhaseCancelled:
-                            CGContextStrokePath(context);
-                            double distance = sqrt((location.y - startLocation.y)*(location.y - startLocation.y) + (location.x - startLocation.x)*(location.x-startLocation.x));
-
-                            if (distance > 10 && strokeCount > 0) {
-                                CGPoint lastLocation = (strokeCount < 8 ? lastLocations[8 - strokeCount] : lastLocations[0]);
-                                double angle = atan2(location.y - lastLocation.y, location.x - lastLocation.x);
-                                NSLog(@"last location: %f, %f.\nCurrent location: %f, %f", lastLocation.y, lastLocation.x, location.y, location.x);
-                                NSLog(@"angle: %.2f, distance: %f", angle * 180 / M_PI, distance);
-
-                                CGContextSetRGBFillColor(context, 0, 0, 1, 1.0); 
-                                CGContextMoveToPoint(context, location.x, location.y);
-                                CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI + M_PI/8), location.y + 50*sin(angle + M_PI + M_PI/8));
-                                CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI - M_PI/8), location.y + 50*sin(angle + M_PI - M_PI/8));
-                                CGContextAddLineToPoint(context, location.x, location.y);
-                                CGContextFillPath(context);
-                            } else {
-                                CGContextSetRGBFillColor(context, 0, 0, 1, 0.7);                                 
-                                CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));                                      
-                            }
-                            break;
-                        case UITouchPhaseMoved:
-                        case UITouchPhaseStationary:
-                            CGContextAddLineToPoint(context, location.x, location.y);
-                            for (NSInteger i = 0; i <= 6; i++) {
-                                lastLocations[i] = lastLocations[i+1];
-                            }
-                            lastLocations[7] = location;
-                            strokeCount++;
-                            break;
-                    }
-                }
-                [pendingTouches removeObjectsInArray:objectsToRemove];
-            }         
-            
-            // Black out private views
-            for (UIView *view in privateViews) {
-                if ([view window] == window) {
-                    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-                    CGContextFillRect(context, [view convertRect:view.frame toView:window]);
-                }
+            // Draw any OpenGL views
+            for (NSDictionary *glViewDictionary in openGLViews) {
+                NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+                UIView *glView = [glViewDictionary objectForKey:@"view"];
+                GLuint colorRenderBuffer = [[glViewDictionary objectForKey:@"colorRenderBuffer"] intValue];
+                UIImage *glImage = [self openGLScreenshot:glView colorRenderBuffer:colorRenderBuffer];
+                [glImage drawInRect:glView.frame];
+                [pool drain];
             }
+            
+            [self drawTouchMarksInContext:context];
+            [self hidePrivateViewsForWindow:window inContext:context];
             
             CGContextRestoreGState(context);
         }
@@ -340,6 +294,157 @@ void Swizzle(Class c, SEL orig, SEL new){
     return image;
 }
 
+- (UIImage *)openGLScreenshot:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer
+{
+    // Get the size of the backing CAEAGLLayer
+    GLint backingWidth, backingHeight;
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderBuffer);
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
+	
+    NSInteger x = 0;
+    NSInteger y = 0; 
+    NSInteger width = backingWidth;
+    NSInteger height = backingHeight;
+    NSInteger dataLength = width * height * 4;
+    GLubyte *data = (GLubyte*)malloc(dataLength * sizeof(GLubyte));
+	
+    // Read pixel data from the framebuffer
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	
+    // Create a CGImage with the pixel data
+    // If your OpenGL ES content is opaque, use kCGImageAlphaNoneSkipLast to ignore the alpha channel
+    // otherwise, use kCGImageAlphaPremultipliedLast
+    CGDataProviderRef ref           = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
+    CGColorSpaceRef colorspace      = CGColorSpaceCreateDeviceRGB();
+    CGImageRef iref                 = CGImageCreate(width, 
+                                                    height, 
+                                                    8, 
+                                                    32, 
+                                                    width * 4, 
+                                                    colorspace, 
+                                                    kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast,
+                                                    ref, NULL, true, kCGRenderingIntentDefault);
+    	
+    // OpenGL ES measures data in PIXELS
+    // Create a graphics context with the target size measured in POINTS
+    NSInteger widthInPoints; 
+    NSInteger heightInPoints;
+    if (NULL != UIGraphicsBeginImageContextWithOptions) {
+        // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
+        // Set the scale parameter to your OpenGL ES view's contentScaleFactor
+        // so that you get a high-resolution snapshot when its value is greater than 1.0
+        CGFloat scale       = eaglview.contentScaleFactor;
+        widthInPoints       = width / scale;
+        heightInPoints      = height / scale;
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthInPoints, heightInPoints), NO, scale);
+    } else {
+        // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
+        widthInPoints       = width;
+        heightInPoints      = height;
+        UIGraphicsBeginImageContext(CGSizeMake(widthInPoints, heightInPoints));
+    }
+	
+    CGContextRef cgcontext  = UIGraphicsGetCurrentContext();
+	
+    // UIKit coordinate system is upside down to GL/Quartz coordinate system
+    // Flip the CGImage by rendering it to the flipped bitmap context
+    // The size of the destination area is measured in POINTS
+    CGContextSetBlendMode(cgcontext, kCGBlendModeCopy);
+    CGContextDrawImage(cgcontext, CGRectMake(0.0, 0.0, widthInPoints, heightInPoints), iref);
+	
+    // Retrieve the UIImage from the current context
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+	
+    UIGraphicsEndImageContext();
+	
+    // Clean up
+    free(data);
+    CFRelease(ref);
+    CFRelease(colorspace);
+    CGImageRelease(iref);
+    
+    return image;
+}
+
+- (void)drawTouchMarksInContext:(CGContextRef)context
+{
+    // Draw touch points
+    NSMutableArray *objectsToRemove = [NSMutableArray array];
+    CGContextSetRGBStrokeColor(context, 0, 0, 1, 0.7);
+    CGContextSetLineWidth(context, 5.0);
+    CGContextSetLineJoin(context, kCGLineJoinRound);
+    CGPoint lastLocations[8];
+    CGPoint startLocation;
+    NSInteger strokeCount = 0;
+    
+    @synchronized(self) {
+        for (NSMutableDictionary *touch in pendingTouches) {
+            CGPoint location = [[touch objectForKey:@"location"] CGPointValue];
+            NSInteger decayCount = [[touch objectForKey:@"decayCount"] integerValue];
+            UITouchPhase phase = [[touch objectForKey:@"phase"] intValue];
+            
+            // Increase the decay count
+            [touch setObject:[NSNumber numberWithInteger:decayCount+1] forKey:@"decayCount"];
+            if (decayCount >= 0) {
+                [objectsToRemove addObject:touch];
+            }
+            
+            CGFloat diameter = 30 - 20*decayCount;
+            switch (phase) {
+                case UITouchPhaseBegan:
+                    startLocation = location;
+                    CGContextMoveToPoint(context, location.x, location.y);
+                    break;
+                case UITouchPhaseEnded:
+                case UITouchPhaseCancelled:
+                    CGContextStrokePath(context);
+                    double distance = sqrt((location.y - startLocation.y)*(location.y - startLocation.y) + (location.x - startLocation.x)*(location.x-startLocation.x));
+                    
+                    if (distance > 10 && strokeCount > 0) {
+                        CGPoint lastLocation = (strokeCount < 8 ? lastLocations[8 - strokeCount] : lastLocations[0]);
+                        double angle = atan2(location.y - lastLocation.y, location.x - lastLocation.x);
+                        NSLog(@"last location: %f, %f.\nCurrent location: %f, %f", lastLocation.y, lastLocation.x, location.y, location.x);
+                        NSLog(@"angle: %.2f, distance: %f", angle * 180 / M_PI, distance);
+                        
+                        CGContextSetRGBFillColor(context, 0, 0, 1, 1.0); 
+                        CGContextMoveToPoint(context, location.x, location.y);
+                        CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI + M_PI/8), location.y + 50*sin(angle + M_PI + M_PI/8));
+                        CGContextAddLineToPoint(context, location.x + 50*cos(angle + M_PI - M_PI/8), location.y + 50*sin(angle + M_PI - M_PI/8));
+                        CGContextAddLineToPoint(context, location.x, location.y);
+                        CGContextFillPath(context);
+                    } else {
+                        CGContextSetRGBFillColor(context, 0, 0, 1, 0.7);                                 
+                        CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));                                      
+                    }
+                    break;
+                case UITouchPhaseMoved:
+                case UITouchPhaseStationary:
+                    CGContextAddLineToPoint(context, location.x, location.y);
+                    for (NSInteger i = 0; i <= 6; i++) {
+                        lastLocations[i] = lastLocations[i+1];
+                    }
+                    lastLocations[7] = location;
+                    strokeCount++;
+                    break;
+            }
+        }
+        [pendingTouches removeObjectsInArray:objectsToRemove];
+    }         
+}
+
+- (void)hidePrivateViewsForWindow:(UIWindow *)window inContext:(CGContextRef)context
+{
+    // Black out private views
+    for (UIView *view in privateViews) {
+        if ([view window] == window) {
+            CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+            CGContextFillRect(context, [view convertRect:view.frame toView:window]);
+        }
+    }
+}
+
 - (void)takeScreenshot
 {
     if (!processing) {
@@ -348,10 +453,6 @@ void Swizzle(Class c, SEL orig, SEL new){
         NSLog(@"Frame rate too high to keep up, skipping frame.");
     }
 }
-
-
-static int frameCount = 0;            //debugging
-static NSTimeInterval timeElapsed = 0;
 
 - (void)takeScreenshotInCurrentThread
 {
@@ -362,15 +463,13 @@ static NSTimeInterval timeElapsed = 0;
     
     if (!_paused) {
         @synchronized(self) {
-            NSLog(@"start screenshot");
             NSTimeInterval start = [[NSDate date] timeIntervalSince1970];
             self.currentScreen = [self screenshot];
             NSTimeInterval end = [[NSDate date] timeIntervalSince1970];
             frameCount++;
-            timeElapsed += (end - start);
-            NSLog(@"stop screenshot");
+            elapsedTime += (end - start);
+            NSLog(@"%i frames, current %.3f, average %.3f", frameCount, (end - start), elapsedTime / frameCount);
         }
-        NSLog(@"%i frames, avg. %f", frameCount, timeElapsed / frameCount);
         
         /*    //debugging
          if (frameCount < 600) {
@@ -555,6 +654,19 @@ static NSTimeInterval timeElapsed = 0;
             CGImageRelease(cgImage);
         }
     }
+}
+
+#pragma mark - Notifications
+
+- (void)handleWillResignActive:(NSNotification *)notification
+{
+    [self stopRecording];
+    UISaveVideoAtPathToSavedPhotosAlbum([self outputPath], nil, nil, nil);
+}
+
+- (void)handleDidBecomeActive:(NSNotification *)notification
+{
+    [self startRecording];
 }
 
 #pragma mark - NBScreenCapturingWindowDelegate

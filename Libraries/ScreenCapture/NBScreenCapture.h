@@ -54,14 +54,16 @@
     //recording state
     BOOL _recording;
     BOOL _paused;
-    NSDate* startedAt;
+    NSDate *startedAt;
     NSTimeInterval pauseStartedAt;
     NSTimeInterval pauseTime;
-    void* bitmapData;
+    void *bitmapData;
     BOOL processing;
+    NSInteger frameCount;
+    NSTimeInterval elapsedTime;
     
     NSTimer *screenshotTimer;
-    NSMutableArray *pendingTouches;    
+    NSMutableArray *pendingTouches;
 }
 
 + (void)start;
@@ -70,10 +72,13 @@
 + (void)resume;
 + (void)registerPrivateView:(UIView *)view;
 + (void)unregisterPrivateView:(UIView *)view;
++ (void)registerOpenGLView:(UIView *)glView colorRenderBuffer:(GLuint)colorRenderBuffer;
++ (void)unregisterOpenGLView:(UIView *)glView;
 
-@property(retain) UIImage *currentScreen;
-@property(retain) NSMutableSet *privateViews;
-@property(assign) float frameRate;
+@property(nonatomic, retain) UIImage *currentScreen;
+@property(nonatomic, retain) NSMutableSet *privateViews;
+@property(nonatomic, retain) NSMutableSet *openGLViews;
+@property(nonatomic, assign) float frameRate;
 @property(nonatomic, assign) id<ScreenCaptureViewDelegate> captureDelegate;
 
 @end

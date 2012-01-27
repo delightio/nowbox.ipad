@@ -53,6 +53,7 @@
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
 		83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83407B851461F55A009E707A /* OnBoardProcessViewController.xib */; };
 		83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */; };
+		835B97CB14D3454B0074A418 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 835B97CA14D3454B0074A418 /* OpenGLES.framework */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
 		837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C741414631012009F3C2A /* OnBoardProcessChannelView.m */; };
 		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
@@ -413,6 +414,7 @@
 		83407B851461F55A009E707A /* OnBoardProcessViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessViewController.xib; sourceTree = "<group>"; };
 		83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessViewController.h; sourceTree = "<group>"; };
 		83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessViewController.m; sourceTree = "<group>"; };
+		835B97CA14D3454B0074A418 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
 		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
 		837C741314631012009F3C2A /* OnBoardProcessChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessChannelView.h; sourceTree = "<group>"; };
@@ -805,6 +807,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				835B97CB14D3454B0074A418 /* OpenGLES.framework in Frameworks */,
 				8381D71C14C7C0730041DC8D /* CoreVideo.framework in Frameworks */,
 				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */,
@@ -1062,6 +1065,7 @@
 		A925013F134385BF001759F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				835B97CA14D3454B0074A418 /* OpenGLES.framework */,
 				8381D71B14C7C0730041DC8D /* CoreVideo.framework */,
 				83852145145A34100047B7E0 /* CoreLocation.framework */,
 				A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */,
