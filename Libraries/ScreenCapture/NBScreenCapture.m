@@ -17,7 +17,8 @@
 #import <OpenGLES/ES1/glext.h>
 
 #define kScaleFactor 0.5f
-#define kFrameRate 1.0f
+#define kStartingFrameRate 1.0f
+#define kMaxFrameRate 100.0f
 #define kBitRate 500.0*1024.0
 
 static NBScreenCapture *sharedInstance = nil;
@@ -36,7 +37,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 - (void)pause;
 - (void)resume;
 - (void)stopRecording;
-- (UIImage *)openGLScreenshot:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer;
+- (void)openGLScreenCapture:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer;
 - (void)drawTouchMarksInContext:(CGContextRef)context;
 - (void)hidePrivateViewsForWindow:(UIWindow *)window inContext:(CGContextRef)context;
 - (void)writeVideoFrameAtTime:(CMTime)time;
@@ -47,7 +48,8 @@ void Swizzle(Class c, SEL orig, SEL new){
 @synthesize currentScreen;
 @synthesize frameRate;
 @synthesize privateViews;
-@synthesize openGLViews;
+@synthesize openGLImage;
+@synthesize openGLFrame;
 @synthesize captureDelegate;
 
 #pragma mark - Class methods
@@ -86,24 +88,9 @@ void Swizzle(Class c, SEL orig, SEL new){
     [sharedInstance.privateViews removeObject:view];
 }
 
-+ (void)registerOpenGLView:(UIView *)glView colorRenderBuffer:(GLuint)colorRenderBuffer
++ (void)openGLScreenCapture:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer
 {
-    [sharedInstance.openGLViews addObject:[NSDictionary dictionaryWithObjectsAndKeys:glView, @"view", [NSNumber numberWithInt:colorRenderBuffer], @"colorRenderBuffer", nil]];
-}
-
-+ (void)unregisterOpenGLView:(UIView *)glView
-{
-    NSDictionary *dictionaryToRemove = nil;
-    for (NSDictionary *dictionary in sharedInstance.openGLViews) {
-        if ([dictionary objectForKey:@"view"] == glView) {
-            dictionaryToRemove = dictionary;
-            break;
-        }
-    }
-    
-    if (dictionaryToRemove) {
-        [sharedInstance.openGLViews removeObject:dictionaryToRemove];
-    }
+    [sharedInstance openGLScreenCapture:eaglview colorRenderBuffer:colorRenderBuffer];
 }
 
 #pragma mark -
@@ -111,7 +98,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 - (void)initialize 
 {
     self.currentScreen = nil;
-    self.frameRate = kFrameRate;     // frames per seconds
+    self.frameRate = kStartingFrameRate;     // frames per seconds
     _recording = false;
     videoWriter = nil;
     videoWriterInput = nil;
@@ -120,7 +107,6 @@ void Swizzle(Class c, SEL orig, SEL new){
     bitmapData = NULL;
     pendingTouches = [[NSMutableArray alloc] init];
     privateViews = [[NSMutableSet alloc] init];
-    openGLViews = [[NSMutableSet alloc] init];
     
     // ISA swizzling
 //    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
@@ -180,7 +166,7 @@ void Swizzle(Class c, SEL orig, SEL new){
     
     [pendingTouches release];
     [privateViews release];
-    [openGLViews release];
+    [openGLImage release];
     
     [super dealloc];
 }
@@ -243,12 +229,12 @@ void Swizzle(Class c, SEL orig, SEL new){
     CGSize windowSize = [[UIScreen mainScreen] bounds].size;
     CGSize imageSize = CGSizeMake(windowSize.width * kScaleFactor, windowSize.height * kScaleFactor);
     CGContextRef context = [self createBitmapContextOfSize:imageSize];
-        
+
     // Iterate over every window from back to front
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
         if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
             CGContextSaveGState(context);
-            
+
             // Flip the y-axis since Core Graphics starts with 0 at the bottom
             CGContextScaleCTM(context, 1.0, -1.0);
             CGContextTranslateCTM(context, 0, -imageSize.height);
@@ -265,17 +251,11 @@ void Swizzle(Class c, SEL orig, SEL new){
             CGContextTranslateCTM(context,
                                   -[window bounds].size.width * [[window layer] anchorPoint].x,
                                   -[window bounds].size.height * [[window layer] anchorPoint].y);
-
             [[window layer] renderInContext:context];
-            
+
             // Draw any OpenGL views
-            for (NSDictionary *glViewDictionary in openGLViews) {
-                NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-                UIView *glView = [glViewDictionary objectForKey:@"view"];
-                GLuint colorRenderBuffer = [[glViewDictionary objectForKey:@"colorRenderBuffer"] intValue];
-                UIImage *glImage = [self openGLScreenshot:glView colorRenderBuffer:colorRenderBuffer];
-                [glImage drawInRect:glView.frame];
-                [pool drain];
+            if (openGLImage) {
+                CGContextDrawImage(context, openGLFrame, [openGLImage CGImage]);
             }
             
             [self drawTouchMarksInContext:context];
@@ -294,78 +274,79 @@ void Swizzle(Class c, SEL orig, SEL new){
     return image;
 }
 
-- (UIImage *)openGLScreenshot:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer
+- (void)openGLScreenCapture:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer
 {
-    // Get the size of the backing CAEAGLLayer
-    GLint backingWidth, backingHeight;
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderBuffer);
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
-	
-    NSInteger x = 0;
-    NSInteger y = 0; 
-    NSInteger width = backingWidth;
-    NSInteger height = backingHeight;
-    NSInteger dataLength = width * height * 4;
-    GLubyte *data = (GLubyte*)malloc(dataLength * sizeof(GLubyte));
-	
-    // Read pixel data from the framebuffer
-    glPixelStorei(GL_PACK_ALIGNMENT, 4);
-    glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	
-    // Create a CGImage with the pixel data
-    // If your OpenGL ES content is opaque, use kCGImageAlphaNoneSkipLast to ignore the alpha channel
-    // otherwise, use kCGImageAlphaPremultipliedLast
-    CGDataProviderRef ref           = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
-    CGColorSpaceRef colorspace      = CGColorSpaceCreateDeviceRGB();
-    CGImageRef iref                 = CGImageCreate(width, 
-                                                    height, 
-                                                    8, 
-                                                    32, 
-                                                    width * 4, 
-                                                    colorspace, 
-                                                    kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast,
-                                                    ref, NULL, true, kCGRenderingIntentDefault);
-    	
-    // OpenGL ES measures data in PIXELS
-    // Create a graphics context with the target size measured in POINTS
-    NSInteger widthInPoints; 
-    NSInteger heightInPoints;
-    if (NULL != UIGraphicsBeginImageContextWithOptions) {
-        // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
-        // Set the scale parameter to your OpenGL ES view's contentScaleFactor
-        // so that you get a high-resolution snapshot when its value is greater than 1.0
-        CGFloat scale       = eaglview.contentScaleFactor;
-        widthInPoints       = width / scale;
-        heightInPoints      = height / scale;
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthInPoints, heightInPoints), NO, scale);
-    } else {
-        // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
-        widthInPoints       = width;
-        heightInPoints      = height;
-        UIGraphicsBeginImageContext(CGSizeMake(widthInPoints, heightInPoints));
+    @synchronized(self) {
+        // Get the size of the backing CAEAGLLayer
+        GLint backingWidth, backingHeight;
+        glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderBuffer);
+        glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
+        glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
+        
+        NSInteger x = 0;
+        NSInteger y = 0; 
+        NSInteger width = backingWidth;
+        NSInteger height = backingHeight;
+        NSInteger dataLength = width * height * 4;
+        GLubyte *data = (GLubyte*)malloc(dataLength * sizeof(GLubyte));
+        
+        // Read pixel data from the framebuffer
+        glPixelStorei(GL_PACK_ALIGNMENT, 4);
+        glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        
+        // Create a CGImage with the pixel data
+        // If your OpenGL ES content is opaque, use kCGImageAlphaNoneSkipLast to ignore the alpha channel
+        // otherwise, use kCGImageAlphaPremultipliedLast
+        CGDataProviderRef ref           = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
+        CGColorSpaceRef colorspace      = CGColorSpaceCreateDeviceRGB();
+        CGImageRef iref                 = CGImageCreate(width, 
+                                                        height, 
+                                                        8, 
+                                                        32, 
+                                                        width * 4, 
+                                                        colorspace, 
+                                                        kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast,
+                                                        ref, NULL, true, kCGRenderingIntentDefault);
+            
+        // OpenGL ES measures data in PIXELS
+        // Create a graphics context with the target size measured in POINTS
+        NSInteger widthInPoints; 
+        NSInteger heightInPoints;
+        if (NULL != UIGraphicsBeginImageContextWithOptions) {
+            // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
+            // Set the scale parameter to your OpenGL ES view's contentScaleFactor
+            // so that you get a high-resolution snapshot when its value is greater than 1.0
+            CGFloat scale       = eaglview.contentScaleFactor;
+            widthInPoints       = width / scale;
+            heightInPoints      = height / scale;
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthInPoints, heightInPoints), NO, scale);
+        } else {
+            // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
+            widthInPoints       = width;
+            heightInPoints      = height;
+            UIGraphicsBeginImageContext(CGSizeMake(widthInPoints, heightInPoints));
+        }
+        
+        CGContextRef cgcontext  = UIGraphicsGetCurrentContext();
+
+        // UIKit coordinate system is upside down to GL/Quartz coordinate system
+        // Flip the CGImage by rendering it to the flipped bitmap context
+        // The size of the destination area is measured in POINTS
+        CGContextSetBlendMode(cgcontext, kCGBlendModeCopy);
+        CGContextDrawImage(cgcontext, CGRectMake(0.0, 0.0, widthInPoints, heightInPoints), iref);
+        // Retrieve the UIImage from the current context
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        self.openGLFrame = [eaglview convertRect:eaglview.frame toView:eaglview.window];
+        self.openGLImage = image;
+        
+        UIGraphicsEndImageContext();
+        
+        // Clean up
+        free(data);
+        CFRelease(ref);
+        CFRelease(colorspace);
+        CGImageRelease(iref);
     }
-	
-    CGContextRef cgcontext  = UIGraphicsGetCurrentContext();
-	
-    // UIKit coordinate system is upside down to GL/Quartz coordinate system
-    // Flip the CGImage by rendering it to the flipped bitmap context
-    // The size of the destination area is measured in POINTS
-    CGContextSetBlendMode(cgcontext, kCGBlendModeCopy);
-    CGContextDrawImage(cgcontext, CGRectMake(0.0, 0.0, widthInPoints, heightInPoints), iref);
-	
-    // Retrieve the UIImage from the current context
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-	
-    UIGraphicsEndImageContext();
-	
-    // Clean up
-    free(data);
-    CFRelease(ref);
-    CFRelease(colorspace);
-    CGImageRelease(iref);
-    
-    return image;
 }
 
 - (void)drawTouchMarksInContext:(CGContextRef)context
@@ -375,11 +356,12 @@ void Swizzle(Class c, SEL orig, SEL new){
     CGContextSetRGBStrokeColor(context, 0, 0, 1, 0.7);
     CGContextSetLineWidth(context, 5.0);
     CGContextSetLineJoin(context, kCGLineJoinRound);
-    CGPoint lastLocations[8];
-    CGPoint startLocation;
+    CGPoint lastLocations[4];
+    CGPoint startLocation = CGPointZero;
     NSInteger strokeCount = 0;
     
     @synchronized(self) {
+        BOOL lineBegun = NO;
         for (NSMutableDictionary *touch in pendingTouches) {
             CGPoint location = [[touch objectForKey:@"location"] CGPointValue];
             NSInteger decayCount = [[touch objectForKey:@"decayCount"] integerValue];
@@ -387,15 +369,15 @@ void Swizzle(Class c, SEL orig, SEL new){
             
             // Increase the decay count
             [touch setObject:[NSNumber numberWithInteger:decayCount+1] forKey:@"decayCount"];
-            if (decayCount >= 0) {
+            if (decayCount >= frameRate) {
                 [objectsToRemove addObject:touch];
             }
             
-            CGFloat diameter = 30 - 20*decayCount;
             switch (phase) {
                 case UITouchPhaseBegan:
                     startLocation = location;
                     CGContextMoveToPoint(context, location.x, location.y);
+                    lineBegun = YES;
                     break;
                 case UITouchPhaseEnded:
                 case UITouchPhaseCancelled:
@@ -403,10 +385,8 @@ void Swizzle(Class c, SEL orig, SEL new){
                     double distance = sqrt((location.y - startLocation.y)*(location.y - startLocation.y) + (location.x - startLocation.x)*(location.x-startLocation.x));
                     
                     if (distance > 10 && strokeCount > 0) {
-                        CGPoint lastLocation = (strokeCount < 8 ? lastLocations[8 - strokeCount] : lastLocations[0]);
+                        CGPoint lastLocation = (strokeCount < 4 ? lastLocations[4 - strokeCount] : lastLocations[0]);
                         double angle = atan2(location.y - lastLocation.y, location.x - lastLocation.x);
-                        NSLog(@"last location: %f, %f.\nCurrent location: %f, %f", lastLocation.y, lastLocation.x, location.y, location.x);
-                        NSLog(@"angle: %.2f, distance: %f", angle * 180 / M_PI, distance);
                         
                         CGContextSetRGBFillColor(context, 0, 0, 1, 1.0); 
                         CGContextMoveToPoint(context, location.x, location.y);
@@ -416,16 +396,23 @@ void Swizzle(Class c, SEL orig, SEL new){
                         CGContextFillPath(context);
                     } else {
                         CGContextSetRGBFillColor(context, 0, 0, 1, 0.7);                                 
-                        CGContextFillEllipseInRect(context, CGRectMake(location.x - diameter / 2, location.y - diameter / 2, diameter, diameter));                                      
+                        CGContextFillEllipseInRect(context, CGRectMake(location.x - 15, location.y - 15, 15, 15));    
                     }
                     break;
                 case UITouchPhaseMoved:
                 case UITouchPhaseStationary:
-                    CGContextAddLineToPoint(context, location.x, location.y);
-                    for (NSInteger i = 0; i <= 6; i++) {
+                    if (lineBegun) {
+                        CGContextAddLineToPoint(context, location.x, location.y);
+                    } else {
+                        CGContextMoveToPoint(context, location.x, location.y);
+                    }
+                    if (CGPointEqualToPoint(startLocation, CGPointZero)) {
+                        startLocation = location;
+                    }
+                    for (NSInteger i = 0; i <= 2; i++) {
                         lastLocations[i] = lastLocations[i+1];
                     }
-                    lastLocations[7] = location;
+                    lastLocations[3] = location;
                     strokeCount++;
                     break;
             }
@@ -449,9 +436,18 @@ void Swizzle(Class c, SEL orig, SEL new){
 {
     if (!processing) {
         [self performSelectorInBackground:@selector(takeScreenshotInCurrentThread) withObject:nil];
+        if (frameRate < kMaxFrameRate) {
+            frameRate++;
+        }
     } else {
-        NSLog(@"Frame rate too high to keep up, skipping frame.");
+        // Frame rate too high to keep up
+        if (frameRate > 1.0) {
+            frameRate--;
+        }
     }
+    
+    NSLog(@"Frame rate: %.0f fps", frameRate);
+    [self performSelector:@selector(takeScreenshot) withObject:nil afterDelay:1.0/frameRate];
 }
 
 - (void)takeScreenshotInCurrentThread
@@ -468,8 +464,10 @@ void Swizzle(Class c, SEL orig, SEL new){
             NSTimeInterval end = [[NSDate date] timeIntervalSince1970];
             frameCount++;
             elapsedTime += (end - start);
-            NSLog(@"%i frames, current %.3f, average %.3f", frameCount, (end - start), elapsedTime / frameCount);
+//            NSLog(@"%i frames, current %.3f, average %.3f", frameCount, (end - start), elapsedTime / frameCount);
         }
+        
+        self.openGLImage = nil;
         
         /*    //debugging
          if (frameCount < 600) {
@@ -582,7 +580,8 @@ void Swizzle(Class c, SEL orig, SEL new){
             startedAt = [[NSDate date] retain];
             _recording = true;
             
-            screenshotTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/kFrameRate target:self selector:@selector(takeScreenshot) userInfo:nil repeats:YES];
+            [self performSelector:@selector(takeScreenshot) withObject:nil afterDelay:1.0/frameRate];
+//            screenshotTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f/kFrameRate target:self selector:@selector(takeScreenshot) userInfo:nil repeats:YES];
         }
     }
     

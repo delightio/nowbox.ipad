@@ -63,7 +63,7 @@
     NSTimeInterval elapsedTime;
     
     NSTimer *screenshotTimer;
-    NSMutableArray *pendingTouches;
+    NSMutableArray *pendingTouches;    
 }
 
 + (void)start;
@@ -72,12 +72,12 @@
 + (void)resume;
 + (void)registerPrivateView:(UIView *)view;
 + (void)unregisterPrivateView:(UIView *)view;
-+ (void)registerOpenGLView:(UIView *)glView colorRenderBuffer:(GLuint)colorRenderBuffer;
-+ (void)unregisterOpenGLView:(UIView *)glView;
++ (void)openGLScreenCapture:(UIView *)view colorRenderBuffer:(GLuint)colorRenderBuffer;
 
 @property(nonatomic, retain) UIImage *currentScreen;
 @property(nonatomic, retain) NSMutableSet *privateViews;
-@property(nonatomic, retain) NSMutableSet *openGLViews;
+@property(retain) UIImage *openGLImage;
+@property(nonatomic, assign) CGRect openGLFrame;
 @property(nonatomic, assign) float frameRate;
 @property(nonatomic, assign) id<ScreenCaptureViewDelegate> captureDelegate;
 
