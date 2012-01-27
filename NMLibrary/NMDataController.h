@@ -101,8 +101,6 @@
 - (NMChannel *)channelForID:(NSNumber *)chnID;
 - (NSArray *)hiddenSubscribedChannels;
 - (NMChannel *)lastSessionChannel;
-//- (void)batchDeleteChannels:(NSArray *)chnAy;
-//- (void)batchDeleteChannelForIDs:(NSArray *)idAy;
 - (void)permanentDeleteMarkedChannels;
 - (NSInteger)maxChannelSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
@@ -140,7 +138,8 @@
 - (NMAuthor *)authorForID:(NSNumber *)authID;
 - (NMAuthor *)insertNewAuthor;
 
-// account
+// Person profile and subscription
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
+- (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
 
 @end

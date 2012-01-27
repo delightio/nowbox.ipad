@@ -37,7 +37,6 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 }
 
 - (void)setParsedObjectsForResult:(id)result {
-	NSLog(@"%@", result);
 	NSMutableDictionary * theDict = [NSMutableDictionary dictionaryWithCapacity:3];
 	[theDict setObject:[result objectForKey:@"id"] forKey:@"nm_user_id"];
 	NSString * str = [result objectForKey:@"username"];

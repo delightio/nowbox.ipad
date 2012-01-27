@@ -564,48 +564,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return chnObj;
 }
 
-//- (void)batchDeleteChannels:(NSArray *)chnAy {
-//	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-//	
-//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-//	[request setEntity:channelEntityDescription];
-//	[request setPredicate:[NSPredicate predicateWithFormat:@"SELF in %@", chnAy]];
-//	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
-//	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-//	if ( [result count] ) {
-//		NSManagedObject * mobj;
-//		for (mobj in result) {
-//			[managedObjectContext deleteObject:mobj];
-//		}
-//	}
-//	[request release];
-//	// clean up cache
-//	[channelCacheDictionary removeAllObjects];
-//	
-//	[pool release];
-//}
-
-//- (void)batchDeleteChannelForIDs:(NSArray *)idAy {
-//	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-//	
-//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-//	[request setEntity:channelEntityDescription];
-//	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id in %@", idAy]];
-//	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
-//	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-//	if ( [result count] ) {
-//		NSManagedObject * mobj;
-//		for (mobj in result) {
-//			[managedObjectContext deleteObject:mobj];
-//		}
-//	}
-//	[request release];
-//	// clean up cache
-//	[channelCacheDictionary removeAllObjects];
-//	
-//	[pool release];
-//}
-
 - (void)permanentDeleteMarkedChannels {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
@@ -1096,7 +1054,20 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		profileObj.nm_user_id = strID;
 		*isNewObj = YES;
 	}
+	[request release];
 	return profileObj;
+}
+
+- (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile {
+	// check if the channel exist
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:channelEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"", aProfile.username]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( result == nil || [result count] == 0 ) {
+		// the user channel does not exist. create and subscribe it.
+	}
 }
 
 #pragma mark Data parsing
