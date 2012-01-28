@@ -30,6 +30,7 @@ NSString * const NMSubscriptionEntityName = @"NMSubscription";
 NSString * const NMPersonProfileEntityName = @"NMPersonProfile";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
+NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 @implementation NMDataController
 @synthesize managedObjectContext;
@@ -57,6 +58,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
 	channelAndSessionPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND nm_session_id == $SESSION_ID"] retain];
 	concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.nm_id = $OBJECT_ID"] retain];
+	concreteVideoForExternalIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.external_id = $EXTERNAL_ID"] retain];
 	usernamePredicateTemplate = [[NSPredicate predicateWithFormat:@"username like $USERNAME"] retain];
 
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
@@ -78,6 +80,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[channelPredicateTemplate release];
 	[channelAndSessionPredicateTemplate release];
 	[concreteVideoForIDPredicateTemplate release];
+	[concreteVideoForExternalIDPredicateTemplate release];
 	[usernamePredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
@@ -1020,8 +1023,35 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return checkResult;
 }
 
-- (NMVideo *)insertVideoIfExists:(BOOL)aflag externalID:(NSString *)anExtID {
+- (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[concreteVideoForExternalIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:anExtID forKey:@"EXTERNAL_ID"]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	[request setReturnsObjectsAsFaults:NO];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	
+	NMVideoExistenceCheckResult checkResult = NMVideoDoesNotExist;
+	if ( [result count] ) {
+		// the video exists. check if the video exists in the channel
+		NMVideo * vdo = nil;
+		BOOL vdoInChn = NO;
+		for (vdo in result) {
+			if ( [vdo.channel isEqual:chn] ) {
+				// video already exists in the current channel
+				vdoInChn = YES;
+				break;
+			}
+		}
+		if ( vdoInChn ) {
+			checkResult = NMVideoExistsAndInChannel;
+		} else {
+			*outRealVdo = vdo.video;
+			checkResult = NMVideoExistsButNotInChannel;
+		}
+	}
+	[request release];
+	return checkResult;
 }
 
 #pragma mark Author

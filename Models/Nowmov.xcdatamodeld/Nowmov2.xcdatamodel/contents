@@ -54,7 +54,7 @@
         <attribute name="nm_direct_sd_url" optional="YES" attributeType="String"/>
         <attribute name="nm_direct_url" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="nm_direct_url_expiry" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_favorite" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_playback_status" optional="YES" transient="YES" attributeType="Integer 32" valueTransformerName="" defaultValueString="0"/>
@@ -73,6 +73,7 @@
     <entity name="NMPersonProfile" representedClassName="NMPersonProfile" syncable="YES">
         <attribute name="first_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nm_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_social_network" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_user_id" optional="YES" attributeType="String" syncable="YES"/>

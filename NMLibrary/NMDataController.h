@@ -32,6 +32,7 @@
 	NSPredicate * channelAndSessionPredicateTemplate;
 	NSPredicate * cachedChannelsPredicate;
 	NSPredicate * concreteVideoForIDPredicateTemplate;
+	NSPredicate * concreteVideoForExternalIDPredicateTemplate;
 	NSPredicate * usernamePredicateTemplate;
 	
 	// entity object
@@ -133,7 +134,7 @@
 - (void)batchUpdateVideoWithID:(NSNumber *)vid forValue:(id)val key:(NSString *)akey;
 - (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag;
 - (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
-- (NMVideo *)insertVideoIfExists:(BOOL)aflag externalID:(NSString *)anExtID;
+- (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 
 // author
 - (NMAuthor *)authorForID:(NSNumber *)authID;

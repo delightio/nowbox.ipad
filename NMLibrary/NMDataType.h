@@ -121,6 +121,7 @@ typedef enum {
 
 extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
+extern NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR;
 // Notifications
 // error
 extern NSString * const NMShowErrorAlertNotification;

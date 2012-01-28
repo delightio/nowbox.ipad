@@ -12,6 +12,8 @@
 #import "NMAccountManager.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
+#import "NMPersonProfile.h"
 #import "FBConnect.h"
 
 static NSArray * youTubeRegexArray = nil;
@@ -46,11 +48,14 @@ static NSArray * youTubeRegexArray = nil;
 - (void)setParsedObjectsForResult:(id)result {
 	NSArray * feedAy = [result valueForKeyPath:@"feed.data"];
 	
-	if ( feedAy == nil || [feedAy count] == 0 ) return;
+	NSUInteger feedCount = [feedAy count];
+	if ( feedCount == 0 ) return;
 	
-	parsedObjects = [[NSMutableArray alloc] initWithCapacity:[feedAy count]];
+	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
+	self.profileArray = [NSMutableArray arrayWithCapacity:feedCount];
 	NSString * extID = nil;
 	NSString * dataType = nil;
+	NSDictionary * fromDict = nil;
 	for (NSDictionary * theDict in feedAy) {
 		// process the contents in the array
 		dataType = [theDict objectForKey:@"type"];
@@ -64,6 +69,9 @@ static NSArray * youTubeRegexArray = nil;
 				NSLog(@"not added: %@ %@", [theDict objectForKey:@"name"], [theDict objectForKey:@"link"]);
 			}
 		}
+		fromDict = [theDict objectForKey:@"from"];
+		if ( fromDict ) [_profileArray addObject:fromDict];
+		else [_profileArray addObject:[NSNull null]];
 	}
 	if ( [parsedObjects count] == 0 ) {
 		[parsedObjects release];
@@ -74,21 +82,46 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	NSUInteger c = [parsedObjects count];
-	NSString * extID;
-	NMVideo * vdo;
-	BOOL isNew;
-	NMPersonProfile * theProfile;
-	NSDictionary * theDict;
-	for (NSUInteger i = 0; i < c; i++) {
-		extID = [parsedObjects objectAtIndex:i];
-		// import the video
-		vdo = [ctrl insertVideoIfExists:YES externalID:extID];
-		theProfile = [ctrl insertNewPersonProfileWithID:[theDict objectForKey:@"nm_user_id"] isNew:&isNew];
-		if ( isNew ) {
-			vdo.personProfile = theProfile;
+	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
+	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		NSString * extID = obj;
+		NMConcreteVideo * conVdo = nil;
+		NMVideo * vdo = nil;
+		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
+		switch (chkResult) {
+			case NMVideoExistsButNotInChannel:
+				// create only the NMVideo object
+				break;
+				
+			case NMVideoDoesNotExist:
+				// create the NMVideo and NMConcreteVideo objects
+				conVdo = [ctrl insertNewConcreteVideo];
+				conVdo.external_id = extID;
+				conVdo.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+				// create video
+				vdo = [ctrl insertNewVideo];
+				vdo.video = conVdo;
+				vdo.channel = _channel;
+				vdo.nm_session_id = NM_SESSION_ID;
+				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				break;
+				
+			default:
+				break;
 		}
-	}
+		// check person profile
+		BOOL isNew = NO;
+		id fromDict = [_profileArray objectAtIndex:idx];
+		if ( fromDict != [NSNull null] ) {
+			NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithID:[fromDict objectForKey:@"id"] isNew:&isNew];
+			if ( isNew ) {
+				theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+				theProfile.first_name = [fromDict objectForKey:@"name"];
+				theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+				vdo.personProfile = theProfile;
+			}
+		}
+	}];
 	return YES;
 }
 
