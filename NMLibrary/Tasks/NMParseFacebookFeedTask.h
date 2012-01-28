@@ -15,6 +15,7 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NSString * nextPageURLString;
 @property (nonatomic, retain) NSString * user_id;
+@property (nonatomic, retain) NSArray * profileArray;
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 

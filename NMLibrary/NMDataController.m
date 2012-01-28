@@ -1020,7 +1020,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return checkResult;
 }
 
-- (NMVideo *)insertVideoWithExternalID:(NSString *)anExtID {
+- (NMVideo *)insertVideoIfExists:(BOOL)aflag externalID:(NSString *)anExtID {
 	
 }
 
@@ -1050,7 +1050,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMPersonProfile * profileObj = nil;
-	if ( result && [result count] ) {
+	if ( [result count] ) {
 		profileObj = [result objectAtIndex:0];
 		*isNewObj = NO;
 	} else {
