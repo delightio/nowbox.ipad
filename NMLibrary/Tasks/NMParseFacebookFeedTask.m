@@ -15,6 +15,11 @@
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "FBConnect.h"
+#import "NMObjectCache.h"
+
+NSString * const NMWillParseFacebookFeedNotification = @"NMWillParseFacebookFeedNotification";
+NSString * const NMDidParseFacebookFeedNotification = @"NMDidParseFacebookFeedNotification";
+NSString * const NMDidFailParseFacebookFeedNotification = @"NMDidFailParseFacebookFeedNotification";
 
 static NSArray * youTubeRegexArray = nil;
 
@@ -42,7 +47,7 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
-	return [self.facebook requestWithGraphPath:@"me" andParams:[NSMutableDictionary dictionaryWithObject:@"feed" forKey:@"fields"] andDelegate:ctrl];
+	return [self.facebook requestWithGraphPath:@"me" andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"feed", @"fields", @"50", @"limit", nil] andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {
@@ -82,7 +87,10 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	if ( [parsedObjects count] == 0 ) return NO;
+	
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
+	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSString * extID = obj;
 		NMConcreteVideo * conVdo = nil;
@@ -91,6 +99,10 @@ static NSArray * youTubeRegexArray = nil;
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
 				// create only the NMVideo object
+				vdo = [ctrl insertNewVideo];
+				vdo.channel = _channel;
+				vdo.nm_session_id = NM_SESSION_ID;
+				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				break;
 				
 			case NMVideoDoesNotExist:
@@ -110,18 +122,26 @@ static NSArray * youTubeRegexArray = nil;
 				break;
 		}
 		// check person profile
-		BOOL isNew = NO;
-		id fromDict = [_profileArray objectAtIndex:idx];
-		if ( fromDict != [NSNull null] ) {
-			NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithID:[fromDict objectForKey:@"id"] isNew:&isNew];
-			if ( isNew ) {
-				theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
-				theProfile.first_name = [fromDict objectForKey:@"name"];
-				theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+		if ( vdo ) {
+			BOOL isNew = NO;
+			id fromDict = [_profileArray objectAtIndex:idx];
+			if ( fromDict != [NSNull null] ) {
+				NSString * manID = [fromDict objectForKey:@"id"];
+				NMPersonProfile * theProfile = [objectCache objectForKey:manID];
+				if ( theProfile == nil ) {
+					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+					[objectCache setObject:theProfile forKey:manID];
+				}
+				if ( isNew ) {
+					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+					theProfile.first_name = [fromDict objectForKey:@"name"];
+					theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+				}
 				vdo.personProfile = theProfile;
 			}
 		}
 	}];
+	[objectCache release];
 	return YES;
 }
 
@@ -144,6 +164,18 @@ static NSArray * youTubeRegexArray = nil;
 		}
 	}
 	return extID;
+}
+
+- (NSString *)willLoadNotificationName {
+	return NMWillParseFacebookFeedNotification;
+}
+
+- (NSString *)didLoadNotificationName {
+	return NMDidParseFacebookFeedNotification;
+}
+
+- (NSString *)didFailNotificationName {
+	return NMDidFailParseFacebookFeedNotification;
 }
 
 @end

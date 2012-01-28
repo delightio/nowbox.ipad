@@ -240,6 +240,9 @@ extern NSString * const NMDidFailSendEventNotification;
 extern NSString * const NMWillGetFacebookProfileNotification;
 extern NSString * const NMDidGetFacebookProfileNotification;
 extern NSString * const NMDidFailGetFacebookProfileNotification;
+extern NSString * const NMWillParseFacebookFeedNotification;
+extern NSString * const NMDidParseFacebookFeedNotification;
+extern NSString * const NMDidFailParseFacebookFeedNotification;
 
 // Entity names
 extern NSString * const NMCategoryEntityName;

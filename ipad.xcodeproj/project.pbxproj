@@ -339,6 +339,8 @@
 		A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9452BC71415E75E00056361 /* NMFileExistsCache.m */; };
 		A9D04874144FB39600EFD21F /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D04873144FB39600EFD21F /* user_placeholder_image.png */; };
 		A9D19B2B140E274E008CF101 /* NMChannelDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B2A140E274E008CF101 /* NMChannelDetail.m */; };
+		A9D5CF8B14D40D2E001AFC95 /* NMObjectCache.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */; };
+		A9D5CF8C14D40D2E001AFC95 /* NMObjectCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */; };
 		A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */; };
 		A9D9EE1E13AABEB0009ABBEA /* NMStyleUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */; };
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
@@ -796,6 +798,8 @@
 		A9D19B2A140E274E008CF101 /* NMChannelDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelDetail.m; sourceTree = "<group>"; };
 		A9D19B30140E2916008CF101 /* NMGetChannelDetailTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelDetailTask.h; sourceTree = "<group>"; };
 		A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelDetailTask.m; sourceTree = "<group>"; };
+		A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMObjectCache.h; sourceTree = "<group>"; };
+		A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMObjectCache.m; sourceTree = "<group>"; };
 		A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		A9D9EE1C13AABEB0009ABBEA /* NMStyleUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMStyleUtility.h; sourceTree = "<group>"; };
 		A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMStyleUtility.m; sourceTree = "<group>"; };
@@ -1399,6 +1403,8 @@
 				A9E285EA14C300A700B4AB5C /* NMURLConnection.m */,
 				A91A50F414D1720700F41FE4 /* NMAccountManager.h */,
 				A91A50F514D1720700F41FE4 /* NMAccountManager.m */,
+				A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */,
+				A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */,
 			);
 			path = NMLibrary;
 			sourceTree = "<group>";
@@ -1595,6 +1601,7 @@
 				A91A50F614D1720700F41FE4 /* NMAccountManager.h in Headers */,
 				A91A50FE14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h in Headers */,
 				A91A510214D1A52A00F41FE4 /* NMFacebookTask.h in Headers */,
+				A9D5CF8B14D40D2E001AFC95 /* NMObjectCache.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2028,6 +2035,7 @@
 				A91A50F714D1720700F41FE4 /* NMAccountManager.m in Sources */,
 				A91A50FF14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m in Sources */,
 				A91A510314D1A52A00F41FE4 /* NMFacebookTask.m in Sources */,
+				A9D5CF8C14D40D2E001AFC95 /* NMObjectCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
