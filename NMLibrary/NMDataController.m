@@ -8,6 +8,7 @@
 
 #import "NMDataController.h"
 #import "NMTask.h"
+#import "NMAuthor.h"
 #import "NMCategory.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
@@ -1070,6 +1071,24 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 - (NMAuthor *)insertNewAuthor {
 	return [NSEntityDescription insertNewObjectForEntityForName:NMAuthorEntityName inManagedObjectContext:managedObjectContext];
+}
+
+- (NMAuthor *)insertNewAuthorWithUsername:(NSString *)aName isNew:(BOOL *)isNewObj {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setPredicate:[usernamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:aName forKey:@"USERNAME"]]];
+	[request setEntity:authorEntityDescription];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	NMAuthor * theAuthor = nil;
+	if ( [result count] ) {
+		theAuthor = [result objectAtIndex:0];
+		*isNewObj = NO;
+	} else {
+		theAuthor = [NSEntityDescription insertNewObjectForEntityForName:NMAuthorEntityName inManagedObjectContext:managedObjectContext];
+		theAuthor.username = aName;
+		*isNewObj = YES;
+	}
+	[request release];
+	return theAuthor;
 }
 
 #pragma mark Subscription and Profile

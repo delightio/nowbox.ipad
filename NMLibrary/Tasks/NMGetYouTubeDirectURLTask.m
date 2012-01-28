@@ -7,8 +7,11 @@
 //
 
 #import "NMGetYouTubeDirectURLTask.h"
+#import "NMDataController.h"
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
+#import "NMVideoDetail.h"
+#import "NMAuthor.h"
 
 static NSString * const NMYouTubeUserAgent = @"Apple iPad v5.0 YouTube v1.0.0.9A5288d";
 static NSString * const NMYouTubeMobileBrowserAgent = @"Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3";
@@ -28,6 +31,7 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 
 @synthesize video, externalID;
 @synthesize directSDURLString, directURLString;
+@synthesize videoInfoDict, authorDict;
 
 + (id)dateFromTimeCreatedString:(NSString *)dateStr {
 	if ( dateStr == nil || [dateStr length] == 0 ) return [NSNull null];
@@ -130,15 +134,26 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 		return;
 	}
 	if ( command == NMCommandImportYouTubeVideo ) {
-		// the import process will first create the concrete video and video objects. There's no need to recreate them here
-		// create video and author
-		// save extra informaiton
 		NSDictionary * srcVdoDict = [contentDict objectForKey:@"video"];
-		NSMutableDictionary * theVdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
-		[theVdoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
-		[theVdoDict setObject:[NMGetYouTubeDirectURLTask dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
-		[theVdoDict setObject:[NMGetYouTubeDirectURLTask numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
-		[theVdoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
+		// the import process will first create the concrete video and video objects. There's no need to recreate them here
+		// create author
+		self.authorDict = [NSMutableDictionary dictionaryWithCapacity:4];
+		[authorDict setObject:[srcVdoDict objectForKey:@"public_name"] forKey:@"username"];
+		NSString * urlStr = [srcVdoDict objectForKey:@"profile_url"];
+		NSRange rng = [urlStr rangeOfString:@"youtube.com"];
+		if ( rng.location == NSNotFound ) {
+			[authorDict setObject:[NSString stringWithFormat:@"http://www.youtube.com%@", [srcVdoDict objectForKey:@"profile_url"]] forKey:@"profile_uri"];
+		} else {
+			[authorDict setObject:[srcVdoDict objectForKey:@"profile_url"] forKey:@"profile_uri"];
+		}
+		[authorDict setObject:[srcVdoDict objectForKey:@"user_image_url"] forKey:@"thumbnail_uri"];
+		// save extra informaiton
+		self.videoInfoDict = [NSMutableDictionary dictionaryWithCapacity:4];
+		[videoInfoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
+		[videoInfoDict setObject:[NMGetYouTubeDirectURLTask dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
+		[videoInfoDict setObject:[NMGetYouTubeDirectURLTask numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
+		[videoInfoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
+		[videoInfoDict setObject:[srcVdoDict objectForKey:@"description"] forKey:@"nm_description"];
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
@@ -176,12 +191,24 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	if ( command == NMCommandImportYouTubeVideo ) {
-		// update Concrete Video
-		// detail Video
-		// author
-	}
 	NMConcreteVideo * targetVideo = video.video;
+	if ( command == NMCommandImportYouTubeVideo ) {
+		// detail Video
+		NMVideoDetail * dtlObj = [ctrl insertNewVideoDetail];
+		dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
+		[videoInfoDict removeObjectForKey:@"nm_description"];
+		targetVideo.detail = dtlObj;
+		targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+		// update Concrete Video
+		[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
+		// author
+		BOOL isNew;
+		NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
+		if ( isNew ) {
+			[arObj setValuesForKeysWithDictionary:authorDict];
+		}
+		targetVideo.author = arObj;
+	}
 	if ( encountersErrorDuringProcessing ) {
 		NSLog(@"direct URL resolution failed: %@", targetVideo.title);
 		targetVideo.nm_direct_url = nil;

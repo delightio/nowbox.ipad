@@ -35,5 +35,6 @@
 - (IBAction)printMovieViewInfo:(id)sender;
 - (IBAction)parseFacebookFeed:(id)sender;
 - (IBAction)getFacebookProfile:(id)sender;
+- (IBAction)importYouTube:(id)sender;
 
 @end

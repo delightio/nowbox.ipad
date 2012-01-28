@@ -196,6 +196,9 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueGetMyFacebookProfile];
 }
 
+- (IBAction)importYouTube:(id)sender {
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

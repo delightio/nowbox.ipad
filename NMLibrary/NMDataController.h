@@ -139,6 +139,7 @@
 // author
 - (NMAuthor *)authorForID:(NSNumber *)authID;
 - (NMAuthor *)insertNewAuthor;
+- (NMAuthor *)insertNewAuthorWithUsername:(NSString *)aName isNew:(BOOL *)isNewObj;
 
 // Person profile and subscription
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
