@@ -17,6 +17,10 @@ NSString * const NMWillGetYouTubeDirectURLNotification = @"NMWillGetYouTubeDirec
 NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectURLNotification";
 NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTubeDirectURLNotification";
 
+NSString * const NMWillImportYouTubeVideoNotification = @"NMWillImportYouTubeVideoNotification";
+NSString * const NMDidImportYouTubeVideoNotification = @"NMDidImportYouTubeVideoNotification";
+NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouTubeVideoNotification";
+
 static NSNumberFormatter * viewCountFormatter = nil;
 static NSDateFormatter * timeCreatedFormatter = nil;
 
@@ -49,6 +53,19 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	self = [super init];
 	
 	command = NMCommandGetYouTubeDirectURL;
+	self.video = vdo;
+	self.externalID = vdo.video.external_id;
+	self.targetID = vdo.video.nm_id;
+	// the task saveProcessedDataInController: method will still be executed when there's resolution error
+	executeSaveActionOnError = YES;
+	
+	return self;
+}
+
+- (id)initImportVideo:(NMVideo *)vdo {
+	self = [super init];
+	
+	command = NMCommandImportYouTubeVideo;
 	self.video = vdo;
 	self.externalID = vdo.video.external_id;
 	self.targetID = vdo.video.nm_id;
@@ -112,7 +129,8 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"reason", [NSNumber numberWithInteger:NMErrorNoData], @"error_code", video, @"target_object", nil];
 		return;
 	}
-	if ( command == NMCommandGetYouTubeDirectURLAndInfo ) {
+	if ( command == NMCommandImportYouTubeVideo ) {
+		// the import process will first create the concrete video and video objects. There's no need to recreate them here
 		// create video and author
 		// save extra informaiton
 		NSDictionary * srcVdoDict = [contentDict objectForKey:@"video"];
@@ -158,8 +176,10 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	if ( command == NMCommandGetYouTubeDirectURLAndInfo ) {
-		// 
+	if ( command == NMCommandImportYouTubeVideo ) {
+		// update Concrete Video
+		// detail Video
+		// author
 	}
 	NMConcreteVideo * targetVideo = video.video;
 	if ( encountersErrorDuringProcessing ) {
@@ -178,14 +198,23 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 }
 
 - (NSString *)willLoadNotificationName {
+	if ( command == NMCommandImportYouTubeVideo ) {
+		return NMWillImportYouTubeVideoNotification;
+	}
 	return NMWillGetYouTubeDirectURLNotification;
 }
 
 - (NSString *)didLoadNotificationName {
+	if ( command == NMCommandImportYouTubeVideo ) {
+		return NMDidImportYouTubeVideoNotification;
+	}
 	return NMDidGetYouTubeDirectURLNotification;
 }
 
 - (NSString *)didFailNotificationName {
+	if ( command == NMCommandImportYouTubeVideo ) {
+		return NMDidFailImportYouTubeVideoNotification;
+	}
 	return NMDidFailGetYouTubeDirectURLNotification;
 }
 
