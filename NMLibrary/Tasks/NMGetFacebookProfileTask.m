@@ -70,6 +70,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	BOOL newState;
 	NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithID:theID isNew:&newState];
 	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	theProfile.nm_error = (NSNumber *)kCFBooleanFalse;
 	[theProfile setValuesForKeysWithDictionary:_profileDictionary];
 	if ( newState ) {
 		// check if we need to create the channel object as well

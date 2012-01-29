@@ -90,6 +90,7 @@ static NSArray * youTubeRegexArray = nil;
 	if ( [parsedObjects count] == 0 ) return NO;
 	
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
+	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSString * extID = obj;
@@ -133,6 +134,7 @@ static NSArray * youTubeRegexArray = nil;
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
+					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
 					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					theProfile.first_name = [fromDict objectForKey:@"name"];
 					theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];

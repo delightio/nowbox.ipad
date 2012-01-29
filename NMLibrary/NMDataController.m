@@ -61,6 +61,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.nm_id = $OBJECT_ID"] retain];
 	concreteVideoForExternalIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.external_id = $EXTERNAL_ID"] retain];
 	usernamePredicateTemplate = [[NSPredicate predicateWithFormat:@"username like $USERNAME"] retain];
+	usernameOrIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID OR username like $USERNAME"] retain];
 
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
@@ -1056,9 +1057,9 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 }
 
 #pragma mark Author
-- (NMAuthor *)authorForID:(NSNumber *)authID {
+- (NMAuthor *)authorForID:(NSNumber *)authID orName:(NSString *)aName {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:authID forKey:@"OBJECT_ID"]]];
+	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:authID, @"OBJECT_ID", aName, @"USERNAME", nil]]];
 	[request setEntity:authorEntityDescription];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMAuthor * theAuthor = nil;
@@ -1109,6 +1110,15 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	}
 	[request release];
 	return profileObj;
+}
+
+- (NSInteger)maxPersonProfileID {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
+	[request setResultType:NSManagedObjectIDResultType];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	return [result count];
 }
 
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile {

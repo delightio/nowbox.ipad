@@ -34,6 +34,7 @@
 	NSPredicate * concreteVideoForIDPredicateTemplate;
 	NSPredicate * concreteVideoForExternalIDPredicateTemplate;
 	NSPredicate * usernamePredicateTemplate;
+	NSPredicate * usernameOrIDPredicateTemplate;
 	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription;
@@ -137,12 +138,13 @@
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 
 // author
-- (NMAuthor *)authorForID:(NSNumber *)authID;
+- (NMAuthor *)authorForID:(NSNumber *)authID orName:(NSString *)aName;
 - (NMAuthor *)insertNewAuthor;
 - (NMAuthor *)insertNewAuthorWithUsername:(NSString *)aName isNew:(BOOL *)isNewObj;
 
 // Person profile and subscription
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
+- (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
 - (NSArray *)subscribedFacebookUserChannels;
 

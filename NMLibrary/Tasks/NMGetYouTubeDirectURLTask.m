@@ -87,6 +87,17 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	[super dealloc];
 }
 
+- (NSInteger)commandIndex {
+	NSInteger idx = 0;
+	if ( command == NMCommandImportYouTubeVideo ) {
+		// use custom command index method
+		idx = ABS((NSInteger)[externalID hash]);
+	} else {
+		idx = [super commandIndex];
+	}
+	return idx;
+}
+
 - (NSURLRequest *)URLRequest {
 	NSString * urlStr;
 	NSMutableURLRequest * theRequest;

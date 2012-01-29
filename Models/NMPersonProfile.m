@@ -15,6 +15,7 @@
 
 @dynamic nm_description;
 @dynamic nm_error;
+@dynamic nm_id;
 @dynamic nm_social_network;
 @dynamic nm_user_id;
 @dynamic username;

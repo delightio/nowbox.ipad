@@ -94,7 +94,7 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 		NSInteger tid = [self.targetID unsignedIntegerValue];
 		return (((NSIntegerMax >> 6 ) & tid) << 6) | command;
 	}
-	return (NSUInteger)command;
+	return command;
 }
 
 - (NSString *)willLoadNotificationName {

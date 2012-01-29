@@ -197,17 +197,16 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 //	totalNumberOfRows = numberOfVideoAdded + [channel.videos count];
 //}
 
-- (NMAuthor *)prepareAuthorForID:(NSNumber *)authID controller:(NMDataController *)ctrl {
+- (NMAuthor *)prepareAuthorWithID:(NSNumber *)authID info:(NSDictionary *)authDict controller:(NMDataController *)ctrl {
 	NMAuthor * theAuthor = [authorMOCache objectForKey:authID];
 	if ( theAuthor == nil ) {
 		// can't find it in local cache
-		theAuthor = [ctrl authorForID:authID];
+		theAuthor = [ctrl authorForID:authID orName:[authDict objectForKey:@"username"]];
 		if ( theAuthor == nil ) {
 			// the author does NOT exist. create a new author
-			NSDictionary * dict = [authorCache objectForKey:authID];
 			theAuthor = [ctrl insertNewAuthor];
-			[theAuthor setValuesForKeysWithDictionary:dict];
-		}
+			[theAuthor setValuesForKeysWithDictionary:authDict];
+		} else if ( theAuthor.nm_id == nil ) theAuthor.nm_id = authID;
 		// add author object to the cache
 		[authorMOCache setObject:theAuthor forKey:authID];
 	}
@@ -227,6 +226,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
 	authorMOCache = [[NSMutableDictionary alloc] initWithCapacity:4];
 	NMAuthor * theAuthor;
+	NSNumber * authID;
 
 	for (dict in parsedObjects) {
 		switch ( [ctrl videoExistsWithID:[dict objectForKey:@"nm_id"] channel:channel targetVideo:&realVidObj] ) {
@@ -253,7 +253,8 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 				[dtlObj setValuesForKeysWithDictionary:dict];
 				dtlObj.video = realVidObj;
 				// hook up with author
-				theAuthor = [self prepareAuthorForID:[parsedAuthorObjects objectAtIndex:vidCount]  controller:ctrl];
+				authID = [parsedAuthorObjects objectAtIndex:vidCount];
+				theAuthor = [self prepareAuthorWithID:authID info:[authorCache objectForKey:authID] controller:ctrl];
 				realVidObj.author = theAuthor;
 				break;
 				
