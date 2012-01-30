@@ -147,5 +147,6 @@
 - (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
 - (NSArray *)subscribedFacebookUserChannels;
+- (NSUInteger)numberOfSubscriptions;
 
 @end

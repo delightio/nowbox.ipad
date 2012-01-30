@@ -20,6 +20,13 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 @synthesize profileDictionary = _profileDictionary;
 @synthesize userID = _userID;
 
+- (id)initGetMe {
+	self = [super init];
+	command = NMCommandGetFacebookProfile;
+	profileOwnsByMe = YES;
+	return self;
+}
+
 - (id)initWithProfile:(NMPersonProfile *)aProfile {
 	self = [super init];
 	command = NMCommandGetFacebookProfile;
@@ -70,6 +77,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	if ( newState ) {
 		// check if we need to create the channel object as well
 		[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+		theProfile.nm_id = [NSNumber numberWithInteger:[ctrl maxPersonProfileID] + 1];
 		return YES;
 	}
 	return NO;

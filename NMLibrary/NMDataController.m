@@ -1130,6 +1130,10 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		chnObj.nm_is_new = (NSNumber *)kCFBooleanTrue;
 		chnObj.title = aProfile.first_name;
 		chnObj.thumbnail_uri = aProfile.picture;
+		// set sorting order (use nm_subscribed)
+		NSUInteger subCount = [self numberOfSubscriptions];
+		chnObj.nm_subscribed = [NSNumber numberWithInteger:subCount + 1];
+		
 		// create subscription
 		NMSubscription * subtObj = [NSEntityDescription insertNewObjectForEntityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext];
 		subtObj.channel = chnObj;
@@ -1146,6 +1150,15 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	return result;
+}
+
+- (NSUInteger)numberOfSubscriptions {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext]];
+	[request setResultType:NSManagedObjectIDResultType];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	return [result count];
 }
 
 #pragma mark Data parsing
