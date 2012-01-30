@@ -229,7 +229,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSNumber * authID;
 
 	for (dict in parsedObjects) {
-		switch ( [ctrl videoExistsWithID:[dict objectForKey:@"nm_id"] channel:channel targetVideo:&realVidObj] ) {
+		switch ( [ctrl videoExistsWithID:[dict objectForKey:@"nm_id"] orExternalID:[dict objectForKey:@"external_id"] channel:channel targetVideo:&realVidObj] ) {
 			case NMVideoDoesNotExist:
 				// create video and concrete video
 				numberOfVideoAdded++;

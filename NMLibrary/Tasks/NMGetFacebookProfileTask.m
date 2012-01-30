@@ -20,17 +20,12 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 @synthesize profileDictionary = _profileDictionary;
 @synthesize userID = _userID;
 
-- (id)initGetMe {
+- (id)initWithProfile:(NMPersonProfile *)aProfile {
 	self = [super init];
 	command = NMCommandGetFacebookProfile;
-	
-	return self;
-}
-
-- (id)initWithUserID:(NSString *)strID {
-	self = [super init];
-	command = NMCommandGetFacebookProfile;
-	self.userID = strID;
+	self.userID = aProfile.nm_user_id;
+	self.targetID = aProfile.nm_id;
+	profileOwnsByMe = [aProfile.nm_me boolValue];
 	return self;
 }
 
@@ -42,10 +37,10 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
 	NSString * str;
-	if ( _userID ) {
-		str = _userID;
-	} else {
+	if ( profileOwnsByMe ) {
 		str = @"me";
+	} else {
+		str = _userID;
 	}
 	return [self.facebook requestWithGraphPath:str andParams:[NSMutableDictionary dictionaryWithObject:@"first_name,id,username,picture" forKey:@"fields"] andDelegate:ctrl];
 }
