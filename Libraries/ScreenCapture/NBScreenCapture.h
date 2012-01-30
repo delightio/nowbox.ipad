@@ -72,10 +72,12 @@
 + (void)resume;
 + (void)registerPrivateView:(UIView *)view;
 + (void)unregisterPrivateView:(UIView *)view;
++ (void)setHidesKeyboard:(BOOL)hidesKeyboard;
 + (void)openGLScreenCapture:(UIView *)view colorRenderBuffer:(GLuint)colorRenderBuffer;
 
 @property(nonatomic, retain) UIImage *currentScreen;
 @property(nonatomic, retain) NSMutableSet *privateViews;
+@property(nonatomic, assign) BOOL hidesKeyboard;
 @property(retain) UIImage *openGLImage;
 @property(nonatomic, assign) CGRect openGLFrame;
 @property(nonatomic, assign) float frameRate;

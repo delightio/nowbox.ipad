@@ -41,6 +41,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 - (void)drawTouchMarksInContext:(CGContextRef)context;
 - (void)hidePrivateViewsForWindow:(UIWindow *)window inContext:(CGContextRef)context;
 - (void)writeVideoFrameAtTime:(CMTime)time;
+- (UIWindow *)keyboardWindow;
 @end
 
 @implementation NBScreenCapture
@@ -48,6 +49,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 @synthesize currentScreen;
 @synthesize frameRate;
 @synthesize privateViews;
+@synthesize hidesKeyboard;
 @synthesize openGLImage;
 @synthesize openGLFrame;
 @synthesize captureDelegate;
@@ -86,6 +88,11 @@ void Swizzle(Class c, SEL orig, SEL new){
 + (void)unregisterPrivateView:(UIView *)view
 {
     [sharedInstance.privateViews removeObject:view];
+}
+
++ (void)setHidesKeyboard:(BOOL)hidesKeyboard
+{
+    [sharedInstance setHidesKeyboard:hidesKeyboard];
 }
 
 + (void)openGLScreenCapture:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer
@@ -132,7 +139,8 @@ void Swizzle(Class c, SEL orig, SEL new){
                                                object:nil];
 }
 
-- (id)init {
+- (id)init 
+{
     self = [super init];
     if (self) {
         [self initialize];
@@ -140,7 +148,8 @@ void Swizzle(Class c, SEL orig, SEL new){
     return self;
 }
 
-- (void)cleanupWriter {
+- (void)cleanupWriter 
+{
     [avAdaptor release];
     avAdaptor = nil;
     
@@ -232,7 +241,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 
     // Iterate over every window from back to front
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
-        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
+        if ((![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) && (!hidesKeyboard || window != [self keyboardWindow])) {
             CGContextSaveGState(context);
 
             // Flip the y-axis since Core Graphics starts with 0 at the bottom
@@ -489,12 +498,13 @@ void Swizzle(Class c, SEL orig, SEL new){
     processing = NO;
 }
                                         
-- (NSURL*) tempFileURL {
+- (NSURL *)tempFileURL 
+{
     NSString *outputPath = [self outputPath];
-    NSURL* outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
-    NSFileManager* fileManager = [NSFileManager defaultManager];
+    NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:outputPath]) {
-        NSError* error;
+        NSError *error;
         if ([fileManager removeItemAtPath:outputPath error:&error] == NO) {
             NSLog(@"Could not delete old recording file at path:  %@", outputPath);
         }
@@ -503,7 +513,8 @@ void Swizzle(Class c, SEL orig, SEL new){
     return [outputURL autorelease];
 }
 
--(BOOL) setUpWriter {
+- (BOOL)setUpWriter 
+{
     NSError* error = nil;
     videoWriter = [[AVAssetWriter alloc] initWithURL:[self tempFileURL] fileType:AVFileTypeQuickTimeMovie error:&error];
     NSParameterAssert(videoWriter);
@@ -536,7 +547,8 @@ void Swizzle(Class c, SEL orig, SEL new){
     return YES;
 }
 
-- (void) completeRecordingSession {
+- (void)completeRecordingSession 
+{
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     [videoWriterInput markAsFinished];
@@ -572,7 +584,8 @@ void Swizzle(Class c, SEL orig, SEL new){
     [pool drain];
 }
 
-- (bool) startRecording {
+- (bool)startRecording 
+{
     bool result = NO;
     @synchronized(self) {
         if (! _recording) {
@@ -588,7 +601,8 @@ void Swizzle(Class c, SEL orig, SEL new){
     return result;
 }
 
-- (void) stopRecording {
+- (void)stopRecording 
+{
     @synchronized(self) {
         if (_recording) {
             _recording = false;
@@ -617,7 +631,7 @@ void Swizzle(Class c, SEL orig, SEL new){
     }
 }
 
--(void) writeVideoFrameAtTime:(CMTime)time {
+- (void)writeVideoFrameAtTime:(CMTime)time {
     if (![videoWriterInput isReadyForMoreMediaData] || !currentScreen) {
         NSLog(@"Not ready for video data");
     } else {
@@ -653,6 +667,20 @@ void Swizzle(Class c, SEL orig, SEL new){
             CGImageRelease(cgImage);
         }
     }
+}
+
+- (UIWindow *)keyboardWindow
+{
+	NSArray *windows = [[UIApplication sharedApplication] windows];
+	for (UIWindow *window in [windows reverseObjectEnumerator]) {
+		for (UIView *view in [window subviews]) {
+			if ([[[view class] description] isEqualToString:@"UIKeyboard"] || [[[view class] description] isEqualToString:@"UIPeripheralHostView"]) {
+				return window;
+			}
+		}
+	}
+	
+	return nil;
 }
 
 #pragma mark - Notifications

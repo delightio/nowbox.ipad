@@ -10,6 +10,7 @@
 #import "ipadAppDelegate.h"
 #import "NMLibrary.h"
 #import "UIView+InteractiveAnimation.h"
+#import "NBScreenCapture.h"
 
 @implementation SocialLoginViewController
 @synthesize loginWebView, progressContainerView;
@@ -83,6 +84,22 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [NBScreenCapture registerPrivateView:self.view];
+    [NBScreenCapture setHidesKeyboard:YES];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [NBScreenCapture unregisterPrivateView:self.view];
+    [NBScreenCapture setHidesKeyboard:NO];
+    
+    [super viewDidDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
