@@ -92,6 +92,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSString * extID = obj;
 		NMConcreteVideo * conVdo = nil;
@@ -102,7 +103,7 @@ static NSArray * youTubeRegexArray = nil;
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
-				vdo.nm_session_id = NM_SESSION_ID;
+				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				break;
 				
@@ -115,7 +116,7 @@ static NSArray * youTubeRegexArray = nil;
 				vdo = [ctrl insertNewVideo];
 				vdo.video = conVdo;
 				vdo.channel = _channel;
-				vdo.nm_session_id = NM_SESSION_ID;
+				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				break;
 				
