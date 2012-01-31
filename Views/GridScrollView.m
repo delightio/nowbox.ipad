@@ -230,7 +230,7 @@
         lastVisibleRow++;
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
             NSUInteger index = (lastVisibleRow * resolvedNumberOfColumns + column);
-            if (index < numberOfItems) {        
+            if (index < numberOfItems + numberOfItemsDelta) {        
                 [self addViewAtIndex:index];
             }
         }
@@ -242,7 +242,7 @@
         topY -= itemSize.height + verticalItemPadding;
         for (NSUInteger column = 0; column < resolvedNumberOfColumns; column++) {
             NSUInteger index = (firstVisibleRow * resolvedNumberOfColumns + column);            
-            if (index < numberOfItems) {
+            if (index < numberOfItems + numberOfItemsDelta) {
                 [self addViewAtIndex:index];
             }
         }
@@ -306,6 +306,7 @@
 - (void)endUpdates
 {
     numberOfItems += numberOfItemsDelta;
+    numberOfItemsDelta = 0;
     numberOfRows = ceil((float)numberOfItems / resolvedNumberOfColumns);    
     
     self.contentSize = CGSizeMake(self.frame.size.width, numberOfRows * itemSize.height + (numberOfRows - 1) * verticalItemPadding + (headerView ? headerView.frame.size.height : 0));   
