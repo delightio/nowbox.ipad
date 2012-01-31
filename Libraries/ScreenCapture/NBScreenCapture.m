@@ -80,14 +80,25 @@ void Swizzle(Class c, SEL orig, SEL new){
     [sharedInstance resume];
 }
 
-+ (void)registerPrivateView:(UIView *)view
++ (void)registerPrivateView:(UIView *)view description:(NSString *)description
 {
-    [sharedInstance.privateViews addObject:view];
+    [sharedInstance.privateViews addObject:[NSDictionary dictionaryWithObjectsAndKeys:view, @"view", 
+                                            description, @"description", nil]];
 }
 
 + (void)unregisterPrivateView:(UIView *)view
 {
-    [sharedInstance.privateViews removeObject:view];
+    NSDictionary *dictionaryToRemove = nil;
+    for (NSDictionary *dictionary in sharedInstance.privateViews) {
+        if ([dictionary objectForKey:@"view"] == view) {
+            dictionaryToRemove = dictionary;
+            break;
+        }
+    }
+    
+    if (dictionaryToRemove) {
+        [sharedInstance.privateViews removeObject:dictionaryToRemove];
+    }
 }
 
 + (void)setHidesKeyboard:(BOOL)hidesKeyboard
@@ -433,10 +444,30 @@ void Swizzle(Class c, SEL orig, SEL new){
 - (void)hidePrivateViewsForWindow:(UIWindow *)window inContext:(CGContextRef)context
 {
     // Black out private views
-    for (UIView *view in privateViews) {
+    for (NSDictionary *dictionary in privateViews) {
+        UIView *view = [dictionary objectForKey:@"view"];
+        NSString *description = [dictionary objectForKey:@"description"];
+        
         if ([view window] == window) {
-            CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-            CGContextFillRect(context, [view convertRect:view.frame toView:window]);
+            CGRect frameInWindow = [view convertRect:view.frame toView:window];
+            
+/*            CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 1.0);
+            CGContextFillRect(context, frameInWindow);*/
+
+            // Draw a label to cover the private view
+            UIView *labelSuperview = [[UIView alloc] initWithFrame:window.frame];
+            UILabel *label = [[UILabel alloc] initWithFrame:frameInWindow];
+            label.backgroundColor = [UIColor blackColor];
+            label.textColor = [UIColor whiteColor];
+            label.text = description;
+            label.textAlignment = UITextAlignmentCenter;
+            label.font = [UIFont systemFontOfSize:24.0];
+            label.adjustsFontSizeToFitWidth = YES;
+            [labelSuperview addSubview:label];
+            [labelSuperview.layer renderInContext:context];
+            [label removeFromSuperview];
+            [label release];
+            [labelSuperview release];
         }
     }
 }

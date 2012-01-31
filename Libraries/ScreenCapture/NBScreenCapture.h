@@ -70,7 +70,7 @@
 + (void)stop;
 + (void)pause;
 + (void)resume;
-+ (void)registerPrivateView:(UIView *)view;
++ (void)registerPrivateView:(UIView *)view description:(NSString *)description;
 + (void)unregisterPrivateView:(UIView *)view;
 + (void)setHidesKeyboard:(BOOL)hidesKeyboard;
 + (void)openGLScreenCapture:(UIView *)view colorRenderBuffer:(GLuint)colorRenderBuffer;

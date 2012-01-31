@@ -90,7 +90,7 @@
 {
     [super viewWillAppear:animated];
     
-    [NBScreenCapture registerPrivateView:self.view];
+    [NBScreenCapture registerPrivateView:self.view description:@"Twitter login page"];
     [NBScreenCapture setHidesKeyboard:YES];
 }
 
