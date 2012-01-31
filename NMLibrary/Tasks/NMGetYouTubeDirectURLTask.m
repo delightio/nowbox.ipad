@@ -84,6 +84,8 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	[externalID release];
 	[directURLString release];
 	[directSDURLString release];
+	[authorDict release];
+	[videoInfoDict release];
 	[super dealloc];
 }
 
@@ -160,11 +162,17 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 		[authorDict setObject:[srcVdoDict objectForKey:@"user_image_url"] forKey:@"thumbnail_uri"];
 		// save extra informaiton
 		self.videoInfoDict = [NSMutableDictionary dictionaryWithCapacity:4];
-		[videoInfoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
-		[videoInfoDict setObject:[NMGetYouTubeDirectURLTask dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
-		[videoInfoDict setObject:[NMGetYouTubeDirectURLTask numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
-		[videoInfoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
-		[videoInfoDict setObject:[srcVdoDict objectForKey:@"description"] forKey:@"nm_description"];
+		@try {
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"title"] forKey:@"title"];
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
+			[videoInfoDict setObject:[NMGetYouTubeDirectURLTask dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
+			[videoInfoDict setObject:[NMGetYouTubeDirectURLTask numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"description"] forKey:@"nm_description"];
+		}
+		@catch (NSException *exception) {
+			// some attribute is probably null
+		}
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
@@ -204,21 +212,26 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	NMConcreteVideo * targetVideo = video.video;
 	if ( command == NMCommandImportYouTubeVideo ) {
-		// detail Video
-		NMVideoDetail * dtlObj = [ctrl insertNewVideoDetail];
-		dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
-		[videoInfoDict removeObjectForKey:@"nm_description"];
-		targetVideo.detail = dtlObj;
-		targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
-		// update Concrete Video
-		[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
-		// author
-		BOOL isNew;
-		NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
-		if ( isNew ) {
-			[arObj setValuesForKeysWithDictionary:authorDict];
+		if ( encountersErrorDuringProcessing ) {
+			// there's error in resolution, we should delete the video altogetheric
+			[ctrl deleteManagedObject:targetVideo];
+		} else {
+			// detail Video
+			NMVideoDetail * dtlObj = [ctrl insertNewVideoDetail];
+			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
+			[videoInfoDict removeObjectForKey:@"nm_description"];
+			targetVideo.detail = dtlObj;
+			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+			// update Concrete Video
+			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
+			// author
+			BOOL isNew;
+			NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
+			if ( isNew ) {
+				[arObj setValuesForKeysWithDictionary:authorDict];
+			}
+			targetVideo.author = arObj;
 		}
-		targetVideo.author = arObj;
 	}
 	if ( encountersErrorDuringProcessing ) {
 		NSLog(@"direct URL resolution failed: %@", targetVideo.title);

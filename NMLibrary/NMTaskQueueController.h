@@ -106,6 +106,7 @@
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
+- (void)issueImportVideo:(NMVideo *)aVideo;
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMAuthor *)anAuthor;
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo;
 /*
@@ -131,6 +132,7 @@
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
 - (void)issueDebugProcessFeed;
+- (void)issueDebugImportYouTubeVideos;
 
 - (void)cancelAllTasks;
 @end

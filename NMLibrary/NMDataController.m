@@ -52,7 +52,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
 	
-	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == $HIDDEN"] retain];
+	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == $HIDDEN AND subscription == nil"] retain];
 	cachedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed <= 0"] retain];
 	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
 	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"video == $VIDEO AND channel == $CHANNEL"] retain];
@@ -197,6 +197,10 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	for (NSManagedObject * mobj in objs) {
 		[managedObjectContext deleteObject:mobj];
 	}
+}
+
+- (void)deleteManagedObject:(NSManagedObject *)mObj {
+	[managedObjectContext deleteObject:mObj];
 }
 
 #pragma mark Search Results Support
@@ -862,6 +866,17 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return [chn.videos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
 }
 
+- (NSArray *)pendingImportVideosForChannel:(NMChannel *)chn {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == %@", chn, [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	[request release];
+	return [result count] ? result : nil;
+}
+
 - (NMVideo *)videoForID:(NSNumber *)vid {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
@@ -1142,10 +1157,9 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return chnObj;
 }
 
-- (NSArray *)subscribedFacebookUserChannels {
+- (NSArray *)allSubscriptions {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"type == %@", [NSNumber numberWithInteger:NMChannelUserFacebookType]]];
+	[request setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];

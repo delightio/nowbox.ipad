@@ -87,6 +87,7 @@
 - (void)resetAllChannelsPageNumber;
 // general data manipulation
 - (void)deleteManagedObjects:(id<NSFastEnumeration>)objs;
+- (void)deleteManagedObject:(NSManagedObject *)mObj;
 // search
 - (void)clearSearchResultCache;
 
@@ -127,6 +128,7 @@
 - (NMConcreteVideo *)insertNewConcreteVideo;
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
+- (NSArray *)pendingImportVideosForChannel:(NMChannel *)chn;
 - (NMVideo *)videoForID:(NSNumber *)vid;
 - (NMVideo *)lastSessionVideoForChannel:(NMChannel *)chn;
 - (void)deleteVideo:(NMVideo *)vidObj;
@@ -146,7 +148,7 @@
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
-- (NSArray *)subscribedFacebookUserChannels;
+- (NSArray *)allSubscriptions;
 - (NSUInteger)numberOfSubscriptions;
 
 @end

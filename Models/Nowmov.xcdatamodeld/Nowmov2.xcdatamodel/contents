@@ -67,7 +67,7 @@
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="view_count" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMAuthor" inverseName="videos" inverseEntity="NMAuthor" syncable="YES"/>
-        <relationship name="channels" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMVideo" inverseName="video" inverseEntity="NMVideo" indexed="YES"/>
+        <relationship name="channels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMVideo" inverseName="video" inverseEntity="NMVideo" indexed="YES"/>
         <relationship name="detail" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMVideoDetail" inverseName="video" inverseEntity="NMVideoDetail" indexed="YES"/>
     </entity>
     <entity name="NMPersonProfile" representedClassName="NMPersonProfile" syncable="YES">
@@ -107,7 +107,7 @@
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="channel" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="videos" inverseEntity="NMChannel" syncable="YES"/>
         <relationship name="personProfile" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMPersonProfile" inverseName="videos" inverseEntity="NMPersonProfile" syncable="YES"/>
-        <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMConcreteVideo" inverseName="channels" inverseEntity="NMConcreteVideo" syncable="YES"/>
+        <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="channels" inverseEntity="NMConcreteVideo" syncable="YES"/>
     </entity>
     <entity name="NMVideoDetail" representedClassName="NMVideoDetail">
         <attribute name="nm_description" optional="YES" attributeType="String"/>

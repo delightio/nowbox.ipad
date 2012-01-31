@@ -148,9 +148,22 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueDebugProcessFeed {
-	NSArray * allFBChannels = [dataController subscribedFacebookUserChannels];
-	for (NMChannel * chn in allFBChannels) {
-		[self issueProcessFeedForChannel:chn];
+	NSArray * allSubscriptions = [dataController allSubscriptions];
+	for (NMSubscription * scrpt in allSubscriptions) {
+		[self issueProcessFeedForChannel:scrpt.channel];
+	}
+}
+
+- (void)issueDebugImportYouTubeVideos {
+	NSArray * allSubscriptions = [dataController allSubscriptions];
+	NSArray * videos;
+	for (NMSubscription * scrpt in allSubscriptions) {
+		// get the list of videos
+		videos = [dataController pendingImportVideosForChannel:scrpt.channel];
+		// issue request for each video
+		if ( [videos count] ) {
+			[self issueImportVideo:[videos objectAtIndex:0]];
+		}
 	}
 }
 
@@ -447,6 +460,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo {
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initWithVideo:aVideo];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueImportVideo:(NMVideo *)aVideo {
+	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initImportVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

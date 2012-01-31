@@ -197,6 +197,7 @@
 }
 
 - (IBAction)importYouTube:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueDebugImportYouTubeVideos];
 }
 
 - (IBAction)checkUpdate:(id)sender {

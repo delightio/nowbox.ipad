@@ -83,7 +83,6 @@ static NSArray * youTubeRegexArray = nil;
 		parsedObjects = nil;
 	}
 	self.nextPageURLString = [result valueForKeyPath:@"feed.data.paging.next"];
-	NSLog(@"result %@", result);
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
@@ -92,6 +91,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
 	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
+	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
 	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSString * extID = obj;
 		NMConcreteVideo * conVdo = nil;
@@ -110,7 +110,7 @@ static NSArray * youTubeRegexArray = nil;
 				// create the NMVideo and NMConcreteVideo objects
 				conVdo = [ctrl insertNewConcreteVideo];
 				conVdo.external_id = extID;
-				conVdo.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+				conVdo.nm_error = errNum;
 				// create video
 				vdo = [ctrl insertNewVideo];
 				vdo.video = conVdo;
