@@ -18,10 +18,10 @@
 
 #define kScaleFactor 0.5f
 #define kStartingFrameRate 1.0f
-#define kMaxFrameRate 1.0f
+#define kMaxFrameRate 100.0f
 #define kBitRate 500.0*1024.0
 
-#define DEBUG_PNG
+//#define DEBUG_PNG
 
 static NBScreenCapture *sharedInstance = nil;
 
@@ -296,7 +296,7 @@ void Swizzle(Class c, SEL orig, SEL new){
                 // Draw the view hierarchy onto our context
                 [[window layer] renderInContext:context];
             } else {
-                [self hideKeyboardWindow:[self keyboardWindow] inContext:context];
+//                [self hideKeyboardWindow:[self keyboardWindow] inContext:context];
             }
 
             // Draw any OpenGL views
@@ -309,6 +309,10 @@ void Swizzle(Class c, SEL orig, SEL new){
             
             CGContextRestoreGState(context);
         }
+    }
+    
+    if (hidesKeyboard) {
+        [self hideKeyboardWindow:[self keyboardWindow] inContext:context];
     }
     
     // Retrieve the screenshot image
@@ -467,21 +471,16 @@ void Swizzle(Class c, SEL orig, SEL new){
     }         
 }
 
-- (void)drawLabelCenteredAt:(CGPoint)point inWindow:(UIWindow *)window inContext:(CGContextRef)context text:(NSString *)text textColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor
+- (void)drawLabelCenteredAt:(CGPoint)point inWindow:(UIWindow *)window inContext:(CGContextRef)context text:(NSString *)text textColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor fontSize:(CGFloat)fontSize transform:(CGAffineTransform)transform
 {
-    UIView *windowRootView = ([window.subviews count] > 0 ? [window.subviews objectAtIndex:0] : nil);
     UIView *labelSuperview = [[UIView alloc] initWithFrame:window.frame];
     UILabel *label = [[UILabel alloc] initWithFrame:window.bounds];
     label.backgroundColor = backgroundColor;
     label.textColor = textColor;
     label.text = text;
     label.textAlignment = UITextAlignmentCenter;
-    label.font = [UIFont systemFontOfSize:24.0];
-    
-    if (windowRootView) {
-        label.transform = windowRootView.transform;
-    }
-    
+    label.font = [UIFont systemFontOfSize:fontSize];
+    label.transform = transform;
     [label sizeToFit];
     label.center = point;
     [labelSuperview addSubview:label];
@@ -500,27 +499,48 @@ void Swizzle(Class c, SEL orig, SEL new){
         
         if ([view window] == window) {
             CGRect frameInWindow = [view convertRect:view.frame toView:window];
-            CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 1.0);
+            CGContextSetGrayFillColor(context, 0.1, 1.0);
             CGContextFillRect(context, frameInWindow);
-                        
+            UIView *windowRootView = ([window.subviews count] > 0 ? [window.subviews objectAtIndex:0] : nil);
+
             [self drawLabelCenteredAt:CGPointMake(CGRectGetMidX(frameInWindow), CGRectGetMidY(frameInWindow))
                              inWindow:window
                             inContext:context 
                                  text:description 
                             textColor:[UIColor whiteColor] 
-                      backgroundColor:[UIColor blueColor]];
+                      backgroundColor:[UIColor colorWithWhite:0.1 alpha:1.0]
+                             fontSize:24.0
+                            transform:(windowRootView ? windowRootView.transform : CGAffineTransformIdentity)];
         }
     }
 }
 
 - (void)hideKeyboardWindow:(UIWindow *)window inContext:(CGContextRef)context
 {
-/*    [self drawLabelInFrame:CGRectMake(keyboardFrame.origin.y, keyboardFrame.origin.x, keyboardFrame.size.height, keyboardFrame.size.width) 
-                  inWindow:window 
-                 inContext:context 
-                      text:@"Keyboard is hidden"
-                 textColor:[UIColor blackColor]
-           backgroundColor:[UIColor colorWithWhite:0.7 alpha:1.0]];*/
+    CGContextSaveGState(context);
+    
+    // Flip the y-axis since Core Graphics starts with 0 at the bottom
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextTranslateCTM(context, 0, -window.frame.size.height * kScaleFactor);
+
+    CGRect scaledKeyboardFrame = CGRectMake(keyboardFrame.origin.x * kScaleFactor,
+                                            keyboardFrame.origin.y * kScaleFactor,
+                                            keyboardFrame.size.width * kScaleFactor,
+                                            keyboardFrame.size.height * kScaleFactor);
+
+    CGContextSetGrayFillColor(context, 0.7, 1.0);
+    CGContextFillRect(context, scaledKeyboardFrame);
+    
+    [self drawLabelCenteredAt:CGPointMake(CGRectGetMidX(scaledKeyboardFrame), CGRectGetMidY(scaledKeyboardFrame))
+                     inWindow:window
+                    inContext:context 
+                         text:@"Keyboard is hidden"
+                    textColor:[UIColor blackColor]
+              backgroundColor:[UIColor colorWithWhite:0.7 alpha:1.0]
+                     fontSize:24.0*kScaleFactor
+                    transform:CGAffineTransformMake(window.transform.a, window.transform.b, window.transform.c, window.transform.d, 0, 0)]; // Only take into account scale/rotation
+    
+    CGContextRestoreGState(context);
 }
 
 - (void)takeScreenshot
