@@ -18,8 +18,10 @@
 
 #define kScaleFactor 0.5f
 #define kStartingFrameRate 1.0f
-#define kMaxFrameRate 100.0f
+#define kMaxFrameRate 1.0f
 #define kBitRate 500.0*1024.0
+
+#define DEBUG_PNG
 
 static NBScreenCapture *sharedInstance = nil;
 
@@ -40,6 +42,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 - (void)openGLScreenCapture:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer;
 - (void)drawTouchMarksInContext:(CGContextRef)context;
 - (void)hidePrivateViewsForWindow:(UIWindow *)window inContext:(CGContextRef)context;
+- (void)hideKeyboardWindow:(UIWindow *)window inContext:(CGContextRef)context;
 - (void)writeVideoFrameAtTime:(CMTime)time;
 - (UIWindow *)keyboardWindow;
 @end
@@ -56,12 +59,17 @@ void Swizzle(Class c, SEL orig, SEL new){
 
 #pragma mark - Class methods
 
-+ (void)start
++ (NBScreenCapture *)sharedInstance
 {
     if (!sharedInstance) {
         sharedInstance = [[NBScreenCapture alloc] init];
-        [sharedInstance startRecording];
-    }    
+    }
+    return sharedInstance;
+}
+
++ (void)start
+{
+    [[self sharedInstance] startRecording];
 }
 
 + (void)stop
@@ -82,7 +90,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 
 + (void)registerPrivateView:(UIView *)view description:(NSString *)description
 {
-    [sharedInstance.privateViews addObject:[NSDictionary dictionaryWithObjectsAndKeys:view, @"view", 
+    [[self sharedInstance].privateViews addObject:[NSDictionary dictionaryWithObjectsAndKeys:view, @"view", 
                                             description, @"description", nil]];
 }
 
@@ -103,12 +111,12 @@ void Swizzle(Class c, SEL orig, SEL new){
 
 + (void)setHidesKeyboard:(BOOL)hidesKeyboard
 {
-    [sharedInstance setHidesKeyboard:hidesKeyboard];
+    [[self sharedInstance] setHidesKeyboard:hidesKeyboard];
 }
 
 + (void)openGLScreenCapture:(UIView *)eaglview colorRenderBuffer:(GLuint)colorRenderBuffer
 {
-    [sharedInstance openGLScreenCapture:eaglview colorRenderBuffer:colorRenderBuffer];
+    [[self sharedInstance] openGLScreenCapture:eaglview colorRenderBuffer:colorRenderBuffer];
 }
 
 #pragma mark -
@@ -148,6 +156,18 @@ void Swizzle(Class c, SEL orig, SEL new){
                                              selector:@selector(handleDidBecomeActive:) 
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleKeyboardFrameChanged:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];    
+    
+    // iOS 5+ only
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 5.0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleKeyboardFrameChanged:)
+                                                     name:UIKeyboardWillChangeFrameNotification
+                                                   object:nil];
+    }
 }
 
 - (id)init 
@@ -252,7 +272,7 @@ void Swizzle(Class c, SEL orig, SEL new){
 
     // Iterate over every window from back to front
     for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
-        if ((![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) && (!hidesKeyboard || window != [self keyboardWindow])) {
+        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen]) {
             CGContextSaveGState(context);
 
             // Flip the y-axis since Core Graphics starts with 0 at the bottom
@@ -271,7 +291,13 @@ void Swizzle(Class c, SEL orig, SEL new){
             CGContextTranslateCTM(context,
                                   -[window bounds].size.width * [[window layer] anchorPoint].x,
                                   -[window bounds].size.height * [[window layer] anchorPoint].y);
-            [[window layer] renderInContext:context];
+            
+            if (!hidesKeyboard || window != [self keyboardWindow]) {
+                // Draw the view hierarchy onto our context
+                [[window layer] renderInContext:context];
+            } else {
+                [self hideKeyboardWindow:[self keyboardWindow] inContext:context];
+            }
 
             // Draw any OpenGL views
             if (openGLImage) {
@@ -441,6 +467,30 @@ void Swizzle(Class c, SEL orig, SEL new){
     }         
 }
 
+- (void)drawLabelCenteredAt:(CGPoint)point inWindow:(UIWindow *)window inContext:(CGContextRef)context text:(NSString *)text textColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor
+{
+    UIView *windowRootView = ([window.subviews count] > 0 ? [window.subviews objectAtIndex:0] : nil);
+    UIView *labelSuperview = [[UIView alloc] initWithFrame:window.frame];
+    UILabel *label = [[UILabel alloc] initWithFrame:window.bounds];
+    label.backgroundColor = backgroundColor;
+    label.textColor = textColor;
+    label.text = text;
+    label.textAlignment = UITextAlignmentCenter;
+    label.font = [UIFont systemFontOfSize:24.0];
+    
+    if (windowRootView) {
+        label.transform = windowRootView.transform;
+    }
+    
+    [label sizeToFit];
+    label.center = point;
+    [labelSuperview addSubview:label];
+    [labelSuperview.layer renderInContext:context];
+    [label removeFromSuperview];
+    [label release];
+    [labelSuperview release];    
+}
+
 - (void)hidePrivateViewsForWindow:(UIWindow *)window inContext:(CGContextRef)context
 {
     // Black out private views
@@ -450,26 +500,27 @@ void Swizzle(Class c, SEL orig, SEL new){
         
         if ([view window] == window) {
             CGRect frameInWindow = [view convertRect:view.frame toView:window];
-            
-/*            CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 1.0);
-            CGContextFillRect(context, frameInWindow);*/
-
-            // Draw a label to cover the private view
-            UIView *labelSuperview = [[UIView alloc] initWithFrame:window.frame];
-            UILabel *label = [[UILabel alloc] initWithFrame:frameInWindow];
-            label.backgroundColor = [UIColor blackColor];
-            label.textColor = [UIColor whiteColor];
-            label.text = description;
-            label.textAlignment = UITextAlignmentCenter;
-            label.font = [UIFont systemFontOfSize:24.0];
-            label.adjustsFontSizeToFitWidth = YES;
-            [labelSuperview addSubview:label];
-            [labelSuperview.layer renderInContext:context];
-            [label removeFromSuperview];
-            [label release];
-            [labelSuperview release];
+            CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 1.0);
+            CGContextFillRect(context, frameInWindow);
+                        
+            [self drawLabelCenteredAt:CGPointMake(CGRectGetMidX(frameInWindow), CGRectGetMidY(frameInWindow))
+                             inWindow:window
+                            inContext:context 
+                                 text:description 
+                            textColor:[UIColor whiteColor] 
+                      backgroundColor:[UIColor blueColor]];
         }
     }
+}
+
+- (void)hideKeyboardWindow:(UIWindow *)window inContext:(CGContextRef)context
+{
+/*    [self drawLabelInFrame:CGRectMake(keyboardFrame.origin.y, keyboardFrame.origin.x, keyboardFrame.size.height, keyboardFrame.size.width) 
+                  inWindow:window 
+                 inContext:context 
+                      text:@"Keyboard is hidden"
+                 textColor:[UIColor blackColor]
+           backgroundColor:[UIColor colorWithWhite:0.7 alpha:1.0]];*/
 }
 
 - (void)takeScreenshot
@@ -509,12 +560,13 @@ void Swizzle(Class c, SEL orig, SEL new){
         
         self.openGLImage = nil;
         
-        /*    //debugging
-         if (frameCount < 600) {
-         NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
-         NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
-         [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
-         }*/
+#ifdef DEBUG_PNG
+        if (frameCount < 600) {
+            NSString* filename = [NSString stringWithFormat:@"Documents/frame_%d.png", frameCount];
+            NSString* pngPath = [NSHomeDirectory() stringByAppendingPathComponent:filename];
+            [UIImagePNGRepresentation(self.currentScreen) writeToFile: pngPath atomically: YES];
+        }
+#endif
         
         if (_recording) {
             float millisElapsed = ([[NSDate date] timeIntervalSinceDate:startedAt] - pauseTime) * 1000.0;
@@ -725,6 +777,11 @@ void Swizzle(Class c, SEL orig, SEL new){
 - (void)handleDidBecomeActive:(NSNotification *)notification
 {
     [self startRecording];
+}
+
+- (void)handleKeyboardFrameChanged:(NSNotification *)notification
+{
+    keyboardFrame = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
 }
 
 #pragma mark - NBScreenCapturingWindowDelegate

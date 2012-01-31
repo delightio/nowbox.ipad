@@ -63,7 +63,8 @@
     NSTimeInterval elapsedTime;
     
     NSTimer *screenshotTimer;
-    NSMutableArray *pendingTouches;    
+    NSMutableArray *pendingTouches;  
+    CGRect keyboardFrame;
 }
 
 + (void)start;
