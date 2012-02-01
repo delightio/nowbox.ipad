@@ -58,7 +58,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 }
 
 - (void)authorizeFacebook {
-	NSArray *permissions = [NSArray arrayWithObjects:@"publish_stream", @"read_stream", @"read_friendlists", nil];
+	NSArray *permissions = [NSArray arrayWithObjects:@"publish_stream", @"read_stream", nil];
 	[self.facebook authorize:permissions];
 }
 
@@ -95,7 +95,9 @@ static NMAccountManager * _sharedAccountManager = nil;
 }
 
 - (void)fbSessionInvalidated {
-	[self.facebook extendAccessToken];
+	_facebook.accessToken = [_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
+	_facebook.expirationDate = [_userDefaults objectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
+	[_facebook extendAccessToken];
 }
 
 @end

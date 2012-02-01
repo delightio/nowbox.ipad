@@ -47,11 +47,15 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
-	return [self.facebook requestWithGraphPath:@"me" andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"feed", @"fields", @"50", @"limit", nil] andDelegate:ctrl];
+	// home - user's news feed
+	// feed - user's own wall
+	return [self.facebook requestWithGraphPath:@"me" andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"home", @"fields", @"50", @"limit", nil] andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {
-	NSArray * feedAy = [result valueForKeyPath:@"feed.data"];
+	// home - user's news feed
+	// feed - user's own wall
+	NSArray * feedAy = [result valueForKeyPath:@"home.data"];
 	
 	NSUInteger feedCount = [feedAy count];
 	if ( feedCount == 0 ) return;

@@ -42,6 +42,9 @@
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
+	// for YouTube import
+	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
     return self;
 }
 
@@ -391,6 +394,21 @@
 
 - (void)handleNewSessionNotification:(NSNotification *)aNotification {
 	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+}
+
+- (void)handleDidImportVideoNotification:(NSNotification *)aNotification {
+	NSDictionary * info = [aNotification userInfo];
+    if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
+		[self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
+		isLoadingNewContent = NO;
+		isAnimatingNewContentCell = YES;
+		[videoTableView reloadData];
+		[videoTableView beginUpdates];
+		[videoTableView endUpdates];
+    }
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
+	[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
 }
 
 #pragma mark trigger load new

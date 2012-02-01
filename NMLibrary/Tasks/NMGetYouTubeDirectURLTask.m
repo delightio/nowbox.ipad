@@ -273,7 +273,13 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	if ( encountersErrorDuringProcessing ) {
 		return errorInfo;
 	}
-	return directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
+	NSDictionary * theDict;
+	if ( command == NMCommandImportYouTubeVideo ) {
+		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", video.channel, @"channel", nil] : nil;
+	} else {
+		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
+	}
+	return theDict;
 }
 
 @end
