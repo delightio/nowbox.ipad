@@ -117,6 +117,7 @@ static NSArray * youTubeRegexArray = nil;
 				conVdo = [ctrl insertNewConcreteVideo];
 				conVdo.external_id = extID;
 				conVdo.nm_error = errNum;
+				conVdo.source = [NSNumber numberWithInteger:NMVideoSourceYouTube];
 				// create video
 				vdo = [ctrl insertNewVideo];
 				vdo.video = conVdo;
