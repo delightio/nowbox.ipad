@@ -639,6 +639,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueSubscribePerson:(NMPersonProfile *)aProfile {
+	if ( aProfile.subscription ) return;
+	NMChannel * chn = [dataController subscribeUserChannelWithPersonProfile:aProfile];
+	[self issueProcessFeedForChannel:chn];
+}
+
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }

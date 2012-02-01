@@ -75,6 +75,7 @@ static NSArray * youTubeRegexArray = nil;
 			}
 		}
 		fromDict = [theDict objectForKey:@"from"];
+		NSLog(@"item from: %@", [fromDict objectForKey:@"name"]);
 		if ( fromDict ) [_profileArray addObject:fromDict];
 		else [_profileArray addObject:[NSNull null]];
 	}
@@ -82,7 +83,7 @@ static NSArray * youTubeRegexArray = nil;
 		[parsedObjects release];
 		parsedObjects = nil;
 	}
-	self.nextPageURLString = [result valueForKeyPath:@"feed.data.paging.next"];
+	self.nextPageURLString = [result valueForKeyPath:@"feed.paging.next"];
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {

@@ -16,6 +16,7 @@
 @class NMVideo;
 @class NMVideoDetail;
 @class NMAuthor;
+@class NMPersonProfile;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
 @class Reachability;
@@ -125,9 +126,10 @@
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 
-// Facebook
+// Facebook or Twitter (social)
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
 - (void)issueGetMyFacebookProfile;
+- (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
