@@ -14,6 +14,7 @@
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
+#import "NMSubscription.h"
 #import "FBConnect.h"
 #import "NMObjectCache.h"
 
@@ -28,18 +29,25 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize channel = _channel;
 @synthesize nextPageURLString = _nextPageURLString;
 @synthesize user_id = _user_id;
+@synthesize since_id = _since_id;
 @synthesize profileArray = _profileArray;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
 	command = NMCommandParseFacebookFeed;
 	self.channel = chn;
+	self.since_id = chn.subscription.nm_since_id;
+	if ( _since_id == nil || [_since_id isEqualToString:@""]) self.since_id = @"0";
+	NMPersonProfile * theProfile =  chn.subscription.personProfile;
+	self.user_id = theProfile.nm_user_id;
+	isAccountOwner = [theProfile.nm_me boolValue];
 	self.targetID = chn.nm_id;
 	return self;
 }
 
 - (void)dealloc {
 	[_user_id release];
+	[_since_id release];
 	[_channel release];
 	[_nextPageURLString release];
 	[_profileArray release];
@@ -49,7 +57,13 @@ static NSArray * youTubeRegexArray = nil;
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
 	// home - user's news feed
 	// feed - user's own wall
-	return [self.facebook requestWithGraphPath:@"me" andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"home", @"fields", @"50", @"limit", nil] andDelegate:ctrl];
+	NSString * thePath;
+	if ( isAccountOwner ) {
+		thePath = @"me";
+	} else {
+		thePath = _user_id;
+	}
+	return [self.facebook requestWithGraphPath:thePath andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"home", @"fields", @"50", @"limit", @"U", @"date_format", _since_id, @"since", nil] andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {
@@ -65,6 +79,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSString * extID = nil;
 	NSString * dataType = nil;
 	NSDictionary * fromDict = nil;
+	NSInteger theTime;
 	for (NSDictionary * theDict in feedAy) {
 		// process the contents in the array
 		dataType = [theDict objectForKey:@"type"];
@@ -74,6 +89,8 @@ static NSArray * youTubeRegexArray = nil;
 				// we just need the external ID
 				NSLog(@"video name: %@ %@", [theDict objectForKey:@"name"], extID);
 				[parsedObjects addObject:extID];
+				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
+				if ( theTime > maxUnixTime ) maxUnixTime = theTime;
 			} else {
 				NSLog(@"not added: %@ %@", [theDict objectForKey:@"name"], [theDict objectForKey:@"link"]);
 			}
@@ -87,7 +104,7 @@ static NSArray * youTubeRegexArray = nil;
 		[parsedObjects release];
 		parsedObjects = nil;
 	}
-	self.nextPageURLString = [result valueForKeyPath:@"feed.paging.next"];
+	self.nextPageURLString = [result valueForKeyPath:@"home.paging.next"];
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
@@ -98,6 +115,7 @@ static NSArray * youTubeRegexArray = nil;
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
+	// enumerate the feed
 	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		NSString * extID = obj;
 		NMConcreteVideo * conVdo = nil;
@@ -150,6 +168,9 @@ static NSArray * youTubeRegexArray = nil;
 			}
 		}
 	}];
+	// update the last checked time
+	_channel.subscription.nm_last_crawled = [NSDate date];
+	_channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
 	[objectCache release];
 	return YES;
 }
