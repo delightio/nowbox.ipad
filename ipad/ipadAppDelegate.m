@@ -294,7 +294,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 			[tqc issueSyncRequest];
 		}
-		[tqc issueSyncSocialChannels];
+		[tqc scheduleSyncSocialChannels];
 	}
 	// refresh video
 	[viewController.playbackModelController refreshDirectURLToBufferedVideos];

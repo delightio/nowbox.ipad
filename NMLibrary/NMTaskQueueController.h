@@ -132,7 +132,8 @@
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
 - (void)issueGetMyFacebookProfile;
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
-- (void)issueSyncSocialChannels;
+- (void)scheduleSyncSocialChannels;
+- (void)scheduleImportVideos;
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;

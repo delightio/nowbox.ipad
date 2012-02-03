@@ -649,7 +649,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueProcessFeedForChannel:chn];
 }
 
-- (void)issueSyncSocialChannels {
+- (void)scheduleSyncSocialChannels {
 	// get the qualified channels
 	NSArray * theChannels = [dataController channelsForSync];
 	NSUInteger c = [theChannels count];
@@ -658,10 +658,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	if ( c > 5 && socialChannelParsingTimer == nil ) {
 		// schedule a timer task to process other channels
-		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(issueSyncSocialChannels) userInfo:nil repeats:YES];
+		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
 	} else if ( socialChannelParsingTimer ) {
 		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
 	}
+}
+
+- (void)scheduleImportVideos {
+	// get the qualified videos
+	NSArray * theVideos = [dataController videosForSync:2];
+	if ( theVideos == nil ) {
+		// stop the timer task
+		
+		return;
+	}
+	
 }
 
 - (void)cancelAllTasks {

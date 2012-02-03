@@ -716,6 +716,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (NSArray *)channelsForSync {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext]];
+	// crawl if the channel has not been crawled in the past 5 min
 	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_last_crawled < %@", [NSDate dateWithTimeIntervalSinceNow:-300.0]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
