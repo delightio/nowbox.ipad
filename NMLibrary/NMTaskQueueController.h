@@ -31,6 +31,7 @@
 	// polling channel population status
 	NSTimer * channelPollingTimer;
 	NSTimer * youTubePollingTimer;
+	NSTimer * videoImportTimer;
 	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
 	NSTimer * socialChannelParsingTimer;
@@ -48,6 +49,7 @@
 @property (nonatomic, readonly) NMDataController * dataController;
 @property (nonatomic, retain) NSTimer * channelPollingTimer;
 @property (nonatomic, retain) NSTimer * youTubePollingTimer;
+@property (nonatomic, retain) NSTimer * videoImportTimer;
 @property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
 @property (nonatomic, retain) NSTimer * socialChannelParsingTimer;

@@ -35,6 +35,7 @@
 	NSPredicate * concreteVideoForExternalIDPredicateTemplate;
 	NSPredicate * usernamePredicateTemplate;
 	NSPredicate * usernameOrIDPredicateTemplate;
+	NSPredicate * pendingImportVideoPredicate;
 	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription;
@@ -65,6 +66,7 @@
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * authorEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
+@property (nonatomic, readonly) NSPredicate * pendingImportVideoPredicate;
 @property (nonatomic, retain) NMChannel * userTwitterStreamChannel;
 @property (nonatomic, retain) NMChannel * userFacebookStreamChannel;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
@@ -130,6 +132,7 @@
 - (NMVideoDetail *)insertNewVideoDetail;
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
 - (NSArray *)pendingImportVideosForChannel:(NMChannel *)chn;
+- (NSArray *)videosForSync:(NSUInteger)numVdo;
 - (NMVideo *)videoForID:(NSNumber *)vid;
 - (NMVideo *)lastSessionVideoForChannel:(NMChannel *)chn;
 - (void)deleteVideo:(NMVideo *)vidObj;

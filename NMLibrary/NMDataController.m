@@ -72,6 +72,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (void)dealloc {
 	[myQueueChannel release], [favoriteVideoChannel release];
 	[userFacebookStreamChannel release], [userTwitterStreamChannel release];
+	[pendingImportVideoPredicate release];
 	[lastSessionVideoIDs release];
 	[categoryCacheDictionary release];
 	[channelCacheDictionary release];
@@ -110,6 +111,13 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		self.videoEntityDescription = nil;
 		self.authorEntityDescription = nil;
 	}
+}
+
+- (NSPredicate *)pendingImportVideoPredicate {
+	if ( pendingImportVideoPredicate == nil ) {
+		pendingImportVideoPredicate = [[NSPredicate predicateWithFormat:@"video.nm_error == %@", [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]] retain];
+	}
+	return pendingImportVideoPredicate;
 }
 
 #pragma mark First launch
@@ -881,6 +889,18 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == %@", chn, [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	[request release];
+	return [result count] ? result : nil;
+}
+
+- (NSArray *)videosForSync:(NSUInteger)numVdo {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:self.pendingImportVideoPredicate];
+	[request setFetchLimit:numVdo];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	

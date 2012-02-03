@@ -59,7 +59,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize dataController;
 @synthesize youTubePollingTimer, tokenRenewTimer;
 @synthesize channelPollingTimer, userSyncTimer;
-@synthesize socialChannelParsingTimer;
+@synthesize socialChannelParsingTimer, videoImportTimer;
 @synthesize unpopulatedChannels;
 @synthesize syncInProgress, appFirstLaunch;
 
@@ -135,6 +135,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	if ( socialChannelParsingTimer ) {
 		[socialChannelParsingTimer invalidate], [socialChannelParsingTimer release];
+	}
+	if ( videoImportTimer ) {
+		[videoImportTimer invalidate], [videoImportTimer release];
 	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
@@ -666,13 +669,19 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)scheduleImportVideos {
 	// get the qualified videos
-	NSArray * theVideos = [dataController videosForSync:2];
+	NSArray * theVideos = [dataController videosForSync:4];
 	if ( theVideos == nil ) {
 		// stop the timer task
-		
+		if ( videoImportTimer ) {
+			[videoImportTimer invalidate];
+			self.videoImportTimer = nil;
+		}
 		return;
 	}
-	
+	for (NMVideo * vdo in theVideos) {
+		[self issueImportVideo:vdo];
+	}
+	self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
 }
 
 - (void)cancelAllTasks {
