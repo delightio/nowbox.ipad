@@ -46,6 +46,8 @@
 
 #define NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP         (60.0f * 40)
 
+#define VIDEO_HEIGHT 220.0f
+
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
 
 //- (void)insertVideoAtIndex:(NSUInteger)idx;
@@ -256,14 +258,15 @@
 
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-        topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height / 2);
+        topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, VIDEO_HEIGHT);
         
-        gridNavigationContainer.frame = CGRectMake(0, self.view.bounds.size.height / 2, self.view.bounds.size.width, self.view.bounds.size.height / 2);
+        gridNavigationContainer.frame = CGRectMake(0, VIDEO_HEIGHT, self.view.bounds.size.width, (self.view.bounds.size.height - VIDEO_HEIGHT));
         gridNavigationController.view.frame = gridNavigationContainer.bounds;
         gridNavigationContainer.alpha = 1.0f;
-        
         [loadedControlView setToggleGridButtonHidden:YES];   
 		[loadedControlView setControlsHidden:YES animated:NO];                
+        
+        [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     } else {
         topLevelContainerView.frame = self.view.bounds;
         if (!gridShowing) {
@@ -276,6 +279,8 @@
         gridNavigationContainer.frame = gridNavigationController.view.bounds;
         [loadedControlView setToggleGridButtonHidden:NO];
 		[loadedControlView setControlsHidden:NO animated:NO];        
+        
+        [movieView setVideoGravity:AVLayerVideoGravityResizeAspect];        
     }
     
     [launchController updateViewForInterfaceOrientation:interfaceOrientation];

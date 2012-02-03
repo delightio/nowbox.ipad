@@ -92,6 +92,10 @@
     [(AVPlayerLayer *)[self layer] setPlayer:aPlayer];
 }
 
+- (void)setVideoGravity:(NSString *)videoGravity {
+    [(AVPlayerLayer *)[self layer] setVideoGravity:videoGravity];
+}
+
 //- (id)initWithFrame:(CGRect)frame {
 //    
 //    self = [super initWithFrame:frame];

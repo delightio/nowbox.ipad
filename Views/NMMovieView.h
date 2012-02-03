@@ -31,5 +31,6 @@
 //- (void)addTarget:(id)atarget action:(SEL)anAction;
 - (void)setActivityIndicationHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)hideAirPlayIndicatorView:(BOOL)hidden;
+- (void)setVideoGravity:(NSString *)videoGravity;
 
 @end
