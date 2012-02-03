@@ -57,8 +57,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize managedObjectContext;
 @synthesize networkController;
 @synthesize dataController;
-@synthesize pollingTimer, tokenRenewTimer;
+@synthesize youTubePollingTimer, tokenRenewTimer;
 @synthesize channelPollingTimer, userSyncTimer;
+@synthesize socialChannelParsingTimer;
 @synthesize unpopulatedChannels;
 @synthesize syncInProgress, appFirstLaunch;
 
@@ -123,14 +124,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController release];
 	[networkController release];
 	[NM_SESSION_ID release];
-	if ( pollingTimer ) {
-		[pollingTimer invalidate], [pollingTimer release];	
+	if ( youTubePollingTimer ) {
+		[youTubePollingTimer invalidate], [youTubePollingTimer release];	
 	}
 	if ( userSyncTimer ) {
 		[userSyncTimer invalidate], [userSyncTimer release];
 	}
 	if ( tokenRenewTimer ) {
 		[tokenRenewTimer invalidate], [tokenRenewTimer release];
+	}
+	if ( socialChannelParsingTimer ) {
+		[socialChannelParsingTimer invalidate], [socialChannelParsingTimer release];
 	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
@@ -645,6 +649,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueProcessFeedForChannel:chn];
 }
 
+- (void)issueSyncSocialChannels {
+	// get the qualified channels
+	NSArray * theChannels = [dataController channelsForSync];
+	NSUInteger c = [theChannels count];
+	for (NSUInteger i = 0; (i < c && i < 5); i++) {
+		[self issueProcessFeedForChannel:[theChannels objectAtIndex:i]];
+	}
+	if ( c > 5 && socialChannelParsingTimer == nil ) {
+		// schedule a timer task to process other channels
+		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(issueSyncSocialChannels) userInfo:nil repeats:YES];
+	} else if ( socialChannelParsingTimer ) {
+		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+	}
+}
+
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }
@@ -728,8 +747,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)stopPollingServer {
-	if ( pollingTimer ) {
-		[pollingTimer invalidate], self.pollingTimer = nil;	
+	if ( youTubePollingTimer ) {
+		[youTubePollingTimer invalidate], self.youTubePollingTimer = nil;	
 	}
 	if ( userSyncTimer ) {
 		[userSyncTimer invalidate], self.userSyncTimer = nil;
@@ -777,11 +796,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)pollServerForYouTubeSyncSignal {
 	// we assue the backend will only activate pollingTimer for only 1 service - YouTube, Facebook or Twitter.
-	if ( pollingTimer ) {
-		[pollingTimer fire];
+	if ( youTubePollingTimer ) {
+		[youTubePollingTimer fire];
 	} else {
 		pollingRetryCount = 0;
-		self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_POLLING_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+		self.youTubePollingTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_POLLING_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
 		//MARK: we may need to fire the timer once here so that we don't have the initial wait.
 	}
 }
@@ -796,8 +815,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( !appFirstLaunch ) {
 			// this is the case where the user has finished up the onboard process with a YouTube login. However, the onboard is done before the polling work finish. In this case, we don't need to perform the sync anymore
 			// invalidate the timer
-			[pollingTimer invalidate];
-			self.pollingTimer = nil;
+			[youTubePollingTimer invalidate];
+			self.youTubePollingTimer = nil;
 			
 			return;
 		}
@@ -805,13 +824,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( NM_USER_YOUTUBE_SYNC_SERVER_TIME > 0 ) {
 			// the account is synced. get the list of channel
 			[self issueCompareSubscribedChannels];
-			[pollingTimer invalidate];
-			self.pollingTimer = nil;
+			[youTubePollingTimer invalidate];
+			self.youTubePollingTimer = nil;
 			NM_USER_YOUTUBE_LAST_SYNC = NM_USER_YOUTUBE_SYNC_SERVER_TIME;
 			[[NSUserDefaults standardUserDefaults] setInteger:NM_USER_YOUTUBE_LAST_SYNC forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
 		} else if ( pollingRetryCount > 5 ) {
-			[pollingTimer invalidate];
-			self.pollingTimer = nil;
+			[youTubePollingTimer invalidate];
+			self.youTubePollingTimer = nil;
 		}
 	} else {
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {

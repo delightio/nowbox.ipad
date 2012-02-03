@@ -713,6 +713,16 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return [result count] ? result : nil;
 }
 
+- (NSArray *)channelsForSync {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_last_crawled < %@", [NSDate dateWithTimeIntervalSinceNow:-300.0]]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	[request release];
+	return [result count] ? result : nil;
+}
+
 - (void)clearChannelCache {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	

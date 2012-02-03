@@ -113,6 +113,7 @@
 - (void)bulkMarkChannelsDeleteStatus:(NSArray *)chnAy;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
+- (NSArray *)channelsForSync;
 - (NMChannel *)channelNextTo:(NMChannel *)anotherChannel;
 - (void)clearChannelCache;
 
