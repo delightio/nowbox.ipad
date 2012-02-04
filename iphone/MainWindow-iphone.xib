@@ -54,13 +54,15 @@
 			</object>
 			<object class="IBUIViewController" id="787010486">
 				<string key="IBUINibName">PhoneVideoPlaybackView</string>
-				<object class="IBUISimulatedOrientationMetrics" key="IBUISimulatedOrientationMetrics">
-					<int key="IBUIInterfaceOrientation">3</int>
-					<int key="interfaceOrientation">3</int>
+				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics">
+					<int key="IBUIStatusBarStyle">2</int>
 				</object>
-				<bool key="IBUIWantsFullScreenLayout">YES</bool>
+				<object class="IBUISimulatedOrientationMetrics" key="IBUISimulatedOrientationMetrics">
+					<int key="IBUIInterfaceOrientation">1</int>
+					<int key="interfaceOrientation">1</int>
+				</object>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-				<bool key="IBUIHorizontal">YES</bool>
+				<bool key="IBUIHorizontal">NO</bool>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -150,17 +152,12 @@
 					<string key="className">ChannelPanelController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="debugRefreshChannel:">id</string>
 						<string key="showChannelManagementView:">id</string>
 						<string key="showFeatureDebugView:">id</string>
 						<string key="showSettingsView:">id</string>
 						<string key="toggleTableEditMode:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="debugRefreshChannel:">
-							<string key="name">debugRefreshChannel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="showChannelManagementView:">
 							<string key="name">showChannelManagementView:</string>
 							<string key="candidateClassName">id</string>
@@ -240,6 +237,7 @@
 						<string key="progressSlider">NMSeekBar</string>
 						<string key="seekBubbleButton">UIButton</string>
 						<string key="segmentChannelButton">UIButton</string>
+						<string key="toggleGridButton">UIButton</string>
 						<string key="topbarContainerView">UIView</string>
 						<string key="videoTitleLabel">UILabel</string>
 						<string key="watchLaterButton">UIButton</string>
@@ -307,6 +305,10 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="segmentChannelButton">
 							<string key="name">segmentChannelButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="toggleGridButton">
+							<string key="name">toggleGridButton</string>
 							<string key="candidateClassName">UIButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="topbarContainerView">
@@ -405,6 +407,7 @@
 						<string key="addVideoToQueue:">id</string>
 						<string key="playStopVideo:">id</string>
 						<string key="seekPlaybackProgress:">id</string>
+						<string key="toggleGrid:">id</string>
 						<string key="touchDownProgressBar:">id</string>
 						<string key="touchUpProgressBar:">id</string>
 					</dictionary>
@@ -425,6 +428,10 @@
 							<string key="name">seekPlaybackProgress:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="toggleGrid:">
+							<string key="name">toggleGrid:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="touchDownProgressBar:">
 							<string key="name">touchDownProgressBar:</string>
 							<string key="candidateClassName">id</string>
@@ -435,14 +442,24 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="channelSwitchingScrollView">UIScrollView</string>
 						<string key="controlScrollView">UIScrollView</string>
 						<string key="favoriteButton">UIButton</string>
 						<string key="loadedControlView">NMControlsView</string>
-						<string key="ribbonView">UIView</string>
+						<string key="nextChannelActivityView">UIActivityIndicatorView</string>
+						<string key="nextChannelHeaderView">UIView</string>
+						<string key="nextChannelSwitchingLabel">UILabel</string>
+						<string key="previousChannelActivityView">UIActivityIndicatorView</string>
+						<string key="previousChannelHeaderView">UIView</string>
+						<string key="previousChannelSwitchingLabel">UILabel</string>
 						<string key="topLevelContainerView">UIView</string>
 						<string key="watchLaterButton">UIButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="channelSwitchingScrollView">
+							<string key="name">channelSwitchingScrollView</string>
+							<string key="candidateClassName">UIScrollView</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="controlScrollView">
 							<string key="name">controlScrollView</string>
 							<string key="candidateClassName">UIScrollView</string>
@@ -455,9 +472,29 @@
 							<string key="name">loadedControlView</string>
 							<string key="candidateClassName">NMControlsView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="ribbonView">
-							<string key="name">ribbonView</string>
+						<object class="IBToOneOutletInfo" key="nextChannelActivityView">
+							<string key="name">nextChannelActivityView</string>
+							<string key="candidateClassName">UIActivityIndicatorView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="nextChannelHeaderView">
+							<string key="name">nextChannelHeaderView</string>
 							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="nextChannelSwitchingLabel">
+							<string key="name">nextChannelSwitchingLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="previousChannelActivityView">
+							<string key="name">previousChannelActivityView</string>
+							<string key="candidateClassName">UIActivityIndicatorView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="previousChannelHeaderView">
+							<string key="name">previousChannelHeaderView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="previousChannelSwitchingLabel">
+							<string key="name">previousChannelSwitchingLabel</string>
+							<string key="candidateClassName">UILabel</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="topLevelContainerView">
 							<string key="name">topLevelContainerView</string>
