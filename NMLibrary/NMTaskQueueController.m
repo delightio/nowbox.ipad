@@ -93,6 +93,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
+	// do the same thing for twitter as well
+	//[nc addObserver:self selector:@selector(handleDidParseSocialChannelNotification:) name:NMDidParseFacebookFeedNotification object:nil];
+
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
@@ -231,6 +235,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			break;
 		default:
 			break;
+	}
+}
+
+- (void)handleDidParseFeedNotification:(NSNotification *)aNotification {
+	NSDictionary * infoDict = [aNotification userInfo];
+	if ( [[infoDict objectForKey:@"num_video_added"] integerValue] ) {
+		// we found new video in the news feed
+		if ( videoImportTimer == nil ) {
+			[self scheduleImportVideos];
+		}
 	}
 }
 
@@ -778,6 +792,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	if ( channelPollingTimer ) {
 		[channelPollingTimer invalidate], self.channelPollingTimer = nil;
+	}
+	if ( videoImportTimer ) {
+		[videoImportTimer invalidate], self.videoImportTimer = nil;
+	}
+	if ( socialChannelParsingTimer ) {
+		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
 	}
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_LAST_SYNC] forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];

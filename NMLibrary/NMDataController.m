@@ -1206,6 +1206,23 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return [result count];
 }
 
+- (NMPersonProfile *)firstAvailablePersonProfile {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription == nil"]];
+	[request setFetchLimit:1];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	NMPersonProfile * thePerson = nil;
+	
+	if ( [result count] ) {
+		thePerson = [result objectAtIndex:0];
+	}
+	[request release];
+	return thePerson;
+}
+
 #pragma mark Data parsing
 - (void)createDataParsingOperationForTask:(NMTask *)atask {
 	NSInvocationOperation * op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseAndProcessData:) object:atask];

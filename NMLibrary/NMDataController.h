@@ -155,4 +155,9 @@
 - (NSArray *)allSubscriptions;
 - (NSUInteger)numberOfSubscriptions;
 
+/*!
+ Used in Feature Debug Panel. Get the first person without subscription so that the test method there can subscribe to that method.
+ */
+- (NMPersonProfile *)firstAvailablePersonProfile;
+
 @end

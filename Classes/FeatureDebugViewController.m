@@ -200,6 +200,14 @@
 	[[NMTaskQueueController sharedTaskQueueController] issueDebugImportYouTubeVideos];
 }
 
+- (IBAction)subscribeFirstAvailablePerson:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	// get the first available person
+	NMPersonProfile * thePerson = [tqc.dataController firstAvailablePersonProfile];
+	// subscribe to his/her feed
+	if ( thePerson ) [tqc issueSubscribePerson:thePerson];
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

@@ -208,4 +208,8 @@ static NSArray * youTubeRegexArray = nil;
 	return NMDidFailParseFacebookFeedNotification;
 }
 
+- (NSDictionary *)userInfo {
+	return [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInteger:[parsedObjects count]] forKey:@"num_video_added"];
+}
+
 @end

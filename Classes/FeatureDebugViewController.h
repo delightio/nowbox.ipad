@@ -36,5 +36,6 @@
 - (IBAction)parseFacebookFeed:(id)sender;
 - (IBAction)getFacebookProfile:(id)sender;
 - (IBAction)importYouTube:(id)sender;
+- (IBAction)subscribeFirstAvailablePerson:(id)sender;
 
 @end
