@@ -235,10 +235,11 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 				[arObj setValuesForKeysWithDictionary:authorDict];
 			}
 			targetVideo.author = arObj;
+			// In some ways, setting the session here purposely make the NMVideo object dirty. Then, when we save the MOC, the NSFetchedResultsController that owns the channel video row will get notified for change.
+			video.nm_session_id = NM_SESSION_ID;
 		}
 	}
 	if ( encountersErrorDuringProcessing ) {
-		NSLog(@"direct URL resolution failed: %@", targetVideo.title);
 		targetVideo.nm_direct_url = nil;
 		targetVideo.nm_direct_sd_url = nil;
 		targetVideo.nm_error = [self.errorInfo objectForKey:@"error_code"];
