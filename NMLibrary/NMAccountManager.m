@@ -70,8 +70,12 @@ static NMAccountManager * _sharedAccountManager = nil;
 	[_userDefaults setObject:[_facebook expirationDate] forKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
 	[_userDefaults synchronize];
 	
+	// listen to profile notification
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	[[NSNotificationCenter defaultCenter] addObserver:tqc selector:@selector(handleDidGetPersonProfile:) name:NMDidGetFacebookProfileNotification object:nil];
+
 	// issue call to get user info
-	[[NMTaskQueueController sharedTaskQueueController] issueGetMyFacebookProfile];
+	[tqc issueGetMyFacebookProfile];
 	// Login interface should listen to notification so that it can update the interface accordingly
 }
 

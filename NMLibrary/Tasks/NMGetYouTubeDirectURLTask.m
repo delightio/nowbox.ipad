@@ -94,6 +94,7 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	if ( command == NMCommandImportYouTubeVideo ) {
 		// use custom command index method
 		idx = ABS((NSInteger)[externalID hash]);
+		NSLog(@"command hash %d", idx);
 	} else {
 		idx = [super commandIndex];
 	}
@@ -217,10 +218,13 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 			[ctrl deleteManagedObject:targetVideo];
 		} else {
 			// detail Video
-			NMVideoDetail * dtlObj = [ctrl insertNewVideoDetail];
+			NMVideoDetail * dtlObj = targetVideo.detail;
+			if ( dtlObj == nil ) {
+				dtlObj = [ctrl insertNewVideoDetail];
+				targetVideo.detail = dtlObj;
+			}
 			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
 			[videoInfoDict removeObjectForKey:@"nm_description"];
-			targetVideo.detail = dtlObj;
 			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
 			// update Concrete Video
 			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];

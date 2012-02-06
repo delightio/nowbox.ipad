@@ -238,6 +238,20 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
+- (void)handleDidGetPersonProfile:(NSNotification *)aNotification {
+	/*
+	 Listen to this notificaiton only when the user signs in Twitter or Facebook.
+	 
+	 For Facebook, we set this task queue schedule to listen to notification in the NMAccountManager. When user has successfully granted this app access to his/her Facebook account, NMAccountManager will get called (the facebook delegate)
+	*/
+	NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
+	if ( [theProfile.nm_me boolValue] ) {
+		// trigger feed parsing
+		[self scheduleSyncSocialChannels];
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:[aNotification name] object:nil];
+	}
+}
+
 - (void)handleDidParseFeedNotification:(NSNotification *)aNotification {
 	NSDictionary * infoDict = [aNotification userInfo];
 	if ( [[infoDict objectForKey:@"num_video_added"] integerValue] ) {
@@ -695,7 +709,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	for (NMVideo * vdo in theVideos) {
 		[self issueImportVideo:vdo];
 	}
-	self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
+	self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
 }
 
 - (void)cancelAllTasks {

@@ -723,9 +723,9 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 - (NSArray *)channelsForSync {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext]];
+	[request setEntity:channelEntityDescription];
 	// crawl if the channel has not been crawled in the past 5 min
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_last_crawled < %@", [NSDate dateWithTimeIntervalSinceNow:-300.0]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_last_crawled < %@", [NSDate dateWithTimeIntervalSinceNow:-300.0]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
@@ -1184,6 +1184,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		NMSubscription * subtObj = [NSEntityDescription insertNewObjectForEntityForName:NMSubscriptionEntityName inManagedObjectContext:managedObjectContext];
 		subtObj.channel = chnObj;
 		subtObj.personProfile = aProfile;
+		subtObj.nm_last_crawled = [NSDate distantPast];
 	}
 	return chnObj;
 }

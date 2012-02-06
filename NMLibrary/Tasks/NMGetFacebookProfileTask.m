@@ -19,6 +19,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 @implementation NMGetFacebookProfileTask
 @synthesize profileDictionary = _profileDictionary;
 @synthesize userID = _userID;
+@synthesize profile = _profile;
 
 - (id)initGetMe {
 	self = [super init];
@@ -39,6 +40,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 - (void)dealloc {
 	[_profileDictionary release];
 	[_userID release];
+	[_profile release];
 	[super dealloc];
 }
 
@@ -75,6 +77,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	theProfile.nm_error = (NSNumber *)kCFBooleanFalse;
 	if ( profileOwnsByMe ) theProfile.nm_me = (NSNumber *)kCFBooleanTrue;
 	[theProfile setValuesForKeysWithDictionary:_profileDictionary];
+	self.profile = theProfile;
 	
 	// check if we need to create the channel object. Only need to do so if we are grabbing the owner's profile
 	if ( newState && profileOwnsByMe ) {
@@ -95,6 +98,10 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 
 - (NSString *)didFailNotificationName {
 	return NMDidFailGetFacebookProfileNotification;
+}
+
+- (NSDictionary *)userInfo {
+	return [NSDictionary dictionaryWithObjectsAndKeys:_profile, @"target_object", nil];
 }
 
 @end

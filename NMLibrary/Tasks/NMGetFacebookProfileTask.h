@@ -15,6 +15,7 @@
 }
 
 @property (nonatomic, retain) NSDictionary * profileDictionary;
+@property (nonatomic, retain) NMPersonProfile * profile;
 @property (nonatomic, retain) NSString * userID;
 
 - (id)initGetMe;
