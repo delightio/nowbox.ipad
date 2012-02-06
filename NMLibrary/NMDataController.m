@@ -1060,7 +1060,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		}
 		if ( vdoInChn ) {
 			checkResult = NMVideoExistsAndInChannel;
-		} else {
+		} else if ( vdo ) {
 			*outRealVdo = vdo.video;
 			// video exists but not in "chn" channel. We just need to create the NMVideo object.
 			checkResult = NMVideoExistsButNotInChannel;
