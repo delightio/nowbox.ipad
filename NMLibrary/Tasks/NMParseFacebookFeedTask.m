@@ -31,6 +31,7 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize user_id = _user_id;
 @synthesize since_id = _since_id;
 @synthesize profileArray = _profileArray;
+@synthesize feedDirectURLString = _feedDirectURLString;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -45,12 +46,27 @@ static NSArray * youTubeRegexArray = nil;
 	return self;
 }
 
+- (id)initWithChannel:(NMChannel *)chn directURLString:(NSString *)urlStr {
+	self = [super init];
+	
+	command = NMCommandParseFacebookFeed;
+	self.feedDirectURLString = urlStr;
+	self.channel = chn;
+	NMPersonProfile * theProfile =  chn.subscription.personProfile;
+	self.user_id = theProfile.nm_user_id;
+	isAccountOwner = [theProfile.nm_me boolValue];
+	self.targetID = chn.nm_id;
+	
+	return self;
+}
+
 - (void)dealloc {
 	[_user_id release];
 	[_since_id release];
 	[_channel release];
 	[_nextPageURLString release];
 	[_profileArray release];
+	[_feedDirectURLString release];
 	[super dealloc];
 }
 
@@ -63,7 +79,14 @@ static NSArray * youTubeRegexArray = nil;
 	} else {
 		thePath = _user_id;
 	}
-	return [self.facebook requestWithGraphPath:thePath andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"home", @"fields", @"50", @"limit", @"U", @"date_format", _since_id, @"since", nil] andDelegate:ctrl];
+	NSMutableDictionary * theDict = nil;
+	if ( _feedDirectURLString == nil ) {
+		NSURL * theURL = [NSURL URLWithString:_feedDirectURLString];
+		theDict = [NSMutableDictionary dictionaryWithDictionary:[self.facebook parseURLParams:[theURL query]]];
+	} else {
+		theDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"home", @"fields", @"50", @"limit", @"U", @"date_format", _since_id, @"since", nil];
+	}
+	return [self.facebook requestWithGraphPath:thePath andParams:theDict andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {
@@ -170,7 +193,7 @@ static NSArray * youTubeRegexArray = nil;
 	}];
 	// update the last checked time
 	_channel.subscription.nm_last_crawled = [NSDate date];
-	_channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
+	if ( maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) _channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
 	[objectCache release];
 	return YES;
 }
@@ -209,7 +232,7 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInteger:[parsedObjects count]] forKey:@"num_video_added"];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
 }
 
 @end

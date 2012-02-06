@@ -13,6 +13,7 @@
 @interface NMParseFacebookFeedTask : NMFacebookTask {
 	NSInteger maxUnixTime;
 	BOOL isAccountOwner;
+	NSString * feedDirectURLString;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
@@ -20,9 +21,11 @@
 @property (nonatomic, retain) NSString * user_id;
 @property (nonatomic, retain) NSString * since_id;
 @property (nonatomic, retain) NSMutableArray * profileArray;
+@property (nonatomic, retain) NSString * feedDirectURLString;
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 
 - (id)initWithChannel:(NMChannel *)chn;
+- (id)initWithChannel:(NMChannel *)chn directURLString:(NSString *)urlStr;
 
 @end

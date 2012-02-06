@@ -51,6 +51,8 @@
     urlSchemeSuffix:(NSString *)urlSchemeSuffix
         andDelegate:(id<FBSessionDelegate>)delegate;
 
+- (NSDictionary*)parseURLParams:(NSString *)query;
+
 - (void)authorize:(NSArray *)permissions;
 
 - (void)extendAccessToken;

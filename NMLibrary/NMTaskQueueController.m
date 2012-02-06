@@ -95,7 +95,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
 	// do the same thing for twitter as well
-	//[nc addObserver:self selector:@selector(handleDidParseSocialChannelNotification:) name:NMDidParseFacebookFeedNotification object:nil];
+	//[nc addObserver:self selector:@selector(handleDidParseSocialChannelNotification:) name:NMDidParseTwitterFeedNotification object:nil];
 
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
@@ -258,6 +258,25 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		// we found new video in the news feed
 		if ( videoImportTimer == nil ) {
 			[self scheduleImportVideos];
+		}
+	}
+	if ( [[infoDict objectForKey:@"num_video_received"] integerValue] ) {
+		// try getting the rest of the feed
+		NMChannel * chnObj = [infoDict objectForKey:@"channel"];
+		switch ([chnObj.type integerValue]) {
+			case NMChannelUserTwitterType:
+			{
+				break;
+			}
+			case NMChannelUserFacebookType:
+			{
+				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:[infoDict objectForKey:@"next_url"]];
+				[networkController addNewConnectionForTask:task];
+				[task release];
+				break;
+			}	
+			default:
+				break;
 		}
 	}
 }
