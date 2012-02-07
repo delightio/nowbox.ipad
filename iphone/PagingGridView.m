@@ -198,6 +198,13 @@
     return view;
 }
 
+- (void)itemSelected:(id)sender
+{
+    if ([gridDelegate respondsToSelector:@selector(gridView:didSelectViewAtIndex:)]) {
+        [gridDelegate gridView:self didSelectViewAtIndex:[sender tag]];
+    }
+}
+
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView

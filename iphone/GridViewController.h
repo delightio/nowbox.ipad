@@ -9,13 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "PagingGridView.h"
 #import "CustomPageControl.h"
+#import "GridDataSource.h"
 
-@interface GridViewController : UIViewController <PagingGridViewDataSource, PagingGridViewDelegate, CustomPageControlDelegate> {
+@interface GridViewController : UIViewController <PagingGridViewDelegate, CustomPageControlDelegate> {
     BOOL scrollingToPage;
 }
 
 @property (nonatomic, retain) IBOutlet PagingGridView *gridView;
 @property (nonatomic, retain) IBOutlet CustomPageControl *pageControl;
+@property (nonatomic, retain) GridDataSource *gridDataSource;
 
 - (IBAction)searchButtonPressed:(id)sender;
 - (IBAction)refreshButtonPressed:(id)sender;

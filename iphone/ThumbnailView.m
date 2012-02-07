@@ -13,6 +13,7 @@
 @synthesize contentView;
 @synthesize image;
 @synthesize label;
+@synthesize button;
 @synthesize activityIndicator;
 
 - (id)initWithFrame:(CGRect)frame
@@ -45,6 +46,7 @@
     [contentView release];
     [image release];
     [label release];
+    [button release];
     [activityIndicator release];
     
     [super dealloc];

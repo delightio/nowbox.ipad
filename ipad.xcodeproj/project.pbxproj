@@ -57,6 +57,9 @@
 		837A298B14E1B2D300065F32 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A298914E1B2D300065F32 /* LaunchViewController.m */; };
 		837A298C14E1B2D300065F32 /* LaunchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837A298A14E1B2D300065F32 /* LaunchViewController.xib */; };
 		837A299014E1BCC900065F32 /* LaunchController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A298F14E1BCC900065F32 /* LaunchController_iPhone.m */; };
+		837A299314E1C8A800065F32 /* HomeGridDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A299214E1C8A800065F32 /* HomeGridDataSource.m */; };
+		837A299914E1CA0D00065F32 /* YouTubeGridDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A299814E1CA0D00065F32 /* YouTubeGridDataSource.m */; };
+		837A299C14E1CC0E00065F32 /* GridDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A299B14E1CC0E00065F32 /* GridDataSource.m */; };
 		837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C741414631012009F3C2A /* OnBoardProcessChannelView.m */; };
 		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
 		837E904B14587FA3009F32DD /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E903F14587FA3009F32DD /* MPCJSONDataSerializer.m */; };
@@ -461,6 +464,12 @@
 		837A298A14E1B2D300065F32 /* LaunchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchViewController.xib; sourceTree = "<group>"; };
 		837A298E14E1BCC900065F32 /* LaunchController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchController_iPhone.h; sourceTree = "<group>"; };
 		837A298F14E1BCC900065F32 /* LaunchController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchController_iPhone.m; sourceTree = "<group>"; };
+		837A299114E1C8A800065F32 /* HomeGridDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeGridDataSource.h; sourceTree = "<group>"; };
+		837A299214E1C8A800065F32 /* HomeGridDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeGridDataSource.m; sourceTree = "<group>"; };
+		837A299714E1CA0D00065F32 /* YouTubeGridDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouTubeGridDataSource.h; sourceTree = "<group>"; };
+		837A299814E1CA0D00065F32 /* YouTubeGridDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YouTubeGridDataSource.m; sourceTree = "<group>"; };
+		837A299A14E1CC0E00065F32 /* GridDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridDataSource.h; sourceTree = "<group>"; };
+		837A299B14E1CC0E00065F32 /* GridDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridDataSource.m; sourceTree = "<group>"; };
 		837C741314631012009F3C2A /* OnBoardProcessChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessChannelView.h; sourceTree = "<group>"; };
 		837C741414631012009F3C2A /* OnBoardProcessChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessChannelView.m; sourceTree = "<group>"; };
 		837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessChannelView.xib; sourceTree = "<group>"; };
@@ -929,6 +938,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		837A299414E1C8B500065F32 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8384CD8014E0903000444755 /* PagingGridView.h */,
+				8384CD8114E0903000444755 /* PagingGridView.m */,
+				8384CD8714E0A9A900444755 /* ThumbnailView.h */,
+				8384CD8814E0A9A900444755 /* ThumbnailView.m */,
+				8384CD8C14E0B13500444755 /* VerticallyAlignedLabel.h */,
+				8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */,
+				8384CD9714E0B7DB00444755 /* CustomPageControl.h */,
+				8384CD9814E0B7DB00444755 /* CustomPageControl.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		837A299514E1C8BE00065F32 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				837A298814E1B2D300065F32 /* LaunchViewController.h */,
+				837A298914E1B2D300065F32 /* LaunchViewController.m */,
+				8384CD5C14E081AF00444755 /* GridViewController.h */,
+				8384CD5D14E081AF00444755 /* GridViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		837A299614E1C8C500065F32 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				837A298E14E1BCC900065F32 /* LaunchController_iPhone.h */,
+				837A298F14E1BCC900065F32 /* LaunchController_iPhone.m */,
+				837A299A14E1CC0E00065F32 /* GridDataSource.h */,
+				837A299B14E1CC0E00065F32 /* GridDataSource.m */,
+				837A299114E1C8A800065F32 /* HomeGridDataSource.h */,
+				837A299214E1C8A800065F32 /* HomeGridDataSource.m */,
+				837A299714E1CA0D00065F32 /* YouTubeGridDataSource.h */,
+				837A299814E1CA0D00065F32 /* YouTubeGridDataSource.m */,
+			);
+			name = Objects;
+			sourceTree = "<group>";
+		};
 		837E903914587F43009F32DD /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -1179,20 +1229,9 @@
 		A90BC4141461F7AC006AD644 /* iphone */ = {
 			isa = PBXGroup;
 			children = (
-				837A298814E1B2D300065F32 /* LaunchViewController.h */,
-				837A298914E1B2D300065F32 /* LaunchViewController.m */,
-				837A298E14E1BCC900065F32 /* LaunchController_iPhone.h */,
-				837A298F14E1BCC900065F32 /* LaunchController_iPhone.m */,
-				8384CD5C14E081AF00444755 /* GridViewController.h */,
-				8384CD5D14E081AF00444755 /* GridViewController.m */,
-				8384CD8014E0903000444755 /* PagingGridView.h */,
-				8384CD8114E0903000444755 /* PagingGridView.m */,
-				8384CD8714E0A9A900444755 /* ThumbnailView.h */,
-				8384CD8814E0A9A900444755 /* ThumbnailView.m */,
-				8384CD8C14E0B13500444755 /* VerticallyAlignedLabel.h */,
-				8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */,
-				8384CD9714E0B7DB00444755 /* CustomPageControl.h */,
-				8384CD9814E0B7DB00444755 /* CustomPageControl.m */,
+				837A299614E1C8C500065F32 /* Objects */,
+				837A299514E1C8BE00065F32 /* Controllers */,
+				837A299414E1C8B500065F32 /* Views */,
 				8384CD6114E081C400444755 /* Prototype */,
 			);
 			path = iphone;
@@ -2083,6 +2122,9 @@
 				8384CD9914E0B7DB00444755 /* CustomPageControl.m in Sources */,
 				837A298B14E1B2D300065F32 /* LaunchViewController.m in Sources */,
 				837A299014E1BCC900065F32 /* LaunchController_iPhone.m in Sources */,
+				837A299314E1C8A800065F32 /* HomeGridDataSource.m in Sources */,
+				837A299914E1CA0D00065F32 /* YouTubeGridDataSource.m in Sources */,
+				837A299C14E1CC0E00065F32 /* GridDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

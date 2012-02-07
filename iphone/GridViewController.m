@@ -7,21 +7,20 @@
 //
 
 #import "GridViewController.h"
-#import "ThumbnailView.h"
-#import "NMTaskQueueController.h"
-#import "NMDataController.h"
-#import "NMChannel.h"
+#import "HomeGridDataSource.h"
+#import "YouTubeGridDataSource.h"
 
 @implementation GridViewController
 
 @synthesize gridView;
 @synthesize pageControl;
+@synthesize gridDataSource;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-
+        self.gridDataSource = [[[HomeGridDataSource alloc] init] autorelease];
     }
     return self;
 }
@@ -30,6 +29,7 @@
 {
     [gridView release];
     [pageControl release];
+    [gridDataSource release];
     
     [super dealloc];
 }
@@ -41,6 +41,7 @@
     [super viewDidLoad];
     
     pageControl.numberOfPages = gridView.numberOfPages;
+    gridView.dataSource = gridDataSource;
 }
 
 - (void)viewDidUnload
@@ -73,51 +74,6 @@
     
 }
 
-#pragma mark - PagingGridViewDataSource
-
-- (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
-{
-    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
-    return [dataController.subscribedChannels count] + 4;
-}
-
-- (UIView *)gridView:(PagingGridView *)aGridView viewForIndex:(NSUInteger)index
-{
-    ThumbnailView *view = (ThumbnailView *) [aGridView dequeueReusableSubview];
-    
-    if (!view) {
-        view = [[[ThumbnailView alloc] init] autorelease];
-    }
-    
-    switch (index) {
-        case 0:
-            view.label.text = @"Facebook";
-            view.image.image = [UIImage imageNamed:@"social-facebook.png"];
-            break;
-        case 1:
-            view.label.text = @"YouTube";
-            view.image.image = [UIImage imageNamed:@"social-youtube.png"];
-            break;
-        case 2:
-            view.label.text = @"Twitter";
-            view.image.image = [UIImage imageNamed:@"social-twitter.png"];            
-            break;
-        case 3:
-            view.label.text = @"Trending";
-            view.image.image = [UIImage imageNamed:@"social-vimeo.png"];            
-            break;
-        default: {
-            NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;            
-            NMChannel *channel = [dataController.subscribedChannels objectAtIndex:(index - 4)];
-            view.label.text = channel.title;
-            [view.image setImageForChannel:channel];
-            break;
-        }
-    }
-    
-    return view;
-}
-
 #pragma mark - PagingGridViewDelegate
 
 - (void)gridViewDidScroll:(PagingGridView *)aGridView
@@ -137,6 +93,13 @@
 {
     scrollingToPage = NO;
 }
+
+- (void)gridView:(PagingGridView *)aGridView didSelectViewAtIndex:(NSUInteger)index
+{
+    self.gridDataSource = [gridDataSource dataSourceForIndex:index];
+    aGridView.dataSource = gridDataSource;
+}
+
 
 #pragma mark - CustomPageControlDelegate
 

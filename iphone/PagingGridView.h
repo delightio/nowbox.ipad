@@ -32,6 +32,9 @@
 - (void)reloadData;
 - (UIView *)dequeueReusableSubview;
 
+// Note: Data source must register this action manually for whatever control it likes. The sender's tag must be the item index.
+- (void)itemSelected:(id)sender;
+
 @end
 
 @protocol PagingGridViewDataSource <NSObject>
@@ -44,4 +47,5 @@
 - (void)gridViewDidScroll:(PagingGridView *)gridView;
 - (void)gridViewWillBeginDragging:(PagingGridView *)gridView;
 - (void)gridViewDidEndScrollingAnimation:(PagingGridView *)gridView;
+- (void)gridView:(PagingGridView *)aGridView didSelectViewAtIndex:(NSUInteger)index;
 @end
