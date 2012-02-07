@@ -80,6 +80,43 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (void)checkAndPushTwitterAccountView {
+	// use built-in twitter integration
+	// Create an account store object.
+	ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+	
+	// Create an account type that ensures Twitter accounts are retrieved.
+	ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+	
+	// Request access from the user to use their Twitter accounts.
+	[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
+		if(granted) {
+			if ( [TWTweetComposeViewController canSendTweet] ) {
+				// pass the account store to Social Login Controller
+				dispatch_async(dispatch_get_main_queue(), ^{
+					// user needs to pick which account(s) s/he wanna hook up to
+					TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+					picker.accountStore = accountStore;
+					[self.navigationController pushViewController:picker animated:YES];
+					[picker release];
+				});
+			} else {
+				// We don't have right to access Twitter account. Send user to the Settings app
+				dispatch_async(dispatch_get_main_queue(), ^{
+					UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not yet signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
+					[alertView show];
+					[alertView release];
+				});
+			}
+		} else {
+//			// unhighlight the cell
+//			dispatch_async(dispatch_get_main_queue(), ^{
+//				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+//			});
+		}
+	}];
+}
+
 #pragma mark - View lifecycle
 
 /*
@@ -254,6 +291,18 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification {
     massUpdate = YES;
+}
+
+- (void)handleAppResumeNotification:(NSNotification *)aNotification {
+	// check if the user is resuming the app after signing in twitter
+	if ( leftAppSessionForTwitter ) {
+		if ( [TWTweetComposeViewController canSendTweet] ) {
+			// push in the account selection view
+			[self checkAndPushTwitterAccountView];
+		}
+		// unregister the notification
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+	}
 }
 
 #pragma mark Target-action methods
@@ -744,40 +793,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							// login twitter
 							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 							if ( NM_RUNNING_IOS_5 ) {
-								// use built-in twitter integration
-								// Create an account store object.
-								ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-								
-								// Create an account type that ensures Twitter accounts are retrieved.
-								ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-								
-								// Request access from the user to use their Twitter accounts.
-								[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
-									if(granted) {
-										if ( [TWTweetComposeViewController canSendTweet] ) {
-											// pass the account store to Social Login Controller
-											dispatch_async(dispatch_get_main_queue(), ^{
-												// user needs to pick which account(s) s/he wanna hook up to
-												TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
-												picker.accountStore = accountStore;
-												[self.navigationController pushViewController:picker animated:YES];
-												[picker release];
-											});
-										} else {
-											// We don't have right to access Twitter account. Send user to the Settings app
-											dispatch_async(dispatch_get_main_queue(), ^{
-												UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not yet signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
-												[alertView show];
-												[alertView release];
-											});
-										}
-									} else {
-										// unhighlight the cell
-										dispatch_async(dispatch_get_main_queue(), ^{
-											[tableView deselectRowAtIndexPath:indexPath animated:YES];
-										});
-									}
-								}];
+								[self checkAndPushTwitterAccountView];
 							} else {
 								socialCtrl.loginType = NMLoginTwitterType;
 								[self.navigationController pushViewController:socialCtrl animated:YES];
@@ -1143,6 +1159,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 	// the condition for Twitter sign in. 
 	if ( buttonIndex == 1 ) {
 		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=TWITTER"]];
+		leftAppSessionForTwitter = YES;
+		// listen to app switching notification
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppResumeNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
 	}
 }
  

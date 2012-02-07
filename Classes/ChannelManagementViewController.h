@@ -49,6 +49,7 @@
     
     CategoryTableCell *lockToEdgeCell;
     BOOL enableLockToEdge;
+	BOOL leftAppSessionForTwitter;
 	
 	// subscription related image
 	UIImage * channelSubscribedIcon, * channelSubscribedButtonImage, * channelSubscribedBackgroundImage;
