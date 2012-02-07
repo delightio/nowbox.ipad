@@ -123,9 +123,12 @@
         desiredPage = (location.x - (self.frame.size.width - overallWidth) / 2) / (dotWidth + dotSpacing);
     }
     
-    if (desiredPage >= 0 && desiredPage < numberOfPages) {
-        self.currentPage = desiredPage;
-        [delegate pageControl:self didSelectPageAtIndex:desiredPage];
+    if (desiredPage >= 0 && desiredPage < numberOfPages && desiredPage != currentPage) {
+        if (![delegate respondsToSelector:@selector(pageControl:shouldSelectPageAtIndex:)] ||
+              [delegate pageControl:self shouldSelectPageAtIndex:desiredPage]) {
+            self.currentPage = desiredPage;
+            [delegate pageControl:self didSelectPageAtIndex:desiredPage];
+        }
     }
 }
 

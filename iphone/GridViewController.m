@@ -126,7 +126,17 @@
     scrollingToPage = NO;
 }
 
+- (void)gridViewDidEndScrollingAnimation:(PagingGridView *)gridView
+{
+    scrollingToPage = NO;
+}
+
 #pragma mark - CustomPageControlDelegate
+
+- (BOOL)pageControl:(CustomPageControl *)pageControl shouldSelectPageAtIndex:(NSUInteger)index
+{
+    return !scrollingToPage;
+}
 
 - (void)pageControl:(CustomPageControl *)pageControl didSelectPageAtIndex:(NSUInteger)index
 {

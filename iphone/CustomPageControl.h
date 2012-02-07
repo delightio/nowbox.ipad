@@ -27,4 +27,6 @@
 
 @protocol CustomPageControlDelegate <NSObject>
 - (void)pageControl:(CustomPageControl *)pageControl didSelectPageAtIndex:(NSUInteger)index;
+@optional
+- (BOOL)pageControl:(CustomPageControl *)pageControl shouldSelectPageAtIndex:(NSUInteger)index;
 @end

@@ -216,4 +216,11 @@
     }
 }
 
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    if ([gridDelegate respondsToSelector:@selector(gridViewDidEndScrollingAnimation:)]) {
+        [gridDelegate gridViewDidEndScrollingAnimation:self];
+    }
+}
+
 @end

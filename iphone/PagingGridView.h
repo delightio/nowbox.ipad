@@ -43,4 +43,5 @@
 @optional
 - (void)gridViewDidScroll:(PagingGridView *)gridView;
 - (void)gridViewWillBeginDragging:(PagingGridView *)gridView;
+- (void)gridViewDidEndScrollingAnimation:(PagingGridView *)gridView;
 @end
