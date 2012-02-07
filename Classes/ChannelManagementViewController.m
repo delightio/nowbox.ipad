@@ -764,12 +764,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 												[picker release];
 											});
 										} else {
-											// process the feed right now
+											// We don't have right to access Twitter account. Send user to the Settings app
 											dispatch_async(dispatch_get_main_queue(), ^{
-												// create the channel for the twitter account
-//												[nowboxTaskController.dataController 
-												// kick start feed processing
-												[nowboxTaskController issueProcessFeedForChannel:chn];
+												UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not yet signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
+												[alertView show];
+												[alertView release];
 											});
 										}
 									} else {
@@ -1123,23 +1122,28 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 #pragma mark UIAlertView delegates
 - (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex != [alertView cancelButtonIndex]) {
-        UIActivityIndicatorView *actView;
-        actView = (UIActivityIndicatorView *)[cellToUnsubscribeFrom viewWithTag:15];
-        [actView startAnimating];
-        
-        UIButton *buttonView = (UIButton *)[cellToUnsubscribeFrom viewWithTag:11];
-        
-        [UIView animateWithInteractiveDuration:0.3
-                         animations:^{
-                             [actView setAlpha:1];
-                             [buttonView setImage:nil forState:UIControlStateNormal];
-                         }
-                         completion:^(BOOL finished) {
-                         }];
-        
-        [nowboxTaskController issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
-    }
+	// All alert view in this view controller has no delegate except the one for Twitter sign in. Code below should be useless.
+//    if (buttonIndex != [alertView cancelButtonIndex]) {
+//        UIActivityIndicatorView *actView;
+//        actView = (UIActivityIndicatorView *)[cellToUnsubscribeFrom viewWithTag:15];
+//        [actView startAnimating];
+//        
+//        UIButton *buttonView = (UIButton *)[cellToUnsubscribeFrom viewWithTag:11];
+//        
+//        [UIView animateWithInteractiveDuration:0.3
+//                         animations:^{
+//                             [actView setAlpha:1];
+//                             [buttonView setImage:nil forState:UIControlStateNormal];
+//                         }
+//                         completion:^(BOOL finished) {
+//                         }];
+//        
+//        [nowboxTaskController issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
+//    }
+	// the condition for Twitter sign in. 
+	if ( buttonIndex == 1 ) {
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=TWITTER"]];
+	}
 }
  
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {
