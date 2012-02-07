@@ -12,6 +12,7 @@
 
 @synthesize numberOfRows;
 @synthesize numberOfColumns;
+@synthesize numberOfPages;
 @synthesize internalPadding;
 @synthesize externalPadding;
 @synthesize dataSource;

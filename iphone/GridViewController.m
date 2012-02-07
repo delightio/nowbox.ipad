@@ -8,6 +8,9 @@
 
 #import "GridViewController.h"
 #import "ThumbnailView.h"
+#import "NMTaskQueueController.h"
+#import "NMDataController.h"
+#import "NMChannel.h"
 
 @implementation GridViewController
 
@@ -37,7 +40,7 @@
 {
     [super viewDidLoad];
     
-    pageControl.numberOfPages = 3;    
+    pageControl.numberOfPages = gridView.numberOfPages;
 }
 
 - (void)viewDidUnload
@@ -72,9 +75,10 @@
 
 #pragma mark - PagingGridViewDataSource
 
-- (NSUInteger)gridViewNumberOfItems:(PagingGridView *)gridView
+- (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    return 14;
+    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+    return [dataController.subscribedChannels count] + 4;
 }
 
 - (UIView *)gridView:(PagingGridView *)aGridView viewForIndex:(NSUInteger)index
@@ -102,10 +106,13 @@
             view.label.text = @"Trending";
             view.image.image = [UIImage imageNamed:@"social-vimeo.png"];            
             break;
-        default:
-            view.label.text = [NSString stringWithFormat:@"Channel %i", index];
-            view.image.image = nil;
+        default: {
+            NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;            
+            NMChannel *channel = [dataController.subscribedChannels objectAtIndex:(index - 4)];
+            view.label.text = channel.title;
+            [view.image setImageForChannel:channel];
             break;
+        }
     }
     
     return view;

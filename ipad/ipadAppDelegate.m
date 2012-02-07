@@ -8,6 +8,7 @@
 
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
+#import "GridViewController.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
 #import "ToolTipController.h"
@@ -486,6 +487,16 @@ NSInteger NM_LAST_CHANNEL_ID;
     }    
     
     return persistentStoreCoordinator_;
+}
+
+#pragma mark - LaunchViewControllerDelegate
+
+- (void)launchViewControllerDidFinish:(LaunchViewController *)launchViewController
+{
+    GridViewController *gridViewController = [[GridViewController alloc] initWithNibName:@"GridViewController" bundle:[NSBundle mainBundle]];
+    self.viewController = gridViewController;
+    self.window.rootViewController = gridViewController;
+    [launchViewController release];
 }
 
 @end

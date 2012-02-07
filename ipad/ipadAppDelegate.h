@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Analytics.h"
+#import "LaunchViewController.h"
 
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
 extern NSString * const NM_LAST_SESSION_DATE;
@@ -39,7 +40,7 @@ extern NSString * const NM_LAST_SOCIAL_NETWORK;
 @class VideoPlaybackViewController;
 @class LaunchViewController;
 
-@interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
+@interface ipadAppDelegate : NSObject <UIApplicationDelegate, LaunchViewControllerDelegate> {
 	UIViewController *viewController;
 
 @private

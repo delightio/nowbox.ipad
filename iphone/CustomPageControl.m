@@ -117,7 +117,7 @@
         desiredPage = currentPage - 1;
     } else if (location.x > touchStartX + kMinSwipeDistance) {
         // Swipe right
-        desiredPage = currentPage + 1;        
+        desiredPage = currentPage + 1;
     } else {
         // Tap on a dot
         desiredPage = (location.x - (self.frame.size.width - overallWidth) / 2) / (dotWidth + dotSpacing);

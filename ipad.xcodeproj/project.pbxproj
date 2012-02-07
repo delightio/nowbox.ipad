@@ -54,6 +54,9 @@
 		83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83407B851461F55A009E707A /* OnBoardProcessViewController.xib */; };
 		83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
+		837A298B14E1B2D300065F32 /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A298914E1B2D300065F32 /* LaunchViewController.m */; };
+		837A298C14E1B2D300065F32 /* LaunchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837A298A14E1B2D300065F32 /* LaunchViewController.xib */; };
+		837A299014E1BCC900065F32 /* LaunchController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 837A298F14E1BCC900065F32 /* LaunchController_iPhone.m */; };
 		837C741514631012009F3C2A /* OnBoardProcessChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 837C741414631012009F3C2A /* OnBoardProcessChannelView.m */; };
 		837C741814631044009F3C2A /* OnBoardProcessChannelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */; };
 		837E904B14587FA3009F32DD /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E903F14587FA3009F32DD /* MPCJSONDataSerializer.m */; };
@@ -453,6 +456,11 @@
 		83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessViewController.m; sourceTree = "<group>"; };
 		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
 		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
+		837A298814E1B2D300065F32 /* LaunchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
+		837A298914E1B2D300065F32 /* LaunchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
+		837A298A14E1B2D300065F32 /* LaunchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchViewController.xib; sourceTree = "<group>"; };
+		837A298E14E1BCC900065F32 /* LaunchController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaunchController_iPhone.h; sourceTree = "<group>"; };
+		837A298F14E1BCC900065F32 /* LaunchController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaunchController_iPhone.m; sourceTree = "<group>"; };
 		837C741314631012009F3C2A /* OnBoardProcessChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessChannelView.h; sourceTree = "<group>"; };
 		837C741414631012009F3C2A /* OnBoardProcessChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessChannelView.m; sourceTree = "<group>"; };
 		837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessChannelView.xib; sourceTree = "<group>"; };
@@ -978,6 +986,7 @@
 			children = (
 				8384CD5E14E081AF00444755 /* GridViewController.xib */,
 				8384CD8A14E0AC8C00444755 /* ThumbnailView.xib */,
+				837A298A14E1B2D300065F32 /* LaunchViewController.xib */,
 				8384CD6714E082DD00444755 /* Prototype */,
 			);
 			name = iPhone;
@@ -1170,6 +1179,10 @@
 		A90BC4141461F7AC006AD644 /* iphone */ = {
 			isa = PBXGroup;
 			children = (
+				837A298814E1B2D300065F32 /* LaunchViewController.h */,
+				837A298914E1B2D300065F32 /* LaunchViewController.m */,
+				837A298E14E1BCC900065F32 /* LaunchController_iPhone.h */,
+				837A298F14E1BCC900065F32 /* LaunchController_iPhone.m */,
 				8384CD5C14E081AF00444755 /* GridViewController.h */,
 				8384CD5D14E081AF00444755 /* GridViewController.m */,
 				8384CD8014E0903000444755 /* PagingGridView.h */,
@@ -1981,6 +1994,7 @@
 				8384CD9414E0B78800444755 /* phone_grid_dot_filled@2x.png in Resources */,
 				8384CD9514E0B78800444755 /* phone_grid_dot.png in Resources */,
 				8384CD9614E0B78800444755 /* phone_grid_dot@2x.png in Resources */,
+				837A298C14E1B2D300065F32 /* LaunchViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2067,6 +2081,8 @@
 				8384CD8914E0A9A900444755 /* ThumbnailView.m in Sources */,
 				8384CD8E14E0B13500444755 /* VerticallyAlignedLabel.m in Sources */,
 				8384CD9914E0B7DB00444755 /* CustomPageControl.m in Sources */,
+				837A298B14E1B2D300065F32 /* LaunchViewController.m in Sources */,
+				837A299014E1BCC900065F32 /* LaunchController_iPhone.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
