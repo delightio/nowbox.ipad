@@ -37,7 +37,7 @@
 {
     [super viewDidLoad];
     
-    pageControl.numberOfPages = 5;    
+    pageControl.numberOfPages = 3;    
 }
 
 - (void)viewDidUnload
@@ -74,7 +74,7 @@
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)gridView
 {
-    return 28;
+    return 14;
 }
 
 - (UIView *)gridView:(PagingGridView *)aGridView viewForIndex:(NSUInteger)index
@@ -82,10 +82,31 @@
     ThumbnailView *view = (ThumbnailView *) [aGridView dequeueReusableSubview];
     
     if (!view) {
-        view = [[[ThumbnailView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)] autorelease];
+        view = [[[ThumbnailView alloc] init] autorelease];
     }
     
-    view.label.text = [NSString stringWithFormat:@"Channel %i", index];
+    switch (index) {
+        case 0:
+            view.label.text = @"Facebook";
+            view.image.image = [UIImage imageNamed:@"social-facebook.png"];
+            break;
+        case 1:
+            view.label.text = @"YouTube";
+            view.image.image = [UIImage imageNamed:@"social-youtube.png"];
+            break;
+        case 2:
+            view.label.text = @"Twitter";
+            view.image.image = [UIImage imageNamed:@"social-twitter.png"];            
+            break;
+        case 3:
+            view.label.text = @"Trending";
+            view.image.image = [UIImage imageNamed:@"social-vimeo.png"];            
+            break;
+        default:
+            view.label.text = [NSString stringWithFormat:@"Channel %i", index];
+            view.image.image = nil;
+            break;
+    }
     
     return view;
 }

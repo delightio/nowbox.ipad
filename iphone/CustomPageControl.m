@@ -20,11 +20,13 @@
 - (void)setup
 {
     numberOfPages = 1;
-    dotSpacing = 10;  
+    dotSpacing = 6;  
 
     dotImage = [[UIImage imageNamed:@"phone_grid_dot.png"] retain];
     filledDotImage = [[UIImage imageNamed:@"phone_grid_dot_filled.png"] retain];
     dotWidth = dotImage.size.width;
+    
+    self.clearsContextBeforeDrawing = YES;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -55,6 +57,8 @@
 
 - (void)drawRect:(CGRect)rect
 {
+    if (numberOfPages <= 1) return;
+    
     overallWidth = (dotWidth + dotSpacing) * numberOfPages - dotSpacing;
     
     CGFloat startX = (self.frame.size.width - overallWidth) / 2;
