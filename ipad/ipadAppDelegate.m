@@ -106,7 +106,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (void)awakeFromNib {
 	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
-	viewController.managedObjectContext = self.managedObjectContext;
+    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
+        ((VideoPlaybackViewController *)viewController).managedObjectContext = self.managedObjectContext;
+    }
 }
 
 - (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
@@ -211,7 +213,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleShowErrorAlertNotification:) name:NMShowErrorAlertNotification object:nil];
 	
 	[NMStyleUtility sharedStyleUtility];
-	self.viewController.appDelegate = self;
+    
+    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
+        ((VideoPlaybackViewController *)viewController).appDelegate = self;
+    }
+    
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
@@ -245,7 +251,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
 	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 	 */
-	[self saveCurrentVideoList:[viewController markPlaybackCheckpoint]];
+    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
+        [self saveCurrentVideoList:[((VideoPlaybackViewController *)viewController) markPlaybackCheckpoint]];
+    }
 	[self saveContext];
 	// release the UI - in particular, remove just the movie player to save memory footprint
 	
@@ -291,8 +299,11 @@ NSInteger NM_LAST_CHANNEL_ID;
 			[tqc issueSyncRequest];
 		}
 	}
-	// refresh video
-	[viewController.playbackModelController refreshDirectURLToBufferedVideos];
+    
+    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
+        // refresh video
+        [((VideoPlaybackViewController *)viewController).playbackModelController refreshDirectURLToBufferedVideos];
+    }
     
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
@@ -323,7 +334,9 @@ NSInteger NM_LAST_CHANNEL_ID;
 	 Save data if appropriate.
 	 See also applicationDidEnterBackground:.
 	 */
-	[self saveCurrentVideoList:[viewController markPlaybackCheckpoint]];
+    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
+        [self saveCurrentVideoList:[((VideoPlaybackViewController *)viewController) markPlaybackCheckpoint]];
+    }
 	[self saveContext];
 }
 

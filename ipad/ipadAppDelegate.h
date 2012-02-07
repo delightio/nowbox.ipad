@@ -40,9 +40,7 @@ extern NSString * const NM_LAST_SOCIAL_NETWORK;
 @class LaunchViewController;
 
 @interface ipadAppDelegate : NSObject <UIApplicationDelegate> {
-	VideoPlaybackViewController *viewController;
-//	LaunchViewController *launchViewController;
-//	UINavigationController * navigationViewController;
+	UIViewController *viewController;
 
 @private
 	BOOL stopShowingError;
@@ -62,9 +60,7 @@ extern NSString * const NM_LAST_SOCIAL_NETWORK;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet VideoPlaybackViewController * viewController;
-//@property (nonatomic, retain) IBOutlet LaunchViewController * launchViewController;
-//@property (nonatomic, retain) IBOutlet UINavigationController * navigationViewController;
+@property (nonatomic, retain) IBOutlet UIViewController * viewController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;

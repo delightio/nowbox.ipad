@@ -334,13 +334,15 @@
         [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];                
     };
     
-    VideoPlaybackViewController *playbackController = [(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
-    
-    // Show "rate us" reminder the second time a user adds a video to the favorites
-    if ([playbackController shouldShowRateUsReminder] && !firstShare) {
-        [playbackController showRateUsReminderCompletion:completion];
-    } else {
-        completion();
+    if ([[(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController] isKindOfClass:[VideoPlaybackViewController class]]) {
+        VideoPlaybackViewController *playbackController = (VideoPlaybackViewController *)[(ipadAppDelegate *)[[UIApplication sharedApplication] delegate] viewController];
+        
+        // Show "rate us" reminder the second time a user adds a video to the favorites
+        if ([playbackController shouldShowRateUsReminder] && !firstShare) {
+            [playbackController showRateUsReminderCompletion:completion];
+        } else {
+            completion();
+        }
     }
     
     progressView.hidden = YES;
