@@ -30,11 +30,11 @@
 - (NSURLRequest *)URLRequest {
 	NSDictionary * params = nil;
 	if ( _sinceID ) {
-		params = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"include_rts", @"200", @"count", [NSNumber numberWithInteger:_page], @"page", _sinceID, @"since_id", nil];
+		params = [NSDictionary dictionaryWithObjectsAndKeys:@"40", @"count", [NSNumber numberWithInteger:_page], @"page", _sinceID, @"since_id", nil];
 	} else {
-		params = [NSDictionary dictionaryWithObjectsAndKeys:@"1", @"include_rts", @"200", @"count", [NSNumber numberWithInteger:_page], @"page", nil];
+		params = [NSDictionary dictionaryWithObjectsAndKeys:@"40", @"count", [NSNumber numberWithInteger:_page], @"page", nil];
 	}
-	TWRequest * twitRequest	= [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/user_timeline.json"] parameters:params requestMethod:TWRequestMethodGET];
+	TWRequest * twitRequest	= [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/friends_timeline.json"] parameters:params requestMethod:TWRequestMethodGET];
 	NSURLRequest * req = [twitRequest signedURLRequest];
 	[twitRequest release];
 	return req;
