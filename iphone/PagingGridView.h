@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol PagingGridViewDataSource;
+@protocol PagingGridViewDelegate;
 
 @interface PagingGridView : UIScrollView <UIScrollViewDelegate> {
     NSUInteger numberOfItems;
@@ -26,6 +27,7 @@
 @property (nonatomic, assign) CGSize internalPadding;
 @property (nonatomic, assign) CGSize externalPadding;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDataSource> dataSource;
+@property (nonatomic, assign) IBOutlet id<PagingGridViewDelegate> gridDelegate;
 
 - (void)reloadData;
 - (UIView *)dequeueReusableSubview;
@@ -35,4 +37,10 @@
 @protocol PagingGridViewDataSource <NSObject>
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)gridView;
 - (UIView *)gridView:(PagingGridView *)gridView viewForIndex:(NSUInteger)index;
+@end
+
+@protocol PagingGridViewDelegate <NSObject>
+@optional
+- (void)gridViewDidScroll:(PagingGridView *)gridView;
+- (void)gridViewWillBeginDragging:(PagingGridView *)gridView;
 @end

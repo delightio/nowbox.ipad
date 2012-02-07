@@ -90,6 +90,16 @@
 		8384CD7E14E089F700444755 /* phone_button_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7C14E089F700444755 /* phone_button_settings.png */; };
 		8384CD7F14E089F700444755 /* phone_button_settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7D14E089F700444755 /* phone_button_settings@2x.png */; };
 		8384CD8214E0903000444755 /* PagingGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD8114E0903000444755 /* PagingGridView.m */; };
+		8384CD8514E0A96D00444755 /* phone_grid_item_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8314E0A96D00444755 /* phone_grid_item_background.png */; };
+		8384CD8614E0A96D00444755 /* phone_grid_item_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8414E0A96D00444755 /* phone_grid_item_background@2x.png */; };
+		8384CD8914E0A9A900444755 /* ThumbnailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD8814E0A9A900444755 /* ThumbnailView.m */; };
+		8384CD8B14E0AC8C00444755 /* ThumbnailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8A14E0AC8C00444755 /* ThumbnailView.xib */; };
+		8384CD8E14E0B13500444755 /* VerticallyAlignedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */; };
+		8384CD9314E0B78800444755 /* phone_grid_dot_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8F14E0B78700444755 /* phone_grid_dot_filled.png */; };
+		8384CD9414E0B78800444755 /* phone_grid_dot_filled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD9014E0B78800444755 /* phone_grid_dot_filled@2x.png */; };
+		8384CD9514E0B78800444755 /* phone_grid_dot.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD9114E0B78800444755 /* phone_grid_dot.png */; };
+		8384CD9614E0B78800444755 /* phone_grid_dot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD9214E0B78800444755 /* phone_grid_dot@2x.png */; };
+		8384CD9914E0B7DB00444755 /* CustomPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD9814E0B7DB00444755 /* CustomPageControl.m */; };
 		83852141145A03F60047B7E0 /* NMNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83852140145A03F60047B7E0 /* NMNavigationController.m */; };
 		83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83852145145A34100047B7E0 /* CoreLocation.framework */; };
 		838668041486F4B10038F86A /* onboard-category-icon-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 838668031486F4B10038F86A /* onboard-category-icon-background.png */; };
@@ -496,6 +506,19 @@
 		8384CD7D14E089F700444755 /* phone_button_settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_settings@2x.png"; sourceTree = "<group>"; };
 		8384CD8014E0903000444755 /* PagingGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingGridView.h; sourceTree = "<group>"; };
 		8384CD8114E0903000444755 /* PagingGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingGridView.m; sourceTree = "<group>"; };
+		8384CD8314E0A96D00444755 /* phone_grid_item_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_grid_item_background.png; sourceTree = "<group>"; };
+		8384CD8414E0A96D00444755 /* phone_grid_item_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_grid_item_background@2x.png"; sourceTree = "<group>"; };
+		8384CD8714E0A9A900444755 /* ThumbnailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailView.h; sourceTree = "<group>"; };
+		8384CD8814E0A9A900444755 /* ThumbnailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailView.m; sourceTree = "<group>"; };
+		8384CD8A14E0AC8C00444755 /* ThumbnailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThumbnailView.xib; sourceTree = "<group>"; };
+		8384CD8C14E0B13500444755 /* VerticallyAlignedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerticallyAlignedLabel.h; sourceTree = "<group>"; };
+		8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerticallyAlignedLabel.m; sourceTree = "<group>"; };
+		8384CD8F14E0B78700444755 /* phone_grid_dot_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_grid_dot_filled.png; sourceTree = "<group>"; };
+		8384CD9014E0B78800444755 /* phone_grid_dot_filled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_grid_dot_filled@2x.png"; sourceTree = "<group>"; };
+		8384CD9114E0B78800444755 /* phone_grid_dot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_grid_dot.png; sourceTree = "<group>"; };
+		8384CD9214E0B78800444755 /* phone_grid_dot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_grid_dot@2x.png"; sourceTree = "<group>"; };
+		8384CD9714E0B7DB00444755 /* CustomPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPageControl.h; sourceTree = "<group>"; };
+		8384CD9814E0B7DB00444755 /* CustomPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPageControl.m; sourceTree = "<group>"; };
 		8385213F145A03F60047B7E0 /* NMNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMNavigationController.h; sourceTree = "<group>"; };
 		83852140145A03F60047B7E0 /* NMNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMNavigationController.m; sourceTree = "<group>"; };
 		83852145145A34100047B7E0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -954,6 +977,7 @@
 			isa = PBXGroup;
 			children = (
 				8384CD5E14E081AF00444755 /* GridViewController.xib */,
+				8384CD8A14E0AC8C00444755 /* ThumbnailView.xib */,
 				8384CD6714E082DD00444755 /* Prototype */,
 			);
 			name = iPhone;
@@ -996,6 +1020,12 @@
 				8384CD7314E0878700444755 /* phone_button_search_icon@2x.png */,
 				8384CD7C14E089F700444755 /* phone_button_settings.png */,
 				8384CD7D14E089F700444755 /* phone_button_settings@2x.png */,
+				8384CD8F14E0B78700444755 /* phone_grid_dot_filled.png */,
+				8384CD9014E0B78800444755 /* phone_grid_dot_filled@2x.png */,
+				8384CD9114E0B78800444755 /* phone_grid_dot.png */,
+				8384CD9214E0B78800444755 /* phone_grid_dot@2x.png */,
+				8384CD8314E0A96D00444755 /* phone_grid_item_background.png */,
+				8384CD8414E0A96D00444755 /* phone_grid_item_background@2x.png */,
 				8384CD6314E082B500444755 /* phone_home_background.png */,
 				8384CD6414E082B500444755 /* phone_home_background@2x.png */,
 				8384CD6814E0836600444755 /* phone_home_logo.png */,
@@ -1144,6 +1174,12 @@
 				8384CD5D14E081AF00444755 /* GridViewController.m */,
 				8384CD8014E0903000444755 /* PagingGridView.h */,
 				8384CD8114E0903000444755 /* PagingGridView.m */,
+				8384CD8714E0A9A900444755 /* ThumbnailView.h */,
+				8384CD8814E0A9A900444755 /* ThumbnailView.m */,
+				8384CD8C14E0B13500444755 /* VerticallyAlignedLabel.h */,
+				8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */,
+				8384CD9714E0B7DB00444755 /* CustomPageControl.h */,
+				8384CD9814E0B7DB00444755 /* CustomPageControl.m */,
 				8384CD6114E081C400444755 /* Prototype */,
 			);
 			path = iphone;
@@ -1938,6 +1974,13 @@
 				8384CD7B14E0893E00444755 /* phone_button_refresh@2x.png in Resources */,
 				8384CD7E14E089F700444755 /* phone_button_settings.png in Resources */,
 				8384CD7F14E089F700444755 /* phone_button_settings@2x.png in Resources */,
+				8384CD8514E0A96D00444755 /* phone_grid_item_background.png in Resources */,
+				8384CD8614E0A96D00444755 /* phone_grid_item_background@2x.png in Resources */,
+				8384CD8B14E0AC8C00444755 /* ThumbnailView.xib in Resources */,
+				8384CD9314E0B78800444755 /* phone_grid_dot_filled.png in Resources */,
+				8384CD9414E0B78800444755 /* phone_grid_dot_filled@2x.png in Resources */,
+				8384CD9514E0B78800444755 /* phone_grid_dot.png in Resources */,
+				8384CD9614E0B78800444755 /* phone_grid_dot@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2021,6 +2064,9 @@
 				8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */,
 				8384CD5F14E081AF00444755 /* GridViewController.m in Sources */,
 				8384CD8214E0903000444755 /* PagingGridView.m in Sources */,
+				8384CD8914E0A9A900444755 /* ThumbnailView.m in Sources */,
+				8384CD8E14E0B13500444755 /* VerticallyAlignedLabel.m in Sources */,
+				8384CD9914E0B7DB00444755 /* CustomPageControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

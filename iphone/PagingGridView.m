@@ -15,13 +15,14 @@
 @synthesize internalPadding;
 @synthesize externalPadding;
 @synthesize dataSource;
+@synthesize gridDelegate;
 
 - (void)setup
 {
     numberOfColumns = 2;
     numberOfRows = 3;
     internalPadding = CGSizeMake(7, 7);
-    externalPadding = CGSizeMake(10, 0);
+    externalPadding = CGSizeMake(7, 0);
     
     visibleIndexes = [[NSMutableIndexSet alloc] init];
     visibleViews = [[NSMutableSet alloc] init];
@@ -97,7 +98,7 @@
     if (delegate == self) {
         [super setDelegate:delegate];        
     } else {
-        NSLog(@"PagingGridView does not support setting the scroll view delegate.");
+        NSLog(@"PagingGridView does not expose the UIScrollView delegate. Use gridDelegate instead.");
         [self doesNotRecognizeSelector:_cmd];
     }
 }
@@ -202,6 +203,17 @@
 {
     currentPage = MAX(0, round(scrollView.contentOffset.x / scrollView.frame.size.width));
     [self setNeedsLayout];    
+    
+    if ([gridDelegate respondsToSelector:@selector(gridViewDidScroll:)]) {
+        [gridDelegate gridViewDidScroll:self];
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if ([gridDelegate respondsToSelector:@selector(gridViewWillBeginDragging:)]) {
+        [gridDelegate gridViewWillBeginDragging:self];
+    }
 }
 
 @end
