@@ -17,7 +17,6 @@
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_me;
-@property (nonatomic, retain) NSNumber * nm_social_network;
 @property (nonatomic, retain) NSString * nm_user_id;
 @property (nonatomic, retain) NSString * username;
 @property (nonatomic, retain) NSNumber * nm_type;

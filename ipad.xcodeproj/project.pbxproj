@@ -234,6 +234,8 @@
 		A92E3E7F14040E4000B30313 /* internal-channel-favorites.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */; };
 		A92E3E8014040E4000B30313 /* internal-channel-history.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7D14040E4000B30313 /* internal-channel-history.png */; };
 		A92E3E8114040E4000B30313 /* internal-channel-queue.png in Resources */ = {isa = PBXBuildFile; fileRef = A92E3E7E14040E4000B30313 /* internal-channel-queue.png */; };
+		A9303A4614E0B09700B990C0 /* NMGetTwitterProfileTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9303A4414E0B09700B990C0 /* NMGetTwitterProfileTask.h */; };
+		A9303A4714E0B09700B990C0 /* NMGetTwitterProfileTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9303A4514E0B09700B990C0 /* NMGetTwitterProfileTask.m */; };
 		A931613613E0902B009694C3 /* playback-full-screen-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612C13E0902B009694C3 /* playback-full-screen-active.png */; };
 		A931613713E0902B009694C3 /* playback-full-screen.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612D13E0902B009694C3 /* playback-full-screen.png */; };
 		A931613813E0902B009694C3 /* playback-normal-screen-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A931612E13E0902B009694C3 /* playback-normal-screen-active.png */; };
@@ -654,6 +656,8 @@
 		A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-favorites.png"; sourceTree = "<group>"; };
 		A92E3E7D14040E4000B30313 /* internal-channel-history.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-history.png"; sourceTree = "<group>"; };
 		A92E3E7E14040E4000B30313 /* internal-channel-queue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "internal-channel-queue.png"; sourceTree = "<group>"; };
+		A9303A4414E0B09700B990C0 /* NMGetTwitterProfileTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetTwitterProfileTask.h; sourceTree = "<group>"; };
+		A9303A4514E0B09700B990C0 /* NMGetTwitterProfileTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetTwitterProfileTask.m; sourceTree = "<group>"; };
 		A931612C13E0902B009694C3 /* playback-full-screen-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-full-screen-active.png"; sourceTree = "<group>"; };
 		A931612D13E0902B009694C3 /* playback-full-screen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-full-screen.png"; sourceTree = "<group>"; };
 		A931612E13E0902B009694C3 /* playback-normal-screen-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-normal-screen-active.png"; sourceTree = "<group>"; };
@@ -1459,6 +1463,8 @@
 				A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */,
 				A91A510014D1A52900F41FE4 /* NMFacebookTask.h */,
 				A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */,
+				A9303A4414E0B09700B990C0 /* NMGetTwitterProfileTask.h */,
+				A9303A4514E0B09700B990C0 /* NMGetTwitterProfileTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1602,6 +1608,7 @@
 				A91A50FE14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h in Headers */,
 				A91A510214D1A52A00F41FE4 /* NMFacebookTask.h in Headers */,
 				A9D5CF8B14D40D2E001AFC95 /* NMObjectCache.h in Headers */,
+				A9303A4614E0B09700B990C0 /* NMGetTwitterProfileTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2036,6 +2043,7 @@
 				A91A50FF14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m in Sources */,
 				A91A510314D1A52A00F41FE4 /* NMFacebookTask.m in Sources */,
 				A9D5CF8C14D40D2E001AFC95 /* NMObjectCache.m in Sources */,
+				A9303A4714E0B09700B990C0 /* NMGetTwitterProfileTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
