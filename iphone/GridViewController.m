@@ -137,7 +137,7 @@
 - (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToLocation:(CGPoint)location
 {
     NSUInteger oldIndex = thumbnailView.tag;
-    NSInteger newIndex = [gridView indexForFrame:thumbnailView.frame];
+    NSInteger newIndex = [gridView repositioningIndexForFrame:thumbnailView.frame];
     
     if (newIndex != oldIndex && newIndex >= 0) {
         [gridView repositionView:thumbnailView fromIndex:oldIndex toIndex:newIndex animated:YES];

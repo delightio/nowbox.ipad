@@ -32,7 +32,7 @@
 - (void)reloadData;
 - (UIView *)dequeueReusableSubview;
 - (CGRect)frameForIndex:(NSUInteger)index;
-- (NSInteger)indexForFrame:(CGRect)frame;
+- (NSInteger)repositioningIndexForFrame:(CGRect)frame;
 - (void)repositionView:(UIView *)view fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated;
 
 @end

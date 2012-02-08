@@ -128,23 +128,23 @@
                       itemSize.height);
 }
 
-- (NSInteger)indexForFrame:(CGRect)frame
+- (NSInteger)repositioningIndexForFrame:(CGRect)frame
 {
     CGPoint center = CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame));
-    NSInteger page = currentPage; //floor(center.x / self.frame.size.width);
-    NSInteger column = round((center.x - page * self.frame.size.width - externalPadding.width) / (itemSize.width + internalPadding.width));
-    NSInteger row = round((center.y - externalPadding.height) / (itemSize.height + internalPadding.height));
+    NSInteger page = floor(center.x / self.frame.size.width);
+    NSInteger column = floor((center.x - page * self.frame.size.width - externalPadding.width) / (itemSize.width + internalPadding.width));
+    NSInteger row = floor((center.y - externalPadding.height) / (itemSize.height + internalPadding.height));
     NSInteger index = page * (numberOfRows * numberOfColumns) + (row * numberOfColumns) + column;
     
-    if (index >= 0 && index < numberOfItems) {        
-        return index;
-        
-//        // If we're too far from the true position it doesn't count        
+    // Make sure we're still on the same page
+    if (index >= 0 && index < numberOfItems && index >= page * numberOfRows * numberOfColumns && index < (page + 1) * numberOfRows * numberOfColumns) {
 //        CGRect trueFrame = [self frameForIndex:index];
 //        CGPoint trueCenter = CGPointMake(CGRectGetMidX(trueFrame), CGRectGetMidY(trueFrame));        
-//        if (sqrt((trueCenter.x - center.x)*(trueCenter.x - center.x) + (trueCenter.y - center.y)*(trueCenter.y - center.y)) < frame.size.width / 4) {
-//            return index;
+//        if (center.x > trueCenter.x && index + 1 < numberOfItems) {
+//            index++;
 //        }
+        
+        return index;
     }
     
     return -1;
