@@ -35,6 +35,17 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	command = NMCommandParseTwitterFeed;
 	self.channel = chnObj;
 	self.account = acObj;
+	self.sinceID = chnObj.subscription.nm_since_id;
+	return self;
+}
+
+- (id)initWithInfo:(NSDictionary *)aDict {
+	self = [super init];
+	command = NMCommandGetTwitterProfile;
+	self.channel = [aDict objectForKey:@"channel"];
+	self.account = [aDict objectForKey:@"account"];
+	self.sinceID = [aDict objectForKey:@"since_id"];
+	self.page = [[aDict objectForKey:@"next_page"] integerValue];
 	return self;
 }
 
@@ -75,7 +86,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	NSDictionary * urlDict;
 	NSString * extID;
 	for (NSDictionary * twDict in objAy) {
-		if ( _newestTwitIDString == nil ) {
+		if ( _page == 0 && _newestTwitIDString == nil ) {
 			self.newestTwitIDString = [twDict objectForKey:@"id_str"];
 		}
 		// grab the "entities" attribute

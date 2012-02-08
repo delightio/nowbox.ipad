@@ -275,7 +275,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		switch ([chnObj.type integerValue]) {
 			case NMChannelUserTwitterType:
 			{
-				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:[infoDict objectForKey:@"channel"] account:[infoDict objectForKey:@"account"]];
+				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:infoDict];
 				[networkController addNewConnectionForTask:task];
 				[task release];
 				break;

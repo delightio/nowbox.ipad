@@ -22,5 +22,6 @@
 @property (nonatomic, retain) NSString * newestTwitIDString;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj;
+- (id)initWithInfo:(NSDictionary *)aDict;
 
 @end
