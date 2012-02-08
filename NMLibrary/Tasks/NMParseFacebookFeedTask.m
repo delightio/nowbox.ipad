@@ -75,16 +75,16 @@ static NSArray * youTubeRegexArray = nil;
 	// feed - user's own wall
 	NSString * thePath;
 	if ( isAccountOwner ) {
-		thePath = @"me";
+		thePath = @"me/home";
 	} else {
-		thePath = _user_id;
+		thePath = [NSString stringWithFormat:@"%@/home", _user_id];
 	}
 	NSMutableDictionary * theDict = nil;
 	if ( _feedDirectURLString == nil ) {
 		NSURL * theURL = [NSURL URLWithString:_feedDirectURLString];
 		theDict = [NSMutableDictionary dictionaryWithDictionary:[self.facebook parseURLParams:[theURL query]]];
 	} else {
-		theDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"home", @"fields", @"50", @"limit", @"U", @"date_format", _since_id, @"since", nil];
+		theDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"50", @"limit", @"U", @"date_format", _since_id, @"since", nil];
 	}
 	return [self.facebook requestWithGraphPath:thePath andParams:theDict andDelegate:ctrl];
 }
@@ -92,7 +92,7 @@ static NSArray * youTubeRegexArray = nil;
 - (void)setParsedObjectsForResult:(id)result {
 	// home - user's news feed
 	// feed - user's own wall
-	NSArray * feedAy = [result valueForKeyPath:@"home.data"];
+	NSArray * feedAy = [result valueForKeyPath:@"data"];
 	
 	NSUInteger feedCount = [feedAy count];
 	if ( feedCount == 0 ) return;
