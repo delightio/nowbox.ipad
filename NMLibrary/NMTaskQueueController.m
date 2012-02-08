@@ -282,9 +282,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			}
 			case NMChannelUserFacebookType:
 			{
-				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:[infoDict objectForKey:@"next_url"]];
-				[networkController addNewConnectionForTask:task];
-				[task release];
+				NSString * urlStr = [infoDict objectForKey:@"next_url"];
+				if ( urlStr ) {
+					NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
+					[networkController addNewConnectionForTask:task];
+					[task release];
+				}
 				break;
 			}	
 			default:
@@ -742,12 +745,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			[videoImportTimer invalidate];
 			self.videoImportTimer = nil;
 		}
+		// return immediately if no video
 		return;
 	}
 	for (NMVideo * vdo in theVideos) {
 		[self issueImportVideo:vdo];
 	}
-	self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
+	if ( videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
 }
 
 - (void)cancelAllTasks {

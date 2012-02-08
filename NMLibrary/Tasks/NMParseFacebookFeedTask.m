@@ -80,7 +80,7 @@ static NSArray * youTubeRegexArray = nil;
 		thePath = [NSString stringWithFormat:@"%@/home", _user_id];
 	}
 	NSMutableDictionary * theDict = nil;
-	if ( _feedDirectURLString == nil ) {
+	if ( _feedDirectURLString ) {
 		NSURL * theURL = [NSURL URLWithString:_feedDirectURLString];
 		theDict = [NSMutableDictionary dictionaryWithDictionary:[self.facebook parseURLParams:[theURL query]]];
 	} else {
@@ -127,7 +127,7 @@ static NSArray * youTubeRegexArray = nil;
 		[parsedObjects release];
 		parsedObjects = nil;
 	}
-	self.nextPageURLString = [result valueForKeyPath:@"home.paging.next"];
+	self.nextPageURLString = [result valueForKeyPath:@"paging.next"];
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
