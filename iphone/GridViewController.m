@@ -20,7 +20,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.gridDataSource = [[[HomeGridDataSource alloc] init] autorelease];
+        self.gridDataSource = [[[HomeGridDataSource alloc] initWithThumbnailViewDelegate:self] autorelease];
     }
     return self;
 }
@@ -94,13 +94,6 @@
     scrollingToPage = NO;
 }
 
-- (void)gridView:(PagingGridView *)aGridView didSelectViewAtIndex:(NSUInteger)index
-{
-    self.gridDataSource = [gridDataSource dataSourceForIndex:index];
-    aGridView.dataSource = gridDataSource;
-}
-
-
 #pragma mark - CustomPageControlDelegate
 
 - (BOOL)pageControl:(CustomPageControl *)pageControl shouldSelectPageAtIndex:(NSUInteger)index
@@ -112,6 +105,43 @@
 {
     scrollingToPage = YES;
     [gridView setContentOffset:CGPointMake(index * gridView.frame.size.width, 0) animated:YES];
+}
+
+#pragma mark - ThumbnailViewDelegate
+
+- (void)thumbnailViewDidTap:(ThumbnailView *)thumbnailView
+{
+    NSUInteger index = thumbnailView.tag;
+    self.gridDataSource = [gridDataSource nextDataSourceForIndex:index];
+    gridView.dataSource = gridDataSource;
+    pageControl.numberOfPages = gridView.numberOfPages;
+}
+
+- (void)thumbnailViewDidBeginRearranging:(ThumbnailView *)thumbnailView
+{
+    gridView.scrollEnabled = NO;    
+}
+
+- (void)thumbnailViewDidEndRearranging:(ThumbnailView *)thumbnailView
+{
+    NSUInteger index = thumbnailView.tag;
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         thumbnailView.frame = [gridView frameForIndex:index];
+                     }
+                     completion:^(BOOL finished){
+                         gridView.scrollEnabled = YES;                         
+                     }];
+}
+
+- (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToLocation:(CGPoint)location
+{
+    NSUInteger oldIndex = thumbnailView.tag;
+    NSInteger newIndex = [gridView indexForFrame:thumbnailView.frame];
+    
+    if (newIndex != oldIndex && newIndex >= 0) {
+        [gridView repositionView:thumbnailView fromIndex:oldIndex toIndex:newIndex animated:YES];
+    }
 }
 
 @end

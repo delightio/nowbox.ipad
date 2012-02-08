@@ -14,6 +14,9 @@
 
 @interface GridDataSource : NSObject <PagingGridViewDataSource>
 
-- (GridDataSource *)dataSourceForIndex:(NSUInteger)index;
+@property (nonatomic, assign) id<ThumbnailViewDelegate> thumbnailViewDelegate;
+
+- (id)initWithThumbnailViewDelegate:(id<ThumbnailViewDelegate>)thumbnailViewDelegate;
+- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
 
 @end

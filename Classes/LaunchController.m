@@ -450,7 +450,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     NSArray *channels = [[aNotification userInfo] objectForKey:@"channels"];
     subscribingChannels = [[NSMutableSet alloc] init];
     
-    while ([subscribingChannels count] < MIN(5, [channels count])) {
+    while ([subscribingChannels count] < MIN(10, [channels count])) {
         NSUInteger index = arc4random() % [channels count];
         NMChannel *aChannel = [channels objectAtIndex:index];
         [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES channel:aChannel];

@@ -10,7 +10,7 @@
 
 @implementation YouTubeGridDataSource
 
-- (GridDataSource *)dataSourceForIndex:(NSUInteger)index
+- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
     return self;
 }
@@ -29,11 +29,9 @@
     
     if (!view) {
         view = [[[ThumbnailView alloc] init] autorelease];
-        [view.button addTarget:aGridView action:@selector(itemSelected:) forControlEvents:UIControlEventTouchUpInside];
+        view.delegate = self.thumbnailViewDelegate;
     }
-    
-    view.button.tag = index;
-    
+        
     NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;            
     NMChannel *channel = [dataController.subscribedChannels objectAtIndex:index];
     view.label.text = channel.title;

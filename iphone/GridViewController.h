@@ -11,7 +11,7 @@
 #import "CustomPageControl.h"
 #import "GridDataSource.h"
 
-@interface GridViewController : UIViewController <PagingGridViewDelegate, CustomPageControlDelegate> {
+@interface GridViewController : UIViewController <PagingGridViewDelegate, CustomPageControlDelegate, ThumbnailViewDelegate> {
     BOOL scrollingToPage;
 }
 

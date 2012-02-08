@@ -33,6 +33,7 @@
     self.showsHorizontalScrollIndicator = NO;
     self.showsVerticalScrollIndicator = NO;
     self.delegate = self;
+    self.clipsToBounds = NO;
     
     [self reloadData];
 }
@@ -66,32 +67,42 @@
 
 - (void)setDataSource:(id<PagingGridViewDataSource>)aDataSource
 {
-    dataSource = aDataSource;
-    [self reloadData];
+    if (dataSource != aDataSource) {
+        dataSource = aDataSource;
+        [self reloadData];
+    }
 }
 
 - (void)setNumberOfRows:(NSUInteger)aNumberOfRows
 {
-    numberOfRows = aNumberOfRows;
-    [self reloadData];
+    if (numberOfRows != aNumberOfRows) {
+        numberOfRows = aNumberOfRows;
+        [self reloadData];
+    }
 }
 
 - (void)setNumberOfColumns:(NSUInteger)aNumberOfColumns
 {
-    numberOfColumns = aNumberOfColumns;
-    [self reloadData];
+    if (numberOfColumns != aNumberOfColumns) {
+        numberOfColumns = aNumberOfColumns;
+        [self reloadData];
+    }
 }
 
 - (void)setInternalPadding:(CGSize)anInternalPadding
 {
-    internalPadding = anInternalPadding;
-    [self reloadData];
+    if (!CGSizeEqualToSize(internalPadding, anInternalPadding)) {
+        internalPadding = anInternalPadding;
+        [self reloadData];
+    }
 }
 
 - (void)setExternalPadding:(CGSize)anExternalPadding
 {
-    externalPadding = anExternalPadding;
-    [self reloadData];
+    if (!CGSizeEqualToSize(externalPadding, anExternalPadding)) {
+        externalPadding = anExternalPadding;
+        [self reloadData];
+    }
 }
 
 - (void)setDelegate:(id<UIScrollViewDelegate>)delegate
@@ -119,11 +130,24 @@
 
 - (NSInteger)indexForFrame:(CGRect)frame
 {
-    NSUInteger page = floor(frame.origin.x / self.frame.size.width);
-    NSUInteger column = round((frame.origin.x - page * self.frame.size.width - externalPadding.width) / (itemSize.width + internalPadding.width));
-    NSUInteger row = round((frame.origin.y - externalPadding.height) / (itemSize.height + internalPadding.height));
+    CGPoint center = CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame));
+    NSInteger page = currentPage; //floor(center.x / self.frame.size.width);
+    NSInteger column = round((center.x - page * self.frame.size.width - externalPadding.width) / (itemSize.width + internalPadding.width));
+    NSInteger row = round((center.y - externalPadding.height) / (itemSize.height + internalPadding.height));
+    NSInteger index = page * (numberOfRows * numberOfColumns) + (row * numberOfColumns) + column;
     
-    return page * (numberOfRows * numberOfColumns) + (row * numberOfColumns) + column;
+    if (index >= 0 && index < numberOfItems) {        
+        return index;
+        
+//        // If we're too far from the true position it doesn't count        
+//        CGRect trueFrame = [self frameForIndex:index];
+//        CGPoint trueCenter = CGPointMake(CGRectGetMidX(trueFrame), CGRectGetMidY(trueFrame));        
+//        if (sqrt((trueCenter.x - center.x)*(trueCenter.x - center.x) + (trueCenter.y - center.y)*(trueCenter.y - center.y)) < frame.size.width / 4) {
+//            return index;
+//        }
+    }
+    
+    return -1;
 }
 
 - (void)reloadData
@@ -162,7 +186,7 @@
     NSMutableSet *viewsToRemove = [NSMutableSet set];
     for (UIView *view in visibleViews) {
         if (!CGRectIntersectsRect(view.frame, visibleRect)) {
-            NSUInteger index = [self indexForFrame:view.frame];
+            NSUInteger index = view.tag;
             [viewsToRemove addObject:view];
             [view removeFromSuperview];
             [visibleIndexes removeIndex:index];
@@ -181,6 +205,7 @@
         if (CGRectIntersectsRect(viewFrame, visibleRect) && ![visibleIndexes containsIndex:i]) {
             UIView *view = [dataSource gridView:self viewForIndex:i];
             view.frame = viewFrame;
+            view.tag = i;
             [visibleViews addObject:view];
             [visibleIndexes addIndex:i];
             [self addSubview:view];
@@ -198,11 +223,33 @@
     return view;
 }
 
-- (void)itemSelected:(id)sender
+- (void)repositionView:(UIView *)repositioningView fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated
 {
-    if ([gridDelegate respondsToSelector:@selector(gridView:didSelectViewAtIndex:)]) {
-        [gridDelegate gridView:self didSelectViewAtIndex:[sender tag]];
+    void (^repositionViews)(void) = ^{ 
+        for (UIView *view in visibleViews) {
+            NSUInteger index = view.tag;
+            if (view != repositioningView && ((index > oldIndex && index <= newIndex) || (index >= newIndex && index < oldIndex))) {
+                // This view is affected by the repositioning
+                if (newIndex > oldIndex) {
+                    index--;
+                } else {
+                    index++;
+                }
+                
+                view.tag = index;
+                view.frame = [self frameForIndex:index];
+            }
+        }
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                         animations:repositionViews];
+    } else {
+        repositionViews();
     }
+    
+    repositioningView.tag = newIndex;
 }
 
 #pragma mark - UIScrollViewDelegate

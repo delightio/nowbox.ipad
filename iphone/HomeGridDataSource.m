@@ -11,9 +11,9 @@
 
 @implementation HomeGridDataSource
 
-- (GridDataSource *)dataSourceForIndex:(NSUInteger)index
+- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
-    return [[[YouTubeGridDataSource alloc] init] autorelease];
+    return [[[YouTubeGridDataSource alloc] initWithThumbnailViewDelegate:self.thumbnailViewDelegate] autorelease];
 }
 
 #pragma mark - PagingGridViewDataSource
@@ -29,11 +29,9 @@
     
     if (!view) {
         view = [[[ThumbnailView alloc] init] autorelease];
-        [view.button addTarget:aGridView action:@selector(itemSelected:) forControlEvents:UIControlEventTouchUpInside];
+        view.delegate = self.thumbnailViewDelegate;
     }
-    
-    view.button.tag = index;
-    
+        
     switch (index) {
         case 0:
             view.label.text = @"Facebook";

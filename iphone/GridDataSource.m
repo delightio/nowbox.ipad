@@ -10,7 +10,18 @@
 
 @implementation GridDataSource
 
-- (GridDataSource *)dataSourceForIndex:(NSUInteger)index
+@synthesize thumbnailViewDelegate;
+
+- (id)initWithThumbnailViewDelegate:(id<ThumbnailViewDelegate>)aThumbnailViewDelegate
+{
+    self = [super init];
+    if (self) {
+        thumbnailViewDelegate = aThumbnailViewDelegate;
+    }
+    return self;
+}
+
+- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
     // To be overriden by subclasses
     [self doesNotRecognizeSelector:_cmd];

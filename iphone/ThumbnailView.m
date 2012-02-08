@@ -7,14 +7,18 @@
 //
 
 #import "ThumbnailView.h"
+#import <QuartzCore/QuartzCore.h>
+
+#define kPressAndHoldDuration 0.8f
+#define kRearrangingScaleFactor 1.15
 
 @implementation ThumbnailView
 
 @synthesize contentView;
 @synthesize image;
 @synthesize label;
-@synthesize button;
 @synthesize activityIndicator;
+@synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -37,19 +41,131 @@
             font = [UIFont fontWithName:@"Futura-Medium" size:label.font.pointSize];
         }
         [label setFont:font];
+        
+        image.adjustsImageOnHighlight = YES;        
     }
     return self;
 } 
 
 - (void)dealloc
 {
+    [pressAndHoldTimer invalidate];
+    
     [contentView release];
     [image release];
     [label release];
-    [button release];
     [activityIndicator release];
     
     [super dealloc];
+}
+
+- (void)cancelPressAndHoldTimer
+{
+    [pressAndHoldTimer invalidate];
+    pressAndHoldTimer = nil;
+}
+
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted:highlighted];    
+    image.highlighted = highlighted;
+}
+
+- (void)setDelegate:(id<ThumbnailViewDelegate>)aDelegate
+{
+    if (delegate != aDelegate) {
+        [self removeTarget:delegate action:NULL forControlEvents:UIControlEventAllEvents];
+        delegate = aDelegate;        
+        [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+        [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
+        [self addTarget:self action:@selector(handleCancelTouch:) forControlEvents:UIControlEventTouchCancel | UIControlEventTouchUpOutside];
+        [self addTarget:self action:@selector(handleDrag:withEvent:) forControlEvents:UIControlEventTouchDragOutside | UIControlEventTouchDragInside];
+    }
+}
+
+#pragma mark - Touches
+
+- (void)didBeginRearranging
+{
+    pressAndHoldTimer = nil;
+    if ([delegate respondsToSelector:@selector(thumbnailViewDidBeginRearranging:)]) {
+        [delegate thumbnailViewDidBeginRearranging:self];
+    }
+    movable = YES;
+    [self.superview bringSubviewToFront:self];
+    
+    [UIView animateWithDuration:0.15
+                     animations:^{
+                         self.alpha = 0.7;
+                         self.transform = CGAffineTransformMakeScale(kRearrangingScaleFactor, kRearrangingScaleFactor);
+                     }];
+}
+
+- (void)didEndRearranging
+{
+    movable = NO;        
+    
+    [UIView animateWithDuration:0.15
+                     animations:^{
+                         self.alpha = 1.0;
+                         self.transform = CGAffineTransformIdentity;                         
+                     }];
+    
+    if ([delegate respondsToSelector:@selector(thumbnailViewDidEndRearranging:)]) {
+        [delegate thumbnailViewDidEndRearranging:self];
+    }
+}
+
+- (void)handleTouchUp:(id)sender
+{
+    if (movable) {
+        [self didEndRearranging];
+    } else {
+        [self cancelPressAndHoldTimer];        
+        [delegate thumbnailViewDidTap:self];
+    }
+}
+
+- (void)handleTouchDown:(id)sender withEvent:(UIEvent *)event
+{
+    [self cancelPressAndHoldTimer];
+    pressAndHoldTimer = [NSTimer scheduledTimerWithTimeInterval:kPressAndHoldDuration
+                                                         target:self
+                                                       selector:@selector(didBeginRearranging)
+                                                       userInfo:nil
+                                                        repeats:NO];
+    
+    UITouch *touch = [[event allTouches] anyObject];
+    CGPoint dragStartLocation = [touch locationInView:self.superview];
+    dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
+}
+
+- (void)handleCancelTouch:(id)sender
+{
+    [self cancelPressAndHoldTimer];
+    if (movable) {
+        [self didEndRearranging];
+    } else {
+        [self cancelPressAndHoldTimer];
+    }
+}
+
+- (void)handleDrag:(id)sender withEvent:(UIEvent *)event
+{
+    UITouch *touch = [[event allTouches] anyObject];
+    if (movable) {
+        CGPoint location = [touch locationInView:self.superview];
+        
+        self.center = CGPointMake(location.x - dragAnchorPoint.x,
+                                  location.y - dragAnchorPoint.y);
+        
+        if ([delegate respondsToSelector:@selector(thumbnailView:didDragToLocation:)]) {
+            [delegate thumbnailView:self didDragToLocation:self.center];
+        }
+    } else {
+        CGPoint dragStartLocation = [touch locationInView:self.superview];
+        dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
+    }
 }
 
 @end
