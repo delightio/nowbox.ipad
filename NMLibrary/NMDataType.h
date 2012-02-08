@@ -101,6 +101,7 @@ typedef enum {
 	NMChannelVimeoType,
 	NMChannelUserFacebookType,
 	NMChannelUserTwitterType,
+    NMChannelRecommendedType
 } NMChannelType;
 
 typedef enum {

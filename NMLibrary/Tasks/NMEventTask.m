@@ -234,7 +234,6 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
 		}
-		case NMEventShare:
 		case NMEventFavorite:
 		{
 			videoRelation = [ctrl relateChannel:ctrl.favoriteVideoChannel withVideo:video];
@@ -255,6 +254,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;
 		}	
+//		case NMEventShare:
 		default:
 			break;
 	}

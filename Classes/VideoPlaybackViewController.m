@@ -1855,7 +1855,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
 		composeController.mailComposeDelegate = self;
 		[composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
-		[composeController setMessageBody:[NSString stringWithFormat:@"I just found a video on NOWBOX that I want to share with you.<br>Watch it here:<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"320\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPad with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
+		[composeController setMessageBody:[NSString stringWithFormat:@"I just found a video on NOWBOX that I want to share with you.<br><br>Watch it here:<br><a href=\"%@%@\"><img src=\"%@\" width=\"320\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPad with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
         [composeController setModalPresentationStyle:UIModalPresentationFormSheet];
 		[self presentModalViewController:composeController animated:YES];
 		[composeController release];
@@ -1911,6 +1911,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error 
 {
+    NMVideo *video = playbackModelController.currentVideo;
+
     NSString *eventName;
     if (result == MFMailComposeResultCancelled) {
         eventName = AnalyticsEventCancelShareDialog;
@@ -1922,10 +1924,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         
         if (result == MFMailComposeResultSent) {
             [self performSelector:@selector(delayedShowEmailShareNotification) withObject:nil afterDelay:0.5];
+            [nowboxTaskController issueShareEventForVideo:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
         }
     }
 
-    NMVideo *video = playbackModelController.currentVideo;
     [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                         video.video.title, AnalyticsPropertyVideoName, 
                                                                         video.video.nm_id, AnalyticsPropertyVideoId,
