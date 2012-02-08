@@ -65,29 +65,31 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	if ( [buffer length] == 0 ) return;
 	NSArray * objAy = [buffer objectFromJSONData];
 	
-	NSArray * entityAy;
-	NSArray * urls;
-	NSString * extID;
-	parsedObjects = [[NSMutableArray alloc] initWithCapacity:8];
+	NSUInteger feedCount = [objAy count];
+	if ( feedCount == 0 ) return;
 	
+	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
+	self.profileArray = [NSMutableArray arrayWithCapacity:feedCount];
+	NSDictionary * entityDict;
+	NSArray * urls;
+	NSDictionary * urlDict;
+	NSString * extID;
 	for (NSDictionary * twDict in objAy) {
 		if ( _newestTwitIDString == nil ) {
 			self.newestTwitIDString = [twDict objectForKey:@"id_str"];
 		}
 		// grab the "entities" attribute
-		entityAy = [twDict objectForKey:@"entities"];
-		if ( entityAy == nil ) continue;
-		// check if the entity contains any URL link
-		for (NSDictionary * entityDict in entityAy) {
-			urls = [entityDict objectForKey:@"urls"];
-			if ( urls == nil ) continue;
-			
-			// extract the external ID
-			for (NSDictionary * urlDict in urls) {
+		entityDict = [twDict objectForKey:@"entities"];
+		urls = [entityDict objectForKey:@"urls"];
+		if ( urls ) {
+			// check if the entity contains any URL link
+			for (urlDict in urls) {
 				extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[urlDict	objectForKey:@"expanded_url"]];
 				if ( extID ) {
 					// the url contains a Youtube external ID
 					[parsedObjects addObject:extID];
+					// save the person who submit this tweet
+					[_profileArray addObject:[twDict objectForKey:@"user"]];
 				}
 			}
 		}
@@ -143,17 +145,20 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 			BOOL isNew = NO;
 			id fromDict = [_profileArray objectAtIndex:idx];
 			if ( fromDict != [NSNull null] ) {
-				NSString * manID = [fromDict objectForKey:@"id"];
+				NSString * manID = [fromDict objectForKey:@"id_str"];
 				NMPersonProfile * theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
 					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
+					// Twitter feed JSON provides enough user info to generate a full detail NMPersonProfile object. Therefore, no need to generate any "person profile task".
 					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
 					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					theProfile.first_name = [fromDict objectForKey:@"name"];
 					theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+					NSString * scName = [fromDict objectForKey:@"screen_name"];
+					if ( scName ) theProfile.username = scName;
 				}
 				vdo.personProfile = theProfile;
 			}
