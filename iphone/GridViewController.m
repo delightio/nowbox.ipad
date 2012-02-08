@@ -10,6 +10,9 @@
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
 
+#define kRearrangePageSwitchDistance 50
+#define kRearrangePageSwitchDuration 1.0
+
 @implementation GridViewController
 
 @synthesize gridView;
@@ -27,6 +30,8 @@
 
 - (void)dealloc
 {
+    [rearrangePageSwitchTimer invalidate];
+    
     [gridView release];
     [pageControl release];
     [gridDataSource release];
@@ -119,12 +124,21 @@
 
 - (void)thumbnailViewDidBeginRearranging:(ThumbnailView *)thumbnailView
 {
+//    // Bring the thumbnail out of the scroll view
+//    thumbnailView.frame = CGRectOffset(thumbnailView.frame, gridView.frame.origin.x - gridView.contentOffset.x, gridView.frame.origin.y - gridView.contentOffset.y);
+//    [self.view addSubview:thumbnailView];
+    
     gridView.scrollEnabled = NO;    
 }
 
 - (void)thumbnailViewDidEndRearranging:(ThumbnailView *)thumbnailView
 {
     NSUInteger index = thumbnailView.tag;
+
+//    // Put the thumbnail back in the scroll view
+//    thumbnailView.frame = CGRectOffset(thumbnailView.frame, -gridView.frame.origin.x + gridView.contentOffset.x, -gridView.frame.origin.y + gridView.contentOffset.y);
+//    [gridView addSubview:thumbnailView];
+    
     [UIView animateWithDuration:0.3
                      animations:^{
                          thumbnailView.frame = [gridView frameForIndex:index];
@@ -134,13 +148,53 @@
                      }];
 }
 
+- (void)rearrangePageSwitchTimerFired:(NSTimer *)timer
+{
+    rearrangePageSwitchTimer = nil;
+    ThumbnailView *thumbnailView = [[timer userInfo] objectForKey:@"thumbnailView"];
+    if (thumbnailView.center.x < gridView.contentOffset.x + kRearrangePageSwitchDistance && gridView.currentPage > 0) {
+        // Switch page left
+        gridView.currentPage = gridView.currentPage - 1;
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             thumbnailView.center = CGPointMake(thumbnailView.center.x - gridView.frame.size.width, thumbnailView.center.y);
+                         }];
+    } else if (thumbnailView.center.x > gridView.contentOffset.x + gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages) {
+        // Switch page right
+        gridView.currentPage = gridView.currentPage + 1;        
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             thumbnailView.center = CGPointMake(thumbnailView.center.x + gridView.frame.size.width, thumbnailView.center.y);
+                         }];        
+    }
+}
+
 - (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToLocation:(CGPoint)location
 {
-    NSUInteger oldIndex = thumbnailView.tag;
-    NSInteger newIndex = [gridView repositioningIndexForFrame:thumbnailView.frame];
-    
-    if (newIndex != oldIndex && newIndex >= 0) {
-        [gridView repositionView:thumbnailView fromIndex:oldIndex toIndex:newIndex animated:YES];
+    CGFloat x = location.x - gridView.contentOffset.x;
+    if ((x < gridView.contentOffset.x + kRearrangePageSwitchDistance && gridView.currentPage > 0) || 
+        (x > gridView.contentOffset.x + gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages)) {
+        // Close to left or right edge and page switch possible
+        if (!rearrangePageSwitchTimer) {
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:thumbnailView forKey:@"thumbnailView"];
+            rearrangePageSwitchTimer = [NSTimer scheduledTimerWithTimeInterval:kRearrangePageSwitchDuration target:self selector:@selector(rearrangePageSwitchTimerFired:) userInfo:userInfo repeats:NO];
+        }
+        
+    } else {    
+        if (rearrangePageSwitchTimer) {
+            // Cancel any pending page switch action - we moved away from the edge
+            [rearrangePageSwitchTimer invalidate];
+            rearrangePageSwitchTimer = nil;
+        }
+        
+        // Reposition the view
+        NSUInteger oldIndex = thumbnailView.tag;
+        NSInteger newIndex = [gridView repositioningIndexForFrame:thumbnailView.frame];
+        
+        if (newIndex != oldIndex && newIndex >= 0) {
+            [gridView repositionView:thumbnailView fromIndex:oldIndex toIndex:newIndex animated:YES];
+            [gridDataSource moveObjectAtIndex:oldIndex toIndex:newIndex];
+        }
     }
 }
 

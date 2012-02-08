@@ -13,7 +13,6 @@
 
 @interface PagingGridView : UIScrollView <UIScrollViewDelegate> {
     NSUInteger numberOfItems;
-    NSUInteger currentPage;
     CGSize itemSize;
     
     NSMutableIndexSet *visibleIndexes;
@@ -24,6 +23,7 @@
 @property (nonatomic, assign) NSUInteger numberOfRows;
 @property (nonatomic, assign) NSUInteger numberOfColumns;
 @property (nonatomic, assign) NSUInteger numberOfPages;
+@property (nonatomic, assign) NSUInteger currentPage;
 @property (nonatomic, assign) CGSize internalPadding;
 @property (nonatomic, assign) CGSize externalPadding;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDataSource> dataSource;

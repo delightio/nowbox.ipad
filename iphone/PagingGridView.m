@@ -13,6 +13,7 @@
 @synthesize numberOfRows;
 @synthesize numberOfColumns;
 @synthesize numberOfPages;
+@synthesize currentPage;
 @synthesize internalPadding;
 @synthesize externalPadding;
 @synthesize dataSource;
@@ -115,6 +116,12 @@
     }
 }
 
+- (void)setCurrentPage:(NSUInteger)aCurrentPage
+{
+    currentPage = aCurrentPage;
+    [self setContentOffset:CGPointMake(currentPage * self.frame.size.width, 0) animated:YES];
+}
+
 - (CGRect)frameForIndex:(NSUInteger)index
 {
     NSUInteger page = index / (numberOfRows * numberOfColumns);
@@ -138,12 +145,6 @@
     
     // Make sure we're still on the same page
     if (index >= 0 && index < numberOfItems && index >= page * numberOfRows * numberOfColumns && index < (page + 1) * numberOfRows * numberOfColumns) {
-//        CGRect trueFrame = [self frameForIndex:index];
-//        CGPoint trueCenter = CGPointMake(CGRectGetMidX(trueFrame), CGRectGetMidY(trueFrame));        
-//        if (center.x > trueCenter.x && index + 1 < numberOfItems) {
-//            index++;
-//        }
-        
         return index;
     }
     
@@ -241,10 +242,13 @@
             }
         }
     };
-    
     if (animated) {
         [UIView animateWithDuration:0.3
-                         animations:repositionViews];
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState
+                         animations:repositionViews
+                         completion:^(BOOL finished){
+                         }];
     } else {
         repositionViews();
     }

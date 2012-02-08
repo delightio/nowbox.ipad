@@ -78,8 +78,8 @@
         delegate = aDelegate;        
         [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
         [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
-        [self addTarget:self action:@selector(handleCancelTouch:) forControlEvents:UIControlEventTouchCancel | UIControlEventTouchUpOutside];
-        [self addTarget:self action:@selector(handleDrag:withEvent:) forControlEvents:UIControlEventTouchDragOutside | UIControlEventTouchDragInside];
+        [self addTarget:self action:@selector(handleCancelTouch:) forControlEvents:UIControlEventTouchCancel | UIControlEventTouchUpOutside | UIControlEventTouchDragOutside];
+        [self addTarget:self action:@selector(handleDrag:withEvent:) forControlEvents:UIControlEventTouchDragInside];
     }
 }
 
@@ -141,7 +141,7 @@
 }
 
 - (void)handleCancelTouch:(id)sender
-{
+{    
     [self cancelPressAndHoldTimer];
     if (movable) {
         [self didEndRearranging];

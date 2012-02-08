@@ -14,7 +14,7 @@
 @interface ThumbnailView : UIButton {
     NSTimer *pressAndHoldTimer;
     BOOL movable;
-    CGPoint dragAnchorPoint;
+    CGPoint dragAnchorPoint;    
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;

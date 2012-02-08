@@ -15,6 +15,13 @@
     return self;
 }
 
+- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+//    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;            
+//    NMChannel *channel = [dataController.subscribedChannels objectAtIndex:index];
+    
+}
+
 #pragma mark - PagingGridViewDataSource
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView

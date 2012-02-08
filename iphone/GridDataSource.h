@@ -18,5 +18,6 @@
 
 - (id)initWithThumbnailViewDelegate:(id<ThumbnailViewDelegate>)thumbnailViewDelegate;
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
+- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end

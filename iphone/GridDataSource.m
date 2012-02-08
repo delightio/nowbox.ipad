@@ -24,8 +24,12 @@
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
     // To be overriden by subclasses
-    [self doesNotRecognizeSelector:_cmd];
     return nil;
+}
+
+- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+    // To be overriden by subclasses
 }
 
 #pragma mark - PagingGridViewDataSource

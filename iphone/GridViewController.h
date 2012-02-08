@@ -13,6 +13,7 @@
 
 @interface GridViewController : UIViewController <PagingGridViewDelegate, CustomPageControlDelegate, ThumbnailViewDelegate> {
     BOOL scrollingToPage;
+    NSTimer *rearrangePageSwitchTimer;
 }
 
 @property (nonatomic, retain) IBOutlet PagingGridView *gridView;
