@@ -165,11 +165,12 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				if ( isNew ) {
 					// Twitter feed JSON provides enough user info to generate a full detail NMPersonProfile object. Therefore, no need to generate any "person profile task".
 					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
-					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 					theProfile.first_name = [fromDict objectForKey:@"name"];
-					theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
 					NSString * scName = [fromDict objectForKey:@"screen_name"];
 					if ( scName ) theProfile.username = scName;
+					scName = [fromDict objectForKey:@"profile_image_url"];
+					if ( scName ) theProfile.picture = scName;
 				}
 				vdo.personProfile = theProfile;
 			}

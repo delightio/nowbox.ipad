@@ -35,7 +35,6 @@
 	NSPredicate * concreteVideoForExternalIDPredicateTemplate;
 	NSPredicate * usernamePredicateTemplate;
 	NSPredicate * usernameOrIDPredicateTemplate;
-	NSPredicate * pendingImportVideoPredicate;
 	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription;
@@ -66,7 +65,8 @@
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * authorEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
-@property (nonatomic, readonly) NSPredicate * pendingImportVideoPredicate;
+@property (nonatomic, retain) NSPredicate * pendingImportVideoPredicate;
+@property (nonatomic, retain) NSPredicate * pendingImportPredicate;
 @property (nonatomic, retain) NMChannel * userTwitterStreamChannel;
 @property (nonatomic, retain) NMChannel * userFacebookStreamChannel;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
@@ -151,6 +151,7 @@
 // Person profile and subscription
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NMPersonProfile *)insertNewPersonProfileWithAccountIdentifier:(NSString *)strID isNew:(BOOL *)isNewObj;
+- (NSArray *)personProfilesForSync:(NSInteger)aCount;
 - (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
 - (NSArray *)allSubscriptions;

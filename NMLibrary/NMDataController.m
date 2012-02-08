@@ -45,6 +45,8 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 @synthesize myQueueChannel, favoriteVideoChannel;
 @synthesize userFacebookStreamChannel, userTwitterStreamChannel;
 @synthesize lastSessionVideoIDs;
+@synthesize pendingImportVideoPredicate = _pendingImportVideoPredicate;
+@synthesize pendingImportPredicate = _pendingImportPredicate;
 
 - (id)init {
 	self = [super init];
@@ -72,7 +74,8 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (void)dealloc {
 	[myQueueChannel release], [favoriteVideoChannel release];
 	[userFacebookStreamChannel release], [userTwitterStreamChannel release];
-	[pendingImportVideoPredicate release];
+	[_pendingImportVideoPredicate release];
+	[_pendingImportPredicate release];
 	[lastSessionVideoIDs release];
 	[categoryCacheDictionary release];
 	[channelCacheDictionary release];
@@ -113,11 +116,20 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	}
 }
 
+#pragma mark Predicates
+
 - (NSPredicate *)pendingImportVideoPredicate {
-	if ( pendingImportVideoPredicate == nil ) {
-		pendingImportVideoPredicate = [[NSPredicate predicateWithFormat:@"video.nm_error == %@", [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]] retain];
+	if ( _pendingImportVideoPredicate == nil ) {
+		_pendingImportVideoPredicate = [[NSPredicate predicateWithFormat:@"video.nm_error == %@", [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]] retain];
 	}
-	return pendingImportVideoPredicate;
+	return _pendingImportVideoPredicate;
+}
+
+- (NSPredicate *)pendingImportPredicate {
+	if ( _pendingImportPredicate == nil ) {
+		_pendingImportPredicate = [[NSPredicate predicateWithFormat:@"nm_error == %@", [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]] retain];
+	}
+	return _pendingImportPredicate;
 }
 
 #pragma mark First launch
@@ -1175,6 +1187,18 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	}
 	[request release];
 	return profileObj;
+}
+
+- (NSArray *)personProfilesForSync:(NSInteger)aCount {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:self.pendingImportPredicate];
+	[request setFetchLimit:aCount];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	[request release];
+	return [result count] ? result : nil;
 }
 
 - (NSInteger)maxPersonProfileID {

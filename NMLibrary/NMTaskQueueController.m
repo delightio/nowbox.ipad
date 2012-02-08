@@ -709,10 +709,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj {
-	// only support Twitter for now
-	NMGetTwitterProfileTask * task = [[NMGetTwitterProfileTask alloc] initWithProfile:aProfile account:acObj];
-	[networkController addNewConnectionForTask:task];
-	[task release];
+	if ( acObj == nil ) {
+		NMGetFacebookProfileTask * task = [[NMGetFacebookProfileTask alloc] initWithProfile:aProfile];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	} else {
+		// only support Twitter for now
+		NMGetTwitterProfileTask * task = [[NMGetTwitterProfileTask alloc] initWithProfile:aProfile account:acObj];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
 }
 
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile {
@@ -738,8 +744,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)scheduleImportVideos {
 	// get the qualified videos
-	NSArray * theVideos = [dataController videosForSync:4];
-	if ( theVideos == nil ) {
+	NSArray * theProfiles = [dataController personProfilesForSync:2];
+	NSInteger cnt = 4;
+	if ( theProfiles ) cnt = 2;
+	NSArray * theVideos = [dataController videosForSync:cnt];
+	
+	if ( theVideos == nil && theProfiles == nil ) {
 		// stop the timer task
 		if ( videoImportTimer ) {
 			[videoImportTimer invalidate];
@@ -750,6 +760,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	for (NMVideo * vdo in theVideos) {
 		[self issueImportVideo:vdo];
+	}
+	for (NMPersonProfile * pfo in theProfiles) {
+		[self issueGetProfile:pfo account:nil];
 	}
 	if ( videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
 }
