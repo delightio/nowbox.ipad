@@ -226,18 +226,15 @@
             // Share
             NMVideo *video = self.navigationController.playbackModelController.currentVideo;            
             NMControlsView *controlsView = self.navigationController.playbackViewController.loadedControlView;
-            
-            if ([video.nm_favorite integerValue] == 0) {
-                ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" bundle:[NSBundle mainBundle] video:video duration:controlsView.duration elapsedSeconds:controlsView.timeElapsed];
-                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:shareController];
-                navigationController.navigationBar.barStyle = UIBarStyleBlack;
-                [self.navigationController.playbackViewController presentModalViewController:navigationController animated:YES];
 
-                [shareController release];
-                [navigationController release];
-            } else {
-                [[NMTaskQueueController sharedTaskQueueController] issueShare:NO video:video duration:controlsView.duration elapsedSeconds:controlsView.timeElapsed];
-            }
+            ShareViewController *shareController = [[ShareViewController alloc] initWithNibName:@"ShareView" bundle:[NSBundle mainBundle] video:video shareMode:ShareModeFacebook duration:controlsView.duration elapsedSeconds:controlsView.timeElapsed];
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:shareController];
+            navigationController.navigationBar.barStyle = UIBarStyleBlack;
+            [self.navigationController.playbackViewController presentModalViewController:navigationController animated:YES];
+
+            [shareController release];
+            [navigationController release];
+
             break;
         }
         case 2: {

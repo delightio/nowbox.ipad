@@ -79,6 +79,7 @@
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
     NM_RATE_US_REMINDER_SHOWN = [userDefaults boolForKey:NM_RATE_US_REMINDER_SHOWN_KEY];
     NM_RATE_US_REMINDER_DEFER_COUNT = [userDefaults integerForKey:NM_RATE_US_REMINDER_DEFER_COUNT_KEY];
+    NM_SHARE_COUNT = [userDefaults integerForKey:NM_SHARE_COUNT_KEY];
 	appFirstLaunch = [userDefaults boolForKey:NM_FIRST_LAUNCH_KEY];
 	
 	taskQueueController = [NMTaskQueueController sharedTaskQueueController];
@@ -396,7 +397,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
          && compareVersions(localVersion, currentVersion) == NSOrderedAscending) {
         // Optional update
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Update Available" 
-                                                            message:@"Hey! We've released a new version of NOWBOX for you." 
+                                                            message:@"A new version of NOWBOX is available. Would you like to update now?" 
                                                            delegate:self 
                                                   cancelButtonTitle:@"Later"
                                                   otherButtonTitles:@"Download", nil];
@@ -408,7 +409,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     } else if (compareVersions(localVersion, minimumVersion) == NSOrderedAscending) {
         // Mandatory update
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Update Required" 
-                                                            message:@"Hey! We've updated NOWBOX and need you to upgrade." 
+                                                            message:@"You need to get the latest version of NOWBOX to continue using the app." 
                                                            delegate:self 
                                                   cancelButtonTitle:@"Leave"
                                                   otherButtonTitles:@"Download", nil];        

@@ -7,9 +7,9 @@
 //
 
 #import "NMVideo.h"
+#import "NMDataType.h"
 #import "NMChannel.h"
 #import "NMVideoDetail.h"
-#import "NMDataType.h"
 #import "NMAVPlayerItem.h"
 
 @implementation NMVideo 

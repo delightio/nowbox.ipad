@@ -27,7 +27,8 @@ typedef enum {
 @property (nonatomic, copy) NSString *dateString;
 @property (nonatomic, assign) PanelVideoCellState state;
 @property (nonatomic, assign, getter=isViewed) BOOL viewed;
-@property (nonatomic, assign, getter=isFirstCell) BOOL firstCell;
+@property (nonatomic, assign, getter=isLastCell) BOOL lastCell;
+@property (nonatomic, assign, getter=isLoadingCell) BOOL loadingCell;
 @property (nonatomic, assign, getter=isSessionStartCell) BOOL sessionStartCell;
 @property (nonatomic, assign) BOOL isPlayingVideo;
 @property (nonatomic, retain) UIImage *statusImage;

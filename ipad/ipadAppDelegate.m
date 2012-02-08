@@ -46,14 +46,13 @@ NSString * const NM_SESSION_COUNT_KEY		= @"NM_SESSION_COUNT_KEY";
 NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY = @"NM_TIME_ON_APP_SINCE_INSTALL_KEY";
 NSString * const NM_RATE_US_REMINDER_SHOWN_KEY = @"NM_RATE_US_REMINDER_SHOWN_KEY";
 NSString * const NM_RATE_US_REMINDER_DEFER_COUNT_KEY = @"NM_RATE_US_REMINDER_DEFER_COUNT_KEY";
+NSString * const NM_SHARE_COUNT_KEY         = @"NM_SHARE_COUNT_KEY";
 // setting view
 NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
 NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
 NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
 NSString * const NM_ENABLE_EMAIL_NOTIFICATION_KEY	= @"NM_ENABLE_EMAIL_NOTIFICATION_KEY";
-// sharing
-NSString * const NM_LAST_SOCIAL_NETWORK     = @"NM_LAST_SOCIAL_NETWORK";
 
 BOOL NM_RUNNING_IOS_5;
 BOOL NM_RUNNING_ON_IPAD;
@@ -85,6 +84,7 @@ NSInteger NM_LAST_CHANNEL_ID;
       zeroNum, NM_TIME_ON_APP_SINCE_INSTALL_KEY,
       noNum, NM_RATE_US_REMINDER_SHOWN_KEY,
       zeroNum, NM_RATE_US_REMINDER_DEFER_COUNT_KEY,
+      zeroNum, NM_SHARE_COUNT_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
 //	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
@@ -495,6 +495,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 {
     GridViewController *gridViewController = [[GridViewController alloc] initWithNibName:@"GridViewController" bundle:[NSBundle mainBundle]];
     self.viewController = gridViewController;
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     self.window.rootViewController = gridViewController;
     [launchViewController release];
 }

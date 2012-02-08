@@ -13,7 +13,7 @@
 @synthesize delegate;
 
 - (void)setup
-{
+{    
     launchController = [[LaunchController_iPhone alloc] init];
     ((LaunchController_iPhone *)launchController).delegate = self;
     [launchController loadView];    

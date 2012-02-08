@@ -97,6 +97,7 @@
 
 //@property (nonatomic, readonly) IBOutlet UIView * channelBackgroundView;
 //@property (nonatomic, readonly) IBOutlet UIView * authorBackgroundView;
+@property (nonatomic, assign) IBOutlet UIView * topbarContainerView;
 
 @property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
 @property (retain, nonatomic) IBOutlet UIButton *toggleGridButton;

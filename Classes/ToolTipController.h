@@ -15,8 +15,11 @@
 #define kVideoTapCountKey @"NMToolTipVideoTapCount"
 #define kBadVideoTapCountKey @"NMToolTipBadVideoTapCount"
 #define kChannelManagementTapCountKey @"NMChannelManagementTapCount"
-#define kSharedVideoTapCountKey @"NMSharedVideoCount"
 #define kWatchLaterTapCountKey @"NMWatchLaterTapCount"
+#define kFavoriteTapCountKey @"NMFavoriteTapCount"
+#define kShareEmailCountKey @"NMShareEmailCount"
+#define kShareFacebookCountKey @"NMShareFacebookCount"
+#define kShareTwitterCountKey @"NMShareTwitterCount"
 #define kChannelListScrollCountKey @"NMChannelListScrollCount"
 
 @protocol ToolTipControllerDelegate;

@@ -20,7 +20,8 @@
 @synthesize dateString;
 @synthesize state;
 @synthesize viewed;
-@synthesize firstCell;
+@synthesize lastCell;
+@synthesize loadingCell;
 @synthesize sessionStartCell;
 @synthesize isPlayingVideo;
 @synthesize statusImage;
@@ -176,16 +177,20 @@
     CGContextSetFillColorWithColor(context, [borderBottomColor CGColor]);
     CGContextFillRect(context, CGRectMake(0, bounds.size.height - 1, bounds.size.width, 1));
     CGContextSetFillColorWithColor(context, [dividerColor CGColor]);
-    CGContextFillRect(context, CGRectMake(bounds.size.width - 1, 0, 1, bounds.size.height));
     
-    if (firstCell) {
+    if (!loadingCell) {
+        // Draw divider on the left
         CGContextFillRect(context, CGRectMake(0, 0, 1, bounds.size.height));
+    }
+    if (lastCell || loadingCell) {
+        // Draw divider on the right
+        CGContextFillRect(context, CGRectMake(bounds.size.width - 1, 0, 1, bounds.size.height));
     }
     
     // Draw labels
-    CGRect titleRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_PADDING, bounds.size.width - NM_VIDEO_CELL_PADDING*2, bounds.size.height - NM_VIDEO_CELL_PADDING*2 - 12);
-    CGRect dateRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
-    CGRect durationRect = CGRectMake(NM_VIDEO_CELL_PADDING, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
+    CGRect titleRect = CGRectMake(NM_VIDEO_CELL_PADDING + 1, NM_VIDEO_CELL_PADDING, bounds.size.width - NM_VIDEO_CELL_PADDING*2, bounds.size.height - NM_VIDEO_CELL_PADDING*2 - 12);
+    CGRect dateRect = CGRectMake(NM_VIDEO_CELL_PADDING + 1, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
+    CGRect durationRect = CGRectMake(NM_VIDEO_CELL_PADDING + 1, NM_VIDEO_CELL_HEIGHT - 24.0f, bounds.size.width - NM_VIDEO_CELL_PADDING * 2.0f, 13.0f);
     
     if (viewed && !highlighted) {
         // Draw text shadows

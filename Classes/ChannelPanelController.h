@@ -23,7 +23,8 @@ typedef enum {
 	IBOutlet UIButton * settingButton;
 	IBOutlet UIButton * filterButton;
     IBOutlet UIButton * fullScreenButton;
-	
+	IBOutlet UIView *scrollToTopArea;
+    
 	UIView *panelView;
     NSMutableSet *recycledVideoCells;
 

@@ -66,7 +66,7 @@
 						<string key="NSFrameSize">{1024, 44}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="361661318"/>
+						<reference key="NSNextKeyView" ref="22993784"/>
 						<string key="NSReuseIdentifierKey">_NS:364</string>
 						<int key="IBUIContentMode">9</int>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -98,6 +98,20 @@
 						<float key="IBUIRowHeight">44</float>
 						<float key="IBUISectionHeaderHeight">22</float>
 						<float key="IBUISectionFooterHeight">22</float>
+					</object>
+					<object class="IBUIView" id="22993784">
+						<reference key="NSNextResponder" ref="191373211"/>
+						<int key="NSvFlags">290</int>
+						<string key="NSFrameSize">{823, 44}</string>
+						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="361661318"/>
+						<string key="NSReuseIdentifierKey">_NS:212</string>
+						<object class="NSColor" key="IBUIBackgroundColor">
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MSAwAA</bytes>
+						</object>
+						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 					</object>
 					<object class="IBUIButton" id="1057073313">
 						<reference key="NSNextResponder" ref="191373211"/>
@@ -373,6 +387,14 @@
 					<int key="connectionID">63</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">scrollToTopArea</string>
+						<reference key="source" ref="96030309"/>
+						<reference key="destination" ref="22993784"/>
+					</object>
+					<int key="connectionID">68</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">showFeatureDebugView:</string>
 						<reference key="source" ref="1057073313"/>
@@ -436,6 +458,7 @@
 							<reference ref="1064860965"/>
 							<reference ref="256796477"/>
 							<reference ref="16338747"/>
+							<reference ref="22993784"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -516,6 +539,12 @@
 						<reference key="object" ref="16338747"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">67</int>
+						<reference key="object" ref="22993784"/>
+						<reference key="parent" ref="191373211"/>
+						<string key="objectName">Scroll To Top Touch Area</string>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -545,6 +574,7 @@
 					<string>53.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
 					<string>62.IBPluginDependency</string>
 					<string>64.IBPluginDependency</string>
+					<string>67.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -571,6 +601,7 @@
 					<real value="1"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -585,7 +616,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">64</int>
+			<int key="maxID">68</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -646,6 +677,7 @@
 							<string>filterButton</string>
 							<string>fullScreenButton</string>
 							<string>panelView</string>
+							<string>scrollToTopArea</string>
 							<string>settingButton</string>
 							<string>tableView</string>
 						</object>
@@ -653,6 +685,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>UIButton</string>
 							<string>UIButton</string>
+							<string>UIView</string>
 							<string>UIView</string>
 							<string>UIButton</string>
 							<string>UITableView</string>
@@ -665,6 +698,7 @@
 							<string>filterButton</string>
 							<string>fullScreenButton</string>
 							<string>panelView</string>
+							<string>scrollToTopArea</string>
 							<string>settingButton</string>
 							<string>tableView</string>
 						</object>
@@ -680,6 +714,10 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">panelView</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">scrollToTopArea</string>
 								<string key="candidateClassName">UIView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -987,6 +1025,7 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
+							<string>shareVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -994,6 +1033,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1012,6 +1052,7 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
+							<string>shareVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -1033,6 +1074,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">seekPlaybackProgress:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">shareVideo:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -1063,6 +1108,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>shareButton</string>
 							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
@@ -1074,6 +1120,7 @@
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
 							<string>UIView</string>
+							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UIButton</string>
 						</object>
@@ -1088,6 +1135,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>shareButton</string>
 							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
@@ -1116,6 +1164,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">ribbonView</string>
 								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">shareButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">topLevelContainerView</string>

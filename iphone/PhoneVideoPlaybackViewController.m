@@ -1551,7 +1551,7 @@
 
 - (IBAction)addVideoToFavorite:(id)sender {
 	NMVideo * vdo = playbackModelController.currentVideo;
-	[nowboxTaskController issueShare:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+    [nowboxTaskController issueMakeFavorite:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {

@@ -73,6 +73,8 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserTwitterType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"trending"] ) {
 		[pDict setObject:[NSNumber numberWithInt:NMChannelTrendingType] forKey:@"type"];
+	} else if ( [chnType isEqualToString:@"recommended"] ) {
+		[pDict setObject:[NSNumber numberWithInt:NMChannelRecommendedType] forKey:@"type"];
 	} else {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUnknownType] forKey:@"type"];
 	}
@@ -488,7 +490,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 		case NMCommandGetChannelWithID:
 			return NMDidFailGetChannelWithIDNotification;
 		case NMCommandGetFeaturedChannelsForCategories:
-			return NMDidFailGetFeaturedCategoriesNotification;
+			return NMDidFailGetFeaturedChannelsForCategories;
 		case NMCommandCompareSubscribedChannels:
 			return NMDidFailCompareSubscribedChannelsNotification;
 		default:

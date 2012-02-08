@@ -57,6 +57,7 @@
 	NMAVPlayerItem * targetItem = vid.nm_player_item;
 	if ( targetItem == nil ) {
 		targetItem = [vid createPlayerItem];
+		if ( targetItem == nil ) return;
 	}
 	if ( [self canInsertItem:targetItem afterItem:anItem] ) {
 		// insert after anItem
@@ -64,7 +65,9 @@
 		[playbackDelegate player:self observePlayerItem:targetItem];
 		[self insertItem:targetItem afterItem:anItem];
 		[self removeItem:anItem];
-		NSLog(@"\tinserted");
+	} else {
+		[playbackDelegate player:self stopObservingPlayerItem:anItem];
+		[self removeItem:anItem];
 	}
 }
 
@@ -254,11 +257,11 @@
 				[self play];
 				// insert other videos
 				otherVideo = [playbackDelegate nextVideoForPlayer:self];
-				if ( otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+				if ( otherVideo && otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 					[self insertVideoToEndOfQueue:otherVideo];
 					
 					otherVideo = [playbackDelegate nextNextVideoForPlayer:self];
-					if ( otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+					if ( otherVideo && otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 						[self insertVideoToEndOfQueue:otherVideo];
 					}
 				}
@@ -281,7 +284,7 @@
 				[self insertVideoToEndOfQueue:vid];
 				
 				otherVideo = [playbackDelegate nextNextVideoForPlayer:self];
-				if ( otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+				if ( otherVideo && otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 					[self insertVideoToEndOfQueue:otherVideo];
 				}
 			}
@@ -298,10 +301,11 @@
 //					[self advanceToVideo:vid];
 					// check if other videos make sense of not.
 					thePlayerItem = [queuedItems objectAtIndex:1];
-					if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
+					otherVideo = [playbackDelegate nextVideoForPlayer:self];
+					if ( otherVideo && ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
 //						[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
 //						[self removeItem:thePlayerItem];
-						[self insertVideo:[playbackDelegate nextVideoForPlayer:self] afterItem:thePlayerItem];
+						[self insertVideo:otherVideo afterItem:thePlayerItem];
 					}
 				} else {
 

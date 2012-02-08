@@ -155,7 +155,7 @@
 							<object class="IBUILabel" id="887890948">
 								<reference key="NSNextResponder" ref="126145415"/>
 								<int key="NSvFlags">290</int>
-								<string key="NSFrame">{{70, 44}, {164, 34}}</string>
+								<string key="NSFrame">{{70, 44}, {126, 34}}</string>
 								<reference key="NSSuperview" ref="126145415"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="720460834"/>
@@ -173,7 +173,6 @@
 								<int key="IBUIBaselineAdjustment">1</int>
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
-								<int key="IBUINumberOfLines">0</int>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
 									<string key="name">HelveticaNeue-Medium</string>
 									<string key="family">Helvetica Neue</string>
@@ -989,6 +988,7 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
+							<string>shareVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -996,6 +996,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1014,6 +1015,7 @@
 							<string>addVideoToQueue:</string>
 							<string>playStopVideo:</string>
 							<string>seekPlaybackProgress:</string>
+							<string>shareVideo:</string>
 							<string>toggleChannelPanel:</string>
 							<string>toggleChannelPanelFullScreen:</string>
 							<string>touchDownProgressBar:</string>
@@ -1035,6 +1037,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">seekPlaybackProgress:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">shareVideo:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -1065,6 +1071,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>shareButton</string>
 							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
@@ -1076,6 +1083,7 @@
 							<string>NMControlsView</string>
 							<string>NMMovieDetailView</string>
 							<string>UIView</string>
+							<string>UIButton</string>
 							<string>UIView</string>
 							<string>UIButton</string>
 						</object>
@@ -1090,6 +1098,7 @@
 							<string>loadedControlView</string>
 							<string>loadedMovieDetailView</string>
 							<string>ribbonView</string>
+							<string>shareButton</string>
 							<string>topLevelContainerView</string>
 							<string>watchLaterButton</string>
 						</object>
@@ -1118,6 +1127,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">ribbonView</string>
 								<string key="candidateClassName">UIView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">shareButton</string>
+								<string key="candidateClassName">UIButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">topLevelContainerView</string>
