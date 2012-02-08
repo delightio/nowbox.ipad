@@ -73,13 +73,13 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	NSString * theID = [_profileDictionary objectForKey:@"nm_user_id"];
 	BOOL newState;
 	NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithID:theID isNew:&newState];
-	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	if ( newState ) theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 	theProfile.nm_error = (NSNumber *)kCFBooleanFalse;
 	if ( profileOwnsByMe ) theProfile.nm_me = (NSNumber *)kCFBooleanTrue;
 	[theProfile setValuesForKeysWithDictionary:_profileDictionary];
 	self.profile = theProfile;
 	
-	// check if we need to create the channel object. Only need to do so if we are grabbing the owner's profile
+	// check if we need to create the channel object. Automatically subscribe to the profile if we are grabbing the owner's profile
 	if ( newState && profileOwnsByMe ) {
 		[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 		theProfile.nm_id = [NSNumber numberWithInteger:[ctrl maxPersonProfileID] + 1];

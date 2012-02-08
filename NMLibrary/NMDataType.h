@@ -51,6 +51,7 @@ typedef enum {
 	NMCommandParseFacebookFeed,
 	NMCommandGetFacebookProfile,
 	NMCommandParseTwitterFeed,
+	NMCommandGetTwitterProfile,
 } NMCommand;
 
 typedef enum {
@@ -246,6 +247,14 @@ extern NSString * const NMDidFailGetFacebookProfileNotification;
 extern NSString * const NMWillParseFacebookFeedNotification;
 extern NSString * const NMDidParseFacebookFeedNotification;
 extern NSString * const NMDidFailParseFacebookFeedNotification;
+
+// twitter
+extern NSString * const NMWillParseTwitterFeedNotification;
+extern NSString * const NMDidParseTwitterFeedNotification;
+extern NSString * const NMDidFailParseTwitterFeedNotification;
+extern NSString * const NMWillGetTwitterProfileNotification;
+extern NSString * const NMDidGetTwitterProfileNotification;
+extern NSString * const NMDidFailGetTwitterProfileNotification;
 
 // Entity names
 extern NSString * const NMCategoryEntityName;

@@ -100,7 +100,7 @@
 
 // channels
 - (NMChannel *)insertNewChannelForID:(NSNumber *)chnID;
-- (NMChannel *)insertChannelWithAccount:(ACAccount *)anAccount;
+//- (NMChannel *)insertChannelWithAccount:(ACAccount *)anAccount;
 - (NMChannelDetail *)insertNewChannelDetail;
 - (NMPreviewThumbnail *)insertNewPreviewThumbnail;
 - (NMChannel *)channelForID:(NSNumber *)chnID;
@@ -150,6 +150,7 @@
 
 // Person profile and subscription
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
+- (NMPersonProfile *)insertNewPersonProfileWithAccountIdentifier:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
 - (NSArray *)allSubscriptions;

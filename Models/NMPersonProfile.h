@@ -13,6 +13,7 @@
 
 @interface NMPersonProfile : NSManagedObject
 
+@property (nonatomic, retain) NSString * nm_account_identifier; // store the "identifier" attribute in ACAccount
 @property (nonatomic, retain) NSString * nm_description;
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_id;

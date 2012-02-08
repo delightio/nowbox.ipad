@@ -62,6 +62,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize socialChannelParsingTimer, videoImportTimer;
 @synthesize unpopulatedChannels;
 @synthesize syncInProgress, appFirstLaunch;
+@synthesize accountStore = _accountStore;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
 	if ( sharedTaskQueueController_ == nil ) {
@@ -95,7 +96,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
 	// do the same thing for twitter as well
-	//[nc addObserver:self selector:@selector(handleDidParseSocialChannelNotification:) name:NMDidParseTwitterFeedNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
 
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
@@ -145,6 +146,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
+	[_accountStore release];
 	[super dealloc];
 }
 
@@ -176,6 +178,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			[self issueImportVideo:[videos objectAtIndex:0]];
 		}
 	}
+}
+
+- (ACAccountStore *)accountStore {
+	if ( _accountStore == nil ) {
+		_accountStore = [[ACAccountStore alloc] init];
+	}
+	return _accountStore;
 }
 
 #pragma mark Session management
@@ -670,7 +679,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	switch ([chnObj.type integerValue]) {
 		case NMChannelUserTwitterType:
 		{
-			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:nil];
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:[self.accountStore accountWithIdentifier:chnObj.subscription.personProfile.nm_account_identifier]];
 			[networkController addNewConnectionForTask:task];
 			[task release];
 			break;
@@ -693,6 +702,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj {
+	// only support Twitter for now
+	NMGetTwitterProfileTask * task = [[NMGetTwitterProfileTask alloc] initWithProfile:aProfile account:acObj];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile {
 	if ( aProfile.subscription ) return;
 	NMChannel * chn = [dataController subscribeUserChannelWithPersonProfile:aProfile];
@@ -708,7 +724,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	if ( c > 5 && socialChannelParsingTimer == nil ) {
 		// schedule a timer task to process other channels
-		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
+		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
 	} else if ( socialChannelParsingTimer ) {
 		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
 	}

@@ -1455,16 +1455,16 @@
 				A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */,
 				A9B9FBF51473D97200953E40 /* NMUserSynchronizeTask.h */,
 				A9B9FBF61473D97200953E40 /* NMUserSynchronizeTask.m */,
-				A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */,
-				A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */,
 				A94D65CD14CD51700033F661 /* NMParseTwitterFeedTask.h */,
 				A94D65CE14CD51700033F661 /* NMParseTwitterFeedTask.m */,
+				A9303A4414E0B09700B990C0 /* NMGetTwitterProfileTask.h */,
+				A9303A4514E0B09700B990C0 /* NMGetTwitterProfileTask.m */,
+				A9128C7214C3D98B00A3861D /* NMParseFacebookFeedTask.h */,
+				A9128C7314C3D98B00A3861D /* NMParseFacebookFeedTask.m */,
 				A91A50FC14D1A46B00F41FE4 /* NMGetFacebookProfileTask.h */,
 				A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */,
 				A91A510014D1A52900F41FE4 /* NMFacebookTask.h */,
 				A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */,
-				A9303A4414E0B09700B990C0 /* NMGetTwitterProfileTask.h */,
-				A9303A4514E0B09700B990C0 /* NMGetTwitterProfileTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";

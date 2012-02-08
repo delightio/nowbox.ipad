@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FBConnect.h"
+#import <Accounts/Accounts.h>
 
 extern NSString * const NM_FACEBOOK_ACCESS_TOKEN_KEY;
 extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
@@ -21,5 +22,7 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 + (NMAccountManager *)sharedAccountManager;
 
 - (void)authorizeFacebook;
+
+- (void)subscribeAccount:(ACAccount *)acObj;
 
 @end

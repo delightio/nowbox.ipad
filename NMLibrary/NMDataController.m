@@ -384,31 +384,31 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return channelObj;
 }
 
-- (NMChannel *)insertChannelWithAccount:(ACAccount *)anAccount {
-	// check if the channel object exists
-	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:channelEntityDescription];
-	[request setPredicate:[usernamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:anAccount.username forKey:@"USERNAME"]]];
-	[request setReturnsObjectsAsFaults:NO];
-	
-	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	
-	NMChannel * chnObj = nil;
-	if ( result && [result count] ) {
-		chnObj = [result objectAtIndex:0];
-	}
-	if ( chnObj == nil ) {
-		// create the channel object
-		chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
-		chnObj.title = anAccount.username;
-		// it's all Twitter account for iOS 5
-		chnObj.type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
-		
-		[managedObjectContext save:nil];
-	}
-	[request release];
-	return chnObj;
-}
+//- (NMChannel *)insertChannelWithAccount:(ACAccount *)anAccount {
+//	// check if the channel object exists
+//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+//	[request setEntity:channelEntityDescription];
+//	[request setPredicate:[usernamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:anAccount.username forKey:@"USERNAME"]]];
+//	[request setReturnsObjectsAsFaults:NO];
+//	
+//	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+//	
+//	NMChannel * chnObj = nil;
+//	if ( result && [result count] ) {
+//		chnObj = [result objectAtIndex:0];
+//	}
+//	if ( chnObj == nil ) {
+//		// create the channel object
+//		chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
+//		chnObj.title = anAccount.username;
+//		// it's all Twitter account for iOS 5
+//		chnObj.type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+//		
+//		[managedObjectContext save:nil];
+//	}
+//	[request release];
+//	return chnObj;
+//}
 
 - (NSArray *)subscribedChannels {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
@@ -1152,6 +1152,25 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	} else {
 		profileObj = [NSEntityDescription insertNewObjectForEntityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext];
 		profileObj.nm_user_id = strID;
+		*isNewObj = YES;
+	}
+	[request release];
+	return profileObj;
+}
+
+- (NMPersonProfile *)insertNewPersonProfileWithAccountIdentifier:(NSString *)strID isNew:(BOOL *)isNewObj {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_account_identifier like %@", strID]];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	NMPersonProfile * profileObj = nil;
+	if ( [result count] ) {
+		profileObj = [result objectAtIndex:0];
+		*isNewObj = NO;
+	} else {
+		profileObj = [NSEntityDescription insertNewObjectForEntityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext];
+		profileObj.nm_account_identifier = strID;
 		*isNewObj = YES;
 	}
 	[request release];

@@ -7,6 +7,7 @@
 //
 
 #import "NMDataType.h"
+#import <Accounts/Accounts.h>
 
 @class NMNetworkController;
 @class NMDataController;
@@ -56,6 +57,7 @@
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 @property (nonatomic) BOOL syncInProgress;
 @property (nonatomic) BOOL appFirstLaunch;
+@property (nonatomic, readonly) ACAccountStore * accountStore;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 
@@ -133,6 +135,7 @@
 // Facebook or Twitter (social)
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
 - (void)issueGetMyFacebookProfile;
+- (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
 - (void)scheduleSyncSocialChannels;
 - (void)scheduleImportVideos;

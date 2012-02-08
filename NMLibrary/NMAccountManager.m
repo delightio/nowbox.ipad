@@ -8,6 +8,8 @@
 
 #import "NMAccountManager.h"
 #import "NMTaskQueueController.h"
+#import "NMDataController.h"
+#import "NMPersonProfile.h"
 
 static NMAccountManager * _sharedAccountManager = nil;
 
@@ -33,6 +35,26 @@ static NMAccountManager * _sharedAccountManager = nil;
 	[_facebook release];
 	[_userDefaults release];
 	[super dealloc];
+}
+
+#pragma mark Twitter
+
+- (void)subscribeAccount:(ACAccount *)acObj {
+	NMDataController * ctrl = [NMTaskQueueController sharedTaskQueueController].dataController;
+	// create the person profile from the account object
+	BOOL isNew;
+	NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithAccountIdentifier:acObj.identifier isNew:&isNew];
+	theProfile.nm_account_identifier = acObj.identifier;
+	theProfile.nm_me = (NSNumber *)kCFBooleanTrue;
+	theProfile.username = acObj.username;
+	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+	theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+	// listen to profile notification
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	[[NSNotificationCenter defaultCenter] addObserver:tqc selector:@selector(handleDidGetPersonProfile:) name:NMDidGetTwitterProfileNotification object:nil];
+	
+	// issue call to get user info
+	[tqc issueGetProfile:theProfile account:acObj];
 }
 
 #pragma mark Facebook

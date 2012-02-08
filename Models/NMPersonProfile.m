@@ -13,6 +13,7 @@
 
 @implementation NMPersonProfile
 
+@dynamic nm_account_identifier;
 @dynamic nm_description;
 @dynamic nm_error;
 @dynamic nm_id;

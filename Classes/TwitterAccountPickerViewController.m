@@ -151,9 +151,10 @@
      [detailViewController release];
      */
 	ACAccount * acObj = [_twitterAccountArray objectAtIndex:indexPath.row];
-	NMTaskQueueController * tqCtrl = [NMTaskQueueController sharedTaskQueueController];
-	NMChannel * chnObj = [tqCtrl.dataController insertChannelWithAccount:acObj];
-	[tqCtrl issueProcessFeedForChannel:chnObj];
+	[[NMAccountManager sharedAccountManager] subscribeAccount:acObj];
+//	NMTaskQueueController * tqCtrl = [NMTaskQueueController sharedTaskQueueController];
+//	NMChannel * chnObj = [tqCtrl.dataController insertChannelWithAccount:acObj];
+//	[tqCtrl issueProcessFeedForChannel:chnObj];
 	//TODO: in production version, we should do the fetch after the user dismiss this view.
 }
 
