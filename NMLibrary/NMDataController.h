@@ -25,17 +25,6 @@
 	NSOperationQueue * operationQueue;
 	
 	NSManagedObjectContext * managedObjectContext;
-	NSPredicate * subscribedChannelsPredicate;
-	NSPredicate * objectForIDPredicateTemplate;
-	NSPredicate * videoInChannelPredicateTemplate;
-	NSPredicate * channelPredicateTemplate;
-	NSPredicate * channelAndSessionPredicateTemplate;
-	NSPredicate * cachedChannelsPredicate;
-	NSPredicate * concreteVideoForIDPredicateTemplate;
-	NSPredicate * concreteVideoForExternalIDPredicateTemplate;
-	NSPredicate * usernamePredicateTemplate;
-	NSPredicate * usernameOrIDPredicateTemplate;
-	
 	// entity object
 	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription;
 	
@@ -65,8 +54,6 @@
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * authorEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
-@property (nonatomic, retain) NSPredicate * pendingImportVideoPredicate;
-@property (nonatomic, retain) NSPredicate * pendingImportPredicate;
 @property (nonatomic, retain) NMChannel * userTwitterStreamChannel;
 @property (nonatomic, retain) NMChannel * userFacebookStreamChannel;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
@@ -78,6 +65,18 @@
 @property (nonatomic, retain) NSArray * lastSessionVideoIDs;
 @property (nonatomic, retain) NMChannel * myQueueChannel;
 @property (nonatomic, retain) NMChannel * favoriteVideoChannel;
+@property (nonatomic, retain) NSPredicate * pendingImportVideoPredicate;
+@property (nonatomic, retain) NSPredicate * pendingImportPredicate;
+@property (nonatomic, retain) NSPredicate * subscribedChannelsPredicate;
+@property (nonatomic, retain) NSPredicate * objectForIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * videoInChannelPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * channelPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * channelAndSessionPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * cachedChannelsPredicate;
+@property (nonatomic, retain) NSPredicate * concreteVideoForIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * concreteVideoForExternalIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * usernamePredicateTemplate;
+@property (nonatomic, retain) NSPredicate * usernameOrIDPredicateTemplate;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 

@@ -45,6 +45,17 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 @synthesize myQueueChannel, favoriteVideoChannel;
 @synthesize userFacebookStreamChannel, userTwitterStreamChannel;
 @synthesize lastSessionVideoIDs;
+
+@synthesize subscribedChannelsPredicate = _subscribedChannelsPredicate;
+@synthesize objectForIDPredicateTemplate = _objectForIDPredicateTemplate;
+@synthesize videoInChannelPredicateTemplate = _videoInChannelPredicateTemplate;
+@synthesize channelPredicateTemplate = _channelPredicateTemplate;
+@synthesize channelAndSessionPredicateTemplate = _channelAndSessionPredicateTemplate;
+@synthesize cachedChannelsPredicate = _cachedChannelsPredicate;
+@synthesize concreteVideoForIDPredicateTemplate = _concreteVideoForIDPredicateTemplate;
+@synthesize concreteVideoForExternalIDPredicateTemplate = _concreteVideoForExternalIDPredicateTemplate;
+@synthesize usernamePredicateTemplate = _usernamePredicateTemplate;
+@synthesize usernameOrIDPredicateTemplate = _usernameOrIDPredicateTemplate;
 @synthesize pendingImportVideoPredicate = _pendingImportVideoPredicate;
 @synthesize pendingImportPredicate = _pendingImportPredicate;
 
@@ -53,17 +64,6 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	
 	operationQueue = [[NSOperationQueue alloc] init];
 	notificationCenter = [NSNotificationCenter defaultCenter];
-	
-	subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == $HIDDEN AND subscription == nil"] retain];
-	cachedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed <= 0"] retain];
-	objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
-	videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"video == $VIDEO AND channel == $CHANNEL"] retain];
-	channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
-	channelAndSessionPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND nm_session_id == $SESSION_ID"] retain];
-	concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.nm_id = $OBJECT_ID OR video.external_id like[cd] $EXTERNAL_ID"] retain];
-	concreteVideoForExternalIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.external_id like[cd] $EXTERNAL_ID"] retain];
-	usernamePredicateTemplate = [[NSPredicate predicateWithFormat:@"username like[cd] $USERNAME"] retain];
-	usernameOrIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID OR username like[cd] $USERNAME"] retain];
 
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
@@ -74,20 +74,21 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (void)dealloc {
 	[myQueueChannel release], [favoriteVideoChannel release];
 	[userFacebookStreamChannel release], [userTwitterStreamChannel release];
+	[_subscribedChannelsPredicate release];
+	[_objectForIDPredicateTemplate release];
+	[_videoInChannelPredicateTemplate release];
+	[_channelPredicateTemplate release];
+	[_channelAndSessionPredicateTemplate release];
+	[_cachedChannelsPredicate release];
+	[_concreteVideoForIDPredicateTemplate release];
+	[_concreteVideoForExternalIDPredicateTemplate release];
+	[_usernamePredicateTemplate release];
+	[_usernameOrIDPredicateTemplate release];
 	[_pendingImportVideoPredicate release];
 	[_pendingImportPredicate release];
 	[lastSessionVideoIDs release];
 	[categoryCacheDictionary release];
 	[channelCacheDictionary release];
-	[subscribedChannelsPredicate release];
-	[cachedChannelsPredicate release];
-	[objectForIDPredicateTemplate release];
-	[videoInChannelPredicateTemplate release];
-	[channelPredicateTemplate release];
-	[channelAndSessionPredicateTemplate release];
-	[concreteVideoForIDPredicateTemplate release];
-	[concreteVideoForExternalIDPredicateTemplate release];
-	[usernamePredicateTemplate release];
 	[managedObjectContext release];
 	[operationQueue release];
 	[internalSearchCategory release];
@@ -117,6 +118,65 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 }
 
 #pragma mark Predicates
+- (NSPredicate *)subscribedChannelsPredicate {
+	if ( _subscribedChannelsPredicate == nil ) 
+		_subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == $HIDDEN AND subscription == nil"] retain];
+	return _subscribedChannelsPredicate;
+}
+
+- (NSPredicate *)objectForIDPredicateTemplate {
+	if ( _objectForIDPredicateTemplate == nil )
+		_objectForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID"] retain];
+	return _objectForIDPredicateTemplate;
+}
+
+- (NSPredicate *)videoInChannelPredicateTemplate {
+	if ( _videoInChannelPredicateTemplate == nil )
+		_videoInChannelPredicateTemplate = [[NSPredicate predicateWithFormat:@"video == $VIDEO AND channel == $CHANNEL"] retain];
+	return _videoInChannelPredicateTemplate;
+}
+
+- (NSPredicate *)channelPredicateTemplate {
+	if ( _channelPredicateTemplate == nil )
+		_channelPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
+	return _channelPredicateTemplate;
+}
+
+- (NSPredicate *)channelAndSessionPredicateTemplate {
+	if ( _channelAndSessionPredicateTemplate == nil )
+		_channelAndSessionPredicateTemplate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND nm_session_id == $SESSION_ID"] retain];
+	return _channelAndSessionPredicateTemplate;
+}
+
+- (NSPredicate *)cachedChannelsPredicate {
+	if ( _cachedChannelsPredicate == nil )
+		_cachedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed <= 0"] retain];
+	return _cachedChannelsPredicate;
+}
+
+- (NSPredicate *)concreteVideoForIDPredicateTemplate {
+	if ( _concreteVideoForIDPredicateTemplate == nil )
+		_concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.nm_id = $OBJECT_ID OR video.external_id like[cd] $EXTERNAL_ID"] retain];
+	return _concreteVideoForIDPredicateTemplate;
+}
+
+- (NSPredicate *)concreteVideoForExternalIDPredicateTemplate {
+	if ( _concreteVideoForExternalIDPredicateTemplate == nil ) 
+		_concreteVideoForExternalIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.external_id like[cd] $EXTERNAL_ID"] retain];
+	return _concreteVideoForExternalIDPredicateTemplate;
+}
+
+- (NSPredicate *)usernamePredicateTemplate {
+	if ( _usernamePredicateTemplate == nil )
+		_usernamePredicateTemplate = [[NSPredicate predicateWithFormat:@"username like[cd] $USERNAME"] retain];
+	return _usernamePredicateTemplate;
+}
+
+- (NSPredicate *)usernameOrIDPredicateTemplate {
+	if ( _usernameOrIDPredicateTemplate == nil )
+		_usernameOrIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id == $OBJECT_ID OR username like[cd] $USERNAME"] retain];
+	return _usernameOrIDPredicateTemplate;
+}
 
 - (NSPredicate *)pendingImportVideoPredicate {
 	if ( _pendingImportVideoPredicate == nil ) {
@@ -302,7 +362,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMCategoryEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:catID forKey:@"OBJECT_ID"]]];
+	[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:catID forKey:@"OBJECT_ID"]]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
@@ -426,7 +486,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"HIDDEN"]]];
+	[request setPredicate:[self.subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"HIDDEN"]]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	return [result count] ? result : nil;
@@ -441,7 +501,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chnID forKey:@"OBJECT_ID"]]];
+	[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chnID forKey:@"OBJECT_ID"]]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
@@ -547,7 +607,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	if ( myQueueChannel == nil ) {
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_WATCH_LATER_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
+		[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_WATCH_LATER_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 		if ( [result count] ) {
@@ -562,7 +622,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	if ( favoriteVideoChannel == nil ) {
 		NSFetchRequest * request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_FAVORITES_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
+		[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NM_USER_FAVORITES_CHANNEL_ID] forKey:@"OBJECT_ID"]]];
 		[request setReturnsObjectsAsFaults:NO];
 		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 		if ( [result count] ) {
@@ -598,7 +658,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"HIDDEN"]]];
+	[request setPredicate:[self.subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"HIDDEN"]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
@@ -688,7 +748,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	// don't need predicate template for now. There's not much performance concern in deleting channel
-	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:chnID] forKey:@"OBJECT_ID"]]];
+	[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:chnID] forKey:@"OBJECT_ID"]]];
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NSNumber * yesNum = [NSNumber numberWithBool:YES];
@@ -749,7 +809,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:cachedChannelsPredicate];
+	[request setPredicate:self.cachedChannelsPredicate];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", @"previewThumbnails", @"detail", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
@@ -762,7 +822,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	// remove categories from subscribed channels. this allows channel management view to always show the progress indicator when loading channels.
 	request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"HIDDEN"]]];
+	[request setPredicate:[self.subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"HIDDEN"]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", nil]];
 	result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
@@ -827,7 +887,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (NMVideo *)relateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[videoInChannelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:vid, @"VIDEO", chnObj, @"CHANNEL", nil]]];
+	[request setPredicate:[self.videoInChannelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:vid, @"VIDEO", chnObj, @"CHANNEL", nil]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideo * newVid = nil;
@@ -925,7 +985,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	[request setEntity:videoEntityDescription];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
+	[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
@@ -1000,7 +1060,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	// this method is used when remove a video from favorite or watch later channel. videos are copied. Other NMVideo MOs with the same nm_id should be updated as well
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
+	[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:vid forKey:@"OBJECT_ID"]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
@@ -1019,10 +1079,10 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSPredicate * thePredicate = nil;
 	if ( flag ) {
 		// take session into account
-		thePredicate = [channelAndSessionPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:chn, @"CHANNEL", NM_SESSION_ID, @"SESSION_ID", nil]];
+		thePredicate = [self.channelAndSessionPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:chn, @"CHANNEL", NM_SESSION_ID, @"SESSION_ID", nil]];
 	} else {
 		// ignore session
-		thePredicate = [channelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chn forKey:@"CHANNEL"]];
+		thePredicate = [self.channelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chn forKey:@"CHANNEL"]];
 	}
 	[request setPredicate:thePredicate];
 	
@@ -1053,7 +1113,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	// check whether the video exists in the given channel
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[concreteVideoForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:vid, @"OBJECT_ID", extID, @"EXTERNAL_ID", nil]]];
+	[request setPredicate:[self.concreteVideoForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:vid, @"OBJECT_ID", extID, @"EXTERNAL_ID", nil]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	[request setReturnsObjectsAsFaults:NO];
 	
@@ -1086,7 +1146,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
-	[request setPredicate:[concreteVideoForExternalIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:anExtID forKey:@"EXTERNAL_ID"]]];
+	[request setPredicate:[self.concreteVideoForExternalIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:anExtID forKey:@"EXTERNAL_ID"]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
@@ -1117,7 +1177,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 #pragma mark Author
 - (NMAuthor *)authorForID:(NSNumber *)authID orName:(NSString *)aName {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setPredicate:[objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:authID, @"OBJECT_ID", aName, @"USERNAME", nil]]];
+	[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:authID, @"OBJECT_ID", aName, @"USERNAME", nil]]];
 	[request setEntity:authorEntityDescription];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMAuthor * theAuthor = nil;
@@ -1134,7 +1194,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 - (NMAuthor *)insertNewAuthorWithUsername:(NSString *)aName isNew:(BOOL *)isNewObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setPredicate:[usernamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:aName forKey:@"USERNAME"]]];
+	[request setPredicate:[self.usernamePredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:aName forKey:@"USERNAME"]]];
 	[request setEntity:authorEntityDescription];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMAuthor * theAuthor = nil;
