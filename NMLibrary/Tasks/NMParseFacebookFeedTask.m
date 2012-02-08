@@ -110,16 +110,14 @@ static NSArray * youTubeRegexArray = nil;
 			extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[theDict objectForKey:@"link"]];
 			if ( extID ) {
 				// we just need the external ID
-				NSLog(@"video name: %@ %@", [theDict objectForKey:@"name"], extID);
 				[parsedObjects addObject:extID];
 				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
 				if ( theTime > maxUnixTime ) maxUnixTime = theTime;
-			} else {
+			} /*else {
 				NSLog(@"not added: %@ %@", [theDict objectForKey:@"name"], [theDict objectForKey:@"link"]);
-			}
+			}*/
 		}
 		fromDict = [theDict objectForKey:@"from"];
-		NSLog(@"item from: %@", [fromDict objectForKey:@"name"]);
 		if ( fromDict ) [_profileArray addObject:fromDict];
 		else [_profileArray addObject:[NSNull null]];
 	}
@@ -191,9 +189,12 @@ static NSArray * youTubeRegexArray = nil;
 			}
 		}
 	}];
-	// update the last checked time
-	_channel.subscription.nm_last_crawled = [NSDate date];
-	if ( maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) _channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
+	// when first fire Facebook feed parsing task, feedDirectURLString is nil. This means we are getting the first page of a person's news feed. The newest item should always appear in the first page. Therefore, we only need to save the parsing time data under this condition.
+	if ( _feedDirectURLString && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
+		// update the last checked time
+		_channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
+		_channel.subscription.nm_last_crawled = [NSDate date];
+	}
 	[objectCache release];
 	return YES;
 }
