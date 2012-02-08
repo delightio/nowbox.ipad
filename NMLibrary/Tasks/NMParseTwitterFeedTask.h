@@ -18,6 +18,8 @@
 @property (nonatomic, retain) ACAccount * account;
 @property (nonatomic) NSInteger page;
 @property (nonatomic, retain) NSString * sinceID;
+@property (nonatomic, retain) NSMutableArray * profileArray;
+@property (nonatomic, retain) NSString * newestTwitIDString;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj;
 

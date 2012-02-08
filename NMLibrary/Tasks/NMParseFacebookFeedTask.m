@@ -131,7 +131,7 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	if ( [parsedObjects count] == 0 ) return NO;
+	if ( parsedObjects == nil ) return NO;
 	
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
 	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
