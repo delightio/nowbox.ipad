@@ -32,11 +32,13 @@
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDataSource> dataSource;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDelegate> gridDelegate;
 
-- (void)reloadData;
 - (PagingGridViewCell *)dequeueReusableCell;
-- (CGRect)frameForIndex:(NSUInteger)index;
-- (NSInteger)repositioningIndexForFrame:(CGRect)frame;
-- (void)repositionView:(UIView *)view fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated;
+- (void)reloadData;
+- (void)beginUpdates;
+- (void)endUpdates;
+- (void)insertItemAtIndex:(NSUInteger)index;
+- (void)deleteItemAtIndex:(NSUInteger)index;
+- (void)updateItemAtIndex:(NSUInteger)index;
 
 @end
 
@@ -51,7 +53,4 @@
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView;
 - (void)gridView:(PagingGridView *)gridView didMoveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 - (void)gridViewDidEndRearranging:(PagingGridView *)gridView;
-- (void)gridViewDidScroll:(PagingGridView *)gridView;
-- (void)gridViewWillBeginDragging:(PagingGridView *)gridView;
-- (void)gridViewDidEndScrollingAnimation:(PagingGridView *)gridView;
 @end
