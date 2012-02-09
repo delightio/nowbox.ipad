@@ -13,7 +13,7 @@
 
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
-    return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext thumbnailViewDelegate:self.thumbnailViewDelegate] autorelease];
+    return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext gridViewCellDelegate:self.gridViewCellDelegate] autorelease];
 }
 
 #pragma mark - PagingGridViewDataSource
@@ -23,13 +23,13 @@
     return 4;
 }
 
-- (UIView *)gridView:(PagingGridView *)aGridView viewForIndex:(NSUInteger)index
+- (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
-    ThumbnailView *view = (ThumbnailView *) [aGridView dequeueReusableSubview];
+    PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
     
     if (!view) {
-        view = [[[ThumbnailView alloc] init] autorelease];
-        view.delegate = self.thumbnailViewDelegate;
+        view = [[[PagingGridViewCell alloc] init] autorelease];
+        view.delegate = self.gridViewCellDelegate;
     }
         
     switch (index) {

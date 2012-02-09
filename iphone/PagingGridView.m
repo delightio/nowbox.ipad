@@ -7,7 +7,6 @@
 //
 
 #import "PagingGridView.h"
-#import "ThumbnailView.h"
 
 @implementation PagingGridView
 
@@ -186,10 +185,10 @@
     
     // Can we remove any views that are offscreen?
     NSMutableSet *viewsToRemove = [NSMutableSet set];
-    for (UIView *view in visibleViews) {
+    for (PagingGridViewCell *view in visibleViews) {
         // If a subview is being dragged, keep it's position relative to the superview
-        if ([view isKindOfClass:[ThumbnailView class]] && [((ThumbnailView *)view) isDraggable]) {
-            CGPoint lastDragLocation = ((ThumbnailView *)view).lastDragLocation;
+        if ([view isDraggable]) {
+            CGPoint lastDragLocation = ((PagingGridViewCell *)view).lastDragLocation;
             view.center = CGPointMake(lastDragLocation.x + self.contentOffset.x, lastDragLocation.y + self.contentOffset.y);
             [self bringSubviewToFront:view];
         } else if (!CGRectIntersectsRect(view.frame, visibleRect)) {
@@ -210,7 +209,7 @@
     for (NSUInteger i = firstIndex; i < lastIndex && i < numberOfItems; i++) {
         CGRect viewFrame = [self frameForIndex:i];
         if (CGRectIntersectsRect(viewFrame, visibleRect) && ![visibleIndexes containsIndex:i]) {
-            UIView *view = [dataSource gridView:self viewForIndex:i];
+            PagingGridViewCell *view = [dataSource gridView:self cellForIndex:i];
             view.frame = viewFrame;
             view.tag = i;
             [visibleViews addObject:view];
@@ -220,7 +219,7 @@
     }
 }
 
-- (UIView *)dequeueReusableSubview
+- (UIView *)dequeueReusableCell
 {
     UIView *view = [[[recycledViews anyObject] retain] autorelease];
     if (view) {

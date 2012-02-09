@@ -11,7 +11,7 @@
 #import "CustomPageControl.h"
 #import "GridDataSource.h"
 
-@interface GridViewController : UIViewController <PagingGridViewDelegate, CustomPageControlDelegate, ThumbnailViewDelegate> {
+@interface GridViewController : UIViewController <PagingGridViewDelegate, CustomPageControlDelegate, PagingGridViewCellDelegate> {
     BOOL scrollingToPage;
     NSTimer *rearrangePageSwitchTimer;
 }

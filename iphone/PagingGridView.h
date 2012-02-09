@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PagingGridViewCell.h"
 
 @protocol PagingGridViewDataSource;
 @protocol PagingGridViewDelegate;
@@ -30,7 +31,7 @@
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDelegate> gridDelegate;
 
 - (void)reloadData;
-- (UIView *)dequeueReusableSubview;
+- (UIView *)dequeueReusableCell;
 - (CGRect)frameForIndex:(NSUInteger)index;
 - (NSInteger)repositioningIndexForFrame:(CGRect)frame;
 - (void)repositionView:(UIView *)view fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated;
@@ -39,7 +40,7 @@
 
 @protocol PagingGridViewDataSource <NSObject>
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)gridView;
-- (UIView *)gridView:(PagingGridView *)gridView viewForIndex:(NSUInteger)index;
+- (PagingGridViewCell *)gridView:(PagingGridView *)gridView cellForIndex:(NSUInteger)index;
 @end
 
 @protocol PagingGridViewDelegate <NSObject>

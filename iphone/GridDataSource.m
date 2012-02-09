@@ -13,16 +13,16 @@
 @synthesize gridView;
 @synthesize updatesEnabled;
 @synthesize managedObjectContext;
-@synthesize thumbnailViewDelegate;
+@synthesize gridViewCellDelegate;
 
-- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext thumbnailViewDelegate:(id<ThumbnailViewDelegate>)aThumbnailViewDelegate
+- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext gridViewCellDelegate:(id<PagingGridViewCellDelegate>)aPagingGridViewCellDelegate
 {
     self = [super init];
     if (self) {
         self.gridView = aGridView;
         self.updatesEnabled = YES;
         self.managedObjectContext = aManagedObjectContext;
-        self.thumbnailViewDelegate = aThumbnailViewDelegate;
+        self.gridViewCellDelegate = aPagingGridViewCellDelegate;
     }
     return self;
 }
@@ -55,7 +55,7 @@
     return 0;
 }
 
-- (UIView *)gridView:(PagingGridView *)aGridView viewForIndex:(NSUInteger)index
+- (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
     // To be overriden by subclasses
     [self doesNotRecognizeSelector:_cmd];

@@ -86,13 +86,13 @@
     return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
 }
 
-- (UIView *)gridView:(PagingGridView *)aGridView viewForIndex:(NSUInteger)index
+- (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
-    ThumbnailView *view = (ThumbnailView *) [aGridView dequeueReusableSubview];
+    PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
     
     if (!view) {
-        view = [[[ThumbnailView alloc] init] autorelease];
-        view.delegate = self.thumbnailViewDelegate;
+        view = [[[PagingGridViewCell alloc] init] autorelease];
+        view.delegate = self.gridViewCellDelegate;
     }
         
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];

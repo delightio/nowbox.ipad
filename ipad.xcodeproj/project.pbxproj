@@ -101,8 +101,8 @@
 		8384CD8214E0903000444755 /* PagingGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD8114E0903000444755 /* PagingGridView.m */; };
 		8384CD8514E0A96D00444755 /* phone_grid_item_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8314E0A96D00444755 /* phone_grid_item_background.png */; };
 		8384CD8614E0A96D00444755 /* phone_grid_item_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8414E0A96D00444755 /* phone_grid_item_background@2x.png */; };
-		8384CD8914E0A9A900444755 /* ThumbnailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD8814E0A9A900444755 /* ThumbnailView.m */; };
-		8384CD8B14E0AC8C00444755 /* ThumbnailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8A14E0AC8C00444755 /* ThumbnailView.xib */; };
+		8384CD8914E0A9A900444755 /* PagingGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD8814E0A9A900444755 /* PagingGridViewCell.m */; };
+		8384CD8B14E0AC8C00444755 /* PagingGridViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8A14E0AC8C00444755 /* PagingGridViewCell.xib */; };
 		8384CD8E14E0B13500444755 /* VerticallyAlignedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */; };
 		8384CD9314E0B78800444755 /* phone_grid_dot_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD8F14E0B78700444755 /* phone_grid_dot_filled.png */; };
 		8384CD9414E0B78800444755 /* phone_grid_dot_filled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD9014E0B78800444755 /* phone_grid_dot_filled@2x.png */; };
@@ -566,9 +566,9 @@
 		8384CD8114E0903000444755 /* PagingGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingGridView.m; sourceTree = "<group>"; };
 		8384CD8314E0A96D00444755 /* phone_grid_item_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_grid_item_background.png; sourceTree = "<group>"; };
 		8384CD8414E0A96D00444755 /* phone_grid_item_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_grid_item_background@2x.png"; sourceTree = "<group>"; };
-		8384CD8714E0A9A900444755 /* ThumbnailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailView.h; sourceTree = "<group>"; };
-		8384CD8814E0A9A900444755 /* ThumbnailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailView.m; sourceTree = "<group>"; };
-		8384CD8A14E0AC8C00444755 /* ThumbnailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThumbnailView.xib; sourceTree = "<group>"; };
+		8384CD8714E0A9A900444755 /* PagingGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingGridViewCell.h; sourceTree = "<group>"; };
+		8384CD8814E0A9A900444755 /* PagingGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingGridViewCell.m; sourceTree = "<group>"; };
+		8384CD8A14E0AC8C00444755 /* PagingGridViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PagingGridViewCell.xib; sourceTree = "<group>"; };
 		8384CD8C14E0B13500444755 /* VerticallyAlignedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerticallyAlignedLabel.h; sourceTree = "<group>"; };
 		8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerticallyAlignedLabel.m; sourceTree = "<group>"; };
 		8384CD8F14E0B78700444755 /* phone_grid_dot_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_grid_dot_filled.png; sourceTree = "<group>"; };
@@ -1039,8 +1039,8 @@
 			children = (
 				8384CD8014E0903000444755 /* PagingGridView.h */,
 				8384CD8114E0903000444755 /* PagingGridView.m */,
-				8384CD8714E0A9A900444755 /* ThumbnailView.h */,
-				8384CD8814E0A9A900444755 /* ThumbnailView.m */,
+				8384CD8714E0A9A900444755 /* PagingGridViewCell.h */,
+				8384CD8814E0A9A900444755 /* PagingGridViewCell.m */,
 				8384CD8C14E0B13500444755 /* VerticallyAlignedLabel.h */,
 				8384CD8D14E0B13500444755 /* VerticallyAlignedLabel.m */,
 				8384CD9714E0B7DB00444755 /* CustomPageControl.h */,
@@ -1132,8 +1132,8 @@
 			isa = PBXGroup;
 			children = (
 				8384CD5E14E081AF00444755 /* GridViewController.xib */,
-				8384CD8A14E0AC8C00444755 /* ThumbnailView.xib */,
 				837A298A14E1B2D300065F32 /* LaunchViewController.xib */,
+				8384CD8A14E0AC8C00444755 /* PagingGridViewCell.xib */,
 				8384CD6714E082DD00444755 /* Prototype */,
 			);
 			name = iPhone;
@@ -2203,7 +2203,7 @@
 				8384CD7F14E089F700444755 /* phone_button_settings@2x.png in Resources */,
 				8384CD8514E0A96D00444755 /* phone_grid_item_background.png in Resources */,
 				8384CD8614E0A96D00444755 /* phone_grid_item_background@2x.png in Resources */,
-				8384CD8B14E0AC8C00444755 /* ThumbnailView.xib in Resources */,
+				8384CD8B14E0AC8C00444755 /* PagingGridViewCell.xib in Resources */,
 				8384CD9314E0B78800444755 /* phone_grid_dot_filled.png in Resources */,
 				8384CD9414E0B78800444755 /* phone_grid_dot_filled@2x.png in Resources */,
 				8384CD9514E0B78800444755 /* phone_grid_dot.png in Resources */,
@@ -2293,7 +2293,7 @@
 				8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */,
 				8384CD5F14E081AF00444755 /* GridViewController.m in Sources */,
 				8384CD8214E0903000444755 /* PagingGridView.m in Sources */,
-				8384CD8914E0A9A900444755 /* ThumbnailView.m in Sources */,
+				8384CD8914E0A9A900444755 /* PagingGridViewCell.m in Sources */,
 				8384CD8E14E0B13500444755 /* VerticallyAlignedLabel.m in Sources */,
 				8384CD9914E0B7DB00444755 /* CustomPageControl.m in Sources */,
 				837A298B14E1B2D300065F32 /* LaunchViewController.m in Sources */,

@@ -49,7 +49,7 @@
     
     pageControl.numberOfPages = gridView.numberOfPages;
     
-    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext thumbnailViewDelegate:self] autorelease];
+    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext gridViewCellDelegate:self] autorelease];
     gridView.dataSource = gridDataSource;
 }
 
@@ -117,30 +117,30 @@
     [gridView setContentOffset:CGPointMake(index * gridView.frame.size.width, 0) animated:YES];
 }
 
-#pragma mark - ThumbnailViewDelegate
+#pragma mark - PagingGridViewCellDelegate
 
-- (void)thumbnailViewDidTap:(ThumbnailView *)thumbnailView
+- (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell
 {
-    NSUInteger index = thumbnailView.tag;
+    NSUInteger index = gridViewCell.tag;
     self.gridDataSource = [gridDataSource nextDataSourceForIndex:index];
     gridView.dataSource = gridDataSource;
     pageControl.numberOfPages = gridView.numberOfPages;
 }
 
-- (void)thumbnailViewDidBeginRearranging:(ThumbnailView *)thumbnailView
+- (void)gridViewCellDidBeginRearranging:(PagingGridViewCell *)gridViewCell
 {
     gridView.scrollEnabled = NO;
     gridDataSource.updatesEnabled = NO;
-    thumbnailView.lastDragLocation = CGPointMake(thumbnailView.center.x - gridView.contentOffset.x, thumbnailView.center.y - gridView.contentOffset.y);
+    gridViewCell.lastDragLocation = CGPointMake(gridViewCell.center.x - gridView.contentOffset.x, gridViewCell.center.y - gridView.contentOffset.y);
 }
 
-- (void)thumbnailViewDidEndRearranging:(ThumbnailView *)thumbnailView
+- (void)gridViewCellDidEndRearranging:(PagingGridViewCell *)gridViewCell
 {
-    NSUInteger index = thumbnailView.tag;
+    NSUInteger index = gridViewCell.tag;
     
     [UIView animateWithDuration:0.3
                      animations:^{
-                         thumbnailView.frame = [gridView frameForIndex:index];
+                         gridViewCell.frame = [gridView frameForIndex:index];
                      }
                      completion:^(BOOL finished){
                          gridView.scrollEnabled = YES;     
@@ -161,9 +161,9 @@
     }
 }
 
-- (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation
+- (void)gridViewCell:(PagingGridViewCell *)gridViewCell didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation
 {        
-    thumbnailView.lastDragLocation = CGPointMake(center.x - gridView.contentOffset.x, center.y - gridView.contentOffset.y);
+    gridViewCell.lastDragLocation = CGPointMake(center.x - gridView.contentOffset.x, center.y - gridView.contentOffset.y);
     
     if ((touchLocation.x - gridView.contentOffset.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) || 
         (touchLocation.x - gridView.contentOffset.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages)) {
@@ -181,11 +181,11 @@
         }
         
         // Reposition the view
-        NSUInteger oldIndex = thumbnailView.tag;
-        NSInteger newIndex = [gridView repositioningIndexForFrame:thumbnailView.frame];
+        NSUInteger oldIndex = gridViewCell.tag;
+        NSInteger newIndex = [gridView repositioningIndexForFrame:gridViewCell.frame];
         
         if (newIndex != oldIndex && newIndex >= 0) {
-            [gridView repositionView:thumbnailView fromIndex:oldIndex toIndex:newIndex animated:YES];
+            [gridView repositionView:gridViewCell fromIndex:oldIndex toIndex:newIndex animated:YES];
             [gridDataSource moveObjectAtIndex:oldIndex toIndex:newIndex];
         }
     }

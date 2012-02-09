@@ -1,18 +1,18 @@
 //
-//  ThumbnailView.m
+//  PagingGridViewCell.m
 //  ipad
 //
 //  Created by Chris Haugli on 2/6/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "ThumbnailView.h"
+#import "PagingGridViewCell.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kPressAndHoldDuration 0.8f
 #define kRearrangingScaleFactor 1.15
 
-@implementation ThumbnailView
+@implementation PagingGridViewCell
 
 @synthesize contentView;
 @synthesize image;
@@ -27,7 +27,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Load the view from a nib
-        [[NSBundle mainBundle] loadNibNamed:@"ThumbnailView" owner:self options:nil];
+        [[NSBundle mainBundle] loadNibNamed:@"PagingGridViewCell" owner:self options:nil];
         
         if (CGRectEqualToRect(frame, CGRectZero)) {
             self.frame = contentView.bounds;
@@ -73,7 +73,7 @@
     image.highlighted = highlighted;
 }
 
-- (void)setDelegate:(id<ThumbnailViewDelegate>)aDelegate
+- (void)setDelegate:(id<PagingGridViewCellDelegate>)aDelegate
 {
     if (delegate != aDelegate) {
         [self removeTarget:delegate action:NULL forControlEvents:UIControlEventAllEvents];
@@ -90,8 +90,8 @@
 - (void)didBeginRearranging
 {
     pressAndHoldTimer = nil;
-    if ([delegate respondsToSelector:@selector(thumbnailViewDidBeginRearranging:)]) {
-        [delegate thumbnailViewDidBeginRearranging:self];
+    if ([delegate respondsToSelector:@selector(gridViewCellDidBeginRearranging:)]) {
+        [delegate gridViewCellDidBeginRearranging:self];
     }
     draggable = YES;
     [self.superview bringSubviewToFront:self];
@@ -113,8 +113,8 @@
                          self.transform = CGAffineTransformIdentity;                         
                      }];
     
-    if ([delegate respondsToSelector:@selector(thumbnailViewDidEndRearranging:)]) {
-        [delegate thumbnailViewDidEndRearranging:self];
+    if ([delegate respondsToSelector:@selector(gridViewCellDidEndRearranging:)]) {
+        [delegate gridViewCellDidEndRearranging:self];
     }
 }
 
@@ -124,7 +124,7 @@
         [self didEndRearranging];
     } else {
         [self cancelPressAndHoldTimer];        
-        [delegate thumbnailViewDidTap:self];
+        [delegate gridViewCellDidTap:self];
     }
 }
 
@@ -161,8 +161,8 @@
         self.center = CGPointMake(location.x - dragAnchorPoint.x,
                                   location.y - dragAnchorPoint.y);
         
-        if ([delegate respondsToSelector:@selector(thumbnailView:didDragToCenter:touchLocation:)]) {
-            [delegate thumbnailView:self didDragToCenter:self.center touchLocation:location];
+        if ([delegate respondsToSelector:@selector(gridViewCell:didDragToCenter:touchLocation:)]) {
+            [delegate gridViewCell:self didDragToCenter:self.center touchLocation:location];
         }
     } else {
         CGPoint dragStartLocation = [touch locationInView:self.superview];
