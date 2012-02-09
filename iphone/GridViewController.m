@@ -18,12 +18,13 @@
 @synthesize gridView;
 @synthesize pageControl;
 @synthesize gridDataSource;
+@synthesize managedObjectContext;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext nibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.gridDataSource = [[[HomeGridDataSource alloc] initWithThumbnailViewDelegate:self] autorelease];
+        self.managedObjectContext = aManagedObjectContext;
     }
     return self;
 }
@@ -35,6 +36,7 @@
     [gridView release];
     [pageControl release];
     [gridDataSource release];
+    [managedObjectContext release];
     
     [super dealloc];
 }
@@ -46,6 +48,8 @@
     [super viewDidLoad];
     
     pageControl.numberOfPages = gridView.numberOfPages;
+    
+    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext thumbnailViewDelegate:self] autorelease];
     gridView.dataSource = gridDataSource;
 }
 
@@ -54,7 +58,8 @@
     [super viewDidUnload];
 
     self.gridView = nil;
-    self.pageControl = nil;    
+    self.gridDataSource = nil;
+    self.pageControl = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -10,4 +10,6 @@
 
 @interface YouTubeGridDataSource : GridDataSource
 
+@property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+
 @end
