@@ -244,7 +244,7 @@
                 }
                 
                 view.tag = index;
-                view.frame = [self frameForIndex:index];
+                view.frame = [self frameForIndex:index];                
             }
         }
     };
@@ -260,6 +260,12 @@
     }
     
     repositioningView.tag = newIndex;
+    
+    // Update the visible indexes
+    [visibleIndexes removeAllIndexes];
+    for (UIView *view in visibleViews) {
+        [visibleIndexes addIndex:view.tag];
+    }
 }
 
 #pragma mark - UIScrollViewDelegate

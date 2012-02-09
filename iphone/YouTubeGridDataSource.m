@@ -98,7 +98,7 @@
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     view.label.text = channel.title;
     [view.image setImageForChannel:channel];
-
+    
     return view;
 }
 
