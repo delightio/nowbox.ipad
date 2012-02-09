@@ -86,6 +86,7 @@
 @property (nonatomic, retain) UITextView * debugMessageView;
 
 + (VideoPlaybackModelController *)sharedVideoPlaybackModelController;
++ (NSPredicate *)playbackModelFilterPredicate;
 /*!
  The next video will become the "currentVideo".
  Returns YES if move is successful. No if the currentVideo is currently the last video

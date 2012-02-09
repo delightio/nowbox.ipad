@@ -28,7 +28,7 @@ NSString * const NMDidFailDeauthorizeUserNotification = @"NMDidFailDeauthorizeUs
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * srv = nil;
 	switch (command) {
 		case NMCommandDeauthorizeYoutubeUser:

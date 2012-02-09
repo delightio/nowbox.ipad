@@ -93,7 +93,7 @@ NSString * const NMDidFailVerifyUserNotification = @"NMDidFailVerifyUserNotifica
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSMutableURLRequest * request;
 	NSString * urlStr;
 	switch (command) {

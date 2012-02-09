@@ -14,6 +14,7 @@
 @class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
+@class NMAuthor;
 @class NMTaskQueueController;
 @class NMStyleUtility;
 @class NMCachedImageView;
@@ -43,7 +44,7 @@
 + (NMCacheController *)sharedCacheController;
 
 // display image from file cache
-- (void)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv;
+- (void)setImageForAuthor:(NMAuthor *)anAuthor imageView:(NMCachedImageView *)iv;
 - (void)setImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
 - (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
@@ -52,7 +53,7 @@
 // interface for NMCachedImageView
 - (NMImageDownloadTask *)downloadImageForCategory:(NMCategory *)cat imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv;
-- (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl imageView:(NMCachedImageView *)iv;
+- (NMImageDownloadTask *)downloadImageForAuthor:(NMAuthor *)anAuthor imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
 //- (void)saveCacheWithInfo:(NSDictionary *)userInfo;

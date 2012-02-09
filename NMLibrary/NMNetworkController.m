@@ -8,9 +8,12 @@
 
 #import "NMNetworkController.h"
 #import "NMDataController.h"
+#import "NMURLConnection.h"
 #import "NMDataType.h"
+#import "NMTaskType.h"
 #ifdef DEBUG_CONNECTION_CONTROLLER
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
 #endif
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
@@ -36,9 +39,8 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	self = [super init];
 	commandIndexPool = [[NSMutableIndexSet alloc] init];
 	pendingDeleteCommandIndexPool = [[NSMutableIndexSet alloc] init];
-//	activeChannelThumbnailDownloadSet = [[NSMutableSet alloc] init];
-	taskPool = [[NSMutableDictionary alloc] init];
-	connectionPool = [[NSMutableDictionary alloc] init];
+	connectionPool = [[NSMutableSet alloc] initWithCapacity:8];
+	facebookConnectionPool = [[NSMutableSet alloc] initWithCapacity:8];
 	pendingTaskBuffer = [[NSMutableArray alloc] init];
 	connectionDateLog = [[NSMutableArray alloc] initWithCapacity:NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION];
 	networkConnectionLock = [[NSLock alloc] init];
@@ -67,10 +69,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	isDone = YES;
 	[commandIndexPool release];
 	[pendingDeleteCommandIndexPool release];
-//	[activeChannelThumbnailDownloadSet release];
 	[defaultCenter release];
-	[taskPool release];
 	[connectionPool release];
+	[facebookConnectionPool release];
 	[pendingTaskBuffer release];
 	[networkConnectionLock release];
 	[pendingTaskBufferLock release];
@@ -188,9 +189,8 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	if ( tokenRenewMode ) return NO;
 	// for-loop that iterates through all elements. Return YES if we exit running out of network connection resources
 	NMTask *theTask;
-	NSMutableURLRequest *request;
-	NSURLConnection *conn;
-	NSNumber *key;
+	NSURLRequest *request;
+	NMURLConnection *conn;
 	BOOL didRunOutResource = NO;
 	NSMutableArray * rmTaskAy = nil;
 	NSInteger taskIdx;
@@ -220,12 +220,28 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				
 				theTask.state = NMTaskExecutionStateConnectionActive;
 				theTask.sequenceLog = taskLogCount++;
-				request = [theTask URLRequest];
-				conn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
-				key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
-				[connectionPool setObject:conn forKey:key];
-				[taskPool setObject:theTask forKey:key];
-				[conn release];
+				switch (theTask.command) {
+					case NMCommandParseFacebookFeed:
+					case NMCommandGetFacebookProfile:
+					{
+						NMFacebookTask * fbTask = (NMFacebookTask *)theTask;
+						FBRequest * fbRequest = [fbTask facebookRequestForController:self];
+						fbRequest.task = fbTask;
+						[facebookConnectionPool addObject:fbRequest];
+						break;
+					}
+						
+					default:
+					{
+						// create the connection as normal
+						request = [theTask URLRequest];
+						conn = [[NMURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+						conn.task = theTask;
+						[connectionPool addObject:conn];
+						[conn release];
+						break;
+					}
+				}
 				
 				// create notification object
 				NSString * notStr = [theTask willLoadNotificationName];
@@ -257,10 +273,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[commandIndexPool addIndex:[theTask commandIndex]];
 	
 	theTask.state = NMTaskExecutionStateConnectionActive;
-	NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:[theTask URLRequest] delegate:self startImmediately:YES];
-	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)conn];
-	[connectionPool setObject:conn forKey:key];
-	[taskPool setObject:theTask forKey:key];
+	NMURLConnection *conn = [[NMURLConnection alloc] initWithRequest:[theTask URLRequest] delegate:self startImmediately:YES];
+	conn.task = theTask;
+	[connectionPool addObject:conn];
 	[conn release];
 	
 	// create notification object
@@ -272,7 +287,6 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	NSNotification * n = [NSNotification notificationWithName:[task didFailNotificationName] object:task userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, @"error", task, @"task", nil]];
 	[defaultCenter performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 }
-
 
 #pragma mark Resources management
 /*!
@@ -364,17 +378,14 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	// cancel the connection
 	NSURLConnection * conn;
 	NMTask * theTask;
-	for (id theKey in connectionPool) {
-		conn = [connectionPool objectForKey:theKey];
+	for (conn in connectionPool) {
 		[conn cancel];
 		[self returnNetworkResource];
-		theTask = [taskPool objectForKey:theKey];
 		if ( [theTask didCancelNotificationName] ) {
 			[self postNotificationOnMainThread:[theTask didCancelNotificationName] object:self userInfo:[theTask cancelUserInfo]];
 		}
 	}
 	[connectionPool removeAllObjects];
-	[taskPool removeAllObjects];
 	[commandIndexPool removeAllIndexes];
 	// clear up tasks not yet executed
 	[pendingTaskBufferLock lock];
@@ -402,13 +413,12 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	return nil;
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+- (void)connection:(NMURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	// network call rate control (5 calls/s)
 	[connectionDateLog addObject:[NSDate date]];
-	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)connection];
 	// add response object
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-	NMTask * task = [taskPool objectForKey:key];
+	NMTask * task = connection.task;
 	task.httpStatusCode = [httpResponse statusCode];
 	switch (task.command) {
 		case NMCommandGetChannelThumbnail:
@@ -430,17 +440,15 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 #endif
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+- (void)connection:(NMURLConnection *)connection didReceiveData:(NSData *)data {
     // Append the new data to receivedData.
     // receivedData is an instance variable declared elsewhere.
- 	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)connection];
-	NMTask * task = [taskPool objectForKey:key];
+	NMTask * task = connection.task;
 	// check if the task has been marked canceled
 	if ( task.state == NMTaskExecutionStateCanceled ) {
-		[connectionPool removeObjectForKey:key];
+		[connectionPool removeObject:connection];
 		[connection cancel];
 		// release the connection, and the data object
-		[taskPool removeObjectForKey:key];
 		[commandIndexPool removeIndex:[task commandIndex]];
 		// remove task
 		[pendingTaskBufferLock lock];
@@ -452,20 +460,17 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	}
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+- (void)connection:(NMURLConnection *)connection didFailWithError:(NSError *)error {
     // release the connection, and the data object
     // receivedData is declared as a method instance elsewhere
 	[self returnNetworkResource];
-	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)connection];
-	[connectionPool removeObjectForKey:key];
-	NMTask *task = [taskPool objectForKey:key];
+	NMTask * task = connection.task;
 	// call error handling
 	if ( task.state != NMTaskExecutionStateCanceled ) {
 		task.state = NMTaskExecutionStateConnectionFailed;
 		[self postConnectionErrorNotificationOnMainThread:error forTask:task];
 	}
 	// release the task
-	[taskPool removeObjectForKey:key];
 	[commandIndexPool removeIndex:[task commandIndex]];
 	[pendingTaskBufferLock lock];
 	[pendingTaskBuffer removeObject:task];
@@ -483,20 +488,21 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 		[self performSelectorOnMainThread:@selector(showAlertForError:) withObject:error waitUntilDone:NO];
 		self.errorWindowStartDate = [NSDate date];
 	}
+	[connectionPool removeObject:connection];
 	// check if we should retry for these errors: NSURLErrorNotConnectedToInternet, NSURLErrorNetworkConnectionLost, NSURLErrorTimedOut
 	// if the app is experiencing "NSURLErrorNotConnectedToInternet" error for multiple times within a 10 sec window, stop retrying
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+- (void)connectionDidFinishLoading:(NMURLConnection *)connection {
 	// return network connection resources
-	NSNumber *key = [NSNumber numberWithUnsignedInteger:(NSUInteger)connection];
-	[connectionPool removeObjectForKey:key];
+	[connection retain];
+	[connectionPool removeObject:connection];
 	[self returnNetworkResource];
-	NMTask *theTask = [taskPool objectForKey:key];
+	NMTask *theTask = connection.task;
 	
 	if ( theTask.state == NMTaskExecutionStateCanceled ) {
+		[connection release];
 		// release the connection, and the data object
-		[taskPool removeObjectForKey:key];
 		[commandIndexPool removeIndex:[theTask commandIndex]];
 		// remove task
 		[pendingTaskBufferLock lock];
@@ -509,7 +515,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
     NSLog(@"Succeeded! Received %d bytes of data, response code %d, cmd %d",[theTask.buffer length], theTask.httpStatusCode, theTask.command);
 	if ( theTask.command == NMCommandGetYouTubeDirectURL ) {
 		NMGetYouTubeDirectURLTask * uTask = (NMGetYouTubeDirectURLTask *)theTask;
-		NSLog(@"video: %@ %@", uTask.video.title, uTask.video.nm_id);
+		NSLog(@"video: %@ %@", uTask.video.video.title, uTask.video.video.nm_id);
 	}
 	if ( [theTask.buffer length] < 256 ) {
 		NSString *str = [[NSString alloc] initWithData:theTask.buffer encoding:NSUTF8StringEncoding];
@@ -528,9 +534,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				[[NMTaskQueueController sharedTaskQueueController] setTokenRenewMode:YES];
 			}
 			// ignore all error, recover the tasks
-			[taskPool removeObjectForKey:key];
 			[commandIndexPool removeIndex:[theTask commandIndex]];
 			theTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
+			[connection release];
 			return;
 		} else {
 			// fire error notification right here
@@ -553,7 +559,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	}
 	
     // release the connection, and the data object
-	[taskPool removeObjectForKey:key];
+	[connection release];
 	[commandIndexPool removeIndex:[theTask commandIndex]];
 	// remove task
 	[pendingTaskBufferLock lock];
@@ -561,4 +567,48 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[pendingTaskBufferLock unlock];
 }
 
+#pragma mark Facebook request
+- (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
+//	NSLog(@"facebook call received response");
+}
+
+- (void)request:(FBRequest *)request didLoad:(id)result {
+	NMFacebookTask * fbTask = request.task;
+	
+	if ( fbTask.state == NMTaskExecutionStateCanceled ) {
+		// release the connection, and the data object
+		[commandIndexPool removeIndex:[fbTask commandIndex]];
+		// remove task
+		[pendingTaskBufferLock lock];
+		[pendingTaskBuffer removeObject:fbTask];
+		[pendingTaskBufferLock unlock];
+		[facebookConnectionPool removeObject:request];
+		[self returnNetworkResource];
+		return;
+	}
+	
+	[fbTask setParsedObjectsForResult:result];
+	[dataController createDataParsingOperationForTask:fbTask];
+	
+    // release the connection, and the data object
+	[commandIndexPool removeIndex:[fbTask commandIndex]];
+	// remove task
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer removeObject:fbTask];
+	[pendingTaskBufferLock unlock];
+	[facebookConnectionPool removeObject:request];
+	[self returnNetworkResource];
+}
+
+- (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
+ 	NMFacebookTask * fbTask = request.task;
+   // release the connection, and the data object
+	[commandIndexPool removeIndex:[fbTask commandIndex]];
+	// remove task
+	[pendingTaskBufferLock lock];
+	[pendingTaskBuffer removeObject:fbTask];
+	[pendingTaskBufferLock unlock];
+	[facebookConnectionPool removeObject:request];
+	[self returnNetworkResource];
+}
 @end

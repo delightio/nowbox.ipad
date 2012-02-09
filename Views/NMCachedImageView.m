@@ -14,7 +14,8 @@
 @synthesize category;
 @synthesize channel;
 @synthesize video;
-@synthesize videoDetail;
+@synthesize author;
+//@synthesize videoDetail;
 @synthesize previewThumbnail;
 @synthesize adjustsImageOnHighlight;
 
@@ -44,7 +45,7 @@
 	[category release];
 	[channel release];
 	[video release];
-	[videoDetail release];
+	[author release];
 	[previewThumbnail release];
 	[super dealloc];
 }
@@ -71,7 +72,7 @@
 
     if ((theTask.command == NMCommandGetChannelThumbnail && target != channel)
         || (theTask.command == NMCommandGetVideoThumbnail && target != video)
-        || (theTask.command == NMCommandGetAuthorThumbnail && target != videoDetail)
+        || (theTask.command == NMCommandGetAuthorThumbnail && target != author)
         || (theTask.command == NMCommandGetPreviewThumbnail && target != previewThumbnail)
         || (theTask.command == NMCommandGetCategoryThumbnail && target != category)) {
         // This is not the image download we wanted
@@ -98,7 +99,7 @@
 }
 
 - (void)delayedIssueAuthorImageDownloadRequest {
-	self.downloadTask = [cacheController downloadImageForAuthor:videoDetail imageView:self];
+	self.downloadTask = [cacheController downloadImageForAuthor:author imageView:self];
 }
 
 - (void)delayedIssueVideoImageDownloadRequest {
@@ -110,7 +111,7 @@
 - (void)clearAssociatedObjects {
     self.channel = nil;
     self.video = nil;
-    self.videoDetail = nil;
+    self.author = nil;
     self.previewThumbnail = nil;
     self.category = nil;
 }
@@ -122,11 +123,10 @@
 	[cacheController setImageForChannel:chn imageView:self];
 }
 
-- (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl {
-    [self clearAssociatedObjects];
-	self.videoDetail = dtl;
+- (void)setImageForAuthorThumbnail:(NMAuthor *)anAuthor {
+	self.author = anAuthor;
 	// check if there's local cache
-	[cacheController setImageForAuthor:dtl imageView:self];
+	[cacheController setImageForAuthor:anAuthor imageView:self];
 }
 
 - (void)setImageForVideoThumbnail:(NMVideo *)vdo {

@@ -47,6 +47,9 @@ NSString * const NM_TIME_ON_APP_SINCE_INSTALL_KEY = @"NM_TIME_ON_APP_SINCE_INSTA
 NSString * const NM_RATE_US_REMINDER_SHOWN_KEY = @"NM_RATE_US_REMINDER_SHOWN_KEY";
 NSString * const NM_RATE_US_REMINDER_DEFER_COUNT_KEY = @"NM_RATE_US_REMINDER_DEFER_COUNT_KEY";
 NSString * const NM_SHARE_COUNT_KEY         = @"NM_SHARE_COUNT_KEY";
+// Facebook token
+NSString * const NM_FACEBOOK_ACCESS_TOKEN_KEY = @"FBAccessTokenKey";
+NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY = @"FBExpirationDateKey";
 // setting view
 NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
@@ -86,11 +89,10 @@ NSInteger NM_LAST_CHANNEL_ID;
       zeroNum, NM_RATE_US_REMINDER_DEFER_COUNT_KEY,
       zeroNum, NM_SHARE_COUNT_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
-//	  [NSNumber numberWithBool:YES], NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
 	  yesNum, NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
-          [NSNumber numberWithInteger:0], NM_SESSION_COUNT_KEY,
+	  [NSNumber numberWithInteger:0], NM_SESSION_COUNT_KEY,
 	  yesNum, NM_SHOW_FAVORITE_CHANNEL_KEY,
 	  noNum, NM_ENABLE_PUSH_NOTIFICATION_KEY,
 	  noNum, NM_ENABLE_EMAIL_NOTIFICATION_KEY,
@@ -102,6 +104,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  noNum, NM_USER_YOUTUBE_SYNC_ACTIVE_KEY,
 	  zeroNum, NM_USER_YOUTUBE_LAST_SYNC_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
+	  @"", NM_FACEBOOK_ACCESS_TOKEN_KEY,
+	  dDate, NM_FACEBOOK_EXPIRATION_DATE_KEY,
 	  nil]];
 }
 
@@ -245,6 +249,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
     
+	[[NMAccountManager sharedAccountManager].facebook extendAccessTokenIfNeeded];
     return YES;
 }
 
@@ -301,6 +306,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 			[tqc issueSyncRequest];
 		}
+		[tqc scheduleSyncSocialChannels];
 	}
     
     if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
@@ -341,6 +347,16 @@ NSInteger NM_LAST_CHANNEL_ID;
         [self saveCurrentVideoList:[((VideoPlaybackViewController *)viewController) markPlaybackCheckpoint]];
     }
 	[self saveContext];
+}
+
+// Pre 4.2 support
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return [[NMAccountManager sharedAccountManager].facebook handleOpenURL:url]; 
+}
+
+// For 4.2+ support
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [[NMAccountManager sharedAccountManager].facebook handleOpenURL:url]; 
 }
 
 #pragma mark User Defaults
@@ -428,9 +444,11 @@ NSInteger NM_LAST_CHANNEL_ID;
     if (managedObjectModel_ != nil) {
         return managedObjectModel_;
     }
-    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"mom"];
-    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
-    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
+//    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"mom"];
+//    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
+//    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
+//    return managedObjectModel_;
+    managedObjectModel_ = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
     return managedObjectModel_;
 }
 

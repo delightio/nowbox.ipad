@@ -282,7 +282,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( launchModeActive ) {
 //		controlScrollView.scrollEnabled = NO;
 		// reset the alpha value
-		playbackModelController.currentVideo.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
+		playbackModelController.currentVideo.video.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
 		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
 
 		shouldFadeOutVideoThumbnail = YES;
@@ -330,7 +330,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Playback data structure
 
 - (NSArray *)markPlaybackCheckpoint {
-	NMVideo * theVideo = [self playerCurrentVideo];
+	NMVideo * vdo = [self playerCurrentVideo];
+	NMConcreteVideo * theVideo = vdo.video;
 	// theVideo is null if there's no video playing (say, when there's no network connection)
 	if ( theVideo == nil ) return nil;
 	CMTime aTime = movieView.player.currentTime;
@@ -342,15 +343,15 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	currentChannel.nm_last_vid = theVideo.nm_id;
 	NSMutableArray * vdoAy = [NSMutableArray arrayWithCapacity:4];
 	[vdoAy addObject:theVideo.nm_id];
-	theVideo = playbackModelController.previousVideo;
+	theVideo = playbackModelController.previousVideo.video;
 	if ( theVideo ) {
 		[vdoAy addObject:theVideo.nm_id];
 	}
-	theVideo = playbackModelController.nextVideo;
+	theVideo = playbackModelController.nextVideo.video;
 	if ( theVideo ) {
 		[vdoAy addObject:theVideo.nm_id];
 	}
-	theVideo = playbackModelController.nextNextVideo;
+	theVideo = playbackModelController.nextNextVideo.video;
 	if ( theVideo ) {
 		[vdoAy addObject:theVideo.nm_id];
 	}
@@ -411,8 +412,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 //	[self updateRibbonButtons];
     
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                       playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
-                                                                       playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                       playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, 
+                                                                       playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId,
                                                                        @"player", AnalyticsPropertySender, 
                                                                        @"auto", AnalyticsPropertyAction, 
                                                                        [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
@@ -451,7 +452,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)showActivityLoader {
-	[self.currentVideo.nm_movie_detail_view setActivityViewHidden:NO];
+	[self.currentVideo.video.nm_movie_detail_view setActivityViewHidden:NO];
 }
 
 #pragma mark NMControlsView delegate methods
@@ -507,7 +508,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"configure control view for: %@, %@, %f", aVideo.title, aVideo.nm_id, currentXOffset);
+	NSLog(@"configure control view for: %@, %@, %f", aVideo.video.title, aVideo.video.nm_id, currentXOffset);
 #endif
 	[loadedControlView resetView];
 	if ( aVideo ) {
@@ -565,18 +566,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			controlScrollView.frame = splitViewRect;
             [channelController.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rowIndexToCenterOn inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-//            if ( launchModeActive ) {
-//				// remove the view
-//				[launchController.progressContainerView removeFromSuperview];
-//				[launchController.view removeFromSuperview];
-//				[launchController release];
-//				launchController = nil;
-//				launchModeActive = NO;
-//			}
 			break;
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
-//			controlScrollView.scrollEnabled = YES;
-			[self configureControlViewForVideo:[self playerCurrentVideo]];
+			[self configureControlViewForVideo:self.currentVideo];
+//			[self configureControlViewForVideo:[self playerCurrentVideo]];
 			[self playCurrentVideo];
 			break;
 		default:
@@ -623,7 +616,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// check if any of the video is marked as error
 	// this for-loop does NOT guarantee to run. Sometimes, we can get free movie detail view even if there's movie detail view occupied by bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
-		if ( theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
 			theView.alpha = 1.0f;
 			return theView;
@@ -635,9 +628,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo {
 	if ( vdo == nil ) return;
-	NMMovieDetailView * theView = vdo.nm_movie_detail_view;
+	NMMovieDetailView * theView = vdo.video.nm_movie_detail_view;
 	if ( theView == nil ) return;
-	vdo.nm_movie_detail_view = nil;
+	vdo.video.nm_movie_detail_view = nil;
 	theView.video = nil;
 	[theView restoreThumbnailView];
 	[theView setActivityViewHidden:YES];
@@ -647,7 +640,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)cleanUpBadVideosMovieDetailView {
 	// it's possible that some bad videos still occupy a movie detail view. We need to make sure all movie detail views are not associated to any bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
-		if ( theView.video && theView.video.nm_playback_status == NMVideoQueueStatusError ) {
+		if ( theView.video && theView.video.video.nm_playback_status == NMVideoQueueStatusError ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
 		}
 	}
@@ -674,7 +667,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	favoriteButton.userInteractionEnabled = YES;
 	loadedControlView.favoriteButton.userInteractionEnabled = YES;
 	
-	if ( [vdo.nm_favorite boolValue] ) {
+	if ( [vdo.video.nm_favorite boolValue] ) {
 		// update image
 		[favoriteButton setImage:styleUtility.favoriteActiveImage forState:UIControlStateNormal];
 		[favoriteButton setImage:styleUtility.favoriteImage forState:UIControlStateHighlighted];
@@ -705,7 +698,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	watchLaterButton.userInteractionEnabled = YES;
 	loadedControlView.watchLaterButton.userInteractionEnabled = YES;
 	
-	if ( [vdo.nm_watch_later boolValue] ) {
+	if ( [vdo.video.nm_watch_later boolValue] ) {
 		// update image
 		[watchLaterButton setImage:styleUtility.watchLaterActiveImage forState:UIControlStateNormal];
 		[watchLaterButton setImage:styleUtility.watchLaterImage forState:UIControlStateHighlighted];
@@ -802,14 +795,14 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}];
 		[self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
-			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
+			playbackModelController.previousVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
             
             [self updateRibbonButtons];
             
             [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                               playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
-                                                                               playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId,
+                                                                               playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, 
+                                                                               playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId,
                                                                                @"player", AnalyticsPropertySender, 
                                                                                @"auto", AnalyticsPropertyAction, 
                                                                                [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
@@ -870,10 +863,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)didLoadNextVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
 	// update the movie detail view frame
-	NMMovieDetailView * theDetailView = ctrl.nextVideo.nm_movie_detail_view;
+	NMMovieDetailView * theDetailView = ctrl.nextVideo.video.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
 		theDetailView = [self dequeueReusableMovieDetailView];
-		ctrl.nextVideo.nm_movie_detail_view = theDetailView;
+		ctrl.nextVideo.video.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.nextVideo;
 	
@@ -891,10 +884,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)didLoadPreviousVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
-	NMMovieDetailView * theDetailView = ctrl.previousVideo.nm_movie_detail_view;
+	NMMovieDetailView * theDetailView = ctrl.previousVideo.video.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
 		theDetailView = [self dequeueReusableMovieDetailView];
-		ctrl.previousVideo.nm_movie_detail_view = theDetailView;
+		ctrl.previousVideo.video.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.previousVideo;
 	
@@ -912,16 +905,16 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)didLoadCurrentVideoManagedObjectForController:(VideoPlaybackModelController *)ctrl {
-	NMMovieDetailView * theDetailView = ctrl.currentVideo.nm_movie_detail_view;
+	NMMovieDetailView * theDetailView = ctrl.currentVideo.video.nm_movie_detail_view;
 	if ( theDetailView == nil ) {
 		theDetailView = [self dequeueReusableMovieDetailView];
-		ctrl.currentVideo.nm_movie_detail_view = theDetailView;
+		ctrl.currentVideo.video.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.currentVideo;
 	
 	CGFloat xOffset = (CGFloat)(ctrl.currentIndexPath.row * NM_IPAD_SCREEN_WIDTH_INT);
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.title);
+	NSLog(@"offset of current MDV: %f actual: %f ptr: %p, %@", xOffset, theDetailView.frame.origin.x, theDetailView, ctrl.currentVideo.video.title);
 #endif
 	CGRect theFrame = theDetailView.frame;
 	if ( theFrame.origin.x != xOffset ) {
@@ -965,12 +958,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 - (void)shouldRevertNextNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
 	[movieView.player refreshItemFromIndex:2];
-	[playbackModelController.nextNextVideo.nm_movie_detail_view restoreThumbnailView];
+	[playbackModelController.nextNextVideo.video.nm_movie_detail_view restoreThumbnailView];
 }
 
 - (void)shouldRevertNextVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
 	[movieView.player refreshItemFromIndex:1];
-	[playbackModelController.nextVideo.nm_movie_detail_view restoreThumbnailView];
+	[playbackModelController.nextVideo.video.nm_movie_detail_view restoreThumbnailView];
 }
 
 - (void)shouldRevertCurrentVideoToNewStateForController:(VideoPlaybackModelController *)ctrl {
@@ -982,7 +975,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// show thumbnail and loading indicator
 	shouldFadeOutVideoThumbnail = YES;
 	[self showActivityLoader];
-	[self.currentVideo.nm_movie_detail_view restoreThumbnailView];
+	[self.currentVideo.video.nm_movie_detail_view restoreThumbnailView];
 	movieView.alpha = 0.0f;
 }
 
@@ -1011,10 +1004,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #endif
 	NMVideo * vdo = ((NMAVPlayerItem *)anItem).nmVideo;
 	if ( vdo == nil ) return;
-	if ( [vdo.nm_error integerValue] == NMErrorNone ) {
-		vdo.nm_playback_status = NMVideoQueueStatusPlayed;
+	if ( [vdo.video.nm_error integerValue] == NMErrorNone ) {
+		vdo.video.nm_playback_status = NMVideoQueueStatusPlayed;
 	} else {
-		vdo.nm_playback_status = NMVideoQueueStatusError;
+		vdo.video.nm_playback_status = NMVideoQueueStatusError;
 	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
@@ -1202,7 +1195,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		lastTimeElapsed = 0, lastStartTime = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
-		curItem.nmVideo.nm_playback_status = NMVideoQueueStatusCurrentVideo;
+		curItem.nmVideo.video.nm_playback_status = NMVideoQueueStatusCurrentVideo;
 		// never change currentIndex here!!
 		// ====== update interface ======
 //		[self configureControlViewForVideo:[self playerCurrentVideo]]; moved to animation delegate
@@ -1287,7 +1280,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 				loadedControlView.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
 				if ( shouldFadeOutVideoThumbnail ) {
 					shouldFadeOutVideoThumbnail = NO;
-					[theItem.nmVideo.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+					[theItem.nmVideo.video.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
 				}
 			}
 		}
@@ -1307,7 +1300,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 }
 
 - (void)configureDetailViewForContext:(NSInteger)ctx {
-	NMMovieDetailView * curDetailView = playbackModelController.currentVideo.nm_movie_detail_view;
+	NMMovieDetailView * curDetailView = playbackModelController.currentVideo.video.nm_movie_detail_view;
 	switch (ctx) {
 		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
 			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
@@ -1384,11 +1377,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		// return the movie detail view
 		[self reclaimMovieDetailViewForVideo:playbackModelController.previousVideo];
 		if ( [playbackModelController moveToNextVideo] ) {
-			playbackModelController.previousVideo.nm_did_play = [NSNumber numberWithBool:YES];
+			playbackModelController.previousVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 			[movieView.player advanceToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
 			
-            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 #ifdef DEBUG_PLAYER_NAVIGATION
 		else
@@ -1402,12 +1395,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( playbackModelController.previousVideo ) {
 			// instruct the data model to rearrange itself
 			[playbackModelController moveToPreviousVideo];
-			playbackModelController.nextVideo.nm_did_play = [NSNumber numberWithBool:YES];
+			playbackModelController.nextVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 			// update the queue player
 			[movieView.player revertToVideo:playbackModelController.currentVideo];
 			[self updateRibbonButtons];
             
-            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId, @"player", AnalyticsPropertySender, @"swipe", AnalyticsPropertyAction, [NSNumber numberWithBool:NM_AIRPLAY_ACTIVE], AnalyticsPropertyAirPlayActive, nil]];
 		}
 	}
 	scrollView.scrollEnabled = YES;
@@ -1458,7 +1451,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		viewRect = CGRectMake(movieView.frame.origin.x, 20.0f, 640.0f, 360.0f);
 		movieView.frame = viewRect;
 		// fade in detail view
-		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:NO];
+		[playbackModelController.currentVideo.video.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:NO];
 		// slide in
 		theFrame.origin.y = splitViewRect.size.height;
 		channelController.panelView.frame = theFrame;
@@ -1469,7 +1462,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                     playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                     playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, 
                                                                                      senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 
@@ -1479,7 +1472,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		viewRect = CGRectMake(movieView.frame.origin.x, 0.0f, 1024.0f, 768.0f);
 		movieView.frame = viewRect;
 		// fade out detail view
-		[playbackModelController.currentVideo.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:YES];
+		[playbackModelController.currentVideo.video.nm_movie_detail_view setLayoutWhenPinchedForFullScreen:YES];
 		// reset offset value
 //		movieXOffset = 0.0f;
 		ribbonView.alpha = 0.0f;
@@ -1491,7 +1484,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenVideo]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                      playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, 
+                                                                                      playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, 
                                                                                       senderStr, AnalyticsPropertySender, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
@@ -1567,7 +1560,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:AnalyticsPropertyFullScreenChannelPanel]];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnterFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                             playbackModelController.currentVideo.title, AnalyticsPropertyVideoName,
+                                                                                             playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName,
                                                                                              nil]];                                                                                                                                                                                                                                                                                                                                                                        
 
 	} else if ( !shouldToggleToFullScreen && channelController.displayMode != NMHalfScreenMode ) {
@@ -1581,7 +1574,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         
         [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:AnalyticsPropertyFullScreenChannelPanel]];        
         [[MixpanelAPI sharedAPI] track:AnalyticsEventExitFullScreenChannelPanel properties:[NSDictionary dictionaryWithObjectsAndKeys:currentChannel.title, AnalyticsPropertyChannelName,
-                                                                                            playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                            playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 	}
 	channelController.panelView.frame = theFrame;
@@ -1638,7 +1631,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (IBAction)addVideoToFavorite:(id)sender {
     NMVideo *video = playbackModelController.currentVideo;
     
-	BOOL isFav = [video.nm_favorite boolValue];
+	BOOL isFav = [video.video.nm_favorite boolValue];
 	[nowboxTaskController issueMakeFavorite:!isFav video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
 	[self animateFavoriteButtonsToInactive];
 	
@@ -1646,7 +1639,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         showMovieControlTimestamp = loadedControlView.timeElapsed;
     }
     
-    [[MixpanelAPI sharedAPI] track:isFav ? AnalyticsEventUnfavoriteVideo : AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, video.title, AnalyticsPropertyVideoName, video.nm_id, AnalyticsPropertyVideoId, nil]];
+    [[MixpanelAPI sharedAPI] track:isFav ? AnalyticsEventUnfavoriteVideo : AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, video.video.title, AnalyticsPropertyVideoName, video.video.nm_id, AnalyticsPropertyVideoId, nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
@@ -1654,10 +1647,10 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     
     showMovieControlTimestamp = loadedControlView.timeElapsed;
 
-	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
+	[nowboxTaskController issueEnqueue:![vdo.video.nm_watch_later boolValue] video:playbackModelController.currentVideo];
 	[self animateWatchLaterButtonsToInactive];
     
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.nm_id, AnalyticsPropertyVideoId, nil]];
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId, nil]];
 }
 
 // seek bar
@@ -1838,7 +1831,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
 
         // Cut off the description at 160 chars
-        NSString *videoDescription = video.detail.nm_description;
+        NSString *videoDescription = video.video.detail.nm_description;
         if ([videoDescription length] > 160) {
             videoDescription = [videoDescription substringToIndex:160];
             NSRange lastWhitespace = [videoDescription rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]
@@ -1858,8 +1851,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         
         MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
 		composeController.mailComposeDelegate = self;
-		[composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.title]];
-		[composeController setMessageBody:[NSString stringWithFormat:@"I just found a video on NOWBOX that I want to share with you.<br><br>Watch it here:<br><a href=\"%@%@\"><img src=\"%@\" width=\"320\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPad with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", url, video.nm_id, video.thumbnail_uri, url, video.nm_id, video.title, videoDescription] isHTML:YES];
+		[composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
+		[composeController setMessageBody:[NSString stringWithFormat:@"I just found a video on NOWBOX that I want to share with you.<br><br>Watch it here:<br><a href=\"%@%@\"><img src=\"%@\" width=\"320\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPad with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
         [composeController setModalPresentationStyle:UIModalPresentationFormSheet];
 		[self presentModalViewController:composeController animated:YES];
 		[composeController release];
@@ -1896,8 +1889,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     }
     if (shareType) {
         [[MixpanelAPI sharedAPI] track:AnalyticsEventShowShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                                 video.title, AnalyticsPropertyVideoName, 
-                                                                                 video.nm_id, AnalyticsPropertyVideoId,
+                                                                                 video.video.title, AnalyticsPropertyVideoName, 
+                                                                                 video.video.nm_id, AnalyticsPropertyVideoId,
                                                                                  shareType, AnalyticsPropertyShareType,
                                                                                  nil]];
     }
@@ -1933,8 +1926,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     }
 
     [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                        video.title, AnalyticsPropertyVideoName, 
-                                                                        video.nm_id, AnalyticsPropertyVideoId,
+                                                                        video.video.title, AnalyticsPropertyVideoName, 
+                                                                        video.video.nm_id, AnalyticsPropertyVideoId,
                                                                         @"Email", AnalyticsPropertyShareType,
                                                                         nil]];  
     

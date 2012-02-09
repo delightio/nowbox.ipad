@@ -2,14 +2,14 @@
 //  NMChannel.h
 //  ipad
 //
-//  Created by Bill So on 8/31/11.
-//  Copyright (c) 2011 Pipely Inc. All rights reserved.
+//  Created by Bill So on 18/1/12.
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMCategory, NMChannelDetail, NMPreviewThumbnail, NMVideo;
+@class NMCategory, NMChannelDetail, NMPreviewThumbnail, NMVideo, NMSubscription;
 
 @interface NMChannel : NSManagedObject {
 	NSNumber * nm_populated;
@@ -39,6 +39,7 @@
 @property (nonatomic, retain) NMChannelDetail *detail;
 @property (nonatomic, retain) NSSet *previewThumbnails;
 @property (nonatomic, retain) NSSet *videos;
+@property (nonatomic, retain) NMSubscription * subscription;
 
 @end
 

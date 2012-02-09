@@ -71,7 +71,7 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	return nil;
 }
 
@@ -83,18 +83,18 @@ NSTimeInterval NM_URL_REQUEST_TIMEOUT = 30.0f;
 	return NO;
 }
 
-- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict {
-	NSNumber * c = [dict valueForKeyPath:@"status.code"];
-	encountersErrorDuringProcessing = ( c == nil || [c integerValue] );
-	return encountersErrorDuringProcessing;
-}
-
+//- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict {
+//	NSNumber * c = [dict valueForKeyPath:@"status.code"];
+//	encountersErrorDuringProcessing = ( c == nil || [c integerValue] );
+//	return encountersErrorDuringProcessing;
+//}
+//
 - (NSInteger)commandIndex {
 	if ( targetID ) {
 		NSInteger tid = [self.targetID unsignedIntegerValue];
 		return (((NSIntegerMax >> 6 ) & tid) << 6) | command;
 	}
-	return (NSUInteger)command;
+	return command;
 }
 
 - (NSString *)willLoadNotificationName {

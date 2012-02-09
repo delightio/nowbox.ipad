@@ -33,7 +33,7 @@ NSString * const NMDidFailCreateChannelNotification = @"NMDidFailCreateChannelNo
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/channels?user_id=%d&query=%@&type=keyword", NM_BASE_URL, NM_USER_ACCOUNT_ID, [keyword stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];
