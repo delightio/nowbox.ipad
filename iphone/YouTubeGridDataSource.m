@@ -92,7 +92,6 @@
     
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
-        view.delegate = self.gridViewCellDelegate;
     }
         
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];

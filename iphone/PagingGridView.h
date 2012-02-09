@@ -12,13 +12,15 @@
 @protocol PagingGridViewDataSource;
 @protocol PagingGridViewDelegate;
 
-@interface PagingGridView : UIScrollView <UIScrollViewDelegate> {
+@interface PagingGridView : UIScrollView <PagingGridViewCellDelegate, UIScrollViewDelegate> {
     NSUInteger numberOfItems;
     CGSize itemSize;
     
     NSMutableIndexSet *visibleIndexes;
     NSMutableSet *visibleViews;
     NSMutableSet *recycledViews;
+    
+    NSTimer *rearrangePageSwitchTimer;
 }
 
 @property (nonatomic, assign) NSUInteger numberOfRows;
@@ -31,7 +33,7 @@
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDelegate> gridDelegate;
 
 - (void)reloadData;
-- (UIView *)dequeueReusableCell;
+- (PagingGridViewCell *)dequeueReusableCell;
 - (CGRect)frameForIndex:(NSUInteger)index;
 - (NSInteger)repositioningIndexForFrame:(CGRect)frame;
 - (void)repositionView:(UIView *)view fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated;
@@ -45,6 +47,10 @@
 
 @protocol PagingGridViewDelegate <NSObject>
 @optional
+- (void)gridView:(PagingGridView *)gridView didSelectItemAtIndex:(NSUInteger)index;
+- (void)gridViewDidBeginRearranging:(PagingGridView *)gridView;
+- (void)gridView:(PagingGridView *)gridView didMoveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+- (void)gridViewDidEndRearranging:(PagingGridView *)gridView;
 - (void)gridViewDidScroll:(PagingGridView *)gridView;
 - (void)gridViewWillBeginDragging:(PagingGridView *)gridView;
 - (void)gridViewDidEndScrollingAnimation:(PagingGridView *)gridView;

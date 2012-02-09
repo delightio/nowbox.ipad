@@ -13,16 +13,14 @@
 @synthesize gridView;
 @synthesize updatesEnabled;
 @synthesize managedObjectContext;
-@synthesize gridViewCellDelegate;
 
-- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext gridViewCellDelegate:(id<PagingGridViewCellDelegate>)aPagingGridViewCellDelegate
+- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
 {
     self = [super init];
     if (self) {
         self.gridView = aGridView;
         self.updatesEnabled = YES;
         self.managedObjectContext = aManagedObjectContext;
-        self.gridViewCellDelegate = aPagingGridViewCellDelegate;
     }
     return self;
 }

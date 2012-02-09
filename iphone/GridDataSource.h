@@ -17,9 +17,8 @@
 @property (nonatomic, retain) PagingGridView *gridView;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, assign) BOOL updatesEnabled;
-@property (nonatomic, assign) id<PagingGridViewCellDelegate> gridViewCellDelegate;
 
-- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext gridViewCellDelegate:(id<PagingGridViewCellDelegate>)aPagingGridViewCellDelegate;
+- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
 

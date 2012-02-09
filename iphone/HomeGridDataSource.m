@@ -13,7 +13,7 @@
 
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
-    return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext gridViewCellDelegate:self.gridViewCellDelegate] autorelease];
+    return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
 }
 
 #pragma mark - PagingGridViewDataSource
@@ -29,7 +29,6 @@
     
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
-        view.delegate = self.gridViewCellDelegate;
     }
         
     switch (index) {

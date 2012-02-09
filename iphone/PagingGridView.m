@@ -8,6 +8,9 @@
 
 #import "PagingGridView.h"
 
+#define kRearrangePageSwitchDistance 50
+#define kRearrangePageSwitchDuration 1.0
+
 @implementation PagingGridView
 
 @synthesize numberOfRows;
@@ -33,7 +36,6 @@
     self.pagingEnabled = YES;
     self.showsHorizontalScrollIndicator = NO;
     self.showsVerticalScrollIndicator = NO;
-    self.delegate = self;
     self.clipsToBounds = NO;
     
     [self reloadData];
@@ -59,6 +61,8 @@
 
 - (void)dealloc
 {
+    [rearrangePageSwitchTimer invalidate];
+
     [visibleIndexes release];
     [visibleViews release];
     [recycledViews release];
@@ -103,16 +107,6 @@
     if (!CGSizeEqualToSize(externalPadding, anExternalPadding)) {
         externalPadding = anExternalPadding;
         [self reloadData];
-    }
-}
-
-- (void)setDelegate:(id<UIScrollViewDelegate>)delegate
-{
-    if (delegate == self) {
-        [super setDelegate:delegate];        
-    } else {
-        NSLog(@"PagingGridView does not expose the UIScrollView delegate. Use gridDelegate instead.");
-        [self doesNotRecognizeSelector:_cmd];
     }
 }
 
@@ -216,11 +210,14 @@
             PagingGridViewCell *view = [dataSource gridView:self cellForIndex:i];
             view.frame = viewFrame;
             view.tag = i;
+            view.delegate = self;
             [visibleViews addObject:view];
             [visibleIndexes addIndex:i];
             [self addSubview:view];
         }
     }
+    
+    currentPage = MAX(0, round(self.contentOffset.x / self.frame.size.width));
 }
 
 - (PagingGridViewCell *)dequeueReusableCell
@@ -271,28 +268,85 @@
     }
 }
 
-#pragma mark - UIScrollViewDelegate
+#pragma mark - PagingGridViewCellDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell
 {
-    currentPage = MAX(0, round(scrollView.contentOffset.x / scrollView.frame.size.width));
+    NSUInteger index = gridViewCell.tag;
+    if ([gridDelegate respondsToSelector:@selector(gridView:didSelectItemAtIndex:)]) {
+        [gridDelegate gridView:self didSelectItemAtIndex:index];
+    }
+}
+
+- (void)gridViewCellDidBeginRearranging:(PagingGridViewCell *)gridViewCell
+{
+    self.scrollEnabled = NO;
+    gridViewCell.lastDragLocation = CGPointMake(gridViewCell.center.x - self.contentOffset.x, gridViewCell.center.y - self.contentOffset.y);
     
-    if ([gridDelegate respondsToSelector:@selector(gridViewDidScroll:)]) {
-        [gridDelegate gridViewDidScroll:self];
+    if ([gridDelegate respondsToSelector:@selector(gridViewDidBeginRearranging:)]) {
+        [gridDelegate gridViewDidBeginRearranging:self];
     }
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+- (void)gridViewCellDidEndRearranging:(PagingGridViewCell *)gridViewCell
 {
-    if ([gridDelegate respondsToSelector:@selector(gridViewWillBeginDragging:)]) {
-        [gridDelegate gridViewWillBeginDragging:self];
+    NSUInteger index = gridViewCell.tag;
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         gridViewCell.frame = [self frameForIndex:index];
+                     }
+                     completion:^(BOOL finished){
+                         self.scrollEnabled = YES;     
+                         
+                         if ([gridDelegate respondsToSelector:@selector(gridViewDidEndRearranging:)]) {
+                             [gridDelegate gridViewDidEndRearranging:self];
+                         }
+                     }];
+}
+
+- (void)rearrangePageSwitchTimerFired:(NSTimer *)timer
+{
+    rearrangePageSwitchTimer = nil;
+    CGPoint touchLocation = [[[timer userInfo] objectForKey:@"touchLocation"] CGPointValue];
+    if (touchLocation.x - self.contentOffset.x < kRearrangePageSwitchDistance && currentPage > 0) {
+        // Switch page left
+        self.currentPage = currentPage - 1;
+    } else if (touchLocation.x - self.contentOffset.x > self.frame.size.width - kRearrangePageSwitchDistance && currentPage + 1 < numberOfPages) {
+        // Switch page right
+        self.currentPage = currentPage + 1;    
     }
 }
 
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
-{
-    if ([gridDelegate respondsToSelector:@selector(gridViewDidEndScrollingAnimation:)]) {
-        [gridDelegate gridViewDidEndScrollingAnimation:self];
+- (void)gridViewCell:(PagingGridViewCell *)gridViewCell didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation
+{        
+    gridViewCell.lastDragLocation = CGPointMake(center.x - self.contentOffset.x, center.y - self.contentOffset.y);
+    
+    if ((touchLocation.x - self.contentOffset.x < kRearrangePageSwitchDistance && currentPage > 0) || 
+        (touchLocation.x - self.contentOffset.x > self.frame.size.width - kRearrangePageSwitchDistance && currentPage + 1 < numberOfPages)) {
+        // Close to left or right edge and page switch possible
+        if (!rearrangePageSwitchTimer) {
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSValue valueWithCGPoint:touchLocation] forKey:@"touchLocation"];
+            rearrangePageSwitchTimer = [NSTimer scheduledTimerWithTimeInterval:kRearrangePageSwitchDuration target:self selector:@selector(rearrangePageSwitchTimerFired:) userInfo:userInfo repeats:NO];
+        }
+        
+    } else {    
+        if (rearrangePageSwitchTimer) {
+            // Cancel any pending page switch action - we moved away from the edge
+            [rearrangePageSwitchTimer invalidate];
+            rearrangePageSwitchTimer = nil;
+        }
+        
+        // Reposition the view
+        NSUInteger oldIndex = gridViewCell.tag;
+        NSInteger newIndex = [self repositioningIndexForFrame:gridViewCell.frame];
+        
+        if (newIndex != oldIndex && newIndex >= 0) {
+            [self repositionView:gridViewCell fromIndex:oldIndex toIndex:newIndex animated:YES];
+            if ([gridDelegate respondsToSelector:@selector(gridView:didMoveItemAtIndex:toIndex:)]) {
+                [gridDelegate gridView:self didMoveItemAtIndex:oldIndex toIndex:newIndex];
+            }
+        }
     }
 }
 

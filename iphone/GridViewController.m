@@ -10,9 +10,6 @@
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
 
-#define kRearrangePageSwitchDistance 50
-#define kRearrangePageSwitchDuration 1.0
-
 @implementation GridViewController
 
 @synthesize gridView;
@@ -30,9 +27,7 @@
 }
 
 - (void)dealloc
-{
-    [rearrangePageSwitchTimer invalidate];
-    
+{    
     [gridView release];
     [pageControl release];
     [gridDataSource release];
@@ -49,7 +44,7 @@
     
     pageControl.numberOfPages = gridView.numberOfPages;
     
-    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext gridViewCellDelegate:self] autorelease];
+    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
     gridView.dataSource = gridDataSource;
 }
 
@@ -86,22 +81,46 @@
 
 #pragma mark - PagingGridViewDelegate
 
-- (void)gridViewDidScroll:(PagingGridView *)aGridView
+- (void)gridView:(PagingGridView *)aGridView didSelectItemAtIndex:(NSUInteger)index
+{
+    self.gridDataSource = [gridDataSource nextDataSourceForIndex:index];
+    aGridView.dataSource = gridDataSource;
+    pageControl.numberOfPages = aGridView.numberOfPages;
+}
+
+- (void)gridViewDidBeginRearranging:(PagingGridView *)gridView
+{
+    gridDataSource.updatesEnabled = NO;
+}
+
+- (void)gridView:(PagingGridView *)gridView didMoveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+    [gridDataSource moveObjectAtIndex:fromIndex toIndex:toIndex];
+}
+
+- (void)gridViewDidEndRearranging:(PagingGridView *)gridView
+{
+    gridDataSource.updatesEnabled = YES;
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if (!scrollingToPage) {
-        NSUInteger currentPage = MAX(0, round(aGridView.contentOffset.x / aGridView.frame.size.width));
+        NSUInteger currentPage = MAX(0, round(scrollView.contentOffset.x / scrollView.frame.size.width));
         [pageControl setCurrentPage:currentPage];
-    }
+    }    
 }
 
-- (void)gridViewWillBeginDragging:(PagingGridView *)gridView
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    scrollingToPage = NO;
+    scrollingToPage = NO;    
 }
 
-- (void)gridViewDidEndScrollingAnimation:(PagingGridView *)gridView
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
 {
-    scrollingToPage = NO;
+    scrollingToPage = NO;    
 }
 
 #pragma mark - CustomPageControlDelegate
@@ -115,80 +134,6 @@
 {
     scrollingToPage = YES;
     [gridView setContentOffset:CGPointMake(index * gridView.frame.size.width, 0) animated:YES];
-}
-
-#pragma mark - PagingGridViewCellDelegate
-
-- (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell
-{
-    NSUInteger index = gridViewCell.tag;
-    self.gridDataSource = [gridDataSource nextDataSourceForIndex:index];
-    gridView.dataSource = gridDataSource;
-    pageControl.numberOfPages = gridView.numberOfPages;
-}
-
-- (void)gridViewCellDidBeginRearranging:(PagingGridViewCell *)gridViewCell
-{
-    gridView.scrollEnabled = NO;
-    gridDataSource.updatesEnabled = NO;
-    gridViewCell.lastDragLocation = CGPointMake(gridViewCell.center.x - gridView.contentOffset.x, gridViewCell.center.y - gridView.contentOffset.y);
-}
-
-- (void)gridViewCellDidEndRearranging:(PagingGridViewCell *)gridViewCell
-{
-    NSUInteger index = gridViewCell.tag;
-    
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         gridViewCell.frame = [gridView frameForIndex:index];
-                     }
-                     completion:^(BOOL finished){
-                         gridView.scrollEnabled = YES;     
-                         gridDataSource.updatesEnabled = YES;
-                     }];
-}
-
-- (void)rearrangePageSwitchTimerFired:(NSTimer *)timer
-{
-    rearrangePageSwitchTimer = nil;
-    CGPoint touchLocation = [[[timer userInfo] objectForKey:@"touchLocation"] CGPointValue];
-    if (touchLocation.x - gridView.contentOffset.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) {
-        // Switch page left
-        gridView.currentPage = gridView.currentPage - 1;
-    } else if (touchLocation.x - gridView.contentOffset.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages) {
-        // Switch page right
-        gridView.currentPage = gridView.currentPage + 1;    
-    }
-}
-
-- (void)gridViewCell:(PagingGridViewCell *)gridViewCell didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation
-{        
-    gridViewCell.lastDragLocation = CGPointMake(center.x - gridView.contentOffset.x, center.y - gridView.contentOffset.y);
-    
-    if ((touchLocation.x - gridView.contentOffset.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) || 
-        (touchLocation.x - gridView.contentOffset.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages)) {
-        // Close to left or right edge and page switch possible
-        if (!rearrangePageSwitchTimer) {
-            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSValue valueWithCGPoint:touchLocation] forKey:@"touchLocation"];
-            rearrangePageSwitchTimer = [NSTimer scheduledTimerWithTimeInterval:kRearrangePageSwitchDuration target:self selector:@selector(rearrangePageSwitchTimerFired:) userInfo:userInfo repeats:NO];
-        }
-        
-    } else {    
-        if (rearrangePageSwitchTimer) {
-            // Cancel any pending page switch action - we moved away from the edge
-            [rearrangePageSwitchTimer invalidate];
-            rearrangePageSwitchTimer = nil;
-        }
-        
-        // Reposition the view
-        NSUInteger oldIndex = gridViewCell.tag;
-        NSInteger newIndex = [gridView repositioningIndexForFrame:gridViewCell.frame];
-        
-        if (newIndex != oldIndex && newIndex >= 0) {
-            [gridView repositionView:gridViewCell fromIndex:oldIndex toIndex:newIndex animated:YES];
-            [gridDataSource moveObjectAtIndex:oldIndex toIndex:newIndex];
-        }
-    }
 }
 
 @end
