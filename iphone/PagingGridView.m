@@ -141,6 +141,10 @@
     NSInteger page = floor(center.x / self.frame.size.width);
     NSInteger column = floor((center.x - page * self.frame.size.width - externalPadding.width) / (itemSize.width + internalPadding.width));
     NSInteger row = floor((center.y - externalPadding.height) / (itemSize.height + internalPadding.height));
+    
+    if (column < 0) column = 0;
+    if (row < 0) row = 0;
+    
     NSInteger index = page * (numberOfRows * numberOfColumns) + (row * numberOfColumns) + column;
     
     // Make sure we're still on the same page
@@ -219,9 +223,9 @@
     }
 }
 
-- (UIView *)dequeueReusableCell
+- (PagingGridViewCell *)dequeueReusableCell
 {
-    UIView *view = [[[recycledViews anyObject] retain] autorelease];
+    PagingGridViewCell *view = [[[recycledViews anyObject] retain] autorelease];
     if (view) {
         [recycledViews removeObject:view];
     }
@@ -272,7 +276,6 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     currentPage = MAX(0, round(scrollView.contentOffset.x / scrollView.frame.size.width));
-//    [self setNeedsLayout];    
     
     if ([gridDelegate respondsToSelector:@selector(gridViewDidScroll:)]) {
         [gridDelegate gridViewDidScroll:self];
