@@ -23,11 +23,27 @@
     return self;
 }
 
-- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+- (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
-//    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;            
-//    NMChannel *channel = [dataController.subscribedChannels objectAtIndex:index];
+    NMChannel *displacedChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
+    NSNumber *newSortOrder = displacedChannel.nm_subscribed;
     
+    if (newIndex < oldIndex) {
+        for (NSInteger i = newIndex; i < oldIndex; i++) {
+            NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i+1 inSection:0]];            
+            thisChannel.nm_subscribed = nextChannel.nm_subscribed;
+        }
+    } else {
+        for (NSInteger i = newIndex; i > oldIndex; i--) {
+            NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i-1 inSection:0]];
+            thisChannel.nm_subscribed = nextChannel.nm_subscribed;
+        }        
+    }
+    
+    NMChannel *channelToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
+    channelToMove.nm_subscribed = newSortOrder;
 }
 
 #pragma mark - NSFetchedResultsController
@@ -67,8 +83,6 @@
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-//    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
-//    return [dataController.subscribedChannels count];
     return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
 }
 
@@ -81,8 +95,6 @@
         view.delegate = self.thumbnailViewDelegate;
     }
         
-//    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;            
-//    NMChannel *channel = [dataController.subscribedChannels objectAtIndex:index];
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     view.label.text = channel.title;
     [view.image setImageForChannel:channel];

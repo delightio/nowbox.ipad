@@ -11,6 +11,7 @@
 @implementation GridDataSource
 
 @synthesize gridView;
+@synthesize updatesEnabled;
 @synthesize managedObjectContext;
 @synthesize thumbnailViewDelegate;
 
@@ -19,6 +20,7 @@
     self = [super init];
     if (self) {
         self.gridView = aGridView;
+        self.updatesEnabled = YES;
         self.managedObjectContext = aManagedObjectContext;
         self.thumbnailViewDelegate = aThumbnailViewDelegate;
     }
@@ -39,7 +41,7 @@
     return nil;
 }
 
-- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+- (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
     // To be overriden by subclasses
 }
@@ -91,7 +93,9 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
 //    [gridView endUpdates];
-    [gridView reloadData];
+    if (updatesEnabled) {
+        [gridView reloadData];
+    }
 }
 
 @end
