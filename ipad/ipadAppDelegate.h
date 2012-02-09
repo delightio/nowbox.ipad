@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Analytics.h"
 #import "LaunchViewController.h"
+#import "FBConnect.h"
 
 extern NSString * const NM_CHANNEL_LAST_UPDATE;
 extern NSString * const NM_LAST_SESSION_DATE;

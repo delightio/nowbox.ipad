@@ -7,6 +7,7 @@
 //
 
 #import "NMDataType.h"
+#import <Accounts/Accounts.h>
 
 @class NMNetworkController;
 @class NMDataController;
@@ -15,6 +16,8 @@
 @class NMPreviewThumbnail;
 @class NMVideo;
 @class NMVideoDetail;
+@class NMAuthor;
+@class NMPersonProfile;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
 @class Reachability;
@@ -28,9 +31,11 @@
 	
 	// polling channel population status
 	NSTimer * channelPollingTimer;
-	NSTimer * pollingTimer;
+	NSTimer * youTubePollingTimer;
+	NSTimer * videoImportTimer;
 	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
+	NSTimer * socialChannelParsingTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
 	NSUInteger pollingRetryCount, channelPollingRetryCount;
@@ -44,12 +49,15 @@
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
 @property (nonatomic, retain) NSTimer * channelPollingTimer;
-@property (nonatomic, retain) NSTimer * pollingTimer;
+@property (nonatomic, retain) NSTimer * youTubePollingTimer;
+@property (nonatomic, retain) NSTimer * videoImportTimer;
 @property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
+@property (nonatomic, retain) NSTimer * socialChannelParsingTimer;
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 @property (nonatomic) BOOL syncInProgress;
 @property (nonatomic) BOOL appFirstLaunch;
+@property (nonatomic, readonly) ACAccountStore * accountStore;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 
@@ -105,7 +113,8 @@
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
-- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj;
+- (void)issueImportVideo:(NMVideo *)aVideo;
+- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMAuthor *)anAuthor;
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo;
 /*
  Refresh channels which user has subscribed but set hidden by the app. A channel is set hidden if it's a user/stream channel and it has no video.
@@ -123,8 +132,18 @@
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 
+// Facebook or Twitter (social)
+- (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
+- (void)issueGetMyFacebookProfile;
+- (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;
+- (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
+- (void)scheduleSyncSocialChannels;
+- (void)scheduleImportVideos;
+
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
+- (void)issueDebugProcessFeed;
+- (void)issueDebugImportYouTubeVideos;
 
 - (void)cancelAllTasks;
 @end

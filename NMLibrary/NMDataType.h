@@ -34,12 +34,12 @@ typedef enum {
 	NMCommandEditUserSettings,
 	NMCommandUserSynchronize,
 	NMCommandGetToken,
-//	NMCommandEditUser,
 	NMCommandPollUser,
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetMoreVideoForChannel,
 	NMCommandGetYouTubeDirectURL,
+	NMCommandImportYouTubeVideo,
 	NMCommandGetVimeoDirectURL,
 	NMCommandGetCategoryThumbnail,
 	NMCommandGetChannelThumbnail,
@@ -48,6 +48,10 @@ typedef enum {
 	NMCommandGetPreviewThumbnail,
 	NMCommandCheckUpdate,
 	NMCommandPostSharing,
+	NMCommandParseFacebookFeed,
+	NMCommandGetFacebookProfile,
+	NMCommandParseTwitterFeed,
+	NMCommandGetTwitterProfile,
 } NMCommand;
 
 typedef enum {
@@ -106,8 +110,20 @@ typedef enum {
 	NMLoginYouTubeType,
 } NMSocialLoginType;
 
+typedef enum {
+	NMVideoSourceYouTube		= 1,
+	NMVideoSourceVimeo,
+} NMVideoSourceType;
+
+typedef enum {
+	NMVideoDoesNotExist,
+	NMVideoExistsAndInChannel,
+	NMVideoExistsButNotInChannel,
+} NMVideoExistenceCheckResult;
+
 extern BOOL NM_WIFI_REACHABLE;
 extern NSString * NMServiceErrorDomain;
+extern NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR;
 // Notifications
 // error
 extern NSString * const NMShowErrorAlertNotification;
@@ -215,6 +231,9 @@ extern NSString * const NMDidFailGetFeaturedCategoriesNotification;
 extern NSString * const NMWillGetYouTubeDirectURLNotification;
 extern NSString * const NMDidGetYouTubeDirectURLNotification;
 extern NSString * const NMDidFailGetYouTubeDirectURLNotification;
+extern NSString * const NMWillImportYouTubeVideoNotification;
+extern NSString * const NMDidImportYouTubeVideoNotification;
+extern NSString * const NMDidFailImportYouTubeVideoNotification;
 extern NSString * const NMWillDownloadImageNotification;
 extern NSString * const NMDidDownloadImageNotification;
 extern NSString * const NMDidFailDownloadImageNotification;
@@ -222,11 +241,31 @@ extern NSString * const NMDidFailDownloadImageNotification;
 extern NSString * const NMTaskFailNotification;
 extern NSString * const NMDidFailSendEventNotification;
 
+// facebook
+extern NSString * const NMWillGetFacebookProfileNotification;
+extern NSString * const NMDidGetFacebookProfileNotification;
+extern NSString * const NMDidFailGetFacebookProfileNotification;
+extern NSString * const NMWillParseFacebookFeedNotification;
+extern NSString * const NMDidParseFacebookFeedNotification;
+extern NSString * const NMDidFailParseFacebookFeedNotification;
+
+// twitter
+extern NSString * const NMWillParseTwitterFeedNotification;
+extern NSString * const NMDidParseTwitterFeedNotification;
+extern NSString * const NMDidFailParseTwitterFeedNotification;
+extern NSString * const NMWillGetTwitterProfileNotification;
+extern NSString * const NMDidGetTwitterProfileNotification;
+extern NSString * const NMDidFailGetTwitterProfileNotification;
+
 // Entity names
 extern NSString * const NMCategoryEntityName;
 extern NSString * const NMChannelEntityName;
 extern NSString * const NMVideoEntityName;
 extern NSString * const NMVideoDetailEntityName;
+extern NSString * const NMConcreteVideoEntityName;
+extern NSString * const NMAuthorEntityName;
+extern NSString * const NMSubscriptionEntityName;
+extern NSString * const NMPersonProfileEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;

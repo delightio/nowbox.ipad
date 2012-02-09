@@ -56,10 +56,10 @@ extern NSString * const NMAuthTokenHeaderKey;
 
 - (void)prepareDataBuffer;
 - (void)clearDataBuffer;
-- (NSMutableURLRequest *)URLRequest;
+- (NSURLRequest *)URLRequest;
 - (void)processDownloadedDataInBuffer;
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl;
-- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict;
+//- (BOOL)checkDictionaryContainsError:(NSDictionary *)dict;
 - (NSInteger)commandIndex;
 
 - (NSString *)willLoadNotificationName;

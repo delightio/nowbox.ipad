@@ -7,7 +7,11 @@
 //
 
 #import "NMGetYouTubeDirectURLTask.h"
+#import "NMDataController.h"
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
+#import "NMVideoDetail.h"
+#import "NMAuthor.h"
 
 static NSString * const NMYouTubeUserAgent = @"Apple iPad v5.0 YouTube v1.0.0.9A5288d";
 static NSString * const NMYouTubeMobileBrowserAgent = @"Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3";
@@ -16,18 +20,59 @@ NSString * const NMWillGetYouTubeDirectURLNotification = @"NMWillGetYouTubeDirec
 NSString * const NMDidGetYouTubeDirectURLNotification = @"NMDidGetYouTubeDirectURLNotification";
 NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTubeDirectURLNotification";
 
+NSString * const NMWillImportYouTubeVideoNotification = @"NMWillImportYouTubeVideoNotification";
+NSString * const NMDidImportYouTubeVideoNotification = @"NMDidImportYouTubeVideoNotification";
+NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouTubeVideoNotification";
+
+static NSNumberFormatter * viewCountFormatter = nil;
+static NSDateFormatter * timeCreatedFormatter = nil;
+
 @implementation NMGetYouTubeDirectURLTask
 
 @synthesize video, externalID;
 @synthesize directSDURLString, directURLString;
+@synthesize videoInfoDict, authorDict;
+
++ (id)dateFromTimeCreatedString:(NSString *)dateStr {
+	if ( dateStr == nil || [dateStr length] == 0 ) return [NSNull null];
+	if ( timeCreatedFormatter == nil ) {
+		timeCreatedFormatter = [[NSDateFormatter alloc] init];
+		[timeCreatedFormatter setDateFormat:@"MMM dd, yyyy"];
+		[timeCreatedFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+	}
+	return [timeCreatedFormatter dateFromString:dateStr];
+}
+
++ (id)numberFromViewCountString:(NSString *)cntStr {
+	if ( cntStr == nil || [cntStr length] == 0 ) return [NSNull null];
+	if ( viewCountFormatter == nil ) {
+		viewCountFormatter = [[NSNumberFormatter alloc] init];
+		[viewCountFormatter setPositiveFormat:@"#,###"];
+		[viewCountFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease]];
+	}
+	return [viewCountFormatter numberFromString:cntStr];
+}
 
 - (id)initWithVideo:(NMVideo *)vdo {
 	self = [super init];
 	
 	command = NMCommandGetYouTubeDirectURL;
 	self.video = vdo;
-	self.externalID = vdo.external_id;
-	self.targetID = vdo.nm_id;
+	self.externalID = vdo.video.external_id;
+	self.targetID = vdo.video.nm_id;
+	// the task saveProcessedDataInController: method will still be executed when there's resolution error
+	executeSaveActionOnError = YES;
+	
+	return self;
+}
+
+- (id)initImportVideo:(NMVideo *)vdo {
+	self = [super init];
+	
+	command = NMCommandImportYouTubeVideo;
+	self.video = vdo;
+	self.externalID = vdo.video.external_id;
+	self.targetID = vdo.video.nm_id;
 	// the task saveProcessedDataInController: method will still be executed when there's resolution error
 	executeSaveActionOnError = YES;
 	
@@ -39,30 +84,31 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	[externalID release];
 	[directURLString release];
 	[directSDURLString release];
+	[authorDict release];
+	[videoInfoDict release];
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSInteger)commandIndex {
+	NSInteger idx = 0;
+	if ( command == NMCommandImportYouTubeVideo ) {
+		// use custom command index method
+		idx = ABS((NSInteger)[externalID hash]);
+		NSLog(@"command hash %d", idx);
+	} else {
+		idx = [super commandIndex];
+	}
+	return idx;
+}
+
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr;
 	NSMutableURLRequest * theRequest;
-//	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
-		urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?ajax=1&layout=tablet&tsp=1&v=%@", externalID];
-		theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
-		[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
-		[theRequest setValue:@"en-us" forHTTPHeaderField:@"Accept-Language"];
-		[theRequest setValue:NMYouTubeMobileBrowserAgent forHTTPHeaderField:@"User-Agent"];
-//	} else {
-//		urlStr = [NSString stringWithFormat:@"http://gdata.youtube.com/feeds/api/videos/%@?alt=json&format=2,3,8,9", externalID];
-//		theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
-//		
-//		[theRequest setValue:NMYouTubeUserAgent forHTTPHeaderField:@"User-Agent"];
-//		[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
-//		[theRequest setValue:@"en-us,en;q=0.5" forHTTPHeaderField:@"Accept-Language"];
-//		[theRequest setValue:@"2" forHTTPHeaderField:@"GData-Version"];
-//		[theRequest setValue:@"ytapi-apple-ipad" forHTTPHeaderField:@"X-GData-Client"];
-//		// iPad 2 - iOS 5 beta 7
-//		[theRequest setValue:@"AIwbFAQnQEpiZxQ0Payjh_yBYxYpu1_blFsXxw4CuiDFAFczVD-1N2Ibmo6k-8zezbXMO36Dt6Y1lUmeAtA21Hd1vIcywt9l4M4rEfe7xA-nGB4ASOC8T_-2IO6yUs3hMJXjKwdtlrOy2-WBbSq50MYSZaq3D3FIsnlo04fSlooMK0PxhCckM1k" forHTTPHeaderField:@"X-YouTube-DeviceAuthToken"];
-//	}
+	urlStr = [NSString stringWithFormat:@"http://m.youtube.com/watch?ajax=1&layout=tablet&tsp=1&v=%@", externalID];
+	theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+	[theRequest setValue:@"*/*" forHTTPHeaderField:@"Accept"];
+	[theRequest setValue:@"en-us" forHTTPHeaderField:@"Accept-Language"];
+	[theRequest setValue:NMYouTubeMobileBrowserAgent forHTTPHeaderField:@"User-Agent"];
 	[theRequest setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
 
 	return theRequest;
@@ -75,7 +121,6 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		self.errorInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:NMErrorNoData] forKey:@"error_code"];
 		return;
 	}
-//	if ( NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION ) {
 	NSString * resultString = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding];
 	// remove odd begin pattern in the JSON source from YouTube
 	NSString * cleanResultStr =[resultString stringByReplacingOccurrencesOfString:@")]}'" withString:@"" options:0 range:NSMakeRange(0, 5)];
@@ -101,6 +146,34 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 		encountersErrorDuringProcessing = YES;
 		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"reason", [NSNumber numberWithInteger:NMErrorNoData], @"error_code", video, @"target_object", nil];
 		return;
+	}
+	if ( command == NMCommandImportYouTubeVideo ) {
+		NSDictionary * srcVdoDict = [contentDict objectForKey:@"video"];
+		// the import process will first create the concrete video and video objects. There's no need to recreate them here
+		// create author
+		self.authorDict = [NSMutableDictionary dictionaryWithCapacity:4];
+		[authorDict setObject:[srcVdoDict objectForKey:@"public_name"] forKey:@"username"];
+		NSString * urlStr = [srcVdoDict objectForKey:@"profile_url"];
+		NSRange rng = [urlStr rangeOfString:@"youtube.com"];
+		if ( rng.location == NSNotFound ) {
+			[authorDict setObject:[NSString stringWithFormat:@"http://www.youtube.com%@", [srcVdoDict objectForKey:@"profile_url"]] forKey:@"profile_uri"];
+		} else {
+			[authorDict setObject:[srcVdoDict objectForKey:@"profile_url"] forKey:@"profile_uri"];
+		}
+		[authorDict setObject:[srcVdoDict objectForKey:@"user_image_url"] forKey:@"thumbnail_uri"];
+		// save extra informaiton
+		self.videoInfoDict = [NSMutableDictionary dictionaryWithCapacity:4];
+		@try {
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"title"] forKey:@"title"];
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
+			[videoInfoDict setObject:[NMGetYouTubeDirectURLTask dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
+			[videoInfoDict setObject:[NMGetYouTubeDirectURLTask numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
+			[videoInfoDict setObject:[srcVdoDict objectForKey:@"description"] forKey:@"nm_description"];
+		}
+		@catch (NSException *exception) {
+			// some attribute is probably null
+		}
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
@@ -138,30 +211,66 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	NMConcreteVideo * targetVideo = video.video;
+	if ( command == NMCommandImportYouTubeVideo ) {
+		if ( encountersErrorDuringProcessing ) {
+			// there's error in resolution, we should delete the video altogetheric
+			[ctrl deleteManagedObject:targetVideo];
+		} else {
+			// detail Video
+			NMVideoDetail * dtlObj = targetVideo.detail;
+			if ( dtlObj == nil ) {
+				dtlObj = [ctrl insertNewVideoDetail];
+				targetVideo.detail = dtlObj;
+			}
+			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
+			[videoInfoDict removeObjectForKey:@"nm_description"];
+			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+			// update Concrete Video
+			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
+			// author
+			BOOL isNew;
+			NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
+			if ( isNew ) {
+				[arObj setValuesForKeysWithDictionary:authorDict];
+			}
+			targetVideo.author = arObj;
+			// In some ways, setting the session here purposely make the NMVideo object dirty. Then, when we save the MOC, the NSFetchedResultsController that owns the channel video row will get notified for change.
+			video.nm_session_id = NM_SESSION_ID;
+		}
+	}
 	if ( encountersErrorDuringProcessing ) {
-		NSLog(@"direct URL resolution failed: %@", video.title);
-		video.nm_direct_url = nil;
-		video.nm_direct_sd_url = nil;
-		video.nm_error = [self.errorInfo objectForKey:@"error_code"];
-		video.nm_playback_status = NMVideoQueueStatusError;
+		targetVideo.nm_direct_url = nil;
+		targetVideo.nm_direct_sd_url = nil;
+		targetVideo.nm_error = [self.errorInfo objectForKey:@"error_code"];
+		targetVideo.nm_playback_status = NMVideoQueueStatusError;
 	} else {
-		video.nm_direct_url = directURLString;
-		video.nm_direct_sd_url = directSDURLString;
-		video.nm_direct_url_expiry = expiryTime;
-		video.nm_playback_status = NMVideoQueueStatusDirectURLReady;
+		targetVideo.nm_direct_url = directURLString;
+		targetVideo.nm_direct_sd_url = directSDURLString;
+		targetVideo.nm_direct_url_expiry = expiryTime;
+		targetVideo.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 	}
 	return NO;
 }
 
 - (NSString *)willLoadNotificationName {
+	if ( command == NMCommandImportYouTubeVideo ) {
+		return NMWillImportYouTubeVideoNotification;
+	}
 	return NMWillGetYouTubeDirectURLNotification;
 }
 
 - (NSString *)didLoadNotificationName {
+	if ( command == NMCommandImportYouTubeVideo ) {
+		return NMDidImportYouTubeVideoNotification;
+	}
 	return NMDidGetYouTubeDirectURLNotification;
 }
 
 - (NSString *)didFailNotificationName {
+	if ( command == NMCommandImportYouTubeVideo ) {
+		return NMDidFailImportYouTubeVideoNotification;
+	}
 	return NMDidFailGetYouTubeDirectURLNotification;
 }
 
@@ -169,7 +278,13 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	if ( encountersErrorDuringProcessing ) {
 		return errorInfo;
 	}
-	return directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
+	NSDictionary * theDict;
+	if ( command == NMCommandImportYouTubeVideo ) {
+		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", video.channel, @"channel", nil] : nil;
+	} else {
+		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
+	}
+	return theDict;
 }
 
 @end

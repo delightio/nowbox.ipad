@@ -188,6 +188,26 @@
 	NSLog(@"movie view info: %f %f scroll view: %f no. of videos: %d", theFrame.origin.x, alpha, playbackViewController.controlScrollView.contentOffset.x, [thePlayer.items count]);
 }
 
+- (IBAction)parseFacebookFeed:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueDebugProcessFeed];
+}
+
+- (IBAction)getFacebookProfile:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueGetMyFacebookProfile];
+}
+
+- (IBAction)importYouTube:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issueDebugImportYouTubeVideos];
+}
+
+- (IBAction)subscribeFirstAvailablePerson:(id)sender {
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	// get the first available person
+	NMPersonProfile * thePerson = [tqc.dataController firstAvailablePersonProfile];
+	// subscribe to his/her feed
+	if ( thePerson ) [tqc issueSubscribePerson:thePerson];
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

@@ -457,7 +457,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         NMVideo * theVideo = [htView.tableController.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
 //        NSLog(@"%@ %d", [theVideo title], theVideo.nm_playback_status);
 		// only play video in that channel which has not been played before
-        if ( theVideo.nm_playback_status >= 0 && !([theVideo.nm_did_play boolValue]) ) {
+        if ( theVideo.video.nm_playback_status >= 0 && !([theVideo.video.nm_did_play boolValue]) ) {
             [htView.tableController playVideoForIndexPath:[NSIndexPath indexPathForRow:i inSection:0] sender:aTableView];
             break;
         }
@@ -698,7 +698,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
     highlightedChannel = [newVideo channel];
-    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:[newVideo channel]];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
     [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 

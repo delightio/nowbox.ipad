@@ -11,11 +11,10 @@
 @interface NMCachedImageView : UIImageView {
 	NMCacheController * cacheController;
 	NMImageDownloadTask * downloadTask;
-//	NSNotificationCenter * notificationCenter;
 	NMCategory * category;
 	NMChannel * channel;
 	NMVideo * video;
-	NMVideoDetail * videoDetail;
+	NMAuthor * author;
 	NMPreviewThumbnail * previewThumbnail;
 }
 
@@ -23,12 +22,12 @@
 @property (nonatomic, retain) NMCategory * category;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMVideo * video;
-@property (nonatomic, retain) NMVideoDetail * videoDetail;
+@property (nonatomic, retain) NMAuthor * author;
 @property (nonatomic, retain) NMPreviewThumbnail * previewThumbnail;
 @property (nonatomic, assign) BOOL adjustsImageOnHighlight;
 
 - (void)setImageForChannel:(NMChannel *)chn;
-- (void)setImageForAuthorThumbnail:(NMVideoDetail *)dtl;
+- (void)setImageForAuthorThumbnail:(NMAuthor *)anAuthor;
 - (void)setImageForVideoThumbnail:(NMVideo *)vdo;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (void)setImageForCategory:(NMCategory *)cat;

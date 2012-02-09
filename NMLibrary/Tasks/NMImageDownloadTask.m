@@ -12,7 +12,9 @@
 #import "NMChannel.h"
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
+#import "NMConcreteVideo.h"
 #import "NMVideoDetail.h"
+#import "NMAuthor.h"
 
 NSString * const NMWillDownloadImageNotification = @"NMWillDownloadImageNotification";
 NSString * const NMDidDownloadImageNotification = @"NMDidDownloadImageNotification";
@@ -23,7 +25,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 @synthesize category;
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
-@synthesize image, video, videoDetail;
+@synthesize image, video, author;
 @synthesize externalID, previewThumbnail;
 
 + (NSInteger)commandIndexForCategory:(NMCategory *)cat {
@@ -36,13 +38,13 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return tid << 6 | NMCommandGetChannelThumbnail;
 }
 
-+ (NSInteger)commandIndexForAuthor:(NMVideoDetail *)dtl {
-	NSInteger tid = [dtl.author_id unsignedIntegerValue];
++ (NSInteger)commandIndexForAuthor:(NMAuthor *)anAuthor {
+	NSInteger tid = [anAuthor.nm_id unsignedIntegerValue];
 	return tid << 6 | NMCommandGetAuthorThumbnail;
 }
 
 + (NSInteger)commandIndexForVideo:(NMVideo *)vdo {
-	NSInteger tid = [vdo.nm_id unsignedIntegerValue];
+	NSInteger tid = [vdo.video.nm_id unsignedIntegerValue];
 	return tid << 6 | NMCommandGetVideoThumbnail;
 }
 
@@ -79,14 +81,14 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return self;
 }
 
-- (id)initWithAuthor:(NMVideoDetail *)dtl {
+- (id)initWithAuthor:(NMAuthor *)anAuthor {
 	self = [super init];
 	
 	cacheController = [NMCacheController sharedCacheController];
-	self.imageURLString = dtl.author_thumbnail_uri;
-	self.originalImagePath = dtl.nm_author_thumbnail_file_name;
-	self.videoDetail = dtl;
-	self.targetID = dtl.author_id;
+	self.imageURLString = anAuthor.thumbnail_uri;
+	self.originalImagePath = anAuthor.nm_thumbnail_file_name;
+	self.author = anAuthor;
+	self.targetID = anAuthor.nm_id;
 	command = NMCommandGetAuthorThumbnail;
 	retainCount = 1;
 	
@@ -97,12 +99,12 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self = [super init];
 	
 	cacheController = [NMCacheController sharedCacheController];
-	self.imageURLString = vdo.thumbnail_uri;
+	self.imageURLString = vdo.video.thumbnail_uri;
 	// we do not store the image in cache for now.
 	// self.originalImagePath = nil;
 	self.video = vdo;
-	self.targetID = vdo.nm_id;
-	self.externalID = vdo.external_id;
+	self.targetID = vdo.video.nm_id;
+	self.externalID = vdo.video.external_id;
 	command = NMCommandGetVideoThumbnail;
 	retainCount = 1;
 
@@ -145,12 +147,12 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	[category release];
 	[channel release];
 	[video release];
-	[videoDetail release];
+	[author release];
 	[externalID release];
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 #ifdef DEBUG_IMAGE_CACHE
 	NSLog(@"Image URL: %@ cmd: %d", imageURLString, command);
 #endif
@@ -217,7 +219,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	if ( originalImagePath == nil ) {
 		switch (command) {
 			case NMCommandGetAuthorThumbnail:
-				videoDetail.nm_author_thumbnail_file_name = [self suggestedFilename];
+				author.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
 				
 			case NMCommandGetChannelThumbnail:
@@ -229,7 +231,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 				break;
 				
 			case NMCommandGetVideoThumbnail:
-				video.nm_thumbnail_file_name = [self suggestedFilename];
+				video.video.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
 				
 			case NMCommandGetPreviewThumbnail:
@@ -259,7 +261,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 - (NSDictionary *)userInfo {
 	switch (command) {
 		case NMCommandGetAuthorThumbnail:
-			return [NSDictionary dictionaryWithObjectsAndKeys:videoDetail, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
+			return [NSDictionary dictionaryWithObjectsAndKeys:author, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
 			
 		case NMCommandGetChannelThumbnail:
 			return [NSDictionary dictionaryWithObjectsAndKeys:channel, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];

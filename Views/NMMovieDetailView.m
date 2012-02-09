@@ -88,11 +88,11 @@
 	theLayer.cornerRadius = 10.0f;
 }
 
-- (void)setVideo:(NMVideo *)aVideo {
-	if ( aVideo && aVideo != video_ ) {
+- (void)setVideo:(NMVideo *)vdo {
+	if ( vdo && vdo != video_ ) {
 		// assigned property. no need to retain
-		video_ = aVideo;
-	} else if ( aVideo == nil ) {
+		video_ = vdo;
+	} else if ( vdo == nil ) {
 		video_ = nil;
 		
 		// reset the view
@@ -112,40 +112,40 @@
 		NSLog(@"movie detail view did nothing");
 		return;
 	}
+	NMConcreteVideo * realVideo = vdo.video;
 	// video info - try to show the whole title, max three lines
 	CGRect theRect = titleLabel.frame;
-	theRect.size = [aVideo.title sizeWithFont:titleLabel.font constrainedToSize:titleMaxSize];
+	theRect.size = [realVideo.title sizeWithFont:titleLabel.font constrainedToSize:titleMaxSize];
 	titleLabel.frame = theRect;
 	
-	titleLabel.text = aVideo.title;
+	titleLabel.text = realVideo.title;
 	// update the view with the video's attribute
-	NMVideoDetail * dtlObj = aVideo.detail;
 	
 	CGFloat titleHeightDiff = theRect.size.height - titleDefaultFrame.size.height;
 	
 	// other info
 	CGPoint thePoint = otherInfoDefaultPosition;
 	thePoint.y += titleHeightDiff;
-	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  %@ views", [style.videoDateFormatter stringFromDate:aVideo.published_at], [style.viewCountFormatter stringFromNumber:aVideo.view_count]];
+	otherInfoLabel.text = [NSString stringWithFormat:@"%@  |  %@ views", [style.videoDateFormatter stringFromDate:realVideo.published_at], [style.viewCountFormatter stringFromNumber:realVideo.view_count]];
 	otherInfoLabel.center = thePoint;
 	
 	// author info
-	[authorThumbnailView setImageForAuthorThumbnail:dtlObj];
-	authorLabel.text = dtlObj.author_username;
+	[authorThumbnailView setImageForAuthorThumbnail:realVideo.author];
+	authorLabel.text = realVideo.author.username;
 	
 	// movie thumbnail
 	thumbnailContainerView.alpha = 1.0f;
 	[self setActivityViewHidden:YES];
-	[movieThumbnailView setImageForVideoThumbnail:aVideo];
+	[movieThumbnailView setImageForVideoThumbnail:vdo];
 	
 	// set position of the description
-	if ( aVideo.detail.nm_description ) {
+	if ( realVideo.detail.nm_description ) {
 		CGRect theFrame = descriptionDefaultFrame;
 		theFrame.size.height -= titleHeightDiff;
 		theFrame.origin.y += titleHeightDiff;
-		theFrame.size = [aVideo.detail.nm_description sizeWithFont:descriptionLabel.font constrainedToSize:theFrame.size];
+		theFrame.size = [realVideo.detail.nm_description sizeWithFont:descriptionLabel.font constrainedToSize:theFrame.size];
 		descriptionLabel.frame = theFrame;
-		descriptionLabel.text = aVideo.detail.nm_description;
+		descriptionLabel.text = realVideo.detail.nm_description;
 		
 	} else {
 		descriptionLabel.text = @"";

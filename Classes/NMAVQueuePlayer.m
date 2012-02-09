@@ -48,13 +48,13 @@
 		[playbackDelegate player:self observePlayerItem:item];
 		
 		[self insertItem:item afterItem:nil];
-		vid.nm_playback_status = NMVideoQueueStatusQueued;
+		vid.video.nm_playback_status = NMVideoQueueStatusQueued;
 	}
 }
 
 - (void)insertVideo:(NMVideo *)vid afterItem:(NMAVPlayerItem *)anItem {
 	// insert the video and delete the item
-	NMAVPlayerItem * targetItem = vid.nm_player_item;
+	NMAVPlayerItem * targetItem = vid.video.nm_player_item;
 	if ( targetItem == nil ) {
 		targetItem = [vid createPlayerItem];
 		if ( targetItem == nil ) return;
@@ -83,27 +83,28 @@
 
 #pragma mark Public interface
 - (void)advanceToVideo:(NMVideo *)aVideo {
+	NMConcreteVideo * realVideo = aVideo.video;
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"advanceToVideo: %@ %d %d - will delay call", aVideo.title, aVideo.nm_playback_status, self.currentItem == nil);
+	NSLog(@"advanceToVideo: %@ %d %d - will delay call", realVideo.title, realVideo.nm_playback_status, self.currentItem == nil);
 #endif
 //	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	NMAVPlayerItem * curItem = (NMAVPlayerItem *)self.currentItem;
 	if ( curItem == nil ) {
 		// queue this item
-		if ( aVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+		if ( realVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 			[self insertVideoToEndOfQueue:aVideo];
 		} else {
-			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+			[self performSelector:@selector(requestResolveVideo:) withObject:realVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 		}
 	} else {
 		[playbackDelegate player:self stopObservingPlayerItem:curItem];
-		curItem.nmVideo.nm_player_item = nil;
+		curItem.nmVideo.video.nm_player_item = nil;
 		curItem.nmVideo = nil;
 		[self advanceToNextItem];
-		if ( aVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+		if ( realVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 			[self play];
 		} else {
-			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+			[self performSelector:@selector(requestResolveVideo:) withObject:realVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 		}
 //		[playbackDelegate player:self stopObservingPlayerItem:curItem];
 //		curItem.nmVideo.nm_player_item = nil;
@@ -117,15 +118,15 @@
 
 - (void)revertToVideo:(NMVideo *)aVideo {
 //	[NSObject cancelPreviousPerformRequestsWithTarget:self];
-	if ( aVideo.nm_playback_status <= NMVideoQueueStatusResolvingDirectURL ) {
+	if ( aVideo.video.nm_playback_status <= NMVideoQueueStatusResolvingDirectURL ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"revertToVideo: %@ - cancel and delay call", aVideo.title);
+		NSLog(@"revertToVideo: %@ - cancel and delay call", aVideo.video.title);
 #endif
 		// we need to resolve the direct URL
 		[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 	} else {
 #ifdef DEBUG_PLAYER_NAVIGATION
-		NSLog(@"revertToVideo: %@ - delay revert to video", aVideo.title);
+		NSLog(@"revertToVideo: %@ - delay revert to video", aVideo.video.title);
 #endif
 		[self performSelector:@selector(delayedRevertToVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 	}
@@ -139,7 +140,7 @@
 
 - (void)resolveAndQueueVideo:(NMVideo *)vid {
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"resolveAndQueueVideo: %@ - no delay call", vid.title);
+	NSLog(@"resolveAndQueueVideo: %@ - no delay call", vid.video.title);
 #endif
 	[self performSelector:@selector(requestResolveVideo:) withObject:vid afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 }
@@ -148,7 +149,7 @@
 - (void)delayedRevertToVideo:(NMVideo *)aVideo {
 	NMAVPlayerItem * item = [aVideo createPlayerItem];
 	if ( item && [self revertPreviousItem:item] ) {
-		aVideo.nm_playback_status = NMVideoQueueStatusQueued;
+		aVideo.video.nm_playback_status = NMVideoQueueStatusQueued;
 	}
 }
 
@@ -166,7 +167,7 @@
 		if ( cItem && [self canInsertItem:cItem afterItem:self.currentItem] ) {
 #ifdef DEBUG_PLAYER_NAVIGATION
 			NMAVPlayerItem * vidItem = (NMAVPlayerItem *)anItem;
-			NSLog(@"revertPreviousItem: re-insert original item back to the queue player: %@", vidItem.nmVideo.title);
+			NSLog(@"revertPreviousItem: re-insert original item back to the queue player: %@", vidItem.nmVideo.video.title);
 #endif
 			[self insertItem:cItem afterItem:self.currentItem];
 			insertStatus = YES;
@@ -183,8 +184,8 @@
 
 - (void)requestResolveVideo:(NMVideo *)vid {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"issue resolution request - %@, status - %d %@", vid.title, vid.nm_playback_status, [vid objectID]);
-	if ( vid.title == nil ) {
+	NSLog(@"issue resolution request - %@, status - %d %@", vid.video.title, vid.video.nm_playback_status, [vid.video objectID]);
+	if ( vid.video.title == nil ) {
 		NSLog(@"null video title?");
 	}
 #endif
@@ -194,14 +195,14 @@
 //		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 //		[nowboxTaskController issueGetDirectURLForVideo:vid];
 //	} 
-	NMVideoQueueStatusType vidType = vid.nm_playback_status;
+	NMVideoQueueStatusType vidType = vid.video.nm_playback_status;
 	if ( vidType > NMVideoQueueStatusResolvingDirectURL ) {
 		[self queueVideo:vid];
 		if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
 			[playbackDelegate player:self willBeginPlayingVideo:vid];
 		}
 	} else if ( vidType >= 0 ) {
-		vid.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
+		vid.video.nm_playback_status = NMVideoQueueStatusResolvingDirectURL;
 		[nowboxTaskController issueGetDirectURLForVideo:vid];
 	}
 	// task queue controller will check if there's an existing task for this
@@ -215,7 +216,7 @@
 		[self removeItem:theItem];
 		// when removing a video item from the queue player, queue player will change the "current item". i.e. triggering the KVO method.
 		// We need to reset the status of the video object again here.
-		vdo.nm_playback_status  = NMVideoQueueStatusNone;
+		vdo.video.nm_playback_status  = NMVideoQueueStatusNone;
 		[self performSelector:@selector(requestResolveVideo:) withObject:vdo afterDelay:0.25];
 		[vdo release];
 	}
@@ -257,11 +258,11 @@
 				[self play];
 				// insert other videos
 				otherVideo = [playbackDelegate nextVideoForPlayer:self];
-				if ( otherVideo && otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+				if ( otherVideo && otherVideo.video.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 					[self insertVideoToEndOfQueue:otherVideo];
 					
 					otherVideo = [playbackDelegate nextNextVideoForPlayer:self];
-					if ( otherVideo && otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+					if ( otherVideo && otherVideo.video.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 						[self insertVideoToEndOfQueue:otherVideo];
 					}
 				}
@@ -284,7 +285,7 @@
 				[self insertVideoToEndOfQueue:vid];
 				
 				otherVideo = [playbackDelegate nextNextVideoForPlayer:self];
-				if ( otherVideo && otherVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
+				if ( otherVideo && otherVideo.video.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 					[self insertVideoToEndOfQueue:otherVideo];
 				}
 			}
@@ -311,7 +312,7 @@
 
 				// we wanna play the current video while there's already videos in the queue. This indicates user has scrolled back to the previous video
 					NMAVPlayerItem * otherItem = [queuedItems objectAtIndex:1];
-					if ( otherItem.nmVideo != [playbackDelegate nextNextVideoForPlayer:self] ) {
+					if ( ![otherItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
 						// remove
 						[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 						[self removeItem:otherItem];
@@ -353,7 +354,7 @@
 					}
 				} else {
 					NMAVPlayerItem * otherItem = [queuedItems objectAtIndex:1];
-					if ( otherItem.nmVideo != [playbackDelegate nextNextVideoForPlayer:self] ) {
+					if ( ![otherItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
 						// remove
 						[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 						[self removeItem:otherItem];
@@ -373,9 +374,9 @@
 #pragma mark Notification Handler
 - (void)handleDidGetDirectURLNotification:(NSNotification *)aNotification {
 	NMVideo * vid = [[aNotification userInfo] objectForKey:@"target_object"];
-	vid.nm_playback_status = NMVideoQueueStatusDirectURLReady;
+	vid.video.nm_playback_status = NMVideoQueueStatusDirectURLReady;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"resolved: %@", vid.title);
+	NSLog(@"resolved: %@", vid.video.title);
 #endif
 	[self queueVideo:vid];
 	if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {

@@ -10,6 +10,8 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
+#import "NMConcreteVideo.h"
+#import "NMAuthor.h"
 #import "NMDataController.h"
 #import "NMTaskQueueController.h"
 
@@ -34,7 +36,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {
-		sharedVideoDirectJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"duration", @"source", @"external_id", @"view_count", nil];
+		sharedVideoDirectJSONKeys = [[NSArray alloc] initWithObjects:@"title", @"duration", @"external_id", @"view_count", nil];
 	}
 	
 	return sharedVideoDirectJSONKeys;
@@ -53,8 +55,8 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	for (NSString * theKey in allKeys) {
 		[mdict setObject:[dict objectForKey:theKey] forKey:theKey];
 	}
+	[mdict setObject:[NSNumber numberWithInteger:NMVideoSourceYouTube] forKey:@"source"];
 	[mdict setObject:[dict objectForKey:@"id"] forKey:@"nm_id"];
-	[mdict setObject:NM_SESSION_ID forKey:@"nm_session_id"];
 	[mdict setObject:[NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"published_at"] floatValue]] forKey:@"published_at"];
 	NSString * thumbURL = [dict objectForKey:@"thumbnail_uri"];
 	if ( thumbURL == nil || [thumbURL isEqualToString:@""] ) {
@@ -67,30 +69,24 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 
 + (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict {
 	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:4];
-	[mdict setObject:[dict valueForKeyPath:@"author.id"] forKey:@"author_id"];
-	[mdict setObject:[dict valueForKeyPath:@"author.username"] forKey:@"author_username"];
-	[mdict setObject:[dict valueForKeyPath:@"author.profile_uri"] forKey:@"author_profile_uri"];
 	[mdict setObject:[dict objectForKey:@"description"] forKey:@"nm_description"];
-	// author thumbnail
-	NSString * thumbURL = [dict valueForKeyPath:@"author.thumbnail_uri"];
-	if ( thumbURL == nil || [thumbURL isEqual:@""] ) {
-		[mdict setObject:[NSNull null] forKey:@"author_thumbnail_uri"];
-	} else {
-		[mdict setObject:thumbURL forKey:@"author_thumbnail_uri"];
-	}
 	return mdict;
 }
 
-//- (id)initWithChannel:(NMChannel *)aChn {
-//	self = [super init];
-//	command = NMCommandGetChannelVideoList;
-//	self.channel = aChn;
-//	self.channelName = aChn.title;
-//	self.targetID = aChn.nm_id;
-//	self.urlString = aChn.resource_uri;
-//	totalNumberOfRows = 0;
-//	return self;
-//}
++ (NSMutableDictionary *)normalizeAuthorDictionary:(NSDictionary *)dict {
+	NSMutableDictionary * mdict = [NSMutableDictionary dictionaryWithCapacity:4];
+	[mdict setObject:[dict valueForKeyPath:@"author.id"] forKey:@"nm_id"];
+	[mdict setObject:[dict valueForKeyPath:@"author.username"] forKey:@"username"];
+	[mdict setObject:[dict valueForKeyPath:@"author.profile_uri"] forKey:@"profile_uri"];
+	// author thumbnail
+	NSString * thumbURL = [dict valueForKeyPath:@"author.thumbnail_uri"];
+	if ( thumbURL == nil || [thumbURL isEqual:@""] ) {
+		[mdict setObject:[NSNull null] forKey:@"thumbnail_uri"];
+	} else {
+		[mdict setObject:thumbURL forKey:@"thumbnail_uri"];
+	}
+	return mdict;
+}
 
 - (id)initGetMoreVideoForChannel:(NMChannel *)aChn {
 	self = [super init];
@@ -100,7 +96,6 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
 	currentPage = [aChn.nm_current_page integerValue];
-	totalNumberOfRows = 0;
 	return self;
 }
 
@@ -108,11 +103,14 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	[channelName release];
 	[channel release];
 	[parsedDetailObjects release];
+	[parsedAuthorObjects release];
+	[authorMOCache release];
+	[authorCache release];
 	[urlString release];
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = nil;
 #ifdef DEBUG_CHANNEL
 	if ( [targetID integerValue] == 999999 ) {
@@ -141,104 +139,154 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	numberOfRowsFromServer = [chVideos count];
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
 	parsedDetailObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
+	parsedAuthorObjects = [[NSMutableArray alloc] initWithCapacity:numberOfRowsFromServer];
+	authorCache = [[NSMutableDictionary alloc] initWithCapacity:4];
 	NSMutableDictionary * mdict;
 //	NSInteger idx = 0;
 	NSDictionary * dict;
+	NSDictionary * authorDict;
+	NSNumber * authorID;
 	for (NSDictionary * parentDict in chVideos) {
 		for (NSString * theKey in parentDict) {
 			dict = [parentDict objectForKey:theKey];
 			mdict = [NMGetChannelVideoListTask normalizeVideoDictionary:dict];
-//			[mdict setObject:[NSNumber numberWithInteger:idx++] forKey:@"nm_sort_order"];
-			[mdict setObject:NM_SESSION_ID forKey:@"nm_session_id"];
 			[parsedObjects addObject:mdict];
 			[parsedDetailObjects addObject:[NMGetChannelVideoListTask normalizeDetailDictionary:dict]];
+			authorID = [dict valueForKeyPath:@"author.id"];
+			[parsedAuthorObjects addObject:authorID];
+			authorDict = [authorCache objectForKey:authorID];
+			if ( authorDict == nil ) {
+				// parse the complete author info
+				[authorCache setObject:[NMGetChannelVideoListTask normalizeAuthorDictionary:dict] forKey:authorID];
+			}
 		}
 	}
 	
 }
 
-- (void)insertAllVideosInController:(NMDataController *)ctrl {
-	NSMutableDictionary * dict;
-	NMVideo * vidObj;
-	NMVideoDetail * dtlObj;
-	NSUInteger vidCount = 0;
-	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
-	NSNumber * yesNum = [NSNumber numberWithBool:YES];
-	for (dict in parsedObjects) {
-		vidObj = [ctrl insertNewVideo];
-		[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
-		[vidObj setValuesForKeysWithDictionary:dict];
-		if ( isFavoriteChannel ) {
-			vidObj.nm_favorite = yesNum;
-		}
-		if ( isWatchLaterChannel ) {
-			vidObj.nm_watch_later = yesNum;
-		}
-		// channel
-		vidObj.channel = channel;
-		// video detail
-		dtlObj = [ctrl insertNewVideoDetail];
-		dict = [parsedDetailObjects objectAtIndex:vidCount];
-		[dtlObj setValuesForKeysWithDictionary:dict];
-		dtlObj.video = vidObj;
-		
-		vidCount++;
+//- (void)insertAllVideosInController:(NMDataController *)ctrl {
+//	NSMutableDictionary * dict;
+//	NMConcreteVideo * realVidObj;
+//	NMVideoDetail * dtlObj;
+//	NMVideo * infoObj;
+//	NSUInteger vidCount = 0;
+//	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
+//	for (dict in parsedObjects) {
+//		realVidObj = [ctrl insertNewConcreteVideo];
+//		[realVidObj setValuesForKeysWithDictionary:dict];
+//		if ( isFavoriteChannel ) {
+//			realVidObj.nm_favorite = (NSNumber *)kCFBooleanTrue;
+//		}
+//		if ( isWatchLaterChannel ) {
+//			realVidObj.nm_watch_later = (NSNumber *)kCFBooleanTrue;
+//		}
+//		// channel-video
+//		infoObj = [ctrl insertNewVideo];
+//		infoObj.channel = channel;
+//		infoObj.video = realVidObj;
+//		infoObj.nm_session_id = NM_SESSION_ID;
+//		infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
+//		// video detail
+//		dtlObj = [ctrl insertNewVideoDetail];
+//		dict = [parsedDetailObjects objectAtIndex:vidCount];
+//		[dtlObj setValuesForKeysWithDictionary:dict];
+//		dtlObj.video = realVidObj;
+//		
+//		vidCount++;
+//	}
+//	channel.nm_hidden = [NSNumber numberWithBool:NO];
+//	numberOfVideoAdded = [parsedObjects count];
+//	totalNumberOfRows = numberOfVideoAdded + [channel.videos count];
+//}
+
+- (NMAuthor *)prepareAuthorWithID:(NSNumber *)authID info:(NSDictionary *)authDict controller:(NMDataController *)ctrl {
+	NMAuthor * theAuthor = [authorMOCache objectForKey:authID];
+	if ( theAuthor == nil ) {
+		// can't find it in local cache
+		theAuthor = [ctrl authorForID:authID orName:[authDict objectForKey:@"username"]];
+		if ( theAuthor == nil ) {
+			// the author does NOT exist. create a new author
+			theAuthor = [ctrl insertNewAuthor];
+			[theAuthor setValuesForKeysWithDictionary:authDict];
+		} else if ( theAuthor.nm_id == nil ) theAuthor.nm_id = authID;
+		// add author object to the cache
+		[authorMOCache setObject:theAuthor forKey:authID];
 	}
-	channel.nm_hidden = [NSNumber numberWithBool:NO];
-	numberOfVideoAdded = [parsedObjects count];
-	totalNumberOfRows = numberOfVideoAdded + [channel.videos count];
+	return theAuthor;
 }
 
 - (void)insertOnlyNewVideosInController:(NMDataController *)ctrl {
 	NSMutableDictionary * dict;
-	NMVideo * vidObj;
+	NMConcreteVideo * realVidObj;
 	NMVideoDetail * dtlObj;
-	NSUInteger idx = [channel.videos count];
+	NMVideo * infoObj;
+//	NSUInteger idx = [channel.videos count];
 	NSUInteger vidCount = 0;
 	// insert video but do not insert duplicate item
-	if ( idx ) {
-		NSMutableIndexSet * idIndexSet = [NSMutableIndexSet indexSet];
-		NSSet * theVideos = channel.videos;
-		for (vidObj in theVideos) {
-			[idIndexSet addIndex:[vidObj.nm_id unsignedIntegerValue]];
-		}
-		numberOfVideoAdded = 0;
-		NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
-		NSNumber * yesNum = [NSNumber numberWithBool:YES];
-		for (dict in parsedObjects) {
-			if ( ![idIndexSet containsIndex:[[dict objectForKey:@"nm_id"] unsignedIntegerValue]] ) {
+	numberOfVideoAdded = 0;
+	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:channel sessionOnly:YES] + 1;
+	NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
+	authorMOCache = [[NSMutableDictionary alloc] initWithCapacity:4];
+	NMAuthor * theAuthor;
+	NSNumber * authID;
+
+	for (dict in parsedObjects) {
+		switch ( [ctrl videoExistsWithID:[dict objectForKey:@"nm_id"] orExternalID:[dict objectForKey:@"external_id"] channel:channel targetVideo:&realVidObj] ) {
+			case NMVideoDoesNotExist:
+				// create video and concrete video
 				numberOfVideoAdded++;
-				vidObj = [ctrl insertNewVideo];
-				[dict setObject:[NSNumber numberWithInteger:theOrder++] forKey:@"nm_sort_order"];
-				[vidObj setValuesForKeysWithDictionary:dict];
+				realVidObj = [ctrl insertNewConcreteVideo];
+				[realVidObj setValuesForKeysWithDictionary:dict];
 				if ( isFavoriteChannel ) {
-					vidObj.nm_favorite = yesNum;
+					realVidObj.nm_favorite = yesNum;
 				}
 				if ( isWatchLaterChannel ) {
-					vidObj.nm_watch_later = yesNum;
+					realVidObj.nm_watch_later = yesNum;
 				}
-				// channel
-				vidObj.channel = channel;
-				//[channel addVideosObject:vidObj];
+				// channel-video
+				infoObj = [ctrl insertNewVideo];
+				infoObj.channel = channel;
+				infoObj.video = realVidObj;
+				infoObj.nm_session_id = NM_SESSION_ID;
+				infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
 				// video detail
 				dtlObj = [ctrl insertNewVideoDetail];
 				dict = [parsedDetailObjects objectAtIndex:vidCount];
 				[dtlObj setValuesForKeysWithDictionary:dict];
-				dtlObj.video = vidObj;
-				//vidObj.detail = dtlObj;
-			} else {
-				// update the view count
-				vidObj.view_count = [dict objectForKey:@"view_count"];
-				// do NOT update the session ID
-			}
-			vidCount++;
+				dtlObj.video = realVidObj;
+				// hook up with author
+				authID = [parsedAuthorObjects objectAtIndex:vidCount];
+				theAuthor = [self prepareAuthorWithID:authID info:[authorCache objectForKey:authID] controller:ctrl];
+				realVidObj.author = theAuthor;
+				break;
+				
+			case NMVideoExistsButNotInChannel:
+				// create video object only
+				numberOfVideoAdded++;
+				if ( isFavoriteChannel ) {
+					realVidObj.nm_favorite = yesNum;
+				}
+				if ( isWatchLaterChannel ) {
+					realVidObj.nm_watch_later = yesNum;
+				}
+				// channel-video
+				infoObj = [ctrl insertNewVideo];
+				infoObj.channel = channel;
+				infoObj.video = realVidObj;
+				infoObj.nm_session_id = NM_SESSION_ID;
+				infoObj.nm_sort_order = [NSNumber numberWithInteger:theOrder++];
+				break;
+				
+			default:
+				// just update the view count
+				realVidObj.view_count = [dict objectForKey:@"view_count"];
+				break;
 		}
-		totalNumberOfRows = numberOfVideoAdded + idx;
-		if ( numberOfVideoAdded ) {
-			channel.nm_hidden = [NSNumber numberWithBool:NO];
-		}
-	} else {
-		[self insertAllVideosInController:ctrl];
+		vidCount++;
+	}
+//	totalNumberOfRows = numberOfVideoAdded + idx;
+	if ( numberOfVideoAdded ) {
+		channel.nm_hidden = [NSNumber numberWithBool:NO];
 	}
 }
 

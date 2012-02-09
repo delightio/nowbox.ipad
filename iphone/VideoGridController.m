@@ -74,7 +74,7 @@
 
 - (IBAction)actionButtonPressed:(id)sender
 {
-    NMVideo *video = self.navigationController.playbackModelController.currentVideo;
+    NMConcreteVideo *video = self.navigationController.playbackModelController.currentVideo.video;
     NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
@@ -121,7 +121,7 @@
     
     NMVideo *video = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     [itemView.thumbnail setImageForVideoThumbnail:video];
-    itemView.titleLabel.text = video.title;
+    itemView.titleLabel.text = video.video.title;
     itemView.playing = (self.navigationController.playbackModelController.currentVideo == video);
     
     return itemView;
@@ -219,7 +219,7 @@
         case 0: {
             // Watch Later
             NMVideo *video = self.navigationController.playbackModelController.currentVideo;
-            [[NMTaskQueueController sharedTaskQueueController] issueEnqueue:([video.nm_watch_later integerValue] == 0) video:video];
+            [[NMTaskQueueController sharedTaskQueueController] issueEnqueue:([video.video.nm_watch_later integerValue] == 0) video:video];
             break;
         }
         case 1: {

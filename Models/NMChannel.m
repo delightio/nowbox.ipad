@@ -2,8 +2,8 @@
 //  NMChannel.m
 //  ipad
 //
-//  Created by Bill So on 8/31/11.
-//  Copyright (c) 2011 Pipely Inc. All rights reserved.
+//  Created by Bill So on 18/1/12.
+//  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
 #import "NMChannel.h"
@@ -27,9 +27,9 @@
 @dynamic nm_time_elapsed_timescale;
 @dynamic nm_time_elapsed_value;
 @dynamic nm_video_last_refresh;
-@dynamic subscriber_count;
 @dynamic populated_at;
 @dynamic resource_uri;
+@dynamic subscriber_count;
 @dynamic thumbnail_uri;
 @dynamic title;
 @dynamic type;
@@ -37,6 +37,7 @@
 @dynamic categories;
 @dynamic detail;
 @dynamic previewThumbnails;
+@dynamic subscription;
 @dynamic videos;
 
 - (void)awakeFromFetch {

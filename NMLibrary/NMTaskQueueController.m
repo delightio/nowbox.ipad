@@ -14,8 +14,13 @@
 #import "NMChannel.h"
 #import "NMPreviewThumbnail.h"
 #import "NMVideo.h"
-#import "NMVideoDetail.h"
+#import "NMConcreteVideo.h"
+#import "NMAuthor.h"
+#import "NMSubscription.h"
+#import "NMPersonProfile.h"
 #import "Reachability.h"
+#import "ipadAppDelegate.h"
+#import "FBConnect.h"
 
 #define NM_USER_SYNC_CHECK_TIMER_INTERVAL	60.0
 #define NM_USER_POLLING_TIMER_INTERVAL		5.0
@@ -52,10 +57,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize managedObjectContext;
 @synthesize networkController;
 @synthesize dataController;
-@synthesize pollingTimer, tokenRenewTimer;
+@synthesize youTubePollingTimer, tokenRenewTimer;
 @synthesize channelPollingTimer, userSyncTimer;
+@synthesize socialChannelParsingTimer, videoImportTimer;
 @synthesize unpopulatedChannels;
 @synthesize syncInProgress, appFirstLaunch;
+@synthesize accountStore = _accountStore;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
 	if ( sharedTaskQueueController_ == nil ) {
@@ -74,8 +81,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// handle keyword channel creation
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
-	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
 //	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 	// polling server for channel update
 	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
@@ -87,6 +94,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
+	// do the same thing for twitter as well
+	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
+
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
@@ -118,8 +129,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[dataController release];
 	[networkController release];
 	[NM_SESSION_ID release];
-	if ( pollingTimer ) {
-		[pollingTimer invalidate], [pollingTimer release];	
+	if ( youTubePollingTimer ) {
+		[youTubePollingTimer invalidate], [youTubePollingTimer release];	
 	}
 	if ( userSyncTimer ) {
 		[userSyncTimer invalidate], [userSyncTimer release];
@@ -127,8 +138,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( tokenRenewTimer ) {
 		[tokenRenewTimer invalidate], [tokenRenewTimer release];
 	}
+	if ( socialChannelParsingTimer ) {
+		[socialChannelParsingTimer invalidate], [socialChannelParsingTimer release];
+	}
+	if ( videoImportTimer ) {
+		[videoImportTimer invalidate], [videoImportTimer release];
+	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
+	[_accountStore release];
 	[super dealloc];
 }
 
@@ -140,6 +158,33 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)debugPrintCommandPoolStatus {
 	[networkController performSelector:@selector(debugPrintCommandPoolStatus) onThread:networkController.controlThread withObject:nil waitUntilDone:NO];
+}
+
+- (void)issueDebugProcessFeed {
+	NSArray * allSubscriptions = [dataController allSubscriptions];
+	for (NMSubscription * scrpt in allSubscriptions) {
+		[self issueProcessFeedForChannel:scrpt.channel];
+	}
+}
+
+- (void)issueDebugImportYouTubeVideos {
+	NSArray * allSubscriptions = [dataController allSubscriptions];
+	NSArray * videos;
+	for (NMSubscription * scrpt in allSubscriptions) {
+		// get the list of videos
+		videos = [dataController pendingImportVideosForChannel:scrpt.channel];
+		// issue request for each video
+		if ( [videos count] ) {
+			[self issueImportVideo:[videos objectAtIndex:0]];
+		}
+	}
+}
+
+- (ACAccountStore *)accountStore {
+	if ( _accountStore == nil ) {
+		_accountStore = [[ACAccountStore alloc] init];
+	}
+	return _accountStore;
 }
 
 #pragma mark Session management
@@ -199,6 +244,55 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			break;
 		default:
 			break;
+	}
+}
+
+- (void)handleDidGetPersonProfile:(NSNotification *)aNotification {
+	/*
+	 Listen to this notificaiton only when the user signs in Twitter or Facebook.
+	 
+	 For Facebook, we set this task queue schedule to listen to notification in the NMAccountManager. When user has successfully granted this app access to his/her Facebook account, NMAccountManager will get called (the facebook delegate)
+	*/
+	NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
+	if ( [theProfile.nm_me boolValue] ) {
+		// trigger feed parsing
+		[self scheduleSyncSocialChannels];
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:[aNotification name] object:nil];
+	}
+}
+
+- (void)handleDidParseFeedNotification:(NSNotification *)aNotification {
+	NSDictionary * infoDict = [aNotification userInfo];
+	if ( [[infoDict objectForKey:@"num_video_added"] integerValue] ) {
+		// we found new video in the news feed
+		if ( videoImportTimer == nil ) {
+			[self scheduleImportVideos];
+		}
+	}
+	if ( [[infoDict objectForKey:@"num_video_received"] integerValue] ) {
+		// try getting the rest of the feed
+		NMChannel * chnObj = [infoDict objectForKey:@"channel"];
+		switch ([chnObj.type integerValue]) {
+			case NMChannelUserTwitterType:
+			{
+				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:infoDict];
+				[networkController addNewConnectionForTask:task];
+				[task release];
+				break;
+			}
+			case NMChannelUserFacebookType:
+			{
+				NSString * urlStr = [infoDict objectForKey:@"next_url"];
+				if ( urlStr ) {
+					NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
+					[networkController addNewConnectionForTask:task];
+					[task release];
+				}
+				break;
+			}	
+			default:
+				break;
+		}
 	}
 }
 
@@ -439,10 +533,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMVideoDetail *)dtlObj {
+- (void)issueImportVideo:(NMVideo *)aVideo {
+	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initImportVideo:aVideo];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMAuthor *)anAuthor {
 	NMImageDownloadTask * task = nil;
-	if ( dtlObj.author_thumbnail_uri ) {
-		task = [[NMImageDownloadTask alloc] initWithAuthor:dtlObj];
+	if ( anAuthor.thumbnail_uri ) {
+		task = [[NMImageDownloadTask alloc] initWithAuthor:anAuthor];
 		[networkController addNewConnectionForTask:task];
 		[task autorelease];
 	}
@@ -492,7 +592,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo {
 	NMImageDownloadTask * task = nil;
-	if ( vdo.thumbnail_uri ) {
+	if ( vdo.video.thumbnail_uri ) {
 		task = [[NMImageDownloadTask alloc] initWithVideoThumbnail:vdo];
 		[networkController addNewConnectionForTask:task];
 		[task autorelease];
@@ -581,6 +681,92 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
+	switch ([chnObj.type integerValue]) {
+		case NMChannelUserTwitterType:
+		{
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:[self.accountStore accountWithIdentifier:chnObj.subscription.personProfile.nm_account_identifier]];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}	
+		case NMChannelUserFacebookType:
+		{
+			NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}				
+		default:
+			break;
+	}
+}
+
+- (void)issueGetMyFacebookProfile {
+	NMGetFacebookProfileTask * task = [[NMGetFacebookProfileTask alloc] initGetMe];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj {
+	if ( acObj == nil ) {
+		NMGetFacebookProfileTask * task = [[NMGetFacebookProfileTask alloc] initWithProfile:aProfile];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	} else {
+		// only support Twitter for now
+		NMGetTwitterProfileTask * task = [[NMGetTwitterProfileTask alloc] initWithProfile:aProfile account:acObj];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+}
+
+- (void)issueSubscribePerson:(NMPersonProfile *)aProfile {
+	if ( aProfile.subscription ) return;
+	NMChannel * chn = [dataController subscribeUserChannelWithPersonProfile:aProfile];
+	[self issueProcessFeedForChannel:chn];
+}
+
+- (void)scheduleSyncSocialChannels {
+	// get the qualified channels
+	NSArray * theChannels = [dataController channelsForSync];
+	NSUInteger c = [theChannels count];
+	for (NSUInteger i = 0; (i < c && i < 5); i++) {
+		[self issueProcessFeedForChannel:[theChannels objectAtIndex:i]];
+	}
+	if ( c > 5 && socialChannelParsingTimer == nil ) {
+		// schedule a timer task to process other channels
+		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
+	} else if ( socialChannelParsingTimer ) {
+		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+	}
+}
+
+- (void)scheduleImportVideos {
+	// get the qualified videos
+	NSArray * theProfiles = [dataController personProfilesForSync:2];
+	NSInteger cnt = 4;
+	if ( theProfiles ) cnt = 2;
+	NSArray * theVideos = [dataController videosForSync:cnt];
+	
+	if ( theVideos == nil && theProfiles == nil ) {
+		// stop the timer task
+		if ( videoImportTimer ) {
+			[videoImportTimer invalidate];
+			self.videoImportTimer = nil;
+		}
+		// return immediately if no video
+		return;
+	}
+	for (NMVideo * vdo in theVideos) {
+		[self issueImportVideo:vdo];
+	}
+	for (NMPersonProfile * pfo in theProfiles) {
+		[self issueGetProfile:pfo account:nil];
+	}
+	if ( videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
+}
+
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }
@@ -664,8 +850,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)stopPollingServer {
-	if ( pollingTimer ) {
-		[pollingTimer invalidate], self.pollingTimer = nil;	
+	if ( youTubePollingTimer ) {
+		[youTubePollingTimer invalidate], self.youTubePollingTimer = nil;	
 	}
 	if ( userSyncTimer ) {
 		[userSyncTimer invalidate], self.userSyncTimer = nil;
@@ -675,6 +861,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	if ( channelPollingTimer ) {
 		[channelPollingTimer invalidate], self.channelPollingTimer = nil;
+	}
+	if ( videoImportTimer ) {
+		[videoImportTimer invalidate], self.videoImportTimer = nil;
+	}
+	if ( socialChannelParsingTimer ) {
+		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
 	}
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_LAST_SYNC] forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
@@ -713,11 +905,11 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)pollServerForYouTubeSyncSignal {
 	// we assue the backend will only activate pollingTimer for only 1 service - YouTube, Facebook or Twitter.
-	if ( pollingTimer ) {
-		[pollingTimer fire];
+	if ( youTubePollingTimer ) {
+		[youTubePollingTimer fire];
 	} else {
 		pollingRetryCount = 0;
-		self.pollingTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_POLLING_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
+		self.youTubePollingTimer = [NSTimer scheduledTimerWithTimeInterval:NM_USER_POLLING_TIMER_INTERVAL target:self selector:@selector(performYouTubePollingForTimer:) userInfo:nil repeats:YES];
 		//MARK: we may need to fire the timer once here so that we don't have the initial wait.
 	}
 }
@@ -732,8 +924,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( !appFirstLaunch ) {
 			// this is the case where the user has finished up the onboard process with a YouTube login. However, the onboard is done before the polling work finish. In this case, we don't need to perform the sync anymore
 			// invalidate the timer
-			[pollingTimer invalidate];
-			self.pollingTimer = nil;
+			[youTubePollingTimer invalidate];
+			self.youTubePollingTimer = nil;
 			
 			return;
 		}
@@ -741,13 +933,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( NM_USER_YOUTUBE_SYNC_SERVER_TIME > 0 ) {
 			// the account is synced. get the list of channel
 			[self issueCompareSubscribedChannels];
-			[pollingTimer invalidate];
-			self.pollingTimer = nil;
+			[youTubePollingTimer invalidate];
+			self.youTubePollingTimer = nil;
 			NM_USER_YOUTUBE_LAST_SYNC = NM_USER_YOUTUBE_SYNC_SERVER_TIME;
 			[[NSUserDefaults standardUserDefaults] setInteger:NM_USER_YOUTUBE_LAST_SYNC forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
 		} else if ( pollingRetryCount > 5 ) {
-			[pollingTimer invalidate];
-			self.pollingTimer = nil;
+			[youTubePollingTimer invalidate];
+			self.youTubePollingTimer = nil;
 		}
 	} else {
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {

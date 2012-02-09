@@ -295,23 +295,25 @@
 	theRect.size.width = channelDefaultWidth + titleDiff;
 	segmentChannelButton.frame = theRect;
 	
+	NMConcreteVideo * realVideo = aVideo.video;
 	// check whether we should hide the author segment
-	if ( [chn.thumbnail_uri isEqualToString:aVideo.detail.author_thumbnail_uri] ) {
+	if ( [chn.thumbnail_uri isEqualToString:realVideo.author.thumbnail_uri] ) {
 		authorBackgroundView.hidden = YES;
 	} else {
+		NMAuthor * theAuthor = realVideo.author;
 		authorBackgroundView.hidden = NO;
 		// set author segment position
 		theRect = authorBackgroundView.frame;
 		theRect.origin.x = segmentChannelButton.frame.size.width - 10.0f;
 		// author label
-		authorNameLabel.text = aVideo.detail.author_username;	
+		authorNameLabel.text = theAuthor.username;	
 		// author size
 		theSize = [authorNameLabel.text sizeWithFont:authorNameLabel.font constrainedToSize:maximumTitleSize];
 		titleDiff = theSize.width - authorTitleDefaultWidth;
 		theRect.size.width = authorDefaultWidth + titleDiff;
 		authorBackgroundView.frame = theRect;
 		// author image
-		[authorImageView setImageForAuthorThumbnail:aVideo.detail];
+		[authorImageView setImageForAuthorThumbnail:theAuthor];
 	}
 	
 	titleDiff = theRect.size.width + theRect.origin.x;
@@ -319,13 +321,13 @@
 	theRect.origin.x = titleDiff + 10.0f;
 	theRect.size.width = 1024.0f - titleDiff - 10.0f - 146.0f;
 	videoTitleLabel.frame = theRect;
-	videoTitleLabel.text = aVideo.title;
+	videoTitleLabel.text = realVideo.title;
 	
 #ifdef DEBUG_PLAYER_NAVIGATION
-	NSLog(@"control view, duration: %d", [aVideo.duration integerValue]);
+	NSLog(@"control view, duration: %d", [realVideo.duration integerValue]);
 #endif
-	self.duration = [aVideo.duration integerValue];
-	NSValue * theRangeValue = [aVideo.nm_player_item.loadedTimeRanges lastObject];
+	self.duration = [realVideo.duration integerValue];
+	NSValue * theRangeValue = [realVideo.nm_player_item.loadedTimeRanges lastObject];
 	if ( theRangeValue ) {
 		self.timeRangeBuffered = [theRangeValue CMTimeRangeValue];
 	}

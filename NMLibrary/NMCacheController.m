@@ -128,14 +128,14 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 //
 
 #pragma mark load image
-- (void)setImageForAuthor:(NMVideoDetail *)dtlObj imageView:(NMCachedImageView *)iv {
-	if ( dtlObj == nil || iv == nil ) return;
+- (void)setImageForAuthor:(NMAuthor *)anAuthor imageView:(NMCachedImageView *)iv {
+	if ( anAuthor == nil || iv == nil ) return;
 
 	// check if the image is in local file system
 	NSString * fPath;
 	NMFileExistsType t;
-	if ( [dtlObj.nm_author_thumbnail_file_name length] ) {
-		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:dtlObj.nm_author_thumbnail_file_name];
+	if ( [anAuthor.nm_thumbnail_file_name length] ) {
+		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:anAuthor.nm_thumbnail_file_name];
 		t = [fileExistenceCache fileExistsAtPath:fPath];
 		if ( t == NMFileExistsNotCached ) {
 			BOOL ex = [fileManager fileExistsAtPath:fPath];
@@ -156,7 +156,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	} else {
 		// this extra check is needed because author info is not properly normalized.
 		// same author info is stored repeatedly in NMVideoDetail object
-		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", dtlObj.author_id]];
+		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", anAuthor.nm_id]];
 		t = [fileExistenceCache fileExistsAtPath:fPath];
 		if ( t == NMFileExistsNotCached ) {
 			BOOL ex = [fileManager fileExistsAtPath:fPath];
@@ -165,11 +165,11 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		}
 		if ( t == NMFileExists ) {
 			iv.image = [UIImage imageWithContentsOfFile:fPath];
-			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.jpg", dtlObj.author_id];
+			anAuthor.nm_thumbnail_file_name = [NSString stringWithFormat:@"%@.jpg", anAuthor.nm_id];
 			return;
 		}
 		
-		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", dtlObj.author_id]];
+		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", anAuthor.nm_id]];
 		t = [fileExistenceCache fileExistsAtPath:fPath];
 		if ( t == NMFileExistsNotCached ) {
 			BOOL ex = [fileManager fileExistsAtPath:fPath];
@@ -178,14 +178,14 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		}
 		if ( t == NMFileExists ) {
 			iv.image = [UIImage imageWithContentsOfFile:fPath];
-			dtlObj.nm_author_thumbnail_file_name = [NSString stringWithFormat:@"%@.png", dtlObj.author_id];
+			anAuthor.nm_thumbnail_file_name = [NSString stringWithFormat:@"%@.png", anAuthor.nm_id];
 			return;
 		}
 	}
 	
-	if ( [dtlObj.author_thumbnail_uri length] ) {
+	if ( [anAuthor.thumbnail_uri length] ) {
 		// check if there's already an existing task requesting the image
-		NSInteger idxNum = [NMImageDownloadTask commandIndexForAuthor:dtlObj];
+		NSInteger idxNum = [NMImageDownloadTask commandIndexForAuthor:anAuthor];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
 		
 		// cancel previous delayed method
@@ -362,8 +362,8 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSLog(@"running cache controller logic for %@", vdo.title);
 #endif
 	// check if the file exists
-	if ( [vdo.nm_thumbnail_file_name length] ) {
-		NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.nm_thumbnail_file_name];
+	if ( [vdo.video.nm_thumbnail_file_name length] ) {
+		NSString * fPath = [videoThumbnailCacheDir stringByAppendingPathComponent:vdo.video.nm_thumbnail_file_name];
 		NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
 		if ( t == NMFileExistsNotCached ) {
 			BOOL ex = [fileManager fileExistsAtPath:fPath];
@@ -380,7 +380,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			}
 		}
 	}
-	if ( [vdo.thumbnail_uri length] ) {
+	if ( [vdo.video.thumbnail_uri length] ) {
 		// check if there's already an existing task requesting the image
 		NSInteger idxNum = [NMImageDownloadTask commandIndexForVideo:vdo];
 		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
@@ -496,11 +496,11 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	return task;
 }
 
-- (NMImageDownloadTask *)downloadImageForAuthor:(NMVideoDetail *)dtl imageView:(NMCachedImageView *)iv {
-	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForAuthor:dtl]];
+- (NMImageDownloadTask *)downloadImageForAuthor:(NMAuthor *)anAuthor imageView:(NMCachedImageView *)iv {
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForAuthor:anAuthor]];
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
 	if ( task == nil ) {
-		task = [nowboxTaskController issueGetThumbnailForAuthor:dtl];
+		task = [nowboxTaskController issueGetThumbnailForAuthor:anAuthor];
 		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithInteger:[task commandIndex]]];
 	}
 	iv.downloadTask = task;
@@ -554,7 +554,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	NSString * path = nil;
 	switch (theTask.command) {
 		case NMCommandGetAuthorThumbnail:
-			path = [authorThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_author_thumbnail_file_name"]];
+			path = [authorThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
 			break;
 			
 		case NMCommandGetChannelThumbnail:
@@ -562,7 +562,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			break;
 			
 		case NMCommandGetVideoThumbnail:
-			path = [videoThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
+			path = [videoThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKeyPath:@"video.nm_thumbnail_file_name"]];
 			break;
 			
 		case NMCommandGetPreviewThumbnail:

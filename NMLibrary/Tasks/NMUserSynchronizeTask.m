@@ -21,7 +21,7 @@ NSString * const NMDidFailSynchronizeUserNotification = @"NMDidFailSynchronizeUs
 	return self;
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = [NSString stringWithFormat:@"http://%@/users/%d/synchronize", NM_BASE_URL, NM_USER_ACCOUNT_ID];
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];

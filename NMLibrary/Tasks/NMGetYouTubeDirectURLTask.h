@@ -16,13 +16,20 @@
 	NSString * directURLString;
 	NSString * directSDURLString;
 	NSInteger expiryTime;
+	NSMutableDictionary * authorDict;
+	NSMutableDictionary * videoInfoDict;
 }
 
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) NSString * directURLString;
 @property (nonatomic, retain) NSString * directSDURLString;
+@property (nonatomic, retain) NSMutableDictionary * authorDict;
+@property (nonatomic, retain) NSMutableDictionary * videoInfoDict;
 
 - (id)initWithVideo:(NMVideo *)vdo;
+- (id)initImportVideo:(NMVideo *)vdo;
++ (id)dateFromTimeCreatedString:(NSString *)dateStr;
++ (id)numberFromViewCountString:(NSString *)cntStr;
 
 @end

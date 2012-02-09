@@ -33,5 +33,9 @@
 - (IBAction)getDebugChannel:(id)sender;
 - (IBAction)printCommandIndexPool:(id)sender;
 - (IBAction)printMovieViewInfo:(id)sender;
+- (IBAction)parseFacebookFeed:(id)sender;
+- (IBAction)getFacebookProfile:(id)sender;
+- (IBAction)importYouTube:(id)sender;
+- (IBAction)subscribeFirstAvailablePerson:(id)sender;
 
 @end

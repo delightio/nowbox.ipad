@@ -21,6 +21,7 @@
 
 static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideoNotification";
+static NSPredicate * playbackModelFilterPredicate_ = nil;
 
 @interface VideoPlaybackModelController (PrivateMethods)
 
@@ -43,6 +44,13 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 		sharedVideoPlaybackModelController_ = [[VideoPlaybackModelController alloc] init];
 	}
 	return sharedVideoPlaybackModelController_;
+}
+
++ (NSPredicate *)playbackModelFilterPredicate {
+	if ( playbackModelFilterPredicate_ == nil ) {
+		playbackModelFilterPredicate_ = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND video.nm_error == 0"] retain];
+	}
+	return playbackModelFilterPredicate_;
 }
 
 - (id)init {
@@ -102,7 +110,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	
 	if ( currentVideo ) {
 		// mark the current video as "played"
-		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
+		currentVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 	}
 	self.previousVideo = nil;
 	self.previousIndexPath = nil;
@@ -131,7 +139,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 			[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
 			
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-			NSLog(@"last viewed title: %@", self.currentVideo.title);
+			NSLog(@"last viewed title: %@", self.currentVideo.video.title);
 #endif
 			// init the playhead. sth similar to initializePlayHead
 			if ( currentIndexPath.row + 1 < numberOfVideos ) {
@@ -203,7 +211,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	
 	if ( currentVideo ) {
 		// mark the current video as "played"
-		currentVideo.nm_did_play = [NSNumber numberWithBool:YES];
+		currentVideo.video.nm_did_play = [NSNumber numberWithBool:YES];
 	}
 	self.previousVideo = nil;
 	self.previousIndexPath = nil;
@@ -357,14 +365,14 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 }
 
 - (void)revertVideoToNewState:(NMVideo *)vdo {
-	vdo.nm_error = [NSNumber numberWithInteger:0];
-	vdo.nm_playback_status = NMVideoQueueStatusNone;
-	vdo.nm_direct_sd_url = nil;
-	vdo.nm_direct_url = nil;
+	vdo.video.nm_error = [NSNumber numberWithInteger:0];
+	vdo.video.nm_playback_status = NMVideoQueueStatusNone;
+	vdo.video.nm_direct_sd_url = nil;
+	vdo.video.nm_direct_url = nil;
 }
 
 - (BOOL)checkDirectURLExpiryForVideo:(NMVideo *)vdo currentTime:(NSInteger)curTime {
-	NSInteger vdoTime = vdo.nm_direct_url_expiry;
+	NSInteger vdoTime = vdo.video.nm_direct_url_expiry;
 	if ( vdoTime && vdoTime - 10 < curTime ) {
 		// the video link has expired
 		[self revertVideoToNewState:vdo];
@@ -459,11 +467,11 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"detail"]];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"video.detail", @"video", @"video.author", nil]];
 	
 	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
 	// set predicate
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error == 0", channel]];
+	[fetchRequest setPredicate:[[VideoPlaybackModelController playbackModelFilterPredicate] predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channel forKey:@"CHANNEL"]]];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];

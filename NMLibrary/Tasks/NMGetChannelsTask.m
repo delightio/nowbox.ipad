@@ -157,7 +157,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	[super dealloc];
 }
 
-- (NSMutableURLRequest *)URLRequest {
+- (NSURLRequest *)URLRequest {
 	NSString * urlStr = nil;
 	NSTimeInterval t = NM_URL_REQUEST_TIMEOUT;
 	switch (command) {
@@ -214,6 +214,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	if ( command == NMCommandGetChannelWithID ) {
 		
 	}
+	const NSInteger indexBase = 1000;
 	for (cDict in theChs) {
 		for (NSString * rKey in cDict) {				// attribute key cleanser
 			chnCtnDict = [cDict objectForKey:rKey];
@@ -224,10 +225,11 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				case NMCommandGetChannelWithID:
 				case NMCommandCompareSubscribedChannels:
 #ifdef DEBUG_CHANNEL
-					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_sort_order"];
+					[pDict setObject:[NSNumber numberWithInteger:indexBase + i] forKey:@"nm_sort_order"];
 #else
-					[pDict setObject:[NSNumber numberWithInteger:++i] forKey:@"nm_subscribed"];
+					[pDict setObject:[NSNumber numberWithInteger:indexBase + i] forKey:@"nm_subscribed"];
 #endif
+					i++;
 					[pDict removeObjectForKey:@"category_ids"];
 					break;
 					
