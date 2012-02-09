@@ -129,21 +129,14 @@
 
 - (void)thumbnailViewDidBeginRearranging:(ThumbnailView *)thumbnailView
 {
-    // Bring the thumbnail out of the scroll view
-    thumbnailView.frame = CGRectOffset(thumbnailView.frame, gridView.frame.origin.x - gridView.contentOffset.x, gridView.frame.origin.y - gridView.contentOffset.y);
-    [self.view addSubview:thumbnailView];
-    
     gridView.scrollEnabled = NO;
     gridDataSource.updatesEnabled = NO;
+    thumbnailView.lastDragLocation = CGPointMake(thumbnailView.center.x - gridView.contentOffset.x, thumbnailView.center.y - gridView.contentOffset.y);
 }
 
 - (void)thumbnailViewDidEndRearranging:(ThumbnailView *)thumbnailView
 {
     NSUInteger index = thumbnailView.tag;
-
-    // Put the thumbnail back in the scroll view
-    thumbnailView.frame = CGRectOffset(thumbnailView.frame, -gridView.frame.origin.x + gridView.contentOffset.x, -gridView.frame.origin.y + gridView.contentOffset.y);
-    [gridView addSubview:thumbnailView];
     
     [UIView animateWithDuration:0.3
                      animations:^{
@@ -159,20 +152,21 @@
 {
     rearrangePageSwitchTimer = nil;
     ThumbnailView *thumbnailView = [[timer userInfo] objectForKey:@"thumbnailView"];
-    if (thumbnailView.center.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) {
+    if (thumbnailView.lastDragLocation.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) {
         // Switch page left
         gridView.currentPage = gridView.currentPage - 1;
-    } else if (thumbnailView.center.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages) {
+    } else if (thumbnailView.lastDragLocation.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages) {
         // Switch page right
         gridView.currentPage = gridView.currentPage + 1;    
     }
 }
 
 - (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToLocation:(CGPoint)location
-{
-    CGFloat x = location.x;
-    if ((x < kRearrangePageSwitchDistance && gridView.currentPage > 0) || 
-        (x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages)) {
+{        
+    thumbnailView.lastDragLocation = CGPointMake(location.x - gridView.contentOffset.x, location.y - gridView.contentOffset.y);
+    
+    if ((thumbnailView.lastDragLocation.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) || 
+        (thumbnailView.lastDragLocation.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages)) {
         // Close to left or right edge and page switch possible
         if (!rearrangePageSwitchTimer) {
             NSDictionary *userInfo = [NSDictionary dictionaryWithObject:thumbnailView forKey:@"thumbnailView"];
