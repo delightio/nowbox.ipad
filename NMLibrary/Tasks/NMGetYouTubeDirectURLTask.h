@@ -18,6 +18,8 @@
 	NSInteger expiryTime;
 	NSMutableDictionary * authorDict;
 	NSMutableDictionary * videoInfoDict;
+	NSNumberFormatter * viewCountFormatter;
+	NSDateFormatter * timeCreatedFormatter;
 }
 
 @property (nonatomic, retain) NMVideo * video;
@@ -29,7 +31,7 @@
 
 - (id)initWithVideo:(NMVideo *)vdo;
 - (id)initImportVideo:(NMVideo *)vdo;
-+ (id)dateFromTimeCreatedString:(NSString *)dateStr;
-+ (id)numberFromViewCountString:(NSString *)cntStr;
+- (id)dateFromTimeCreatedString:(NSString *)dateStr;
+- (id)numberFromViewCountString:(NSString *)cntStr;
 
 @end

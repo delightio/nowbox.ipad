@@ -24,16 +24,13 @@ NSString * const NMWillImportYouTubeVideoNotification = @"NMWillImportYouTubeVid
 NSString * const NMDidImportYouTubeVideoNotification = @"NMDidImportYouTubeVideoNotification";
 NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouTubeVideoNotification";
 
-static NSNumberFormatter * viewCountFormatter = nil;
-static NSDateFormatter * timeCreatedFormatter = nil;
-
 @implementation NMGetYouTubeDirectURLTask
 
 @synthesize video, externalID;
 @synthesize directSDURLString, directURLString;
 @synthesize videoInfoDict, authorDict;
 
-+ (id)dateFromTimeCreatedString:(NSString *)dateStr {
+- (id)dateFromTimeCreatedString:(NSString *)dateStr {
 	if ( dateStr == nil || [dateStr length] == 0 ) return [NSNull null];
 	if ( timeCreatedFormatter == nil ) {
 		timeCreatedFormatter = [[NSDateFormatter alloc] init];
@@ -43,7 +40,7 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	return [timeCreatedFormatter dateFromString:dateStr];
 }
 
-+ (id)numberFromViewCountString:(NSString *)cntStr {
+- (id)numberFromViewCountString:(NSString *)cntStr {
 	if ( cntStr == nil || [cntStr length] == 0 ) return [NSNull null];
 	if ( viewCountFormatter == nil ) {
 		viewCountFormatter = [[NSNumberFormatter alloc] init];
@@ -86,6 +83,8 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 	[directSDURLString release];
 	[authorDict release];
 	[videoInfoDict release];
+	[viewCountFormatter release];
+	[timeCreatedFormatter release];
 	[super dealloc];
 }
 
@@ -166,8 +165,8 @@ static NSDateFormatter * timeCreatedFormatter = nil;
 		@try {
 			[videoInfoDict setObject:[srcVdoDict objectForKey:@"title"] forKey:@"title"];
 			[videoInfoDict setObject:[srcVdoDict objectForKey:@"length_seconds"] forKey:@"duration"];
-			[videoInfoDict setObject:[NMGetYouTubeDirectURLTask dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
-			[videoInfoDict setObject:[NMGetYouTubeDirectURLTask numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
+			[videoInfoDict setObject:[self dateFromTimeCreatedString:[srcVdoDict objectForKey:@"time_created_text"]] forKey:@"published_at"];
+			[videoInfoDict setObject:[self numberFromViewCountString:[srcVdoDict objectForKey:@"view_count"]] forKey:@"view_count"];
 			[videoInfoDict setObject:[srcVdoDict objectForKey:@"thumbnail_for_watch"] forKey:@"thumbnail_uri"];
 			[videoInfoDict setObject:[srcVdoDict objectForKey:@"description"] forKey:@"nm_description"];
 		}
