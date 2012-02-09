@@ -161,8 +161,8 @@
         self.center = CGPointMake(location.x - dragAnchorPoint.x,
                                   location.y - dragAnchorPoint.y);
         
-        if ([delegate respondsToSelector:@selector(thumbnailView:didDragToLocation:)]) {
-            [delegate thumbnailView:self didDragToLocation:self.center];
+        if ([delegate respondsToSelector:@selector(thumbnailView:didDragToCenter:touchLocation:)]) {
+            [delegate thumbnailView:self didDragToCenter:self.center touchLocation:location];
         }
     } else {
         CGPoint dragStartLocation = [touch locationInView:self.superview];

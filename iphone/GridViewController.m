@@ -151,25 +151,25 @@
 - (void)rearrangePageSwitchTimerFired:(NSTimer *)timer
 {
     rearrangePageSwitchTimer = nil;
-    ThumbnailView *thumbnailView = [[timer userInfo] objectForKey:@"thumbnailView"];
-    if (thumbnailView.lastDragLocation.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) {
+    CGPoint touchLocation = [[[timer userInfo] objectForKey:@"touchLocation"] CGPointValue];
+    if (touchLocation.x - gridView.contentOffset.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) {
         // Switch page left
         gridView.currentPage = gridView.currentPage - 1;
-    } else if (thumbnailView.lastDragLocation.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages) {
+    } else if (touchLocation.x - gridView.contentOffset.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages) {
         // Switch page right
         gridView.currentPage = gridView.currentPage + 1;    
     }
 }
 
-- (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToLocation:(CGPoint)location
+- (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation
 {        
-    thumbnailView.lastDragLocation = CGPointMake(location.x - gridView.contentOffset.x, location.y - gridView.contentOffset.y);
+    thumbnailView.lastDragLocation = CGPointMake(center.x - gridView.contentOffset.x, center.y - gridView.contentOffset.y);
     
-    if ((thumbnailView.lastDragLocation.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) || 
-        (thumbnailView.lastDragLocation.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages)) {
+    if ((touchLocation.x - gridView.contentOffset.x < kRearrangePageSwitchDistance && gridView.currentPage > 0) || 
+        (touchLocation.x - gridView.contentOffset.x > gridView.frame.size.width - kRearrangePageSwitchDistance && gridView.currentPage + 1 < gridView.numberOfPages)) {
         // Close to left or right edge and page switch possible
         if (!rearrangePageSwitchTimer) {
-            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:thumbnailView forKey:@"thumbnailView"];
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSValue valueWithCGPoint:touchLocation] forKey:@"touchLocation"];
             rearrangePageSwitchTimer = [NSTimer scheduledTimerWithTimeInterval:kRearrangePageSwitchDuration target:self selector:@selector(rearrangePageSwitchTimerFired:) userInfo:userInfo repeats:NO];
         }
         

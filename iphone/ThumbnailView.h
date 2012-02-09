@@ -31,5 +31,5 @@
 - (void)thumbnailViewDidTap:(ThumbnailView *)thumbnailView;
 - (void)thumbnailViewDidBeginRearranging:(ThumbnailView *)thumbnailView;
 - (void)thumbnailViewDidEndRearranging:(ThumbnailView *)thumbnailView;
-- (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToLocation:(CGPoint)location;
+- (void)thumbnailView:(ThumbnailView *)thumbnailView didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation;
 @end
