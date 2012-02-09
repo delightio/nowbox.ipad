@@ -72,13 +72,13 @@
 		838105E514916AF600B3FCE5 /* LaunchView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */; };
 		8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381062A1491B6D600B3FCE5 /* TestGridController.m */; };
 		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
+		8381171614C0C7D300892799 /* tooltip-share-email.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171314C0C7D300892799 /* tooltip-share-email.png */; };
+		8381171714C0C7D300892799 /* tooltip-share-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171414C0C7D300892799 /* tooltip-share-facebook.png */; };
+		8381171814C0C7D300892799 /* tooltip-share-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171514C0C7D300892799 /* tooltip-share-twitter.png */; };
 		8381548C148856B1003F2CA4 /* VideoGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548B148856B1003F2CA4 /* VideoGridController.m */; };
 		838154901488588D003F2CA4 /* ChannelGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381548F1488588D003F2CA4 /* ChannelGridController.m */; };
 		8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381549114885CFD003F2CA4 /* grid-channels-plus.png */; };
 		838154951488612A003F2CA4 /* CategoryGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 838154941488612A003F2CA4 /* CategoryGridController.m */; };
-		8381171614C0C7D300892799 /* tooltip-share-email.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171314C0C7D300892799 /* tooltip-share-email.png */; };
-		8381171714C0C7D300892799 /* tooltip-share-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171414C0C7D300892799 /* tooltip-share-facebook.png */; };
-		8381171814C0C7D300892799 /* tooltip-share-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171514C0C7D300892799 /* tooltip-share-twitter.png */; };
 		8381626A1492F4380084C516 /* tooltip-favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = 838162691492F4380084C516 /* tooltip-favorite.png */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
@@ -241,7 +241,6 @@
 		83F8E2DD1468C3720051D990 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F8E2DC1468C3720051D990 /* ShareViewController.m */; };
 		83F8E2E01468C4B40051D990 /* ShareView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83F8E2DF1468C4B40051D990 /* ShareView.xib */; };
 		A903D8561450ABA900FC7B28 /* channel-title-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A903D8551450ABA900FC7B28 /* channel-title-background.png */; };
-		A9042600140E2EEC0028B972 /* NMChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A90425FF140E2EEC0028B972 /* NMChannel.m */; };
 		A90BC4161461F7D9006AD644 /* MainWindow-iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */; };
 		A90C89C414C9E728006DC909 /* NMAuthor.m in Sources */ = {isa = PBXBuildFile; fileRef = A90C89C314C9E728006DC909 /* NMAuthor.m */; };
 		A90DE57C13A1B62F0005FE6A /* NMAVQueuePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A90DE57B13A1B62F0005FE6A /* NMAVQueuePlayer.m */; };
@@ -531,6 +530,9 @@
 		8381062A1491B6D600B3FCE5 /* TestGridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestGridController.m; sourceTree = "<group>"; };
 		83810ADE1464A633003D3F76 /* GridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridScrollView.h; sourceTree = "<group>"; };
 		83810ADF1464A633003D3F76 /* GridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridScrollView.m; sourceTree = "<group>"; };
+		8381171314C0C7D300892799 /* tooltip-share-email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-email.png"; sourceTree = "<group>"; };
+		8381171414C0C7D300892799 /* tooltip-share-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-facebook.png"; sourceTree = "<group>"; };
+		8381171514C0C7D300892799 /* tooltip-share-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-twitter.png"; sourceTree = "<group>"; };
 		8381548A148856B1003F2CA4 /* VideoGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoGridController.h; sourceTree = "<group>"; };
 		8381548B148856B1003F2CA4 /* VideoGridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoGridController.m; sourceTree = "<group>"; };
 		8381548E1488588D003F2CA4 /* ChannelGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelGridController.h; sourceTree = "<group>"; };
@@ -538,9 +540,6 @@
 		8381549114885CFD003F2CA4 /* grid-channels-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grid-channels-plus.png"; sourceTree = "<group>"; };
 		838154931488612A003F2CA4 /* CategoryGridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryGridController.h; sourceTree = "<group>"; };
 		838154941488612A003F2CA4 /* CategoryGridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryGridController.m; sourceTree = "<group>"; };
-		8381171314C0C7D300892799 /* tooltip-share-email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-email.png"; sourceTree = "<group>"; };
-		8381171414C0C7D300892799 /* tooltip-share-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-facebook.png"; sourceTree = "<group>"; };
-		8381171514C0C7D300892799 /* tooltip-share-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-twitter.png"; sourceTree = "<group>"; };
 		838162691492F4380084C516 /* tooltip-favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-favorite.png"; sourceTree = "<group>"; };
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
@@ -735,8 +734,6 @@
 		A900603B13EFE78100B05645 /* NMGetCategoriesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetCategoriesTask.h; sourceTree = "<group>"; };
 		A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetCategoriesTask.m; sourceTree = "<group>"; };
 		A903D8551450ABA900FC7B28 /* channel-title-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-title-background.png"; sourceTree = "<group>"; };
-		A90425FE140E2EEC0028B972 /* NMChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel.h; sourceTree = "<group>"; };
-		A90425FF140E2EEC0028B972 /* NMChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel.m; sourceTree = "<group>"; };
 		A90BC4151461F7D9006AD644 /* MainWindow-iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "MainWindow-iphone.xib"; path = "../iphone/MainWindow-iphone.xib"; sourceTree = "<group>"; };
 		A90C89C214C9E728006DC909 /* NMAuthor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMAuthor.h; sourceTree = "<group>"; };
 		A90C89C314C9E728006DC909 /* NMAuthor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMAuthor.m; sourceTree = "<group>"; };
@@ -2503,6 +2500,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_SKIP_ONBOARD_PROCESS,
 					DEBUG_PANEL_ENABLED,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_PLAYER_NAVIGATION,
