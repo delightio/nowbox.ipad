@@ -132,7 +132,7 @@
 - (NSInteger)repositioningIndexForFrame:(CGRect)frame
 {
     CGPoint center = CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame));
-    NSInteger page = floor(center.x / self.frame.size.width);
+    NSInteger page = currentPage;
     NSInteger column = floor((center.x - page * self.frame.size.width - externalPadding.width) / (itemSize.width + internalPadding.width));
     NSInteger row = floor((center.y - externalPadding.height) / (itemSize.height + internalPadding.height));
     
@@ -349,7 +349,7 @@
                 [gridDelegate gridView:self didMoveItemAtIndex:oldIndex toIndex:newIndex];
             }
         }
-    }
+    }    
 }
 
 @end
