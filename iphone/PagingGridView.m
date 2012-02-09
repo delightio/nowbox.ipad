@@ -186,8 +186,7 @@
     for (PagingGridViewCell *view in visibleViews) {
         // If a subview is being dragged, keep it's position relative to the superview
         if ([view isDraggable]) {
-            CGPoint lastDragLocation = ((PagingGridViewCell *)view).lastDragLocation;
-            view.center = CGPointMake(lastDragLocation.x + self.contentOffset.x, lastDragLocation.y + self.contentOffset.y);
+            view.center = CGPointMake(view.lastDragLocation.x + self.contentOffset.x, view.lastDragLocation.y + self.contentOffset.y);
             [self bringSubviewToFront:view];
         } else if (!CGRectIntersectsRect(view.frame, visibleRect)) {
             NSUInteger index = view.tag;
@@ -268,6 +267,20 @@
     }
 }
 
+- (void)rearrangePageSwitchTimerFired:(NSTimer *)timer
+{
+    rearrangePageSwitchTimer = nil;
+    CGPoint touchLocation = [[[timer userInfo] objectForKey:@"touchLocation"] CGPointValue];
+    
+    if (touchLocation.x - self.contentOffset.x < kRearrangePageSwitchDistance && currentPage > 0) {
+        // Switch page left
+        self.currentPage = currentPage - 1;
+    } else if (touchLocation.x - self.contentOffset.x > self.frame.size.width - kRearrangePageSwitchDistance && currentPage + 1 < numberOfPages) {
+        // Switch page right
+        self.currentPage = currentPage + 1;    
+    }
+}
+
 #pragma mark - PagingGridViewCellDelegate
 
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell
@@ -291,6 +304,8 @@
 - (void)gridViewCellDidEndRearranging:(PagingGridViewCell *)gridViewCell
 {
     NSUInteger index = gridViewCell.tag;
+    [rearrangePageSwitchTimer invalidate];
+    rearrangePageSwitchTimer = nil;
     
     [UIView animateWithDuration:0.3
                      animations:^{
@@ -303,19 +318,6 @@
                              [gridDelegate gridViewDidEndRearranging:self];
                          }
                      }];
-}
-
-- (void)rearrangePageSwitchTimerFired:(NSTimer *)timer
-{
-    rearrangePageSwitchTimer = nil;
-    CGPoint touchLocation = [[[timer userInfo] objectForKey:@"touchLocation"] CGPointValue];
-    if (touchLocation.x - self.contentOffset.x < kRearrangePageSwitchDistance && currentPage > 0) {
-        // Switch page left
-        self.currentPage = currentPage - 1;
-    } else if (touchLocation.x - self.contentOffset.x > self.frame.size.width - kRearrangePageSwitchDistance && currentPage + 1 < numberOfPages) {
-        // Switch page right
-        self.currentPage = currentPage + 1;    
-    }
 }
 
 - (void)gridViewCell:(PagingGridViewCell *)gridViewCell didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation

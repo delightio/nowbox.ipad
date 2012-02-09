@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "PagingGridView.h"
-#import "PagingGridViewCell.h"
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
 
