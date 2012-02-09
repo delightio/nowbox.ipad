@@ -198,10 +198,12 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
     // Enable analytics and crash reporting
     [self setupMixpanel];
+#ifndef DEBUG
     [Crittercism initWithAppID:NM_CRITTERCISM_APP_ID
                         andKey:NM_CRITTERCISM_OAUTH_KEY
                      andSecret:NM_CRITTERCISM_OAUTH_SECRET
          andMainViewController:viewController];
+#endif
     
 	// detect version
 	if ( kCFCoreFoundationVersionNumber > 550.58f ) {
