@@ -13,7 +13,7 @@
 
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
-    return [[[YouTubeGridDataSource alloc] initWithThumbnailViewDelegate:self.thumbnailViewDelegate] autorelease];
+    return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext thumbnailViewDelegate:self.thumbnailViewDelegate] autorelease];
 }
 
 #pragma mark - PagingGridViewDataSource

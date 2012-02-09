@@ -13,14 +13,15 @@
 
 @interface ThumbnailView : UIButton {
     NSTimer *pressAndHoldTimer;
-    BOOL movable;
-    CGPoint dragAnchorPoint;    
+    CGPoint dragAnchorPoint;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
 @property (nonatomic, retain) IBOutlet NMCachedImageView *image;
 @property (nonatomic, retain) IBOutlet UILabel *label;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, assign, getter=isDraggable) BOOL draggable;
+@property (nonatomic, assign) CGPoint lastDragLocation;
 @property (nonatomic, assign) IBOutlet id<ThumbnailViewDelegate> delegate;
 
 @end

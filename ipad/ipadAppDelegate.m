@@ -513,7 +513,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 
 - (void)launchViewControllerDidFinish:(LaunchViewController *)launchViewController
 {
-    GridViewController *gridViewController = [[GridViewController alloc] initWithNibName:@"GridViewController" bundle:[NSBundle mainBundle]];
+    GridViewController *gridViewController = [[GridViewController alloc] initWithManagedObjectContext:self.managedObjectContext nibName:@"GridViewController" bundle:[NSBundle mainBundle]];
     self.viewController = gridViewController;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     self.window.rootViewController = gridViewController;

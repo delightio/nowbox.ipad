@@ -12,12 +12,15 @@
 #import "NMTaskQueueController.h"
 #import "NMDataController.h"
 
-@interface GridDataSource : NSObject <PagingGridViewDataSource>
+@interface GridDataSource : NSObject <PagingGridViewDataSource, NSFetchedResultsControllerDelegate>
 
+@property (nonatomic, retain) PagingGridView *gridView;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, assign) BOOL updatesEnabled;
 @property (nonatomic, assign) id<ThumbnailViewDelegate> thumbnailViewDelegate;
 
-- (id)initWithThumbnailViewDelegate:(id<ThumbnailViewDelegate>)thumbnailViewDelegate;
+- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext thumbnailViewDelegate:(id<ThumbnailViewDelegate>)aThumbnailViewDelegate;
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
-- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+- (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
 
 @end

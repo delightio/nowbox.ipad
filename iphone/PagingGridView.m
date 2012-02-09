@@ -7,6 +7,7 @@
 //
 
 #import "PagingGridView.h"
+#import "ThumbnailView.h"
 
 @implementation PagingGridView
 
@@ -186,7 +187,12 @@
     // Can we remove any views that are offscreen?
     NSMutableSet *viewsToRemove = [NSMutableSet set];
     for (UIView *view in visibleViews) {
-        if (!CGRectIntersectsRect(view.frame, visibleRect)) {
+        // If a subview is being dragged, keep it's position relative to the superview
+        if ([view isKindOfClass:[ThumbnailView class]] && [((ThumbnailView *)view) isDraggable]) {
+            CGPoint lastDragLocation = ((ThumbnailView *)view).lastDragLocation;
+            view.center = CGPointMake(lastDragLocation.x + self.contentOffset.x, lastDragLocation.y + self.contentOffset.y);
+            [self bringSubviewToFront:view];
+        } else if (!CGRectIntersectsRect(view.frame, visibleRect)) {
             NSUInteger index = view.tag;
             [viewsToRemove addObject:view];
             [view removeFromSuperview];
@@ -261,7 +267,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     currentPage = MAX(0, round(scrollView.contentOffset.x / scrollView.frame.size.width));
-    [self setNeedsLayout];    
+//    [self setNeedsLayout];    
     
     if ([gridDelegate respondsToSelector:@selector(gridViewDidScroll:)]) {
         [gridDelegate gridViewDidScroll:self];

@@ -18,6 +18,8 @@
 @synthesize image;
 @synthesize label;
 @synthesize activityIndicator;
+@synthesize draggable;
+@synthesize lastDragLocation;
 @synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
@@ -91,7 +93,7 @@
     if ([delegate respondsToSelector:@selector(thumbnailViewDidBeginRearranging:)]) {
         [delegate thumbnailViewDidBeginRearranging:self];
     }
-    movable = YES;
+    draggable = YES;
     [self.superview bringSubviewToFront:self];
     
     [UIView animateWithDuration:0.15
@@ -103,7 +105,7 @@
 
 - (void)didEndRearranging
 {
-    movable = NO;        
+    draggable = NO;        
     
     [UIView animateWithDuration:0.15
                      animations:^{
@@ -118,7 +120,7 @@
 
 - (void)handleTouchUp:(id)sender
 {
-    if (movable) {
+    if (draggable) {
         [self didEndRearranging];
     } else {
         [self cancelPressAndHoldTimer];        
@@ -143,7 +145,7 @@
 - (void)handleCancelTouch:(id)sender
 {    
     [self cancelPressAndHoldTimer];
-    if (movable) {
+    if (draggable) {
         [self didEndRearranging];
     } else {
         [self cancelPressAndHoldTimer];
@@ -153,7 +155,7 @@
 - (void)handleDrag:(id)sender withEvent:(UIEvent *)event
 {
     UITouch *touch = [[event allTouches] anyObject];
-    if (movable) {
+    if (draggable) {
         CGPoint location = [touch locationInView:self.superview];
         
         self.center = CGPointMake(location.x - dragAnchorPoint.x,
