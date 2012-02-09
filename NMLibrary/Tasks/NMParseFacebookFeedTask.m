@@ -77,7 +77,7 @@ static NSArray * youTubeRegexArray = nil;
 	if ( isAccountOwner ) {
 		thePath = @"me/home";
 	} else {
-		thePath = [NSString stringWithFormat:@"%@/home", _user_id];
+		thePath = [NSString stringWithFormat:@"%@/feed", _user_id];
 	}
 	NSMutableDictionary * theDict = nil;
 	if ( _feedDirectURLString ) {

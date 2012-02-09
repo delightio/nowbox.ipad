@@ -25,7 +25,8 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 @synthesize channel = _channel;
 @synthesize account = _account;
 @synthesize page = _page;
-@synthesize sinceID = _sinceID;
+@synthesize since_id = _since_id;
+@synthesize user_id = _user_id;
 @synthesize profileArray = _profileArray;
 @synthesize newestTwitIDString = _newestTwitIDString;
 
@@ -35,7 +36,10 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	command = NMCommandParseTwitterFeed;
 	self.channel = chnObj;
 	self.account = acObj;
-	self.sinceID = chnObj.subscription.nm_since_id;
+	self.since_id = chnObj.subscription.nm_since_id;
+	NMPersonProfile * thePerson = chnObj.subscription.personProfile;
+	isAccountOwner = [thePerson.nm_me boolValue];
+	self.user_id = thePerson.nm_user_id;
 	return self;
 }
 
@@ -44,28 +48,43 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	command = NMCommandGetTwitterProfile;
 	self.channel = [aDict objectForKey:@"channel"];
 	self.account = [aDict objectForKey:@"account"];
-	self.sinceID = [aDict objectForKey:@"since_id"];
+	self.since_id = [aDict objectForKey:@"since_id"];
 	self.page = [[aDict objectForKey:@"next_page"] integerValue];
+	NMPersonProfile * thePerson = _channel.subscription.personProfile;
+	isAccountOwner = [thePerson.nm_me boolValue];
+	self.user_id = thePerson.nm_user_id;
 	return self;
 }
 
 - (void)dealloc {
 	[_channel release];
 	[_account release];
-	[_sinceID release];
+	[_since_id release];
+	[_user_id release];
 	[_profileArray release];
 	[_newestTwitIDString release];
 	[super dealloc];
 }
 
 - (NSURLRequest *)URLRequest {
-	NSDictionary * params = nil;
-	if ( _sinceID ) {
-		params = [NSDictionary dictionaryWithObjectsAndKeys:@"40", @"count", [NSString stringWithFormat:@"%d", _page], @"page", _sinceID, @"since_id", @"1", @"include_entities", nil];
-	} else {
-		params = [NSDictionary dictionaryWithObjectsAndKeys:@"40", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", nil];
+	NSMutableDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:@"40", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"0", @"include_rts", nil];
+	
+	if ( _since_id ) {
+		[params setObject:_since_id forKey:@"since_id"];
 	}
-	TWRequest * twitRequest	= [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/friends_timeline.json"] parameters:params requestMethod:TWRequestMethodGET];
+	if ( !isAccountOwner ) {
+		// specify the user ID
+		[params setObject:_user_id forKey:@"user_id"];
+	}
+	
+	NSString * urlStr = nil;
+	if ( isAccountOwner ) {
+		urlStr = @"http://api.twitter.com/1/statuses/home_timeline.json";
+	} else {
+		// read the user's own post
+		urlStr = @"http://api.twitter.com/1/statuses/user_timeline.json";
+	}
+	TWRequest * twitRequest	= [[TWRequest alloc] initWithURL:[NSURL URLWithString:urlStr] parameters:params requestMethod:TWRequestMethodGET];
 	twitRequest.account = _account;
 	NSURLRequest * req = [twitRequest signedURLRequest];
 	[twitRequest release];
@@ -197,7 +216,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_added", _channel, @"channel", _account, @"account", [NSNumber numberWithInteger:_page + 1], @"next_page", _sinceID, @"since_id", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_added", _channel, @"channel", _account, @"account", [NSNumber numberWithInteger:_page + 1], @"next_page", _since_id, @"since_id", nil];
 }
 
 @end

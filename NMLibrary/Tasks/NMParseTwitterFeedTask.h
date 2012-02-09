@@ -12,12 +12,15 @@
 
 @class NMChannel;
 
-@interface NMParseTwitterFeedTask : NMTask 
+@interface NMParseTwitterFeedTask : NMTask {
+	BOOL isAccountOwner;
+}
 
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) ACAccount * account;
 @property (nonatomic) NSInteger page;
-@property (nonatomic, retain) NSString * sinceID;
+@property (nonatomic, retain) NSString * user_id;
+@property (nonatomic, retain) NSString * since_id;
 @property (nonatomic, retain) NSMutableArray * profileArray;
 @property (nonatomic, retain) NSString * newestTwitIDString;
 
