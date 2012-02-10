@@ -22,6 +22,8 @@
     
     NSTimer *rearrangePageSwitchTimer;
     BOOL rearranging;
+    BOOL dragging;
+    UIButton *stopRearrangingButton;
 }
 
 @property (nonatomic, assign) NSUInteger numberOfRows;

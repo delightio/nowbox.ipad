@@ -34,6 +34,7 @@
 @optional
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell;
+- (BOOL)gridViewCellShouldStartDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidEndDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCell:(PagingGridViewCell *)gridViewCell didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation;

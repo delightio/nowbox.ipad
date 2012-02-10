@@ -377,22 +377,56 @@
     }
 }
 
+- (void)setRearranging:(BOOL)isRearranging
+{
+    rearranging = isRearranging;
+    
+    for (PagingGridViewCell *cell in visibleViews) {
+        if (rearranging) {
+            cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
+        }
+        [cell setDraggable:rearranging animated:YES];
+    }
+    
+    if (rearranging) {
+        if (!stopRearrangingButton) {
+            // Put an invisible button on the last page to intercept any touch events in empty space
+            stopRearrangingButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [stopRearrangingButton addTarget:self action:@selector(stopRearranging:) forControlEvents:UIControlEventTouchUpInside];
+            stopRearrangingButton.frame = CGRectMake(self.contentSize.width - self.frame.size.width, 0, self.frame.size.width, self.frame.size.height);
+            [self insertSubview:stopRearrangingButton atIndex:0];
+        }
+        
+        if ([gridDelegate respondsToSelector:@selector(gridViewDidBeginRearranging:)]) {
+            [gridDelegate gridViewDidBeginRearranging:self];
+        }
+    } else {
+        [stopRearrangingButton removeFromSuperview];
+        stopRearrangingButton = nil;
+        
+        if ([gridDelegate respondsToSelector:@selector(gridViewDidEndRearranging:)]) {
+            [gridDelegate gridViewDidEndRearranging:self];
+        }
+    }
+}
+
+- (void)stopRearranging:(id)sender
+{
+    if (!dragging) {
+        [self setRearranging:NO];
+    }
+}
+
 #pragma mark - PagingGridViewCellDelegate
 
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell
 {
     NSLog(@"cell did tap");
-
+    if (dragging) return;
+    
     if (rearranging) {
         // Make the cells non-draggable again
-        for (PagingGridViewCell *cell in visibleViews) {
-            [cell setDraggable:NO animated:YES];
-        }
-        
-        rearranging = NO;
-        if ([gridDelegate respondsToSelector:@selector(gridViewDidEndRearranging:)]) {
-            [gridDelegate gridViewDidEndRearranging:self];
-        }
+        [self setRearranging:NO];
     } else {
         // Selected an item
         NSUInteger index = gridViewCell.tag;
@@ -405,23 +439,19 @@
 - (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell
 {
     NSLog(@"cell did press and hold");
+    [self setRearranging:YES];
+}
 
-    self.scrollEnabled = NO;
-    for (PagingGridViewCell *cell in visibleViews) {
-        cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
-        [cell setDraggable:YES animated:YES];
-    }
-    
-    rearranging = YES;
-    if ([gridDelegate respondsToSelector:@selector(gridViewDidBeginRearranging:)]) {
-        [gridDelegate gridViewDidBeginRearranging:self];
-    }
+- (BOOL)gridViewCellShouldStartDragging:(PagingGridViewCell *)gridViewCell
+{
+    return !dragging;
 }
 
 - (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell
 {
     NSLog(@"cell did start dragging");
-    
+    self.scrollEnabled = NO;
+    dragging = YES;
 }
 
 - (void)gridViewCellDidEndDragging:(PagingGridViewCell *)gridViewCell
@@ -430,6 +460,8 @@
     NSUInteger index = gridViewCell.tag;
     [rearrangePageSwitchTimer invalidate];
     rearrangePageSwitchTimer = nil;
+    
+    dragging = NO;
     
     [UIView animateWithDuration:0.3
                      animations:^{

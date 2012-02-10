@@ -121,8 +121,7 @@
                              self.alpha = 1.0;
                              self.transform = CGAffineTransformIdentity;
                          }
-                         
-                     }];    
+                     }];  
 }
 
 - (void)didPressAndHold
@@ -134,7 +133,19 @@
         [delegate gridViewCellDidPressAndHold:self];
     }
     
-    [self setBigAndTranslucent:YES];
+    BOOL shouldDrag = YES;
+    if ([delegate respondsToSelector:@selector(gridViewCellShouldStartDragging:)]) {
+        shouldDrag = [delegate gridViewCellShouldStartDragging:self];
+    }
+    
+    if (shouldDrag) {
+        if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
+            [delegate gridViewCellDidStartDragging:self];
+        }
+        
+        dragging = YES;
+        [self setBigAndTranslucent:YES];
+    }
 }
 
 - (void)didStopDragging
@@ -185,17 +196,24 @@
     UITouch *touch = [[event allTouches] anyObject];
 
     if (draggable && !dragging) {
-        CGPoint dragStartLocation = [touch locationInView:self.superview];
-        dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
-        dragging = YES;
+        BOOL shouldDrag = YES;
+        if ([delegate respondsToSelector:@selector(gridViewCellShouldStartDragging:)]) {
+            shouldDrag = [delegate gridViewCellShouldStartDragging:self];
+        }
         
-        [pressAndHoldTimer invalidate];
-        pressAndHoldTimer = nil;
+        if (shouldDrag) {
+            CGPoint dragStartLocation = [touch locationInView:self.superview];
+            dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
+            dragging = YES;
+            
+            [pressAndHoldTimer invalidate];
+            pressAndHoldTimer = nil;
 
-        [self setBigAndTranslucent:YES];
-        
-        if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
-            [delegate gridViewCellDidStartDragging:self];
+            [self setBigAndTranslucent:YES];
+            
+            if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
+                [delegate gridViewCellDidStartDragging:self];
+            }
         }
     }
     
