@@ -185,7 +185,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					// Twitter feed JSON provides enough user info to generate a full detail NMPersonProfile object. Therefore, no need to generate any "person profile task".
 					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
 					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
-					theProfile.first_name = [fromDict objectForKey:@"name"];
+					theProfile.name = [fromDict objectForKey:@"name"];
 					NSString * scName = [fromDict objectForKey:@"screen_name"];
 					if ( scName ) theProfile.username = scName;
 					scName = [fromDict objectForKey:@"profile_image_url"];
