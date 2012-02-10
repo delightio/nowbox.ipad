@@ -385,21 +385,29 @@
     }
 }
 
-- (void)gridViewCellDidBeginRearranging:(PagingGridViewCell *)gridViewCell
+- (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell
 {
     self.scrollEnabled = NO;
     gridViewCell.lastDragLocation = CGPointMake(gridViewCell.center.x - self.contentOffset.x, gridViewCell.center.y - self.contentOffset.y);
+    [gridViewCell setDraggable:YES animated:YES];
     
     if ([gridDelegate respondsToSelector:@selector(gridViewDidBeginRearranging:)]) {
         [gridDelegate gridViewDidBeginRearranging:self];
     }
 }
 
-- (void)gridViewCellDidEndRearranging:(PagingGridViewCell *)gridViewCell
+- (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell
+{
+    
+}
+
+- (void)gridViewCellDidEndDragging:(PagingGridViewCell *)gridViewCell
 {
     NSUInteger index = gridViewCell.tag;
     [rearrangePageSwitchTimer invalidate];
     rearrangePageSwitchTimer = nil;
+    
+    [gridViewCell setDraggable:NO animated:YES];
     
     [UIView animateWithDuration:0.3
                      animations:^{

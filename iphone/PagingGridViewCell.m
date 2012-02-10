@@ -18,6 +18,7 @@
 @synthesize image;
 @synthesize label;
 @synthesize activityIndicator;
+@synthesize deleteButton;
 @synthesize draggable;
 @synthesize lastDragLocation;
 @synthesize delegate;
@@ -57,6 +58,7 @@
     [image release];
     [label release];
     [activityIndicator release];
+    [deleteButton release];
     
     [super dealloc];
 }
@@ -85,15 +87,33 @@
     }
 }
 
+- (void)setDraggable:(BOOL)isDraggable
+{
+    draggable = isDraggable;
+    deleteButton.alpha = (draggable ? 1 : 0);
+}
+
+- (void)setDraggable:(BOOL)isDraggable animated:(BOOL)animated
+{
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             self.draggable = isDraggable;
+                         }];
+    } else {
+        self.draggable = isDraggable;
+    }
+}
+
 #pragma mark - Touches
 
-- (void)didBeginRearranging
+- (void)didPressAndHold
 {
     pressAndHoldTimer = nil;
-    if ([delegate respondsToSelector:@selector(gridViewCellDidBeginRearranging:)]) {
-        [delegate gridViewCellDidBeginRearranging:self];
+    if ([delegate respondsToSelector:@selector(gridViewCellDidPressAndHold:)]) {
+        [delegate gridViewCellDidPressAndHold:self];
     }
-    draggable = YES;
+    dragging = YES;
     [self.superview bringSubviewToFront:self];
     
     [UIView animateWithDuration:0.15
@@ -103,25 +123,24 @@
                      }];
 }
 
-- (void)didEndRearranging
+- (void)didStopDragging
 {
-    draggable = NO;        
-    
     [UIView animateWithDuration:0.15
                      animations:^{
                          self.alpha = 1.0;
                          self.transform = CGAffineTransformIdentity;                         
                      }];
     
-    if ([delegate respondsToSelector:@selector(gridViewCellDidEndRearranging:)]) {
-        [delegate gridViewCellDidEndRearranging:self];
+    dragging = NO;
+    if ([delegate respondsToSelector:@selector(gridViewCellDidEndDragging:)]) {
+        [delegate gridViewCellDidEndDragging:self];
     }
 }
 
 - (void)handleTouchUp:(id)sender
 {
-    if (draggable) {
-        [self didEndRearranging];
+    if (dragging) {
+        [self didStopDragging];
     } else {
         [self cancelPressAndHoldTimer];        
         [delegate gridViewCellDidTap:self];
@@ -133,7 +152,7 @@
     [self cancelPressAndHoldTimer];
     pressAndHoldTimer = [NSTimer scheduledTimerWithTimeInterval:kPressAndHoldDuration
                                                          target:self
-                                                       selector:@selector(didBeginRearranging)
+                                                       selector:@selector(didPressAndHold)
                                                        userInfo:nil
                                                         repeats:NO];
     
@@ -145,8 +164,8 @@
 - (void)handleCancelTouch:(id)sender
 {    
     [self cancelPressAndHoldTimer];
-    if (draggable) {
-        [self didEndRearranging];
+    if (dragging) {
+        [self didStopDragging];
     } else {
         [self cancelPressAndHoldTimer];
     }
@@ -155,7 +174,17 @@
 - (void)handleDrag:(id)sender withEvent:(UIEvent *)event
 {
     UITouch *touch = [[event allTouches] anyObject];
-    if (draggable) {
+
+    if (draggable && !dragging) {
+        CGPoint dragStartLocation = [touch locationInView:self.superview];
+        dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
+        dragging = YES;
+        if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
+            [delegate gridViewCellDidStartDragging:self];
+        }
+    }
+    
+    if (dragging) {
         CGPoint location = [touch locationInView:self.superview];
         
         self.center = CGPointMake(location.x - dragAnchorPoint.x,
@@ -164,9 +193,6 @@
         if ([delegate respondsToSelector:@selector(gridViewCell:didDragToCenter:touchLocation:)]) {
             [delegate gridViewCell:self didDragToCenter:self.center touchLocation:location];
         }
-    } else {
-        CGPoint dragStartLocation = [touch locationInView:self.superview];
-        dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
     }
 }
 

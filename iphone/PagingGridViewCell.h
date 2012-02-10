@@ -14,22 +14,27 @@
 @interface PagingGridViewCell : UIButton {
     NSTimer *pressAndHoldTimer;
     CGPoint dragAnchorPoint;
+    BOOL dragging;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
 @property (nonatomic, retain) IBOutlet NMCachedImageView *image;
 @property (nonatomic, retain) IBOutlet UILabel *label;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, retain) IBOutlet UIButton *deleteButton;
 @property (nonatomic, assign, getter=isDraggable) BOOL draggable;
 @property (nonatomic, assign) CGPoint lastDragLocation;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewCellDelegate> delegate;
+
+- (void)setDraggable:(BOOL)draggable animated:(BOOL)animated;
 
 @end
 
 @protocol PagingGridViewCellDelegate <NSObject>
 @optional
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell;
-- (void)gridViewCellDidBeginRearranging:(PagingGridViewCell *)gridViewCell;
-- (void)gridViewCellDidEndRearranging:(PagingGridViewCell *)gridViewCell;
+- (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell;
+- (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell;
+- (void)gridViewCellDidEndDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCell:(PagingGridViewCell *)gridViewCell didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation;
 @end
