@@ -44,6 +44,11 @@
     // To be overriden by subclasses
 }
 
+- (void)deleteObjectAtIndex:(NSUInteger)index
+{
+    // To be overriden by subclasses    
+}
+
 #pragma mark - PagingGridViewDataSource
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
@@ -78,13 +83,13 @@
             [gridView insertItemAtIndex:newIndexPath.row];
             break;
         case NSFetchedResultsChangeDelete:
-            [gridView deleteItemAtIndex:indexPath.row];
+            [gridView deleteItemAtIndex:indexPath.row animated:YES];
             break;
         case NSFetchedResultsChangeUpdate:
             [gridView updateItemAtIndex:indexPath.row];
             break;
         case NSFetchedResultsChangeMove:
-            [gridView deleteItemAtIndex:indexPath.row];
+            [gridView deleteItemAtIndex:indexPath.row animated:YES];
             [gridView insertItemAtIndex:newIndexPath.row];
             break;
     }

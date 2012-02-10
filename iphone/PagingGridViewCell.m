@@ -39,6 +39,10 @@
         contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:contentView];
         
+        deleteButton.center = CGPointMake(4, 4);
+        deleteButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [self addSubview:deleteButton];
+        
         // Set the font depending on if it's available (iOS 4 doesn't have Futura Condensed Medium)
         UIFont *font = [UIFont fontWithName:@"Futura-CondensedMedium" size:label.font.pointSize];
         if (!font) {
@@ -46,7 +50,13 @@
         }
         [label setFont:font];
         
-        image.adjustsImageOnHighlight = YES;        
+        image.adjustsImageOnHighlight = YES;
+        self.clipsToBounds = NO;
+        
+        [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+        [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
+        [self addTarget:self action:@selector(handleCancelTouch:) forControlEvents:UIControlEventTouchCancel | UIControlEventTouchUpOutside | UIControlEventTouchDragOutside];
+        [self addTarget:self action:@selector(handleDrag:withEvent:) forControlEvents:UIControlEventTouchDragInside];
     }
     return self;
 } 
@@ -76,18 +86,6 @@
     image.highlighted = highlighted;
 }
 
-- (void)setDelegate:(id<PagingGridViewCellDelegate>)aDelegate
-{
-    if (delegate != aDelegate) {
-        [self removeTarget:delegate action:NULL forControlEvents:UIControlEventAllEvents];
-        delegate = aDelegate;        
-        [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-        [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
-        [self addTarget:self action:@selector(handleCancelTouch:) forControlEvents:UIControlEventTouchCancel | UIControlEventTouchUpOutside | UIControlEventTouchDragOutside];
-        [self addTarget:self action:@selector(handleDrag:withEvent:) forControlEvents:UIControlEventTouchDragInside];
-    }
-}
-
 - (void)setDraggable:(BOOL)isDraggable
 {
     draggable = isDraggable;
@@ -106,8 +104,6 @@
     }
 }
 
-#pragma mark - Touches
-
 - (void)setBigAndTranslucent:(BOOL)big
 {
     [self.superview bringSubviewToFront:self];
@@ -123,6 +119,17 @@
                          }
                      }];  
 }
+
+#pragma mark - IBActions
+
+- (IBAction)deleteButtonPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(gridViewCellDidPressDeleteButton:)]) {
+        [delegate gridViewCellDidPressDeleteButton:self];
+    }
+}
+
+#pragma mark - Touches
 
 - (void)didPressAndHold
 {

@@ -15,6 +15,8 @@
 - (CGRect)frameForIndex:(NSUInteger)index;
 - (NSInteger)repositioningIndexForFrame:(CGRect)frame;
 - (void)repositionView:(UIView *)view fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated;
+- (PagingGridViewCell *)addCellAtIndex:(NSUInteger)index;
+- (void)updateNumberOfPages;
 @end
 
 @implementation PagingGridView
@@ -25,6 +27,7 @@
 @synthesize currentPage;
 @synthesize internalPadding;
 @synthesize externalPadding;
+@synthesize rearranging;
 @synthesize dataSource;
 @synthesize gridDelegate;
 
@@ -46,6 +49,8 @@
     
     [self reloadData];
 }
+
+#pragma mark - UIView methods
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -75,6 +80,46 @@
     
     [super dealloc];
 }
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    CGRect visibleRect = CGRectMake(self.contentOffset.x, self.contentOffset.y, self.frame.size.width, self.frame.size.height);
+    
+    // Can we remove any views that are offscreen?
+    NSMutableSet *viewsToRemove = [NSMutableSet set];
+    for (PagingGridViewCell *view in visibleViews) {
+        // If a subview is being dragged, keep it's position relative to the superview
+        if ([view isDragging]) {
+            view.center = CGPointMake(view.lastDragLocation.x + self.contentOffset.x, view.lastDragLocation.y + self.contentOffset.y);
+            [self bringSubviewToFront:view];
+        } else if (!CGRectIntersectsRect(view.frame, visibleRect)) {
+            NSUInteger index = view.tag;
+            [viewsToRemove addObject:view];
+            [view removeFromSuperview];
+            [visibleIndexes removeIndex:index];
+            [recycledViews addObject:view];
+        }
+    }
+    [visibleViews minusSet:viewsToRemove];
+    
+    // Do we need to add any views that came onscreen?
+    CGFloat currentPageFloat = MAX(0, self.contentOffset.x / self.frame.size.width);
+    NSUInteger firstIndex = floor(currentPageFloat) * (numberOfRows * numberOfColumns);
+    NSUInteger lastIndex = (ceil(currentPageFloat) + 1) * (numberOfRows * numberOfColumns);
+    
+    for (NSUInteger i = firstIndex; i < lastIndex && i < numberOfItems; i++) {
+        CGRect viewFrame = [self frameForIndex:i];
+        if (CGRectIntersectsRect(viewFrame, visibleRect) && ![visibleIndexes containsIndex:i]) {
+            [self addCellAtIndex:i];
+        }
+    }
+    
+    currentPage = MAX(0, round(self.contentOffset.x / self.frame.size.width));
+}
+
+#pragma mark - Properties
 
 - (void)setDataSource:(id<PagingGridViewDataSource>)aDataSource
 {
@@ -122,6 +167,41 @@
     [self setContentOffset:CGPointMake(currentPage * self.frame.size.width, 0) animated:YES];
 }
 
+- (void)setRearranging:(BOOL)isRearranging
+{
+    rearranging = isRearranging;
+    
+    for (PagingGridViewCell *cell in visibleViews) {
+        if (rearranging) {
+            cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
+        }
+        [cell setDraggable:rearranging animated:YES];
+    }
+    
+    if (rearranging) {
+        if (!stopRearrangingButton) {
+            // Put an invisible button on the last page to intercept any touch events in empty space
+            stopRearrangingButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [stopRearrangingButton addTarget:self action:@selector(stopRearranging:) forControlEvents:UIControlEventTouchUpInside];
+            stopRearrangingButton.frame = CGRectMake(self.contentSize.width - self.frame.size.width, 0, self.frame.size.width, self.frame.size.height);
+            [self insertSubview:stopRearrangingButton atIndex:0];
+        }
+        
+        if ([gridDelegate respondsToSelector:@selector(gridViewDidBeginRearranging:)]) {
+            [gridDelegate gridViewDidBeginRearranging:self];
+        }
+    } else {
+        [stopRearrangingButton removeFromSuperview];
+        stopRearrangingButton = nil;
+        
+        if ([gridDelegate respondsToSelector:@selector(gridViewDidEndRearranging:)]) {
+            [gridDelegate gridViewDidEndRearranging:self];
+        }
+    }
+}
+
+#pragma mark - Private methods
+
 - (CGRect)frameForIndex:(NSUInteger)index
 {
     NSUInteger page = index / (numberOfRows * numberOfColumns);
@@ -155,85 +235,19 @@
     return -1;
 }
 
-- (void)layoutSubviews
+- (PagingGridViewCell *)addCellAtIndex:(NSUInteger)index
 {
-    [super layoutSubviews];
-    
-    CGRect visibleRect = CGRectMake(self.contentOffset.x, self.contentOffset.y, self.frame.size.width, self.frame.size.height);
-    
-    // Can we remove any views that are offscreen?
-    NSMutableSet *viewsToRemove = [NSMutableSet set];
-    for (PagingGridViewCell *view in visibleViews) {
-        // If a subview is being dragged, keep it's position relative to the superview
-        if ([view isDragging]) {
-            view.center = CGPointMake(view.lastDragLocation.x + self.contentOffset.x, view.lastDragLocation.y + self.contentOffset.y);
-            [self bringSubviewToFront:view];
-        } else if (!CGRectIntersectsRect(view.frame, visibleRect)) {
-            NSUInteger index = view.tag;
-            [viewsToRemove addObject:view];
-            [view removeFromSuperview];
-            [visibleIndexes removeIndex:index];
-            [recycledViews addObject:view];
-        }
-    }
-    [visibleViews minusSet:viewsToRemove];
-    
-    // Do we need to add any views that came onscreen?
-    CGFloat currentPageFloat = MAX(0, self.contentOffset.x / self.frame.size.width);
-    NSUInteger firstIndex = floor(currentPageFloat) * (numberOfRows * numberOfColumns);
-    NSUInteger lastIndex = (ceil(currentPageFloat) + 1) * (numberOfRows * numberOfColumns);
-    
-    for (NSUInteger i = firstIndex; i < lastIndex && i < numberOfItems; i++) {
-        CGRect viewFrame = [self frameForIndex:i];
-        if (CGRectIntersectsRect(viewFrame, visibleRect) && ![visibleIndexes containsIndex:i]) {
-            PagingGridViewCell *view = [dataSource gridView:self cellForIndex:i];
-            view.frame = viewFrame;
-            view.tag = i;
-            view.delegate = self;
-            view.draggable = rearranging;            
-            [visibleViews addObject:view];
-            [visibleIndexes addIndex:i];
-            [self addSubview:view];
-        }
-    }
-    
-    currentPage = MAX(0, round(self.contentOffset.x / self.frame.size.width));
-}
-
-- (PagingGridViewCell *)dequeueReusableCell
-{
-    PagingGridViewCell *view = [[[recycledViews anyObject] retain] autorelease];
-    if (view) {
-        [recycledViews removeObject:view];
-    }
+    PagingGridViewCell *view = [dataSource gridView:self cellForIndex:index];
+    view.frame = [self frameForIndex:index];
+    view.tag = index;
+    view.delegate = self;
+    view.draggable = rearranging;
+    [view.activityIndicator stopAnimating];
+    [visibleViews addObject:view];
+    [visibleIndexes addIndex:index];
+    [self addSubview:view];    
     
     return view;
-}
-
-- (void)reloadData
-{
-    if (!dataSource) return;
-    
-    numberOfItems = [dataSource gridViewNumberOfItems:self];
-    numberOfPages = numberOfItems / (numberOfRows * numberOfColumns);
-    if (numberOfItems % (numberOfRows * numberOfColumns) > 0) {
-        numberOfPages++;
-    }
-    
-    itemSize = CGSizeMake((self.frame.size.width - 2 * externalPadding.width - (numberOfColumns - 1) * internalPadding.width) / numberOfColumns, 
-                          (self.frame.size.height - 2 * externalPadding.height - (numberOfRows - 1) * internalPadding.height) / numberOfRows);
-    
-    self.contentSize = CGSizeMake(numberOfPages * self.frame.size.width, self.frame.size.height);
-    
-    // Remove all visible views
-    for (UIView *view in visibleViews) {
-        [view removeFromSuperview];
-        [recycledViews addObject:view];
-    }
-    [visibleViews removeAllObjects];
-    [visibleIndexes removeAllIndexes];
-    
-    [self setNeedsLayout];
 }
 
 - (void)repositionView:(UIView *)repositioningView fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated
@@ -288,6 +302,61 @@
     }
 }
 
+- (void)updateNumberOfPages
+{
+    numberOfPages = numberOfItems / (numberOfRows * numberOfColumns);
+    if (numberOfItems % (numberOfRows * numberOfColumns) > 0) {
+        numberOfPages++;
+    }
+    
+    self.contentSize = CGSizeMake(numberOfPages * self.frame.size.width, self.frame.size.height);
+    
+    if (currentPage >= numberOfPages && currentPage > 0) {
+        self.currentPage = currentPage - 1;
+    }
+}
+
+- (void)stopRearranging:(id)sender
+{
+    if (!dragging) {
+        [self setRearranging:NO];
+    }
+}
+
+#pragma mark - Public methods
+
+- (PagingGridViewCell *)dequeueReusableCell
+{
+    PagingGridViewCell *view = [[[recycledViews anyObject] retain] autorelease];
+    if (view) {
+        [recycledViews removeObject:view];
+    }
+    
+    return view;
+}
+
+- (void)reloadData
+{
+    if (!dataSource) return;
+    
+    numberOfItems = [dataSource gridViewNumberOfItems:self];
+    [self updateNumberOfPages];
+    
+    itemSize = CGSizeMake((self.frame.size.width - 2 * externalPadding.width - (numberOfColumns - 1) * internalPadding.width) / numberOfColumns, 
+                          (self.frame.size.height - 2 * externalPadding.height - (numberOfRows - 1) * internalPadding.height) / numberOfRows);
+    
+    
+    // Remove all visible views
+    for (UIView *view in visibleViews) {
+        [view removeFromSuperview];
+        [recycledViews addObject:view];
+    }
+    [visibleViews removeAllObjects];
+    [visibleIndexes removeAllIndexes];
+    
+    [self setNeedsLayout];
+}
+
 #pragma mark - Updates
 
 - (void)beginUpdates
@@ -318,27 +387,67 @@
     }
     
     numberOfItems++;
-    numberOfPages = numberOfItems / (numberOfRows * numberOfColumns);
-
+    [self updateNumberOfPages];
     [self setNeedsLayout];
 }
 
-- (void)deleteItemAtIndex:(NSUInteger)index
+- (void)deleteItemAtIndex:(NSUInteger)index animated:(BOOL)animated
 {
+    if ([gridDelegate respondsToSelector:@selector(gridView:willDeleteItemAtIndex:)]) {
+        [gridDelegate gridView:self willDeleteItemAtIndex:index];
+    }
+    
     PagingGridViewCell *cellToRemove = nil;
+    
+    // Add the subview on the next page which will be bumped to this page
+    NSUInteger page = index / (numberOfRows * numberOfColumns);
+    if (index % (numberOfRows * numberOfColumns)) {
+        page++;
+    }
+    NSUInteger nextIndex = (page + 1) * (numberOfRows * numberOfColumns);
+    if (nextIndex < numberOfItems) {
+        PagingGridViewCell *cell = [self addCellAtIndex:nextIndex];
+        
+        // Animate it in from the side rather than from the top
+        cell.frame = [self frameForIndex:(nextIndex + (numberOfRows - 1) * numberOfColumns)];
+    }
     
     // Bump views that come after up by one
     for (PagingGridViewCell *cell in visibleViews) {
         if (cell.tag == index) {
             cellToRemove = cell;
-        } else {
-            cell.frame = [self frameForIndex:--cell.tag];
+        } else if (cell.tag > index) {
+            cell.tag--;
+            
+            if (animated) {
+                [UIView animateWithDuration:0.3
+                                 animations:^{
+                                     cell.frame = [self frameForIndex:cell.tag];                                     
+                                 }];
+            } else {
+                cell.frame = [self frameForIndex:cell.tag];
+            }
         }
     }
     
+    // Fade out the cell being deleted
     if (cellToRemove) {
-        [cellToRemove removeFromSuperview];
-        [visibleViews removeObject:cellToRemove];
+        if (animated) {
+            [UIView animateWithDuration:0.3
+                             animations:^{
+                                 cellToRemove.alpha = 0;
+                             }
+                             completion:^(BOOL finished){
+                                 [cellToRemove removeFromSuperview];    
+                                 cellToRemove.alpha = 1;
+                                 [recycledViews addObject:cellToRemove];
+                                 [visibleViews removeObject:cellToRemove];
+                             }];
+        } else {
+            [cellToRemove removeFromSuperview];
+            [recycledViews addObject:cellToRemove];
+            [visibleViews removeObject:cellToRemove];
+        }
     }
     
     // Update visible indexes
@@ -348,9 +457,13 @@
     }
 
     numberOfItems--;
-    numberOfPages = numberOfItems / (numberOfRows * numberOfColumns);
+    [self updateNumberOfPages];
 
-    [self setNeedsLayout];    
+    [self setNeedsLayout];   
+    
+    if ([gridDelegate respondsToSelector:@selector(gridView:didDeleteItemAtIndex:)]) {
+        [gridDelegate gridView:self didDeleteItemAtIndex:index];
+    }
 }
 
 - (void)updateItemAtIndex:(NSUInteger)index
@@ -367,53 +480,7 @@
         [cellToRemove removeFromSuperview];
         [visibleViews removeObject:cellToRemove];
         
-        PagingGridViewCell *view = [dataSource gridView:self cellForIndex:index];
-        view.frame = [self frameForIndex:index];
-        view.tag = index;
-        view.delegate = self;
-        view.draggable = rearranging;
-        [visibleViews addObject:view];
-        [self addSubview:view];
-    }
-}
-
-- (void)setRearranging:(BOOL)isRearranging
-{
-    rearranging = isRearranging;
-    
-    for (PagingGridViewCell *cell in visibleViews) {
-        if (rearranging) {
-            cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
-        }
-        [cell setDraggable:rearranging animated:YES];
-    }
-    
-    if (rearranging) {
-        if (!stopRearrangingButton) {
-            // Put an invisible button on the last page to intercept any touch events in empty space
-            stopRearrangingButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            [stopRearrangingButton addTarget:self action:@selector(stopRearranging:) forControlEvents:UIControlEventTouchUpInside];
-            stopRearrangingButton.frame = CGRectMake(self.contentSize.width - self.frame.size.width, 0, self.frame.size.width, self.frame.size.height);
-            [self insertSubview:stopRearrangingButton atIndex:0];
-        }
-        
-        if ([gridDelegate respondsToSelector:@selector(gridViewDidBeginRearranging:)]) {
-            [gridDelegate gridViewDidBeginRearranging:self];
-        }
-    } else {
-        [stopRearrangingButton removeFromSuperview];
-        stopRearrangingButton = nil;
-        
-        if ([gridDelegate respondsToSelector:@selector(gridViewDidEndRearranging:)]) {
-            [gridDelegate gridViewDidEndRearranging:self];
-        }
-    }
-}
-
-- (void)stopRearranging:(id)sender
-{
-    if (!dragging) {
-        [self setRearranging:NO];
+        [self addCellAtIndex:index];
     }
 }
 
@@ -440,6 +507,24 @@
 {
     NSLog(@"cell did press and hold");
     [self setRearranging:YES];
+}
+
+- (void)gridViewCellDidPressDeleteButton:(PagingGridViewCell *)gridViewCell
+{
+    NSLog(@"cell did press delete button");
+
+    BOOL shouldDelete = YES;
+    if ([gridDelegate respondsToSelector:@selector(gridView:shouldDeleteItemAtIndex:)]) {
+        shouldDelete = [gridDelegate gridView:self shouldDeleteItemAtIndex:gridViewCell.tag];
+    }
+    
+    if (shouldDelete) {    
+        [self beginUpdates];
+        [self deleteItemAtIndex:gridViewCell.tag animated:YES];
+        [self endUpdates];
+    } else {
+        [gridViewCell.activityIndicator startAnimating];
+    }
 }
 
 - (BOOL)gridViewCellShouldStartDragging:(PagingGridViewCell *)gridViewCell

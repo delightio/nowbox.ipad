@@ -12,9 +12,23 @@
 
 @synthesize fetchedResultsController;
 
+- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
+{
+    self = [super initWithGridView:aGridView managedObjectContext:aManagedObjectContext];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didUnsubscribeChannelNotification:) name:NMDidUnsubscribeChannelNotification object:nil];
+        channelsToIndexes = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [channelsToIndexes release];
     [fetchedResultsController release];
+    
     [super dealloc];
 }
 
@@ -44,6 +58,30 @@
     
     NMChannel *channelToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
     channelToMove.nm_subscribed = newSortOrder;
+}
+
+- (void)deleteObjectAtIndex:(NSUInteger)index
+{
+    NMChannel *channelToDelete = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    [channelsToIndexes setObject:[NSNumber numberWithUnsignedInteger:index] forKey:channelToDelete.nm_id];
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channelToDelete];
+}
+
+#pragma mark - Notifications
+
+- (void)didUnsubscribeChannelNotification:(NSNotification *)notification
+{
+    NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
+    NSUInteger index = [[channelsToIndexes objectForKey:channel.nm_id] unsignedIntegerValue];
+    [self.gridView deleteItemAtIndex:index animated:YES];
+    
+    // Other indexes waiting for deletion will be shifted down by one
+    for (NMChannel *otherChannel in [channelsToIndexes allKeys]) {
+        NSUInteger otherIndex = [[channelsToIndexes objectForKey:channel.nm_id] unsignedIntegerValue];
+        if (otherIndex > index) {
+            [channelsToIndexes setObject:[NSNumber numberWithUnsignedInteger:otherIndex-1] forKey:otherChannel.nm_id];
+        }
+    }
 }
 
 #pragma mark - NSFetchedResultsController
@@ -93,7 +131,7 @@
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
     }
-        
+
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     view.label.text = channel.title;
     [view.image setImageForChannel:channel];

@@ -88,6 +88,20 @@
     pageControl.numberOfPages = aGridView.numberOfPages;
 }
 
+- (BOOL)gridView:(PagingGridView *)aGridView shouldDeleteItemAtIndex:(NSUInteger)index
+{
+    [gridDataSource deleteObjectAtIndex:index];
+    
+    // We will delete the item ourselves once the data source is finished deleting
+    return NO;
+}
+
+- (void)gridView:(PagingGridView *)aGridView didDeleteItemAtIndex:(NSUInteger)index
+{
+    pageControl.numberOfPages = aGridView.numberOfPages;
+    pageControl.currentPage = aGridView.currentPage;
+}
+
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView
 {
     NSLog(@"begin rearranging");

@@ -21,7 +21,6 @@
     NSMutableSet *recycledViews;
     
     NSTimer *rearrangePageSwitchTimer;
-    BOOL rearranging;
     BOOL dragging;
     UIButton *stopRearrangingButton;
 }
@@ -32,6 +31,7 @@
 @property (nonatomic, assign) NSUInteger currentPage;
 @property (nonatomic, assign) CGSize internalPadding;
 @property (nonatomic, assign) CGSize externalPadding;
+@property (nonatomic, assign) BOOL rearranging;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDataSource> dataSource;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDelegate> gridDelegate;
 
@@ -40,7 +40,7 @@
 - (void)beginUpdates;
 - (void)endUpdates;
 - (void)insertItemAtIndex:(NSUInteger)index;
-- (void)deleteItemAtIndex:(NSUInteger)index;
+- (void)deleteItemAtIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)updateItemAtIndex:(NSUInteger)index;
 
 @end
@@ -53,6 +53,9 @@
 @protocol PagingGridViewDelegate <NSObject>
 @optional
 - (void)gridView:(PagingGridView *)gridView didSelectItemAtIndex:(NSUInteger)index;
+- (void)gridView:(PagingGridView *)aGridView willDeleteItemAtIndex:(NSUInteger)index;
+- (BOOL)gridView:(PagingGridView *)aGridView shouldDeleteItemAtIndex:(NSUInteger)index;
+- (void)gridView:(PagingGridView *)aGridView didDeleteItemAtIndex:(NSUInteger)index;
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView;
 - (void)gridView:(PagingGridView *)gridView didMoveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 - (void)gridViewDidEndRearranging:(PagingGridView *)gridView;
