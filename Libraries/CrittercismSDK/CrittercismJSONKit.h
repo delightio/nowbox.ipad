@@ -203,14 +203,14 @@ typedef struct CrittercismJKParseState CrittercismJKParseState; // Opaque intern
 // Normally, a string that is serialized to JSON has quotation marks surrounding it, which you may or may not want when serializing a single string, and can be controlled with includeQuotes:
 // includeQuotes:YES `a "test"...` -> `"a \"test\"..."`
 // includeQuotes:NO  `a "test"...` -> `a \"test\"...`
-- (NSData *)CJSONData;     // Invokes JSONDataWithOptions:CrittercismJKSerializeOptionNone   includeQuotes:YES
+- (NSData *)JSONData;     // Invokes JSONDataWithOptions:CrittercismJKSerializeOptionNone   includeQuotes:YES
 - (NSData *)JSONDataWithOptions:(CrittercismJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error;
 - (NSString *)CrittercismJSONString; // Invokes CrittercismJSONStringWithOptions:CrittercismJKSerializeOptionNone includeQuotes:YES
 - (NSString *)CrittercismJSONStringWithOptions:(CrittercismJKSerializeOptionFlags)serializeOptions includeQuotes:(BOOL)includeQuotes error:(NSError **)error;
 @end
 
 @interface NSArray (CrittercismJSONKitSerializing)
-- (NSData *)CJSONData;
+- (NSData *)JSONData;
 - (NSData *)JSONDataWithOptions:(CrittercismJKSerializeOptionFlags)serializeOptions error:(NSError **)error;
 - (NSData *)JSONDataWithOptions:(CrittercismJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
 - (NSString *)CrittercismJSONString;
@@ -219,7 +219,7 @@ typedef struct CrittercismJKParseState CrittercismJKParseState; // Opaque intern
 @end
 
 @interface NSDictionary (CrittercismJSONKitSerializing)
-- (NSData *)CJSONData;
+- (NSData *)JSONData;
 - (NSData *)JSONDataWithOptions:(CrittercismJKSerializeOptionFlags)serializeOptions error:(NSError **)error;
 - (NSData *)JSONDataWithOptions:(CrittercismJKSerializeOptionFlags)serializeOptions serializeUnsupportedClassesUsingDelegate:(id)delegate selector:(SEL)selector error:(NSError **)error;
 - (NSString *)CrittercismJSONString;
