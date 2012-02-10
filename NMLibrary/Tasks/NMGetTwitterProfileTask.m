@@ -67,8 +67,8 @@ NSString * const NMDidFailGetTwitterProfileNotification = @"NMDidFailGetTwitterP
 	// use the string version of the ID to avoid complication handling 64-bit integer
 	[theDict setObject:[dict objectForKey:@"id_str"] forKey:@"nm_user_id"];
 
-	key = @"first_name";
-	str = [dict objectForKey:@"name"];
+	key = @"name";
+	str = [dict objectForKey:key];
 	if ( str ) [theDict setObject:str forKey:key];
 	else [theDict setObject:[NSNull null] forKey:key];
 	

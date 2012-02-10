@@ -15,6 +15,8 @@
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "NMSubscription.h"
+#import "NMFacebookInfo.h"
+#import "NMFacebookComment.h"
 #import "FBConnect.h"
 #import "NMObjectCache.h"
 
@@ -32,6 +34,8 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize since_id = _since_id;
 @synthesize profileArray = _profileArray;
 @synthesize feedDirectURLString = _feedDirectURLString;
+@synthesize videoLikeDict = _videoLikeDict;
+@synthesize videoCommentDict = _videoCommentDict;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -70,6 +74,12 @@ static NSArray * youTubeRegexArray = nil;
 	[super dealloc];
 }
 
+- (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
+	theProfile.nm_id = [NSNumber numberWithInteger:theID];
+	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+}
+
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
 	// home - user's news feed
 	// feed - user's own wall
@@ -99,10 +109,13 @@ static NSArray * youTubeRegexArray = nil;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
 	self.profileArray = [NSMutableArray arrayWithCapacity:feedCount];
+	self.videoLikeDict = [NSMutableDictionary dictionaryWithCapacity:feedCount];
+	self.videoCommentDict = [NSMutableDictionary dictionaryWithCapacity:feedCount];
 	NSString * extID = nil;
 	NSString * dataType = nil;
 	NSDictionary * fromDict = nil;
 	NSInteger theTime;
+	NSDictionary * otherDict;
 	for (NSDictionary * theDict in feedAy) {
 		// process the contents in the array
 		dataType = [theDict objectForKey:@"type"];
@@ -112,6 +125,10 @@ static NSArray * youTubeRegexArray = nil;
 				// we just need the external ID
 				[parsedObjects addObject:extID];
 				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
+				otherDict = [theDict objectForKey:@"likes"];
+				if ( otherDict ) [_videoLikeDict setObject:otherDict forKey:extID];
+				otherDict = [theDict objectForKey:@"comments"];
+				if ( otherDict ) [_videoCommentDict setObject:otherDict forKey:extID];
 				if ( theTime > maxUnixTime ) maxUnixTime = theTime;
 			} /*else {
 				NSLog(@"not added: %@ %@", [theDict objectForKey:@"name"], [theDict objectForKey:@"link"]);
@@ -137,8 +154,9 @@ static NSArray * youTubeRegexArray = nil;
 	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
-	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		NSString * extID = obj;
+	NSInteger idx = -1;
+	for (NSString * extID in parsedObjects) {
+		idx++;
 		NMConcreteVideo * conVdo = nil;
 		NMVideo * vdo = nil;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
@@ -168,27 +186,99 @@ static NSArray * youTubeRegexArray = nil;
 			default:
 				break;
 		}
-		// check person profile
 		if ( vdo ) {
+			// check person profile
 			BOOL isNew = NO;
 			id fromDict = [_profileArray objectAtIndex:idx];
+			NSString * manID;
+			NMPersonProfile * theProfile;
 			if ( fromDict != [NSNull null] ) {
-				NSString * manID = [fromDict objectForKey:@"id"];
-				NMPersonProfile * theProfile = [objectCache objectForKey:manID];
+				manID = [fromDict objectForKey:@"id"];
+				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
 					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
-					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
-					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
-					theProfile.first_name = [fromDict objectForKey:@"name"];
-					theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+					[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+					theProfile.name = [fromDict objectForKey:@"name"];
 				}
 				vdo.personProfile = theProfile;
 			}
+			// check likes
+			NSDictionary * otherDict = [_videoLikeDict objectForKey:extID];
+			NMFacebookInfo * fbInfo;
+			if ( otherDict ) {
+				fbInfo = vdo.video.facebook_info;
+				if ( fbInfo == nil ) {
+					fbInfo = [ctrl insertNewFacebookInfo];
+					vdo.video.facebook_info = fbInfo;
+				}
+				// there are some comments in this video. add the comment
+				fbInfo.likes_count = [otherDict objectForKey:@"count"];
+				// remove all existing relationship and reinsert new ones
+				if ( fbInfo.people_like ) {
+					[fbInfo setPeople_like:nil];
+				}
+				NSArray * lkAy = [otherDict objectForKey:@"data"];
+				NSMutableSet * lkSet = [NSMutableSet setWithCapacity:[lkAy count]];
+				for (fromDict in lkAy) {
+					manID = [fromDict objectForKey:@"id"];
+					theProfile = [objectCache objectForKey:manID];
+					if ( theProfile == nil ) {
+						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						[objectCache setObject:theProfile forKey:manID];
+					}
+					if ( isNew ) {
+						idx++;
+						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+						theProfile.name = [fromDict objectForKey:@"name"];
+					}
+					[lkSet addObject:theProfile];
+				}
+				[fbInfo addPeople_like:lkSet];
+			}
+			// check comments
+			otherDict = [_videoCommentDict objectForKey:extID];
+			if ( otherDict ) {
+				fbInfo = vdo.video.facebook_info;
+				if ( fbInfo == nil ) {
+					fbInfo = [ctrl insertNewFacebookInfo];
+					vdo.video.facebook_info = fbInfo;
+				}
+				// someone has liked this video
+				fbInfo.comments_count = [otherDict objectForKey:@"count"];
+				// remove all comments and reinsert everything
+				if ( fbInfo.comments ) {
+					[fbInfo setComments:nil];
+				}
+				NSArray * cmtAy = [otherDict objectForKey:@"data"];
+				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
+				NMFacebookComment * cmtObj;
+				for (NSDictionary * cmtDict in cmtAy) {
+					cmtObj = [ctrl insertNewFacebookComment];
+					cmtObj.message = [cmtDict objectForKey:@"message"];
+					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
+					// look up the person
+					fromDict = [cmtDict objectForKey:@"from"];
+					manID = [fromDict objectForKey:@"id"];
+					theProfile = [objectCache objectForKey:manID];
+					if ( theProfile == nil ) {
+						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						[objectCache setObject:theProfile forKey:manID];
+					}
+					if ( isNew ) {
+						idx++;
+						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+						theProfile.name = [fromDict objectForKey:@"name"];
+					}
+					cmtObj.from = theProfile;
+					[cmtSet addObject:cmtObj];
+				}
+				[fbInfo addComments:cmtSet];
+			}
 		}
-	}];
+	}
 	// when first fire Facebook feed parsing task, feedDirectURLString is nil. This means we are getting the first page of a person's news feed. The newest item should always appear in the first page. Therefore, we only need to save the parsing time data under this condition.
 	if ( _feedDirectURLString && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
 		// update the last checked time
