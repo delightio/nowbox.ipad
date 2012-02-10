@@ -509,6 +509,15 @@
     [self setRearranging:YES];
 }
 
+- (BOOL)gridViewCellShouldShowDeleteButton:(PagingGridViewCell *)gridViewCell
+{
+    if ([dataSource respondsToSelector:@selector(gridView:canDeleteItemAtIndex:)] && [dataSource gridView:self canDeleteItemAtIndex:gridViewCell.tag]) {
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (void)gridViewCellDidPressDeleteButton:(PagingGridViewCell *)gridViewCell
 {
     NSLog(@"cell did press delete button");

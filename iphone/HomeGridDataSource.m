@@ -55,4 +55,9 @@
     return view;
 }
 
+- (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
+{
+    return index >= 4;
+}
+
 @end

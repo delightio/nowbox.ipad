@@ -35,6 +35,7 @@
 @optional
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell;
+- (BOOL)gridViewCellShouldShowDeleteButton:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidPressDeleteButton:(PagingGridViewCell *)gridViewCell;
 - (BOOL)gridViewCellShouldStartDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell;

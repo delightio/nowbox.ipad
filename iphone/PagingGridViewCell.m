@@ -89,7 +89,12 @@
 - (void)setDraggable:(BOOL)isDraggable
 {
     draggable = isDraggable;
-    deleteButton.alpha = (draggable ? 1 : 0);
+    
+    if (draggable && [delegate respondsToSelector:@selector(gridViewCellShouldShowDeleteButton:)] && [delegate gridViewCellShouldShowDeleteButton:self]) {
+        deleteButton.alpha = 1;
+    } else {
+        deleteButton.alpha = 0;
+    }
 }
 
 - (void)setDraggable:(BOOL)isDraggable animated:(BOOL)animated

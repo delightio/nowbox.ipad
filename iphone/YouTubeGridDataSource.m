@@ -139,4 +139,10 @@
     return view;
 }
 
+- (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
+{
+    NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    return [channel.type integerValue] != NMChannelRecommendedType;
+}
+
 @end
