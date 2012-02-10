@@ -7,6 +7,7 @@
 //
 
 #import "FeatureDebugViewController.h"
+#import "FeatureDebugSocialChannelViewController.h"
 #import "VideoPlaybackViewController.h"
 
 @implementation FeatureDebugViewController
@@ -206,6 +207,14 @@
 	NMPersonProfile * thePerson = [tqc.dataController firstAvailablePersonProfile];
 	// subscribe to his/her feed
 	if ( thePerson ) [tqc issueSubscribePerson:thePerson];
+}
+
+- (IBAction)facebookFilter:(id)sender {
+	// push the facebook view
+	FeatureDebugSocialChannelViewController * viewCtrl = [[FeatureDebugSocialChannelViewController alloc] initWithStyle:UITableViewStylePlain];
+	viewCtrl.channelType = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	[self.navigationController pushViewController:viewCtrl animated:YES];
+	[viewCtrl release];
 }
 
 - (IBAction)checkUpdate:(id)sender {
