@@ -154,8 +154,9 @@ static NSArray * youTubeRegexArray = nil;
 	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
-	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		NSString * extID = obj;
+	NSInteger idx = -1;
+	for (NSString * extID in parsedObjects) {
+		idx++;
 		NMConcreteVideo * conVdo = nil;
 		NMVideo * vdo = nil;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
@@ -229,6 +230,7 @@ static NSArray * youTubeRegexArray = nil;
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
+						idx++;
 						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
 						theProfile.name = [fromDict objectForKey:@"name"];
 					}
@@ -266,6 +268,7 @@ static NSArray * youTubeRegexArray = nil;
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
+						idx++;
 						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
 						theProfile.name = [fromDict objectForKey:@"name"];
 					}
@@ -275,7 +278,7 @@ static NSArray * youTubeRegexArray = nil;
 				[fbInfo addComments:cmtSet];
 			}
 		}
-	}];
+	}
 	// when first fire Facebook feed parsing task, feedDirectURLString is nil. This means we are getting the first page of a person's news feed. The newest item should always appear in the first page. Therefore, we only need to save the parsing time data under this condition.
 	if ( _feedDirectURLString && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
 		// update the last checked time
