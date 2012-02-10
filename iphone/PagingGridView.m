@@ -165,7 +165,7 @@
     NSMutableSet *viewsToRemove = [NSMutableSet set];
     for (PagingGridViewCell *view in visibleViews) {
         // If a subview is being dragged, keep it's position relative to the superview
-        if ([view isDraggable]) {
+        if ([view isDragging]) {
             view.center = CGPointMake(view.lastDragLocation.x + self.contentOffset.x, view.lastDragLocation.y + self.contentOffset.y);
             [self bringSubviewToFront:view];
         } else if (!CGRectIntersectsRect(view.frame, visibleRect)) {
@@ -190,6 +190,7 @@
             view.frame = viewFrame;
             view.tag = i;
             view.delegate = self;
+            view.draggable = rearranging;            
             [visibleViews addObject:view];
             [visibleIndexes addIndex:i];
             [self addSubview:view];
@@ -370,6 +371,7 @@
         view.frame = [self frameForIndex:index];
         view.tag = index;
         view.delegate = self;
+        view.draggable = rearranging;
         [visibleViews addObject:view];
         [self addSubview:view];
     }
@@ -379,18 +381,38 @@
 
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell
 {
-    NSUInteger index = gridViewCell.tag;
-    if ([gridDelegate respondsToSelector:@selector(gridView:didSelectItemAtIndex:)]) {
-        [gridDelegate gridView:self didSelectItemAtIndex:index];
+    NSLog(@"cell did tap");
+
+    if (rearranging) {
+        // Make the cells non-draggable again
+        for (PagingGridViewCell *cell in visibleViews) {
+            [cell setDraggable:NO animated:YES];
+        }
+        
+        rearranging = NO;
+        if ([gridDelegate respondsToSelector:@selector(gridViewDidEndRearranging:)]) {
+            [gridDelegate gridViewDidEndRearranging:self];
+        }
+    } else {
+        // Selected an item
+        NSUInteger index = gridViewCell.tag;
+        if ([gridDelegate respondsToSelector:@selector(gridView:didSelectItemAtIndex:)]) {
+            [gridDelegate gridView:self didSelectItemAtIndex:index];
+        }
     }
 }
 
 - (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell
 {
+    NSLog(@"cell did press and hold");
+
     self.scrollEnabled = NO;
-    gridViewCell.lastDragLocation = CGPointMake(gridViewCell.center.x - self.contentOffset.x, gridViewCell.center.y - self.contentOffset.y);
-    [gridViewCell setDraggable:YES animated:YES];
+    for (PagingGridViewCell *cell in visibleViews) {
+        cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
+        [cell setDraggable:YES animated:YES];
+    }
     
+    rearranging = YES;
     if ([gridDelegate respondsToSelector:@selector(gridViewDidBeginRearranging:)]) {
         [gridDelegate gridViewDidBeginRearranging:self];
     }
@@ -398,27 +420,23 @@
 
 - (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell
 {
+    NSLog(@"cell did start dragging");
     
 }
 
 - (void)gridViewCellDidEndDragging:(PagingGridViewCell *)gridViewCell
 {
+    NSLog(@"cell did end dragging");
     NSUInteger index = gridViewCell.tag;
     [rearrangePageSwitchTimer invalidate];
     rearrangePageSwitchTimer = nil;
-    
-    [gridViewCell setDraggable:NO animated:YES];
     
     [UIView animateWithDuration:0.3
                      animations:^{
                          gridViewCell.frame = [self frameForIndex:index];
                      }
                      completion:^(BOOL finished){
-                         self.scrollEnabled = YES;     
-                         
-                         if ([gridDelegate respondsToSelector:@selector(gridViewDidEndRearranging:)]) {
-                             [gridDelegate gridViewDidEndRearranging:self];
-                         }
+                         self.scrollEnabled = YES;
                      }];
 }
 

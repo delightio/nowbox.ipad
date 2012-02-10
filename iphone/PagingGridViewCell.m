@@ -20,6 +20,7 @@
 @synthesize activityIndicator;
 @synthesize deleteButton;
 @synthesize draggable;
+@synthesize dragging;
 @synthesize lastDragLocation;
 @synthesize delegate;
 
@@ -107,30 +108,38 @@
 
 #pragma mark - Touches
 
-- (void)didPressAndHold
+- (void)setBigAndTranslucent:(BOOL)big
 {
-    pressAndHoldTimer = nil;
-    if ([delegate respondsToSelector:@selector(gridViewCellDidPressAndHold:)]) {
-        [delegate gridViewCellDidPressAndHold:self];
-    }
-    dragging = YES;
     [self.superview bringSubviewToFront:self];
     
     [UIView animateWithDuration:0.15
                      animations:^{
-                         self.alpha = 0.7;
-                         self.transform = CGAffineTransformMakeScale(kRearrangingScaleFactor, kRearrangingScaleFactor);
-                     }];
+                         if (big) {
+                             self.alpha = 0.7;
+                             self.transform = CGAffineTransformMakeScale(kRearrangingScaleFactor, kRearrangingScaleFactor);
+                         } else {
+                             self.alpha = 1.0;
+                             self.transform = CGAffineTransformIdentity;
+                         }
+                         
+                     }];    
+}
+
+- (void)didPressAndHold
+{
+    pressAndHoldTimer = nil;
+    if (dragging) return;
+    
+    if ([delegate respondsToSelector:@selector(gridViewCellDidPressAndHold:)]) {
+        [delegate gridViewCellDidPressAndHold:self];
+    }
+    
+    [self setBigAndTranslucent:YES];
 }
 
 - (void)didStopDragging
 {
-    [UIView animateWithDuration:0.15
-                     animations:^{
-                         self.alpha = 1.0;
-                         self.transform = CGAffineTransformIdentity;                         
-                     }];
-    
+    [self setBigAndTranslucent:NO];
     dragging = NO;
     if ([delegate respondsToSelector:@selector(gridViewCellDidEndDragging:)]) {
         [delegate gridViewCellDidEndDragging:self];
@@ -179,6 +188,12 @@
         CGPoint dragStartLocation = [touch locationInView:self.superview];
         dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
         dragging = YES;
+        
+        [pressAndHoldTimer invalidate];
+        pressAndHoldTimer = nil;
+
+        [self setBigAndTranslucent:YES];
+        
         if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
             [delegate gridViewCellDidStartDragging:self];
         }

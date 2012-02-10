@@ -21,6 +21,7 @@
     NSMutableSet *recycledViews;
     
     NSTimer *rearrangePageSwitchTimer;
+    BOOL rearranging;
 }
 
 @property (nonatomic, assign) NSUInteger numberOfRows;

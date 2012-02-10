@@ -90,6 +90,8 @@
 
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView
 {
+    NSLog(@"begin rearranging");
+    // Don't want updates because then we get layoutSubviews which messes up our drag events
     gridDataSource.updatesEnabled = NO;
 }
 
@@ -100,6 +102,7 @@
 
 - (void)gridViewDidEndRearranging:(PagingGridView *)gridView
 {
+    NSLog(@"end rearranging");    
     gridDataSource.updatesEnabled = YES;
 }
 

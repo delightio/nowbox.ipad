@@ -14,7 +14,6 @@
 @interface PagingGridViewCell : UIButton {
     NSTimer *pressAndHoldTimer;
     CGPoint dragAnchorPoint;
-    BOOL dragging;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
@@ -23,6 +22,7 @@
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) IBOutlet UIButton *deleteButton;
 @property (nonatomic, assign, getter=isDraggable) BOOL draggable;
+@property (nonatomic, assign, getter=isDragging) BOOL dragging;
 @property (nonatomic, assign) CGPoint lastDragLocation;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewCellDelegate> delegate;
 
