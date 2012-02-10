@@ -19,6 +19,8 @@
 @class NMAuthor;
 @class NMSubscription;
 @class NMPersonProfile;
+@class NMFacebookInfo;
+@class NMFacebookComment;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -143,6 +145,10 @@
 - (NSInteger)maxVideoSortOrderInChannel:(NMChannel *)chn sessionOnly:(BOOL)flag;
 - (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid orExternalID:(NSString *)extID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
+
+// video facebook info
+- (NMFacebookInfo *)insertNewFacebookInfo;
+- (NMFacebookComment *)insertNewFacebookComment;
 
 // author
 - (NMAuthor *)authorForID:(NSNumber *)authID orName:(NSString *)aName;

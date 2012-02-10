@@ -16,6 +16,8 @@
 #import "NMVideoDetail.h"
 #import "NMSubscription.h"
 #import "NMPersonProfile.h"
+#import "NMFacebookInfo.h"
+#import "NMFacebookComment.h"
 #import "NMGetChannelVideoListTask.h"
 
 
@@ -29,6 +31,8 @@ NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
 NSString * const NMAuthorEntityName = @"NMAuthor";
 NSString * const NMSubscriptionEntityName = @"NMSubscription";
 NSString * const NMPersonProfileEntityName = @"NMPersonProfile";
+NSString * const NMFacebookInfoEntityName = @"NMFacebookInfo";
+NSString * const NMFacebookCommentEntityName = @"NMFacebookComment";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
@@ -1200,6 +1204,15 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	}
 	[request release];
 	return checkResult;
+}
+
+#pragma mark Video Facebook info
+- (NMFacebookInfo *)insertNewFacebookInfo {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext];
+}
+
+- (NMFacebookComment *)insertNewFacebookComment {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookCommentEntityName inManagedObjectContext:managedObjectContext];
 }
 
 #pragma mark Author

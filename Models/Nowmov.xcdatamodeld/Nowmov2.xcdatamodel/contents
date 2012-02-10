@@ -72,7 +72,7 @@
         <relationship name="facebook_info" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMFacebookInfo" inverseName="video" inverseEntity="NMFacebookInfo" syncable="YES"/>
     </entity>
     <entity name="NMFacebookComment" representedClassName="NMFacebookComment" syncable="YES">
-        <attribute name="created_time" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="created_time" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="facebook_info" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMFacebookInfo" inverseName="comments" inverseEntity="NMFacebookInfo" syncable="YES"/>
         <relationship name="from" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMPersonProfile" inverseName="comments" inverseEntity="NMPersonProfile" syncable="YES"/>
@@ -134,7 +134,7 @@
         <element name="NMChannel" positionX="288" positionY="-207" width="153" height="405"/>
         <element name="NMChannelDetail" positionX="88" positionY="15" width="128" height="75"/>
         <element name="NMConcreteVideo" positionX="261" positionY="270" width="128" height="360"/>
-        <element name="NMPersonProfile" positionX="729" positionY="-3" width="128" height="240"/>
+        <element name="NMPersonProfile" positionX="729" positionY="-3" width="128" height="210"/>
         <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMSubscription" positionX="558" positionY="-165" width="128" height="105"/>
         <element name="NMVideo" positionX="558" positionY="159" width="128" height="120"/>

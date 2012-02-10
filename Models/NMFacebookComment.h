@@ -13,7 +13,7 @@
 
 @interface NMFacebookComment : NSManagedObject
 
-@property (nonatomic, retain) NSDate * created_time;
+@property (nonatomic, retain) NSNumber * created_time;
 @property (nonatomic, retain) NSString * message;
 @property (nonatomic, retain) NSManagedObject *facebook_info;
 @property (nonatomic, retain) NMPersonProfile *from;

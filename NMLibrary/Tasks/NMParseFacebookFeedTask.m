@@ -15,6 +15,8 @@
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "NMSubscription.h"
+#import "NMFacebookInfo.h"
+#import "NMFacebookComment.h"
 #import "FBConnect.h"
 #import "NMObjectCache.h"
 
@@ -32,6 +34,8 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize since_id = _since_id;
 @synthesize profileArray = _profileArray;
 @synthesize feedDirectURLString = _feedDirectURLString;
+@synthesize videoLikeDict = _videoLikeDict;
+@synthesize videoCommentDict = _videoCommentDict;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -103,6 +107,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSString * dataType = nil;
 	NSDictionary * fromDict = nil;
 	NSInteger theTime;
+	NSDictionary * otherDict;
 	for (NSDictionary * theDict in feedAy) {
 		// process the contents in the array
 		dataType = [theDict objectForKey:@"type"];
@@ -112,6 +117,10 @@ static NSArray * youTubeRegexArray = nil;
 				// we just need the external ID
 				[parsedObjects addObject:extID];
 				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
+				otherDict = [theDict objectForKey:@"likes"];
+				if ( otherDict ) [_videoLikeDict setObject:otherDict forKey:extID];
+				otherDict = [theDict objectForKey:@"comments"];
+				if ( otherDict ) [_videoCommentDict setObject:otherDict forKey:extID];
 				if ( theTime > maxUnixTime ) maxUnixTime = theTime;
 			} /*else {
 				NSLog(@"not added: %@ %@", [theDict objectForKey:@"name"], [theDict objectForKey:@"link"]);
@@ -168,8 +177,8 @@ static NSArray * youTubeRegexArray = nil;
 			default:
 				break;
 		}
-		// check person profile
 		if ( vdo ) {
+			// check person profile
 			BOOL isNew = NO;
 			id fromDict = [_profileArray objectAtIndex:idx];
 			if ( fromDict != [NSNull null] ) {
@@ -186,6 +195,41 @@ static NSArray * youTubeRegexArray = nil;
 					theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
 				}
 				vdo.personProfile = theProfile;
+			}
+			// check likes
+			NSDictionary * otherDict = [_videoCommentDict objectForKey:extID];
+			NMFacebookInfo * fbInfo;
+			if ( otherDict ) {
+				fbInfo = vdo.video.facebook_info;
+				if ( fbInfo == nil ) {
+					fbInfo = [ctrl insertNewFacebookInfo];
+					vdo.video.facebook_info = fbInfo;
+				}
+				// there are some comments in this video. add the comment
+				fbInfo.likes_count = [otherDict objectForKey:@"count"];
+			}
+			// check comments
+			otherDict = [_videoLikeDict objectForKey:extID];
+			if ( otherDict ) {
+				fbInfo = vdo.video.facebook_info;
+				if ( fbInfo == nil ) {
+					fbInfo = [ctrl insertNewFacebookInfo];
+					vdo.video.facebook_info = fbInfo;
+				}
+				// someone has liked this video
+				fbInfo.comments_count = [otherDict objectForKey:@"count"];
+				// remove all comments and reinsert everything
+				NSArray * cmtAy = [otherDict objectForKey:@"data"];
+				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
+				NMFacebookComment * cmtObj;
+				for (NSDictionary * cmtDict in cmtAy) {
+					cmtObj = [ctrl insertNewFacebookComment];
+					cmtObj.message = [cmtDict objectForKey:@"message"];
+					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
+					// look up the person
+					
+					[cmtSet addObject:cmtObj];
+				}
 			}
 		}
 	}];
