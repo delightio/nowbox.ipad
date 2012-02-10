@@ -74,6 +74,12 @@ static NSArray * youTubeRegexArray = nil;
 	[super dealloc];
 }
 
+- (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
+	theProfile.nm_id = [NSNumber numberWithInteger:theID];
+	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+}
+
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
 	// home - user's news feed
 	// feed - user's own wall
@@ -103,6 +109,8 @@ static NSArray * youTubeRegexArray = nil;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
 	self.profileArray = [NSMutableArray arrayWithCapacity:feedCount];
+	self.videoLikeDict = [NSMutableDictionary dictionaryWithCapacity:feedCount];
+	self.videoCommentDict = [NSMutableDictionary dictionaryWithCapacity:feedCount];
 	NSString * extID = nil;
 	NSString * dataType = nil;
 	NSDictionary * fromDict = nil;
@@ -181,23 +189,23 @@ static NSArray * youTubeRegexArray = nil;
 			// check person profile
 			BOOL isNew = NO;
 			id fromDict = [_profileArray objectAtIndex:idx];
+			NSString * manID;
+			NMPersonProfile * theProfile;
 			if ( fromDict != [NSNull null] ) {
-				NSString * manID = [fromDict objectForKey:@"id"];
-				NMPersonProfile * theProfile = [objectCache objectForKey:manID];
+				manID = [fromDict objectForKey:@"id"];
+				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
 					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
-					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
-					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
-					theProfile.first_name = [fromDict objectForKey:@"name"];
-					theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+					[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+					theProfile.name = [fromDict objectForKey:@"name"];
 				}
 				vdo.personProfile = theProfile;
 			}
 			// check likes
-			NSDictionary * otherDict = [_videoCommentDict objectForKey:extID];
+			NSDictionary * otherDict = [_videoLikeDict objectForKey:extID];
 			NMFacebookInfo * fbInfo;
 			if ( otherDict ) {
 				fbInfo = vdo.video.facebook_info;
@@ -207,9 +215,29 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				// there are some comments in this video. add the comment
 				fbInfo.likes_count = [otherDict objectForKey:@"count"];
+				// remove all existing relationship and reinsert new ones
+				if ( fbInfo.people_like ) {
+					[fbInfo setPeople_like:nil];
+				}
+				NSArray * lkAy = [otherDict objectForKey:@"data"];
+				NSMutableSet * lkSet = [NSMutableSet setWithCapacity:[lkAy count]];
+				for (fromDict in lkAy) {
+					manID = [fromDict objectForKey:@"id"];
+					theProfile = [objectCache objectForKey:manID];
+					if ( theProfile == nil ) {
+						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						[objectCache setObject:theProfile forKey:manID];
+					}
+					if ( isNew ) {
+						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+						theProfile.name = [fromDict objectForKey:@"name"];
+					}
+					[lkSet addObject:theProfile];
+				}
+				[fbInfo addPeople_like:lkSet];
 			}
 			// check comments
-			otherDict = [_videoLikeDict objectForKey:extID];
+			otherDict = [_videoCommentDict objectForKey:extID];
 			if ( otherDict ) {
 				fbInfo = vdo.video.facebook_info;
 				if ( fbInfo == nil ) {
@@ -219,6 +247,9 @@ static NSArray * youTubeRegexArray = nil;
 				// someone has liked this video
 				fbInfo.comments_count = [otherDict objectForKey:@"count"];
 				// remove all comments and reinsert everything
+				if ( fbInfo.comments ) {
+					[fbInfo setComments:nil];
+				}
 				NSArray * cmtAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
 				NMFacebookComment * cmtObj;
@@ -227,9 +258,21 @@ static NSArray * youTubeRegexArray = nil;
 					cmtObj.message = [cmtDict objectForKey:@"message"];
 					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
 					// look up the person
-					
+					fromDict = [cmtDict objectForKey:@"from"];
+					manID = [fromDict objectForKey:@"id"];
+					theProfile = [objectCache objectForKey:manID];
+					if ( theProfile == nil ) {
+						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						[objectCache setObject:theProfile forKey:manID];
+					}
+					if ( isNew ) {
+						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+						theProfile.name = [fromDict objectForKey:@"name"];
+					}
+					cmtObj.from = theProfile;
 					[cmtSet addObject:cmtObj];
 				}
+				[fbInfo addComments:cmtSet];
 			}
 		}
 	}];

@@ -51,7 +51,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	} else {
 		str = _userID;
 	}
-	return [self.facebook requestWithGraphPath:str andParams:[NSMutableDictionary dictionaryWithObject:@"first_name,id,username,picture" forKey:@"fields"] andDelegate:ctrl];
+	return [self.facebook requestWithGraphPath:str andParams:[NSMutableDictionary dictionaryWithObject:@"name,id,username,picture" forKey:@"fields"] andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {
@@ -60,9 +60,9 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	NSString * str = [result objectForKey:@"username"];
 	if ( str ) [theDict setObject:str forKey:@"username"];
 	else [theDict setObject:[NSNull null] forKey:@"username"];
-	str = [result objectForKey:@"first_name"];
-	if ( str ) [theDict setObject:str forKey:@"first_name"];
-	else [theDict setObject:[NSNull null] forKey:@"first_name"];
+	str = [result objectForKey:@"name"];
+	if ( str ) [theDict setObject:str forKey:@"name"];
+	else [theDict setObject:[NSNull null] forKey:@"name"];
 	str = [result objectForKey:@"picture"];
 	if ( str ) [theDict setObject:str forKey:@"picture"];
 	else [theDict setObject:[NSNull null] forKey:@"picture"];

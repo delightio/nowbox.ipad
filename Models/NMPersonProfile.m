@@ -15,7 +15,7 @@
 
 @implementation NMPersonProfile
 
-@dynamic first_name;
+@dynamic name;
 @dynamic nm_account_identifier;
 @dynamic nm_error;
 @dynamic nm_id;

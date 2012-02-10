@@ -13,7 +13,7 @@
 
 @interface NMPersonProfile : NSManagedObject
 
-@property (nonatomic, retain) NSString * first_name;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * nm_account_identifier;
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_id;

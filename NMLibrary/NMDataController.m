@@ -1318,7 +1318,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		chnObj = [NSEntityDescription insertNewObjectForEntityForName:NMChannelEntityName inManagedObjectContext:managedObjectContext];
 		chnObj.type = aProfile.nm_type;
 		chnObj.nm_is_new = (NSNumber *)kCFBooleanTrue;
-		chnObj.title = aProfile.first_name;
+		chnObj.title = aProfile.name;
 		chnObj.thumbnail_uri = aProfile.picture;
 		// set sorting order (use nm_subscribed)
 		NSUInteger subCount = [self numberOfSubscriptions];
