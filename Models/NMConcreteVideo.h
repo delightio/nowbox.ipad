@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMVideoDetail, NMAuthor, NMVideo;
+@class NMVideoDetail, NMAuthor, NMVideo, NMFacebookInfo;
 @class NMMovieDetailView, NMAVPlayerItem;
 
 @interface NMConcreteVideo : NSManagedObject {
@@ -42,6 +42,7 @@
 @property (nonatomic, retain) NSSet *channels;
 @property (nonatomic, retain) NMVideoDetail *detail;
 @property (nonatomic, retain) NMAuthor *author;
+@property (nonatomic, retain) NMFacebookInfo * facebook_info;
 
 @property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
 @property (nonatomic, assign) NMMovieDetailView * nm_movie_detail_view;
