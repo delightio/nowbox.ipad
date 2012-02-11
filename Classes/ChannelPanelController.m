@@ -484,7 +484,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO"]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND subscription.nm_subscription_tier == 0"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];

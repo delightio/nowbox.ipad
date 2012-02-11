@@ -50,6 +50,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 @synthesize lastSessionVideoIDs;
 
 @synthesize subscribedChannelsPredicate = _subscribedChannelsPredicate;
+@synthesize socialChannelsToSyncPredicate = _socialChannelsToSyncPredicate;
 @synthesize objectForIDPredicateTemplate = _objectForIDPredicateTemplate;
 @synthesize videoInChannelPredicateTemplate = _videoInChannelPredicateTemplate;
 @synthesize channelPredicateTemplate = _channelPredicateTemplate;
@@ -78,6 +79,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	[myQueueChannel release], [favoriteVideoChannel release];
 	[userFacebookStreamChannel release], [userTwitterStreamChannel release];
 	[_subscribedChannelsPredicate release];
+	[_socialChannelsToSyncPredicate release];
 	[_objectForIDPredicateTemplate release];
 	[_videoInChannelPredicateTemplate release];
 	[_channelPredicateTemplate release];
@@ -126,6 +128,12 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	if ( _subscribedChannelsPredicate == nil ) 
 		_subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == $HIDDEN AND NOT type IN %@", [NSArray arrayWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], nil]] retain];
 	return _subscribedChannelsPredicate;
+}
+
+- (NSPredicate *)socialChannelsToSyncPredicate {
+	if ( _socialChannelsToSyncPredicate == nil ) 
+		_socialChannelsToSyncPredicate = [[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_subscription_tier == 0 AND type IN %@ AND subscription.nm_video_last_refresh < $LAST_REFRESH", [NSArray arrayWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], nil]] retain];
+	return _socialChannelsToSyncPredicate;
 }
 
 - (NSPredicate *)objectForIDPredicateTemplate {
@@ -543,7 +551,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (NSArray *)hiddenSubscribedChannels {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == YES AND subscription.nm_video_last_refresh < %@", [NSDate dateWithTimeIntervalSinceNow:-600]]]; // 10 min
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == YES AND subscription.nm_video_last_refresh < %@", [NSNumber numberWithFloat:[[NSDate dateWithTimeIntervalSinceNow:-600] timeIntervalSince1970]]]]; // 10 min
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
     [request release];    
@@ -787,7 +795,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	// get all stream and keyword channels that have never been populated before. The backend needs to poll the server to see if videos are available in those channels
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND type != %@ AND subscription.populated_at == 0", [NSNumber numberWithInteger:NMChannelUserType]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND type != %@ AND populated_at == 0", [NSNumber numberWithInteger:NMChannelUserType]]];
 	[request setReturnsObjectsAsFaults:NO];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
 	
@@ -797,13 +805,14 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return [result count] ? result : nil;
 }
 
-- (NSArray *)channelsForSync {
+- (NSArray *)socialChannelsForSync {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	// crawl if the channel has not been crawled in the past 5 min
 	time_t t;
 	time(&t);
-	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_video_last_refresh < %@", [NSNumber numberWithInteger:mktime(gmtime(&t)) - 300]]];
+	NSPredicate * thePredicate = [self.socialChannelsToSyncPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:mktime(gmtime(&t)) - 300] forKey:@"LAST_REFRESH"]];
+	[request setPredicate:thePredicate];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];

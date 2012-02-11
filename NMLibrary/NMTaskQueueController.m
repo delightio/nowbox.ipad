@@ -732,7 +732,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)scheduleSyncSocialChannels {
 	// get the qualified channels
-	NSArray * theChannels = [dataController channelsForSync];
+	NSArray * theChannels = [dataController socialChannelsForSync];
 	NSUInteger c = [theChannels count];
 	for (NSUInteger i = 0; (i < c && i < 5); i++) {
 		[self issueProcessFeedForChannel:[theChannels objectAtIndex:i]];
