@@ -88,11 +88,25 @@
     pageControl.numberOfPages = aGridView.numberOfPages;
 }
 
+- (BOOL)gridView:(PagingGridView *)aGridView shouldDeleteItemAtIndex:(NSUInteger)index
+{
+    [gridDataSource deleteObjectAtIndex:index];
+    
+    // We will delete the item ourselves once the data source is finished deleting
+    return NO;
+}
+
+- (void)gridView:(PagingGridView *)aGridView didDeleteItemAtIndex:(NSUInteger)index
+{
+    pageControl.numberOfPages = aGridView.numberOfPages;
+    pageControl.currentPage = aGridView.currentPage;
+}
+
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView
 {
     NSLog(@"begin rearranging");
-    // Don't want updates because then we get layoutSubviews which messes up our drag events
-    gridDataSource.updatesEnabled = NO;
+    // Don't want moves because then we get layoutSubviews which messes up our rearrange events
+    gridDataSource.ignoresMoveChanges = YES;
 }
 
 - (void)gridView:(PagingGridView *)gridView didMoveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
@@ -103,7 +117,7 @@
 - (void)gridViewDidEndRearranging:(PagingGridView *)gridView
 {
     NSLog(@"end rearranging");    
-    gridDataSource.updatesEnabled = YES;
+    gridDataSource.ignoresMoveChanges = NO;
 }
 
 #pragma mark - UIScrollViewDelegate

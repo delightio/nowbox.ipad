@@ -11,7 +11,7 @@
 @implementation GridDataSource
 
 @synthesize gridView;
-@synthesize updatesEnabled;
+@synthesize ignoresMoveChanges;
 @synthesize managedObjectContext;
 
 - (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
@@ -19,7 +19,6 @@
     self = [super init];
     if (self) {
         self.gridView = aGridView;
-        self.updatesEnabled = YES;
         self.managedObjectContext = aManagedObjectContext;
     }
     return self;
@@ -42,6 +41,11 @@
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
     // To be overriden by subclasses
+}
+
+- (void)deleteObjectAtIndex:(NSUInteger)index
+{
+    // To be overriden by subclasses    
 }
 
 #pragma mark - PagingGridViewDataSource
@@ -71,20 +75,20 @@
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath 
 {    
-    if (!updatesEnabled) return;
+    if (ignoresMoveChanges && type == NSFetchedResultsChangeMove) return;
     
     switch(type) {
         case NSFetchedResultsChangeInsert: 
             [gridView insertItemAtIndex:newIndexPath.row];
             break;
         case NSFetchedResultsChangeDelete:
-            [gridView deleteItemAtIndex:indexPath.row];
+            [gridView deleteItemAtIndex:indexPath.row animated:YES];
             break;
         case NSFetchedResultsChangeUpdate:
             [gridView updateItemAtIndex:indexPath.row];
             break;
         case NSFetchedResultsChangeMove:
-            [gridView deleteItemAtIndex:indexPath.row];
+            [gridView deleteItemAtIndex:indexPath.row animated:YES];
             [gridView insertItemAtIndex:newIndexPath.row];
             break;
     }
@@ -93,9 +97,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
     [gridView endUpdates];
-//    if (updatesEnabled) {
-//        [gridView reloadData];
-//    }
 }
 
 @end

@@ -27,6 +27,7 @@
 @property (nonatomic, assign) IBOutlet id<PagingGridViewCellDelegate> delegate;
 
 - (void)setDraggable:(BOOL)draggable animated:(BOOL)animated;
+- (IBAction)deleteButtonPressed:(id)sender;
 
 @end
 
@@ -34,6 +35,9 @@
 @optional
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell;
+- (BOOL)gridViewCellShouldShowDeleteButton:(PagingGridViewCell *)gridViewCell;
+- (void)gridViewCellDidPressDeleteButton:(PagingGridViewCell *)gridViewCell;
+- (BOOL)gridViewCellShouldStartDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCellDidEndDragging:(PagingGridViewCell *)gridViewCell;
 - (void)gridViewCell:(PagingGridViewCell *)gridViewCell didDragToCenter:(CGPoint)center touchLocation:(CGPoint)touchLocation;

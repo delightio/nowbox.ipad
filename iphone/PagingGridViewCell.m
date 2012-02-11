@@ -39,6 +39,10 @@
         contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:contentView];
         
+        deleteButton.center = CGPointMake(4, 4);
+        deleteButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [self addSubview:deleteButton];
+        
         // Set the font depending on if it's available (iOS 4 doesn't have Futura Condensed Medium)
         UIFont *font = [UIFont fontWithName:@"Futura-CondensedMedium" size:label.font.pointSize];
         if (!font) {
@@ -46,7 +50,13 @@
         }
         [label setFont:font];
         
-        image.adjustsImageOnHighlight = YES;        
+        image.adjustsImageOnHighlight = YES;
+        self.clipsToBounds = NO;
+        
+        [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+        [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
+        [self addTarget:self action:@selector(handleCancelTouch:) forControlEvents:UIControlEventTouchCancel | UIControlEventTouchUpOutside | UIControlEventTouchDragOutside];
+        [self addTarget:self action:@selector(handleDrag:withEvent:) forControlEvents:UIControlEventTouchDragInside];
     }
     return self;
 } 
@@ -76,22 +86,15 @@
     image.highlighted = highlighted;
 }
 
-- (void)setDelegate:(id<PagingGridViewCellDelegate>)aDelegate
-{
-    if (delegate != aDelegate) {
-        [self removeTarget:delegate action:NULL forControlEvents:UIControlEventAllEvents];
-        delegate = aDelegate;        
-        [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
-        [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
-        [self addTarget:self action:@selector(handleCancelTouch:) forControlEvents:UIControlEventTouchCancel | UIControlEventTouchUpOutside | UIControlEventTouchDragOutside];
-        [self addTarget:self action:@selector(handleDrag:withEvent:) forControlEvents:UIControlEventTouchDragInside];
-    }
-}
-
 - (void)setDraggable:(BOOL)isDraggable
 {
     draggable = isDraggable;
-    deleteButton.alpha = (draggable ? 1 : 0);
+    
+    if (draggable && [delegate respondsToSelector:@selector(gridViewCellShouldShowDeleteButton:)] && [delegate gridViewCellShouldShowDeleteButton:self]) {
+        deleteButton.alpha = 1;
+    } else {
+        deleteButton.alpha = 0;
+    }
 }
 
 - (void)setDraggable:(BOOL)isDraggable animated:(BOOL)animated
@@ -106,8 +109,6 @@
     }
 }
 
-#pragma mark - Touches
-
 - (void)setBigAndTranslucent:(BOOL)big
 {
     [self.superview bringSubviewToFront:self];
@@ -121,9 +122,19 @@
                              self.alpha = 1.0;
                              self.transform = CGAffineTransformIdentity;
                          }
-                         
-                     }];    
+                     }];  
 }
+
+#pragma mark - IBActions
+
+- (IBAction)deleteButtonPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(gridViewCellDidPressDeleteButton:)]) {
+        [delegate gridViewCellDidPressDeleteButton:self];
+    }
+}
+
+#pragma mark - Touches
 
 - (void)didPressAndHold
 {
@@ -134,7 +145,19 @@
         [delegate gridViewCellDidPressAndHold:self];
     }
     
-    [self setBigAndTranslucent:YES];
+    BOOL shouldDrag = YES;
+    if ([delegate respondsToSelector:@selector(gridViewCellShouldStartDragging:)]) {
+        shouldDrag = [delegate gridViewCellShouldStartDragging:self];
+    }
+    
+    if (shouldDrag) {
+        if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
+            [delegate gridViewCellDidStartDragging:self];
+        }
+        
+        dragging = YES;
+        [self setBigAndTranslucent:YES];
+    }
 }
 
 - (void)didStopDragging
@@ -185,17 +208,24 @@
     UITouch *touch = [[event allTouches] anyObject];
 
     if (draggable && !dragging) {
-        CGPoint dragStartLocation = [touch locationInView:self.superview];
-        dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
-        dragging = YES;
+        BOOL shouldDrag = YES;
+        if ([delegate respondsToSelector:@selector(gridViewCellShouldStartDragging:)]) {
+            shouldDrag = [delegate gridViewCellShouldStartDragging:self];
+        }
         
-        [pressAndHoldTimer invalidate];
-        pressAndHoldTimer = nil;
+        if (shouldDrag) {
+            CGPoint dragStartLocation = [touch locationInView:self.superview];
+            dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
+            dragging = YES;
+            
+            [pressAndHoldTimer invalidate];
+            pressAndHoldTimer = nil;
 
-        [self setBigAndTranslucent:YES];
-        
-        if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
-            [delegate gridViewCellDidStartDragging:self];
+            [self setBigAndTranslucent:YES];
+            
+            if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
+                [delegate gridViewCellDidStartDragging:self];
+            }
         }
     }
     

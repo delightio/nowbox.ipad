@@ -1144,8 +1144,8 @@
 		838106021491779E00B3FCE5 /* iPhone */ = {
 			isa = PBXGroup;
 			children = (
-				8384CD5E14E081AF00444755 /* GridViewController.xib */,
 				837A298A14E1B2D300065F32 /* LaunchViewController.xib */,
+				8384CD5E14E081AF00444755 /* GridViewController.xib */,
 				8384CD8A14E0AC8C00444755 /* PagingGridViewCell.xib */,
 				8384CD6714E082DD00444755 /* Prototype */,
 			);

@@ -14,7 +14,10 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [fetchedResultsController release];
+    
     [super dealloc];
 }
 
@@ -44,6 +47,18 @@
     
     NMChannel *channelToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
     channelToMove.subscription.nm_sort_order = newSortOrder;
+}
+
+- (void)deleteObjectAtIndex:(NSUInteger)index
+{
+    NMChannel *channelToDelete = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channelToDelete];
+}
+
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel
+{
+    cell.label.text = channel.title;
+    [cell.image setImageForChannel:channel];    
 }
 
 #pragma mark - NSFetchedResultsController
@@ -79,6 +94,20 @@
     return fetchedResultsController;
 }    
 
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath 
+{    
+    if (type == NSFetchedResultsChangeUpdate) {
+        // Don't replace the cell, it messes up our drags. Just change the properties of the old one.
+        NMChannel *channel = (NMChannel *)anObject;
+        PagingGridViewCell *cell = [self.gridView cellForIndex:indexPath.row];
+        [self configureCell:cell forChannel:channel];
+    } else {
+        [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
+    }
+}
+
 #pragma mark - PagingGridViewDataSource
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
@@ -93,12 +122,17 @@
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
     }
-        
+
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    view.label.text = channel.title;
-    [view.image setImageForChannel:channel];
+    [self configureCell:view forChannel:channel];
     
     return view;
+}
+
+- (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
+{
+    NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    return [channel.type integerValue] != NMChannelRecommendedType;
 }
 
 @end

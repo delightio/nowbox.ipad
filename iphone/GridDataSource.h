@@ -15,10 +15,11 @@
 
 @property (nonatomic, retain) PagingGridView *gridView;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, assign) BOOL updatesEnabled;
+@property (nonatomic, assign) BOOL ignoresMoveChanges;
 
 - (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
+- (void)deleteObjectAtIndex:(NSUInteger)index;
 
 @end
