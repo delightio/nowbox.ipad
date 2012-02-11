@@ -98,9 +98,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
     [gridView endUpdates];
-//    if (updatesEnabled) {
-//        [gridView reloadData];
-//    }
 }
 
 @end

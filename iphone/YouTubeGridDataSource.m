@@ -73,6 +73,7 @@
 {
     NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
     NSUInteger index = [[channelsToIndexes objectForKey:channel.nm_id] unsignedIntegerValue];
+    [channelsToIndexes removeObjectForKey:channel.nm_id];
     
     [self.gridView beginUpdates];
     [self.gridView deleteItemAtIndex:index animated:YES];

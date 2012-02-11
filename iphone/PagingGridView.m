@@ -84,7 +84,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+        
     CGRect visibleRect = CGRectMake(self.contentOffset.x, self.contentOffset.y, self.frame.size.width, self.frame.size.height);
     
     // Can we remove any views that are offscreen?
@@ -236,7 +236,7 @@
 }
 
 - (PagingGridViewCell *)addCellAtIndex:(NSUInteger)index
-{
+{    
     PagingGridViewCell *view = [dataSource gridView:self cellForIndex:index];
     view.frame = [self frameForIndex:index];
     view.tag = index;
@@ -401,15 +401,12 @@
     
     // Add the subview on the next page which will be bumped to this page
     NSUInteger page = index / (numberOfRows * numberOfColumns);
-    if (index % (numberOfRows * numberOfColumns)) {
-        page++;
-    }
-    NSUInteger nextIndex = (page + 1) * (numberOfRows * numberOfColumns);
-    if (nextIndex < numberOfItems) {
+    NSUInteger nextIndex = (page + 1) * (numberOfRows * numberOfColumns) - 1;
+    if (nextIndex < numberOfItems - 1) {
         PagingGridViewCell *cell = [self addCellAtIndex:nextIndex];
-        
+        cell.tag++;
         // Animate it in from the side rather than from the top
-        cell.frame = [self frameForIndex:(nextIndex + (numberOfRows - 1) * numberOfColumns)];
+        cell.frame = [self frameForIndex:(cell.tag + (numberOfRows - 1) * numberOfColumns)];
     }
     
     // Bump views that come after up by one
@@ -430,40 +427,38 @@
         }
     }
     
-    // Fade out the cell being deleted
-    if (cellToRemove) {
-        if (animated) {
-            [UIView animateWithDuration:0.3
-                             animations:^{
-                                 cellToRemove.alpha = 0;
-                             }
-                             completion:^(BOOL finished){
-                                 [cellToRemove removeFromSuperview];    
-                                 cellToRemove.alpha = 1;
-                                 [recycledViews addObject:cellToRemove];
-                                 [visibleViews removeObject:cellToRemove];
-                             }];
-        } else {
-            [cellToRemove removeFromSuperview];
-            [recycledViews addObject:cellToRemove];
-            [visibleViews removeObject:cellToRemove];
+    void (^removeCell)(BOOL) = ^(BOOL finished){        
+        [cellToRemove removeFromSuperview];    
+        cellToRemove.alpha = 1;
+        [recycledViews addObject:cellToRemove];
+        [visibleViews removeObject:cellToRemove];
+
+        // Update visible indexes
+        [visibleIndexes removeAllIndexes];
+        for (PagingGridViewCell *cell in visibleViews) {
+            [visibleIndexes addIndex:cell.tag];
         }
-    }
+        
+        numberOfItems--;
+        [self updateNumberOfPages];
+        
+        [self setNeedsLayout];   
+        
+        if ([gridDelegate respondsToSelector:@selector(gridView:didDeleteItemAtIndex:)]) {
+            [gridDelegate gridView:self didDeleteItemAtIndex:index];
+        }
+    };
     
-    // Update visible indexes
-    [visibleIndexes removeAllIndexes];
-    for (PagingGridViewCell *cell in visibleViews) {
-        [visibleIndexes addIndex:cell.tag];
-    }
-
-    numberOfItems--;
-    [self updateNumberOfPages];
-
-    [self setNeedsLayout];   
-    
-    if ([gridDelegate respondsToSelector:@selector(gridView:didDeleteItemAtIndex:)]) {
-        [gridDelegate gridView:self didDeleteItemAtIndex:index];
-    }
+    // Fade out the cell being deleted
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             cellToRemove.alpha = 0;
+                         }
+                         completion:removeCell];
+    } else {
+        removeCell(YES);
+    }    
 }
 
 - (void)updateItemAtIndex:(NSUInteger)index
