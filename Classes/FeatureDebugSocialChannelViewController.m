@@ -156,7 +156,7 @@
 	NSEntityDescription * entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND type == %@", _channelType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_hidden == NO AND type == %@", _channelType]];
 	
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
