@@ -482,7 +482,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
 	
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO"]];
 	
