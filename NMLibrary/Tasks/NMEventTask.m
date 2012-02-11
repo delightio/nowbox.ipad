@@ -180,6 +180,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	switch (eventType) {
 		case NMEventSubscribeChannel:
 		{
+			[ctrl subscribeChannel:channel];
 			if ( bulkSubscribe ) {
 				// in case of bulk subscribe (right now, only supported in onboard process), we preserve the order of subscription to be the same as sorting order
 				channel.subscription.nm_sort_order = channel.nm_sort_order;
@@ -187,7 +188,6 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 				channel.subscription.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxSubscriptionSortOrder] + 1];
 			}
 			channel.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
-			[ctrl subscribeChannel:channel];
 			return YES;
 		}
 		case NMEventUnsubscribeChannel:

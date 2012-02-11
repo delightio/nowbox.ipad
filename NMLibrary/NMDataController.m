@@ -124,7 +124,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 #pragma mark Predicates
 - (NSPredicate *)subscribedChannelsPredicate {
 	if ( _subscribedChannelsPredicate == nil ) 
-		_subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == $HIDDEN AND subscription == nil"] retain];
+		_subscribedChannelsPredicate = [[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == $HIDDEN AND NOT type IN %@", [NSArray arrayWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], nil]] retain];
 	return _subscribedChannelsPredicate;
 }
 
@@ -154,7 +154,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 - (NSPredicate *)cachedChannelsPredicate {
 	if ( _cachedChannelsPredicate == nil )
-		_cachedChannelsPredicate = [[NSPredicate predicateWithFormat:@"nm_subscribed <= 0"] retain];
+		_cachedChannelsPredicate = [[NSPredicate predicateWithFormat:@"subscription == nil"] retain];
 	return _cachedChannelsPredicate;
 }
 
@@ -543,7 +543,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (NSArray *)hiddenSubscribedChannels {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == 0 AND nm_video_last_refresh < %@", [NSDate dateWithTimeIntervalSinceNow:-600]]]; // 10 min
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == YES AND subscription.nm_video_last_refresh < %@", [NSDate dateWithTimeIntervalSinceNow:-600]]]; // 10 min
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
     [request release];    
@@ -579,7 +579,8 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	// fetch last video played
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND nm_id == %@", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_id == %@ AND subscription.nm_hidden == NO", [NSNumber numberWithInteger:NM_LAST_CHANNEL_ID]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	NMChannel * chnObj = nil;
@@ -590,8 +591,8 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		// get the first channel
 		request = [[NSFetchRequest alloc] init];
 		[request setEntity:channelEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscribed > 0 AND nm_id > 0"]];
-		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
+		[request setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND nm_id > 0"]];
+		NSSortDescriptor * sortDsptr = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
 		[request setSortDescriptors:[NSArray arrayWithObject:sortDsptr]];
 		[sortDsptr release];
 		[request setFetchLimit:1];
@@ -662,7 +663,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	[request setPredicate:[self.subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"HIDDEN"]]];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", nil]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"categories", @"videos", @"videos.video", @"subscription", @"subscription.personProfile", @"previewThumbnails", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
 		NSManagedObject * mobj;
@@ -786,7 +787,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	// get all stream and keyword channels that have never been populated before. The backend needs to poll the server to see if videos are available in those channels
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"type != %@ AND subscription.nm_subscribed > 0 AND subscription.populated_at == 0", [NSNumber numberWithInteger:NMChannelUserType]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND type != %@ AND subscription.populated_at == 0", [NSNumber numberWithInteger:NMChannelUserType]]];
 	[request setReturnsObjectsAsFaults:NO];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
 	
@@ -800,8 +801,9 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:channelEntityDescription];
 	// crawl if the channel has not been crawled in the past 5 min
-	NSInteger t = time(NULL);
-	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_video_last_refresh < %d", t - 300]];
+	time_t t;
+	time(&t);
+	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_video_last_refresh < %@", [NSNumber numberWithInteger:mktime(gmtime(&t)) - 300]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];

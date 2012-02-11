@@ -13,9 +13,9 @@
 #import "CategoryGridController.h"
 
 #define kDefaultCategoryPredicate @"ANY categories.nm_id == %@ AND nm_hidden == NO"
-#define kDefaultSubscribedPredicate @"nm_subscribed > 0 AND nm_hidden == NO"
+#define kDefaultSubscribedPredicate @"subscription != nil AND subscription.nm_hidden == NO"
 #define kFilteredCategoryPredicate @"ANY categories.nm_id == %@ AND nm_hidden == NO AND title CONTAINS[cd] %@"
-#define kFilteredSubscribedPredicate @"nm_subscribed > 0 AND nm_hidden == NO AND title CONTAINS[cd] %@"
+#define kFilteredSubscribedPredicate @"subscription != nil AND subscription.nm_hidden == NO AND title CONTAINS[cd] %@"
 
 @implementation ChannelGridController
 
@@ -137,7 +137,7 @@
         }
         [fetchRequest setFetchBatchSize:20];
         
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"subscription.nm_sort_order" ascending:YES];
         [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         [sortDescriptor release];
         

@@ -52,6 +52,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	[pDict setObject:[chnCtnDict objectForKey:@"resource_uri"] forKey:@"resource_uri"];
 	[pDict setObject:[chnCtnDict objectForKey:@"video_count"] forKey:@"video_count"];
 	[pDict setObject:[chnCtnDict objectForKey:@"subscriber_count"] forKey:@"subscriber_count"];
+	[pDict setObject:[chnCtnDict objectForKey:@"populated_at"] forKey:@"populated_at"];
 	NSString * chnType = [[chnCtnDict objectForKey:@"type"] lowercaseString];
 	if ( [chnType isEqualToString:@"user"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];
@@ -62,8 +63,14 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	} else if ( [chnType isEqualToString:@"keyword"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelKeywordType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"facebookstream"] ) {
+#ifdef DEBUG_FORCE_IGNORE_POPULATE_AT
+		[pDict setObject:(NSNumber *)kCFBooleanFalse forKey:@"populated_at"];
+#endif
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserFacebookType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"twitterstream"] ) {
+#ifdef DEBUG_FORCE_IGNORE_POPULATE_AT
+		[pDict setObject:(NSNumber *)kCFBooleanFalse forKey:@"populated_at"];
+#endif
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserTwitterType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"trending"] ) {
 		[pDict setObject:[NSNumber numberWithInt:NMChannelTrendingType] forKey:@"type"];
@@ -400,18 +407,6 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				// create the new object
 				chn = [ctrl insertNewChannelForID:[chnDict objectForKey:@"nm_id"]];
 				[chn setValuesForKeysWithDictionary:chnDict];
-				// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
-				if ( [chn.type integerValue] == NMChannelUserType ) {
-					chn.subscription.nm_hidden = yesNum;
-				}
-				if ( !fLaunch ) {
-					chn.subscription.nm_is_new = yesNum;
-				}
-				if ( command == NMCommandCompareSubscribedChannels ) {
-					// assign the new channel to YouTube group
-					[ctrl.internalYouTubeCategory addChannelsObject:chn];
-					numberOfRowsAdded++;
-				}
 			} else {
 				// the channel already exists, just update the sort order.
 				[chn setValuesForKeysWithDictionary:chnDict];
@@ -429,6 +424,20 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 					break;
 				case NMCommandGetSubscribedChannels:
 					[ctrl subscribeChannel:chn];
+					// create subscription object
+					[ctrl subscribeChannel:chn];
+					// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
+					if ( [chn.type integerValue] == NMChannelUserType ) {
+						chn.subscription.nm_hidden = yesNum;
+					}
+					if ( !fLaunch ) {
+						chn.subscription.nm_is_new = yesNum;
+					}
+					break;
+				case NMCommandCompareSubscribedChannels:
+					// assign the new channel to YouTube group
+					[ctrl.internalYouTubeCategory addChannelsObject:chn];
+					numberOfRowsAdded++;
 					break;
 				default:
 					break;

@@ -287,7 +287,9 @@ static NSArray * youTubeRegexArray = nil;
 	if ( _feedDirectURLString && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
 		// update the last checked time
 		_channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
-		_channel.subscription.nm_video_last_refresh = [NSNumber numberWithInteger:time(NULL)];
+		time_t t;
+		time(&t);
+		_channel.subscription.nm_video_last_refresh = [NSNumber numberWithInteger:mktime(gmtime(&t))];
 	}
 	[objectCache release];
 	return YES;
