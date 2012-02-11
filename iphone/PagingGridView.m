@@ -271,7 +271,7 @@
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:0
-                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState
+                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
                          animations:repositionViews
                          completion:^(BOOL finished){
                          }];

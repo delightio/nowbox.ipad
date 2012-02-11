@@ -46,7 +46,7 @@
         // Set the font depending on if it's available (iOS 4 doesn't have Futura Condensed Medium)
         UIFont *font = [UIFont fontWithName:@"Futura-CondensedMedium" size:label.font.pointSize];
         if (!font) {
-            font = [UIFont fontWithName:@"Futura-Medium" size:label.font.pointSize];
+            font = [UIFont fontWithName:@"Futura-Medium" size:18];
         }
         [label setFont:font];
         
