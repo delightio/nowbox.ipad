@@ -11,7 +11,7 @@
 @implementation GridDataSource
 
 @synthesize gridView;
-@synthesize updatesEnabled;
+@synthesize ignoresMoveChanges;
 @synthesize managedObjectContext;
 
 - (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
@@ -19,7 +19,6 @@
     self = [super init];
     if (self) {
         self.gridView = aGridView;
-        self.updatesEnabled = YES;
         self.managedObjectContext = aManagedObjectContext;
     }
     return self;
@@ -76,7 +75,7 @@
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath 
 {    
-    if (!updatesEnabled) return;
+    if (ignoresMoveChanges && type == NSFetchedResultsChangeMove) return;
     
     switch(type) {
         case NSFetchedResultsChangeInsert: 

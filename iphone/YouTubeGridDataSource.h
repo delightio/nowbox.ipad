@@ -8,9 +8,7 @@
 
 #import "GridDataSource.h"
 
-@interface YouTubeGridDataSource : GridDataSource {
-    NSMutableDictionary *channelsToIndexes;
-}
+@interface YouTubeGridDataSource : GridDataSource
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 
