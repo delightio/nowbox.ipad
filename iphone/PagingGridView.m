@@ -335,6 +335,17 @@
     return view;
 }
 
+- (PagingGridViewCell *)cellForIndex:(NSUInteger)index
+{
+    for (PagingGridViewCell *cell in visibleViews) {
+        if (cell.tag == index) {
+            return cell;
+        }
+    }
+    
+    return nil;
+}
+
 - (void)reloadData
 {
     if (!dataSource) return;

@@ -36,6 +36,7 @@
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDelegate> gridDelegate;
 
 - (PagingGridViewCell *)dequeueReusableCell;
+- (PagingGridViewCell *)cellForIndex:(NSUInteger)index;
 - (void)reloadData;
 - (void)beginUpdates;
 - (void)endUpdates;

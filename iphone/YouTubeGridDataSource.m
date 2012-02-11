@@ -88,6 +88,12 @@
     }
 }
 
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel
+{
+    cell.label.text = channel.title;
+    [cell.image setImageForChannel:channel];    
+}
+
 #pragma mark - NSFetchedResultsController
 
 - (NSFetchedResultsController *)fetchedResultsController 
@@ -121,6 +127,20 @@
     return fetchedResultsController;
 }    
 
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath 
+{    
+    if (type == NSFetchedResultsChangeUpdate) {
+        // Don't replace the cell, it messes up our drags. Just change the properties of the old one.
+        NMChannel *channel = (NMChannel *)anObject;
+        PagingGridViewCell *cell = [self.gridView cellForIndex:indexPath.row];
+        [self configureCell:cell forChannel:channel];
+    } else {
+        [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
+    }
+}
+
 #pragma mark - PagingGridViewDataSource
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
@@ -137,8 +157,7 @@
     }
 
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-    view.label.text = channel.title;
-    [view.image setImageForChannel:channel];
+    [self configureCell:view forChannel:channel];
     
     return view;
 }
