@@ -9,6 +9,7 @@
 #import "NMGetChannelsTask.h"
 #import "NMGetChannelVideoListTask.h"
 #import "NMChannel.h"
+#import "NMSubscription.h"
 #import "NMVideo.h"
 #import "NMCategory.h"
 #import "NMDataController.h"
@@ -51,7 +52,6 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	[pDict setObject:[chnCtnDict objectForKey:@"resource_uri"] forKey:@"resource_uri"];
 	[pDict setObject:[chnCtnDict objectForKey:@"video_count"] forKey:@"video_count"];
 	[pDict setObject:[chnCtnDict objectForKey:@"subscriber_count"] forKey:@"subscriber_count"];
-	[pDict setObject:[NSDate dateWithTimeIntervalSince1970:[[chnCtnDict objectForKey:@"populated_at"] floatValue]] forKey:@"populated_at"];
 	NSString * chnType = [[chnCtnDict objectForKey:@"type"] lowercaseString];
 	if ( [chnType isEqualToString:@"user"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserType] forKey:@"type"];
@@ -62,14 +62,8 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	} else if ( [chnType isEqualToString:@"keyword"] ) {
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelKeywordType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"facebookstream"] ) {
-#ifdef DEBUG_FORCE_IGNORE_POPULATE_AT
-		[pDict setObject:[NSDate dateWithTimeIntervalSince1970:0.0f] forKey:@"populated_at"];
-#endif
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserFacebookType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"twitterstream"] ) {
-#ifdef DEBUG_FORCE_IGNORE_POPULATE_AT
-		[pDict setObject:[NSDate dateWithTimeIntervalSince1970:0.0f] forKey:@"populated_at"];
-#endif
 		[pDict setObject:[NSNumber numberWithInteger:NMChannelUserTwitterType] forKey:@"type"];
 	} else if ( [chnType isEqualToString:@"trending"] ) {
 		[pDict setObject:[NSNumber numberWithInt:NMChannelTrendingType] forKey:@"type"];
@@ -224,11 +218,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				case NMCommandGetSubscribedChannels:
 				case NMCommandGetChannelWithID:
 				case NMCommandCompareSubscribedChannels:
-#ifdef DEBUG_CHANNEL
 					[pDict setObject:[NSNumber numberWithInteger:indexBase + i] forKey:@"nm_sort_order"];
-#else
-					[pDict setObject:[NSNumber numberWithInteger:indexBase + i] forKey:@"nm_subscribed"];
-#endif
 					i++;
 					[pDict removeObjectForKey:@"category_ids"];
 					break;
@@ -259,7 +249,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 #ifdef DEBUG_CHANNEL
 	// create test channel
 	[channelIndexSet addIndex:999999];
-	pDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Test Channel", @"title", @"https://project.headnix.com/pipely/channel.json", @"resource_uri", [NSNumber numberWithInteger:NMChannelKeywordType], @"type", [NSNull null], @"thumbnail_uri", [NSNumber numberWithInteger:999999], @"nm_id", [NSNumber numberWithInteger:++i], @"nm_subscribed", nil];
+	pDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Test Channel", @"title", @"https://project.headnix.com/pipely/channel.json", @"resource_uri", [NSNumber numberWithInteger:NMChannelKeywordType], @"type", [NSNull null], @"thumbnail_uri", [NSNumber numberWithInteger:999999], @"nm_id", [NSNumber numberWithInteger:++i], @"nm_sort_order", nil];
 	[parsedObjectDictionary setObject:pDict forKey:[NSNumber numberWithInteger:999999]];
 #endif
 	if ( command == NMCommandSearchChannels && !containsKeywordChannel ) {
@@ -376,7 +366,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			chnDict = [parsedObjectDictionary objectForKey:chnObj.nm_id];
 			// the channel exists, update its sort order
 			if ( command == NMCommandGetSubscribedChannels ) {
-				chnObj.nm_subscribed = [chnDict objectForKey:@"nm_subscribed"];
+				chnObj.subscription.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
 			}
 			[channelIndexSet removeIndex:cid];
 		} else {
@@ -398,7 +388,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	}
 	if ( [channelIndexSet count] ) {
 		BOOL fLaunch = [NMTaskQueueController sharedTaskQueueController].appFirstLaunch;
-		NSNumber * yesNum = [NSNumber numberWithBool:YES];
+		NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 			// check if the channel exists among all stored
@@ -412,10 +402,10 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				[chn setValuesForKeysWithDictionary:chnDict];
 				// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
 				if ( [chn.type integerValue] == NMChannelUserType ) {
-					chn.nm_hidden = yesNum;
+					chn.subscription.nm_hidden = yesNum;
 				}
 				if ( !fLaunch ) {
-					chn.nm_is_new = yesNum;
+					chn.subscription.nm_is_new = yesNum;
 				}
 				if ( command == NMCommandCompareSubscribedChannels ) {
 					// assign the new channel to YouTube group
@@ -438,8 +428,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 					//[category addChannelsObject:chn];
 					break;
 				case NMCommandGetSubscribedChannels:
-					[ctrl.internalSubscribedChannelsCategory addChannelsObject:chn];
-					//[chn addCategoriesObject:ctrl.internalSubscribedChannelsCategory];
+					[ctrl subscribeChannel:chn];
 					break;
 				default:
 					break;

@@ -479,12 +479,13 @@
 	// theVideo is null if there's no video playing (say, when there's no network connection)
 	if ( theVideo == nil ) return nil;
 	CMTime aTime = movieView.player.currentTime;
+	NMSubscription * subtObj = currentChannel.subscription;
 	if ( aTime.flags & kCMTimeFlags_Valid ) {
-		currentChannel.nm_time_elapsed_value = [NSNumber numberWithLongLong:aTime.value];
-		currentChannel.nm_time_elapsed_timescale = [NSNumber numberWithInteger:aTime.timescale];
+		subtObj.nm_time_elapsed_value = [NSNumber numberWithLongLong:aTime.value];
+		subtObj.nm_time_elapsed_timescale = [NSNumber numberWithInteger:aTime.timescale];
 	}
 	// send event back to nowmov server
-	currentChannel.nm_last_vid = theVideo.nm_id;
+	subtObj.nm_last_vid = theVideo.nm_id;
 	NSMutableArray * vdoAy = [NSMutableArray arrayWithCapacity:4];
 	[vdoAy addObject:theVideo.nm_id];
 	theVideo = playbackModelController.previousVideo.video;
@@ -546,7 +547,7 @@
 
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
-	chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
+	chnObj.subscription.nm_is_new = (NSNumber *)kCFBooleanFalse;
     
     // Update highlighted channel in grid
     if ([gridNavigationController.visibleViewController isKindOfClass:[ChannelGridController class]]) {
@@ -869,7 +870,7 @@
 	if ( ![currentChannel isEqual:chnObj] ) {
 		if ( currentChannel ) [currentChannel release];
 		currentChannel = [chnObj retain];
-		chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
+		chnObj.subscription.nm_is_new = (NSNumber *)kCFBooleanFalse;
 	}
 	[playbackModelController setVideo:aVideo];
 	forceStopByUser = NO;

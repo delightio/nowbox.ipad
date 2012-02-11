@@ -213,6 +213,7 @@
 	// push the facebook view
 	FeatureDebugSocialChannelViewController * viewCtrl = [[FeatureDebugSocialChannelViewController alloc] initWithStyle:UITableViewStylePlain];
 	viewCtrl.channelType = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	viewCtrl.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
 	[self.navigationController pushViewController:viewCtrl animated:YES];
 	[viewCtrl release];
 }

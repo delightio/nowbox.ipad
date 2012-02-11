@@ -26,24 +26,24 @@
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
     NMChannel *displacedChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
-    NSNumber *newSortOrder = displacedChannel.nm_subscribed;
+    NSNumber *newSortOrder = displacedChannel.subscription.nm_sort_order;
     
     if (newIndex < oldIndex) {
         for (NSInteger i = newIndex; i < oldIndex; i++) {
             NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i+1 inSection:0]];            
-            thisChannel.nm_subscribed = nextChannel.nm_subscribed;
+            thisChannel.subscription.nm_sort_order = nextChannel.subscription.nm_sort_order;
         }
     } else {
         for (NSInteger i = newIndex; i > oldIndex; i--) {
             NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i-1 inSection:0]];
-            thisChannel.nm_subscribed = nextChannel.nm_subscribed;
+            thisChannel.subscription.nm_sort_order = nextChannel.subscription.nm_sort_order;
         }        
     }
     
     NMChannel *channelToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
-    channelToMove.nm_subscribed = newSortOrder;
+    channelToMove.subscription.nm_sort_order = newSortOrder;
 }
 
 #pragma mark - NSFetchedResultsController

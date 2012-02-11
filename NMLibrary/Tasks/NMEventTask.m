@@ -9,6 +9,7 @@
 #import "NMEventTask.h"
 #import "NMDataController.h"
 #import "NMChannel.h"
+#import "NMSubscription.h"
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
 #import "NMCategory.h"
@@ -181,12 +182,12 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 		{
 			if ( bulkSubscribe ) {
 				// in case of bulk subscribe (right now, only supported in onboard process), we preserve the order of subscription to be the same as sorting order
-				channel.nm_subscribed = channel.nm_sort_order;
+				channel.subscription.nm_sort_order = channel.nm_sort_order;
 			} else {
-				channel.nm_subscribed = [NSNumber numberWithInteger:[ctrl maxChannelSortOrder] + 1];
+				channel.subscription.nm_sort_order = [NSNumber numberWithInteger:[ctrl maxSubscriptionSortOrder] + 1];
 			}
-			channel.nm_hidden = (NSNumber *)kCFBooleanFalse;
-			[ctrl.internalSubscribedChannelsCategory addChannelsObject:channel];
+			channel.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
+			[ctrl subscribeChannel:channel];
 			return YES;
 		}
 		case NMEventUnsubscribeChannel:
@@ -207,8 +208,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 				[def setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 				[def setBool:YES forKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY];
 			} else {
-				channel.nm_subscribed = [NSNumber numberWithInteger:0];
-				[ctrl.internalSubscribedChannelsCategory removeChannelsObject:channel];
+				channel.subscription = nil;
 			}
 			return YES;
 		}
@@ -220,7 +220,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			videoRelation.nm_session_id = NM_SESSION_ID;
 			video.video.nm_watch_later = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
-			if ( [ctrl.myQueueChannel.nm_hidden boolValue] ) ctrl.myQueueChannel.nm_hidden = (NSNumber *)kCFBooleanFalse;
+			if ( [ctrl.myQueueChannel.subscription.nm_hidden boolValue] ) ctrl.myQueueChannel.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
 //			[ctrl updateChannelHiddenStatus:ctrl.myQueueChannel];
 			return YES;
 		}
@@ -241,7 +241,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			videoRelation.nm_session_id = NM_SESSION_ID;
 			video.video.nm_favorite = (NSNumber *)kCFBooleanTrue;
 			// show/hide channel
-			if ( [ctrl.favoriteVideoChannel.nm_hidden boolValue] ) ctrl.favoriteVideoChannel.nm_hidden = (NSNumber *)kCFBooleanFalse;
+			if ( [ctrl.favoriteVideoChannel.subscription.nm_hidden boolValue] ) ctrl.favoriteVideoChannel.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
 //			[ctrl updateChannelHiddenStatus:ctrl.favoriteVideoChannel];
 			return YES;
 		}

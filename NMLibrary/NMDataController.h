@@ -28,7 +28,7 @@
 	
 	NSManagedObjectContext * managedObjectContext;
 	// entity object
-	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription;
+	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription, * subscriptionEntityDescription;
 	
 	// Core data query cache. Cache recent core data search result. The cache is for reducing number of database access round trips. Simple cache policy - first in first out.
 	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
@@ -41,8 +41,6 @@
 	// The predicate used by FRC in table view to filter a list of current search result
 	NSPredicate * searchResultsPredicate;
 	
-	// all subscribed channels should belong to this category
-	NMCategory * internalSubscribedChannelsCategory;
 	// for onboard process use only. Temporarily store a channel obtained from YouTube sync to this category for displaying the reason appropriately in the onboard process UI
 	NMCategory * internalYouTubeCategory;
 	
@@ -55,12 +53,12 @@
 @property (nonatomic, retain) NSEntityDescription * channelEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * authorEntityDescription;
+@property (nonatomic, retain) NSEntityDescription * subscriptionEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NMChannel * userTwitterStreamChannel;
 @property (nonatomic, retain) NMChannel * userFacebookStreamChannel;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
-@property (nonatomic, retain) NMCategory * internalSubscribedChannelsCategory;
 @property (nonatomic, retain) NMCategory * internalYouTubeCategory;
 @property (nonatomic, readonly) NSArray * subscribedChannels;	// for debug purpose
 @property (nonatomic, readonly) NSArray * categories;
@@ -110,7 +108,7 @@
 - (NSArray *)hiddenSubscribedChannels;
 - (NMChannel *)lastSessionChannel;
 - (void)permanentDeleteMarkedChannels;
-- (NSInteger)maxChannelSortOrder;
+- (NSInteger)maxSubscriptionSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
 - (void)updateFavoriteChannelHideStatus;
 - (void)markChannelDeleteStatus:(NMChannel *)chnObj;
@@ -119,7 +117,6 @@
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NSArray *)channelsForSync;
-- (NMChannel *)channelNextTo:(NMChannel *)anotherChannel;
 - (void)clearChannelCache;
 
 // channel detail
@@ -161,6 +158,7 @@
 - (NSArray *)personProfilesForSync:(NSInteger)aCount;
 - (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
+- (void)subscribeChannel:(NMChannel *)chn;
 - (NSArray *)allSubscriptions;
 - (NSUInteger)numberOfSubscriptions;
 

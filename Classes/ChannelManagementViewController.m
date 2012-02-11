@@ -550,7 +550,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							detailLbl.text = [NSString stringWithFormat:@"%@ %@", chn.video_count, ([chn.video_count integerValue] == 1 ? @"video" : @"videos")];
 							
 							[thumbnailView setImageForChannel:chn];
-							if ([chn.nm_subscribed boolValue]) {
+							if (chn.subscription) {
 								[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
                                 [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];                                
 								[backgroundView setImage:channelSubscribedBackgroundImage];
@@ -560,7 +560,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
                             
-                            newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
+                            newChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Twitter";
 							detailLbl.text = @"Watch videos shared by people you follow";
@@ -580,7 +580,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[thumbnailView setImageForChannel:chn];
 							buttonView = (UIButton *)[cell viewWithTag:11];
 							backgroundView = (UIImageView *)[cell viewWithTag:14];
-							if ([chn.nm_subscribed boolValue]) {
+							if (chn.subscription) {
 								[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
                                 [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];                                
 								[backgroundView setImage:channelSubscribedBackgroundImage];
@@ -590,7 +590,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
                             
-                            newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
+                            newChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Facebook";
 							detailLbl.text = @"Watch videos shared by Facebook friends";
@@ -622,11 +622,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         buttonView = (UIButton *)[cell viewWithTag:11];
         backgroundView = (UIImageView *)[cell viewWithTag:14];
         UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
-        if ([chn.nm_subscribed boolValue]) {
+        if (chn.subscription) {
             [buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
             [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];            
             [backgroundView setImage:channelSubscribedBackgroundImage];
-            newChannelIndicator.hidden = ![chn.nm_is_new boolValue];            
+            newChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];            
         } else {
             [buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
             [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
@@ -1241,7 +1241,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         channelName = chn.title;        
     }
 
-    BOOL subscribed = [chn.nm_subscribed boolValue];
+    BOOL subscribed = chn.subscription != nil;
     if (subscribed) {
         [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:channelName, AnalyticsPropertyChannelName,
                                                                                     @"channelmanagement_toggle", AnalyticsPropertySender, 

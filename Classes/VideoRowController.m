@@ -124,7 +124,7 @@
         }
         [cell setHidden:!isLoadingNewContent];
         
-        if ([channel.populated_at timeIntervalSince1970] > 0 || [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] > 0) {
+        if ([channel.populated_at integerValue] > 0 || [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] > 0) {
             cell.loadingText.text = @"Loading videos...";
         } else {
             cell.loadingText.text = @"Processing channel...";

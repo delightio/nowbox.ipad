@@ -196,7 +196,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 		}
 	}];
 	// update the last checked time
-	_channel.subscription.nm_last_crawled = [NSDate date];
+	_channel.subscription.nm_video_last_refresh = [NSNumber numberWithInteger:time(NULL)];
 	// only update the since ID if we are parsing the first page. The rest of the tweets in other pages will have ID smaller than this one
 	if ( _page == 0 ) _channel.subscription.nm_since_id = _newestTwitIDString;
 	[objectCache release];

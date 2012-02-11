@@ -299,7 +299,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 - (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
 	// when user has subscribed a channel, we need to check if the channel has contents populated.
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
-	if ( [chnObj.type integerValue] == NMChannelKeywordType && ![chnObj.nm_populated boolValue] ) {
+	if ( [chnObj.type integerValue] == NMChannelKeywordType && ![chnObj.populated_at boolValue] ) {
 		// this is a keyword channel. we need to check if if has been populated or not
 		// fire the polling logic
 		[self pollServerForChannelReadiness];
@@ -310,20 +310,22 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( didFinishLogin ) {
 		didFinishLogin = NO;
 		// check user channels
-		if ( ![dataController.myQueueChannel.nm_populated boolValue] ) {
+		if ( ![dataController.myQueueChannel.populated_at boolValue] ) {
 			[self issueGetMoreVideoForChannel:dataController.myQueueChannel];
 		}
-		if ( ![dataController.favoriteVideoChannel.nm_populated boolValue] ) {
+		if ( ![dataController.favoriteVideoChannel.populated_at boolValue] ) {
 			[self issueGetMoreVideoForChannel:dataController.favoriteVideoChannel];
 		}
 		// stream channel (twitter/facebook), we don't distinguish here whether the user has just logged in twitter or facebook. no harm fetching video list for 
 		NMChannel * chnObj = nil;
+		NMSubscription * subtObj = nil;
 		BOOL shouldFirePollingLogic = NO;
 		if ( NM_USER_TWITTER_CHANNEL_ID ) {
 			chnObj = dataController.userTwitterStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
-			if ( [chnObj.nm_populated boolValue] ) {
-				if ( [chnObj.nm_hidden boolValue] ) {
-					chnObj.nm_hidden = [NSNumber numberWithBool:NO];
+			subtObj = chnObj.subscription;
+			if ( [chnObj.populated_at boolValue] ) {
+				if ( [subtObj.nm_hidden boolValue] ) {
+					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
 				}
 				// fetch the list of video in this twitter stream channel
 				[self issueGetMoreVideoForChannel:chnObj];
@@ -334,9 +336,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		}
 		if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 			chnObj = dataController.userFacebookStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
-			if ( [chnObj.nm_populated boolValue] ) {
-				if ( [chnObj.nm_hidden boolValue] ) {
-					chnObj.nm_hidden = [NSNumber numberWithBool:NO];
+			subtObj = chnObj.subscription;
+			if ( [chnObj.populated_at boolValue] ) {
+				if ( [subtObj.nm_hidden boolValue] ) {
+					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
 				}
 				// fetch the list of video in this twitter stream channel
 				[self issueGetMoreVideoForChannel:chnObj];

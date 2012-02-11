@@ -8,6 +8,7 @@
 
 #import "NMGetChannelVideoListTask.h"
 #import "NMChannel.h"
+#import "NMSubscription.h"
 #import "NMVideo.h"
 #import "NMVideoDetail.h"
 #import "NMConcreteVideo.h"
@@ -95,7 +96,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.channelName = aChn.title;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
-	currentPage = [aChn.nm_current_page integerValue];
+	currentPage = [aChn.subscription.nm_current_page integerValue];
 	return self;
 }
 
@@ -286,7 +287,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	}
 //	totalNumberOfRows = numberOfVideoAdded + idx;
 	if ( numberOfVideoAdded ) {
-		channel.nm_hidden = [NSNumber numberWithBool:NO];
+		channel.subscription.nm_hidden = [NSNumber numberWithBool:NO];
 	}
 }
 
@@ -297,7 +298,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		[self insertOnlyNewVideosInController:ctrl];
 		// update the page number
 		if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
-			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
+			channel.subscription.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
 		}
 	}
 //	NSInteger chnID = [targetID integerValue];
@@ -316,7 +317,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
 #endif
 	// update last refreshed time stamp
-	channel.nm_video_last_refresh = [NSDate date];
+	channel.subscription.nm_video_last_refresh = [NSDate date];
 	return numberOfVideoAdded > 0;
 }
 
