@@ -1,19 +1,20 @@
 //
-//  FeatureDebugSocialChannelViewController.m
+//  FeatureDebugVideoListViewController.m
 //  ipad
 //
-//  Created by Bill So on 2/10/12.
+//  Created by Bill So on 2/13/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "FeatureDebugSocialChannelViewController.h"
-#import "NMLibrary.h"
 #import "FeatureDebugVideoListViewController.h"
+#import "ipadAppDelegate.h"
+#import "VideoPlaybackViewController.h"
 
-@implementation FeatureDebugSocialChannelViewController
-@synthesize channelType = _channelType;
+
+@implementation FeatureDebugVideoListViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
+@synthesize channel = _channel;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -25,9 +26,9 @@
 }
 
 - (void)dealloc {
-	[_channelType release];
 	[_fetchedResultsController release];
 	[_managedObjectContext release];
+	[_channel release];
 	[super dealloc];
 }
 
@@ -50,18 +51,39 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	switch ([_channelType integerValue]) {
-		case NMChannelUserFacebookType:
-			self.title = @"Facebook Channels";
-			break;
-			
-		case NMChannelUserTwitterType:
-			self.title = @"Twitter Channels";
-			break;
-			
-		default:
-			break;
-	}
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
@@ -87,9 +109,8 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = chnObj.title;
-	
+    // Configure the cell...
+    
     return cell;
 }
 
@@ -136,11 +157,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	// show the video list
-	FeatureDebugVideoListViewController * listCtrl = [[FeatureDebugVideoListViewController alloc] initWithStyle:UITableViewStylePlain];
-	listCtrl.managedObjectContext = self.managedObjectContext;
-	[self.navigationController pushViewController:listCtrl animated:YES];
-	[listCtrl release];
+	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+	// play the selected channel
+	VideoPlaybackViewController * vdoCtrl = (VideoPlaybackViewController *)appDel.viewController;
+	vdoCtrl.currentChannel = [self.fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 #pragma mark - Fetched results controller and delegate
@@ -152,10 +172,12 @@
 	
 	// create the fetched resutl controller
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NSEntityDescription * entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:_managedObjectContext];
+	NSEntityDescription * entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_hidden == NO AND type == %@", _channelType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", _channel]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
 	
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
