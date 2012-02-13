@@ -347,7 +347,7 @@
 - (void)handleDidGetVideoNotification:(NSNotification *)aNotification {
 	NSDictionary * info = [aNotification userInfo];
 	if ([[info objectForKey:@"channel"] isEqual:channel] && [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
-		self.channel = [taskQueueController.dataController channelNextTo:channel];
+		self.channel = [taskQueueController.dataController nextChannel:channel];
 		[viewController setCurrentChannel:channel startPlaying:NO];
 	}
 }

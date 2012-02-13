@@ -29,24 +29,24 @@
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
     NMChannel *displacedChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
-    NSNumber *newSortOrder = displacedChannel.nm_subscribed;
+    NSNumber *newSortOrder = displacedChannel.subscription.nm_sort_order;
     
     if (newIndex < oldIndex) {
         for (NSInteger i = newIndex; i < oldIndex; i++) {
             NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i+1 inSection:0]];            
-            thisChannel.nm_subscribed = nextChannel.nm_subscribed;
+            thisChannel.subscription.nm_sort_order = nextChannel.subscription.nm_sort_order;
         }
     } else {
         for (NSInteger i = newIndex; i > oldIndex; i--) {
             NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i-1 inSection:0]];
-            thisChannel.nm_subscribed = nextChannel.nm_subscribed;
+            thisChannel.subscription.nm_sort_order = nextChannel.subscription.nm_sort_order;
         }        
     }
     
     NMChannel *channelToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
-    channelToMove.nm_subscribed = newSortOrder;
+    channelToMove.subscription.nm_sort_order = newSortOrder;
 }
 
 - (void)deleteObjectAtIndex:(NSUInteger)index
@@ -73,10 +73,10 @@
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];	            
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO"]];	            
         [fetchRequest setFetchBatchSize:20];
         
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
         [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         [sortDescriptor release];
         

@@ -90,7 +90,7 @@
         if (currentChannel == dataController.userFacebookStreamChannel || currentChannel == dataController.userTwitterStreamChannel) {
             [actionSheet addButtonWithTitle:@"Log Out"];            
         } else {
-            [actionSheet addButtonWithTitle:([currentChannel.nm_subscribed integerValue] > 0 ? @"Unsubscribe" : @"Subscribe")];
+            [actionSheet addButtonWithTitle:(currentChannel.subscription == nil ? @"Subscribe" : @"Unsubscribe")];
         }
     }
     
@@ -239,7 +239,7 @@
         }
         case 2: {
             // Unsubscribe / subscribe
-            [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:([currentChannel.nm_subscribed integerValue] == 0) channel:currentChannel];
+            [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:(currentChannel.subscription == nil) channel:currentChannel];
             break;
         }
         default:

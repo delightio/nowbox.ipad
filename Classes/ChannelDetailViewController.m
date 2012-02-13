@@ -51,12 +51,12 @@
 		[self setDescriptionLabelText];
 	}
     
-    if ([channel.nm_subscribed intValue] <= 0) {
+    if (channel.subscription == nil) {
         // Not subscribed
         NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
         [UIView animateWithInteractiveDuration:0.25f 
 						 animations:^{
-                             if ([channel.populated_at timeIntervalSince1970] <= 0 && [vdoThumbnails count] == 0) {
+                             if ([channel.populated_at integerValue] <= 0 && [vdoThumbnails count] == 0) {
                                  // Not populated
                                  unpopulatedMessageView.alpha = 1;
                                  subscribeView.alpha = 0;
@@ -141,7 +141,7 @@
     subscribeUnpopulatedButton.enabled = YES;
     subscribeAndWatchButton.enabled = YES;
     
-    if ([channel.nm_subscribed intValue] > 0) {
+    if (channel.subscription) {
         unpopulatedMessageView.alpha = 0;
         subscribeView.alpha = 0;
         unsubscribeView.alpha = 1;
@@ -344,7 +344,7 @@
         NSArray *vdoThumbnails = [[NMTaskQueueController sharedTaskQueueController].dataController previewsForChannel:channel];
         [UIView animateWithInteractiveDuration:0.25f 
 						 animations:^{
-							 if ([channel.nm_subscribed intValue] > 0) {
+							 if (channel.subscription) {
                                  unsubscribeButton.enabled = YES;
                                  subscribeView.alpha = 0;
                                  unsubscribeView.alpha = 1;
@@ -355,7 +355,7 @@
                                  subscribeAndWatchButton.enabled = YES;
                                  subscribeUnpopulatedButton.enabled = YES;
                                  
-                                 if ([channel.populated_at timeIntervalSince1970] <= 0 && [vdoThumbnails count] == 0) {
+                                 if ([channel.populated_at integerValue] <= 0 && [vdoThumbnails count] == 0) {
                                      // Not populated
                                      unpopulatedMessageView.alpha = 1;
                                      subscribeView.alpha = 0;

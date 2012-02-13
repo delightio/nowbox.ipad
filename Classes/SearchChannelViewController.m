@@ -160,11 +160,11 @@
     buttonView = (UIButton *)[cell viewWithTag:11];
     backgroundView = (UIImageView *)[cell viewWithTag:14];
     UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
-    if ([chn.nm_subscribed boolValue]) {
+    if (chn.subscription) {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-subscribed-icon"] forState:UIControlStateNormal];
         [buttonView setBackgroundImage:[UIImage imageNamed:@"find-channel-subscribed-button"] forState:UIControlStateNormal];
         [backgroundView setImage:[UIImage imageNamed:@"find-channel-list-subscribed"]];
-        newChannelIndicator.hidden = ![chn.nm_is_new boolValue];
+        newChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];
     } else {
         [buttonView setImage:[UIImage imageNamed:@"find-channel-not-subscribed-icon"] forState:UIControlStateNormal];
         [buttonView setBackgroundImage:[UIImage imageNamed:@"find-channel-not-subscribed-button"] forState:UIControlStateNormal];
@@ -429,7 +429,7 @@
     NMChannel * chn;
     chn = [fetchedResultsController_ objectAtIndexPath:[tableView indexPathForCell:cell]];
         
-    BOOL subscribed = [chn.nm_subscribed boolValue];
+    BOOL subscribed = chn.subscription != nil;
     if (subscribed) {
         [[MixpanelAPI sharedAPI] track:AnalyticsEventUnsubscribeChannel properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName,
                                                                                     @"search_toggle", AnalyticsPropertySender, 

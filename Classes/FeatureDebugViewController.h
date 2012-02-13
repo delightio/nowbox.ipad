@@ -37,5 +37,6 @@
 - (IBAction)getFacebookProfile:(id)sender;
 - (IBAction)importYouTube:(id)sender;
 - (IBAction)subscribeFirstAvailablePerson:(id)sender;
+- (IBAction)facebookFilter:(id)sender;
 
 @end

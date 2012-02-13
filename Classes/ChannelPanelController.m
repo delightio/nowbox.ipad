@@ -277,7 +277,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
         [ctnView.textLabel setFrame:CGRectMake(0, 0, ctnView.frame.size.width, cell.contentView.bounds.size.height)];
     }
 
-    ctnView.newChannelIndicator.hidden = ![theChannel.nm_is_new boolValue];
+    ctnView.newChannelIndicator.hidden = ![theChannel.subscription.nm_is_new boolValue];
 	[ctnView.imageView setImageForChannel:theChannel];
 
 	// video row
@@ -343,7 +343,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
     ChannelContainerView * ctnView = (ChannelContainerView *)[channelCell viewWithTag:1001];
     [ctnView setHighlighted:YES];
-    [ctnView.newChannelIndicator setHidden:![theChannel.nm_is_new boolValue]];
+    [ctnView.newChannelIndicator setHidden:![theChannel.subscription.nm_is_new boolValue]];
 
     NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
     
@@ -482,15 +482,15 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_subscribed > 0 AND nm_hidden == NO"]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND subscription.nm_subscription_tier == 0"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_subscribed" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"subscription.nm_sort_order" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

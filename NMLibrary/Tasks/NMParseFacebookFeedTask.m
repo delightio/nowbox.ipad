@@ -149,12 +149,13 @@ static NSArray * youTubeRegexArray = nil;
 	if ( parsedObjects == nil ) return NO;
 	
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
-	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
+	NSInteger personIDBase = [ctrl maxPersonProfileID];
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
 	NSInteger idx = -1;
+	NSInteger personIDOffset = 0;
 	for (NSString * extID in parsedObjects) {
 		idx++;
 		NMConcreteVideo * conVdo = nil;
@@ -200,8 +201,11 @@ static NSArray * youTubeRegexArray = nil;
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
-					[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+					personIDOffset++;
+					[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 					theProfile.name = [fromDict objectForKey:@"name"];
+					// subscribe to this person as well
+					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
 				vdo.personProfile = theProfile;
 			}
@@ -230,8 +234,8 @@ static NSArray * youTubeRegexArray = nil;
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
-						idx++;
-						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+						personIDOffset++;
+						[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 						theProfile.name = [fromDict objectForKey:@"name"];
 					}
 					[lkSet addObject:theProfile];
@@ -268,8 +272,8 @@ static NSArray * youTubeRegexArray = nil;
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
-						idx++;
-						[self setupPersonProfile:theProfile withID:theProfileOrder + idx];
+						personIDOffset++;
+						[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 						theProfile.name = [fromDict objectForKey:@"name"];
 					}
 					cmtObj.from = theProfile;
@@ -283,7 +287,9 @@ static NSArray * youTubeRegexArray = nil;
 	if ( _feedDirectURLString && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
 		// update the last checked time
 		_channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
-		_channel.subscription.nm_last_crawled = [NSDate date];
+		time_t t;
+		time(&t);
+		_channel.subscription.nm_video_last_refresh = [NSNumber numberWithInteger:mktime(gmtime(&t))];
 	}
 	[objectCache release];
 	return YES;
