@@ -109,13 +109,15 @@
     }
 }
 
-- (void)setBigAndTranslucent:(BOOL)big
+- (void)setDragging:(BOOL)isDragging
 {
-    [self.superview bringSubviewToFront:self];
+    dragging = isDragging;
     
+    [self.superview bringSubviewToFront:self];
+
     [UIView animateWithDuration:0.15
                      animations:^{
-                         if (big) {
+                         if (dragging) {
                              self.alpha = 0.7;
                              self.transform = CGAffineTransformMakeScale(kRearrangingScaleFactor, kRearrangingScaleFactor);
                          } else {
@@ -155,15 +157,14 @@
             [delegate gridViewCellDidStartDragging:self];
         }
         
-        dragging = YES;
-        [self setBigAndTranslucent:YES];
+        [self setDragging:YES];
     }
 }
 
 - (void)didStopDragging
 {
-    [self setBigAndTranslucent:NO];
-    dragging = NO;
+    [self setDragging:NO];
+
     if ([delegate respondsToSelector:@selector(gridViewCellDidEndDragging:)]) {
         [delegate gridViewCellDidEndDragging:self];
     }
@@ -216,12 +217,10 @@
         if (shouldDrag) {
             CGPoint dragStartLocation = [touch locationInView:self.superview];
             dragAnchorPoint = CGPointMake(dragStartLocation.x - self.center.x, dragStartLocation.y - self.center.y);
-            dragging = YES;
+            [self setDragging:YES];
             
             [pressAndHoldTimer invalidate];
             pressAndHoldTimer = nil;
-
-            [self setBigAndTranslucent:YES];
             
             if ([delegate respondsToSelector:@selector(gridViewCellDidStartDragging:)]) {
                 [delegate gridViewCellDidStartDragging:self];
