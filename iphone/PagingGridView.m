@@ -73,7 +73,7 @@
 - (void)dealloc
 {
     [rearrangePageSwitchTimer invalidate];
-
+    
     [visibleIndexes release];
     [visibleViews release];
     [recycledViews release];
@@ -84,7 +84,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-        
+    
     CGRect visibleRect = CGRectMake(self.contentOffset.x, self.contentOffset.y, self.frame.size.width, self.frame.size.height);
     
     // Can we remove any views that are offscreen?
@@ -175,7 +175,7 @@
         if (rearranging) {
             cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
         }
-        [cell setDraggable:rearranging animated:YES];
+        [cell setEditing:rearranging animated:YES];
     }
     
     if (rearranging) {
@@ -241,7 +241,7 @@
     view.frame = [self frameForIndex:index];
     view.tag = index;
     view.delegate = self;
-    view.draggable = rearranging;
+    view.editing = rearranging;
     [view.activityIndicator stopAnimating];
     [visibleViews addObject:view];
     [visibleIndexes addIndex:index];
@@ -372,7 +372,7 @@
 
 - (void)beginUpdates
 {
-
+    
 }
 
 - (void)endUpdates
@@ -443,7 +443,7 @@
         cellToRemove.alpha = 1;
         [recycledViews addObject:cellToRemove];
         [visibleViews removeObject:cellToRemove];
-
+        
         // Update visible indexes
         [visibleIndexes removeAllIndexes];
         for (PagingGridViewCell *cell in visibleViews) {
@@ -527,7 +527,7 @@
 - (void)gridViewCellDidPressDeleteButton:(PagingGridViewCell *)gridViewCell
 {
     NSLog(@"cell did press delete button");
-
+    
     BOOL shouldDelete = YES;
     if ([gridDelegate respondsToSelector:@selector(gridView:shouldDeleteItemAtIndex:)]) {
         shouldDelete = [gridDelegate gridView:self shouldDeleteItemAtIndex:gridViewCell.tag];

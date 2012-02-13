@@ -21,12 +21,12 @@
 @property (nonatomic, retain) IBOutlet UILabel *label;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) IBOutlet UIButton *deleteButton;
-@property (nonatomic, assign, getter=isDraggable) BOOL draggable;
+@property (nonatomic, assign, getter=isEditing) BOOL editing;
 @property (nonatomic, assign, getter=isDragging) BOOL dragging;
 @property (nonatomic, assign) CGPoint lastDragLocation;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewCellDelegate> delegate;
 
-- (void)setDraggable:(BOOL)draggable animated:(BOOL)animated;
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated;
 - (IBAction)deleteButtonPressed:(id)sender;
 
 @end

@@ -10,7 +10,8 @@
 #import <QuartzCore/QuartzCore.h>
 
 #define kPressAndHoldDuration 0.8f
-#define kRearrangingScaleFactor 1.15
+#define kDraggingScaleFactor 1.1
+#define kEditingScaleFactor 0.85
 
 @implementation PagingGridViewCell
 
@@ -19,7 +20,7 @@
 @synthesize label;
 @synthesize activityIndicator;
 @synthesize deleteButton;
-@synthesize draggable;
+@synthesize editing;
 @synthesize dragging;
 @synthesize lastDragLocation;
 @synthesize delegate;
@@ -39,7 +40,7 @@
         contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self addSubview:contentView];
         
-        deleteButton.center = CGPointMake(4, 4);
+        deleteButton.center = CGPointMake(12, 12);
         deleteButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         [self addSubview:deleteButton];
         
@@ -86,26 +87,32 @@
     image.highlighted = highlighted;
 }
 
-- (void)setDraggable:(BOOL)isDraggable
+- (void)setEditing:(BOOL)isEditing
 {
-    draggable = isDraggable;
+    editing = isEditing;
     
-    if (draggable && [delegate respondsToSelector:@selector(gridViewCellShouldShowDeleteButton:)] && [delegate gridViewCellShouldShowDeleteButton:self]) {
+    if (editing) {
+        contentView.transform = CGAffineTransformMakeScale(kEditingScaleFactor, kEditingScaleFactor);
+    } else {
+        contentView.transform = CGAffineTransformIdentity;
+    }
+    
+    if (editing && [delegate respondsToSelector:@selector(gridViewCellShouldShowDeleteButton:)] && [delegate gridViewCellShouldShowDeleteButton:self]) {
         deleteButton.alpha = 1;
     } else {
         deleteButton.alpha = 0;
     }
 }
 
-- (void)setDraggable:(BOOL)isDraggable animated:(BOOL)animated
+- (void)setEditing:(BOOL)isEditing animated:(BOOL)animated
 {
     if (animated) {
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.draggable = isDraggable;
+                             self.editing = isEditing;
                          }];
     } else {
-        self.draggable = isDraggable;
+        self.editing = isEditing;
     }
 }
 
@@ -116,15 +123,25 @@
     [self.superview bringSubviewToFront:self];
 
     [UIView animateWithDuration:0.15
+                          delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
                      animations:^{
                          if (dragging) {
                              self.alpha = 0.7;
-                             self.transform = CGAffineTransformMakeScale(kRearrangingScaleFactor, kRearrangingScaleFactor);
+                             contentView.transform = CGAffineTransformMakeScale(kDraggingScaleFactor, kDraggingScaleFactor);
+                             deleteButton.transform = CGAffineTransformMake(kDraggingScaleFactor, 0, 0, kDraggingScaleFactor, -17, -15);
                          } else {
                              self.alpha = 1.0;
-                             self.transform = CGAffineTransformIdentity;
+                             deleteButton.transform = CGAffineTransformIdentity;
+                             if (editing) {
+                                 contentView.transform = CGAffineTransformMakeScale(kEditingScaleFactor, kEditingScaleFactor);
+                             } else {
+                                 contentView.transform = CGAffineTransformIdentity;
+                             }
                          }
-                     }];  
+                     }
+                     completion:^(BOOL finished){
+                     }];
 }
 
 #pragma mark - IBActions
@@ -208,7 +225,7 @@
 {
     UITouch *touch = [[event allTouches] anyObject];
 
-    if (draggable && !dragging) {
+    if (editing && !dragging) {
         BOOL shouldDrag = YES;
         if ([delegate respondsToSelector:@selector(gridViewCellShouldStartDragging:)]) {
             shouldDrag = [delegate gridViewCellShouldStartDragging:self];
