@@ -126,7 +126,8 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 	[resultString release];
 	
 	// get the JSON object
-	NSDictionary * dict = [cleanResultStr objectFromJSONString];
+	NSError * error = nil;
+	NSDictionary * dict = [cleanResultStr objectFromJSONStringWithParseOptions:0 error:&error];
 	// check if there's error
 	if ( ![dict isKindOfClass:[NSDictionary class]] ) {
 		encountersErrorDuringProcessing = YES;
@@ -141,7 +142,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 		return;
 	}
 	NSDictionary * contentDict = [dict objectForKey:@"content"];
-	if ( contentDict == nil || [contentDict count] == 0) {
+	if ( contentDict == nil || [contentDict count] == 0 ) {
 		encountersErrorDuringProcessing = YES;
 		self.errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"No video content", @"reason", [NSNumber numberWithInteger:NMErrorNoData], @"error_code", video, @"target_object", nil];
 		return;
@@ -155,11 +156,20 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 		NSString * urlStr = [srcVdoDict objectForKey:@"profile_url"];
 		NSRange rng = [urlStr rangeOfString:@"youtube.com"];
 		if ( rng.location == NSNotFound ) {
-			[authorDict setObject:[NSString stringWithFormat:@"http://www.youtube.com%@", [srcVdoDict objectForKey:@"profile_url"]] forKey:@"profile_uri"];
+			[authorDict setObject:[@"http://www.youtube.com" stringByAppendingString:[srcVdoDict objectForKey:@"profile_url"]] forKey:@"profile_uri"];
 		} else {
 			[authorDict setObject:[srcVdoDict objectForKey:@"profile_url"] forKey:@"profile_uri"];
 		}
-		[authorDict setObject:[srcVdoDict objectForKey:@"user_image_url"] forKey:@"thumbnail_uri"];
+		// Feb 13, 2012. There's a bug in YouTube API. The attribute in JSOn is not a valid URL - //i1.ytimg.com/vi/HCIcms1RK3o/default.jpg
+		NSString * usrThumbURLStr = [srcVdoDict objectForKey:@"user_image_url"];
+		if ( usrThumbURLStr ) {
+			rng = [usrThumbURLStr rangeOfString:@"//"];
+			if ( rng.location == 0 ) {
+				// it is affected by the bug
+				usrThumbURLStr = [@"http:" stringByAppendingString:usrThumbURLStr];
+			}
+			[authorDict setObject:usrThumbURLStr forKey:@"thumbnail_uri"];
+		}
 		// save extra informaiton
 		self.videoInfoDict = [NSMutableDictionary dictionaryWithCapacity:4];
 		@try {
