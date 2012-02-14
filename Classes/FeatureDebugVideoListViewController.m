@@ -109,7 +109,8 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-    // Configure the cell...
+    NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	cell.textLabel.text = vdo.video.title;
     
     return cell;
 }

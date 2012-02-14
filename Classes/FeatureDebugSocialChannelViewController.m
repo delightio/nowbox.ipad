@@ -139,6 +139,7 @@
 	// show the video list
 	FeatureDebugVideoListViewController * listCtrl = [[FeatureDebugVideoListViewController alloc] initWithStyle:UITableViewStylePlain];
 	listCtrl.managedObjectContext = self.managedObjectContext;
+	listCtrl.channel = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	[self.navigationController pushViewController:listCtrl animated:YES];
 	[listCtrl release];
 }

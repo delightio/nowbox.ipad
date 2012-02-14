@@ -212,6 +212,13 @@ static NSArray * youTubeRegexArray = nil;
 					// the video is from another person. we should add the video to that person's channel as well
 					if ( isNew || chkResult == NMVideoDoesNotExist ) {
 						// this person profile is now. i.e. just insert the video to thi channel
+						// add the video into the channel
+						NMVideo * personVdo = [ctrl insertNewVideo];
+						personVdo.video = conVdo;
+						// add the new video proxy object to the person's channel
+						personVdo.channel = theProfile.subscription.channel;
+						personVdo.nm_session_id = bigSessionNum;
+						personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 					} else if ( !isNew && chkResult == NMVideoExistsButNotInChannel ) {
 						// check if the vido exists in this person's channel
 						NMChannel * personChn = theProfile.subscription.channel;
