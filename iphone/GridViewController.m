@@ -7,6 +7,7 @@
 //
 
 #import "GridViewController.h"
+#import "VideoViewController.h"
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
 
@@ -83,16 +84,27 @@
 
 - (void)gridView:(PagingGridView *)aGridView didSelectItemAtIndex:(NSUInteger)index
 {
-    self.gridDataSource = [gridDataSource nextDataSourceForIndex:index];
-    aGridView.dataSource = gridDataSource;
-    pageControl.numberOfPages = aGridView.numberOfPages;
+    GridDataSource *nextDataSource = [gridDataSource nextDataSourceForIndex:index];
+    
+    if (nextDataSource) {
+        // Load another set of grid items
+        self.gridDataSource = nextDataSource;
+        aGridView.dataSource = gridDataSource;
+        pageControl.numberOfPages = aGridView.numberOfPages;
+    } else {
+        // Go to video player
+        NMChannel *channel = [gridDataSource objectAtIndex:index];
+        VideoViewController *videoViewController = [[VideoViewController alloc] initWithChannel:channel video:nil nibName:@"VideoViewController" bundle:nil];
+        [self presentModalViewController:videoViewController animated:NO];
+        [videoViewController release];
+    }
 }
 
 - (BOOL)gridView:(PagingGridView *)aGridView shouldDeleteItemAtIndex:(NSUInteger)index
 {
     [gridDataSource deleteObjectAtIndex:index];
     
-    // We will delete the item ourselves once the data source is finished deleting
+    // We will delete the cell ourselves once the data source is finished deleting
     return NO;
 }
 

@@ -38,6 +38,12 @@
     return nil;
 }
 
+- (id)objectAtIndex:(NSUInteger)index
+{
+    // To be overriden by subclasses
+    return nil;
+}
+
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
     // To be overriden by subclasses

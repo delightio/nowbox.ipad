@@ -19,6 +19,7 @@
 
 - (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
+- (id)objectAtIndex:(NSUInteger)index;
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
 - (void)deleteObjectAtIndex:(NSUInteger)index;
 

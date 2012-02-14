@@ -23,7 +23,12 @@
 
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
-    return self;
+    return nil;
+}
+
+- (id)objectAtIndex:(NSUInteger)index
+{
+    return [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 }
 
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
@@ -48,6 +53,8 @@
     NMChannel *channelToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
     channelToMove.subscription.nm_sort_order = newSortOrder;
 
+    [self.managedObjectContext save:NULL];
+    
     // Refresh channels to update sort order
     NSError *error = nil;
     if (![fetchedResultsController performFetch:&error]) {
@@ -82,7 +89,7 @@
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext]];
         [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO"]];	            
         [fetchRequest setFetchBatchSize:20];
-      
+        
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"subscription.nm_sort_order" ascending:YES];
         [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         [sortDescriptor release];
