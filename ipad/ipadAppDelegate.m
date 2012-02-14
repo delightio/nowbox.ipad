@@ -309,7 +309,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 		[tqc scheduleSyncSocialChannels];
 	}
     
-    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
+    if ([viewController isKindOfClass:[VideoPlaybackBaseViewController class]]) {
+		// need to check the class type cause it could be the launch view controller instead of the playback view controller
         // refresh video
         [((VideoPlaybackViewController *)viewController).playbackModelController refreshDirectURLToBufferedVideos];
     }
@@ -317,7 +318,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     // Reset the session timer - consider this to be a new session for analytics purposes
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     [self updateMixpanelProperties];
-    NSTimeInterval elapsedTotalTime = [[NSDate date] timeIntervalSince1970] - appStartTime;
+    NSTimeInterval elapsedTotalTime = sessionStartTime - appStartTime;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterForeground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:0], AnalyticsPropertySessionElapsedTime, 
                                                                                 [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = NO;

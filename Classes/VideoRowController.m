@@ -45,7 +45,10 @@
 	// for YouTube import
 	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
-    return self;
+	// facebook import
+	[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
+	return self;
 }
 
 
@@ -398,6 +401,14 @@
 }
 
 - (void)handleDidImportVideoNotification:(NSNotification *)aNotification {
+	if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
+		isLoadingNewContent = NO;
+		isAnimatingNewContentCell = YES;
+		[videoTableView reloadData];
+		[videoTableView beginUpdates];
+		[videoTableView endUpdates];
+		return;
+	}
 	NSDictionary * info = [aNotification userInfo];
     if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
 		[self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
@@ -410,6 +421,31 @@
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
 	[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
+}
+
+- (void)handleDidParseFacebookFeedNotification:(NSNotification *)aNotification {
+	if ( [[aNotification name] isEqualToString:NMDidFailParseFacebookFeedNotification] ) {
+		isLoadingNewContent = NO;
+		isAnimatingNewContentCell = YES;
+		[videoTableView reloadData];
+		[videoTableView beginUpdates];
+		[videoTableView endUpdates];
+		return;
+	}
+	NSDictionary * info = [aNotification userInfo];
+	if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
+		// check how many videos are found
+		NSInteger c = [[info objectForKey:@"num_video_added"] integerValue];
+		NSString * nxtStr = [info objectForKey:@"next_url"];
+		if ( c == 0 && nxtStr == nil ) {
+			// there's nth new in the user's news feed or friend's wall.
+			isLoadingNewContent = NO;
+			isAnimatingNewContentCell = YES;
+			[videoTableView reloadData];
+			[videoTableView beginUpdates];
+			[videoTableView endUpdates];
+		}
+	}
 }
 
 #pragma mark trigger load new
