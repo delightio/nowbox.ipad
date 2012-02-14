@@ -279,6 +279,7 @@
 		A9250151134385BF001759F5 /* ipadAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9250150134385BF001759F5 /* ipadAppDelegate.m */; };
 		A9250154134385BF001759F5 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9250152134385BF001759F5 /* MainWindow.xib */; };
 		A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */; };
+		A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */ = {isa = PBXBuildFile; fileRef = A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */; };
 		A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
@@ -778,6 +779,8 @@
 		A9250150134385BF001759F5 /* ipadAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadAppDelegate.m; sourceTree = "<group>"; };
 		A9250153134385BF001759F5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugFacebookCommentsAndLikes.h; sourceTree = "<group>"; };
+		A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugFacebookCommentsAndLikes.m; sourceTree = "<group>"; };
 		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
 		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
@@ -1493,6 +1496,8 @@
 				A952B47B14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m */,
 				A95CE61814E9A6AF005568FF /* FeatureDebugVideoListViewController.h */,
 				A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */,
+				A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */,
+				A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -2342,6 +2347,7 @@
 				A9B40E5714E5E9400004DF03 /* NMChannel.m in Sources */,
 				A9B40E5B14E5E9410004DF03 /* NMSubscription.m in Sources */,
 				A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */,
+				A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

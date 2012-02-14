@@ -266,6 +266,7 @@ extern NSString * const NMConcreteVideoEntityName;
 extern NSString * const NMAuthorEntityName;
 extern NSString * const NMSubscriptionEntityName;
 extern NSString * const NMPersonProfileEntityName;
+extern NSString * const NMFacebookCommentEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;

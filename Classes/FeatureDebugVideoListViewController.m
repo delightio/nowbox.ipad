@@ -9,6 +9,7 @@
 #import "FeatureDebugVideoListViewController.h"
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
+#import "FeatureDebugFacebookCommentsAndLikes.h"
 
 
 @implementation FeatureDebugVideoListViewController
@@ -40,53 +41,12 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
 #pragma mark - Table view data source
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	cell.textLabel.text = vdo.video.title;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -107,12 +67,24 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
-    NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = vdo.video.title;
+	[self configureCell:cell atIndexPath:indexPath];
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+	NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	if ( vdo.video.facebook_info == nil ) {
+		return;
+	}
+	FeatureDebugFacebookCommentsAndLikes * ctrl = [[FeatureDebugFacebookCommentsAndLikes alloc] initWithStyle:UITableViewStylePlain];
+	ctrl.managedObjectContext = _managedObjectContext;
+	ctrl.socialInfo = vdo.video.facebook_info;
+	[self.navigationController pushViewController:ctrl animated:YES];
+	[ctrl release];
 }
 
 /*
@@ -161,7 +133,7 @@
 	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
 	// play the selected channel
 	VideoPlaybackViewController * vdoCtrl = (VideoPlaybackViewController *)appDel.viewController;
-	vdoCtrl.currentChannel = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	[vdoCtrl playVideo:[self.fetchedResultsController objectAtIndexPath:indexPath]];
 }
 
 #pragma mark - Fetched results controller and delegate
@@ -177,9 +149,7 @@
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", _channel]];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
-	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
-	
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];	
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
 	
@@ -196,6 +166,57 @@
 	}
 	
 	return _fetchedResultsController;
+}
+
+#pragma mark NSFetchedResultsController delegate
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    UITableView *tableView = self.tableView;
+    
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.tableView endUpdates];
 }
 
 @end
