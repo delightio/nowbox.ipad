@@ -778,10 +778,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info {
 	// save the comment
-	
+	NMFacebookComment * cmtObj = [dataController insertNewFacebookComment];
+	cmtObj.facebookInfo = info;
+	cmtObj.message = msg;
+	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
 	// send it to facebook
+	NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:msg];
+	[networkController addNewConnectionForTask:task];
+	[task release];
 }
 
+- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info {
+	NMFacebookLikeTask * task = [[NMFacebookLikeTask alloc] initWithInfo:info like:aLike];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
 
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];

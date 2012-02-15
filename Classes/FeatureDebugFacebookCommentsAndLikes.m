@@ -95,7 +95,7 @@
 
 #pragma mark - Target action methods
 - (void)toggleLikeStatus:(id)sender {
-	
+	[[NMTaskQueueController sharedTaskQueueController] issuePostLike:YES forPost:_socialInfo];
 }
 
 - (void)sendRandomComment:(id)sender {

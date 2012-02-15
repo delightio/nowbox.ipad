@@ -235,26 +235,28 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 			NSLog(@"error importing video: %@\n%@", self.targetID, self.errorInfo);
 #endif
 		}
-		// detail Video
-		NMVideoDetail * dtlObj = targetVideo.detail;
-		if ( dtlObj == nil ) {
-			dtlObj = [ctrl insertNewVideoDetail];
-			targetVideo.detail = dtlObj;
+		if ( videoInfoDict && authorDict ) {
+			// detail Video
+			NMVideoDetail * dtlObj = targetVideo.detail;
+			if ( dtlObj == nil ) {
+				dtlObj = [ctrl insertNewVideoDetail];
+				targetVideo.detail = dtlObj;
+			}
+			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
+			[videoInfoDict removeObjectForKey:@"nm_description"];
+			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+			// update Concrete Video
+			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
+			// author
+			BOOL isNew;
+			NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
+			if ( isNew ) {
+				[arObj setValuesForKeysWithDictionary:authorDict];
+			}
+			targetVideo.author = arObj;
+			// In some ways, setting the session here purposely make the NMVideo object dirty. Then, when we save the MOC, the NSFetchedResultsController that owns the channel video row will get notified for change.
+			video.nm_session_id = NM_SESSION_ID;
 		}
-		dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
-		[videoInfoDict removeObjectForKey:@"nm_description"];
-		targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
-		// update Concrete Video
-		[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
-		// author
-		BOOL isNew;
-		NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
-		if ( isNew ) {
-			[arObj setValuesForKeysWithDictionary:authorDict];
-		}
-		targetVideo.author = arObj;
-		// In some ways, setting the session here purposely make the NMVideo object dirty. Then, when we save the MOC, the NSFetchedResultsController that owns the channel video row will get notified for change.
-		video.nm_session_id = NM_SESSION_ID;
 	}
 	if ( encountersErrorDuringProcessing ) {
 		targetVideo.nm_direct_url = nil;
