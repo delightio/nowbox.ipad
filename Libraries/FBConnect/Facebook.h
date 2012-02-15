@@ -65,6 +65,8 @@
 
 - (void)logout;
 
+- (void)logout:(id<FBSessionDelegate>)delegate;
+
 - (FBRequest*)requestWithParams:(NSMutableDictionary *)params
                     andDelegate:(id <FBRequestDelegate>)delegate;
 

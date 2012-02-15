@@ -182,13 +182,13 @@ static void *finishedContext = @"finishedContext";
   if (context == finishedContext) {
     FBRequest* _request = (FBRequest*)object;
     FBRequestState requestState = [_request state];
-    if (requestState == kFBRequestStateError) {
-      [self invalidateSession];
-      if ([self.sessionDelegate respondsToSelector:@selector(fbSessionInvalidated)]) {
-        [self.sessionDelegate fbSessionInvalidated];
+    if (requestState == kFBRequestStateComplete) {
+      if ([_request sessionDidExpire]) {
+        [self invalidateSession];
+        if ([self.sessionDelegate respondsToSelector:@selector(fbSessionInvalidated)]) {
+          [self.sessionDelegate fbSessionInvalidated];
+        }
       }
-    }
-    if (requestState == kFBRequestStateComplete || requestState == kFBRequestStateError) {
       [_request removeObserver:self forKeyPath:requestFinishedKeyPath];
       [_requests removeObject:_request];
     }
@@ -469,6 +469,22 @@ static void *finishedContext = @"finishedContext";
 
   if ([self.sessionDelegate respondsToSelector:@selector(fbDidLogout)]) {
     [self.sessionDelegate fbDidLogout];
+  }
+}
+
+/**
+ * Invalidate the current user session by removing the access token in
+ * memory and clearing the browser cookie.
+ *
+ * @deprecated Use of a single session delegate, set at app init, is preferred
+ */
+- (void)logout:(id<FBSessionDelegate>)delegate {
+  [self logout];
+  // preserve deprecated callback behavior, but leave cached delegate intact
+  // avoid calling twice if the passed and cached delegates are the same
+  if (delegate != self.sessionDelegate &&
+    [delegate respondsToSelector:@selector(fbDidLogout)]) {
+    [delegate fbDidLogout];
   }
 }
 

@@ -29,3 +29,5 @@
 #import "NMGetFacebookProfileTask.h"
 #import "NMParseTwitterFeedTask.h"
 #import "NMGetTwitterProfileTask.h"
+#import "NMFacebookCommentTask.h"
+#import "NMFacebookLikeTask.h"

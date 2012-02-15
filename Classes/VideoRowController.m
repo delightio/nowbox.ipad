@@ -42,12 +42,6 @@
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
-	// for YouTube import
-	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
-	// facebook import
-	[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
 	return self;
 }
 
@@ -267,6 +261,39 @@
     [sortDescriptor release];
 	[timestampDesc release];
     [sortDescriptors release];
+	
+	// listen to notificaiton for Youtube import
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	switch ( [channel.type integerValue] ) {
+		case NMChannelUserFacebookType:
+		{
+			// for YouTube import
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
+			// facebook import
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
+			break;
+		}
+		case NMChannelUserTwitterType:
+		{
+			// for YouTube import
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
+			// twitter import
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseTwitterFeedNotification object:nil];
+			break;
+		}
+		default:
+			[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidParseFacebookFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidFailParseFacebookFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidParseTwitterFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidFailParseTwitterFeedNotification object:nil];
+			break;
+	}
     
     NSError *error = nil;
     if (![fetchedResultsController_ performFetch:&error]) {
@@ -401,49 +428,44 @@
 }
 
 - (void)handleDidImportVideoNotification:(NSNotification *)aNotification {
-	if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
-		isLoadingNewContent = NO;
-		isAnimatingNewContentCell = YES;
-		[videoTableView reloadData];
-		[videoTableView beginUpdates];
-		[videoTableView endUpdates];
-		return;
-	}
 	NSDictionary * info = [aNotification userInfo];
-    if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
-		[self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
-		isLoadingNewContent = NO;
-		isAnimatingNewContentCell = YES;
-		[videoTableView reloadData];
-		[videoTableView beginUpdates];
-		[videoTableView endUpdates];
-    }
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
-	[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
+	NMConcreteVideo * vdo = [info objectForKey:@"target_object"];
+	if ( vdo && [vdo.channels containsObject:channel] ) {
+		if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
+			isLoadingNewContent = NO;
+			isAnimatingNewContentCell = NO;
+			[videoTableView reloadData];
+		} else {
+            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
+            isLoadingNewContent = NO;
+            isAnimatingNewContentCell = YES;
+			[videoTableView reloadData];
+            [videoTableView beginUpdates];
+            [videoTableView endUpdates];
+		}
+	}
 }
 
 - (void)handleDidParseFacebookFeedNotification:(NSNotification *)aNotification {
-	if ( [[aNotification name] isEqualToString:NMDidFailParseFacebookFeedNotification] ) {
-		isLoadingNewContent = NO;
-		isAnimatingNewContentCell = YES;
-		[videoTableView reloadData];
-		[videoTableView beginUpdates];
-		[videoTableView endUpdates];
-		return;
-	}
 	NSDictionary * info = [aNotification userInfo];
-	if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
-		// check how many videos are found
-		NSInteger c = [[info objectForKey:@"num_video_added"] integerValue];
-		NSString * nxtStr = [info objectForKey:@"next_url"];
-		if ( c == 0 && nxtStr == nil ) {
-			// there's nth new in the user's news feed or friend's wall.
+	NMChannel * chnObj = [info objectForKey:@"channel"];
+	if ( [chnObj isEqual:channel] ) {
+		if ( [[aNotification name] isEqualToString:NMDidFailParseFacebookFeedNotification] ) {
 			isLoadingNewContent = NO;
-			isAnimatingNewContentCell = YES;
+			isAnimatingNewContentCell = NO;
 			[videoTableView reloadData];
-			[videoTableView beginUpdates];
-			[videoTableView endUpdates];
+		} else {
+			// check how many videos are found
+			NSInteger c = [[info objectForKey:@"num_video_added"] integerValue];
+			NSString * nxtStr = [info objectForKey:@"next_url"];
+			if ( c == 0 && nxtStr == nil ) {
+				// there's nth new in the user's news feed or friend's wall.
+				isLoadingNewContent = NO;
+				isAnimatingNewContentCell = YES;
+				[videoTableView reloadData];
+				[videoTableView beginUpdates];
+				[videoTableView endUpdates];
+			}
 		}
 	}
 }
