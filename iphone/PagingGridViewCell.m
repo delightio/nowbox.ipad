@@ -144,12 +144,6 @@
                      }];
 }
 
-- (void)setFrame:(CGRect)frame
-{
-    [super setFrame:frame];
-    NSLog(@"frame: %@", NSStringFromCGRect(frame));
-}
-
 #pragma mark - IBActions
 
 - (IBAction)deleteButtonPressed:(id)sender
