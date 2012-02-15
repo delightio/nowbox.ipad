@@ -184,10 +184,10 @@
 
 - (void)requestResolveVideo:(NMVideo *)vid {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	NSLog(@"issue resolution request - %@, status - %d %@", vid.video.title, vid.video.nm_playback_status, [vid.video objectID]);
-	if ( vid.video.title == nil ) {
-		NSLog(@"null video title?");
-	}
+	//NSLog(@"issue resolution request - %@, status - %d %@", vid.video.title, vid.video.nm_playback_status, [vid.video objectID]);
+//	if ( vid.video.title == nil ) {
+//		NSLog(@"null video title?");
+//	}
 #endif
 	if ( vid == nil ) return;
 	// request to resolve the direct URL of this video
