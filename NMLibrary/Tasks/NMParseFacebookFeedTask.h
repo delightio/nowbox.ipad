@@ -20,10 +20,7 @@
 @property (nonatomic, retain) NSString * nextPageURLString;
 @property (nonatomic, retain) NSString * user_id;
 @property (nonatomic, retain) NSString * since_id;
-@property (nonatomic, retain) NSMutableArray * profileArray;
 @property (nonatomic, retain) NSString * feedDirectURLString;
-@property (nonatomic, retain) NSMutableDictionary * videoCommentDict;
-@property (nonatomic, retain) NSMutableDictionary * videoLikeDict;
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 

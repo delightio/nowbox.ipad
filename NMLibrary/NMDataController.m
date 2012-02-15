@@ -192,7 +192,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 - (NSPredicate *)pendingImportVideoPredicate {
 	if ( _pendingImportVideoPredicate == nil ) {
-		_pendingImportVideoPredicate = [[NSPredicate predicateWithFormat:@"video.nm_error == %@", [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]] retain];
+		_pendingImportVideoPredicate = [[NSPredicate predicateWithFormat:@"nm_error == %@", [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR]] retain];
 	}
 	return _pendingImportVideoPredicate;
 }
@@ -936,10 +936,9 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 - (NSArray *)videosForSync:(NSUInteger)numVdo {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:videoEntityDescription];
+	[request setEntity:[NSEntityDescription entityForName:NMConcreteVideoEntityName inManagedObjectContext:managedObjectContext]];
 	[request setPredicate:self.pendingImportVideoPredicate];
 	[request setFetchLimit:numVdo];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	
 	[request release];

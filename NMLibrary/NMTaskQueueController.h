@@ -15,6 +15,7 @@
 @class NMChannel;
 @class NMPreviewThumbnail;
 @class NMVideo;
+@class NMConcreteVideo;
 @class NMVideoDetail;
 @class NMAuthor;
 @class NMPersonProfile;
@@ -113,7 +114,7 @@
 
 // Video
 - (void)issueGetDirectURLForVideo:(NMVideo *)aVideo;
-- (void)issueImportVideo:(NMVideo *)aVideo;
+- (void)issueImportVideo:(NMConcreteVideo *)aVideo;
 - (NMImageDownloadTask *)issueGetThumbnailForAuthor:(NMAuthor *)anAuthor;
 - (NMImageDownloadTask *)issueGetThumbnailForVideo:(NMVideo *)vdo;
 /*
