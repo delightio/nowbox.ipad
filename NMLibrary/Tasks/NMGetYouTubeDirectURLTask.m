@@ -29,6 +29,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 @synthesize video, externalID;
 @synthesize directSDURLString, directURLString;
 @synthesize videoInfoDict, authorDict;
+@synthesize concreteVideo;
 
 - (id)dateFromTimeCreatedString:(NSString *)dateStr {
 	if ( dateStr == nil || [dateStr length] == 0 ) return [NSNull null];
@@ -63,13 +64,16 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 	return self;
 }
 
-- (id)initImportVideo:(NMVideo *)vdo {
+- (id)initImportVideo:(NMConcreteVideo *)vdo {
 	self = [super init];
 	
 	command = NMCommandImportYouTubeVideo;
-	self.video = vdo;
-	self.externalID = vdo.video.external_id;
-	self.targetID = vdo.video.nm_id;
+	self.concreteVideo = vdo;
+	self.externalID = vdo.external_id;
+	self.targetID = vdo.nm_id;
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"init import task: %@", self.externalID);
+#endif
 	// the task saveProcessedDataInController: method will still be executed when there's resolution error
 	executeSaveActionOnError = YES;
 	
@@ -78,6 +82,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 
 - (void)dealloc {
 	[video release];
+	[concreteVideo release];
 	[externalID release];
 	[directURLString release];
 	[directSDURLString release];
@@ -220,33 +225,37 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	NMConcreteVideo * targetVideo = video.video;
+	NMConcreteVideo * targetVideo = nil;
+	if ( video ) targetVideo = video.video;
+	else if ( concreteVideo ) targetVideo = concreteVideo;
 	if ( command == NMCommandImportYouTubeVideo ) {
 		if ( encountersErrorDuringProcessing ) {
 			// there's error in resolution, we should delete the video altogetheric
-			[ctrl deleteManagedObject:targetVideo];
-		} else {
-			// detail Video
-			NMVideoDetail * dtlObj = targetVideo.detail;
-			if ( dtlObj == nil ) {
-				dtlObj = [ctrl insertNewVideoDetail];
-				targetVideo.detail = dtlObj;
-			}
-			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
-			[videoInfoDict removeObjectForKey:@"nm_description"];
-			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
-			// update Concrete Video
-			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
-			// author
-			BOOL isNew;
-			NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
-			if ( isNew ) {
-				[arObj setValuesForKeysWithDictionary:authorDict];
-			}
-			targetVideo.author = arObj;
-			// In some ways, setting the session here purposely make the NMVideo object dirty. Then, when we save the MOC, the NSFetchedResultsController that owns the channel video row will get notified for change.
-			video.nm_session_id = NM_SESSION_ID;
+			//[ctrl deleteManagedObject:targetVideo];
+#ifdef DEBUG_FACEBOOK_IMPORT
+			NSLog(@"error importing video: %@\n%@", self.targetID, self.errorInfo);
+#endif
 		}
+		// detail Video
+		NMVideoDetail * dtlObj = targetVideo.detail;
+		if ( dtlObj == nil ) {
+			dtlObj = [ctrl insertNewVideoDetail];
+			targetVideo.detail = dtlObj;
+		}
+		dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
+		[videoInfoDict removeObjectForKey:@"nm_description"];
+		targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+		// update Concrete Video
+		[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
+		// author
+		BOOL isNew;
+		NMAuthor * arObj = [ctrl insertNewAuthorWithUsername:[authorDict objectForKey:@"username"] isNew:&isNew];
+		if ( isNew ) {
+			[arObj setValuesForKeysWithDictionary:authorDict];
+		}
+		targetVideo.author = arObj;
+		// In some ways, setting the session here purposely make the NMVideo object dirty. Then, when we save the MOC, the NSFetchedResultsController that owns the channel video row will get notified for change.
+		video.nm_session_id = NM_SESSION_ID;
 	}
 	if ( encountersErrorDuringProcessing ) {
 		targetVideo.nm_direct_url = nil;

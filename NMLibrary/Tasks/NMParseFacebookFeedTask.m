@@ -32,10 +32,7 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize nextPageURLString = _nextPageURLString;
 @synthesize user_id = _user_id;
 @synthesize since_id = _since_id;
-@synthesize profileArray = _profileArray;
 @synthesize feedDirectURLString = _feedDirectURLString;
-@synthesize videoLikeDict = _videoLikeDict;
-@synthesize videoCommentDict = _videoCommentDict;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -69,7 +66,6 @@ static NSArray * youTubeRegexArray = nil;
 	[_since_id release];
 	[_channel release];
 	[_nextPageURLString release];
-	[_profileArray release];
 	[_feedDirectURLString release];
 	[super dealloc];
 }
@@ -108,35 +104,51 @@ static NSArray * youTubeRegexArray = nil;
 	if ( feedCount == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
-	self.profileArray = [NSMutableArray arrayWithCapacity:feedCount];
-	self.videoLikeDict = [NSMutableDictionary dictionaryWithCapacity:feedCount];
-	self.videoCommentDict = [NSMutableDictionary dictionaryWithCapacity:feedCount];
 	NSString * extID = nil;
 	NSString * dataType = nil;
-	NSDictionary * fromDict = nil;
 	NSInteger theTime;
 	NSDictionary * otherDict;
+	NSMutableDictionary * vdoDict = nil;
+	NSArray * theActions;
 	for (NSDictionary * theDict in feedAy) {
 		// process the contents in the array
 		dataType = [theDict objectForKey:@"type"];
 		if ( [dataType isEqualToString:@"video"] || [dataType isEqualToString:@"link"] ) {
 			extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[theDict objectForKey:@"link"]];
-			if ( extID ) {
+			if ( extID && theActions ) {
+				vdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
 				// we just need the external ID
-				[parsedObjects addObject:extID];
+				[vdoDict setObject:extID forKey:@"external_id"];
+				[vdoDict setObject:[theDict objectForKey:@"id"] forKey:@"object_id"];
 				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
+				
 				otherDict = [theDict objectForKey:@"likes"];
-				if ( otherDict ) [_videoLikeDict setObject:otherDict forKey:extID];
+				if ( otherDict ) [vdoDict setObject:otherDict forKey:@"likes"];
+				
 				otherDict = [theDict objectForKey:@"comments"];
-				if ( otherDict ) [_videoCommentDict setObject:otherDict forKey:extID];
+				if ( otherDict ) [vdoDict setObject:otherDict forKey:@"comments"];
+				
+				otherDict = [theDict objectForKey:@"from"];
+				if ( otherDict ) [vdoDict setObject:otherDict forKey:@"from"];
+				
+				// action URLs
+				theActions = [theDict objectForKey:@"actions"];
+				for (otherDict in theActions) {
+					NSString * theActionName = [[otherDict objectForKey:@"name"] lowercaseString];
+					if ( [theActionName isEqualToString:@"comment"] ) {
+						[vdoDict setObject:[otherDict objectForKey:@"link"] forKey:@"comment_post_url"];
+					} else if ( [theActionName isEqualToString:@"like"] ) {
+						[vdoDict setObject:[otherDict objectForKey:@"link"] forKey:@"like_post_url"];
+					}
+				}
+
 				if ( theTime > maxUnixTime ) maxUnixTime = theTime;
+				
+				[parsedObjects addObject:vdoDict];
 			} /*else {
 				NSLog(@"not added: %@ %@", [theDict objectForKey:@"name"], [theDict objectForKey:@"link"]);
 			}*/
 		}
-		fromDict = [theDict objectForKey:@"from"];
-		if ( fromDict ) [_profileArray addObject:fromDict];
-		else [_profileArray addObject:[NSNull null]];
 	}
 	if ( [parsedObjects count] == 0 ) {
 		[parsedObjects release];
@@ -159,21 +171,40 @@ static NSArray * youTubeRegexArray = nil;
 	NMFacebookInfo * fbInfo;
 	NMConcreteVideo * conVdo = nil;
 	NMVideo * vdo = nil;
-	for (NSString * extID in parsedObjects) {
+	NSString * extID;
+	for (NSDictionary * vdoFeedDict in parsedObjects) {
+		extID = [vdoFeedDict objectForKey:@"external_id"];
 		idx++;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
+			{
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-				// create facebook info
-				fbInfo = [ctrl insertNewFacebookInfo];
-				vdo.facebookInfo = fbInfo;
+				conVdo = vdo.video;
+				// check if the set contains the info from this person already
+				NSSet * fbMtnSet = conVdo.facebookMentions;
+				BOOL postFound = NO;
+				for (fbInfo in fbMtnSet) {
+					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+						postFound = YES;
+						break;
+					}
+				}
+				if ( !postFound ) {
+					// create facebook info
+					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo.video = vdo.video;
+					// set the link
+					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
+					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
+					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+				} // else - object clean up will be done later below.
 				break;
-				
+			}
 			case NMVideoDoesNotExist:
 				// create the NMVideo and NMConcreteVideo objects
 				conVdo = [ctrl insertNewConcreteVideo];
@@ -188,7 +219,11 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				// create facebook info
 				fbInfo = [ctrl insertNewFacebookInfo];
-				vdo.facebookInfo = fbInfo;
+				fbInfo.video = conVdo;
+				// set the link
+				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
+				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
+				fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 				break;
 				
 			default:
@@ -197,10 +232,10 @@ static NSArray * youTubeRegexArray = nil;
 		if ( vdo ) {
 			// check person profile
 			BOOL isNew = NO;
-			id fromDict = [_profileArray objectAtIndex:idx];
+			NSDictionary * fromDict = [vdoFeedDict objectForKey:@"from"];
 			NSString * manID;
 			NMPersonProfile * theProfile;
-			if ( fromDict != [NSNull null] ) {
+			if ( fromDict ) {
 				manID = [fromDict objectForKey:@"id"];
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
@@ -242,13 +277,12 @@ static NSArray * youTubeRegexArray = nil;
 				}
 			}
 			// check likes
-			NSDictionary * otherDict = [_videoLikeDict objectForKey:extID];
+			NSDictionary * otherDict = [vdoFeedDict objectForKey:@"likes"];
 			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
-				fbInfo = vdo.facebookInfo;
 				// there are some comments in this video. add the comment
 				fbInfo.likes_count = [otherDict objectForKey:@"count"];
 				// remove all existing relationship and reinsert new ones
-				if ( fbInfo.peopleLike ) {
+				if ( [fbInfo.peopleLike count] ) {
 					[fbInfo setPeopleLike:nil];
 				}
 				NSArray * lkAy = [otherDict objectForKey:@"data"];
@@ -268,15 +302,16 @@ static NSArray * youTubeRegexArray = nil;
 					[lkSet addObject:theProfile];
 				}
 				[fbInfo addPeopleLike:lkSet];
+			} else if ( [fbInfo.peopleLike count] ) {
+				[fbInfo removePeopleLike:fbInfo.peopleLike];
 			}
 			// check comments
-			otherDict = [_videoCommentDict objectForKey:extID];
+			otherDict = [vdoFeedDict objectForKey:@"comments"];
 			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
-				fbInfo = vdo.facebookInfo;
 				// someone has liked this video
 				fbInfo.comments_count = [otherDict objectForKey:@"count"];
 				// remove all comments and reinsert everything
-				if ( fbInfo.comments ) {
+				if ( [fbInfo.comments count] ) {
 					[fbInfo setComments:nil];
 				}
 				NSArray * cmtAy = [otherDict objectForKey:@"data"];
@@ -303,6 +338,8 @@ static NSArray * youTubeRegexArray = nil;
 					[cmtSet addObject:cmtObj];
 				}
 				[fbInfo addComments:cmtSet];
+			} else if ( [fbInfo.comments count] ) {
+				[fbInfo removeComments:fbInfo.comments];
 			}
 		}
 	}

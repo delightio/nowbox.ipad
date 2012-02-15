@@ -52,7 +52,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	} else {
 		str = _userID;
 	}
-	return [self.facebook requestWithGraphPath:str andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"name,id,username,picture", @"fields", @"normal", @"type", nil] andDelegate:ctrl];
+	return [self.facebook requestWithGraphPath:str andParams:[NSMutableDictionary dictionaryWithObjectsAndKeys:@"name,id,username,picture", @"fields", @"large", @"type", nil] andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {

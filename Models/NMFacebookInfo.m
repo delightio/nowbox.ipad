@@ -18,6 +18,7 @@
 @dynamic comments_count;
 @dynamic like_post_url;
 @dynamic likes_count;
+@dynamic object_id;
 @dynamic comments;
 @dynamic peopleLike;
 @dynamic video;

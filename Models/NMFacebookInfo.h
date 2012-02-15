@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMFacebookComment, NMPersonProfile, NMVideo;
+@class NMFacebookComment, NMPersonProfile, NMConcreteVideo;
 
 @interface NMFacebookInfo : NSManagedObject
 
@@ -17,9 +17,10 @@
 @property (nonatomic, retain) NSNumber * comments_count;
 @property (nonatomic, retain) NSString * like_post_url;
 @property (nonatomic, retain) NSNumber * likes_count;
+@property (nonatomic, retain) NSString * object_id;
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *peopleLike;
-@property (nonatomic, retain) NMVideo *video;
+@property (nonatomic, retain) NMConcreteVideo *video;
 @end
 
 @interface NMFacebookInfo (CoreDataGeneratedAccessors)

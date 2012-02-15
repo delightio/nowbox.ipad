@@ -42,6 +42,7 @@
 @property (nonatomic, retain) NSSet *channels;
 @property (nonatomic, retain) NMVideoDetail *detail;
 @property (nonatomic, retain) NMAuthor *author;
+@property (nonatomic, retain) NSSet * facebookMentions;
 
 @property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
 @property (nonatomic, assign) NMMovieDetailView * nm_movie_detail_view;
@@ -54,6 +55,12 @@
 - (void)removeChannelsObject:(NMConcreteVideo *)value;
 - (void)addChannels:(NSSet *)values;
 - (void)removeChannels:(NSSet *)values;
+
+- (void)addFacebookMentionsObject:(NMFacebookInfo *)value;
+- (void)removeFacebookMentionsObject:(NMFacebookInfo *)value;
+- (void)addFacebookMentions:(NSSet *)values;
+- (void)removeFacebookMentions:(NSSet *)values;
+
 - (NSString *)primitiveNm_direct_url;
 - (NSString *)primitiveNm_direct_sd_url;
 

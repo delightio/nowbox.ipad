@@ -98,7 +98,7 @@
 		}
 		case 1:
 		{
-			NMFacebookComment * theComment = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:1]];
+			NMFacebookComment * theComment = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
 			cell.textLabel.text = theComment.message;
 			break;
 		}

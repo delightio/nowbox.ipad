@@ -9,9 +9,11 @@
 #import "NMTask.h"
 
 @class NMVideo;
+@class NMConcreteVideo;
 
 @interface NMGetYouTubeDirectURLTask : NMTask {
 	NMVideo * video;
+	NMConcreteVideo * concreteVideo;
 	NSString * externalID;
 	NSString * directURLString;
 	NSString * directSDURLString;
@@ -23,6 +25,7 @@
 }
 
 @property (nonatomic, retain) NMVideo * video;
+@property (nonatomic, retain) NMConcreteVideo * concreteVideo;
 @property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) NSString * directURLString;
 @property (nonatomic, retain) NSString * directSDURLString;
@@ -30,7 +33,7 @@
 @property (nonatomic, retain) NSMutableDictionary * videoInfoDict;
 
 - (id)initWithVideo:(NMVideo *)vdo;
-- (id)initImportVideo:(NMVideo *)vdo;
+- (id)initImportVideo:(NMConcreteVideo *)vdo;
 - (id)dateFromTimeCreatedString:(NSString *)dateStr;
 - (id)numberFromViewCountString:(NSString *)cntStr;
 

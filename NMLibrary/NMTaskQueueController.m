@@ -536,7 +536,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueImportVideo:(NMVideo *)aVideo {
+- (void)issueImportVideo:(NMConcreteVideo *)aVideo {
 	NMGetYouTubeDirectURLTask * task = [[NMGetYouTubeDirectURLTask alloc] initImportVideo:aVideo];
 	[networkController addNewConnectionForTask:task];
 	[task release];
@@ -746,6 +746,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)scheduleImportVideos {
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"scheduleImportVideos");
+#endif
 	// get the qualified videos
 	NSArray * theProfiles = [dataController personProfilesForSync:2];
 	NSInteger cnt = 4;
@@ -757,11 +760,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( videoImportTimer ) {
 			[videoImportTimer invalidate];
 			self.videoImportTimer = nil;
+#ifdef DEBUG_FACEBOOK_IMPORT
+			NSLog(@"stop video import timer");
+#endif
 		}
+#ifdef DEBUG_FACEBOOK_IMPORT
+		NSLog(@"no more video or profiles to import");
+#endif
 		// return immediately if no video
 		return;
 	}
-	for (NMVideo * vdo in theVideos) {
+	for (NMConcreteVideo * vdo in theVideos) {
 		[self issueImportVideo:vdo];
 	}
 	for (NMPersonProfile * pfo in theProfiles) {

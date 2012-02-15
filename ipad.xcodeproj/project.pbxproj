@@ -291,6 +291,7 @@
 		A9250154134385BF001759F5 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9250152134385BF001759F5 /* MainWindow.xib */; };
 		A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */; };
 		A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */ = {isa = PBXBuildFile; fileRef = A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */; };
+		A927BCA614EB4B5E00298615 /* NMFacebookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A927BCA514EB4B5E00298615 /* NMFacebookInfo.m */; };
 		A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
@@ -358,7 +359,6 @@
 		A97EBE5D13F7B2AF00CC0F5C /* SocialLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */; };
 		A97EBE6013F7B2BF00CC0F5C /* SocialLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */; };
 		A97F5293144FA22E00D1B2F6 /* launch-status-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A97F5291144FA22E00D1B2F6 /* launch-status-background.png */; };
-		A984180914EB2D1100733700 /* NMFacebookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A984180814EB2D1100733700 /* NMFacebookInfo.m */; };
 		A98555E0141758CD00079453 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A98555DF141758CD00079453 /* KeychainItemWrapper.m */; };
 		A98866FB14686B67002CFF0E /* YoutubeLoading.html in Resources */ = {isa = PBXBuildFile; fileRef = A98866FA14686B67002CFF0E /* YoutubeLoading.html */; };
 		A98C241513D38C040061A594 /* button-like-active.png in Resources */ = {isa = PBXBuildFile; fileRef = A98C241113D38C030061A594 /* button-like-active.png */; };
@@ -805,6 +805,8 @@
 		A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugFacebookCommentsAndLikes.h; sourceTree = "<group>"; };
 		A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugFacebookCommentsAndLikes.m; sourceTree = "<group>"; };
+		A927BCA414EB4B5E00298615 /* NMFacebookInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookInfo.h; sourceTree = "<group>"; };
+		A927BCA514EB4B5E00298615 /* NMFacebookInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookInfo.m; sourceTree = "<group>"; };
 		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
 		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
@@ -921,8 +923,6 @@
 		A97EBE5C13F7B2AF00CC0F5C /* SocialLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialLoginViewController.m; sourceTree = "<group>"; };
 		A97EBE5F13F7B2BF00CC0F5C /* SocialLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SocialLoginView.xib; sourceTree = "<group>"; };
 		A97F5291144FA22E00D1B2F6 /* launch-status-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-status-background.png"; sourceTree = "<group>"; };
-		A984180714EB2D1100733700 /* NMFacebookInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookInfo.h; sourceTree = "<group>"; };
-		A984180814EB2D1100733700 /* NMFacebookInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookInfo.m; sourceTree = "<group>"; };
 		A98555DE141758CD00079453 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		A98555DF141758CD00079453 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		A98866FA14686B67002CFF0E /* YoutubeLoading.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = YoutubeLoading.html; sourceTree = "<group>"; };
@@ -1713,8 +1713,8 @@
 				A992827814C6F1A900406A77 /* NMVideo.m */,
 				A9B40E5514E5E9400004DF03 /* NMChannel.h */,
 				A9B40E5614E5E9400004DF03 /* NMChannel.m */,
-				A984180714EB2D1100733700 /* NMFacebookInfo.h */,
-				A984180814EB2D1100733700 /* NMFacebookInfo.m */,
+				A927BCA414EB4B5E00298615 /* NMFacebookInfo.h */,
+				A927BCA514EB4B5E00298615 /* NMFacebookInfo.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2397,14 +2397,13 @@
 				A922423214E4942A00A8FE4F /* NMFacebookComment.m in Sources */,
 				A952B47C14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m in Sources */,
 				A9B40E5714E5E9400004DF03 /* NMChannel.m in Sources */,
-				A9B40E5B14E5E9410004DF03 /* NMSubscription.m in Sources */,
 				838317BE14E9E4B300185DE6 /* VideoViewController.m in Sources */,
 				838317C114E9ECDA00185DE6 /* VideoInfoView.m in Sources */,
 				A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */,
 				A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */,
-				A984180914EB2D1100733700 /* NMFacebookInfo.m in Sources */,
 				A96F926514EB2EE600B51509 /* NMPersonProfile.m in Sources */,
 				A96F926614EB2EE600B51509 /* NMSubscription.m in Sources */,
+				A927BCA614EB4B5E00298615 /* NMFacebookInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
