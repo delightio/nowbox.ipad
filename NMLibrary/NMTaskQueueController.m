@@ -776,6 +776,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
 }
 
+- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info {
+	// save the comment
+	
+	// send it to facebook
+}
+
+
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }

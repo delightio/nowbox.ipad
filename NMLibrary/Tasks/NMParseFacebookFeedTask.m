@@ -283,7 +283,7 @@ static NSArray * youTubeRegexArray = nil;
 				fbInfo.likes_count = [otherDict objectForKey:@"count"];
 				// remove all existing relationship and reinsert new ones
 				if ( [fbInfo.peopleLike count] ) {
-					[fbInfo setPeopleLike:nil];
+					[fbInfo removePeopleLike:fbInfo.peopleLike];
 				}
 				NSArray * lkAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * lkSet = [NSMutableSet setWithCapacity:[lkAy count]];
@@ -312,7 +312,7 @@ static NSArray * youTubeRegexArray = nil;
 				fbInfo.comments_count = [otherDict objectForKey:@"count"];
 				// remove all comments and reinsert everything
 				if ( [fbInfo.comments count] ) {
-					[fbInfo setComments:nil];
+					[fbInfo removeComments:fbInfo.comments];
 				}
 				NSArray * cmtAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
@@ -321,6 +321,7 @@ static NSArray * youTubeRegexArray = nil;
 					cmtObj = [ctrl insertNewFacebookComment];
 					cmtObj.message = [cmtDict objectForKey:@"message"];
 					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
+					cmtObj.object_id = [cmtDict objectForKey:@"id"];
 					// look up the person
 					fromDict = [cmtDict objectForKey:@"from"];
 					manID = [fromDict objectForKey:@"id"];

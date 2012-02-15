@@ -336,6 +336,10 @@
 		A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */; };
 		A962DD5E13A82552004CC111 /* MovieDetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */; };
 		A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */; };
+		A966499914EC498F00F346D2 /* NMFacebookCommentTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A966499714EC498F00F346D2 /* NMFacebookCommentTask.h */; };
+		A966499A14EC498F00F346D2 /* NMFacebookCommentTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A966499814EC498F00F346D2 /* NMFacebookCommentTask.m */; };
+		A966499E14EC499D00F346D2 /* NMFacebookLikeTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A966499C14EC499D00F346D2 /* NMFacebookLikeTask.h */; };
+		A966499F14EC499D00F346D2 /* NMFacebookLikeTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A966499D14EC499D00F346D2 /* NMFacebookLikeTask.m */; };
 		A9699A281462163C00ED0C6F /* VideoPlaybackBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9699A271462163C00ED0C6F /* VideoPlaybackBaseViewController.m */; };
 		A96AD056145B8F70000A8ECC /* NMUserSettingsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */; };
 		A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */; };
@@ -864,6 +868,10 @@
 		A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MovieDetailInfoView.xib; sourceTree = "<group>"; };
 		A962DD7013A82D3A004CC111 /* NMMovieDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMovieDetailView.h; sourceTree = "<group>"; };
 		A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMovieDetailView.m; sourceTree = "<group>"; };
+		A966499714EC498F00F346D2 /* NMFacebookCommentTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookCommentTask.h; sourceTree = "<group>"; };
+		A966499814EC498F00F346D2 /* NMFacebookCommentTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookCommentTask.m; sourceTree = "<group>"; };
+		A966499C14EC499D00F346D2 /* NMFacebookLikeTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookLikeTask.h; sourceTree = "<group>"; };
+		A966499D14EC499D00F346D2 /* NMFacebookLikeTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookLikeTask.m; sourceTree = "<group>"; };
 		A9699A261462163C00ED0C6F /* VideoPlaybackBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlaybackBaseViewController.h; sourceTree = "<group>"; };
 		A9699A271462163C00ED0C6F /* VideoPlaybackBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlaybackBaseViewController.m; sourceTree = "<group>"; };
 		A96AD052145B8F29000A8ECC /* NMUserSettingsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMUserSettingsTask.h; sourceTree = "<group>"; };
@@ -1797,6 +1805,10 @@
 				A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */,
 				A91A510014D1A52900F41FE4 /* NMFacebookTask.h */,
 				A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */,
+				A966499714EC498F00F346D2 /* NMFacebookCommentTask.h */,
+				A966499814EC498F00F346D2 /* NMFacebookCommentTask.m */,
+				A966499C14EC499D00F346D2 /* NMFacebookLikeTask.h */,
+				A966499D14EC499D00F346D2 /* NMFacebookLikeTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -1942,6 +1954,8 @@
 				A91A510214D1A52A00F41FE4 /* NMFacebookTask.h in Headers */,
 				A9D5CF8B14D40D2E001AFC95 /* NMObjectCache.h in Headers */,
 				A9303A4614E0B09700B990C0 /* NMGetTwitterProfileTask.h in Headers */,
+				A966499914EC498F00F346D2 /* NMFacebookCommentTask.h in Headers */,
+				A966499E14EC499D00F346D2 /* NMFacebookLikeTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2449,6 +2463,8 @@
 				A91A510314D1A52A00F41FE4 /* NMFacebookTask.m in Sources */,
 				A9D5CF8C14D40D2E001AFC95 /* NMObjectCache.m in Sources */,
 				A9303A4714E0B09700B990C0 /* NMGetTwitterProfileTask.m in Sources */,
+				A966499A14EC498F00F346D2 /* NMFacebookCommentTask.m in Sources */,
+				A966499F14EC499D00F346D2 /* NMFacebookLikeTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2588,11 +2604,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_FACEBOOK_IMPORT,
 					DEBUG,
 					DEBUG_SKIP_ONBOARD_PROCESS,
 					DEBUG_PANEL_ENABLED,
-					DEBUG_PLAYBACK_NETWORK_CALL,
-					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_USE_STAGING_SERVER,
 				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
@@ -2653,11 +2668,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_FACEBOOK_IMPORT,
 					DEBUG_SKIP_ONBOARD_PROCESS,
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_USE_STAGING_SERVER,
-					DEBUG_CONNECTION_CONTROLLER,
-					DEBUG_PLAYBACK_NETWORK_CALL,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

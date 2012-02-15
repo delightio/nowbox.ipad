@@ -51,6 +51,11 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	UIBarButtonItem * likeBtn = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleLikeStatus:)];
+	UIBarButtonItem * cmtBtn = [[UIBarButtonItem alloc] initWithTitle:@"Comment" style:UIBarButtonItemStyleBordered target:self action:@selector(sendRandomComment:)];
+	self.toolbarItems = [NSArray arrayWithObjects:likeBtn, cmtBtn, nil];
+	[likeBtn release];
+	[cmtBtn release];
 }
 
 - (void)viewDidUnload
@@ -63,6 +68,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+	self.navigationController.toolbarHidden = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -73,6 +79,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+	self.navigationController.toolbarHidden = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -84,6 +91,16 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - Target action methods
+- (void)toggleLikeStatus:(id)sender {
+	
+}
+
+- (void)sendRandomComment:(id)sender {
+	NSString * str = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci urna, iaculis lacinia ultrices vel";
+	[[NMTaskQueueController sharedTaskQueueController] issuePostComment:str forPost:_socialInfo];
 }
 
 #pragma mark - Table view data source

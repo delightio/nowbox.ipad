@@ -98,7 +98,6 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 	if ( command == NMCommandImportYouTubeVideo ) {
 		// use custom command index method
 		idx = ABS((NSInteger)[externalID hash]);
-		NSLog(@"command hash %d", idx);
 	} else {
 		idx = [super commandIndex];
 	}
