@@ -981,6 +981,33 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return vidObj;
 }
 
+- (NMVideo *)latestVideoForChannel:(NMChannel *)channel {
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:videoEntityDescription];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	[request setReturnsObjectsAsFaults:NO];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
+    [request setFetchBatchSize:1];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+	NSSortDescriptor *timestampDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDescriptor, sortDescriptor, nil];
+    [request setSortDescriptors:sortDescriptors];
+    
+    NSArray *results = [managedObjectContext executeFetchRequest:request error:nil];
+	NMVideo *video = nil;
+	if ([results count]) {
+		video = [results objectAtIndex:0];
+	}
+    
+    [request release];
+    [sortDescriptor release];
+	[timestampDescriptor release];
+    [sortDescriptors release];
+    
+    return video;
+}
+
 - (void)deleteVideo:(NMVideo *)vidObj {
 	if ( vidObj == nil ) return;
 	[managedObjectContext deleteObject:vidObj];

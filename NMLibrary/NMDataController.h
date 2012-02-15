@@ -136,6 +136,7 @@
 - (NSArray *)videosForSync:(NSUInteger)numVdo;
 - (NMVideo *)videoForID:(NSNumber *)vid;
 - (NMVideo *)lastSessionVideoForChannel:(NMChannel *)chn;
+- (NMVideo *)latestVideoForChannel:(NMChannel *)chn;
 - (void)deleteVideo:(NMVideo *)vidObj;
 - (void)batchDeleteVideos:(NSSet *)vdoSet;
 //- (void)deleteVideoWithID:(NSNumber *)vid fromChannel:(NMChannel *)chn;
