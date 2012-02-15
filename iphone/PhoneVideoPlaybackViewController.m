@@ -223,9 +223,6 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
     
-    [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillAppear:) name:UIKeyboardWillShowNotification object:nil];
-    [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillDisappear:) name:UIKeyboardWillHideNotification object:nil];
-    [defaultNotificationCenter addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidGetInfoNotification:) name:NMDidCheckUpdateNotification object:nil];
 
 	// setup gesture recognizer
@@ -234,11 +231,14 @@
 	[controlScrollView addGestureRecognizer:pinRcr];
 	[pinRcr release];
 	
+    /*
 	// create the launch view
 	launchController = [[PhoneLaunchController alloc] init];
 	launchController.viewController = self;
 	[[NSBundle mainBundle] loadNibNamed:@"LaunchView" owner:launchController options:nil];
 	[self showLaunchView];
+     */
+    [self showPlaybackView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -258,28 +258,12 @@
 
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-        topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, VIDEO_HEIGHT);
-        
-        gridNavigationContainer.frame = CGRectMake(0, VIDEO_HEIGHT, self.view.bounds.size.width, (self.view.bounds.size.height - VIDEO_HEIGHT));
-        gridNavigationController.view.frame = gridNavigationContainer.bounds;
-        gridNavigationContainer.alpha = 1.0f;
-        [loadedControlView setToggleGridButtonHidden:YES];   
+        topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, VIDEO_HEIGHT);        
 		[loadedControlView setControlsHidden:YES animated:NO];                
-        
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     } else {
         topLevelContainerView.frame = self.view.bounds;
-        if (!gridShowing) {
-            gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);      
-            gridNavigationContainer.alpha = 0.0f;
-        } else {
-            gridNavigationController.view.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
-            gridNavigationContainer.alpha = 1.0f;
-        }
-        gridNavigationContainer.frame = gridNavigationController.view.bounds;
-        [loadedControlView setToggleGridButtonHidden:NO];
-		[loadedControlView setControlsHidden:NO animated:NO];        
-        
+		[loadedControlView setControlsHidden:NO animated:NO];                
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspect];        
     }
     
@@ -334,10 +318,6 @@
     previousChannelHeaderView.frame = theFrame;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    [gridNavigationController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-}
-
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [self updateViewsForInterfaceOrientation:toInterfaceOrientation];
 }
@@ -361,8 +341,6 @@
 
 - (void)dealloc {
 	[launchController release];
-	[gridNavigationController release];
-    [gridNavigationContainer release];
 	[loadedControlView release];
 	[movieDetailViewArray release];
 	[currentChannel release];
@@ -450,25 +428,6 @@
 		playFirstVideoOnLaunchWhenReady = YES;
 	}
     
-    // Start monitoring for tooltips
-//    [[ToolTipController sharedToolTipController] startTimer];
-//    [[ToolTipController sharedToolTipController] setDelegate:self];
-    
-    ChannelGridController *gridController = [[ChannelGridController alloc] initWithNibName:@"GridController" bundle:[NSBundle mainBundle]];
-    gridController.delegate = self;
-    gridController.managedObjectContext = self.managedObjectContext;
-    gridNavigationController = [[SizableNavigationController alloc] initWithRootViewController:gridController];
-    gridNavigationController.playbackModelController = playbackModelController;
-    gridNavigationController.playbackViewController = self;
-    [gridController release];
-    
-    gridNavigationContainer = [[UIView alloc] initWithFrame:gridController.view.frame];
-    gridNavigationContainer.backgroundColor = [UIColor clearColor];
-    gridNavigationContainer.clipsToBounds = YES;
-    gridNavigationContainer.autoresizesSubviews = YES;
-    [gridNavigationContainer addSubview:gridNavigationController.view];
-    [self.view addSubview:gridNavigationContainer];
-    
     [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
 
@@ -548,11 +507,6 @@
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
 	chnObj.subscription.nm_is_new = (NSNumber *)kCFBooleanFalse;
-    
-    // Update highlighted channel in grid
-    if ([gridNavigationController.visibleViewController isKindOfClass:[ChannelGridController class]]) {
-        [((ChannelGridController *)gridNavigationController.visibleViewController).gridView reloadData];
-    }
 	
 	NMConcreteVideo * vdo = playbackModelController.currentVideo.video;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
@@ -661,7 +615,7 @@
 			didSkippedVideo = NO;
 //			[movieView setActivityIndicationHidden:YES animated:YES];
 		}
-		if ( showMovieControlTimestamp > 0 && (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) || !gridShowing)) {
+		if ( showMovieControlTimestamp > 0) {
 			// check if it's time to auto hide control
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
 				// we should hide
@@ -1541,16 +1495,10 @@
 }
 
 - (void)controlsViewTouchUp:(id)sender {
-//	UIView * v = (UIView *)sender;
-    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) && gridShowing) return;
-    
+//	UIView * v = (UIView *)sender;    
 	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
-        loadedControlView.toggleGridButton.userInteractionEnabled = NO;
 	} completion:^(BOOL finished) {
-		if ( finished ) {
-            loadedControlView.toggleGridButton.userInteractionEnabled = YES;
-		}
 	}];
 }
 
@@ -1618,105 +1566,9 @@
 	lastStartTime = showMovieControlTimestamp;
 }
 
-- (IBAction)toggleGrid:(id)sender {
-    gridShowing = !gridShowing;
-    
-    // Keep controls view showing a little longer
-    showMovieControlTimestamp = loadedControlView.timeElapsed;
-
-    if (gridShowing) {
-        gridNavigationController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height - loadedControlView.controlContainerView.frame.size.height);            
-        gridNavigationContainer.alpha = 1.0f;
-    }
-
-    [UIView animateWithInteractiveDuration:0.3
-                                animations:^{
-                                    if (gridShowing) {
-                                        gridNavigationController.view.frame = CGRectOffset(gridNavigationController.view.frame, 0, -self.view.bounds.size.height);
-                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-collapse.png"] forState:UIControlStateNormal];
-                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-collapse-active.png"] forState:UIControlStateHighlighted];
-                                    } else {
-                                        gridNavigationController.view.frame = CGRectOffset(gridNavigationController.view.frame, 0, self.view.bounds.size.height);
-                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand.png"] forState:UIControlStateNormal];
-                                        [loadedControlView.toggleGridButton setImage:[UIImage imageNamed:@"toolbar-expand-active.png"] forState:UIControlStateHighlighted];
-                                    }                                    
-                                }
-                                completion:^(BOOL finished){
-                                    if (!gridShowing) {
-                                        gridNavigationContainer.alpha = 0.0f;
-                                    }
-                                    
-                                    controlScrollView.scrollEnabled = !gridShowing;
-                                    channelSwitchingScrollView.scrollEnabled = !gridShowing;
-                                }];
-}
-
 # pragma mark Gestures
 - (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
     
-}
-
-#pragma mark - Keyboard resizing
-
-- (void)resizeViewForKeyboardUserInfo:(NSDictionary *)userInfo
-{
-    NSValue *sizeValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-    NSValue *durationValue = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    
-    CGSize keyboardSize = [sizeValue CGRectValue].size;
-    
-    NSTimeInterval duration = 0;
-    [durationValue getValue:&duration];
-    
-    CGRect frame = gridNavigationContainer.frame;
-    frame.origin.y = 0;
-    
-    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame.size.height = self.view.frame.size.height - keyboardSize.height;
-    } else {
-        frame.size.height = self.view.frame.size.width - keyboardSize.width;
-    }
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         gridNavigationContainer.frame = frame;
-                         gridNavigationController.view.frame = gridNavigationContainer.bounds;
-                     }];    
-}
-
-- (void)keyboardWillAppear:(NSNotification *)notification
-{
-    [self resizeViewForKeyboardUserInfo:[notification userInfo]];
-}
-
-- (void)keyboardWillDisappear:(NSNotification *)notification
-{
-    NSDictionary *info = [notification userInfo];
-    NSValue *durationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    
-    NSTimeInterval duration = 0;
-    [durationValue getValue:&duration];
-    
-    CGRect frame = gridNavigationContainer.frame;
-    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame.origin.y = self.view.frame.size.height / 2;
-        frame.size.height = self.view.frame.size.height / 2;
-    } else {
-        frame.origin.y = 0;
-        frame.size.height = self.view.frame.size.width;
-    }
-    
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         [self updateViewsForInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation]];
-//                         gridNavigationContainer.frame = frame;
-//                         gridNavigationController.view.frame = gridNavigationContainer.bounds;
-                     }];
-}
-
-- (void)keyboardWillChangeFrame:(NSNotification *)notification
-{
-    [self resizeViewForKeyboardUserInfo:[notification userInfo]];
 }
 
 #pragma mark - Rate Us reminder
@@ -1771,23 +1623,6 @@
             [userDefaults synchronize];
             break;
         }
-    }
-}
-
-#pragma mark - GridControllerDelegate
-
-- (void)gridController:(GridController *)gridController didSelectChannel:(NMChannel *)channel
-{
-
-}
-
-- (void)gridController:(GridController *)gridController didSelectVideo:(NMVideo *)video
-{
-    [self playVideo:video];
-    
-    if (gridShowing && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        // Hide grid
-        [self toggleGrid:nil];
     }
 }
 

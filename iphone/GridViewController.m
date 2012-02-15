@@ -7,9 +7,9 @@
 //
 
 #import "GridViewController.h"
-#import "VideoViewController.h"
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
+#import "PhoneVideoPlaybackViewController.h"
 
 @implementation GridViewController
 
@@ -94,9 +94,12 @@
     } else {
         // Go to video player
         NMChannel *channel = [gridDataSource objectAtIndex:index];
-        VideoViewController *videoViewController = [[VideoViewController alloc] initWithChannel:channel video:nil nibName:@"VideoViewController" bundle:nil];
-        [self presentModalViewController:videoViewController animated:NO];
-        [videoViewController release];
+        
+        PhoneVideoPlaybackViewController *playbackController = [[PhoneVideoPlaybackViewController alloc] initWithNibName:@"PhoneVideoPlaybackView" bundle:nil];
+        [playbackController setManagedObjectContext:managedObjectContext];
+        [self presentModalViewController:playbackController animated:NO];
+        [playbackController setCurrentChannel:channel startPlaying:YES];
+        [playbackController release];
     }
 }
 

@@ -84,6 +84,7 @@
 {
     infoView.channelTitleLabel.text = channel.title;
     infoView.videoTitleLabel.text = video.video.title;
+    [infoView.channelThumbnail setImageForChannel:channel];
 }
 
 #pragma mark - Actions

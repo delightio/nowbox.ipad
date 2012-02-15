@@ -18,8 +18,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
-#import "SizableNavigationController.h"
-#import "ChannelGridController.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -37,7 +35,7 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, GridControllerDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
@@ -71,8 +69,6 @@ enum {
 	BOOL playFirstVideoOnLaunchWhenReady;
     BOOL videoWasPaused;
 	PhoneLaunchController * launchController;
-    SizableNavigationController * gridNavigationController;
-    UIView * gridNavigationContainer;
     
     BOOL shouldResumePlayingVideoAfterTransition;
 	BOOL shouldFadeOutVideoThumbnail;
@@ -97,9 +93,7 @@ enum {
     ToolTip *pendingToolTip; 
     void (^alertCompletion)(void);
 
-    BOOL scrollingNotFromUser;
-    
-    BOOL gridShowing;
+    BOOL scrollingNotFromUser;    
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -122,7 +116,6 @@ enum {
 - (IBAction)seekPlaybackProgress:(id)sender;
 - (IBAction)touchDownProgressBar:(id)sender;
 - (IBAction)touchUpProgressBar:(id)sender;
-- (IBAction)toggleGrid:(id)sender;
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;

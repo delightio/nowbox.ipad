@@ -36,5 +36,6 @@
 
 - (void)checkUpdateChannels;
 - (void)loadView;
+- (void)beginNewSession;
 
 @end

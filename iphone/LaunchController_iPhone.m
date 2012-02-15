@@ -13,14 +13,27 @@
 
 @synthesize delegate;
 
-- (void)handleDidGetChannelNotification:(NSNotification *)aNotification 
+- (void)didFinish
 {
-    // Unlike iPad, all we need is channels for now.
+    [self beginNewSession];
+
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 	taskQueueController.appFirstLaunch = NO;
     
-    [delegate launchControllerDidFinish:self];
+    [delegate launchControllerDidFinish:self];    
+}
+
+- (void)showVideoViewAnimated
+{
+    [self didFinish];
+}
+
+- (void)handleDidGetChannelNotification:(NSNotification *)aNotification 
+{
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
+    
+    [self didFinish];
 }
 
 @end

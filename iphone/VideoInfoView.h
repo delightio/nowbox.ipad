@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NMCachedImageView.h"
 
 @interface VideoInfoView : UIView
 
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
-@property (nonatomic, retain) IBOutlet UIImageView *channelThumbnail;
+@property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
 
 @end

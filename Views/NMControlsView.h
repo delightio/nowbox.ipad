@@ -100,7 +100,6 @@
 @property (nonatomic, assign) IBOutlet UIView * topbarContainerView;
 
 @property (retain, nonatomic) IBOutlet UIView *airPlayIndicatorView;
-@property (retain, nonatomic) IBOutlet UIButton *toggleGridButton;
 @property (nonatomic, assign) BOOL isSeeking;
 
 //- (void)addTarget:(id)atarget action:(SEL)anAction;
@@ -117,6 +116,5 @@
 
 // bubble
 - (void)updateSeekBubbleLocation;
-- (void)setToggleGridButtonHidden:(BOOL)hidden;
 
 @end

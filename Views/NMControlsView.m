@@ -25,7 +25,6 @@
 
 @implementation NMControlsView
 @synthesize airPlayIndicatorView;
-@synthesize toggleGridButton;
 
 @synthesize controlDelegate;
 @synthesize duration, timeElapsed;
@@ -112,7 +111,6 @@
 	[lastVideoMessage release];
 	[volumeView release];
     [airPlayIndicatorView release];
-    [toggleGridButton release];
     [super dealloc];
 }
 
@@ -382,24 +380,6 @@
 
 - (void)setTimeRangeBuffered:(CMTimeRange)aRange {
 	progressSlider.bufferTime = (NSInteger)CMTimeGetSeconds(CMTimeAdd(aRange.start, aRange.duration));
-}
-
-- (void)setToggleGridButtonHidden:(BOOL)hidden {
-    if (toggleGridButton.hidden == hidden) return;
-    
-    CGRect progressFrame = progressContainerView.frame;
-    CGRect airPlayFrame = airPlayContainerView.frame;
-    if (hidden) {
-        progressFrame.size.width += toggleGridButton.frame.size.width;
-        airPlayFrame.origin.x += toggleGridButton.frame.size.width;
-    } else {
-        progressFrame.size.width -= toggleGridButton.frame.size.width;        
-        airPlayFrame.origin.x -= toggleGridButton.frame.size.width;
-    }    
-    progressContainerView.frame = progressFrame;
-    airPlayContainerView.frame = airPlayFrame;
-    
-    toggleGridButton.hidden = hidden;
 }
 
 #pragma mark Gesture delegate
