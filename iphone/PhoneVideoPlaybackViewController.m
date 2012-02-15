@@ -345,6 +345,8 @@
 
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 	[launchController release];
 	[loadedControlView release];
 	[movieDetailViewArray release];

@@ -20,6 +20,7 @@
 @synthesize label;
 @synthesize activityIndicator;
 @synthesize deleteButton;
+@synthesize highlightView;
 @synthesize editing;
 @synthesize dragging;
 @synthesize lastDragLocation;
@@ -70,6 +71,7 @@
     [label release];
     [activityIndicator release];
     [deleteButton release];
+    [highlightView release];
     
     [super dealloc];
 }
@@ -83,7 +85,12 @@
 - (void)setHighlighted:(BOOL)highlighted
 {
     [super setHighlighted:highlighted];    
-    image.highlighted = highlighted;
+    highlightView.hidden = !highlighted;
+}
+
+- (void)didMoveToSuperview
+{
+    [self setHighlighted:NO];
 }
 
 - (void)setEditing:(BOOL)isEditing
