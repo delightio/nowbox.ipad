@@ -156,10 +156,11 @@ static NSArray * youTubeRegexArray = nil;
 	// enumerate the feed
 	NSInteger idx = -1;
 	NSInteger personIDOffset = 0;
+	NMFacebookInfo * fbInfo;
+	NMConcreteVideo * conVdo = nil;
+	NMVideo * vdo = nil;
 	for (NSString * extID in parsedObjects) {
 		idx++;
-		NMConcreteVideo * conVdo = nil;
-		NMVideo * vdo = nil;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
@@ -168,6 +169,9 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				// create facebook info
+				fbInfo = [ctrl insertNewFacebookInfo];
+				vdo.facebookInfo = fbInfo;
 				break;
 				
 			case NMVideoDoesNotExist:
@@ -182,6 +186,9 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				// create facebook info
+				fbInfo = [ctrl insertNewFacebookInfo];
+				vdo.facebookInfo = fbInfo;
 				break;
 				
 			default:
@@ -207,7 +214,6 @@ static NSArray * youTubeRegexArray = nil;
 					// subscribe to this person as well
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
-				vdo.personProfile = theProfile;
 				if ( ![_user_id isEqual:manID] ) {
 					// the video is from another person. we should add the video to that person's channel as well
 					if ( isNew || chkResult == NMVideoDoesNotExist ) {
@@ -237,18 +243,13 @@ static NSArray * youTubeRegexArray = nil;
 			}
 			// check likes
 			NSDictionary * otherDict = [_videoLikeDict objectForKey:extID];
-			NMFacebookInfo * fbInfo;
 			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
-				fbInfo = vdo.video.facebook_info;
-				if ( fbInfo == nil ) {
-					fbInfo = [ctrl insertNewFacebookInfo];
-					vdo.video.facebook_info = fbInfo;
-				}
+				fbInfo = vdo.facebookInfo;
 				// there are some comments in this video. add the comment
 				fbInfo.likes_count = [otherDict objectForKey:@"count"];
 				// remove all existing relationship and reinsert new ones
-				if ( fbInfo.people_like ) {
-					[fbInfo setPeople_like:nil];
+				if ( fbInfo.peopleLike ) {
+					[fbInfo setPeopleLike:nil];
 				}
 				NSArray * lkAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * lkSet = [NSMutableSet setWithCapacity:[lkAy count]];
@@ -266,16 +267,12 @@ static NSArray * youTubeRegexArray = nil;
 					}
 					[lkSet addObject:theProfile];
 				}
-				[fbInfo addPeople_like:lkSet];
+				[fbInfo addPeopleLike:lkSet];
 			}
 			// check comments
 			otherDict = [_videoCommentDict objectForKey:extID];
 			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
-				fbInfo = vdo.video.facebook_info;
-				if ( fbInfo == nil ) {
-					fbInfo = [ctrl insertNewFacebookInfo];
-					vdo.video.facebook_info = fbInfo;
-				}
+				fbInfo = vdo.facebookInfo;
 				// someone has liked this video
 				fbInfo.comments_count = [otherDict objectForKey:@"count"];
 				// remove all comments and reinsert everything
@@ -302,7 +299,7 @@ static NSArray * youTubeRegexArray = nil;
 						[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 						theProfile.name = [fromDict objectForKey:@"name"];
 					}
-					cmtObj.from = theProfile;
+					cmtObj.fromPerson = theProfile;
 					[cmtSet addObject:cmtObj];
 				}
 				[fbInfo addComments:cmtSet];

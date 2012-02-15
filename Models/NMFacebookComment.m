@@ -14,7 +14,7 @@
 
 @dynamic created_time;
 @dynamic message;
-@dynamic facebook_info;
-@dynamic from;
+@dynamic facebookInfo;
+@dynamic fromPerson;
 
 @end

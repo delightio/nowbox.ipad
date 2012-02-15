@@ -2,22 +2,24 @@
 //  NMFacebookInfo.m
 //  ipad
 //
-//  Created by Bill So on 2/9/12.
+//  Created by Bill So on 2/14/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
 #import "NMFacebookInfo.h"
-#import "NMConcreteVideo.h"
 #import "NMFacebookComment.h"
 #import "NMPersonProfile.h"
+#import "NMVideo.h"
 
 
 @implementation NMFacebookInfo
 
-@dynamic likes_count;
+@dynamic comment_post_url;
 @dynamic comments_count;
+@dynamic like_post_url;
+@dynamic likes_count;
 @dynamic comments;
+@dynamic peopleLike;
 @dynamic video;
-@dynamic people_like;
 
 @end

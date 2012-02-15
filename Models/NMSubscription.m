@@ -2,7 +2,7 @@
 //  NMSubscription.m
 //  ipad
 //
-//  Created by Bill So on 2/10/12.
+//  Created by Bill So on 2/14/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 

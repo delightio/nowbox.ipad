@@ -19,7 +19,7 @@
 @dynamic nm_session_id;
 @dynamic video;
 @dynamic channel;
-@dynamic personProfile;
+@dynamic facebookInfo;
 
 - (NMAVPlayerItem *)createPlayerItem {
 	if ( self.video.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {

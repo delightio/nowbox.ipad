@@ -191,7 +191,6 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					scName = [fromDict objectForKey:@"profile_image_url"];
 					if ( scName ) theProfile.picture = scName;
 				}
-				vdo.personProfile = theProfile;
 			}
 		}
 	}];

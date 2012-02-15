@@ -2,7 +2,7 @@
 //  NMPersonProfile.m
 //  ipad
 //
-//  Created by Bill So on 2/9/12.
+//  Created by Bill So on 2/14/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
@@ -10,7 +10,6 @@
 #import "NMFacebookComment.h"
 #import "NMFacebookInfo.h"
 #import "NMSubscription.h"
-#import "NMVideo.h"
 
 
 @implementation NMPersonProfile
@@ -24,9 +23,8 @@
 @dynamic nm_user_id;
 @dynamic picture;
 @dynamic username;
-@dynamic subscription;
-@dynamic videos;
 @dynamic comments;
-@dynamic facebook_likes;
+@dynamic facebookLikes;
+@dynamic subscription;
 
 @end
