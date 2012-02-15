@@ -94,7 +94,7 @@
 		if ( realVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 			[self insertVideoToEndOfQueue:aVideo];
 		} else {
-			[self performSelector:@selector(requestResolveVideo:) withObject:realVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 		}
 	} else {
 		[playbackDelegate player:self stopObservingPlayerItem:curItem];
@@ -104,7 +104,7 @@
 		if ( realVideo.nm_playback_status > NMVideoQueueStatusResolvingDirectURL ) {
 			[self play];
 		} else {
-			[self performSelector:@selector(requestResolveVideo:) withObject:realVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
+			[self performSelector:@selector(requestResolveVideo:) withObject:aVideo afterDelay:NM_PLAYER_DELAY_REQUEST_DURATION];
 		}
 //		[playbackDelegate player:self stopObservingPlayerItem:curItem];
 //		curItem.nmVideo.nm_player_item = nil;
@@ -184,10 +184,10 @@
 
 - (void)requestResolveVideo:(NMVideo *)vid {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
-	//NSLog(@"issue resolution request - %@, status - %d %@", vid.video.title, vid.video.nm_playback_status, [vid.video objectID]);
-//	if ( vid.video.title == nil ) {
-//		NSLog(@"null video title?");
-//	}
+	NSLog(@"issue resolution request - %@, status - %d %@", vid.video.title, vid.video.nm_playback_status, [vid.video objectID]);
+	if ( vid.video.title == nil ) {
+		NSLog(@"null video title?");
+	}
 #endif
 	if ( vid == nil ) return;
 	// request to resolve the direct URL of this video
