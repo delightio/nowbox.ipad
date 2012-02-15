@@ -419,6 +419,7 @@
 		A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20C81348B8830018AA4A /* SystemConfiguration.framework */; };
 		A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
 		A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CB1348B8990018AA4A /* Security.framework */; };
+		A9E1B09914EC3BE400D734BB /* PhoneVideoInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 838317C014E9ECDA00185DE6 /* PhoneVideoInfoView.m */; };
 		A9E285EB14C300A700B4AB5C /* NMURLConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E285E914C300A700B4AB5C /* NMURLConnection.h */; };
 		A9E285EC14C300A700B4AB5C /* NMURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E285EA14C300A700B4AB5C /* NMURLConnection.m */; };
 		A9E2A93913F652DC00807C17 /* ChannelManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */; };
@@ -2371,6 +2372,7 @@
 				838154901488588D003F2CA4 /* ChannelGridController.m in Sources */,
 				838154951488612A003F2CA4 /* CategoryGridController.m in Sources */,
 				838105E2149153CC00B3FCE5 /* PhoneLaunchController.m in Sources */,
+				A9E1B09914EC3BE400D734BB /* PhoneVideoInfoView.m in Sources */,
 				8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */,
 				8384CD5F14E081AF00444755 /* GridViewController.m in Sources */,
 				8384CD8214E0903000444755 /* PagingGridView.m in Sources */,
