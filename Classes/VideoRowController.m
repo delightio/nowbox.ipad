@@ -42,12 +42,6 @@
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
-	// for YouTube import
-	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
-	// facebook import
-	[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
 	return self;
 }
 
@@ -267,6 +261,39 @@
     [sortDescriptor release];
 	[timestampDesc release];
     [sortDescriptors release];
+	
+	// listen to notificaiton for Youtube import
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	switch ( [channel.type integerValue] ) {
+		case NMChannelUserFacebookType:
+		{
+			// for YouTube import
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
+			// facebook import
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
+			break;
+		}
+		case NMChannelUserTwitterType:
+		{
+			// for YouTube import
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
+			// twitter import
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
+			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseTwitterFeedNotification object:nil];
+			break;
+		}
+		default:
+			[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidParseFacebookFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidFailParseFacebookFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidParseTwitterFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidFailParseTwitterFeedNotification object:nil];
+			break;
+	}
     
     NSError *error = nil;
     if (![fetchedResultsController_ performFetch:&error]) {
@@ -418,9 +445,6 @@
 		[videoTableView beginUpdates];
 		[videoTableView endUpdates];
     }
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
-	[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
 }
 
 - (void)handleDidParseFacebookFeedNotification:(NSNotification *)aNotification {
