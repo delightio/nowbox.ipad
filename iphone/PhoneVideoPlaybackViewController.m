@@ -231,6 +231,11 @@
 	[controlScrollView addGestureRecognizer:pinRcr];
 	[pinRcr release];
 	
+    videoInfoView = [[PhoneVideoInfoView alloc] initWithFrame:self.view.bounds];
+    videoInfoView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    videoInfoView.delegate = self;
+    [self.view addSubview:videoInfoView];
+    
     /*
 	// create the launch view
 	launchController = [[PhoneLaunchController alloc] init];
@@ -258,7 +263,7 @@
 
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-        topLevelContainerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, VIDEO_HEIGHT);        
+        topLevelContainerView.frame = CGRectMake(0, CGRectGetMaxY(videoInfoView.portraitView.topView.frame), self.view.bounds.size.width, VIDEO_HEIGHT);        
 		[loadedControlView setControlsHidden:YES animated:NO];                
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     } else {
@@ -267,8 +272,8 @@
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspect];        
     }
     
-    [launchController updateViewForInterfaceOrientation:interfaceOrientation];
-	
+    [videoInfoView updateViewForInterfaceOrientation:interfaceOrientation];
+    
     // Update scroll view sizes / content offsets
     channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
     
@@ -353,7 +358,8 @@
     [previousChannelHeaderView release];
     [nextChannelHeaderView release];
     [ratingsURL release];
-
+    [videoInfoView release];
+    
 	[super dealloc];
 }
 
@@ -507,7 +513,8 @@
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
 	chnObj.subscription.nm_is_new = (NSNumber *)kCFBooleanFalse;
-	
+    
+    [self configureControlViewForVideo:playbackModelController.currentVideo];
 	NMConcreteVideo * vdo = playbackModelController.currentVideo.video;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventPlayVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
                                                                        vdo.title, AnalyticsPropertyVideoName, 
@@ -637,6 +644,9 @@
 	[loadedControlView resetView];
 	if ( aVideo ) {
 		[loadedControlView updateViewForVideo:aVideo];
+        [videoInfoView setChannelTitle:aVideo.channel.title];
+        [videoInfoView setChannelThumbnailForChannel:aVideo.channel];
+        [videoInfoView setVideoTitle:aVideo.video.title];
 	}
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
@@ -1624,6 +1634,13 @@
             break;
         }
     }
+}
+
+#pragma mark - PhoneVideoInfoViewDelegate
+
+- (void)videoInfoViewDidTapGridButton:(PhoneVideoInfoView *)videoInfoView
+{
+    [self dismissModalViewControllerAnimated:NO];
 }
 
 #pragma mark Debug
