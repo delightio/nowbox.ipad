@@ -95,7 +95,6 @@
 		838317B714E9E04500185DE6 /* phone_video_info_background_landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317B514E9E04500185DE6 /* phone_video_info_background_landscape@2x.png */; };
 		838317BA14E9E23500185DE6 /* phone_video_thumbnail.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317B814E9E23400185DE6 /* phone_video_thumbnail.png */; };
 		838317BB14E9E23500185DE6 /* phone_video_thumbnail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317B914E9E23400185DE6 /* phone_video_thumbnail@2x.png */; };
-		838317C114E9ECDA00185DE6 /* PhoneVideoInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 838317C014E9ECDA00185DE6 /* PhoneVideoInfoView.m */; };
 		8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */ = {isa = PBXBuildFile; fileRef = 8383BD551473A111002956C4 /* onboard-social-footer.png */; };
 		83844042144DE51E007C99A2 /* PanelVideoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 83844041144DE51E007C99A2 /* PanelVideoCell.m */; };
 		8384CD5F14E081AF00444755 /* GridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8384CD5D14E081AF00444755 /* GridViewController.m */; };
@@ -576,7 +575,7 @@
 		838317B514E9E04500185DE6 /* phone_video_info_background_landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_info_background_landscape@2x.png"; sourceTree = "<group>"; };
 		838317B814E9E23400185DE6 /* phone_video_thumbnail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_thumbnail.png; sourceTree = "<group>"; };
 		838317B914E9E23400185DE6 /* phone_video_thumbnail@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_thumbnail@2x.png"; sourceTree = "<group>"; };
-		838317BF14E9ECDA00185DE6 /* PhoneVideoInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; path = PhoneVideoInfoView.h; sourceTree = "<group>"; };
+		838317BF14E9ECDA00185DE6 /* PhoneVideoInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneVideoInfoView.h; sourceTree = "<group>"; };
 		838317C014E9ECDA00185DE6 /* PhoneVideoInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneVideoInfoView.m; sourceTree = "<group>"; };
 		8383BD551473A111002956C4 /* onboard-social-footer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-footer.png"; sourceTree = "<group>"; };
 		83844040144DE51E007C99A2 /* PanelVideoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelVideoCell.h; sourceTree = "<group>"; };
@@ -2392,10 +2391,6 @@
 				A922423214E4942A00A8FE4F /* NMFacebookComment.m in Sources */,
 				A952B47C14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m in Sources */,
 				A9B40E5714E5E9400004DF03 /* NMChannel.m in Sources */,
-				838317BE14E9E4B300185DE6 /* VideoViewController.m in Sources */,
-				838317C114E9ECDA00185DE6 /* VideoInfoView.m in Sources */,
-				A9B40E5B14E5E9410004DF03 /* NMSubscription.m in Sources */,
-				838317C114E9ECDA00185DE6 /* PhoneVideoInfoView.m in Sources */,
 				A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */,
 				A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */,
 				A96F926514EB2EE600B51509 /* NMPersonProfile.m in Sources */,
