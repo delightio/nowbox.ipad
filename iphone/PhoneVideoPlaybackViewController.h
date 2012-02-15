@@ -18,6 +18,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
+#import "PhoneVideoInfoView.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -35,7 +36,7 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, PhoneVideoInfoViewDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
@@ -94,6 +95,8 @@ enum {
     void (^alertCompletion)(void);
 
     BOOL scrollingNotFromUser;    
+    
+    PhoneVideoInfoView *videoInfoView;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
