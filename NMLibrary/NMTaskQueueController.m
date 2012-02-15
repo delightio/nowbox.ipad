@@ -269,30 +269,27 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			[self scheduleImportVideos];
 		}
 	}
-	if ( [[infoDict objectForKey:@"num_video_received"] integerValue] ) {
-		// try getting the rest of the feed
-		NMChannel * chnObj = [infoDict objectForKey:@"channel"];
-		switch ([chnObj.type integerValue]) {
-			case NMChannelUserTwitterType:
-			{
-				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:infoDict];
+	NMChannel * chnObj = [infoDict objectForKey:@"channel"];
+	switch ([chnObj.type integerValue]) {
+		case NMChannelUserTwitterType:
+		{
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:infoDict];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		case NMChannelUserFacebookType:
+		{
+			NSString * urlStr = [infoDict objectForKey:@"next_url"];
+			if ( urlStr ) {
+				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
 				[networkController addNewConnectionForTask:task];
 				[task release];
-				break;
 			}
-			case NMChannelUserFacebookType:
-			{
-				NSString * urlStr = [infoDict objectForKey:@"next_url"];
-				if ( urlStr ) {
-					NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
-					[networkController addNewConnectionForTask:task];
-					[task release];
-				}
-				break;
-			}	
-			default:
-				break;
-		}
+			break;
+		}	
+		default:
+			break;
 	}
 }
 

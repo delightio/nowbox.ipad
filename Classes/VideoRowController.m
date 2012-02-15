@@ -428,46 +428,44 @@
 }
 
 - (void)handleDidImportVideoNotification:(NSNotification *)aNotification {
-	if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
-		isLoadingNewContent = NO;
-		isAnimatingNewContentCell = YES;
-		[videoTableView reloadData];
-		[videoTableView beginUpdates];
-		[videoTableView endUpdates];
-		return;
-	}
 	NSDictionary * info = [aNotification userInfo];
-    if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
-		[self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
-		isLoadingNewContent = NO;
-		isAnimatingNewContentCell = YES;
-		[videoTableView reloadData];
-		[videoTableView beginUpdates];
-		[videoTableView endUpdates];
-    }
+	NMConcreteVideo * vdo = [info objectForKey:@"target_object"];
+	if ( vdo && [vdo.channels containsObject:channel] ) {
+		if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
+			isLoadingNewContent = NO;
+			isAnimatingNewContentCell = NO;
+			[videoTableView reloadData];
+		} else {
+            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
+            isLoadingNewContent = NO;
+            isAnimatingNewContentCell = YES;
+			[videoTableView reloadData];
+            [videoTableView beginUpdates];
+            [videoTableView endUpdates];
+		}
+	}
 }
 
 - (void)handleDidParseFacebookFeedNotification:(NSNotification *)aNotification {
-	if ( [[aNotification name] isEqualToString:NMDidFailParseFacebookFeedNotification] ) {
-		isLoadingNewContent = NO;
-		isAnimatingNewContentCell = YES;
-		[videoTableView reloadData];
-		[videoTableView beginUpdates];
-		[videoTableView endUpdates];
-		return;
-	}
 	NSDictionary * info = [aNotification userInfo];
-	if ( [[info objectForKey:@"channel"] isEqual:channel] ) {
-		// check how many videos are found
-		NSInteger c = [[info objectForKey:@"num_video_added"] integerValue];
-		NSString * nxtStr = [info objectForKey:@"next_url"];
-		if ( c == 0 && nxtStr == nil ) {
-			// there's nth new in the user's news feed or friend's wall.
+	NMChannel * chnObj = [info objectForKey:@"channel"];
+	if ( [chnObj isEqual:channel] ) {
+		if ( [[aNotification name] isEqualToString:NMDidFailParseFacebookFeedNotification] ) {
 			isLoadingNewContent = NO;
-			isAnimatingNewContentCell = YES;
+			isAnimatingNewContentCell = NO;
 			[videoTableView reloadData];
-			[videoTableView beginUpdates];
-			[videoTableView endUpdates];
+		} else {
+			// check how many videos are found
+			NSInteger c = [[info objectForKey:@"num_video_added"] integerValue];
+			NSString * nxtStr = [info objectForKey:@"next_url"];
+			if ( c == 0 && nxtStr == nil ) {
+				// there's nth new in the user's news feed or friend's wall.
+				isLoadingNewContent = NO;
+				isAnimatingNewContentCell = YES;
+				[videoTableView reloadData];
+				[videoTableView beginUpdates];
+				[videoTableView endUpdates];
+			}
 		}
 	}
 }
