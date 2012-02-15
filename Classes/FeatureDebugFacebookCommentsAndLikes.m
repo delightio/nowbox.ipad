@@ -128,7 +128,7 @@
 		default:
 			break;
 	}
-	sectionInfo = [[ctrl sections] objectAtIndex:section];
+	sectionInfo = [[ctrl sections] objectAtIndex:0];
 	return [sectionInfo numberOfObjects];
 }
 
@@ -247,8 +247,9 @@
 	NSEntityDescription * entity = [NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"facebook_likes CONTAINS %@", _socialInfo]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"facebookLikes CONTAINS %@", _socialInfo]];
 	[request setFetchLimit:12];
+	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
 	
 	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 	resultCtrl.delegate = self;
@@ -275,8 +276,9 @@
 	NSEntityDescription * entity = [NSEntityDescription entityForName:NMFacebookCommentEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"facebook_info == %@", _socialInfo]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"facebookInfo == %@", _socialInfo]];
 	[request setFetchLimit:12];
+	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:NO]]];
 	
 	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 	resultCtrl.delegate = self;

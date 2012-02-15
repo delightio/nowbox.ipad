@@ -77,12 +77,12 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
 	NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	if ( vdo.video.facebook_info == nil ) {
+	if ( vdo.facebookInfo == nil ) {
 		return;
 	}
 	FeatureDebugFacebookCommentsAndLikes * ctrl = [[FeatureDebugFacebookCommentsAndLikes alloc] initWithStyle:UITableViewStylePlain];
 	ctrl.managedObjectContext = _managedObjectContext;
-	ctrl.socialInfo = vdo.video.facebook_info;
+	ctrl.socialInfo = vdo.facebookInfo;
 	[self.navigationController pushViewController:ctrl animated:YES];
 	[ctrl release];
 }
