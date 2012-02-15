@@ -353,8 +353,8 @@
     numberOfItems = [dataSource gridViewNumberOfItems:self];
     [self updateNumberOfPages];
     
-    itemSize = CGSizeMake((self.frame.size.width - 2 * externalPadding.width - (numberOfColumns - 1) * internalPadding.width) / numberOfColumns, 
-                          (self.frame.size.height - 2 * externalPadding.height - (numberOfRows - 1) * internalPadding.height) / numberOfRows);
+    itemSize = CGSizeMake(round((self.frame.size.width - 2 * externalPadding.width - (numberOfColumns - 1) * internalPadding.width) / numberOfColumns), 
+                          round((self.frame.size.height - 2 * externalPadding.height - (numberOfRows - 1) * internalPadding.height) / numberOfRows));
     
     
     // Remove all visible views

@@ -13,9 +13,7 @@
 @synthesize fetchedResultsController;
 
 - (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+{    
     [fetchedResultsController release];
     
     [super dealloc];
@@ -72,7 +70,16 @@
 - (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel
 {
     cell.label.text = channel.title;
-    [cell.image setImageForChannel:channel];    
+    
+    if ([channel.videos count] > 0) {
+        NMVideo *video = [channel.videos anyObject];
+        [cell.image setImageForVideoThumbnail:video];
+        [cell.activityIndicator stopAnimating];
+    } else {
+        [cell.image setImageForChannel:channel];
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        [cell.activityIndicator startAnimating];
+    }
 }
 
 #pragma mark - NSFetchedResultsController
