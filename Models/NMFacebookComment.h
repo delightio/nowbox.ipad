@@ -15,7 +15,7 @@
 
 @property (nonatomic, retain) NSNumber * created_time;
 @property (nonatomic, retain) NSString * message;
-@property (nonatomic, retain) NSManagedObject *facebook_info;
-@property (nonatomic, retain) NMPersonProfile *from;
+@property (nonatomic, retain) NSManagedObject *facebookInfo;
+@property (nonatomic, retain) NMPersonProfile *fromPerson;
 
 @end
