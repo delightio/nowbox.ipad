@@ -59,6 +59,14 @@
 {
     [portraitView.videoTitleLabel setText:videoTitle];
     [landscapeView.videoTitleLabel setText:videoTitle];
+    [portraitView positionLabels];
+    [landscapeView positionLabels];
+}
+
+- (void)setAuthorText:(NSString *)authorText
+{
+    [portraitView.authorLabel setText:authorText];
+    [landscapeView.authorLabel setText:authorText];
 }
 
 - (void)setChannelThumbnailForChannel:(NMChannel *)channel
@@ -106,15 +114,28 @@
 @synthesize bottomView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
+@synthesize authorLabel;
 @synthesize channelThumbnail;
 
 - (void)dealloc
 {
     [channelTitleLabel release];
     [videoTitleLabel release];
+    [authorLabel release];
     [channelThumbnail release];
     
     [super dealloc];
+}
+
+- (void)positionLabels
+{
+    // Position the author label below the video title
+    CGSize videoTitleSize = [videoTitleLabel.text sizeWithFont:videoTitleLabel.font 
+                                             constrainedToSize:videoTitleLabel.frame.size
+                                                 lineBreakMode:videoTitleLabel.lineBreakMode];
+    CGRect frame = authorLabel.frame;
+    frame.origin.y = videoTitleLabel.frame.origin.y + videoTitleSize.height;
+    authorLabel.frame = frame;
 }
 
 @end
