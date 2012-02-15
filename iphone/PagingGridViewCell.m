@@ -51,7 +51,6 @@
         }
         [label setFont:font];
         
-        image.adjustsImageOnHighlight = YES;
         self.clipsToBounds = NO;
         
         [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
