@@ -208,11 +208,37 @@ static NSArray * youTubeRegexArray = nil;
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
 				vdo.personProfile = theProfile;
+				if ( ![_user_id isEqual:manID] ) {
+					// the video is from another person. we should add the video to that person's channel as well
+					if ( isNew || chkResult == NMVideoDoesNotExist ) {
+						// this person profile is now. i.e. just insert the video to thi channel
+						// add the video into the channel
+						NMVideo * personVdo = [ctrl insertNewVideo];
+						personVdo.video = conVdo;
+						// add the new video proxy object to the person's channel
+						personVdo.channel = theProfile.subscription.channel;
+						personVdo.nm_session_id = bigSessionNum;
+						personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+					} else if ( !isNew && chkResult == NMVideoExistsButNotInChannel ) {
+						// check if the vido exists in this person's channel
+						NMChannel * personChn = theProfile.subscription.channel;
+						chkResult = [ctrl videoExistsWithExternalID:extID channel:personChn targetVideo:&conVdo];
+						if ( chkResult == NMVideoExistsButNotInChannel ) {
+							// add the video into the channel
+							NMVideo * personVdo = [ctrl insertNewVideo];
+							personVdo.video = conVdo;
+							// add the new video proxy object to the person's channel
+							personVdo.channel = personChn;
+							personVdo.nm_session_id = bigSessionNum;
+							personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+						}
+					}
+				}
 			}
 			// check likes
 			NSDictionary * otherDict = [_videoLikeDict objectForKey:extID];
 			NMFacebookInfo * fbInfo;
-			if ( otherDict ) {
+			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
 				fbInfo = vdo.video.facebook_info;
 				if ( fbInfo == nil ) {
 					fbInfo = [ctrl insertNewFacebookInfo];
@@ -244,7 +270,7 @@ static NSArray * youTubeRegexArray = nil;
 			}
 			// check comments
 			otherDict = [_videoCommentDict objectForKey:extID];
-			if ( otherDict ) {
+			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
 				fbInfo = vdo.video.facebook_info;
 				if ( fbInfo == nil ) {
 					fbInfo = [ctrl insertNewFacebookInfo];

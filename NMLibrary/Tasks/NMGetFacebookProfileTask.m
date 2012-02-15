@@ -11,6 +11,7 @@
 #import "NMDataController.h"
 #import "FBConnect.h"
 #import "NMPersonProfile.h"
+#import "NMSubscription.h"
 
 NSString * const NMWillGetFacebookProfileNotification = @"NMWillGetFacebookProfileNotification";
 NSString * const NMDidGetFacebookProfileNotification = @"NMDidGetFacebookProfileNotification";
@@ -51,7 +52,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	} else {
 		str = _userID;
 	}
-	return [self.facebook requestWithGraphPath:str andParams:[NSMutableDictionary dictionaryWithObject:@"name,id,username,picture" forKey:@"fields"] andDelegate:ctrl];
+	return [self.facebook requestWithGraphPath:str andParams:[NSDictionary dictionaryWithObjectsAndKeys:@"name,id,username,picture", @"fields", @"normal", @"type", nil] andDelegate:ctrl];
 }
 
 - (void)setParsedObjectsForResult:(id)result {
@@ -83,6 +84,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	if ( newState && profileOwnsByMe ) {
 		[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 		theProfile.nm_id = [NSNumber numberWithInteger:[ctrl maxPersonProfileID] + 1];
+		theProfile.subscription.nm_subscription_tier = (NSNumber *)kCFBooleanFalse;
 		return YES;
 	}
 	return NO;

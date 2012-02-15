@@ -1,19 +1,21 @@
 //
-//  FeatureDebugSocialChannelViewController.m
+//  FeatureDebugVideoListViewController.m
 //  ipad
 //
-//  Created by Bill So on 2/10/12.
+//  Created by Bill So on 2/13/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "FeatureDebugSocialChannelViewController.h"
-#import "NMLibrary.h"
 #import "FeatureDebugVideoListViewController.h"
+#import "ipadAppDelegate.h"
+#import "VideoPlaybackViewController.h"
+#import "FeatureDebugFacebookCommentsAndLikes.h"
 
-@implementation FeatureDebugSocialChannelViewController
-@synthesize channelType = _channelType;
+
+@implementation FeatureDebugVideoListViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
+@synthesize channel = _channel;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -25,9 +27,9 @@
 }
 
 - (void)dealloc {
-	[_channelType release];
 	[_fetchedResultsController release];
 	[_managedObjectContext release];
+	[_channel release];
 	[super dealloc];
 }
 
@@ -39,36 +41,11 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	switch ([_channelType integerValue]) {
-		case NMChannelUserFacebookType:
-			self.title = @"Facebook Channels";
-			break;
-			
-		case NMChannelUserTwitterType:
-			self.title = @"Twitter Channels";
-			break;
-			
-		default:
-			break;
-	}
-}
-
 #pragma mark - Table view data source
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = chnObj.title;
+    NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	cell.textLabel.text = vdo.video.title;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -90,11 +67,24 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
-
-    [self configureCell:cell atIndexPath:indexPath];
-	
+    
+	[self configureCell:cell atIndexPath:indexPath];
+    
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+	NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	if ( vdo.video.facebook_info == nil ) {
+		return;
+	}
+	FeatureDebugFacebookCommentsAndLikes * ctrl = [[FeatureDebugFacebookCommentsAndLikes alloc] initWithStyle:UITableViewStylePlain];
+	ctrl.managedObjectContext = _managedObjectContext;
+	ctrl.socialInfo = vdo.video.facebook_info;
+	[self.navigationController pushViewController:ctrl animated:YES];
+	[ctrl release];
 }
 
 /*
@@ -140,12 +130,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	// show the video list
-	FeatureDebugVideoListViewController * listCtrl = [[FeatureDebugVideoListViewController alloc] initWithStyle:UITableViewStylePlain];
-	listCtrl.managedObjectContext = self.managedObjectContext;
-	listCtrl.channel = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[self.navigationController pushViewController:listCtrl animated:YES];
-	[listCtrl release];
+	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
+	// play the selected channel
+	VideoPlaybackViewController * vdoCtrl = (VideoPlaybackViewController *)appDel.viewController;
+	[vdoCtrl playVideo:[self.fetchedResultsController objectAtIndexPath:indexPath]];
 }
 
 #pragma mark - Fetched results controller and delegate
@@ -157,11 +145,11 @@
 	
 	// create the fetched resutl controller
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NSEntityDescription * entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:_managedObjectContext];
+	NSEntityDescription * entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_hidden == NO AND type == %@", _channelType]];
-	
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", _channel]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];	
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
 	

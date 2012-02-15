@@ -292,6 +292,7 @@
 		A9250151134385BF001759F5 /* ipadAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9250150134385BF001759F5 /* ipadAppDelegate.m */; };
 		A9250154134385BF001759F5 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9250152134385BF001759F5 /* MainWindow.xib */; };
 		A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */; };
+		A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */ = {isa = PBXBuildFile; fileRef = A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */; };
 		A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
@@ -335,6 +336,7 @@
 		A952B47C14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A952B47B14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m */; };
 		A953ED4E134CB9F100372F48 /* VideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A953ED4D134CB9F100372F48 /* VideoControlView.xib */; };
 		A956EE1714CD70AD001C5C7E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A956EE1614CD70AD001C5C7E /* Accounts.framework */; };
+		A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */; };
 		A962DD5E13A82552004CC111 /* MovieDetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */; };
 		A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */; };
 		A9699A281462163C00ED0C6F /* VideoPlaybackBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9699A271462163C00ED0C6F /* VideoPlaybackBaseViewController.m */; };
@@ -805,6 +807,8 @@
 		A9250150134385BF001759F5 /* ipadAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ipadAppDelegate.m; sourceTree = "<group>"; };
 		A9250153134385BF001759F5 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugFacebookCommentsAndLikes.h; sourceTree = "<group>"; };
+		A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugFacebookCommentsAndLikes.m; sourceTree = "<group>"; };
 		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
 		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
@@ -860,6 +864,8 @@
 		A952B47B14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugSocialChannelViewController.m; sourceTree = "<group>"; };
 		A953ED4D134CB9F100372F48 /* VideoControlView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoControlView.xib; sourceTree = "<group>"; };
 		A956EE1614CD70AD001C5C7E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		A95CE61814E9A6AF005568FF /* FeatureDebugVideoListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugVideoListViewController.h; sourceTree = "<group>"; };
+		A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugVideoListViewController.m; sourceTree = "<group>"; };
 		A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MovieDetailInfoView.xib; sourceTree = "<group>"; };
 		A962DD7013A82D3A004CC111 /* NMMovieDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMMovieDetailView.h; sourceTree = "<group>"; };
 		A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMMovieDetailView.m; sourceTree = "<group>"; };
@@ -1101,6 +1107,8 @@
 				8384CD5D14E081AF00444755 /* GridViewController.m */,
 				838317BC14E9E4B300185DE6 /* VideoViewController.h */,
 				838317BD14E9E4B300185DE6 /* VideoViewController.m */,
+				A9A641DA146205CC0032EFE1 /* PhoneVideoPlaybackViewController.h */,
+				A9A641DB146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1186,11 +1194,9 @@
 			path = iphone;
 			sourceTree = "<group>";
 		};
-		8384CD6114E081C400444755 /* Prototype */ = {
+		8384CD6114E081C400444755 /* Old Prototype */ = {
 			isa = PBXGroup;
 			children = (
-				A9A641DA146205CC0032EFE1 /* PhoneVideoPlaybackViewController.h */,
-				A9A641DB146205CC0032EFE1 /* PhoneVideoPlaybackViewController.m */,
 				838105E0149153CC00B3FCE5 /* PhoneLaunchController.h */,
 				838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */,
 				838668101486FB0D0038F86A /* SizableNavigationController.h */,
@@ -1208,7 +1214,7 @@
 				83866816148719290038F86A /* GridItemView.h */,
 				83866817148719290038F86A /* GridItemView.m */,
 			);
-			name = Prototype;
+			name = "Old Prototype";
 			sourceTree = "<group>";
 		};
 		8384CD6214E082B500444755 /* iPhone */ = {
@@ -1387,7 +1393,7 @@
 				837A299614E1C8C500065F32 /* Objects */,
 				837A299514E1C8BE00065F32 /* Controllers */,
 				837A299414E1C8B500065F32 /* Views */,
-				8384CD6114E081C400444755 /* Prototype */,
+				8384CD6114E081C400444755 /* Old Prototype */,
 			);
 			path = iphone;
 			sourceTree = "<group>";
@@ -1531,6 +1537,10 @@
 				A94D65E114CDF54D0033F661 /* TwitterAccountPickerViewController.m */,
 				A952B47A14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.h */,
 				A952B47B14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m */,
+				A95CE61814E9A6AF005568FF /* FeatureDebugVideoListViewController.h */,
+				A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */,
+				A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */,
+				A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -2392,6 +2402,8 @@
 				A9B40E5B14E5E9410004DF03 /* NMSubscription.m in Sources */,
 				838317BE14E9E4B300185DE6 /* VideoViewController.m in Sources */,
 				838317C114E9ECDA00185DE6 /* VideoInfoView.m in Sources */,
+				A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */,
+				A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

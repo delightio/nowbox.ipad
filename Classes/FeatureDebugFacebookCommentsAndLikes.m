@@ -1,19 +1,19 @@
 //
-//  FeatureDebugSocialChannelViewController.m
+//  FeatureDebugFacebookCommentsAndLikes.m
 //  ipad
 //
-//  Created by Bill So on 2/10/12.
+//  Created by Bill So on 2/13/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "FeatureDebugSocialChannelViewController.h"
-#import "NMLibrary.h"
-#import "FeatureDebugVideoListViewController.h"
+#import "FeatureDebugFacebookCommentsAndLikes.h"
 
-@implementation FeatureDebugSocialChannelViewController
-@synthesize channelType = _channelType;
-@synthesize fetchedResultsController = _fetchedResultsController;
+
+@implementation FeatureDebugFacebookCommentsAndLikes
+@synthesize likesResultsController = _likesResultsController;
+@synthesize commentsResultsController = _commentsResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
+@synthesize socialInfo = _socialInfo;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -25,9 +25,10 @@
 }
 
 - (void)dealloc {
-	[_channelType release];
-	[_fetchedResultsController release];
+	[_likesResultsController release];
+	[_commentsResultsController release];
 	[_managedObjectContext release];
+	[_socialInfo release];
 	[super dealloc];
 }
 
@@ -50,36 +51,84 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	switch ([_channelType integerValue]) {
-		case NMChannelUserFacebookType:
-			self.title = @"Facebook Channels";
-			break;
-			
-		case NMChannelUserTwitterType:
-			self.title = @"Twitter Channels";
-			break;
-			
-		default:
-			break;
-	}
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = chnObj.title;
+	switch (indexPath.section) {
+		case 0:
+		{
+			NMPersonProfile * thePerson = [self.likesResultsController objectAtIndexPath:indexPath];
+			cell.textLabel.text = thePerson.name;
+			break;
+		}
+		case 1:
+		{
+			NMFacebookComment * theComment = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:1]];
+			cell.textLabel.text = theComment.message;
+			break;
+		}
+		default:
+			break;
+	}
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 1;
+    // Return the number of sections.
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	id <NSFetchedResultsSectionInfo> sectionInfo;
-	sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
+	NSFetchedResultsController * ctrl = nil;
+	switch (section) {
+		case 0:
+			ctrl = self.likesResultsController;
+			break;
+		case 1:
+			ctrl = self.commentsResultsController;
+			break;
+			
+		default:
+			break;
+	}
+	sectionInfo = [[ctrl sections] objectAtIndex:section];
 	return [sectionInfo numberOfObjects];
 }
 
@@ -91,10 +140,46 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
+    
+	switch (indexPath.section) {
+		case 0:
+		{
+			// like section
+			NMPersonProfile * personObj = [self.likesResultsController objectAtIndexPath:indexPath];
+			cell.textLabel.text = personObj.name;
+			break;
+		}	
+		case 1:
+		{
+			// comment section
+			NMFacebookComment * cmtObj = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
+			cell.textLabel.text = cmtObj.message;
+			break;
+		}	
+		default:
+			break;
+	}
 
     [self configureCell:cell atIndexPath:indexPath];
 	
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	NSString * str = nil;
+	switch (section) {
+		case 0:
+			str = @"Likes";
+			break;
+			
+		case 1:
+			str = @"Comments";
+			break;
+			
+		default:
+			break;
+	}
+	return str;
 }
 
 /*
@@ -140,47 +225,75 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	// show the video list
-	FeatureDebugVideoListViewController * listCtrl = [[FeatureDebugVideoListViewController alloc] initWithStyle:UITableViewStylePlain];
-	listCtrl.managedObjectContext = self.managedObjectContext;
-	listCtrl.channel = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	[self.navigationController pushViewController:listCtrl animated:YES];
-	[listCtrl release];
+    // Navigation logic may go here. Create and push another view controller.
+    /*
+     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
+     // ...
+     // Pass the selected object to the new view controller.
+     [self.navigationController pushViewController:detailViewController animated:YES];
+     [detailViewController release];
+     */
 }
 
 #pragma mark - Fetched results controller and delegate
 
-- (NSFetchedResultsController *)fetchedResultsController {
-	if ( _fetchedResultsController ) {
-		return _fetchedResultsController;
+- (NSFetchedResultsController *)likesResultsController {
+	if ( _likesResultsController ) {
+		return _likesResultsController;
 	}
 	
 	// create the fetched resutl controller
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NSEntityDescription * entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:_managedObjectContext];
+	NSEntityDescription * entity = [NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_hidden == NO AND type == %@", _channelType]];
-	
+	[request setPredicate:[NSPredicate predicateWithFormat:@"facebook_likes CONTAINS %@", _socialInfo]];
 	[request setFetchLimit:12];
-	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
 	
 	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 	resultCtrl.delegate = self;
-	self.fetchedResultsController = resultCtrl;
+	self.likesResultsController = resultCtrl;
 	
 	[resultCtrl release];
 	[request release];
 	NSError * error = nil;
-	if ( ![_fetchedResultsController performFetch:&error] ) {
+	if ( ![_likesResultsController performFetch:&error] ) {
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
 	}
 	
-	return _fetchedResultsController;
+	return _likesResultsController;
 }
 
-#pragma mark NSFetchedResultsController delegate
+- (NSFetchedResultsController *)commentsResultsController {
+	if ( _commentsResultsController ) {
+		return _commentsResultsController;
+	}
+	
+	// create the fetched resutl controller
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	NSEntityDescription * entity = [NSEntityDescription entityForName:NMFacebookCommentEntityName inManagedObjectContext:_managedObjectContext];
+	[request setEntity:entity];
+	[request setReturnsObjectsAsFaults:NO];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"facebook_info == %@", _socialInfo]];
+	[request setFetchLimit:12];
+	
+	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+	resultCtrl.delegate = self;
+	self.commentsResultsController = resultCtrl;
+	
+	[resultCtrl release];
+	[request release];
+	NSError * error = nil;
+	if ( ![_commentsResultsController performFetch:&error] ) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+	}
+	
+	return _commentsResultsController;
+}
+
+#pragma mark FetchedResultsController delegate
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
@@ -205,6 +318,11 @@
       newIndexPath:(NSIndexPath *)newIndexPath
 {
     UITableView *tableView = self.tableView;
+	if ( controller == _commentsResultsController ) {
+		// modify the index path
+		newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:1];
+		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:1];
+	}
     
     switch(type) {
         case NSFetchedResultsChangeInsert:
