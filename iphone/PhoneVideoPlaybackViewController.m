@@ -646,8 +646,8 @@
 	[loadedControlView resetView];
 	if ( aVideo ) {
 		[loadedControlView updateViewForVideo:aVideo];
-        [videoInfoView setChannelTitle:aVideo.channel.title];
-        [videoInfoView setChannelThumbnailForChannel:aVideo.channel];
+        [videoInfoView setChannelTitle:(aVideo ? aVideo.channel.title : currentChannel.title)];
+        [videoInfoView setChannelThumbnailForChannel:(aVideo ? aVideo.channel : currentChannel)];
         [videoInfoView setVideoTitle:aVideo.video.title];
 	}
 	// update the position

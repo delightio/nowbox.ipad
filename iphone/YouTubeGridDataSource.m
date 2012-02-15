@@ -71,14 +71,16 @@
 {
     cell.label.text = channel.title;
     
-    if ([channel.videos count] > 0) {
-        NMVideo *video = [channel.videos anyObject];
-        [cell.image setImageForVideoThumbnail:video];
+    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+    NMVideo *latestVideo = [dataController latestVideoForChannel:channel];
+    
+    if (latestVideo) {
+        [cell.image setImageForVideoThumbnail:latestVideo];
         [cell.activityIndicator stopAnimating];
     } else {
         [cell.image setImageForChannel:channel];
-        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
         [cell.activityIndicator startAnimating];
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
     }
 }
 
