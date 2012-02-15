@@ -42,7 +42,6 @@
 @property (nonatomic, retain) NSSet *channels;
 @property (nonatomic, retain) NMVideoDetail *detail;
 @property (nonatomic, retain) NMAuthor *author;
-@property (nonatomic, retain) NMFacebookInfo * facebook_info;
 
 @property (nonatomic, assign) NMAVPlayerItem * nm_player_item;
 @property (nonatomic, assign) NMMovieDetailView * nm_movie_detail_view;
