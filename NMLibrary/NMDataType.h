@@ -50,6 +50,10 @@ typedef enum {
 	NMCommandPostSharing,
 	NMCommandParseFacebookFeed,
 	NMCommandGetFacebookProfile,
+	NMCommandPostFacebookLike,
+	NMCommandDeleteFacebookLike,
+	NMCommandPostFacebookComment,
+	NMCommandDeleteFacebookComment,
 	NMCommandParseTwitterFeed,
 	NMCommandGetTwitterProfile,
 } NMCommand;

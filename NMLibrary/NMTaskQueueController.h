@@ -19,6 +19,7 @@
 @class NMVideoDetail;
 @class NMAuthor;
 @class NMPersonProfile;
+@class NMFacebookInfo;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
 @class Reachability;
@@ -140,6 +141,8 @@
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
 - (void)scheduleSyncSocialChannels;
 - (void)scheduleImportVideos;
+- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info;
+- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info;
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;

@@ -223,6 +223,10 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				switch (theTask.command) {
 					case NMCommandParseFacebookFeed:
 					case NMCommandGetFacebookProfile:
+					case NMCommandPostFacebookLike:
+					case NMCommandDeleteFacebookLike:
+					case NMCommandPostFacebookComment:
+					case NMCommandDeleteFacebookComment:
 					{
 						NMFacebookTask * fbTask = (NMFacebookTask *)theTask;
 						FBRequest * fbRequest = [fbTask facebookRequestForController:self];

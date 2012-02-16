@@ -269,30 +269,27 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 			[self scheduleImportVideos];
 		}
 	}
-	if ( [[infoDict objectForKey:@"num_video_received"] integerValue] ) {
-		// try getting the rest of the feed
-		NMChannel * chnObj = [infoDict objectForKey:@"channel"];
-		switch ([chnObj.type integerValue]) {
-			case NMChannelUserTwitterType:
-			{
-				NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:infoDict];
+	NMChannel * chnObj = [infoDict objectForKey:@"channel"];
+	switch ([chnObj.type integerValue]) {
+		case NMChannelUserTwitterType:
+		{
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:infoDict];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		case NMChannelUserFacebookType:
+		{
+			NSString * urlStr = [infoDict objectForKey:@"next_url"];
+			if ( urlStr ) {
+				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
 				[networkController addNewConnectionForTask:task];
 				[task release];
-				break;
 			}
-			case NMChannelUserFacebookType:
-			{
-				NSString * urlStr = [infoDict objectForKey:@"next_url"];
-				if ( urlStr ) {
-					NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
-					[networkController addNewConnectionForTask:task];
-					[task release];
-				}
-				break;
-			}	
-			default:
-				break;
-		}
+			break;
+		}	
+		default:
+			break;
 	}
 }
 
@@ -777,6 +774,24 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		[self issueGetProfile:pfo account:nil];
 	}
 	if ( videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
+}
+
+- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info {
+	// save the comment
+	NMFacebookComment * cmtObj = [dataController insertNewFacebookComment];
+	cmtObj.facebookInfo = info;
+	cmtObj.message = msg;
+	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
+	// send it to facebook
+	NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:msg];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info {
+	NMFacebookLikeTask * task = [[NMFacebookLikeTask alloc] initWithInfo:info like:aLike];
+	[networkController addNewConnectionForTask:task];
+	[task release];
 }
 
 - (void)cancelAllTasks {
