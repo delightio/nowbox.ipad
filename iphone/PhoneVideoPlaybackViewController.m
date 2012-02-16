@@ -649,7 +649,7 @@
         [videoInfoView setChannelTitle:(aVideo ? aVideo.channel.title : currentChannel.title)];
         [videoInfoView setChannelThumbnailForChannel:(aVideo ? aVideo.channel : currentChannel)];
         [videoInfoView setVideoTitle:aVideo.video.title];
-        [videoInfoView setAuthorText:(aVideo ? aVideo.video.author.username : currentChannel.title)];
+        [videoInfoView setDescriptionText:aVideo.video.detail.nm_description];
 	}
 	// update the position
 	CGRect theFrame = loadedControlView.frame;

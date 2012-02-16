@@ -7,6 +7,7 @@
 //
 
 #import "PhoneVideoInfoView.h"
+#import "UIView+InteractiveAnimation.h"
 
 @implementation PhoneVideoInfoView
 
@@ -63,10 +64,10 @@
     [landscapeView positionLabels];
 }
 
-- (void)setAuthorText:(NSString *)authorText
+- (void)setDescriptionText:(NSString *)descriptionText
 {
-    [portraitView.authorLabel setText:authorText];
-    [landscapeView.authorLabel setText:authorText];
+    [portraitView.descriptionLabel setText:descriptionText];
+    [landscapeView.descriptionLabel setText:descriptionText];
 }
 
 - (void)setChannelThumbnailForChannel:(NMChannel *)channel
@@ -104,6 +105,12 @@
     }
 }
 
+- (IBAction)toggleInfoPanel:(id)sender
+{
+    [portraitView toggleInfoPanel];
+    [landscapeView toggleInfoPanel];
+}
+
 @end
 
 #pragma mark -
@@ -112,16 +119,20 @@
 
 @synthesize topView;
 @synthesize bottomView;
+@synthesize infoView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
-@synthesize authorLabel;
+@synthesize descriptionLabel;
 @synthesize channelThumbnail;
 
 - (void)dealloc
 {
+    [topView release];
+    [bottomView release];
+    [infoView release];
     [channelTitleLabel release];
     [videoTitleLabel release];
-    [authorLabel release];
+    [descriptionLabel release];
     [channelThumbnail release];
     
     [super dealloc];
@@ -129,13 +140,31 @@
 
 - (void)positionLabels
 {
-    // Position the author label below the video title
+    // Position the description label below the video title
     CGSize videoTitleSize = [videoTitleLabel.text sizeWithFont:videoTitleLabel.font 
                                              constrainedToSize:videoTitleLabel.frame.size
                                                  lineBreakMode:videoTitleLabel.lineBreakMode];
-    CGRect frame = authorLabel.frame;
+    CGRect frame = descriptionLabel.frame;
+    CGFloat distanceFromBottom = CGRectGetHeight(infoView.frame) - CGRectGetMaxY(frame);
     frame.origin.y = videoTitleLabel.frame.origin.y + videoTitleSize.height;
-    authorLabel.frame = frame;
+    frame.size.height = infoView.frame.size.height - frame.origin.y - distanceFromBottom;
+    descriptionLabel.frame = frame;
+    descriptionLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+}
+
+- (void)toggleInfoPanel
+{
+    CGRect frame = infoView.frame;
+    if (frame.size.height < 200) {
+        frame.size.height = 200;
+    } else {
+        frame.size.height = 116;
+    }
+    
+    [UIView animateWithInteractiveDuration:0.3
+                                animations:^{
+                                    infoView.frame = frame;                                    
+                                }];
 }
 
 @end

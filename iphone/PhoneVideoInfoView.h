@@ -23,10 +23,11 @@
 
 - (void)setChannelTitle:(NSString *)channelTitle;
 - (void)setVideoTitle:(NSString *)videoTitle;
-- (void)setAuthorText:(NSString *)authorText;
+- (void)setDescriptionText:(NSString *)descriptionText;
 - (void)setChannelThumbnailForChannel:(NMChannel *)channel;
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (IBAction)gridButtonPressed:(id)sender;
+- (IBAction)toggleInfoPanel:(id)sender;
 
 @end
 
@@ -43,11 +44,13 @@
 
 @property (nonatomic, retain) IBOutlet UIView *topView;
 @property (nonatomic, retain) IBOutlet UIView *bottomView;
+@property (nonatomic, retain) IBOutlet UIView *infoView;
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
-@property (nonatomic, retain) IBOutlet UILabel *authorLabel;
+@property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
 @property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
 
 - (void)positionLabels;
+- (void)toggleInfoPanel;
 
 @end
