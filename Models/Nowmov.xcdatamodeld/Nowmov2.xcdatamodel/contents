@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="878" systemVersion="11D50" minimumToolsVersion="Xcode 4.2" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1170" systemVersion="11D50" minimumToolsVersion="Xcode 4.2" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="NMAuthor" representedClassName="NMAuthor" syncable="YES">
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String" syncable="YES"/>
@@ -9,7 +9,7 @@
         <relationship name="videos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="author" inverseEntity="NMConcreteVideo" syncable="YES"/>
     </entity>
     <entity name="NMCategory" representedClassName="NMCategory">
-        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_last_refresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String" syncable="YES"/>
@@ -18,7 +18,7 @@
         <relationship name="channels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMChannel" inverseName="categories" inverseEntity="NMChannel"/>
     </entity>
     <entity name="NMChannel" representedClassName="NMChannel">
-        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String"/>
         <attribute name="populated_at" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -40,14 +40,14 @@
     </entity>
     <entity name="NMConcreteVideo" representedClassName="NMConcreteVideo">
         <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="external_id" optional="YES" attributeType="String" indexed="YES"/>
+        <attribute name="external_id" optional="YES" attributeType="String"/>
         <attribute name="nm_did_play" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
         <attribute name="nm_direct_sd_url" optional="YES" attributeType="String"/>
         <attribute name="nm_direct_url" optional="YES" transient="YES" attributeType="String"/>
         <attribute name="nm_direct_url_expiry" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
         <attribute name="nm_favorite" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
-        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES"/>
+        <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_playback_status" optional="YES" transient="YES" attributeType="Integer 32" valueTransformerName="" defaultValueString="0"/>
         <attribute name="nm_retry_count" optional="YES" transient="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String"/>
@@ -57,7 +57,7 @@
         <attribute name="thumbnail_uri" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="view_count" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMAuthor" inverseName="videos" inverseEntity="NMAuthor" syncable="YES"/>
+        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMAuthor" inverseName="videos" inverseEntity="NMAuthor" syncable="YES"/>
         <relationship name="channels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMVideo" inverseName="video" inverseEntity="NMVideo" indexed="YES"/>
         <relationship name="detail" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMVideoDetail" inverseName="video" inverseEntity="NMVideoDetail" indexed="YES"/>
         <relationship name="facebookMentions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMFacebookInfo" inverseName="video" inverseEntity="NMFacebookInfo" syncable="YES"/>
@@ -85,13 +85,13 @@
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_me" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="nm_type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="nm_type" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="nm_user_id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="picture" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMFacebookComment" inverseName="fromPerson" inverseEntity="NMFacebookComment" syncable="YES"/>
-        <relationship name="facebookLikes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMFacebookInfo" inverseName="peopleLike" inverseEntity="NMFacebookInfo" syncable="YES"/>
-        <relationship name="subscription" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMSubscription" inverseName="personProfile" inverseEntity="NMSubscription" syncable="YES"/>
+        <attribute name="username" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMFacebookComment" inverseName="fromPerson" inverseEntity="NMFacebookComment" syncable="YES"/>
+        <relationship name="facebookLikes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMFacebookInfo" inverseName="peopleLike" inverseEntity="NMFacebookInfo" syncable="YES"/>
+        <relationship name="subscription" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMSubscription" inverseName="personProfile" inverseEntity="NMSubscription" syncable="YES"/>
     </entity>
     <entity name="NMPreviewThumbnail" representedClassName="NMPreviewThumbnail">
         <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
@@ -107,7 +107,7 @@
     </entity>
     <entity name="NMSubscription" representedClassName="NMSubscription" syncable="YES">
         <attribute name="nm_current_page" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="nm_hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
+        <attribute name="nm_hidden" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="nm_is_new" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="nm_last_vid" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
         <attribute name="nm_since_id" optional="YES" attributeType="String" syncable="YES"/>
@@ -120,7 +120,7 @@
         <relationship name="personProfile" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMPersonProfile" inverseName="subscription" inverseEntity="NMPersonProfile" syncable="YES"/>
     </entity>
     <entity name="NMVideo" representedClassName="NMVideo" syncable="YES">
-        <attribute name="nm_session_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="nm_session_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="channel" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="videos" inverseEntity="NMChannel" syncable="YES"/>
         <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="channels" inverseEntity="NMConcreteVideo" syncable="YES"/>
@@ -130,17 +130,17 @@
         <relationship name="video" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="detail" inverseEntity="NMConcreteVideo" indexed="YES"/>
     </entity>
     <elements>
-        <element name="NMAuthor" positionX="7" positionY="342" width="128" height="150"/>
+        <element name="NMAuthor" positionX="7" positionY="342" width="128" height="135"/>
         <element name="NMCategory" positionX="90" positionY="-204" width="128" height="150"/>
         <element name="NMChannel" positionX="288" positionY="-207" width="153" height="270"/>
         <element name="NMChannelDetail" positionX="88" positionY="15" width="128" height="75"/>
-        <element name="NMConcreteVideo" positionX="261" positionY="270" width="128" height="360"/>
+        <element name="NMConcreteVideo" positionX="261" positionY="270" width="128" height="375"/>
         <element name="NMFacebookComment" positionX="1098" positionY="330" width="128" height="120"/>
         <element name="NMFacebookInfo" positionX="826" positionY="252" width="128" height="165"/>
         <element name="NMPersonProfile" positionX="819" positionY="-36" width="128" height="225"/>
         <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMSubscription" positionX="558" positionY="-165" width="128" height="225"/>
-        <element name="NMVideo" positionX="558" positionY="159" width="128" height="120"/>
+        <element name="NMVideo" positionX="558" positionY="159" width="128" height="105"/>
         <element name="NMVideoDetail" positionX="7" positionY="522" width="128" height="75"/>
     </elements>
 </model>

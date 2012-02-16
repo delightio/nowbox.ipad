@@ -34,9 +34,11 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 @synthesize controlThread;
 @synthesize errorWindowStartDate;
 @synthesize tokenRenewMode;
+@synthesize suspendFacebook;
 
 - (id)init {
 	self = [super init];
+	facebookCommandRange = NSMakeRange(NMCommandFacebookCommandLowerBound, NMCommandFacebookCommandUpperBound - NMCommandFacebookCommandLowerBound + 1);
 	commandIndexPool = [[NSMutableIndexSet alloc] init];
 	pendingDeleteCommandIndexPool = [[NSMutableIndexSet alloc] init];
 	connectionPool = [[NSMutableSet alloc] initWithCapacity:8];
@@ -130,16 +132,30 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 #pragma mark Connection management
 - (void)addNewConnectionForTasks:(NSArray *)tasks {
 	[pendingTaskBufferLock lock];
-	[pendingTaskBuffer addObjectsFromArray:tasks];
 	NMTask *t;
-	for (t in tasks) {
-		t.state = NMTaskExecutionStateWaitingInConnectionQueue;
+	if ( suspendFacebook ) {
+		// check if there's any facebook tasks
+		for (t in tasks) {
+			if ( NSLocationInRange(t.command, facebookCommandRange ) ) {
+				continue;
+			}
+			[pendingTaskBuffer addObject:t];
+			t.state = NMTaskExecutionStateWaitingInConnectionQueue;
+		}
+	} else {
+		[pendingTaskBuffer addObjectsFromArray:tasks];
+		for (t in tasks) {
+			t.state = NMTaskExecutionStateWaitingInConnectionQueue;
+		}
 	}
 	[pendingTaskBufferLock unlock];
 	[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
 }
 
 - (void)addNewConnectionForTask:(NMTask *)aTask {
+	if ( suspendFacebook && NSLocationInRange(aTask.command, facebookCommandRange ) ) {
+		return;
+	}
 	[pendingTaskBufferLock lock];
 	[pendingTaskBuffer addObject:aTask];
 	aTask.state = NMTaskExecutionStateWaitingInConnectionQueue;
@@ -220,31 +236,20 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				
 				theTask.state = NMTaskExecutionStateConnectionActive;
 				theTask.sequenceLog = taskLogCount++;
-				switch (theTask.command) {
-					case NMCommandParseFacebookFeed:
-					case NMCommandGetFacebookProfile:
-					case NMCommandPostFacebookLike:
-					case NMCommandDeleteFacebookLike:
-					case NMCommandPostFacebookComment:
-					case NMCommandDeleteFacebookComment:
-					{
-						NMFacebookTask * fbTask = (NMFacebookTask *)theTask;
-						FBRequest * fbRequest = [fbTask facebookRequestForController:self];
-						fbRequest.task = fbTask;
-						[facebookConnectionPool addObject:fbRequest];
-						break;
-					}
-						
-					default:
-					{
-						// create the connection as normal
-						request = [theTask URLRequest];
-						conn = [[NMURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
-						conn.task = theTask;
-						[connectionPool addObject:conn];
-						[conn release];
-						break;
-					}
+				NMCommand cmd = theTask.command;
+				if ( cmd > NMCommandFacebookCommandLowerBound && cmd < NMCommandFacebookCommandUpperBound ) {
+					NMFacebookTask * fbTask = (NMFacebookTask *)theTask;
+					FBRequest * fbRequest = [fbTask facebookRequestForController:self];
+					fbRequest.task = fbTask;
+					[facebookConnectionPool addObject:fbRequest];
+				} else {
+					// create the connection as normal
+					request = [theTask URLRequest];
+					conn = [[NMURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+					conn.task = theTask;
+					[connectionPool addObject:conn];
+					[conn release];
+					break;
 				}
 				
 				// create notification object
@@ -356,6 +361,34 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 				default:
 					break;
 			}
+		}
+	}
+	[pendingTaskBufferLock unlock];
+}
+
+- (void)cancelTaskWithCommandSet:(NSIndexSet *)aCmd {
+	[pendingTaskBufferLock lock];
+	// go through all existing connection objects first
+	NMURLConnection * connObj;
+	NMTask * task;
+	for (connObj in connectionPool) {
+		task = connObj.task;
+		if ( [aCmd containsIndex:task.command] ) {
+			task.state = NMTaskExecutionStateCanceled;
+			// the task has active connection.
+			[connectionPool removeObject:connObj];
+			[connObj cancel];
+			// release the connection, and the data object
+			[commandIndexPool removeIndex:[task commandIndex]];
+			// remove task
+			[pendingTaskBuffer removeObject:task];
+			[self returnNetworkResource];
+		}
+	}
+	for (NMTask * task in pendingTaskBuffer) {
+		if ( [aCmd containsIndex:task.command] ) {
+			// remove the task
+			[pendingTaskBuffer removeObject:task];
 		}
 	}
 	[pendingTaskBufferLock unlock];

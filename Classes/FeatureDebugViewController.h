@@ -30,13 +30,10 @@
 - (IBAction)pollUserYouTube:(id)sender;
 - (IBAction)getSubscribedChannels:(id)sender;
 - (IBAction)syncRequest:(id)sender;
-- (IBAction)getDebugChannel:(id)sender;
 - (IBAction)printCommandIndexPool:(id)sender;
 - (IBAction)printMovieViewInfo:(id)sender;
-- (IBAction)parseFacebookFeed:(id)sender;
-- (IBAction)getFacebookProfile:(id)sender;
 - (IBAction)importYouTube:(id)sender;
-- (IBAction)subscribeFirstAvailablePerson:(id)sender;
 - (IBAction)facebookFilter:(id)sender;
+- (IBAction)facebookSignOut:(id)sender;
 
 @end

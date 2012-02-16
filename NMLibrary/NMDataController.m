@@ -1166,13 +1166,92 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	return checkResult;
 }
 
-#pragma mark Video Facebook info
+#pragma mark Facebook
 - (NMFacebookInfo *)insertNewFacebookInfo {
 	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext];
 }
 
 - (NMFacebookComment *)insertNewFacebookComment {
 	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookCommentEntityName inManagedObjectContext:managedObjectContext];
+}
+
+- (void)deleteFacebookCacheForLogout {
+	NSNumber * fbChnType = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	// delete all facebook subscription
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:self.subscriptionEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel.type == %@", fbChnType]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"subscription", @"channel", @"channel.videos", @"channel.videos.video", nil]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		for (NMSubscription * subtObj in result) {
+			[managedObjectContext deleteObject:subtObj];
+		}
+	}
+	[request release];
+	[pool release];
+	
+	// delete all person profile
+	pool = [[NSAutoreleasePool alloc] init];
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_type == %@", fbChnType]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"comments", @"facebookLikes", nil]];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		for (NMPersonProfile * personObj in result) {
+			[managedObjectContext deleteObject:personObj];
+		}
+	}
+	[request release];
+	[pool release];
+	
+	// delete all facebook info (cascade to comment automatically)
+	pool = [[NSAutoreleasePool alloc] init];
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"video", @"comments", @"peopleLike", nil]];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		for (NMFacebookInfo * fbInfo  in result) {
+			[managedObjectContext deleteObject:fbInfo];
+		}
+	}
+	[request release];
+	[pool release];
+	
+	// delete orphaned concrete video
+	pool = [[NSAutoreleasePool alloc] init];
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMConcreteVideoEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channels.@count == 0"]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"author", @"detail", nil]];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		for (NMConcreteVideo * vdo in result) {
+			[managedObjectContext deleteObject:vdo];
+		}
+	}
+	[request release];
+	[pool release];
+	
+	// delete orphaned author
+	pool = [[NSAutoreleasePool alloc] init];
+	request = [[NSFetchRequest alloc] init];
+	[request setEntity:[NSEntityDescription entityForName:NMAuthorEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"videos.@count == 0"]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	result = [managedObjectContext executeFetchRequest:request error:nil];
+	if ( [result count] ) {
+		for (NMAuthor * authObj in result) {
+			[managedObjectContext deleteObject:authObj];
+		}
+	}
+	[request release];
+	[pool release];
+	
+	[managedObjectContext save:nil];
 }
 
 #pragma mark Author
