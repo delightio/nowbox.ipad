@@ -794,6 +794,28 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+- (void)prepareSignOutFacebook {
+	networkController.suspendFacebook = YES;
+	// stop sync timer
+	if ( videoImportTimer ) {
+		[videoImportTimer invalidate], self.videoImportTimer = nil;
+	}
+	if ( socialChannelParsingTimer ) {
+		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+	}
+	// cancel all existing Facebook related tasks
+	NSMutableIndexSet * cmdIdx = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(NMCommandFacebookCommandLowerBound, NMCommandFacebookCommandUpperBound - NMCommandFacebookCommandLowerBound + 1)];
+	// cancel all Youtube import task
+	[cmdIdx addIndex:NMCommandImportYouTubeVideo];
+	[networkController cancelTaskWithCommandSet:cmdIdx];
+
+	// make sure the backend will not queue any facebook tasks after that.
+}
+
+- (void)endSignOutFacebook {
+	networkController.suspendFacebook = NO;
+}
+
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }

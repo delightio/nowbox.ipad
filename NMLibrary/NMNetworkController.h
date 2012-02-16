@@ -39,7 +39,8 @@
 	BOOL tokenRenewMode;
 	NSUInteger taskLogMark;
 	NSUInteger taskLogCount;
-	
+	NSRange facebookCommandRange;
+	BOOL suspendFacebook;
 	// channel thumbnail_uri cache
 //	NSMutableSet * activeChannelThumbnailDownloadSet;
 }
@@ -50,6 +51,7 @@
 
 @property (nonatomic, retain) NSDate * errorWindowStartDate;
 @property (nonatomic, assign) BOOL tokenRenewMode;
+@property (nonatomic) BOOL suspendFacebook;
 
 //- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 
@@ -69,6 +71,7 @@
 
 - (void)cancelPlaybackRelatedTasksForChannel:(NMChannel *)chnObj;
 - (void)cancelSearchTasks;
+- (void)cancelTaskWithCommandSet:(NSIndexSet *)aCmd;
 - (void)forceCancelAllTasks;
 
 - (void)debugPrintCommandPoolStatus;

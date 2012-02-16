@@ -13,7 +13,10 @@
 extern NSString * const NM_FACEBOOK_ACCESS_TOKEN_KEY;
 extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 
-@interface NMAccountManager : NSObject <FBSessionDelegate>
+@interface NMAccountManager : NSObject <FBSessionDelegate> {
+	id signOutTarget;
+	SEL signOutAction;
+}
 
 @property (nonatomic, retain) NSUserDefaults * userDefaults;
 @property (nonatomic, readonly) Facebook * facebook;
@@ -22,6 +25,7 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 + (NMAccountManager *)sharedAccountManager;
 
 - (void)authorizeFacebook;
+- (void)signOutFacebookOnCompleteTarget:(id)aTarget action:(SEL)completionSelector;
 
 - (void)subscribeAccount:(ACAccount *)acObj;
 

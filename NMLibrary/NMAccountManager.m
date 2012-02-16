@@ -84,6 +84,31 @@ static NMAccountManager * _sharedAccountManager = nil;
 	[self.facebook authorize:permissions];
 }
 
+- (void)signOutFacebookOnCompleteTarget:(id)aTarget action:(SEL)completionSelector {
+	signOutAction = completionSelector;
+	signOutTarget = aTarget;
+	dispatch_async(dispatch_get_main_queue(), ^{
+		// cancel all existing Facebook related tasks
+		NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+		[tqc prepareSignOutFacebook];
+		// make sure the backend will not queue any facebook tasks from now on.
+		// remove the data as well
+		double delayInSeconds = 2.0;	// chill for 2 sec. hopefully all the tasks are cancelled by then.
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+			[[tqc dataController] deleteFacebookCacheForLogout];
+			if ([_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY]) {
+				[_userDefaults removeObjectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
+				[_userDefaults removeObjectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
+				[_userDefaults synchronize];
+			}
+			// on-completion, begin sign out
+			[self.facebook logout];
+			[tqc endSignOutFacebook];
+		});
+	});
+}
+
 #pragma mark Facebook delegate methods
 
 - (void)fbDidLogin {
@@ -103,11 +128,8 @@ static NMAccountManager * _sharedAccountManager = nil;
 
 - (void)fbDidLogout {
     // Remove saved authorization information if it exists
-	if ([_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY]) {
-		[_userDefaults removeObjectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
-		[_userDefaults removeObjectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
-		[_userDefaults synchronize];
-	}
+	[signOutTarget performSelector:signOutAction withObject:nil];
+	[_facebook release], _facebook = nil;
 }
 
 - (void)fbDidExtendToken:(NSString*)accessToken expiresAt:(NSDate*)expiresAt {

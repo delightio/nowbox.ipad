@@ -147,6 +147,7 @@
 // video facebook info
 - (NMFacebookInfo *)insertNewFacebookInfo;
 - (NMFacebookComment *)insertNewFacebookComment;
+- (void)deleteFacebookCacheForLogout;
 
 // author
 - (NMAuthor *)authorForID:(NSNumber *)authID orName:(NSString *)aName;

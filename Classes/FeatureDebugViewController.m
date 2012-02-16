@@ -162,6 +162,10 @@
 	}
 }
 
+- (void)stopAnimating {
+	[syncActivityView stopAnimating];
+}
+
 #pragma mark Target action methods
 
 - (IBAction)resetTooltip:(id)sender {
@@ -170,12 +174,6 @@
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"Tooltips have been reset." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 	[alert show];
 	[alert release];
-}
-
-- (IBAction)getDebugChannel:(id)sender {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleGetChannelNotification:) name:NMDidGetChannelWithIDNotification object:nil];
-	// get debug channel
-	[[NMTaskQueueController sharedTaskQueueController] issueGetChannelWithID:26810];
 }
 
 - (IBAction)printCommandIndexPool:(id)sender {
@@ -189,24 +187,8 @@
 	NSLog(@"movie view info: %f %f scroll view: %f no. of videos: %d", theFrame.origin.x, alpha, playbackViewController.controlScrollView.contentOffset.x, [thePlayer.items count]);
 }
 
-- (IBAction)parseFacebookFeed:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueDebugProcessFeed];
-}
-
-- (IBAction)getFacebookProfile:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetMyFacebookProfile];
-}
-
 - (IBAction)importYouTube:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueDebugImportYouTubeVideos];
-}
-
-- (IBAction)subscribeFirstAvailablePerson:(id)sender {
-	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
-	// get the first available person
-	NMPersonProfile * thePerson = [tqc.dataController firstAvailablePersonProfile];
-	// subscribe to his/her feed
-	if ( thePerson ) [tqc issueSubscribePerson:thePerson];
 }
 
 - (IBAction)facebookFilter:(id)sender {
@@ -216,6 +198,11 @@
 	viewCtrl.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
 	[self.navigationController pushViewController:viewCtrl animated:YES];
 	[viewCtrl release];
+}
+
+- (IBAction)facebookSignOut:(id)sender {
+	[syncActivityView startAnimating];
+	[[NMAccountManager sharedAccountManager] signOutFacebookOnCompleteTarget:self action:@selector(stopAnimating)];
 }
 
 - (IBAction)checkUpdate:(id)sender {

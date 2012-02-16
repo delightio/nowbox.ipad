@@ -143,6 +143,8 @@
 - (void)scheduleImportVideos;
 - (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info;
 - (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info;
+- (void)prepareSignOutFacebook;
+- (void)endSignOutFacebook;
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
