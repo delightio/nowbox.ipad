@@ -122,6 +122,7 @@
 @synthesize bottomView;
 @synthesize infoView;
 @synthesize infoButtonScrollView;
+@synthesize gradientMask;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
@@ -133,6 +134,7 @@
     [bottomView release];
     [infoView release];
     [infoButtonScrollView release];
+    [gradientMask release];
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabel release];
@@ -158,8 +160,29 @@
 - (void)toggleInfoPanel
 {
     CGRect frame = infoView.frame;
-    if (frame.size.height < 200) {
-        frame.size.height = 200;
+    BOOL growing = NO;
+    BOOL landscape = (infoView == bottomView);
+    
+    if (landscape) {
+        // Landscape - resize view keeping the bottom position the same
+        if (frame.size.height < 160) {
+            growing = YES;
+            frame.size.height = 160;
+        } else {
+            frame.size.height = 120;
+        }
+        frame.origin.y = CGRectGetMaxY(infoView.frame) - frame.size.height;
+    } else {
+        // Portrait - resize view keeping the top position the same
+        if (frame.size.height < 200) {
+            growing = YES;
+            frame.size.height = 200;
+        } else {
+            frame.size.height = 116;
+        }
+    }
+    
+    if (growing) {
         infoButtonScrollView.scrollEnabled = NO;
                 
         // We don't want buttons flying down from the top, looks bad. Reposition buttons to avoid it.
@@ -172,7 +195,6 @@
             }
         }
     } else {
-        frame.size.height = 116;
         infoButtonScrollView.scrollEnabled = YES;
     }
     
@@ -182,7 +204,17 @@
                      animations:^{
                          infoView.frame = frame;
                          
-                         if (!infoButtonScrollView.scrollEnabled) {
+                         if (landscape) {
+                             CGRect gradientFrame = gradientMask.frame;
+                             if (growing) {
+                                 gradientFrame.origin.y = gradientMask.superview.frame.size.height;
+                             } else {
+                                 gradientFrame.origin.y = gradientMask.superview.frame.size.height - gradientFrame.size.height;
+                             }
+                             gradientMask.frame = gradientFrame;
+                         }
+                         
+                         if (growing) {
                              // Position the buttons in the scroll view, which is no longer scrollable
                              for (UIView *view in infoButtonScrollView.subviews) {
                                  CGRect buttonFrame = view.frame;

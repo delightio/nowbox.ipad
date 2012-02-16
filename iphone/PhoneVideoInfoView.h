@@ -47,6 +47,7 @@
 @property (nonatomic, retain) IBOutlet UIView *bottomView;
 @property (nonatomic, retain) IBOutlet UIView *infoView;
 @property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
+@property (nonatomic, retain) IBOutlet UIView *gradientMask;
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
