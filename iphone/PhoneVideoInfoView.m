@@ -7,7 +7,6 @@
 //
 
 #import "PhoneVideoInfoView.h"
-#import "UIView+InteractiveAnimation.h"
 
 @implementation PhoneVideoInfoView
 
@@ -161,10 +160,14 @@
         frame.size.height = 116;
     }
     
-    [UIView animateWithInteractiveDuration:0.3
-                                animations:^{
-                                    infoView.frame = frame;                                    
-                                }];
+    [UIView animateWithDuration:0.3
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         infoView.frame = frame;                         
+                     }
+                     completion:^(BOOL finished){
+                     }];
 }
 
 @end
