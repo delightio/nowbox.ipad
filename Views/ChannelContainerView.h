@@ -13,13 +13,13 @@
 @interface ChannelContainerView : UIView {
     UILabel * textLabel;
 	NMCachedImageView * imageView;
-    UIImageView * newChannelIndicator;
+    UIImageView * unwatchedChannelIndicator;
     BOOL highlighted;
 }
 
 @property (nonatomic, readonly) UILabel * textLabel;
 @property (nonatomic, readonly) NMCachedImageView * imageView;
-@property (nonatomic, readonly) UIImageView * newChannelIndicator;
+@property (nonatomic, readonly) UIImageView * unwatchedChannelIndicator;
 @property (nonatomic, assign) BOOL highlighted;
 
 - (id)initWithHeight:(CGFloat)aHeight;
