@@ -704,7 +704,7 @@
             theFrame.size.width = topLevelContainerView.frame.size.width;
             theFrame.size.height = topLevelContainerView.frame.size.height;
             loadedMovieDetailView.frame = theFrame;
-			[controlScrollView insertSubview:loadedMovieDetailView belowSubview:movieView];
+			[controlScrollView insertSubview:loadedMovieDetailView aboveSubview:movieView];
 			self.loadedMovieDetailView = nil;
 			// movie detail view doesn't need to respond to autoresize
             
@@ -1320,6 +1320,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
 	if ( scrollView == channelSwitchingScrollView ) {
         if (scrollingNotFromUser) return;
         
