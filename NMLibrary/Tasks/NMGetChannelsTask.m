@@ -212,10 +212,6 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	NSNumber * idNum;
 	NSInteger i = 0;
 	BOOL containsKeywordChannel = NO;
-	if ( command == NMCommandGetChannelWithID ) {
-		
-	}
-	const NSInteger indexBase = 1000;
 	for (cDict in theChs) {
 		for (NSString * rKey in cDict) {				// attribute key cleanser
 			chnCtnDict = [cDict objectForKey:rKey];
@@ -225,7 +221,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				case NMCommandGetSubscribedChannels:
 				case NMCommandGetChannelWithID:
 				case NMCommandCompareSubscribedChannels:
-					[pDict setObject:[NSNumber numberWithInteger:indexBase + i] forKey:@"nm_sort_order"];
+					[pDict setObject:[NSNumber numberWithInteger:i] forKey:@"nm_sort_order"];
 					i++;
 					[pDict removeObjectForKey:@"category_ids"];
 					break;
@@ -360,6 +356,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	NSMutableArray * objectsToDelete = nil;
 	NMChannel * chnObj;
 	NSMutableDictionary * chnDict;
+	NMChannelType chnType;
 	// update / delete existing channel
 	for (chnObj in theChannelPool) {
 		cid = [chnObj.nm_id unsignedIntegerValue];
@@ -367,6 +364,11 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			chnDict = [parsedObjectDictionary objectForKey:chnObj.nm_id];
 			// The channel exists in local cache.
 			if ( command == NMCommandGetSubscribedChannels ) {
+				chnType = [chnObj.type integerValue];
+				if ( NM_RUNNING_ON_IPAD && ( chnType == NMChannelUserType || chnType == NMChannelRecommendedType ) ) {
+					// update user channel to order from the server order if it's running on iPad
+					chnObj.subscription.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
+				}
 				// ignore the sort order
 				[chnDict removeObjectForKey:@"nm_sort_order"];
 				// update the channel attributes
@@ -393,6 +395,9 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	if ( [channelIndexSet count] ) {
 		BOOL fLaunch = [NMTaskQueueController sharedTaskQueueController].appFirstLaunch;
 		NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
+		NSInteger maxSubtOrder = [ctrl maxSubscriptionSortOrder];
+		if ( maxSubtOrder < 1000 ) maxSubtOrder = 1000;
+		__block NSInteger loopIdx = 0;
 		// add the remaining channals
 		[channelIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
 			// check if the channel exists among all stored
@@ -400,6 +405,11 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			// search the channel object. The channel may exist in another category. So, need to search if it already exists in the current database.
 			NMChannel * chn = [ctrl channelForID:idNum];
 			NSMutableDictionary * chnDict = [parsedObjectDictionary objectForKey:idNum];
+			NMChannelType chnType = [[chnDict objectForKey:@"type"] integerValue];
+			if ( chnType == NMChannelUserFacebookType || chnType == NMChannelUserTwitterType ) {
+				// we don't support Twitter or Facebook channel that are from the server anymore
+				return;
+			}
 			if ( chn == nil ) {
 				// create the new object
 				chn = [ctrl insertNewChannelForID:[chnDict objectForKey:@"nm_id"]];
@@ -420,7 +430,6 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 					//[category addChannelsObject:chn];
 					break;
 				case NMCommandGetSubscribedChannels:
-					[ctrl subscribeChannel:chn];
 					// create subscription object
 					[ctrl subscribeChannel:chn];
 					// hide new user channels. they will appear again when, later, the "get channel video" task finds videos in them.
@@ -429,6 +438,12 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 					}
 					if ( !fLaunch ) {
 						chn.subscription.nm_is_new = yesNum;
+					}
+					// assign sort order
+					if ( chnType == NMChannelUserType || chnType == NMChannelRecommendedType ) {
+						chn.subscription.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
+					} else {
+						chn.subscription.nm_sort_order = [NSNumber numberWithInteger:maxSubtOrder + loopIdx + 1];
 					}
 					break;
 				case NMCommandCompareSubscribedChannels:
@@ -439,6 +454,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				default:
 					break;
 			}
+			loopIdx++;
 		}];
 	}
 	return YES;
