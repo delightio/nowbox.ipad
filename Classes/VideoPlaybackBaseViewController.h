@@ -15,13 +15,11 @@
 @interface VideoPlaybackBaseViewController : UIViewController {
 	NMChannel * currentChannel;
 	BOOL launchModeActive;
-	NMMovieDetailView * loadedMovieDetailView;
 }
 
 @property (nonatomic, retain) NMChannel * currentChannel;
 @property (nonatomic, readonly) NMVideo * currentVideo;
 @property (nonatomic) BOOL launchModeActive;
-@property (nonatomic, retain) IBOutlet NMMovieDetailView * loadedMovieDetailView;
 
 // setting channel
 - (void)setCurrentChannel:(NMChannel *)chnObj startPlaying:(BOOL)aPlayFlag;

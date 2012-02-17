@@ -18,7 +18,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
-#import "PhoneVideoInfoView.h"
+#import "PhoneMovieDetailView.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -36,7 +36,7 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, PhoneVideoInfoViewDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, PhoneMovieDetailViewDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
@@ -94,13 +94,12 @@ enum {
     ToolTip *pendingToolTip; 
     void (^alertCompletion)(void);
 
-    BOOL scrollingNotFromUser;    
-    
-    PhoneVideoInfoView *videoInfoView;
+    BOOL scrollingNotFromUser;        
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
+@property (nonatomic, retain) IBOutlet PhoneMovieDetailView * loadedMovieDetailView;
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 @property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;

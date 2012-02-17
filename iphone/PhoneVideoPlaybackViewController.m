@@ -39,8 +39,8 @@
 #define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
 #define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
 
-#define NM_MOVIE_VIEW_GAP								20
-#define NM_MOVIE_VIEW_GAP_FLOAT							20.0f
+#define NM_MOVIE_VIEW_GAP								0 //20
+#define NM_MOVIE_VIEW_GAP_FLOAT							0.0f //20.0f
 
 #define REFRESH_HEADER_HEIGHT 80.0f
 
@@ -91,17 +91,7 @@
 @synthesize nextChannelHeaderView;
 @synthesize playbackModelController;
 @synthesize ratingsURL;
-
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-/*
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization.
-    }
-    return self;
-}
-*/
+@synthesize loadedMovieDetailView;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -230,11 +220,6 @@
     pinRcr.delegate = self;
 	[controlScrollView addGestureRecognizer:pinRcr];
 	[pinRcr release];
-	
-    videoInfoView = [[PhoneVideoInfoView alloc] initWithFrame:self.view.bounds];
-    videoInfoView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    videoInfoView.delegate = self;
-    [self.view addSubview:videoInfoView];
     
     /*
 	// create the launch view
@@ -263,16 +248,19 @@
 
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-        topLevelContainerView.frame = CGRectMake(0, CGRectGetMaxY(videoInfoView.portraitView.topView.frame), self.view.bounds.size.width, VIDEO_HEIGHT);        
-		[loadedControlView setControlsHidden:YES animated:NO];                
+        movieView.frame = CGRectMake(0, 42, topLevelContainerView.frame.size.width, VIDEO_HEIGHT);        
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+		[loadedControlView setControlsHidden:YES animated:NO];                
     } else {
-        topLevelContainerView.frame = self.view.bounds;
-		[loadedControlView setControlsHidden:NO animated:NO];                
+        movieView.frame = topLevelContainerView.bounds;
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspect];        
+		[loadedControlView setControlsHidden:NO animated:NO];                
     }
     
-    [videoInfoView updateViewForInterfaceOrientation:interfaceOrientation];
+    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+        [detailView updateViewForInterfaceOrientation:interfaceOrientation];
+        detailView.thumbnailContainerView.frame = movieView.frame;
+    }
     
     // Update scroll view sizes / content offsets
     channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
@@ -296,9 +284,6 @@
 		theDetailView = playbackModelController.nextVideo.video.nm_movie_detail_view;
         theDetailView.frame = CGRectMake(playbackModelController.nextIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP), 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height);
 	}
-//    for (UIView *view in movieDetailViewArray) {
-//        view.frame = CGRectMake(view.tag * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP), 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height);
-//    }
     
     // Update controls / movie position
 	CGRect theFrame = loadedControlView.frame;
@@ -307,8 +292,6 @@
 
 	theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
-    theFrame.size.width = topLevelContainerView.frame.size.width;
-    theFrame.size.height = topLevelContainerView.frame.size.height;
 	movieView.frame = theFrame;
     loadedControlView.frame = theFrame;
     
@@ -360,7 +343,6 @@
     [previousChannelHeaderView release];
     [nextChannelHeaderView release];
     [ratingsURL release];
-    [videoInfoView release];
     
 	[super dealloc];
 }
@@ -619,7 +601,7 @@
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = (NSInteger)CMTimeGetSeconds(t);
 			loadedControlView.timeElapsed = sec;
-            [videoInfoView setElapsedTime:sec];
+///            [videoInfoView setElapsedTime:sec];
 		}
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
@@ -647,11 +629,6 @@
 	[loadedControlView resetView];
 	if ( aVideo ) {
 		[loadedControlView updateViewForVideo:aVideo];
-        [videoInfoView setChannelTitle:(aVideo ? aVideo.channel.title : currentChannel.title)];
-        [videoInfoView setChannelThumbnailForChannel:(aVideo ? aVideo.channel : currentChannel)];
-        [videoInfoView setVideoTitle:aVideo.video.title];
-        [videoInfoView setDescriptionText:aVideo.video.detail.nm_description];
-        [videoInfoView setDuration:[aVideo.video.duration integerValue]];
 	}
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
@@ -719,6 +696,7 @@
 		for (NSInteger i = 0; i < 3; i++) {
 			[mb loadNibNamed:@"MovieDetailInfoView" owner:self options:nil];
 			[movieDetailViewArray addObject:self.loadedMovieDetailView];
+            loadedMovieDetailView.delegate = self;
             theFrame = loadedMovieDetailView.frame;
             theFrame.origin.y = 0.0f;
 			// make sure the view is located in invisible area
@@ -729,6 +707,8 @@
 			[controlScrollView insertSubview:loadedMovieDetailView belowSubview:movieView];
 			self.loadedMovieDetailView = nil;
 			// movie detail view doesn't need to respond to autoresize
+            
+            [self updateViewsForInterfaceOrientation:self.interfaceOrientation];
 		}
 	}
 	// get a free view
@@ -1641,16 +1621,26 @@
     }
 }
 
-#pragma mark - PhoneVideoInfoViewDelegate
+#pragma mark - PhoneMovieDetailViewDelegate
 
-- (void)videoInfoViewDidTapGridButton:(PhoneVideoInfoView *)videoInfoView
+- (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView
 {
     [self dismissModalViewControllerAnimated:NO];
 }
 
-- (void)videoInfoViewDidTapPlayButton:(PhoneVideoInfoView *)videoInfoView
+- (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView
 {
     [self playStopVideo:nil];
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded
+{
+    // Make all detail views have the same panel state
+    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+        if (detailView != videoInfoView) {
+            [detailView setInfoPanelExpanded:expanded];
+        }
+    }
 }
 
 #pragma mark Debug

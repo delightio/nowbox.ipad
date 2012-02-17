@@ -69,18 +69,6 @@
 			otherInfoLabel.font = theFont;
 			authorLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
 		}
-	} else {
-		// dump the whole thing
-		[infoContainerView removeFromSuperview];
-		infoContainerView = nil;
-		authorLabel = nil;
-		titleLabel = nil;
-		otherInfoLabel = nil;
-		descriptionLabel = nil;
-		authorThumbnailView = nil;
-		// resize the view
-		thumbnailContainerView.frame = self.bounds;
-		thumbnailContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	}
 	
 	CALayer * theLayer = activityView.layer;
