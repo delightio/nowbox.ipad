@@ -442,9 +442,16 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
     [[MixpanelAPI sharedAPI] track:@"$born"];
     [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
+	
+	// Just use a few categories to avoid blocking in the launch process
+	NSArray * catAy = [NMTaskQueueController sharedTaskQueueController].dataController.categories;
+	
+	if ( [catAy count] > 4 ) {
+		catAy = [catAy subarrayWithRange:NSMakeRange(0, 4)];
+	}
     
     // Get some channels so we can subscribe to some of them
-    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[NMTaskQueueController sharedTaskQueueController].dataController.categories];
+    [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:catAy];
 }
 
 - (void)handleSkipOnboardDidGetFeaturedChannelsNotification:(NSNotification *)aNotification {

@@ -101,6 +101,8 @@ static NMAccountManager * _sharedAccountManager = nil;
 				[_userDefaults removeObjectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
 				[_userDefaults removeObjectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
 				[_userDefaults synchronize];
+				[_userDefaults setObject:(NSNumber *)kCFBooleanFalse forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+				NM_USER_FACEBOOK_CHANNEL_ID = 0;
 			}
 			// on-completion, begin sign out
 			[self.facebook logout];

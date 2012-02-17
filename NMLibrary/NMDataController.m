@@ -650,8 +650,20 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		return nil;
 	}
 	if ( userFacebookStreamChannel ) return userFacebookStreamChannel;
-	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
+	NMChannel * chnObj = nil;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:self.subscriptionEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %@", [NSNumber numberWithInteger:NMChannelUserFacebookType]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	if ( [result count] ) {
+		chnObj = [[result objectAtIndex:0] valueForKey:@"channel"];;
+	}
 	self.userFacebookStreamChannel = chnObj;
+	[request release];
 	return chnObj;
 }
 
@@ -660,8 +672,20 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		return nil;
 	}
 	if ( userTwitterStreamChannel ) return userTwitterStreamChannel;
-	NMChannel * chnObj = [self channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
+	NMChannel * chnObj = nil;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:self.subscriptionEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %@", [NSNumber numberWithInteger:NMChannelUserTwitterType]]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	if ( [result count] ) {
+		chnObj = [[result objectAtIndex:0] valueForKey:@"channel"];;
+	}
 	self.userTwitterStreamChannel = chnObj;
+	[request release];
 	return chnObj;
 }
 
@@ -697,7 +721,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 - (NSInteger)maxSubscriptionSortOrder {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setResultType:NSDictionaryResultType];
-	[request setEntity:subscriptionEntityDescription];
+	[request setEntity:self.subscriptionEntityDescription];
 	
 	NSExpression * keyPathExpression = [NSExpression expressionForKeyPath:@"nm_sort_order"];
 	NSExpression * maxSortOrderExpression = [NSExpression expressionForFunction:@"max:" arguments:[NSArray arrayWithObject:keyPathExpression]];
@@ -1380,6 +1404,10 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		subtObj.channel = chn;
 		// (default value is zero) subtObj.nm_subscription_type = [NSNumber numberWithInteger:0];
 	}
+}
+
+- (void)unsubscribeChannel:(NMChannel *)chn {
+	[managedObjectContext deleteObject:chn.subscription];
 }
 
 - (NSArray *)allSubscriptions {

@@ -517,8 +517,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
             UIActivityIndicatorView *actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
             [actView setAlpha:0];
 
-            UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
-            newChannelIndicator.hidden = YES;
+            UIImageView *unwatchedChannelIndicator = (UIImageView *)[cell viewWithTag:16];
+            unwatchedChannelIndicator.hidden = YES;
             
 			if ( indexPath.section == 0 ) {
 				if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
@@ -560,7 +560,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
                             
-                            newChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];
+                            unwatchedChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Twitter";
 							detailLbl.text = @"Watch videos shared by people you follow";
@@ -590,7 +590,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 								[backgroundView setImage:channelNotSubscribedBackgroundImage];
 							}
                             
-                            newChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];
+                            unwatchedChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];
 						} else {
 							titleLbl.text = @"Facebook";
 							detailLbl.text = @"Watch videos shared by Facebook friends";
@@ -611,7 +611,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		}
 		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
         if (selectedIndex == 0) {
-            chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+            chn = [[myChannelsFetchedResultsController objectAtIndexPath:indexPath] valueForKey:@"channel"];
         } else {
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
         }
@@ -621,17 +621,17 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         
         buttonView = (UIButton *)[cell viewWithTag:11];
         backgroundView = (UIImageView *)[cell viewWithTag:14];
-        UIImageView *newChannelIndicator = (UIImageView *)[cell viewWithTag:16];
+        UIImageView *unwatchedChannelIndicator = (UIImageView *)[cell viewWithTag:16];
         if (chn.subscription) {
             [buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
             [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];            
             [backgroundView setImage:channelSubscribedBackgroundImage];
-            newChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];            
+            unwatchedChannelIndicator.hidden = ![chn.subscription.nm_is_new boolValue];            
         } else {
             [buttonView setImage:channelNotSubscribedIcon forState:UIControlStateNormal];
             [buttonView setBackgroundImage:channelNotSubscribedButtonImage forState:UIControlStateNormal];
             [backgroundView setImage:channelNotSubscribedBackgroundImage];
-            newChannelIndicator.hidden = YES;            
+            unwatchedChannelIndicator.hidden = YES;            
         }
         
         UILabel *label;
@@ -969,13 +969,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], [NSNumber numberWithInteger:NMChannelRecommendedType], nil]]];
-	
+//    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], [NSNumber numberWithInteger:NMChannelRecommendedType], nil]]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND NOT channel.type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], [NSNumber numberWithInteger:NMChannelRecommendedType], nil]]];
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
@@ -1231,7 +1231,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			{
 				// reset of the channels
 				NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row inSection:0];
-				chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
+				chn = [[myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath] valueForKey:@"channel"];
 				channelName = chn.title;
 				break;
 			}

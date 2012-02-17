@@ -128,6 +128,7 @@ typedef enum {
 } NMVideoExistenceCheckResult;
 
 extern BOOL NM_WIFI_REACHABLE;
+extern BOOL NM_RUNNING_ON_IPAD;
 extern NSString * NMServiceErrorDomain;
 extern NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR;
 // Notifications

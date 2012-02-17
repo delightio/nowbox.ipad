@@ -415,6 +415,7 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (NSDictionary *)userInfo {
+	_channel.video_count = [NSNumber numberWithUnsignedInteger:[_channel.videos count]];
 	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
 }
 

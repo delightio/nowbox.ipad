@@ -84,7 +84,11 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	if ( newState && profileOwnsByMe ) {
 		[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 		theProfile.nm_id = [NSNumber numberWithInteger:[ctrl maxPersonProfileID] + 1];
+		// tier 0 is the highest level
 		theProfile.subscription.nm_subscription_tier = (NSNumber *)kCFBooleanFalse;
+		// save the channel ID
+		[[NSUserDefaults standardUserDefaults] setObject:theProfile.nm_id forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+		NM_USER_FACEBOOK_CHANNEL_ID = [theProfile.nm_id integerValue];
 		return YES;
 	}
 	return NO;

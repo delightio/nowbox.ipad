@@ -14,7 +14,7 @@
 @implementation ChannelContainerView
 @synthesize textLabel;
 @synthesize imageView;
-@synthesize newChannelIndicator;
+@synthesize unwatchedChannelIndicator;
 @synthesize highlighted;
 
 //+ (Class)layerClass {
@@ -92,11 +92,11 @@
 		imageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
 		[self addSubview:imageView];
         
-        newChannelIndicator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"channel-new-indicator.png"]];
-        newChannelIndicator.frame = CGRectMake(0, 0, newChannelIndicator.frame.size.width, newChannelIndicator.frame.size.height);
-        newChannelIndicator.center = CGPointMake(newChannelIndicator.center.x, aHeight / 2);
-        newChannelIndicator.hidden = YES;
-        [self addSubview:newChannelIndicator];
+        unwatchedChannelIndicator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"channel-new-indicator.png"]];
+        unwatchedChannelIndicator.frame = CGRectMake(0, 0, unwatchedChannelIndicator.frame.size.width, unwatchedChannelIndicator.frame.size.height);
+        unwatchedChannelIndicator.center = CGPointMake(unwatchedChannelIndicator.center.x, aHeight / 2);
+        unwatchedChannelIndicator.hidden = YES;
+        [self addSubview:unwatchedChannelIndicator];
 
 	}
 	return self;
@@ -138,7 +138,7 @@
 {
 	[textLabel release];
 	[imageView release];
-    [newChannelIndicator release];
+    [unwatchedChannelIndicator release];
     [super dealloc];
 }
 
