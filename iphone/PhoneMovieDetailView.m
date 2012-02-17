@@ -20,8 +20,8 @@
 
 - (void)awakeFromNib
 {
-    self.backgroundColor = [UIColor clearColor];
-    
+    [super awakeFromNib];
+        
     [self addSubview:portraitView];
     currentOrientedView = portraitView;
 }
