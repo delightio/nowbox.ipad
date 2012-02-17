@@ -253,12 +253,6 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 			[parsedObjectDictionary setObject:pDict forKey:idNum];
 		}
 	}
-#ifdef DEBUG_CHANNEL
-	// create test channel
-	[channelIndexSet addIndex:999999];
-	pDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Test Channel", @"title", @"https://project.headnix.com/pipely/channel.json", @"resource_uri", [NSNumber numberWithInteger:NMChannelKeywordType], @"type", [NSNull null], @"thumbnail_uri", [NSNumber numberWithInteger:999999], @"nm_id", [NSNumber numberWithInteger:++i], @"nm_sort_order", nil];
-	[parsedObjectDictionary setObject:pDict forKey:[NSNumber numberWithInteger:999999]];
-#endif
 	if ( command == NMCommandSearchChannels && !containsKeywordChannel ) {
 		// create a fake keyword channel
 		NSNumber * zeroNum = [NSNumber numberWithInteger:0];
@@ -365,15 +359,18 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 	NSUInteger cid;
 	NSMutableArray * objectsToDelete = nil;
 	NMChannel * chnObj;
-	NSDictionary * chnDict;
+	NSMutableDictionary * chnDict;
 	// update / delete existing channel
 	for (chnObj in theChannelPool) {
 		cid = [chnObj.nm_id unsignedIntegerValue];
 		if ( [channelIndexSet containsIndex:cid] ) {
 			chnDict = [parsedObjectDictionary objectForKey:chnObj.nm_id];
-			// the channel exists, update its sort order
+			// The channel exists in local cache.
 			if ( command == NMCommandGetSubscribedChannels ) {
-				chnObj.subscription.nm_sort_order = [chnDict objectForKey:@"nm_sort_order"];
+				// ignore the sort order
+				[chnDict removeObjectForKey:@"nm_sort_order"];
+				// update the channel attributes
+				[chnObj setValuesForKeysWithDictionary:chnDict];
 			}
 			[channelIndexSet removeIndex:cid];
 		} else {
