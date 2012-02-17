@@ -7,6 +7,7 @@
 //
 
 #import "PhoneVideoInfoView.h"
+#import <QuartzCore/QuartzCore.h>
 
 #pragma mark - PhoneVideoInfoView
 
@@ -122,11 +123,30 @@
 @synthesize bottomView;
 @synthesize infoView;
 @synthesize infoButtonScrollView;
-@synthesize gradientMask;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
 @synthesize channelThumbnail;
+
+- (void)awakeFromNib
+{
+    UIView *viewToMask = infoButtonScrollView.superview;
+    
+    // Fade out info buttons
+    CAGradientLayer *mask = [CAGradientLayer layer];
+    mask.frame = CGRectMake(0, 0, viewToMask.bounds.size.width, viewToMask.bounds.size.height * 2);
+    mask.colors = [NSArray arrayWithObjects:
+                   (id)[UIColor whiteColor].CGColor,
+                   (id)[UIColor whiteColor].CGColor,                       
+                   (id)[UIColor clearColor].CGColor, nil];
+    mask.startPoint = CGPointMake(0.5, 0);
+    mask.endPoint = CGPointMake(0.5, 1);
+    mask.locations = [NSArray arrayWithObjects:
+                      [NSNumber numberWithFloat:0],
+                      [NSNumber numberWithFloat:0.25],
+                      [NSNumber numberWithFloat:0.375], nil];
+    viewToMask.layer.mask = mask; 
+}
 
 - (void)dealloc
 {
@@ -134,7 +154,6 @@
     [bottomView release];
     [infoView release];
     [infoButtonScrollView release];
-    [gradientMask release];
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabel release];
@@ -158,7 +177,7 @@
 }
 
 - (void)toggleInfoPanel
-{
+{    
     CGRect frame = infoView.frame;
     BOOL growing = NO;
     BOOL landscape = (infoView == bottomView);
@@ -198,21 +217,28 @@
         infoButtonScrollView.scrollEnabled = YES;
     }
     
+    // We don't want the button alpha mask when the panel is expanded
+    CAGradientLayer *mask = (CAGradientLayer *) infoButtonScrollView.superview.layer.mask;
+    [CATransaction begin];
+    [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    [CATransaction setValue:[NSNumber numberWithDouble:0.3] forKey:kCATransactionAnimationDuration];
+    if (growing) {
+        mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:1.0],
+                          [NSNumber numberWithFloat:1.0], nil];
+    } else {
+        mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0.25],
+                          [NSNumber numberWithFloat:0.375], nil];
+    }
+    [CATransaction commit];
+    
+    // Animate the panel resizing
     [UIView animateWithDuration:0.3
                           delay:0
                         options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
                          infoView.frame = frame;
-                         
-                         if (landscape) {
-                             CGRect gradientFrame = gradientMask.frame;
-                             if (growing) {
-                                 gradientFrame.origin.y = gradientMask.superview.frame.size.height;
-                             } else {
-                                 gradientFrame.origin.y = gradientMask.superview.frame.size.height - gradientFrame.size.height;
-                             }
-                             gradientMask.frame = gradientFrame;
-                         }
                          
                          if (growing) {
                              // Position the buttons in the scroll view, which is no longer scrollable
