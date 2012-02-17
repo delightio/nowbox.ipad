@@ -619,6 +619,7 @@
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = (NSInteger)CMTimeGetSeconds(t);
 			loadedControlView.timeElapsed = sec;
+            [videoInfoView setElapsedTime:sec];
 		}
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
@@ -650,6 +651,7 @@
         [videoInfoView setChannelThumbnailForChannel:(aVideo ? aVideo.channel : currentChannel)];
         [videoInfoView setVideoTitle:aVideo.video.title];
         [videoInfoView setDescriptionText:aVideo.video.detail.nm_description];
+        [videoInfoView setDuration:[aVideo.video.duration integerValue]];
 	}
 	// update the position
 	CGRect theFrame = loadedControlView.frame;
@@ -1644,6 +1646,11 @@
 - (void)videoInfoViewDidTapGridButton:(PhoneVideoInfoView *)videoInfoView
 {
     [self dismissModalViewControllerAnimated:NO];
+}
+
+- (void)videoInfoViewDidTapPlayButton:(PhoneVideoInfoView *)videoInfoView
+{
+    [self playStopVideo:nil];
 }
 
 #pragma mark Debug

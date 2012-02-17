@@ -51,6 +51,10 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
+		8305574B14EDD5F4004048F7 /* phone_button_like_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574914EDD5F4004048F7 /* phone_button_like_pressed.png */; };
+		8305574C14EDD5F4004048F7 /* phone_button_like_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574A14EDD5F4004048F7 /* phone_button_like_pressed@2x.png */; };
+		8305574F14EDD609004048F7 /* phone_button_play.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574D14EDD609004048F7 /* phone_button_play.png */; };
+		8305575014EDD609004048F7 /* phone_button_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574E14EDD609004048F7 /* phone_button_play@2x.png */; };
 		83407B861461F55A009E707A /* OnBoardProcessViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83407B851461F55A009E707A /* OnBoardProcessViewController.xib */; };
 		83407B8C1461FC09009E707A /* OnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
@@ -527,6 +531,10 @@
 		22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchChannelViewController.xib; path = Classes/SearchChannelViewController.xib; sourceTree = "<group>"; };
 		22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+KeyboardDismiss.h"; sourceTree = "<group>"; };
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
+		8305574914EDD5F4004048F7 /* phone_button_like_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_like_pressed.png; sourceTree = "<group>"; };
+		8305574A14EDD5F4004048F7 /* phone_button_like_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_like_pressed@2x.png"; sourceTree = "<group>"; };
+		8305574D14EDD609004048F7 /* phone_button_play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_play.png; sourceTree = "<group>"; };
+		8305574E14EDD609004048F7 /* phone_button_play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_play@2x.png"; sourceTree = "<group>"; };
 		83407B851461F55A009E707A /* OnBoardProcessViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessViewController.xib; sourceTree = "<group>"; };
 		83407B8A1461FC09009E707A /* OnBoardProcessViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessViewController.h; sourceTree = "<group>"; };
 		83407B8B1461FC09009E707A /* OnBoardProcessViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessViewController.m; sourceTree = "<group>"; };
@@ -1251,8 +1259,12 @@
 			children = (
 				838317B014E9DD9800185DE6 /* phone_button_grid.png */,
 				838317B114E9DD9800185DE6 /* phone_button_grid@2x.png */,
+				8305574914EDD5F4004048F7 /* phone_button_like_pressed.png */,
+				8305574A14EDD5F4004048F7 /* phone_button_like_pressed@2x.png */,
 				83818BEF14EC7C7B00CE8C96 /* phone_button_like.png */,
 				83818BF014EC7C7B00CE8C96 /* phone_button_like@2x.png */,
+				8305574D14EDD609004048F7 /* phone_button_play.png */,
+				8305574E14EDD609004048F7 /* phone_button_play@2x.png */,
 				8384CD7814E0893E00444755 /* phone_button_refresh.png */,
 				8384CD7914E0893E00444755 /* phone_button_refresh@2x.png */,
 				8384CD7014E0878700444755 /* phone_button_search_background.png */,
@@ -2358,6 +2370,10 @@
 				83818BEE14EC7C7400CE8C96 /* phone_button_watch_later@2x.png in Resources */,
 				83818BF114EC7C7B00CE8C96 /* phone_button_like.png in Resources */,
 				83818BF214EC7C7B00CE8C96 /* phone_button_like@2x.png in Resources */,
+				8305574B14EDD5F4004048F7 /* phone_button_like_pressed.png in Resources */,
+				8305574C14EDD5F4004048F7 /* phone_button_like_pressed@2x.png in Resources */,
+				8305574F14EDD609004048F7 /* phone_button_play.png in Resources */,
+				8305575014EDD609004048F7 /* phone_button_play@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

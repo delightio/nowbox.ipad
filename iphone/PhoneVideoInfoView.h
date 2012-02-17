@@ -26,8 +26,11 @@
 - (void)setVideoTitle:(NSString *)videoTitle;
 - (void)setDescriptionText:(NSString *)descriptionText;
 - (void)setChannelThumbnailForChannel:(NMChannel *)channel;
+- (void)setElapsedTime:(NSInteger)elapsedTime;
+- (void)setDuration:(NSInteger)duration;
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (IBAction)gridButtonPressed:(id)sender;
+- (IBAction)playButtonPressed:(id)sender;
 - (IBAction)toggleInfoPanel:(id)sender;
 
 @end
@@ -37,6 +40,7 @@
 @protocol PhoneVideoInfoViewDelegate <NSObject>
 @optional
 - (void)videoInfoViewDidTapGridButton:(PhoneVideoInfoView *)videoInfoView;
+- (void)videoInfoViewDidTapPlayButton:(PhoneVideoInfoView *)videoInfoView;
 @end
 
 // A video info view contains two of these, one for portrait and one for landscape.
@@ -46,11 +50,13 @@
 @property (nonatomic, retain) IBOutlet UIView *topView;
 @property (nonatomic, retain) IBOutlet UIView *bottomView;
 @property (nonatomic, retain) IBOutlet UIView *infoView;
+@property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
 @property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
-@property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
+@property (nonatomic, retain) IBOutlet UILabel *elapsedTimeLabel;
+@property (nonatomic, retain) IBOutlet UILabel *durationLabel;
 
 - (void)positionLabels;
 - (void)toggleInfoPanel;

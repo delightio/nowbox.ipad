@@ -78,6 +78,20 @@
     [landscapeView.channelThumbnail setImageForChannel:channel];
 }
 
+- (void)setElapsedTime:(NSInteger)elapsedTime
+{
+    NSString *elapsedTimeText = [NSString stringWithFormat:@"%02i:%02i", elapsedTime / 60, elapsedTime % 60];
+    [portraitView.elapsedTimeLabel setText:elapsedTimeText];
+    [landscapeView.elapsedTimeLabel setText:elapsedTimeText];
+}
+
+- (void)setDuration:(NSInteger)duration
+{
+    NSString *durationText = [NSString stringWithFormat:@"%02i:%02i", duration / 60, duration % 60];
+    [portraitView.durationLabel setText:durationText];
+    [landscapeView.durationLabel setText:durationText];
+}
+
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     [currentOrientedView removeFromSuperview];
@@ -107,6 +121,13 @@
     }
 }
 
+- (IBAction)playButtonPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(videoInfoViewDidTapPlayButton:)]) {
+        [delegate videoInfoViewDidTapPlayButton:self];
+    }
+}
+
 - (IBAction)toggleInfoPanel:(id)sender
 {
     [portraitView toggleInfoPanel];
@@ -122,11 +143,13 @@
 @synthesize topView;
 @synthesize bottomView;
 @synthesize infoView;
+@synthesize channelThumbnail;
 @synthesize infoButtonScrollView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
-@synthesize channelThumbnail;
+@synthesize elapsedTimeLabel;
+@synthesize durationLabel;
 
 - (void)awakeFromNib
 {
@@ -153,11 +176,13 @@
     [topView release];
     [bottomView release];
     [infoView release];
+    [channelThumbnail release];
     [infoButtonScrollView release];
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabel release];
-    [channelThumbnail release];
+    [elapsedTimeLabel release];
+    [durationLabel release];
     
     [super dealloc];
 }
