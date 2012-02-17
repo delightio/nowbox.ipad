@@ -208,7 +208,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 				[def setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 				[def setBool:YES forKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY];
 			} else {
-				channel.subscription = nil;
+				[ctrl markChannelDeleteStatus:channel];
 			}
 			return YES;
 		}

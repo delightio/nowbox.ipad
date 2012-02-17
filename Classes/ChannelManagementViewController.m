@@ -611,7 +611,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 		}
 		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
         if (selectedIndex == 0) {
-            chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+            chn = [[myChannelsFetchedResultsController objectAtIndexPath:indexPath] valueForKey:@"channel"];
         } else {
             chn = [selectedChannelArray objectAtIndex:indexPath.row];
         }
@@ -969,13 +969,13 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	//	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"videos"]];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], [NSNumber numberWithInteger:NMChannelRecommendedType], nil]]];
-	
+//    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND NOT type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], [NSNumber numberWithInteger:NMChannelRecommendedType], nil]]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND NOT channel.type IN %@", [NSSet setWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], [NSNumber numberWithInteger:NMChannelUserType], [NSNumber numberWithInteger:NMChannelRecommendedType], nil]]];
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
@@ -1231,7 +1231,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			{
 				// reset of the channels
 				NSIndexPath *fetchedIndexPath = [NSIndexPath indexPathForRow:tableIndexPath.row inSection:0];
-				chn = [myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath];
+				chn = [[myChannelsFetchedResultsController objectAtIndexPath:fetchedIndexPath] valueForKey:@"channel"];
 				channelName = chn.title;
 				break;
 			}
