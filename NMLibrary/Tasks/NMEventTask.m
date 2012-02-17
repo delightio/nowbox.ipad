@@ -196,19 +196,19 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			if ( [channel isEqual:ctrl.userTwitterStreamChannel] ) {
 				// the unsubscribed channel is a user stream channel
 				// remove twitter stream channel
-				[ctrl markChannelDeleteStatus:channel];
+				[ctrl unsubscribeChannel:channel];
 				NM_USER_TWITTER_CHANNEL_ID = 0;
 				[def setInteger:0 forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
 				// when a user login, the server will always set the AUTO POST to true. On the client side, we need to reset that too.
 				[def setBool:YES forKey:NM_SETTING_TWITTER_AUTO_POST_KEY];
 			} else if ( [channel isEqual:ctrl.userFacebookStreamChannel] ) {
 				// remove facebook stream channel
-				[ctrl markChannelDeleteStatus:channel];
+				[ctrl unsubscribeChannel:channel];
 				NM_USER_FACEBOOK_CHANNEL_ID = 0;
 				[def setInteger:0 forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 				[def setBool:YES forKey:NM_SETTING_FACEBOOK_AUTO_POST_KEY];
 			} else {
-				[ctrl markChannelDeleteStatus:channel];
+				[ctrl unsubscribeChannel:channel];
 			}
 			return YES;
 		}

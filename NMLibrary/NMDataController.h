@@ -162,6 +162,7 @@
 - (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
 - (void)subscribeChannel:(NMChannel *)chn;
+- (void)unsubscribeChannel:(NMChannel *)chn;
 - (NSArray *)allSubscriptions;
 - (NSUInteger)numberOfSubscriptions;
 

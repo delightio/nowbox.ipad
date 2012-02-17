@@ -1406,6 +1406,10 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	}
 }
 
+- (void)unsubscribeChannel:(NMChannel *)chn {
+	[managedObjectContext deleteObject:chn.subscription];
+}
+
 - (NSArray *)allSubscriptions {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:subscriptionEntityDescription];
