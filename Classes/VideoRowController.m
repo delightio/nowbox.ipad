@@ -483,12 +483,14 @@
         if (!isLoadingNewContent && !isAnimatingNewContentCell) {
 //            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 //            NSLog(@"Load new videos y:%f, h:%f, r:%f",y,h,reload_distance);
-            isLoadingNewContent = YES;
-            [videoTableView beginUpdates];
-            [videoTableView endUpdates];
 
-            NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-			[schdlr issueGetMoreVideoForChannel:channel];
+			NMChannelType chnType = [channel.type integerValue];
+			if ( chnType != NMChannelUserFacebookType && chnType != NMChannelUserTwitterType ) {
+				isLoadingNewContent = YES;
+				[videoTableView beginUpdates];
+				[videoTableView endUpdates];
+				[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+			}
         }
     }
 }
