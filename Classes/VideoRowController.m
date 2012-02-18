@@ -15,6 +15,7 @@
 @implementation VideoRowController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
+@synthesize youtubeImportPredicate = _youtubeImportPredicate;
 @synthesize videoTableView;
 @synthesize channel, panelController;
 @synthesize indexInTable;
@@ -57,6 +58,7 @@
         [cell setVideoRowDelegate:nil];
     }
     [videoTableView release];
+	[_youtubeImportPredicate release];
     
 	[super dealloc];
 }
@@ -219,6 +221,13 @@
 }
 
 #pragma mark Fetched Results Controller
+- (NSPredicate *)youtubeImportPredicate {
+	if ( _youtubeImportPredicate == nil ) {
+		_youtubeImportPredicate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL"] retain];
+	}
+	return _youtubeImportPredicate;
+}
+
 - (NSFetchedResultsController *)fetchedResultsController {
     
     if (fetchedResultsController_ != nil) {
@@ -430,18 +439,21 @@
 - (void)handleDidImportVideoNotification:(NSNotification *)aNotification {
 	NSDictionary * info = [aNotification userInfo];
 	NMConcreteVideo * vdo = [info objectForKey:@"target_object"];
-	if ( vdo && [vdo.channels containsObject:channel] ) {
-		if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
-			isLoadingNewContent = NO;
-			isAnimatingNewContentCell = NO;
-			[videoTableView reloadData];
-		} else {
-            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
-            isLoadingNewContent = NO;
-            isAnimatingNewContentCell = YES;
-			[videoTableView reloadData];
-            [videoTableView beginUpdates];
-            [videoTableView endUpdates];
+	if ( vdo ) {
+		NSSet * result = [vdo.channels filteredSetUsingPredicate:[self.youtubeImportPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channel forKey:@"CHANNEL"]]];
+		if ( [result count] ) {
+			if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
+				isLoadingNewContent = NO;
+				isAnimatingNewContentCell = NO;
+				[videoTableView reloadData];
+			} else {
+				[self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
+				isLoadingNewContent = NO;
+				isAnimatingNewContentCell = YES;
+				[videoTableView reloadData];
+				[videoTableView beginUpdates];
+				[videoTableView endUpdates];
+			}
 		}
 	}
 }

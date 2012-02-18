@@ -14,6 +14,7 @@
 	NSInteger maxUnixTime;
 	BOOL isAccountOwner;
 	NSString * feedDirectURLString;
+	NSInteger numberOfVideoAdded;
 }
 
 @property (nonatomic, retain) NMChannel * channel;

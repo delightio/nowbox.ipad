@@ -188,7 +188,7 @@
 }
 
 - (IBAction)importYouTube:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issueDebugImportYouTubeVideos];
+	[[NMTaskQueueController sharedTaskQueueController] scheduleImportVideos];
 }
 
 - (IBAction)facebookFilter:(id)sender {
@@ -203,6 +203,10 @@
 - (IBAction)facebookSignOut:(id)sender {
 	[syncActivityView startAnimating];
 	[[NMAccountManager sharedAccountManager] signOutFacebookOnCompleteTarget:self action:@selector(stopAnimating)];
+}
+
+- (IBAction)facebookFeedParse:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] scheduleSyncSocialChannels];
 }
 
 - (IBAction)checkUpdate:(id)sender {

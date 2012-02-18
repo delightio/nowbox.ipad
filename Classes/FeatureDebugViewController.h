@@ -35,5 +35,6 @@
 - (IBAction)importYouTube:(id)sender;
 - (IBAction)facebookFilter:(id)sender;
 - (IBAction)facebookSignOut:(id)sender;
+- (IBAction)facebookFeedParse:(id)sender;
 
 @end

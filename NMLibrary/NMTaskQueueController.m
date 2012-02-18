@@ -160,26 +160,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController performSelector:@selector(debugPrintCommandPoolStatus) onThread:networkController.controlThread withObject:nil waitUntilDone:NO];
 }
 
-- (void)issueDebugProcessFeed {
-	NSArray * allSubscriptions = [dataController allSubscriptions];
-	for (NMSubscription * scrpt in allSubscriptions) {
-		[self issueProcessFeedForChannel:scrpt.channel];
-	}
-}
-
-- (void)issueDebugImportYouTubeVideos {
-	NSArray * allSubscriptions = [dataController allSubscriptions];
-	NSArray * videos;
-	for (NMSubscription * scrpt in allSubscriptions) {
-		// get the list of videos
-		videos = [dataController pendingImportVideosForChannel:scrpt.channel];
-		// issue request for each video
-		if ( [videos count] ) {
-			[self issueImportVideo:[videos objectAtIndex:0]];
-		}
-	}
-}
-
 - (ACAccountStore *)accountStore {
 	if ( _accountStore == nil ) {
 		_accountStore = [[ACAccountStore alloc] init];

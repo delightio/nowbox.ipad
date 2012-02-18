@@ -148,8 +148,6 @@
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
-- (void)issueDebugProcessFeed;
-- (void)issueDebugImportYouTubeVideos;
 
 - (void)cancelAllTasks;
 @end
