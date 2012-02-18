@@ -165,6 +165,7 @@
 			[taskQueueController issueSyncRequest];
 		}
 		[taskQueueController scheduleSyncSocialChannels];
+		[taskQueueController scheduleImportVideos];
 	}
     
     NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];

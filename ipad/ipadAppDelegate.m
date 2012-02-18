@@ -307,6 +307,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 			[tqc issueSyncRequest];
 		}
 		[tqc scheduleSyncSocialChannels];
+		[tqc scheduleImportVideos];
 	}
     
     if ([viewController isKindOfClass:[VideoPlaybackBaseViewController class]]) {
