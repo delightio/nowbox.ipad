@@ -921,6 +921,7 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 		newVid.channel = chnObj;
 		newVid.video = vid.video;
 	}
+	[request release];
 	return newVid;
 }
 

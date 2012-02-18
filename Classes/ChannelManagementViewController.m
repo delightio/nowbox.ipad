@@ -115,6 +115,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 //			});
 		}
 	}];
+	[accountStore release];
 }
 
 #pragma mark - View lifecycle
@@ -797,8 +798,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							} else {
 								socialCtrl.loginType = NMLoginTwitterType;
 								[self.navigationController pushViewController:socialCtrl animated:YES];
-								[socialCtrl release];
 							}
+							[socialCtrl release];
 							
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							

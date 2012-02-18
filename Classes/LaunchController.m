@@ -49,7 +49,7 @@
 	[lastFailNotificationName release];
     [updateURL release];
     [onBoardProcessController release];
-    
+    [subscribingChannels release];
 	[super dealloc];
 }
 

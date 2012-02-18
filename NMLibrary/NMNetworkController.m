@@ -413,9 +413,10 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 
 - (void)forceCancelAllTasks {
 	// cancel the connection
-	NSURLConnection * conn;
+	NMURLConnection * conn;
 	NMTask * theTask;
 	for (conn in connectionPool) {
+		theTask = conn.task;
 		[conn cancel];
 		[self returnNetworkResource];
 		if ( [theTask didCancelNotificationName] ) {

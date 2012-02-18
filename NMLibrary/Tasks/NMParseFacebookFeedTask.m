@@ -325,7 +325,9 @@ static NSArray * youTubeRegexArray = nil;
 					}
 					[lkSet addObject:theProfile];
 				}
+#ifdef DEBUG_FACEBOOK_IMPORT
 				NSLog(@"add like: %@", theProfile.name);
+#endif
 				[fbInfo addPeopleLike:lkSet];
 			} else if ( [fbInfo.peopleLike count] ) {
 				[fbInfo removePeopleLike:fbInfo.peopleLike];
@@ -361,7 +363,9 @@ static NSArray * youTubeRegexArray = nil;
 						theProfile.name = [fromDict objectForKey:@"name"];
 					}
 					cmtObj.fromPerson = theProfile;
+#ifdef DEBUG_FACEBOOK_IMPORT
 					NSLog(@"add comment: %@", cmtObj.message);
+#endif
 					[cmtSet addObject:cmtObj];
 				}
 				[fbInfo addComments:cmtSet];
