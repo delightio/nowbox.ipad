@@ -1,46 +1,29 @@
 //
-//  PhoneVideoInfoView.m
+//  PhoneMovieDetailView.m
 //  ipad
 //
 //  Created by Chris Haugli on 2/13/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "PhoneVideoInfoView.h"
+#import "PhoneMovieDetailView.h"
+#import <QuartzCore/QuartzCore.h>
 
-#pragma mark - PhoneVideoInfoView
+#pragma mark - PhoneMovieDetailView
 
-@implementation PhoneVideoInfoView
+@implementation PhoneMovieDetailView
 
 @synthesize portraitView;
 @synthesize landscapeView;
+@synthesize infoPanelExpanded;
 @synthesize delegate;
 
-- (void)setup
+- (void)awakeFromNib
 {
     self.backgroundColor = [UIColor clearColor];
     
-    [[NSBundle mainBundle] loadNibNamed:@"PhoneVideoInfoView" owner:self options:nil];
     [self addSubview:portraitView];
     currentOrientedView = portraitView;
-}
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self setup];
-    }
-    return self;
 }
 
 - (void)dealloc
@@ -49,6 +32,16 @@
     [landscapeView release];
     
     [super dealloc];
+}
+
+- (void)setVideo:(NMVideo *)video {
+    [super setVideo:video];
+    
+    [self setChannelTitle:video.channel.title];
+    [self setChannelThumbnailForChannel:video.channel];
+    [self setVideoTitle:video.video.title];
+    [self setDescriptionText:video.video.detail.nm_description];
+    [self setDuration:[video.video.duration integerValue]];
 }
 
 - (void)setChannelTitle:(NSString *)channelTitle
@@ -75,6 +68,32 @@
 {
     [portraitView.channelThumbnail setImageForChannel:channel];
     [landscapeView.channelThumbnail setImageForChannel:channel];
+}
+
+- (void)setElapsedTime:(NSInteger)elapsedTime
+{
+    NSString *elapsedTimeText = [NSString stringWithFormat:@"%02i:%02i", elapsedTime / 60, elapsedTime % 60];
+    [portraitView.elapsedTimeLabel setText:elapsedTimeText];
+    [landscapeView.elapsedTimeLabel setText:elapsedTimeText];
+}
+
+- (void)setDuration:(NSInteger)duration
+{
+    NSString *durationText = [NSString stringWithFormat:@"%02i:%02i", duration / 60, duration % 60];
+    [portraitView.durationLabel setText:durationText];
+    [landscapeView.durationLabel setText:durationText];
+}
+
+- (void)setInfoPanelExpanded:(BOOL)expanded
+{
+    [self setInfoPanelExpanded:expanded animated:NO];
+}
+
+- (void)setInfoPanelExpanded:(BOOL)expanded animated:(BOOL)animated
+{
+    infoPanelExpanded = expanded;
+    [portraitView setInfoPanelExpanded:expanded animated:animated];
+    [landscapeView setInfoPanelExpanded:expanded animated:animated];
 }
 
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -106,10 +125,19 @@
     }
 }
 
+- (IBAction)playButtonPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(videoInfoViewDidTapPlayButton:)]) {
+        [delegate videoInfoViewDidTapPlayButton:self];
+    }
+}
+
 - (IBAction)toggleInfoPanel:(id)sender
 {
-    [portraitView toggleInfoPanel];
-    [landscapeView toggleInfoPanel];
+    [self setInfoPanelExpanded:!infoPanelExpanded animated:YES];
+    if ([delegate respondsToSelector:@selector(videoInfoView:didToggleInfoPanelExpanded:)]) {
+        [delegate videoInfoView:self didToggleInfoPanelExpanded:infoPanelExpanded];
+    }
 }
 
 @end
@@ -121,22 +149,47 @@
 @synthesize topView;
 @synthesize bottomView;
 @synthesize infoView;
+@synthesize channelThumbnail;
 @synthesize infoButtonScrollView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
-@synthesize channelThumbnail;
+@synthesize elapsedTimeLabel;
+@synthesize durationLabel;
+@synthesize infoPanelExpanded;
+
+- (void)awakeFromNib
+{
+    UIView *viewToMask = infoButtonScrollView.superview;
+    
+    // Fade out info buttons
+    CAGradientLayer *mask = [CAGradientLayer layer];
+    mask.frame = CGRectMake(0, 0, viewToMask.bounds.size.width, viewToMask.bounds.size.height * 2);
+    mask.colors = [NSArray arrayWithObjects:
+                   (id)[UIColor whiteColor].CGColor,
+                   (id)[UIColor whiteColor].CGColor,                       
+                   (id)[UIColor clearColor].CGColor, nil];
+    mask.startPoint = CGPointMake(0.5, 0);
+    mask.endPoint = CGPointMake(0.5, 1);
+    mask.locations = [NSArray arrayWithObjects:
+                      [NSNumber numberWithFloat:0],
+                      [NSNumber numberWithFloat:0.25],
+                      [NSNumber numberWithFloat:0.375], nil];
+    viewToMask.layer.mask = mask; 
+}
 
 - (void)dealloc
 {
     [topView release];
     [bottomView release];
     [infoView release];
+    [channelThumbnail release];
     [infoButtonScrollView release];
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabel release];
-    [channelThumbnail release];
+    [elapsedTimeLabel release];
+    [durationLabel release];
     
     [super dealloc];
 }
@@ -155,11 +208,28 @@
     descriptionLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
-- (void)toggleInfoPanel
+- (void)setInfoPanelExpanded:(BOOL)expanded
 {
+    [self setInfoPanelExpanded:expanded animated:NO];
+}
+
+- (void)setInfoPanelExpanded:(BOOL)expanded animated:(BOOL)animated
+{    
+    infoPanelExpanded = expanded;
+    
     CGRect frame = infoView.frame;
-    if (frame.size.height < 200) {
-        frame.size.height = 200;
+    BOOL landscape = (infoView == bottomView);
+    
+    if (landscape) {
+        // Landscape - resize view keeping the bottom position the same
+        frame.size.height = (expanded ? 160 : 120);
+        frame.origin.y = CGRectGetMaxY(infoView.frame) - frame.size.height;
+    } else {
+        // Portrait - resize view keeping the top position the same
+        frame.size.height = (expanded ? 200 : 116);
+    }
+    
+    if (expanded) {
         infoButtonScrollView.scrollEnabled = NO;
                 
         // We don't want buttons flying down from the top, looks bad. Reposition buttons to avoid it.
@@ -172,27 +242,53 @@
             }
         }
     } else {
-        frame.size.height = 116;
         infoButtonScrollView.scrollEnabled = YES;
     }
     
-    [UIView animateWithDuration:0.3
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
-                     animations:^{
-                         infoView.frame = frame;
-                         
-                         if (!infoButtonScrollView.scrollEnabled) {
-                             // Position the buttons in the scroll view, which is no longer scrollable
-                             for (UIView *view in infoButtonScrollView.subviews) {
-                                 CGRect buttonFrame = view.frame;
-                                 buttonFrame.origin.y = infoButtonScrollView.contentOffset.y + view.tag * infoButtonScrollView.frame.size.height;
-                                 view.frame = buttonFrame;
-                             }
-                         }
-                     }
-                     completion:^(BOOL finished){
-                     }];
+    // We don't want the button alpha mask when the panel is expanded
+    CAGradientLayer *mask = (CAGradientLayer *) infoButtonScrollView.superview.layer.mask;
+    if (animated) {
+        [CATransaction begin];
+        [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [CATransaction setValue:[NSNumber numberWithDouble:0.3] forKey:kCATransactionAnimationDuration];
+    }
+    if (expanded) {
+        mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:1.0],
+                          [NSNumber numberWithFloat:1.0], nil];
+    } else {
+        mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0.25],
+                          [NSNumber numberWithFloat:0.375], nil];
+    }
+    if (animated) {
+        [CATransaction commit];
+    }
+    
+    // Resize the panel
+    void (^animations)(void) = ^{
+        infoView.frame = frame;
+        
+        if (expanded) {
+            // Position the buttons in the scroll view, which is no longer scrollable
+            for (UIView *view in infoButtonScrollView.subviews) {
+                CGRect buttonFrame = view.frame;
+                buttonFrame.origin.y = infoButtonScrollView.contentOffset.y + view.tag * infoButtonScrollView.frame.size.height;
+                view.frame = buttonFrame;
+            }
+        }        
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
+                         animations:animations
+                         completion:^(BOOL finished){
+                         }];
+    } else {
+        animations();
+    }
 }
 
 @end

@@ -85,6 +85,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 @synthesize appDelegate;
 @synthesize playbackModelController;
 @synthesize ratingsURL;
+@synthesize loadedMovieDetailView;
 
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 /*

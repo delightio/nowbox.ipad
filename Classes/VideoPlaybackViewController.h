@@ -93,6 +93,7 @@
 @property (nonatomic, readonly) NMVideo * currentVideo;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
+@property (nonatomic, retain) IBOutlet NMMovieDetailView * loadedMovieDetailView;
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, readonly) NMMovieView * movieView;
 @property (nonatomic, retain) IBOutlet ChannelPanelController * channelController;

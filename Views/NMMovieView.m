@@ -28,7 +28,8 @@
 	self = [super initWithFrame:frame];
 	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
 	self.backgroundColor = theStyle.blackColor;
-	
+	self.clipsToBounds = YES;
+    
 	CGPoint pos;
 	pos.x = floorf(frame.size.width / 2.0);
 	pos.y = floorf(frame.size.height / 2.0);
