@@ -254,7 +254,11 @@
 
 - (void)updateSeekBubbleLocation {
 	CGPoint thePoint = seekBubbleButton.center;
-	thePoint.x = progressSlider.nubPosition.x + sliderRect.origin.x - 1;
+    if (NM_RUNNING_ON_IPAD) {
+        thePoint.x = progressSlider.nubPosition.x + sliderRect.origin.x - 1;
+    } else {
+        thePoint.x = [progressSlider convertPoint:progressSlider.nubPosition toView:self].x;
+    }
 	seekBubbleButton.center = thePoint;
 }
 
@@ -264,8 +268,8 @@
 //	channelNameLabel.text = @"";
 	[segmentChannelButton setTitle:@"" forState:UIControlStateNormal];
 	videoTitleLabel.text = @"";
-	durationLabel.text = @"--:--";
-	currentTimeLabel.text = @"--:--";
+	durationLabel.text = (NM_RUNNING_ON_IPAD ? @"--:--" : @"00:00");
+	currentTimeLabel.text = (NM_RUNNING_ON_IPAD ? @"--:--" : @"00:00");
 	authorImageView.image = nil;
 	channelImageView.image = nil;
 	if ( lastVideoMessage ) {
