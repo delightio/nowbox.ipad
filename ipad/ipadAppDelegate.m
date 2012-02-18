@@ -269,7 +269,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	// cancel tasks
 //	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
-	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	[tqc stopPollingServer];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
@@ -278,6 +279,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedSessionTime], AnalyticsPropertySessionElapsedTime, 
                                                                                 [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = YES;
+	[tqc.dataController clearChannelCache];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

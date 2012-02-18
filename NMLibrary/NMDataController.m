@@ -773,37 +773,6 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	}
 }
 
-- (void)markChannelDeleteStatus:(NMChannel *)chnObj {
-	chnObj.subscription.nm_hidden = (NSNumber *)kCFBooleanTrue;
-	[managedObjectContext save:nil];
-}
-
-- (void)markChannelDeleteStatusForID:(NSInteger)chnID {
-	//TODO: set those channels as hidden for now. Gotta make a special status for "marked as delete"
-	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:channelEntityDescription];
-	// don't need predicate template for now. There's not much performance concern in deleting channel
-	[request setPredicate:[self.objectForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:chnID] forKey:@"OBJECT_ID"]]];
-	[request setReturnsObjectsAsFaults:NO];
-	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-	NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
-	for (NMChannel * chnObj in result) {
-		chnObj.subscription.nm_hidden = yesNum;
-	}
-	// save changes
-	[managedObjectContext save:nil];
-	[request release];
-}
-
-- (void)bulkMarkChannelsDeleteStatus:(NSArray *)chnAy {
-	NSNumber * yesNum = (NSNumber *)kCFBooleanTrue;
-	for (NMChannel * chnObj in chnAy) {
-		chnObj.subscription.nm_hidden = yesNum;
-	}
-	[channelCacheDictionary removeAllObjects];
-	[managedObjectContext save:nil];
-}
-
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
@@ -1211,6 +1180,9 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
 		for (NMSubscription * subtObj in result) {
+			// delete the channel object first. channel-subscription uses "nullify" delete rule
+			[managedObjectContext deleteObject:subtObj.channel];
+			// delete the subscription object itself
 			[managedObjectContext deleteObject:subtObj];
 		}
 	}
@@ -1409,6 +1381,15 @@ NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR = 99991;
 
 - (void)unsubscribeChannel:(NMChannel *)chn {
 	[managedObjectContext deleteObject:chn.subscription];
+}
+
+- (void)bulkUnsubscribeChannels:(NSArray *)chnAy {
+	for (NMChannel * chn in chnAy) {
+		if ( chn.subscription ) {
+			[managedObjectContext deleteObject:chn.subscription];
+		}
+	}
+	[managedObjectContext save:nil];
 }
 
 - (NSArray *)allSubscriptions {

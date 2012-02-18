@@ -389,7 +389,7 @@ NSString * const NMDidFailCompareSubscribedChannelsNotification = @"NMDidFailCom
 				[chnObj removeCategoriesObject:category];
 			}
 		} else {
-			[ctrl bulkMarkChannelsDeleteStatus:objectsToDelete];
+			[ctrl bulkUnsubscribeChannels:objectsToDelete];
 		}
 	}
 	if ( [channelIndexSet count] ) {

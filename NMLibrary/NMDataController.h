@@ -112,9 +112,6 @@
 - (NSInteger)maxSubscriptionSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
 - (void)updateFavoriteChannelHideStatus;
-- (void)markChannelDeleteStatus:(NMChannel *)chnObj;
-- (void)markChannelDeleteStatusForID:(NSInteger)chnID;
-- (void)bulkMarkChannelsDeleteStatus:(NSArray *)chnAy;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NSArray *)socialChannelsForSync;
@@ -162,6 +159,7 @@
 - (NSInteger)maxPersonProfileID;
 - (NMChannel *)subscribeUserChannelWithPersonProfile:(NMPersonProfile *)aProfile;
 - (void)subscribeChannel:(NMChannel *)chn;
+- (void)bulkUnsubscribeChannels:(NSArray *)chnAy;
 - (void)unsubscribeChannel:(NMChannel *)chn;
 - (NSArray *)allSubscriptions;
 - (NSUInteger)numberOfSubscriptions;

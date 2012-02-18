@@ -829,7 +829,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				}	
 				default:
 					indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
-					chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+					chn = [[myChannelsFetchedResultsController objectAtIndexPath:indexPath] valueForKey:@"channel"];
 					[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
 																							  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
 																							  @"channelmanagement", AnalyticsPropertySender, nil]];
