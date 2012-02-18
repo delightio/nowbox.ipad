@@ -49,7 +49,9 @@
 
 // A video info view contains two of these, one for portrait and one for landscape.
 
-@interface PhoneVideoInfoOrientedView : UIView
+@interface PhoneVideoInfoOrientedView : UIView {
+    CGRect originalVideoTitleFrame;
+}
 
 @property (nonatomic, retain) IBOutlet UIView *topView;
 @property (nonatomic, retain) IBOutlet UIView *bottomView;

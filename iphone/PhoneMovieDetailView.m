@@ -108,6 +108,7 @@
 
     currentOrientedView.frame = self.bounds;
     [self addSubview:currentOrientedView];
+    [currentOrientedView positionLabels];
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
@@ -176,6 +177,8 @@
                       [NSNumber numberWithFloat:0.25],
                       [NSNumber numberWithFloat:0.375], nil];
     viewToMask.layer.mask = mask; 
+    
+    originalVideoTitleFrame = videoTitleLabel.frame;
 }
 
 - (void)dealloc
@@ -197,12 +200,15 @@
 - (void)positionLabels
 {
     // Position the description label below the video title
-    CGSize videoTitleSize = [videoTitleLabel.text sizeWithFont:videoTitleLabel.font 
-                                             constrainedToSize:videoTitleLabel.frame.size
-                                                 lineBreakMode:videoTitleLabel.lineBreakMode];
-    CGRect frame = descriptionLabel.frame;
+    videoTitleLabel.frame = originalVideoTitleFrame;
+    [videoTitleLabel sizeToFit];
+    CGRect frame = videoTitleLabel.frame;
+    frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
+    videoTitleLabel.frame = frame;
+    
+    frame = descriptionLabel.frame;
     CGFloat distanceFromBottom = CGRectGetHeight(infoView.frame) - CGRectGetMaxY(frame);
-    frame.origin.y = videoTitleLabel.frame.origin.y + videoTitleSize.height;
+    frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 5;
     frame.size.height = infoView.frame.size.height - frame.origin.y - distanceFromBottom;
     descriptionLabel.frame = frame;
     descriptionLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

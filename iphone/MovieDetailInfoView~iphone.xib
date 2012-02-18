@@ -114,7 +114,7 @@
 										</object>
 									</object>
 								</array>
-								<string key="NSFrame">{{100, 130}, {120, 120}}</string>
+								<string key="NSFrame">{{100, 140}, {120, 120}}</string>
 								<reference key="NSSuperview" ref="625834118"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="353113485"/>
@@ -359,7 +359,7 @@
 										<string key="NSFrame">{{0, 94}, {320, 22}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="476363426"/>
+										<reference key="NSNextKeyView" ref="229656207"/>
 										<string key="NSReuseIdentifierKey">_NS:567</string>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -398,10 +398,10 @@
 									<object class="IBUILabel" id="723129820">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">290</int>
-										<string key="NSFrame">{{64, 7}, {186, 86}}</string>
+										<string key="NSFrame">{{64, 10}, {186, 65}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="30034096"/>
+										<reference key="NSNextKeyView" ref="476363426"/>
 										<string key="NSReuseIdentifierKey">_NS:328</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIClipsSubviews">YES</bool>
@@ -413,7 +413,7 @@
 										<nil key="IBUIHighlightedColor"/>
 										<int key="IBUIBaselineAdjustment">1</int>
 										<float key="IBUIMinimumFontSize">10</float>
-										<int key="IBUINumberOfLines">10</int>
+										<int key="IBUINumberOfLines">0</int>
 										<object class="IBUIFontDescription" key="IBUIFontDescription">
 											<string key="name">Futura-CondensedMedium</string>
 											<string key="family">Futura</string>
@@ -429,10 +429,10 @@
 									<object class="IBUILabel" id="476363426">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">274</int>
-										<string key="NSFrame">{{64, 56}, {186, 40}}</string>
+										<string key="NSFrame">{{64, 60}, {186, 34}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="229656207"/>
+										<reference key="NSNextKeyView" ref="30034096"/>
 										<string key="NSReuseIdentifierKey">_NS:328</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIClipsSubviews">YES</bool>
@@ -805,6 +805,7 @@
 								<nil key="IBUIHighlightedColor"/>
 								<int key="IBUIBaselineAdjustment">1</int>
 								<float key="IBUIMinimumFontSize">10</float>
+								<int key="IBUINumberOfLines">0</int>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
 									<string key="name">Futura-CondensedMedium</string>
 									<string key="family">Futura</string>
@@ -820,7 +821,7 @@
 							<object class="IBUILabel" id="632621912">
 								<reference key="NSNextResponder" ref="263006526"/>
 								<int key="NSvFlags">274</int>
-								<string key="NSFrame">{{66, 55}, {325, 21}}</string>
+								<string key="NSFrame">{{66, 55}, {325, 20}}</string>
 								<reference key="NSSuperview" ref="263006526"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="474427118"/>
