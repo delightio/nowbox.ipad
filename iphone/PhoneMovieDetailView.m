@@ -257,11 +257,8 @@
         infoButtonScrollView.scrollEnabled = NO;
                 
         // We don't want buttons flying down from the top, looks bad. Reposition buttons to avoid it.
-        NSInteger centerViewIndex = [infoButtonScrollView centerViewIndex];
         for (UIView *view in infoButtonScrollView.subviews) {
-            if (view.tag < centerViewIndex && view.center.y - infoButtonScrollView.contentOffset.y > infoButtonScrollView.frame.size.height) {
-                view.center = CGPointMake(view.center.x, view.center.y - [infoButtonScrollView.subviews count] * infoButtonScrollView.frame.size.height);
-            } else if (view.tag > centerViewIndex && view.center.y - infoButtonScrollView.contentOffset.y < 0) {
+            if (view.center.y < infoButtonScrollView.contentOffset.y) {
                 view.center = CGPointMake(view.center.x, view.center.y + [infoButtonScrollView.subviews count] * infoButtonScrollView.frame.size.height);
             }
         }
@@ -290,28 +287,17 @@
     }
     
     // Resize the panel
-    void (^animations)(void) = ^{
-        infoView.frame = frame;
-        
-        if (expanded) {
-            // Position the buttons in the scroll view, which is no longer scrollable
-            for (UIView *view in infoButtonScrollView.subviews) {
-                CGRect buttonFrame = view.frame;
-                buttonFrame.origin.y = infoButtonScrollView.contentOffset.y + view.tag * infoButtonScrollView.frame.size.height;
-                view.frame = buttonFrame;
-            }
-        }        
-    };
-    
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
-                         animations:animations
+                         animations:^{
+                             infoView.frame = frame;
+                         }
                          completion:^(BOOL finished){
                          }];
     } else {
-        animations();
+        infoView.frame = frame;
     }
 }
 
