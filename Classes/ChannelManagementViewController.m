@@ -806,7 +806,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							return;
 						}
 					} else if ( indexPath.row == 1 ) {
-						if ( acMgr.facebookAuthorized ) {
+						if ( [acMgr.facebookAccountStatus integerValue] ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 							channelDetailViewController.enableUnsubscribe = YES;
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 

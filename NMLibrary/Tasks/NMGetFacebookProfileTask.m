@@ -22,18 +22,13 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 @synthesize userID = _userID;
 @synthesize profile = _profile;
 
-- (id)initGetMe {
-	self = [super init];
-	command = NMCommandGetFacebookProfile;
-	profileOwnsByMe = YES;
-	return self;
-}
-
 - (id)initWithProfile:(NMPersonProfile *)aProfile {
+	// For Facebook, the person's profile is always created before we perform fetch person profile detail.
 	self = [super init];
 	command = NMCommandGetFacebookProfile;
 	self.userID = aProfile.nm_user_id;
 	self.targetID = aProfile.nm_id;
+	self.profile = aProfile;
 	profileOwnsByMe = [aProfile.nm_me boolValue];
 	return self;
 }
@@ -73,22 +68,22 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	NSString * theID = [_profileDictionary objectForKey:@"nm_user_id"];
 	BOOL newState;
-	NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithID:theID isNew:&newState];
-	if ( newState ) theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
-	theProfile.nm_error = (NSNumber *)kCFBooleanFalse;
-	if ( profileOwnsByMe ) theProfile.nm_me = (NSNumber *)kCFBooleanTrue;
-	[theProfile setValuesForKeysWithDictionary:_profileDictionary];
-	self.profile = theProfile;
+	if ( _profile == nil ) {
+		self.profile = [ctrl insertNewPersonProfileWithID:theID isNew:&newState];
+	}
+	if ( newState ) _profile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+	_profile.nm_error = (NSNumber *)kCFBooleanFalse;
+	[_profile setValuesForKeysWithDictionary:_profileDictionary];
 	
 	// check if we need to create the channel object. Automatically subscribe to the profile if we are grabbing the owner's profile
-	if ( newState && profileOwnsByMe ) {
-		[ctrl subscribeUserChannelWithPersonProfile:theProfile];
-		theProfile.nm_id = [NSNumber numberWithInteger:[ctrl maxPersonProfileID] + 1];
+	if ( profileOwnsByMe && _profile.subscription == nil ) {
+		[ctrl subscribeUserChannelWithPersonProfile:_profile];
+		_profile.nm_id = [NSNumber numberWithInteger:[ctrl maxPersonProfileID] + 1];
 		// tier 0 is the highest level
-		theProfile.subscription.nm_subscription_tier = (NSNumber *)kCFBooleanFalse;
+		_profile.subscription.nm_subscription_tier = (NSNumber *)kCFBooleanFalse;
 		// save the channel ID
-		[[NSUserDefaults standardUserDefaults] setObject:theProfile.nm_id forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
-		NM_USER_FACEBOOK_CHANNEL_ID = [theProfile.nm_id integerValue];
+		[[NSUserDefaults standardUserDefaults] setObject:_profile.nm_id forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+		NM_USER_FACEBOOK_CHANNEL_ID = [_profile.nm_id integerValue];
 		return YES;
 	}
 	return NO;
@@ -108,6 +103,10 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 
 - (NSDictionary *)userInfo {
 	return [NSDictionary dictionaryWithObjectsAndKeys:_profile, @"target_object", nil];
+}
+
+- (NSDictionary *)failUserInfo {
+	return [NSDictionary dictionaryWithObject:_profile forKey:@"target_object"];
 }
 
 @end

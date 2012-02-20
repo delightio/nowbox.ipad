@@ -136,7 +136,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
 	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
-	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+	NSNumber * errNum = [NSNumber numberWithInteger:NMErrorPendingImport];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
 	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

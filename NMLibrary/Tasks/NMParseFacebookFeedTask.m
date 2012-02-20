@@ -73,7 +73,7 @@ static NSArray * youTubeRegexArray = nil;
 - (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
 	theProfile.nm_id = [NSNumber numberWithInteger:theID];
 	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
-	theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+	theProfile.nm_error = [NSNumber numberWithInteger:NMErrorPendingImport];
 }
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
@@ -162,7 +162,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
 	NSInteger personIDBase = [ctrl maxPersonProfileID];
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
-	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+	NSNumber * errNum = [NSNumber numberWithInteger:NMErrorPendingImport];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
 	NSInteger idx = -1;

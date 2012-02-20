@@ -164,8 +164,7 @@
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 			[taskQueueController issueSyncRequest];
 		}
-		[taskQueueController scheduleSyncSocialChannels];
-		[taskQueueController scheduleImportVideos];
+		[[NMAccountManager sharedAccountManager] applicationDidLaunch];
 	}
     
     NSString *userNameTag = [NSString stringWithFormat:@"User #%i", NM_USER_ACCOUNT_ID];

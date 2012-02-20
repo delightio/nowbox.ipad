@@ -59,7 +59,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize dataController;
 @synthesize youTubePollingTimer, tokenRenewTimer;
 @synthesize channelPollingTimer, userSyncTimer;
-@synthesize socialChannelParsingTimer, videoImportTimer;
 @synthesize unpopulatedChannels;
 @synthesize syncInProgress, appFirstLaunch;
 @synthesize accountStore = _accountStore;
@@ -94,10 +93,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	
 	// listen to subscription as well
 	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
-	// do the same thing for twitter as well
-	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
-
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
@@ -137,12 +132,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	if ( tokenRenewTimer ) {
 		[tokenRenewTimer invalidate], [tokenRenewTimer release];
-	}
-	if ( socialChannelParsingTimer ) {
-		[socialChannelParsingTimer invalidate], [socialChannelParsingTimer release];
-	}
-	if ( videoImportTimer ) {
-		[videoImportTimer invalidate], [videoImportTimer release];
 	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
@@ -222,52 +211,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 				}
 			}
 			break;
-		default:
-			break;
-	}
-}
-
-- (void)handleDidGetPersonProfile:(NSNotification *)aNotification {
-	/*
-	 Listen to this notificaiton only when the user signs in Twitter or Facebook.
-	 
-	 For Facebook, we set this task queue schedule to listen to notification in the NMAccountManager. When user has successfully granted this app access to his/her Facebook account, NMAccountManager will get called (the facebook delegate)
-	*/
-	NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
-	if ( [theProfile.nm_me boolValue] ) {
-		// trigger feed parsing
-		[self scheduleSyncSocialChannels];
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:[aNotification name] object:nil];
-	}
-}
-
-- (void)handleDidParseFeedNotification:(NSNotification *)aNotification {
-	NSDictionary * infoDict = [aNotification userInfo];
-	if ( [[infoDict objectForKey:@"num_video_added"] integerValue] ) {
-		// we found new video in the news feed
-		if ( videoImportTimer == nil ) {
-			[self scheduleImportVideos];
-		}
-	}
-	NMChannel * chnObj = [infoDict objectForKey:@"channel"];
-	switch ([chnObj.type integerValue]) {
-		case NMChannelUserTwitterType:
-		{
-			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:infoDict];
-			[networkController addNewConnectionForTask:task];
-			[task release];
-			break;
-		}
-		case NMChannelUserFacebookType:
-		{
-			NSString * urlStr = [infoDict objectForKey:@"next_url"];
-			if ( urlStr ) {
-				NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
-				[networkController addNewConnectionForTask:task];
-				[task release];
-			}
-			break;
-		}	
 		default:
 			break;
 	}
@@ -682,8 +625,14 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-- (void)issueGetMyFacebookProfile {
-	NMGetFacebookProfileTask * task = [[NMGetFacebookProfileTask alloc] initGetMe];
+- (void)issueProcessFeedWithTwitterInfo:(NSDictionary *)twChnInfo {
+	NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithInfo:twChnInfo];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj directURLString:(NSString *)urlStr {
+	NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -707,55 +656,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueProcessFeedForChannel:chn];
 }
 
-- (void)scheduleSyncSocialChannels {
-	// get the qualified channels
-	NSArray * theChannels = [dataController socialChannelsForSync];
-	NSUInteger c = [theChannels count];
-	for (NSUInteger i = 0; (i < c && i < 5); i++) {
-		[self issueProcessFeedForChannel:[theChannels objectAtIndex:i]];
-	}
-	if ( c > 5 && socialChannelParsingTimer == nil ) {
-		// schedule a timer task to process other channels
-		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
-	} else if ( socialChannelParsingTimer ) {
-		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
-	}
-}
-
-- (void)scheduleImportVideos {
-#ifdef DEBUG_FACEBOOK_IMPORT
-	NSLog(@"scheduleImportVideos");
-#endif
-	// get the qualified videos
-	NSArray * theProfiles = [dataController personProfilesForSync:2];
-	NSInteger cnt = 4;
-	if ( theProfiles ) cnt = 2;
-	NSArray * theVideos = [dataController videosForSync:cnt];
-	
-	if ( theVideos == nil && theProfiles == nil ) {
-		// stop the timer task
-		if ( videoImportTimer ) {
-			[videoImportTimer invalidate];
-			self.videoImportTimer = nil;
-#ifdef DEBUG_FACEBOOK_IMPORT
-			NSLog(@"stop video import timer");
-#endif
-		}
-#ifdef DEBUG_FACEBOOK_IMPORT
-		NSLog(@"no more video or profiles to import");
-#endif
-		// return immediately if no video
-		return;
-	}
-	for (NMConcreteVideo * vdo in theVideos) {
-		[self issueImportVideo:vdo];
-	}
-	for (NMPersonProfile * pfo in theProfiles) {
-		[self issueGetProfile:pfo account:nil];
-	}
-	if ( videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
-}
-
 - (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info {
 	// save the comment
 	NMFacebookComment * cmtObj = [dataController insertNewFacebookComment];
@@ -776,13 +676,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)prepareSignOutFacebook {
 	networkController.suspendFacebook = YES;
-	// stop sync timer
-	if ( videoImportTimer ) {
-		[videoImportTimer invalidate], self.videoImportTimer = nil;
-	}
-	if ( socialChannelParsingTimer ) {
-		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
-	}
 	// cancel all existing Facebook related tasks
 	NSMutableIndexSet * cmdIdx = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(NMCommandFacebookCommandLowerBound, NMCommandFacebookCommandUpperBound - NMCommandFacebookCommandLowerBound + 1)];
 	// cancel all Youtube import task
@@ -890,12 +783,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	if ( channelPollingTimer ) {
 		[channelPollingTimer invalidate], self.channelPollingTimer = nil;
-	}
-	if ( videoImportTimer ) {
-		[videoImportTimer invalidate], self.videoImportTimer = nil;
-	}
-	if ( socialChannelParsingTimer ) {
-		[socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
 	}
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_LAST_SYNC] forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];

@@ -188,7 +188,7 @@
 }
 
 - (IBAction)importYouTube:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] scheduleImportVideos];
+	[[NMAccountManager sharedAccountManager] scheduleImportVideos];
 }
 
 - (IBAction)facebookFilter:(id)sender {
@@ -206,7 +206,7 @@
 }
 
 - (IBAction)facebookFeedParse:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] scheduleSyncSocialChannels];
+	[[NMAccountManager sharedAccountManager] scheduleSyncSocialChannels];
 }
 
 - (IBAction)checkUpdate:(id)sender {

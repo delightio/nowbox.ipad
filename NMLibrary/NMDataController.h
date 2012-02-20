@@ -27,8 +27,6 @@
 	NSOperationQueue * operationQueue;
 	
 	NSManagedObjectContext * managedObjectContext;
-	// entity object
-	NSEntityDescription * channelEntityDescription, * videoEntityDescription, * authorEntityDescription, * subscriptionEntityDescription;
 	
 	// Core data query cache. Cache recent core data search result. The cache is for reducing number of database access round trips. Simple cache policy - first in first out.
 	NSMutableDictionary * categoryCacheDictionary, * channelCacheDictionary;
@@ -153,6 +151,7 @@
 - (NMAuthor *)insertNewAuthorWithUsername:(NSString *)aName isNew:(BOOL *)isNewObj;
 
 // Person profile and subscription
+- (NMPersonProfile *)insertMyNewEmptyFacebookProfile:(BOOL *)isNew;
 - (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NMPersonProfile *)insertNewPersonProfileWithAccountIdentifier:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NSArray *)personProfilesForSync:(NSInteger)aCount;
@@ -163,10 +162,7 @@
 - (void)unsubscribeChannel:(NMChannel *)chn;
 - (NSArray *)allSubscriptions;
 - (NSUInteger)numberOfSubscriptions;
-
-/*!
- Used in Feature Debug Panel. Get the first person without subscription so that the test method there can subscribe to that method.
- */
-- (NMPersonProfile *)firstAvailablePersonProfile;
+- (NMPersonProfile *)myFacebookProfile;
+- (NMPersonProfile *)myTwitterProfile;
 
 @end

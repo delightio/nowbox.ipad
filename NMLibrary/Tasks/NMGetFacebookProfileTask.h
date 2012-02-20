@@ -18,7 +18,6 @@
 @property (nonatomic, retain) NMPersonProfile * profile;
 @property (nonatomic, retain) NSString * userID;
 
-- (id)initGetMe;
 - (id)initWithProfile:(NMPersonProfile *)aProfile;
 
 @end
