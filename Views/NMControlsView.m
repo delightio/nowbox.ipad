@@ -281,7 +281,9 @@
 	progressSlider.duration = 0;
 	
 	self.alpha = 1.0;
-	[self setControlsHidden:YES animated:NO];
+    if (NM_RUNNING_ON_IPAD) {
+        [self setControlsHidden:YES animated:NO];
+    }
 }
 
 - (void)updateViewForVideo:(NMVideo *)aVideo {

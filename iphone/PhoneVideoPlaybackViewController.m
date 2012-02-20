@@ -84,7 +84,6 @@
 @implementation PhoneVideoPlaybackViewController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize currentVideo;
-@synthesize loadedControlView;
 @synthesize controlScrollView;
 @synthesize appDelegate;
 @synthesize previousChannelHeaderView;
@@ -92,6 +91,7 @@
 @synthesize playbackModelController;
 @synthesize ratingsURL;
 @synthesize loadedMovieDetailView;
+@synthesize loadedControlView;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -152,15 +152,6 @@
 	channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
 	[channelSwitchingScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
 
-	// for unknown reason, setting "directional lock" in interface builder does NOT work. So, set programmatically.
-//	controlScrollView.directionalLockEnabled = YES;
-	
-	// pre-load control view
-	// load the nib
-	[[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
-//	// top left corner gesture recognizer
-//	UITapGestureRecognizer * topLeftRcgr = [[UITapGestureRecognizer alloc] initWithTarget:@selector() action:self];
-//	topLeftRcgr.
 	// double-tap handling
 	dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
 	dblTapRcgr.numberOfTapsRequired = 2;
@@ -175,14 +166,7 @@
 	[tapRcgr release];
 	[dblTapRcgr release];
 	 
-	loadedControlView.frame = movieView.frame;
 	loadedControlView.controlDelegate = self;
-	[loadedControlView setPlaybackMode:NMHalfScreenMode animated:NO];
-	[loadedControlView setTopBarHidden:YES animated:NO];
-	
-	// put the view to scroll view
-	[controlScrollView addSubview:loadedControlView];
-	controlScrollView.decelerationRate = UIScrollViewDecelerationRateNormal / 2.0f;
 	
 	// set up player
 	[self setupPlayer];
@@ -242,19 +226,16 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Overriden to allow any orientation.
-	return YES;
+	return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         movieView.frame = CGRectMake(0, 42, topLevelContainerView.frame.size.width, VIDEO_HEIGHT);        
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-		[loadedControlView setControlsHidden:YES animated:NO];                
     } else {
         movieView.frame = topLevelContainerView.bounds;
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspect];        
-		[loadedControlView setControlsHidden:NO animated:NO];                
     }
     
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
@@ -285,61 +266,34 @@
         theDetailView.frame = CGRectMake(playbackModelController.nextIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP), 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height);
 	}
     
-    // Update controls / movie position
-	CGRect theFrame = loadedControlView.frame;
-	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
-	loadedControlView.frame = theFrame;
-
-	theFrame = movieView.frame;
+    // Update movie position
+	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
-    loadedControlView.frame = theFrame;
-    
-    // Update "pull to switch" positions
-    theFrame = nextChannelHeaderView.frame;
-	theFrame.origin.y = topLevelContainerView.frame.size.height;
-    theFrame.size.width = topLevelContainerView.frame.size.width;
-	nextChannelHeaderView.frame = theFrame;
-    
-    theFrame = previousChannelHeaderView.frame;
-    theFrame.size.width = topLevelContainerView.frame.size.width;
-    previousChannelHeaderView.frame = theFrame;
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [self updateViewsForInterfaceOrientation:toInterfaceOrientation];
 }
 
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
-}
-
-
 - (void)viewDidUnload {
     [self setPreviousChannelHeaderView:nil];
     [self setNextChannelHeaderView:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
-
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 	[launchController release];
-	[loadedControlView release];
 	[movieDetailViewArray release];
+    [loadedControlView release];
 	[currentChannel release];
 	// get rid of time observer of video player
  	[movieView.player removeTimeObserver:timeObserver];
 	[timeObserver release];
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
-//    [temporaryDisabledGestures release];
     [previousChannelHeaderView release];
     [nextChannelHeaderView release];
     [ratingsURL release];
@@ -348,13 +302,6 @@
 }
 
 #pragma mark Launch / onboard process
-//- (void)setLaunchModeActive:(BOOL)flag {
-//	if ( flag ) {
-//		// set to full screen
-//		[self toggleChannelPanel:nil];
-//	}
-//	launchModeActive = flag;
-//}
 
 - (void)showLaunchView {
 	[launchController loadView];
@@ -613,7 +560,7 @@
 				// we should hide
 				showMovieControlTimestamp = -1;
 //				[self hideControlView];
-				[loadedControlView setControlsHidden:YES animated:YES];
+//				[loadedControlView setControlsHidden:YES animated:YES];
 			}
 		}
 	}];
@@ -626,21 +573,22 @@
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"configure control view for: %@, %@", aVideo.video.title, aVideo.video.nm_id);
 #endif
+    PhoneMovieDetailView *detailView = (PhoneMovieDetailView *) aVideo.video.nm_movie_detail_view;
+    self.loadedControlView = detailView.controlsView;
+    
 	[loadedControlView resetView];
 	if ( aVideo ) {
 		[loadedControlView updateViewForVideo:aVideo];
 	}
 	// update the position
-	CGRect theFrame = loadedControlView.frame;
+	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = currentXOffset;
-	loadedControlView.frame = theFrame;
-	// update the movie view too
 	movieView.frame = theFrame;
     
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
-        [loadedControlView setControlsHidden:NO animated:YES];
+//        [loadedControlView setControlsHidden:NO animated:YES];
 	}];
 }
 
@@ -733,12 +681,14 @@
 
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo {
 	if ( vdo == nil ) return;
-	NMMovieDetailView * theView = vdo.video.nm_movie_detail_view;
+	PhoneMovieDetailView * theView = (PhoneMovieDetailView *) vdo.video.nm_movie_detail_view;
 	if ( theView == nil ) return;
 	vdo.video.nm_movie_detail_view = nil;
 	theView.video = nil;
 	[theView restoreThumbnailView];
 	[theView setActivityViewHidden:YES];
+    [theView.controlsView resetView];
+    
 	theView.alpha = 0.0f;
 }
 
@@ -926,7 +876,6 @@
 			CGRect theFrame = movieView.frame;
 			theFrame.origin.x = currentXOffset;
 			movieView.frame = theFrame;
-			loadedControlView.frame = theFrame;
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		} else {
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
@@ -1163,6 +1112,7 @@
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		shouldFadeOutVideoThumbnail = YES;
 		lastTimeElapsed = 0, lastStartTime = 0;
+        
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.video.nm_playback_status = NMVideoQueueStatusCurrentVideo;
@@ -1316,7 +1266,7 @@
 //	}
 //	[self hideControlView];
     
-    [loadedControlView setControlsHidden:YES animated:YES];
+//    [loadedControlView setControlsHidden:YES animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1476,11 +1426,11 @@
 
 #pragma mark Target-action methods
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
-	[UIView animateWithDuration:0.25f animations:^{
+/*	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 		showMovieControlTimestamp = loadedControlView.timeElapsed;
-	}];
+	}];*/
 }
 
 - (void)movieViewDoubleTap:(id)sender {
@@ -1492,10 +1442,10 @@
 
 - (void)controlsViewTouchUp:(id)sender {
 //	UIView * v = (UIView *)sender;    
-	[UIView animateWithDuration:0.25f animations:^{
+/*	[UIView animateWithDuration:0.25f animations:^{
 		loadedControlView.alpha = 0.0f;
 	} completion:^(BOOL finished) {
-	}];
+	}];*/
 }
 
 - (IBAction)addVideoToFavorite:(id)sender {
@@ -1517,49 +1467,6 @@
                                                                           vdo.title, AnalyticsPropertyVideoName, 
                                                                           vdo.nm_id, AnalyticsPropertyVideoId,
                                                                           nil]];
-}
-
-// seek bar
-- (IBAction)seekPlaybackProgress:(id)sender {
-	NMSeekBar * slider = (NMSeekBar *)sender;
-	CMTime theTime = CMTimeMake((int64_t)slider.currentTime, 1);
-	[movieView.player seekToTime:theTime];
-	[loadedControlView updateSeekBubbleLocation];
-}
-
-- (IBAction)touchDownProgressBar:(id)sender {
-	forceStopByUser = YES;
-	[self stopVideo];
-	showMovieControlTimestamp = -1;
-	loadedControlView.isSeeking = YES;
-	// get current control nub position
-	[loadedControlView updateSeekBubbleLocation];
-	// show seek bubble
-	[UIView animateWithDuration:0.25 animations:^{
-		loadedControlView.seekBubbleButton.alpha = 1.0f;
-		if ( NM_AIRPLAY_ACTIVE ) {
-			// hide the airplay indicator
-			movieView.airPlayIndicatorView.alpha = 0.0f;
-		}
-	}];
-	lastTimeElapsed = loadedControlView.timeElapsed;
-}
-
-- (IBAction)touchUpProgressBar:(id)sender {
-	forceStopByUser = NO;
-	[self playCurrentVideo];
-	loadedControlView.isSeeking = NO;
-	showMovieControlTimestamp = loadedControlView.timeElapsed;
-	[UIView animateWithDuration:0.25 animations:^{
-		loadedControlView.seekBubbleButton.alpha = 0.0f;
-		if ( NM_AIRPLAY_ACTIVE ) {
-			// show the airplay indicator
-			movieView.airPlayIndicatorView.alpha = 1.0f;
-		}
-	}];
-	// send the event
-	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed - lastStartTime];
-	lastStartTime = showMovieControlTimestamp;
 }
 
 # pragma mark Gestures
@@ -1634,6 +1541,44 @@
     [self playStopVideo:nil];
 }
 
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar
+{
+    CMTime theTime = CMTimeMake((int64_t)seekBar.currentTime, 1);
+    [movieView.player seekToTime:theTime];
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchDownSeekBar:(NMSeekBar *)seekBar
+{
+	forceStopByUser = YES;
+	[self stopVideo];
+	showMovieControlTimestamp = -1;
+	// show seek bubble
+	[UIView animateWithDuration:0.25 animations:^{
+		loadedControlView.seekBubbleButton.alpha = 1.0f;
+		if ( NM_AIRPLAY_ACTIVE ) {
+			// hide the airplay indicator
+			movieView.airPlayIndicatorView.alpha = 0.0f;
+		}
+	}];
+	lastTimeElapsed = loadedControlView.timeElapsed;    
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchUpSeekBar:(NMSeekBar *)seekBar
+{
+    forceStopByUser = NO;
+	[self playCurrentVideo];
+	showMovieControlTimestamp = loadedControlView.timeElapsed;
+	[UIView animateWithDuration:0.25 animations:^{
+		if ( NM_AIRPLAY_ACTIVE ) {
+			// show the airplay indicator
+			movieView.airPlayIndicatorView.alpha = 1.0f;
+		}
+	}];
+	// send the event
+	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:lastTimeElapsed - lastStartTime];
+	lastStartTime = showMovieControlTimestamp;
+}
+
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded
 {
     // Make all detail views have the same panel state
@@ -1643,14 +1588,5 @@
         }
     }
 }
-
-#pragma mark Debug
-
-#ifdef DEBUG_PLAYER_NAVIGATION
-- (NMAVQueuePlayer *)getQueuePlayer {
-	return movieView.player;
-}
-
-#endif
 
 @end

@@ -15,6 +15,7 @@
 
 @synthesize portraitView;
 @synthesize landscapeView;
+@synthesize controlsView;
 @synthesize infoPanelExpanded;
 @synthesize delegate;
 
@@ -24,12 +25,17 @@
         
     [self addSubview:portraitView];
     currentOrientedView = portraitView;
+    
+    [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
+    controlsView.frame = CGRectMake(20, landscapeView.frame.size.height - controlsView.frame.size.height, controlsView.frame.size.width, controlsView.frame.size.height);
+    [landscapeView addSubview:controlsView];
 }
 
 - (void)dealloc
 {
     [portraitView release];
     [landscapeView release];
+    [controlsView release];
     
     [super dealloc];
 }
@@ -41,7 +47,6 @@
     [self setChannelThumbnailForChannel:video.channel];
     [self setVideoTitle:video.video.title];
     [self setDescriptionText:video.video.detail.nm_description];
-    [self setDuration:[video.video.duration integerValue]];
 }
 
 - (void)setChannelTitle:(NSString *)channelTitle
@@ -68,20 +73,6 @@
 {
     [portraitView.channelThumbnail setImageForChannel:channel];
     [landscapeView.channelThumbnail setImageForChannel:channel];
-}
-
-- (void)setElapsedTime:(NSInteger)elapsedTime
-{
-    NSString *elapsedTimeText = [NSString stringWithFormat:@"%02i:%02i", elapsedTime / 60, elapsedTime % 60];
-    [portraitView.elapsedTimeLabel setText:elapsedTimeText];
-    [landscapeView.elapsedTimeLabel setText:elapsedTimeText];
-}
-
-- (void)setDuration:(NSInteger)duration
-{
-    NSString *durationText = [NSString stringWithFormat:@"%02i:%02i", duration / 60, duration % 60];
-    [portraitView.durationLabel setText:durationText];
-    [landscapeView.durationLabel setText:durationText];
 }
 
 - (void)setInfoPanelExpanded:(BOOL)expanded
@@ -133,6 +124,37 @@
     }
 }
 
+- (IBAction)seekBarValueChanged:(id)sender
+{
+    [controlsView updateSeekBubbleLocation];
+    
+    if ([delegate respondsToSelector:@selector(videoInfoView:didSeek:)]) {
+        [delegate videoInfoView:self didSeek:sender];
+    }
+}
+
+- (IBAction)seekBarTouchDown:(id)sender
+{
+	controlsView.isSeeking = YES;
+	[controlsView updateSeekBubbleLocation];
+    
+    if ([delegate respondsToSelector:@selector(videoInfoView:didTouchDownSeekBar:)]) {
+        [delegate videoInfoView:self didTouchDownSeekBar:sender];
+    }
+}
+
+- (IBAction)seekBarTouchUp:(id)sender
+{
+    controlsView.isSeeking = NO;
+    [UIView animateWithDuration:0.25 animations:^{
+		controlsView.seekBubbleButton.alpha = 0.0f;
+    }];
+    
+    if ([delegate respondsToSelector:@selector(videoInfoView:didTouchUpSeekBar:)]) {
+        [delegate videoInfoView:self didTouchUpSeekBar:sender];
+    }
+}
+
 - (IBAction)toggleInfoPanel:(id)sender
 {
     [self setInfoPanelExpanded:!infoPanelExpanded animated:YES];
@@ -155,8 +177,6 @@
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
-@synthesize elapsedTimeLabel;
-@synthesize durationLabel;
 @synthesize infoPanelExpanded;
 
 - (void)awakeFromNib
@@ -191,8 +211,6 @@
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabel release];
-    [elapsedTimeLabel release];
-    [durationLabel release];
     
     [super dealloc];
 }

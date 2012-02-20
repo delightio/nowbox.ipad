@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NMCachedImageView.h"
-#import "NMChannel.h"
 #import "NMMovieDetailView.h"
+#import "NMCachedImageView.h"
+#import "NMControlsView.h"
+#import "NMChannel.h"
 
 @protocol PhoneMovieDetailViewDelegate;
 @class PhoneVideoInfoOrientedView;
@@ -21,6 +22,7 @@
 
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *portraitView;
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *landscapeView;
+@property (nonatomic, retain) IBOutlet NMControlsView *controlsView;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
 @property (nonatomic, assign) id<PhoneMovieDetailViewDelegate> delegate;
 
@@ -28,12 +30,13 @@
 - (void)setVideoTitle:(NSString *)videoTitle;
 - (void)setDescriptionText:(NSString *)descriptionText;
 - (void)setChannelThumbnailForChannel:(NMChannel *)channel;
-- (void)setElapsedTime:(NSInteger)elapsedTime;
-- (void)setDuration:(NSInteger)duration;
 - (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (IBAction)gridButtonPressed:(id)sender;
 - (IBAction)playButtonPressed:(id)sender;
+- (IBAction)seekBarValueChanged:(id)sender;
+- (IBAction)seekBarTouchDown:(id)sender;
+- (IBAction)seekBarTouchUp:(id)sender;
 - (IBAction)toggleInfoPanel:(id)sender;
 
 @end
@@ -44,6 +47,9 @@
 @optional
 - (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchDownSeekBar:(NMSeekBar *)seekBar;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchUpSeekBar:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded;
 @end
 
@@ -61,8 +67,6 @@
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
-@property (nonatomic, retain) IBOutlet UILabel *elapsedTimeLabel;
-@property (nonatomic, retain) IBOutlet UILabel *durationLabel;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
 
 - (void)positionLabels;
