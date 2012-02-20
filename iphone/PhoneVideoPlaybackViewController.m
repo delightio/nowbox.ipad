@@ -39,8 +39,8 @@
 #define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
 #define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
 
-#define NM_MOVIE_VIEW_GAP								0 //20
-#define NM_MOVIE_VIEW_GAP_FLOAT							0.0f //20.0f
+#define NM_MOVIE_VIEW_GAP								20
+#define NM_MOVIE_VIEW_GAP_FLOAT							20.0f
 
 #define REFRESH_HEADER_HEIGHT 80.0f
 
