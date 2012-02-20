@@ -648,7 +648,7 @@
             theFrame = loadedMovieDetailView.frame;
             theFrame.origin.y = 0.0f;
 			// make sure the view is located in invisible area
-            theFrame.origin.x = -(topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT);
+            theFrame.origin.x = -(topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT)*2;
             theFrame.size.width = topLevelContainerView.frame.size.width;
             theFrame.size.height = topLevelContainerView.frame.size.height;
             loadedMovieDetailView.frame = theFrame;
