@@ -276,6 +276,11 @@
 	switch ( [channel.type integerValue] ) {
 		case NMChannelUserFacebookType:
 		{
+			// avoid re-registering for the same set of notificaitons
+			[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidParseFacebookFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidFailParseFacebookFeedNotification object:nil];
 			// for YouTube import
 			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
 			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
@@ -286,6 +291,11 @@
 		}
 		case NMChannelUserTwitterType:
 		{
+			// avoid re-registering for the same set of notificaitons
+			[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
+			[nc removeObserver:self name:NMDidParseTwitterFeedNotification object:nil];
+			[nc removeObserver:self name:NMDidFailParseTwitterFeedNotification object:nil];
 			// for YouTube import
 			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
 			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
