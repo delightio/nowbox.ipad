@@ -277,7 +277,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 	}
 	if ( c > 5 && _socialChannelParsingTimer == nil ) {
 		// schedule a timer task to process other channels
-		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:8.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
+		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
 	} else if ( _socialChannelParsingTimer ) {
 		[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
 	}

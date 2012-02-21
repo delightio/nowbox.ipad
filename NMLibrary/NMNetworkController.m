@@ -385,11 +385,18 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 			[self returnNetworkResource];
 		}
 	}
+	NSMutableArray * taskDelAy = nil;
 	for (NMTask * task in pendingTaskBuffer) {
 		if ( [aCmd containsIndex:task.command] ) {
+			if ( taskDelAy == nil ) {
+				taskDelAy = [NSMutableArray arrayWithCapacity:2];
+			}
 			// remove the task
-			[pendingTaskBuffer removeObject:task];
+			[taskDelAy addObject:task];
 		}
+	}
+	if ( taskDelAy ) {
+		[pendingTaskBuffer removeObjectsInArray:taskDelAy];
 	}
 	[pendingTaskBufferLock unlock];
 }
