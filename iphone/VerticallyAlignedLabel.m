@@ -48,7 +48,12 @@
 - (void)drawTextInRect:(CGRect)requestedRect
 {
     CGRect actualRect = [self textRectForBounds:requestedRect limitedToNumberOfLines:self.numberOfLines];
-    [super drawTextInRect:actualRect];
+//    [super drawTextInRect:actualRect];
+    
+    // drawTextInRect doesn't perfectly align it to the top. It vertically centers it slightly.
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [self.textColor CGColor]);
+    [self.text drawInRect:actualRect withFont:self.font lineBreakMode:self.lineBreakMode alignment:self.textAlignment];
 }
 
 @end

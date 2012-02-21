@@ -69,6 +69,7 @@
 										<string key="NSFrame">{{41, 33}, {37, 37}}</string>
 										<reference key="NSSuperview" ref="865208808"/>
 										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:1062</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -355,7 +356,7 @@
 										<string key="NSFrame">{{0, 94}, {320, 22}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="229656207"/>
+										<reference key="NSNextKeyView" ref="476363426"/>
 										<string key="NSReuseIdentifierKey">_NS:567</string>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -394,10 +395,10 @@
 									<object class="IBUILabel" id="723129820">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">290</int>
-										<string key="NSFrame">{{64, 10}, {186, 67}}</string>
+										<string key="NSFrame">{{64, 10}, {186, 70}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="476363426"/>
+										<reference key="NSNextKeyView" ref="30034096"/>
 										<string key="NSReuseIdentifierKey">_NS:328</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIClipsSubviews">YES</bool>
@@ -425,14 +426,14 @@
 									<object class="IBUILabel" id="476363426">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">274</int>
-										<string key="NSFrame">{{64, 60}, {186, 36}}</string>
+										<string key="NSFrame">{{64, 60}, {186, 40}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="30034096"/>
+										<reference key="NSNextKeyView" ref="229656207"/>
 										<string key="NSReuseIdentifierKey">_NS:328</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIClipsSubviews">YES</bool>
-										<int key="IBUIContentMode">7</int>
+										<int key="IBUIContentMode">5</int>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<string key="IBUIText">Description</string>
@@ -542,6 +543,7 @@
 														<string key="NSFrame">{{8, 92}, {42, 42}}</string>
 														<reference key="NSSuperview" ref="626450123"/>
 														<reference key="NSWindow"/>
+														<reference key="NSNextKeyView"/>
 														<string key="NSReuseIdentifierKey">_NS:225</string>
 														<bool key="IBUIOpaque">NO</bool>
 														<int key="IBUITag">2</int>
@@ -788,7 +790,7 @@
 								<string key="NSFrame">{{66, 16}, {325, 40}}</string>
 								<reference key="NSSuperview" ref="263006526"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="632621912"/>
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -816,14 +818,14 @@
 							<object class="IBUILabel" id="632621912">
 								<reference key="NSNextResponder" ref="263006526"/>
 								<int key="NSvFlags">274</int>
-								<string key="NSFrame">{{66, 55}, {325, 20}}</string>
+								<string key="NSFrame">{{66, 55}, {325, 24}}</string>
 								<reference key="NSSuperview" ref="263006526"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="327096284"/>
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
-								<int key="IBUIContentMode">7</int>
+								<int key="IBUIContentMode">5</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<string key="IBUIText">Description</string>
@@ -918,6 +920,7 @@
 												<string key="NSFrame">{{8, 92}, {42, 42}}</string>
 												<reference key="NSSuperview" ref="742024431"/>
 												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:225</string>
 												<bool key="IBUIOpaque">NO</bool>
 												<int key="IBUITag">2</int>
@@ -1591,6 +1594,7 @@
 				<string key="22.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="23.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="24.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="25.CustomClassName">VerticallyAlignedLabel</string>
 				<string key="25.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="26.CustomClassName">VerticallyAlignedLabel</string>
 				<string key="26.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1616,6 +1620,7 @@
 				<string key="40.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="41.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="42.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="43.CustomClassName">VerticallyAlignedLabel</string>
 				<string key="43.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="44.CustomClassName">NMCachedImageView</string>
 				<string key="44.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -1840,6 +1845,9 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="gridButtonPressed:">id</string>
 						<string key="playButtonPressed:">id</string>
+						<string key="seekBarTouchDown:">id</string>
+						<string key="seekBarTouchUp:">id</string>
+						<string key="seekBarValueChanged:">id</string>
 						<string key="toggleInfoPanel:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -1849,6 +1857,18 @@
 						</object>
 						<object class="IBActionInfo" key="playButtonPressed:">
 							<string key="name">playButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="seekBarTouchDown:">
+							<string key="name">seekBarTouchDown:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="seekBarTouchUp:">
+							<string key="name">seekBarTouchUp:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="seekBarValueChanged:">
+							<string key="name">seekBarValueChanged:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="toggleInfoPanel:">
@@ -1888,8 +1908,6 @@
 						<string key="channelThumbnail">NMCachedImageView</string>
 						<string key="channelTitleLabel">UILabel</string>
 						<string key="descriptionLabel">UILabel</string>
-						<string key="durationLabel">UILabel</string>
-						<string key="elapsedTimeLabel">UILabel</string>
 						<string key="infoButtonScrollView">InfiniteScrollView</string>
 						<string key="infoView">UIView</string>
 						<string key="topView">UIView</string>
@@ -1910,14 +1928,6 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="descriptionLabel">
 							<string key="name">descriptionLabel</string>
-							<string key="candidateClassName">UILabel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="durationLabel">
-							<string key="name">durationLabel</string>
-							<string key="candidateClassName">UILabel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="elapsedTimeLabel">
-							<string key="name">elapsedTimeLabel</string>
 							<string key="candidateClassName">UILabel</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="infoButtonScrollView">
@@ -1949,9 +1959,6 @@
 						<string key="addVideoToFavorite:">id</string>
 						<string key="addVideoToQueue:">id</string>
 						<string key="playStopVideo:">id</string>
-						<string key="seekPlaybackProgress:">id</string>
-						<string key="touchDownProgressBar:">id</string>
-						<string key="touchUpProgressBar:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="addVideoToFavorite:">
@@ -1966,24 +1973,11 @@
 							<string key="name">playStopVideo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="seekPlaybackProgress:">
-							<string key="name">seekPlaybackProgress:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="touchDownProgressBar:">
-							<string key="name">touchDownProgressBar:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="touchUpProgressBar:">
-							<string key="name">touchUpProgressBar:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="channelSwitchingScrollView">UIScrollView</string>
 						<string key="controlScrollView">UIScrollView</string>
 						<string key="favoriteButton">UIButton</string>
-						<string key="loadedControlView">NMControlsView</string>
 						<string key="loadedMovieDetailView">PhoneMovieDetailView</string>
 						<string key="nextChannelActivityView">UIActivityIndicatorView</string>
 						<string key="nextChannelHeaderView">UIView</string>
@@ -2006,10 +2000,6 @@
 						<object class="IBToOneOutletInfo" key="favoriteButton">
 							<string key="name">favoriteButton</string>
 							<string key="candidateClassName">UIButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="loadedControlView">
-							<string key="name">loadedControlView</string>
-							<string key="candidateClassName">NMControlsView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="loadedMovieDetailView">
 							<string key="name">loadedMovieDetailView</string>

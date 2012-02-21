@@ -226,7 +226,7 @@
     
     frame = descriptionLabel.frame;
     CGFloat distanceFromBottom = CGRectGetHeight(infoView.frame) - CGRectGetMaxY(frame);
-    frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 5;
+    frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
     frame.size.height = infoView.frame.size.height - frame.origin.y - distanceFromBottom;
     descriptionLabel.frame = frame;
     descriptionLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
