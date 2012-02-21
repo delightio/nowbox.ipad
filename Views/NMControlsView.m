@@ -78,10 +78,10 @@
 	// airplay button
 	if ( NM_RUNNING_IOS_5 ) {
 		theRect = progressContainerView.frame;
-		theRect.size.width -= 61.0f;
+		theRect.size.width -= (NM_RUNNING_ON_IPAD ? 61.0f : 31.0f);
 		progressContainerView.frame = theRect;
 		
-		theRect.origin.x += theRect.size.width;
+		theRect.origin.x += (NM_RUNNING_ON_IPAD ? theRect.size.width : theRect.size.width - 20.0f);
 		theRect.size.width = 60.0f;
         
 		airPlayContainerView = [[NMAirPlayContainerView alloc] initWithFrame:theRect];
@@ -254,7 +254,11 @@
 
 - (void)updateSeekBubbleLocation {
 	CGPoint thePoint = seekBubbleButton.center;
-	thePoint.x = progressSlider.nubPosition.x + sliderRect.origin.x - 1;
+    if (NM_RUNNING_ON_IPAD) {
+        thePoint.x = progressSlider.nubPosition.x + sliderRect.origin.x - 1;
+    } else {
+        thePoint.x = [progressSlider convertPoint:progressSlider.nubPosition toView:self].x;
+    }
 	seekBubbleButton.center = thePoint;
 }
 
@@ -264,8 +268,8 @@
 //	channelNameLabel.text = @"";
 	[segmentChannelButton setTitle:@"" forState:UIControlStateNormal];
 	videoTitleLabel.text = @"";
-	durationLabel.text = @"--:--";
-	currentTimeLabel.text = @"--:--";
+	durationLabel.text = (NM_RUNNING_ON_IPAD ? @"--:--" : @"00:00");
+	currentTimeLabel.text = (NM_RUNNING_ON_IPAD ? @"--:--" : @"00:00");
 	authorImageView.image = nil;
 	channelImageView.image = nil;
 	if ( lastVideoMessage ) {
@@ -277,7 +281,9 @@
 	progressSlider.duration = 0;
 	
 	self.alpha = 1.0;
-	[self setControlsHidden:YES animated:NO];
+    if (NM_RUNNING_ON_IPAD) {
+        [self setControlsHidden:YES animated:NO];
+    }
 }
 
 - (void)updateViewForVideo:(NMVideo *)aVideo {

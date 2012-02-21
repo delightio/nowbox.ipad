@@ -21,35 +21,58 @@
 	selfLayer.sublayerTransform = CATransform3DMakeTranslation(0.0f, 7.5f, 0.0f);
 	CGFloat myWidth = self.bounds.size.width;
 	selfLayer.originalWidth = myWidth;
+    
 	// background layer
+    UIImage *backgroundImage = [UIImage imageNamed:@"playback-progress-background"];
 	CALayer * theLayer = [CALayer layer];
-	theLayer.contents = (id)[UIImage imageNamed:@"playback-progress-background"].CGImage;
+	theLayer.contents = (id)backgroundImage.CGImage;
 	theLayer.anchorPoint = CGPointMake(0.0, 0.5f);
-	theLayer.frame = CGRectMake(0.0f, 0.0f, myWidth, 9.0f);
+    if (NM_RUNNING_ON_IPAD) {
+        theLayer.frame = CGRectMake(1.0f, 1.0f, myWidth, backgroundImage.size.height);
+    } else {
+        theLayer.frame = CGRectMake(1.0f, 0.0f, myWidth, backgroundImage.size.height);
+        theLayer.masksToBounds = YES;
+        theLayer.cornerRadius = 5.0f;
+    }
 	[selfLayer addSublayer:theLayer];
 	selfLayer.barBackgroundLayer = theLayer;
 	
 	// buffer layer
+    UIImage *bufferImage = [UIImage imageNamed:@"progress-gray-side"];
 	theLayer = [CALayer layer];
-	theLayer.contents = (id)[UIImage imageNamed:@"progress-gray-side"].CGImage;
+	theLayer.contents = (id)bufferImage.CGImage;
 	theLayer.anchorPoint = CGPointMake(0.0, 0.5f);
-	theLayer.frame = CGRectMake(1.0f, 1.0f, 0.0f, 6.0f);
+    if (NM_RUNNING_ON_IPAD) {
+        theLayer.frame = CGRectMake(1.0f, 1.0f, 0.0f, bufferImage.size.height);
+    } else {
+        theLayer.frame = CGRectMake(1.0f, 0.0f, 0.0f, bufferImage.size.height);
+        theLayer.masksToBounds = YES;
+        theLayer.cornerRadius = 5.0f;
+    }
 	[selfLayer addSublayer:theLayer];
 	selfLayer.bufferLayer = theLayer;
 	
 	// progress layer
+    UIImage *brightImage = [UIImage imageNamed:@"progress-bright-side"];
 	theLayer = [CALayer layer];
-	theLayer.contents = (id)[UIImage imageNamed:@"progress-bright-side"].CGImage;
+	theLayer.contents = (id)brightImage.CGImage;
 	theLayer.anchorPoint = CGPointMake(0.0, 0.5f);
-	theLayer.frame = CGRectMake(1.0f, 1.0f, 0.0f, 6.0f);
+    if (NM_RUNNING_ON_IPAD) {
+        theLayer.frame = CGRectMake(1.0f, 1.0f, 0.0f, brightImage.size.height);
+    } else {
+        theLayer.frame = CGRectMake(1.0f, 0.0f, 0.0f, brightImage.size.height);
+        theLayer.masksToBounds = YES;
+        theLayer.cornerRadius = 5.0f;
+    }
 	[selfLayer addSublayer:theLayer];
 	selfLayer.progressLayer = theLayer;
-	
+    
 	// nub
+    UIImage *nubImage = [UIImage imageNamed:@"progress-nub"];
 	theLayer = [CALayer layer];
-	theLayer.contents = (id)[UIImage imageNamed:@"progress-nub"].CGImage;
-	theLayer.bounds = CGRectMake(0.0f, 0.0f, 13.0f, 25.0f);
-	theLayer.position = CGPointMake(0.5f, 4.5f);
+	theLayer.contents = (id)nubImage.CGImage;
+    theLayer.bounds = CGRectMake(0.5f, 0.0f, nubImage.size.width, nubImage.size.height);
+    theLayer.position = CGPointMake(0.5f, 4.5f);    
 	[selfLayer addSublayer:theLayer];
 	selfLayer.nubLayer = theLayer;
 	self.nubLayer = theLayer;
@@ -94,7 +117,7 @@
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.progressLayer.bounds = theRect;
-	nubLayer.position = CGPointMake(theRect.size.width + 0.5f, 3.5f);
+	nubLayer.position = CGPointMake(theRect.size.width + 0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
 	[CATransaction commit];
 }
 
@@ -107,6 +130,10 @@
 	if ( theRect.size.width > self.bounds.size.width ) {
 		theRect.size.width = self.bounds.size.width - 2.0f;
 	}
+    if (!NM_RUNNING_ON_IPAD) {
+        // We don't reach the end otherwise
+        theRect.size.width += 2;
+    }
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.bufferLayer.bounds = theRect;
@@ -125,7 +152,7 @@
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.progressLayer.bounds = theRect;
 	theLayer.bufferLayer.bounds = theRect;
-	nubLayer.position = CGPointMake(0.5f, 3.5f);
+	nubLayer.position = CGPointMake(0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
 	[CATransaction commit];
 }
 
@@ -139,9 +166,9 @@
     
     // Since nub is small, accept a touch area bigger than the nub
     CGRect largerNub = CGRectMake(nubLayer.frame.origin.x - nubLayer.frame.size.width * 2,
-                                  nubLayer.frame.origin.y - nubLayer.frame.size.height,
+                                  nubLayer.frame.origin.y - nubLayer.frame.size.height * 2,
                                   nubLayer.frame.size.width * 5,
-                                  nubLayer.frame.size.height * 3);
+                                  nubLayer.frame.size.height * 5);
                                            
     if (CGRectContainsPoint(largerNub, thePoint)) {
         return YES;
@@ -159,7 +186,7 @@
 	
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-	nubLayer.position = CGPointMake(thePoint.x + 0.5f, 3.5f);
+	nubLayer.position = CGPointMake(thePoint.x + 0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
 	[CATransaction commit];
 	currentTime = (NSInteger)(thePoint.x / widthPerSec);
 	[self sendActionsForControlEvents:UIControlEventValueChanged];
@@ -168,7 +195,7 @@
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
     // Accept a region slightly outside this view to give us a larger hit area for the nub
-    if (point.x > -10 && point.y > -10 && point.x < self.bounds.size.width + 10 && point.y < self.bounds.size.height + 10) {
+    if (point.x > -20 && point.y > -20 && point.x < self.bounds.size.width + 20 && point.y < self.bounds.size.height + 20) {
         return YES;
     }
     

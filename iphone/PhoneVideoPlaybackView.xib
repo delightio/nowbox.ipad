@@ -2,19 +2,19 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1280</int>
-		<string key="IBDocument.SystemVersion">11C74</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
-		<string key="IBDocument.AppKitVersion">1138.23</string>
-		<string key="IBDocument.HIToolboxVersion">567.00</string>
+		<string key="IBDocument.SystemVersion">11D50b</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
+		<string key="IBDocument.AppKitVersion">1138.32</string>
+		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">933</string>
+			<string key="NS.object.0">1173</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
-			<string>IBUILabel</string>
+			<string>IBUIScrollView</string>
 			<string>IBUIActivityIndicatorView</string>
 			<string>IBUIView</string>
-			<string>IBUIScrollView</string>
+			<string>IBUILabel</string>
 			<string>IBProxyObject</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -41,44 +41,25 @@
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">306</int>
 						<array class="NSMutableArray" key="NSSubviews">
-							<object class="IBUIScrollView" id="412700657">
+							<object class="IBUIScrollView" id="216075073">
 								<reference key="NSNextResponder" ref="714552435"/>
 								<int key="NSvFlags">274</int>
-								<array class="NSMutableArray" key="NSSubviews">
-									<object class="IBUIScrollView" id="216075073">
-										<reference key="NSNextResponder" ref="412700657"/>
-										<int key="NSvFlags">274</int>
-										<string key="NSFrameSize">{320, 460}</string>
-										<reference key="NSSuperview" ref="412700657"/>
-										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView"/>
-										<string key="NSReuseIdentifierKey">_NS:206</string>
-										<bool key="IBUIClipsSubviews">YES</bool>
-										<bool key="IBUIMultipleTouchEnabled">YES</bool>
-										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-										<bool key="IBUIPagingEnabled">YES</bool>
-										<bool key="IBUIShowsHorizontalScrollIndicator">NO</bool>
-										<bool key="IBUIShowsVerticalScrollIndicator">NO</bool>
-									</object>
-								</array>
 								<string key="NSFrameSize">{320, 460}</string>
 								<reference key="NSSuperview" ref="714552435"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="216075073"/>
-								<string key="NSReuseIdentifierKey">_NS:190</string>
+								<string key="NSReuseIdentifierKey">_NS:206</string>
 								<bool key="IBUIClipsSubviews">YES</bool>
 								<bool key="IBUIMultipleTouchEnabled">YES</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<bool key="IBUIAlwaysBounceVertical">YES</bool>
+								<bool key="IBUIPagingEnabled">YES</bool>
 								<bool key="IBUIShowsHorizontalScrollIndicator">NO</bool>
 								<bool key="IBUIShowsVerticalScrollIndicator">NO</bool>
-								<bool key="IBUIDelaysContentTouches">NO</bool>
 							</object>
 						</array>
 						<string key="NSFrameSize">{320, 460}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="412700657"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<object class="NSColor" key="IBUIBackgroundColor" id="795998131">
 							<int key="NSColorSpace">3</int>
@@ -125,7 +106,6 @@
 							<bytes key="NSWhite">MC42NjY2NjY2NjY3AA</bytes>
 						</object>
 						<int key="IBUIBaselineAdjustment">1</int>
-						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
 						<object class="IBUIFontDescription" key="IBUIFontDescription" id="540890662">
@@ -144,7 +124,6 @@
 						<string key="NSFrame">{{10, 1}, {20, 20}}</string>
 						<reference key="NSSuperview" ref="373417106"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:1030</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -182,7 +161,6 @@
 						<nil key="IBUIHighlightedColor"/>
 						<reference key="IBUIShadowColor" ref="221269510"/>
 						<int key="IBUIBaselineAdjustment">1</int>
-						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 						<float key="IBUIMinimumFontSize">10</float>
 						<int key="IBUITextAlignment">1</int>
 						<reference key="IBUIFontDescription" ref="540890662"/>
@@ -222,22 +200,6 @@
 						<reference key="destination" ref="714552435"/>
 					</object>
 					<int key="connectionID">10</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">controlScrollView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="216075073"/>
-					</object>
-					<int key="connectionID">11</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">channelSwitchingScrollView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="412700657"/>
-					</object>
-					<int key="connectionID">13</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -289,19 +251,19 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">controlScrollView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="216075073"/>
+					</object>
+					<int key="connectionID">11</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="216075073"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">9</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="412700657"/>
-						<reference key="destination" ref="372490531"/>
-					</object>
-					<int key="connectionID">14</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -335,25 +297,9 @@
 						<int key="objectID">7</int>
 						<reference key="object" ref="714552435"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="412700657"/>
-						</array>
-						<reference key="parent" ref="191373211"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">12</int>
-						<reference key="object" ref="412700657"/>
-						<array class="NSMutableArray" key="children">
 							<reference ref="216075073"/>
 						</array>
-						<reference key="parent" ref="714552435"/>
-						<string key="objectName">Channel Switching Scroll View</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">8</int>
-						<reference key="object" ref="216075073"/>
-						<array class="NSMutableArray" key="children"/>
-						<reference key="parent" ref="412700657"/>
-						<string key="objectName">Movie Scroll View</string>
+						<reference key="parent" ref="191373211"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">17</int>
@@ -397,6 +343,12 @@
 						<reference key="parent" ref="691935452"/>
 						<string key="objectName">Next Channel Name</string>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">8</int>
+						<reference key="object" ref="216075073"/>
+						<reference key="parent" ref="714552435"/>
+						<string key="objectName">Movie Scroll View</string>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -405,7 +357,6 @@
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="17.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="18.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -423,6 +374,14 @@
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">InfiniteScrollView</string>
+					<string key="superclassName">UIScrollView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/InfiniteScrollView.h</string>
+					</object>
+				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">NMCachedImageView</string>
 					<string key="superclassName">UIImageView</string>
@@ -451,7 +410,6 @@
 						<string key="progressSlider">NMSeekBar</string>
 						<string key="seekBubbleButton">UIButton</string>
 						<string key="segmentChannelButton">UIButton</string>
-						<string key="toggleGridButton">UIButton</string>
 						<string key="topbarContainerView">UIView</string>
 						<string key="videoTitleLabel">UILabel</string>
 						<string key="watchLaterButton">UIButton</string>
@@ -519,10 +477,6 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="segmentChannelButton">
 							<string key="name">segmentChannelButton</string>
-							<string key="candidateClassName">UIButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toggleGridButton">
-							<string key="name">toggleGridButton</string>
 							<string key="candidateClassName">UIButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="topbarContainerView">
@@ -614,6 +568,109 @@
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">PhoneMovieDetailView</string>
+					<string key="superclassName">NMMovieDetailView</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="gridButtonPressed:">id</string>
+						<string key="playButtonPressed:">id</string>
+						<string key="toggleInfoPanel:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="gridButtonPressed:">
+							<string key="name">gridButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="playButtonPressed:">
+							<string key="name">playButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="toggleInfoPanel:">
+							<string key="name">toggleInfoPanel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="landscapeView">PhoneVideoInfoOrientedView</string>
+						<string key="portraitView">PhoneVideoInfoOrientedView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="landscapeView">
+							<string key="name">landscapeView</string>
+							<string key="candidateClassName">PhoneVideoInfoOrientedView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="portraitView">
+							<string key="name">portraitView</string>
+							<string key="candidateClassName">PhoneVideoInfoOrientedView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PhoneMovieDetailView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PhoneVideoInfoOrientedView</string>
+					<string key="superclassName">UIView</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="bottomView">UIView</string>
+						<string key="channelThumbnail">NMCachedImageView</string>
+						<string key="channelTitleLabel">UILabel</string>
+						<string key="descriptionLabel">UILabel</string>
+						<string key="durationLabel">UILabel</string>
+						<string key="elapsedTimeLabel">UILabel</string>
+						<string key="infoButtonScrollView">InfiniteScrollView</string>
+						<string key="infoView">UIView</string>
+						<string key="topView">UIView</string>
+						<string key="videoTitleLabel">UILabel</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="bottomView">
+							<string key="name">bottomView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelThumbnail">
+							<string key="name">channelThumbnail</string>
+							<string key="candidateClassName">NMCachedImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="channelTitleLabel">
+							<string key="name">channelTitleLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="descriptionLabel">
+							<string key="name">descriptionLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="durationLabel">
+							<string key="name">durationLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="elapsedTimeLabel">
+							<string key="name">elapsedTimeLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="infoButtonScrollView">
+							<string key="name">infoButtonScrollView</string>
+							<string key="candidateClassName">InfiniteScrollView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="infoView">
+							<string key="name">infoView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="topView">
+							<string key="name">topView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="videoTitleLabel">
+							<string key="name">videoTitleLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PhoneVideoInfoOrientedView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">PhoneVideoPlaybackViewController</string>
 					<string key="superclassName">VideoPlaybackBaseViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
@@ -621,7 +678,6 @@
 						<string key="addVideoToQueue:">id</string>
 						<string key="playStopVideo:">id</string>
 						<string key="seekPlaybackProgress:">id</string>
-						<string key="toggleGrid:">id</string>
 						<string key="touchDownProgressBar:">id</string>
 						<string key="touchUpProgressBar:">id</string>
 					</dictionary>
@@ -642,10 +698,6 @@
 							<string key="name">seekPlaybackProgress:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="toggleGrid:">
-							<string key="name">toggleGrid:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="touchDownProgressBar:">
 							<string key="name">touchDownProgressBar:</string>
 							<string key="candidateClassName">id</string>
@@ -660,6 +712,7 @@
 						<string key="controlScrollView">UIScrollView</string>
 						<string key="favoriteButton">UIButton</string>
 						<string key="loadedControlView">NMControlsView</string>
+						<string key="loadedMovieDetailView">PhoneMovieDetailView</string>
 						<string key="nextChannelActivityView">UIActivityIndicatorView</string>
 						<string key="nextChannelHeaderView">UIView</string>
 						<string key="nextChannelSwitchingLabel">UILabel</string>
@@ -685,6 +738,10 @@
 						<object class="IBToOneOutletInfo" key="loadedControlView">
 							<string key="name">loadedControlView</string>
 							<string key="candidateClassName">NMControlsView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="loadedMovieDetailView">
+							<string key="name">loadedMovieDetailView</string>
+							<string key="candidateClassName">PhoneMovieDetailView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="nextChannelActivityView">
 							<string key="name">nextChannelActivityView</string>
@@ -727,17 +784,6 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">VideoPlaybackBaseViewController</string>
 					<string key="superclassName">UIViewController</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">loadedMovieDetailView</string>
-						<string key="NS.object.0">NMMovieDetailView</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">loadedMovieDetailView</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">loadedMovieDetailView</string>
-							<string key="candidateClassName">NMMovieDetailView</string>
-						</object>
-					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/VideoPlaybackBaseViewController.h</string>
@@ -749,6 +795,6 @@
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<string key="IBCocoaTouchPluginVersion">933</string>
+		<string key="IBCocoaTouchPluginVersion">1173</string>
 	</data>
 </archive>

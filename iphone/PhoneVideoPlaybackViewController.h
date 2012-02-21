@@ -50,9 +50,7 @@ enum {
 	NMMovieView * movieView;
 	
 	NSMutableArray * movieDetailViewArray;
-	
-	NMControlsView * loadedControlView;
-	
+		
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
 //	BOOL scrollBeyondThreshold;
@@ -98,8 +96,8 @@ enum {
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, retain) IBOutlet NMControlsView * loadedControlView;	// it's a proxy. it does not retain the view loaded.
 @property (nonatomic, retain) IBOutlet PhoneMovieDetailView * loadedMovieDetailView;
+@property (nonatomic, retain) NMControlsView * loadedControlView;
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 @property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;
@@ -108,16 +106,8 @@ enum {
 @property (retain, nonatomic) IBOutlet UIView *nextChannelHeaderView;
 
 - (IBAction)playStopVideo:(id)sender;
-//- (IBAction)toggleChannelPanel:(id)sender;
-//- (IBAction)toggleChannelPanelFullScreen:(id)sender;
-//- (void)channelPanelToggleToFullScreen:(BOOL)shouldToggleToFullScreen resumePlaying:(BOOL)shouldResume centerToRow:(NSInteger)indexInTable;
-// movie detail view actions
 - (IBAction)addVideoToFavorite:(id)sender;
 - (IBAction)addVideoToQueue:(id)sender;
-// seeking
-- (IBAction)seekPlaybackProgress:(id)sender;
-- (IBAction)touchDownProgressBar:(id)sender;
-- (IBAction)touchUpProgressBar:(id)sender;
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
@@ -125,14 +115,9 @@ enum {
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
 // launch view / onboard process
-//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle;
 - (void)showPlaybackView;
 
 - (BOOL)shouldShowRateUsReminder;
 - (void)showRateUsReminderCompletion:(void (^)(void))completion;
-
-#ifdef DEBUG_PLAYER_NAVIGATION
-- (NMAVQueuePlayer *)getQueuePlayer;
-#endif
 
 @end
