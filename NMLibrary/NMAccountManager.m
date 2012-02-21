@@ -258,6 +258,9 @@ static NMAccountManager * _sharedAccountManager = nil;
 
 #pragma mark Sync methods
 - (void)scheduleSyncSocialChannels {
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"scheduleSyncSocialChannels");
+#endif
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
 	// get the qualified channels
 	NSArray * theChannels = [tqc.dataController socialChannelsForSync];

@@ -249,7 +249,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
     
-	[[NMAccountManager sharedAccountManager] applicationDidLaunch];
     return YES;
 }
 

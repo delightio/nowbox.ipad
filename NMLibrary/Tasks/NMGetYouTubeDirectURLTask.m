@@ -268,6 +268,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 		targetVideo.nm_direct_sd_url = directSDURLString;
 		targetVideo.nm_direct_url_expiry = expiryTime;
 		targetVideo.nm_playback_status = NMVideoQueueStatusDirectURLReady;
+		targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
 	}
 	return NO;
 }
