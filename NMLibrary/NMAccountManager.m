@@ -19,8 +19,6 @@ static NMAccountManager * _sharedAccountManager = nil;
 @synthesize facebook = _facebook;
 @synthesize facebookAccountStatus = _facebookAccountStatus;
 @synthesize twitterAccountStatus = _twitterAccountStatus;
-@synthesize facebookProfile = _facebookProfile;
-@synthesize twitterProfile = _twitterProfile;
 
 @synthesize socialChannelParsingTimer = _socialChannelParsingTimer, videoImportTimer = _videoImportTimer;
 
@@ -47,15 +45,17 @@ static NMAccountManager * _sharedAccountManager = nil;
 	
 	// update facebook sync status
 	NMDataController * ctrl = [[NMTaskQueueController sharedTaskQueueController] dataController];
-	[ctrl myFacebookProfile];
+	if ( [ctrl myFacebookProfile] ) {
+		self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+	} else {
+		self.facebookAccountStatus = (NSNumber *)kCFBooleanFalse;
+	}
 	return self;
 }
 
 - (void)dealloc {
 	[_facebook release];
 	[_userDefaults release];
-	[_facebookProfile release];
-	[_twitterProfile release];
 	[_facebookAccountStatus release];
 	[_twitterAccountStatus release];
 	if ( _socialChannelParsingTimer ) {
@@ -181,12 +181,14 @@ static NMAccountManager * _sharedAccountManager = nil;
 	NMPersonProfile * thePerson = [tqc.dataController insertMyNewEmptyFacebookProfile:&isNew];
 	[[NMTaskQueueController sharedTaskQueueController] issueGetProfile:thePerson account:nil];
 	// Login interface should listen to notification so that it can update the interface accordingly
+	self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncPendingInitialSync];
 }
 
 - (void)fbDidLogout {
     // Remove saved authorization information if it exists
 	[signOutTarget performSelector:signOutAction withObject:nil];
 	[_facebook release], _facebook = nil;
+	self.facebookAccountStatus = (NSNumber *)kCFBooleanFalse;
 }
 
 - (void)fbDidExtendToken:(NSString*)accessToken expiresAt:(NSDate*)expiresAt {
@@ -232,9 +234,11 @@ static NMAccountManager * _sharedAccountManager = nil;
 
 - (void)handleDidParseFeedNotification:(NSNotification *)aNotification {
 	NSDictionary * infoDict = [aNotification userInfo];
-	if ( [[infoDict objectForKey:@"num_video_added"] integerValue] ) {
+	NSInteger c = [[infoDict objectForKey:@"num_video_added"] integerValue];
+	if ( c ) {
 		// we found new video in the news feed
 		[self scheduleImportVideos];
+		numberOfVideosAddedFromFacebook += c;
 	}
 	NMChannel * chnObj = [infoDict objectForKey:@"channel"];
 	switch ([chnObj.type integerValue]) {
@@ -248,6 +252,8 @@ static NMAccountManager * _sharedAccountManager = nil;
 			NSString * urlStr = [infoDict objectForKey:@"next_url"];
 			if ( urlStr ) {
 				[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForFacebookChannel:chnObj directURLString:urlStr];
+			} else if ( numberOfVideosAddedFromFacebook == 0 ) {
+				self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
 			}
 			break;
 		}	
@@ -258,6 +264,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 
 #pragma mark Sync methods
 - (void)scheduleSyncSocialChannels {
+	if ( [self.facebookAccountStatus integerValue] == 0 ) return;
 #ifdef DEBUG_FACEBOOK_IMPORT
 	NSLog(@"scheduleSyncSocialChannels");
 #endif
@@ -274,9 +281,12 @@ static NMAccountManager * _sharedAccountManager = nil;
 	} else if ( _socialChannelParsingTimer ) {
 		[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
 	}
+	// reset the value
+	numberOfVideosAddedFromFacebook = 0;
 }
 
 - (void)scheduleImportVideos {
+	if ( [self.facebookAccountStatus integerValue] == 0 ) return;
 #ifdef DEBUG_FACEBOOK_IMPORT
 	NSLog(@"scheduleImportVideos");
 #endif
@@ -299,9 +309,11 @@ static NMAccountManager * _sharedAccountManager = nil;
 #ifdef DEBUG_FACEBOOK_IMPORT
 		NSLog(@"no more video or profiles to import");
 #endif
+		self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
 		// return immediately if no video
 		return;
 	}
+	self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
 	for (NMConcreteVideo * vdo in theVideos) {
 		[tqc issueImportVideo:vdo];
 	}

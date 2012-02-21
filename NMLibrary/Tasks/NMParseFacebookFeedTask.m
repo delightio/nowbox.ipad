@@ -101,6 +101,10 @@ static NSArray * youTubeRegexArray = nil;
 	NSArray * feedAy = [result valueForKeyPath:@"data"];
 	
 	NSUInteger feedCount = [feedAy count];
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"received facebook feed - %d", feedCount);
+#endif
+
 	if ( feedCount == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];

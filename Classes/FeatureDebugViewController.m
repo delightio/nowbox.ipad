@@ -29,6 +29,7 @@
 	[playbackViewController release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[[NMTaskQueueController sharedTaskQueueController] removeObserver:self forKeyPath:@"syncInProgress"];
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
 	[super dealloc];
 }
 
@@ -69,6 +70,7 @@
 	}
 	// observer
 	[tqc addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
+	[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1002];
 }
 
 - (void)viewDidUnload
@@ -95,6 +97,10 @@
 			} else {
 				[syncActivityView stopAnimating];
 			}
+			break;
+			
+		case 1002:
+			NSLog(@"Facebook sync status: %@", [object valueForKeyPath:keyPath]);
 			break;
 			
 		default:

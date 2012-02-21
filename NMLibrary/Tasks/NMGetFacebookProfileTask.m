@@ -41,6 +41,9 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 }
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"get facebook profile - %@", profileOwnsByMe ? @"me" : _userID);
+#endif
 	NSString * str;
 	if ( profileOwnsByMe ) {
 		str = @"me";
@@ -63,6 +66,9 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	if ( str ) [theDict setObject:str forKey:@"picture"];
 	else [theDict setObject:[NSNull null] forKey:@"picture"];
 	self.profileDictionary = theDict;
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"facebook profile received: %@", [theDict objectForKey:@"name"]);
+#endif
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
