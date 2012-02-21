@@ -93,6 +93,7 @@
 @synthesize loadedMovieDetailView;
 @synthesize loadedControlView;
 @synthesize backgroundImage;
+@synthesize movieBackgroundView;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -135,6 +136,11 @@
     movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height)];
 	movieView.alpha = 0.0f;
     movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    self.movieBackgroundView = [[[UIView alloc] initWithFrame:movieView.frame] autorelease];
+    movieBackgroundView.backgroundColor = [UIColor blackColor];
+    movieBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [controlScrollView addSubview:movieBackgroundView];
     
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
@@ -233,10 +239,12 @@
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         movieView.frame = CGRectMake(0, 42, topLevelContainerView.frame.size.width, VIDEO_HEIGHT);        
+        movieBackgroundView.frame = movieView.frame;
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
         backgroundImage.hidden = NO;
     } else {
         movieView.frame = topLevelContainerView.bounds;
+        movieBackgroundView.frame = movieView.frame;
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspect];        
         backgroundImage.hidden = YES;
     }
@@ -273,6 +281,7 @@
 	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
+    movieBackgroundView.frame = theFrame;
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -283,6 +292,7 @@
     [self setPreviousChannelHeaderView:nil];
     [self setNextChannelHeaderView:nil];
     self.backgroundImage = nil;
+    self.movieBackgroundView = nil;
     
     [super viewDidUnload];
 }
@@ -303,6 +313,7 @@
     [nextChannelHeaderView release];
     [ratingsURL release];
     [backgroundImage release];
+    [movieBackgroundView release];
     
 	[super dealloc];
 }
@@ -522,6 +533,7 @@
 	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = currentXOffset;
 	movieView.frame = theFrame;
+    movieBackgroundView.frame = theFrame;
     
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
@@ -814,6 +826,7 @@
 			CGRect theFrame = movieView.frame;
 			theFrame.origin.x = currentXOffset;
 			movieView.frame = theFrame;
+            movieBackgroundView.frame = theFrame;
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		} else {
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
@@ -1138,6 +1151,10 @@
 				if ( shouldFadeOutVideoThumbnail ) {
 					shouldFadeOutVideoThumbnail = NO;
 					[theItem.nmVideo.video.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+                    
+                    CGRect theFrame = movieBackgroundView.frame;
+                    theFrame.origin.x = currentXOffset;
+                    movieBackgroundView.frame = theFrame;
 				}
 			}
 		}

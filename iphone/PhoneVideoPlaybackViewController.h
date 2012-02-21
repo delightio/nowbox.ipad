@@ -100,6 +100,7 @@ enum {
 @property (nonatomic, retain) IBOutlet PhoneMovieDetailView * loadedMovieDetailView;
 @property (nonatomic, retain) NMControlsView * loadedControlView;
 @property (nonatomic, retain) IBOutlet UIImageView * backgroundImage;
+@property (nonatomic, retain) UIView *movieBackgroundView;
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 @property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;
