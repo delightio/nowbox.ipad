@@ -270,49 +270,6 @@
     [sortDescriptor release];
 	[timestampDesc release];
     [sortDescriptors release];
-	
-	// listen to notificaiton for Youtube import
-	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	switch ( [channel.type integerValue] ) {
-		case NMChannelUserFacebookType:
-		{
-			// avoid re-registering for the same set of notificaitons
-			[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
-			[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
-			[nc removeObserver:self name:NMDidParseFacebookFeedNotification object:nil];
-			[nc removeObserver:self name:NMDidFailParseFacebookFeedNotification object:nil];
-			// for YouTube import
-			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
-			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
-			// facebook import
-			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
-			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
-			break;
-		}
-		case NMChannelUserTwitterType:
-		{
-			// avoid re-registering for the same set of notificaitons
-			[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
-			[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
-			[nc removeObserver:self name:NMDidParseTwitterFeedNotification object:nil];
-			[nc removeObserver:self name:NMDidFailParseTwitterFeedNotification object:nil];
-			// for YouTube import
-			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
-			[nc addObserver:self selector:@selector(handleDidImportVideoNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
-			// twitter import
-			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
-			[nc addObserver:self selector:@selector(handleDidParseFacebookFeedNotification:) name:NMDidFailParseTwitterFeedNotification object:nil];
-			break;
-		}
-		default:
-			[nc removeObserver:self name:NMDidImportYouTubeVideoNotification object:nil];
-			[nc removeObserver:self name:NMDidFailImportYouTubeVideoNotification object:nil];
-			[nc removeObserver:self name:NMDidParseFacebookFeedNotification object:nil];
-			[nc removeObserver:self name:NMDidFailParseFacebookFeedNotification object:nil];
-			[nc removeObserver:self name:NMDidParseTwitterFeedNotification object:nil];
-			[nc removeObserver:self name:NMDidFailParseTwitterFeedNotification object:nil];
-			break;
-	}
     
     NSError *error = nil;
     if (![fetchedResultsController_ performFetch:&error]) {
@@ -444,52 +401,6 @@
 
 - (void)handleNewSessionNotification:(NSNotification *)aNotification {
 	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-}
-
-- (void)handleDidImportVideoNotification:(NSNotification *)aNotification {
-	NSDictionary * info = [aNotification userInfo];
-	NMConcreteVideo * vdo = [info objectForKey:@"target_object"];
-	if ( vdo ) {
-		NSSet * result = [vdo.channels filteredSetUsingPredicate:[self.youtubeImportPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:channel forKey:@"CHANNEL"]]];
-		if ( [result count] ) {
-			if ( [[aNotification name] isEqualToString:NMDidFailImportYouTubeVideoNotification] ) {
-				isLoadingNewContent = NO;
-				isAnimatingNewContentCell = NO;
-				[videoTableView reloadData];
-			} else {
-				[self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
-				isLoadingNewContent = NO;
-				isAnimatingNewContentCell = YES;
-				[videoTableView reloadData];
-				[videoTableView beginUpdates];
-				[videoTableView endUpdates];
-			}
-		}
-	}
-}
-
-- (void)handleDidParseFacebookFeedNotification:(NSNotification *)aNotification {
-	NSDictionary * info = [aNotification userInfo];
-	NMChannel * chnObj = [info objectForKey:@"channel"];
-	if ( [chnObj isEqual:channel] ) {
-		if ( [[aNotification name] isEqualToString:NMDidFailParseFacebookFeedNotification] ) {
-			isLoadingNewContent = NO;
-			isAnimatingNewContentCell = NO;
-			[videoTableView reloadData];
-		} else {
-			// check how many videos are found
-			NSInteger c = [[info objectForKey:@"num_video_added"] integerValue];
-			NSString * nxtStr = [info objectForKey:@"next_url"];
-			if ( c == 0 && nxtStr == nil ) {
-				// there's nth new in the user's news feed or friend's wall.
-				isLoadingNewContent = NO;
-				isAnimatingNewContentCell = YES;
-				[videoTableView reloadData];
-				[videoTableView beginUpdates];
-				[videoTableView endUpdates];
-			}
-		}
-	}
 }
 
 #pragma mark trigger load new
