@@ -115,6 +115,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 //			});
 		}
 	}];
+	[accountStore release];
 }
 
 #pragma mark - View lifecycle
@@ -797,15 +798,15 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							} else {
 								socialCtrl.loginType = NMLoginTwitterType;
 								[self.navigationController pushViewController:socialCtrl animated:YES];
-								[socialCtrl release];
 							}
+							[socialCtrl release];
 							
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
 							return;
 						}
 					} else if ( indexPath.row == 1 ) {
-						if ( acMgr.facebookAuthorized ) {
+						if ( [acMgr.facebookAccountStatus integerValue] ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 							channelDetailViewController.enableUnsubscribe = YES;
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
@@ -828,7 +829,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				}	
 				default:
 					indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
-					chn = [myChannelsFetchedResultsController objectAtIndexPath:indexPath];
+					chn = [[myChannelsFetchedResultsController objectAtIndexPath:indexPath] valueForKey:@"channel"];
 					[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:chn.title, AnalyticsPropertyChannelName, 
 																							  [NSNumber numberWithBool:NO], AnalyticsPropertySocialChannel, 
 																							  @"channelmanagement", AnalyticsPropertySender, nil]];

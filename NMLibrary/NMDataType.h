@@ -96,7 +96,16 @@ typedef enum {
 	NMErrorYouTubeAPIError,
 	NMErrorDequeueVideo,
 	NMErrorUnfavoriteVideo,
+	NMErrorPendingImport = 99991,
 } NMErrorType;
+
+typedef enum {
+	NMSyncNotConfigured,
+	NMSyncPendingInitialSync,
+	NMSyncSyncInProgress,
+	NMSyncAccountActive,
+	NMSyncPendingDelete,
+} NMSyncStatusType;
 
 typedef enum {
 	NMChannelUnknownType,
@@ -130,7 +139,6 @@ typedef enum {
 extern BOOL NM_WIFI_REACHABLE;
 extern BOOL NM_RUNNING_ON_IPAD;
 extern NSString * NMServiceErrorDomain;
-extern NSInteger const NM_ENTITY_PENDING_IMPORT_ERROR;
 // Notifications
 // error
 extern NSString * const NMShowErrorAlertNotification;

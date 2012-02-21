@@ -244,7 +244,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 			}
 			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
 			[videoInfoDict removeObjectForKey:@"nm_description"];
-			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+			if ( !encountersErrorDuringProcessing ) targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
 			// update Concrete Video
 			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
 			// author
@@ -268,8 +268,11 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 		targetVideo.nm_direct_sd_url = directSDURLString;
 		targetVideo.nm_direct_url_expiry = expiryTime;
 		targetVideo.nm_playback_status = NMVideoQueueStatusDirectURLReady;
+#ifdef DEBUG_FACEBOOK_IMPORT
+		NSLog(@"imported video successfully: %@, %@", externalID, [[targetVideo.channels anyObject] valueForKeyPath:@"channel.title"]);
+#endif
 	}
-	return NO;
+	return YES;
 }
 
 - (NSString *)willLoadNotificationName {
@@ -300,6 +303,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 	NSDictionary * theDict;
 	if ( command == NMCommandImportYouTubeVideo ) {
 		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:concreteVideo, @"target_object", nil] : nil;
+		NSLog(@"on send notification: imported video successfully: %@, %@", externalID, [[concreteVideo.channels anyObject] valueForKeyPath:@"channel.title"]);
 	} else {
 		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
 	}

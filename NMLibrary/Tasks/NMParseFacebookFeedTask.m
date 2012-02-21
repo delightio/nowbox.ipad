@@ -73,7 +73,7 @@ static NSArray * youTubeRegexArray = nil;
 - (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
 	theProfile.nm_id = [NSNumber numberWithInteger:theID];
 	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
-	theProfile.nm_error = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+	theProfile.nm_error = [NSNumber numberWithInteger:NMErrorPendingImport];
 }
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
@@ -101,6 +101,10 @@ static NSArray * youTubeRegexArray = nil;
 	NSArray * feedAy = [result valueForKeyPath:@"data"];
 	
 	NSUInteger feedCount = [feedAy count];
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"received facebook feed - %d", feedCount);
+#endif
+
 	if ( feedCount == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
@@ -162,7 +166,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
 	NSInteger personIDBase = [ctrl maxPersonProfileID];
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
-	NSNumber * errNum = [NSNumber numberWithInteger:NM_ENTITY_PENDING_IMPORT_ERROR];
+	NSNumber * errNum = [NSNumber numberWithInteger:NMErrorPendingImport];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
 	NSInteger idx = -1;
@@ -206,6 +210,7 @@ static NSArray * youTubeRegexArray = nil;
 				break;
 			}
 			case NMVideoDoesNotExist:
+				numberOfVideoAdded++;
 				// create the NMVideo and NMConcreteVideo objects
 				conVdo = [ctrl insertNewConcreteVideo];
 				conVdo.external_id = extID;
@@ -324,7 +329,9 @@ static NSArray * youTubeRegexArray = nil;
 					}
 					[lkSet addObject:theProfile];
 				}
+#ifdef DEBUG_FACEBOOK_IMPORT
 				NSLog(@"add like: %@", theProfile.name);
+#endif
 				[fbInfo addPeopleLike:lkSet];
 			} else if ( [fbInfo.peopleLike count] ) {
 				[fbInfo removePeopleLike:fbInfo.peopleLike];
@@ -360,7 +367,9 @@ static NSArray * youTubeRegexArray = nil;
 						theProfile.name = [fromDict objectForKey:@"name"];
 					}
 					cmtObj.fromPerson = theProfile;
+#ifdef DEBUG_FACEBOOK_IMPORT
 					NSLog(@"add comment: %@", cmtObj.message);
+#endif
 					[cmtSet addObject:cmtObj];
 				}
 				[fbInfo addComments:cmtSet];
@@ -370,12 +379,10 @@ static NSArray * youTubeRegexArray = nil;
 		}
 	}
 	// when first fire Facebook feed parsing task, feedDirectURLString is nil. This means we are getting the first page of a person's news feed. The newest item should always appear in the first page. Therefore, we only need to save the parsing time data under this condition.
-	if ( _feedDirectURLString && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
+	if ( _feedDirectURLString == nil && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
 		// update the last checked time
 		_channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
-		time_t t;
-		time(&t);
-		_channel.subscription.nm_video_last_refresh = [NSNumber numberWithInteger:mktime(gmtime(&t))];
+		_channel.subscription.nm_video_last_refresh = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
 	}
 	[objectCache release];
 	return YES;
@@ -416,7 +423,7 @@ static NSArray * youTubeRegexArray = nil;
 
 - (NSDictionary *)userInfo {
 	_channel.video_count = [NSNumber numberWithUnsignedInteger:[_channel.videos count]];
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
 }
 
 @end

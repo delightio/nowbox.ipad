@@ -249,16 +249,14 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
     
-	[[NMAccountManager sharedAccountManager].facebook extendAccessTokenIfNeeded];
     return YES;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-	/*
-	 Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-	 If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-	 */
+	// stop all account sync related activity FIRST!!
+	[[NMAccountManager sharedAccountManager] applicationDidSuspend];
+	
     if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
         [self saveCurrentVideoList:[((VideoPlaybackViewController *)viewController) markPlaybackCheckpoint]];
     }
@@ -267,17 +265,13 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	// release core data
 	
-	// cancel tasks
-//	[[NMTaskQueueController sharedTaskQueueController] cancelAllTasks];
-	[[NMTaskQueueController sharedTaskQueueController] stopPollingServer];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-    
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval elapsedSessionTime = now - sessionStartTime;
     NSTimeInterval elapsedTotalTime = now - appStartTime;
     [[MixpanelAPI sharedAPI] track:AnalyticsEventAppEnterBackground properties:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:elapsedSessionTime], AnalyticsPropertySessionElapsedTime, 
                                                                                 [NSNumber numberWithFloat:elapsedTotalTime], AnalyticsPropertyTotalElapsedTime, nil]];
 	stopShowingError = YES;
+	[[NMTaskQueueController sharedTaskQueueController].dataController clearChannelCache];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -306,7 +300,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 			[tqc issueSyncRequest];
 		}
-		[tqc scheduleSyncSocialChannels];
+		[[NMAccountManager sharedAccountManager] applicationDidLaunch];
 	}
     
     if ([viewController isKindOfClass:[VideoPlaybackBaseViewController class]]) {

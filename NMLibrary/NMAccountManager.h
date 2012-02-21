@@ -10,17 +10,24 @@
 #import "FBConnect.h"
 #import <Accounts/Accounts.h>
 
+@class NMPersonProfile;
+
 extern NSString * const NM_FACEBOOK_ACCESS_TOKEN_KEY;
 extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 
 @interface NMAccountManager : NSObject <FBSessionDelegate> {
 	id signOutTarget;
 	SEL signOutAction;
+	NSInteger numberOfVideosAddedFromFacebook;
 }
 
 @property (nonatomic, retain) NSUserDefaults * userDefaults;
 @property (nonatomic, readonly) Facebook * facebook;
-@property (nonatomic, readonly) BOOL facebookAuthorized;
+@property (nonatomic, retain) NSNumber * facebookAccountStatus;
+@property (nonatomic, retain) NSNumber * twitterAccountStatus;
+
+@property (nonatomic, retain) NSTimer * socialChannelParsingTimer;
+@property (nonatomic, retain) NSTimer * videoImportTimer;
 
 + (NMAccountManager *)sharedAccountManager;
 
@@ -28,5 +35,13 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 - (void)signOutFacebookOnCompleteTarget:(id)aTarget action:(SEL)completionSelector;
 
 - (void)subscribeAccount:(ACAccount *)acObj;
+
+// Application lifecycle
+- (void)applicationDidLaunch;
+- (void)applicationDidSuspend;
+
+// Sync methods
+- (void)scheduleSyncSocialChannels;
+- (void)scheduleImportVideos;
 
 @end

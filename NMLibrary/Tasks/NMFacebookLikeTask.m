@@ -10,6 +10,7 @@
 #import "NMFacebookLikeTask.h"
 #import "NMFacebookInfo.h"
 #import "NMNetworkController.h"
+#import "NMDataController.h"
 
 NSString * const NMWillPostFacebookLikeNotification = @"NMWillPostFacebookLikeNotification";
 NSString * const NMDidPostFacebookLikeNotificaiton = @"NMDidPostFacebookLikeNotificaiton";
@@ -46,14 +47,19 @@ NSString * const NMDidFailDeleteFacebookLikeNotification = @"NMDidFailDeleteFace
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
 	NSString * gpath = [NSString stringWithFormat:@"%@/likes", _objectID];
-	return [self.facebook requestWithGraphPath:gpath andParams:nil andHttpMethod:command == NMCommandPostFacebookLike ? @"POST" : @"DELETE" andDelegate:ctrl];
+	return [self.facebook requestWithGraphPath:gpath andParams:[NSMutableDictionary dictionary] andHttpMethod:command == NMCommandPostFacebookLike ? @"POST" : @"DELETE" andDelegate:ctrl];
 }
 
-- (void)setParsedObjectsForResult:(id)result {
-	NSLog(@"%@", result);
-}
+//- (void)setParsedObjectsForResult:(id)result {
+//}
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	if ( command == NMCommandPostFacebookLike ) {
+		// you like this video
+		[_postInfo addPeopleLikeObject:[ctrl myFacebookProfile]];
+	} else {
+		[_postInfo removePeopleLikeObject:[ctrl myFacebookProfile]];
+	}
 	return NO;
 }
 

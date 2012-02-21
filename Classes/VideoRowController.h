@@ -29,6 +29,7 @@
 
 @property (nonatomic, retain) AGOrientedTableView * videoTableView;
 @property (nonatomic, assign) ChannelPanelController * panelController;
+@property (nonatomic, retain) NSPredicate * youtubeImportPredicate;
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, assign) NSInteger indexInTable;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;

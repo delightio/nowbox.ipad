@@ -34,10 +34,8 @@
 	// polling channel population status
 	NSTimer * channelPollingTimer;
 	NSTimer * youTubePollingTimer;
-	NSTimer * videoImportTimer;
 	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
-	NSTimer * socialChannelParsingTimer;
 	NSMutableArray * unpopulatedChannels;
 	BOOL didFinishLogin;
 	NSUInteger pollingRetryCount, channelPollingRetryCount;
@@ -52,10 +50,8 @@
 @property (nonatomic, readonly) NMDataController * dataController;
 @property (nonatomic, retain) NSTimer * channelPollingTimer;
 @property (nonatomic, retain) NSTimer * youTubePollingTimer;
-@property (nonatomic, retain) NSTimer * videoImportTimer;
 @property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
-@property (nonatomic, retain) NSTimer * socialChannelParsingTimer;
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 @property (nonatomic) BOOL syncInProgress;
 @property (nonatomic) BOOL appFirstLaunch;
@@ -136,11 +132,10 @@
 
 // Facebook or Twitter (social)
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
-- (void)issueGetMyFacebookProfile;
+- (void)issueProcessFeedWithTwitterInfo:(NSDictionary *)twChnInfo;
+- (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj directURLString:(NSString *)urlStr;
 - (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
-- (void)scheduleSyncSocialChannels;
-- (void)scheduleImportVideos;
 - (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info;
 - (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info;
 - (void)prepareSignOutFacebook;
@@ -148,8 +143,6 @@
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
-- (void)issueDebugProcessFeed;
-- (void)issueDebugImportYouTubeVideos;
 
 - (void)cancelAllTasks;
 @end

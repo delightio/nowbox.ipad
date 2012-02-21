@@ -51,11 +51,14 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	UIBarButtonItem * likeBtn = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleLikeStatus:)];
+	UIBarButtonItem * likeBtn = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:self action:@selector(setLikeStatus:)];
+	UIBarButtonItem * unlikeBtn = [[UIBarButtonItem alloc] initWithTitle:@"Unlike" style:UIBarButtonItemStyleBordered target:self action:@selector(setUnlikeStatus:)];
 	UIBarButtonItem * cmtBtn = [[UIBarButtonItem alloc] initWithTitle:@"Comment" style:UIBarButtonItemStyleBordered target:self action:@selector(sendRandomComment:)];
-	self.toolbarItems = [NSArray arrayWithObjects:likeBtn, cmtBtn, nil];
+	self.toolbarItems = [NSArray arrayWithObjects:likeBtn, unlikeBtn, cmtBtn, nil];
 	[likeBtn release];
 	[cmtBtn release];
+	
+	self.title = _socialInfo.video.title;
 }
 
 - (void)viewDidUnload
@@ -94,8 +97,12 @@
 }
 
 #pragma mark - Target action methods
-- (void)toggleLikeStatus:(id)sender {
+- (void)setLikeStatus:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issuePostLike:YES forPost:_socialInfo];
+}
+
+- (void)setUnlikeStatus:(id)sender {
+	[[NMTaskQueueController sharedTaskQueueController] issuePostLike:NO forPost:_socialInfo];
 }
 
 - (void)sendRandomComment:(id)sender {
