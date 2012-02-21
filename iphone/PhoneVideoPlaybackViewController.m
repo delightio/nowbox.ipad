@@ -1152,6 +1152,14 @@
 					shouldFadeOutVideoThumbnail = NO;
 					[theItem.nmVideo.video.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
                     
+                    // Restore the other thumbnail views - we only want one thumbnail faded out at a time
+                    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+                        if (detailView != theItem.nmVideo.video.nm_movie_detail_view) {
+                            [detailView restoreThumbnailView];
+                            [detailView setActivityViewHidden:YES];
+                        }
+                    }
+                    
                     CGRect theFrame = movieBackgroundView.frame;
                     theFrame.origin.x = currentXOffset;
                     movieBackgroundView.frame = theFrame;
