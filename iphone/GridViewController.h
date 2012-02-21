@@ -13,6 +13,7 @@
 
 @interface GridViewController : UIViewController <PagingGridViewDelegate, UIScrollViewDelegate, CustomPageControlDelegate> {
     BOOL scrollingToPage;
+    NSUInteger currentPage;
 }
 
 @property (nonatomic, retain) IBOutlet PagingGridView *gridView;

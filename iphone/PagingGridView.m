@@ -494,7 +494,6 @@
 
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell
 {
-    NSLog(@"cell did tap");
     if (dragging) return;
     
     if (rearranging) {
@@ -511,7 +510,6 @@
 
 - (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell
 {
-    NSLog(@"cell did press and hold");
     [self setRearranging:YES];
 }
 
@@ -525,9 +523,7 @@
 }
 
 - (void)gridViewCellDidPressDeleteButton:(PagingGridViewCell *)gridViewCell
-{
-    NSLog(@"cell did press delete button");
-    
+{    
     BOOL shouldDelete = YES;
     if ([gridDelegate respondsToSelector:@selector(gridView:shouldDeleteItemAtIndex:)]) {
         shouldDelete = [gridDelegate gridView:self shouldDeleteItemAtIndex:gridViewCell.tag];
@@ -549,14 +545,12 @@
 
 - (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell
 {
-    NSLog(@"cell did start dragging");
     self.scrollEnabled = NO;
     dragging = YES;
 }
 
 - (void)gridViewCellDidEndDragging:(PagingGridViewCell *)gridViewCell
 {
-    NSLog(@"cell did end dragging");
     NSUInteger index = gridViewCell.tag;
     [rearrangePageSwitchTimer invalidate];
     rearrangePageSwitchTimer = nil;
