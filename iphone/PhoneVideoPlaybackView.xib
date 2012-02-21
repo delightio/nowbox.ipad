@@ -198,6 +198,7 @@
 				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="30.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="7.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="8.CustomClassName">TouchDelayingScrollView</string>
 				<string key="8.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
@@ -441,7 +442,6 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="controlsView">NMControlsView</string>
 						<string key="landscapeView">PhoneVideoInfoOrientedView</string>
-						<string key="movieThumbnailContainerView">UIView</string>
 						<string key="portraitView">PhoneVideoInfoOrientedView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -452,10 +452,6 @@
 						<object class="IBToOneOutletInfo" key="landscapeView">
 							<string key="name">landscapeView</string>
 							<string key="candidateClassName">PhoneVideoInfoOrientedView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="movieThumbnailContainerView">
-							<string key="name">movieThumbnailContainerView</string>
-							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="portraitView">
 							<string key="name">portraitView</string>
@@ -613,6 +609,14 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/PhoneVideoPlaybackViewController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">TouchDelayingScrollView</string>
+					<string key="superclassName">UIScrollView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/TouchDelayingScrollView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

@@ -58,7 +58,6 @@
 	CGFloat channelTitleDefaultWidth, authorTitleDefaultWidth;
 	CGSize maximumTitleSize;
 	
-	IBOutlet NMSeekBar * progressSlider;
 	CGRect sliderRect;
 		
 //	CGFloat pxWidthPerSecond;
@@ -94,6 +93,7 @@
 @property (nonatomic, assign) IBOutlet UIButton * favoriteButton;
 @property (nonatomic, assign) IBOutlet UIButton * watchLaterButton;
 @property (nonatomic, assign) IBOutlet UIView * controlContainerView;
+@property (nonatomic, retain) IBOutlet NMSeekBar * progressSlider;
 
 //@property (nonatomic, readonly) IBOutlet UIView * channelBackgroundView;
 //@property (nonatomic, readonly) IBOutlet UIView * authorBackgroundView;
