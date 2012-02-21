@@ -27,7 +27,10 @@
     currentOrientedView = portraitView;
     
     [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
-    controlsView.frame = CGRectMake(20, landscapeView.frame.size.height - controlsView.frame.size.height, controlsView.frame.size.width, controlsView.frame.size.height);
+    controlsView.frame = CGRectMake(landscapeView.descriptionLabel.frame.origin.x - 13, 
+                                    landscapeView.frame.size.height - controlsView.frame.size.height, 
+                                    landscapeView.descriptionLabel.frame.size.width + 26, 
+                                    controlsView.frame.size.height);
     [landscapeView addSubview:controlsView];
 }
 

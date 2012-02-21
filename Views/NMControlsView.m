@@ -78,10 +78,10 @@
 	// airplay button
 	if ( NM_RUNNING_IOS_5 ) {
 		theRect = progressContainerView.frame;
-		theRect.size.width -= 61.0f;
+		theRect.size.width -= (NM_RUNNING_ON_IPAD ? 61.0f : 31.0f);
 		progressContainerView.frame = theRect;
 		
-		theRect.origin.x += theRect.size.width;
+		theRect.origin.x += (NM_RUNNING_ON_IPAD ? theRect.size.width : theRect.size.width - 20.0f);
 		theRect.size.width = 60.0f;
         
 		airPlayContainerView = [[NMAirPlayContainerView alloc] initWithFrame:theRect];
