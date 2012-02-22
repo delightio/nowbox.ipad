@@ -48,9 +48,6 @@ static NMAccountManager * _sharedAccountManager = nil;
 	// listen to import notification, we only care about successful import
 	[nc addObserver:self selector:@selector(handleDidImportYoutubeVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
 	
-	// KVO for its own variable
-	[self addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1001];
-	
 	// update facebook sync status
 	NMDataController * ctrl = [[NMTaskQueueController sharedTaskQueueController] dataController];
 	if ( [ctrl myFacebookProfile] ) {
@@ -81,6 +78,26 @@ static NMAccountManager * _sharedAccountManager = nil;
 		self.updatedChannels = [NSMutableSet setWithCapacity:2];
 	}
 	return _updatedChannels;
+}
+
+- (void)setFacebookAccountStatus:(NSNumber *)aStatus {
+	if ( _facebookAccountStatus == aStatus ) return;
+	
+	[_facebookAccountStatus release], _facebookAccountStatus = nil;
+	if ( aStatus ) {
+		_facebookAccountStatus = [aStatus retain];
+		if ( [_facebookAccountStatus integerValue] == NMSyncAccountActive && numberOfVideoImported ) {
+			// send notification for every channel
+			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+			for (NMChannel * chnObj in _updatedChannels) {
+				// arbitrarily fill in 1 as value
+				[nc postNotificationName:NMDidGetChannelVideoListNotification object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:1], @"num_video_added", [NSNumber numberWithUnsignedInteger:1], @"num_video_received", [NSNumber numberWithUnsignedInteger:1], @"num_video_requested", chnObj, @"channel", nil]];
+			}
+			// reset value
+			numberOfVideoImported = 0;
+			self.updatedChannels = nil;
+		}
+	}
 }
 
 #pragma mark Application life-cycle
@@ -224,25 +241,6 @@ static NMAccountManager * _sharedAccountManager = nil;
 }
 
 #pragma mark Sync notification handlers
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	if ( context == (void *)1001 ) {
-		// check if we need to send notificaiton
-		if ( [_facebookAccountStatus integerValue] == NMSyncAccountActive && numberOfVideoImported ) {
-			// send notification for every channel
-			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-			for (NMChannel * chnObj in _updatedChannels) {
-				// arbitrarily fill in 1 as value
-				[nc postNotificationName:NMDidGetChannelVideoListNotification object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:1], @"num_video_added", [NSNumber numberWithUnsignedInteger:1], @"num_video_received", [NSNumber numberWithUnsignedInteger:1], @"num_video_requested", chnObj, @"channel", nil]];
-			}
-			// reset value
-			numberOfVideoImported = 0;
-			self.updatedChannels = nil;
-		}
-	} else {
-		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-	}
-}
 
 - (void)handleDidGetPersonProfile:(NSNotification *)aNotification {
 	/*
