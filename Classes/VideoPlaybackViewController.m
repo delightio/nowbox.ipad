@@ -117,7 +117,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	// playback data model controller
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
-	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
+	playbackModelController = [[VideoPlaybackModelController alloc] init];
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
 
@@ -250,6 +250,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    [playbackModelController release]; playbackModelController = nil;
+    [movieView release]; movieView = nil;
 }
 
 
@@ -268,6 +270,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[movieView release];
 //    [temporaryDisabledGestures release];
     [ratingsURL release];
+    [playbackModelController release];
     
 	[super dealloc];
 }

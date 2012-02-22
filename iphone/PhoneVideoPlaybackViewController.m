@@ -129,7 +129,7 @@
 	
 	// playback data model controller
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
-	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
+	playbackModelController = [[VideoPlaybackModelController alloc] init];
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
 
@@ -316,8 +316,12 @@
 - (void)viewDidUnload {
     [self setPreviousChannelHeaderView:nil];
     [self setNextChannelHeaderView:nil];
+    
+    // Release objects that get recreated in viewDidLoad
     self.backgroundImage = nil;
     self.movieBackgroundView = nil;
+    [playbackModelController release]; playbackModelController = nil;
+    [movieView release]; movieView = nil;
     
     [super viewDidUnload];
 }
@@ -338,6 +342,7 @@
     [movieBackgroundView release];
     [controlScrollView release];
     [topLevelContainerView release];
+    [playbackModelController release];
     
 	[super dealloc];
 }
