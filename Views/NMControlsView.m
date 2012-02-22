@@ -34,6 +34,7 @@
 @synthesize favoriteButton, watchLaterButton;
 @synthesize controlContainerView;
 @synthesize topbarContainerView;
+@synthesize progressSlider;
 @synthesize playbackMode=playbackMode_;
 
 - (void)awakeFromNib {
@@ -111,6 +112,7 @@
 	[lastVideoMessage release];
 	[volumeView release];
     [airPlayIndicatorView release];
+    [progressSlider release];
     [super dealloc];
 }
 

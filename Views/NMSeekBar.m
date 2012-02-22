@@ -160,20 +160,23 @@
 	return nubLayer.position;
 }
 
-#pragma mark UIControl
-- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-	CGPoint thePoint = [touch locationInView:self];
-    
+- (BOOL)pointInsideNub:(CGPoint)point {
     // Since nub is small, accept a touch area bigger than the nub
     CGRect largerNub = CGRectMake(nubLayer.frame.origin.x - nubLayer.frame.size.width * 2,
                                   nubLayer.frame.origin.y - nubLayer.frame.size.height * 2,
                                   nubLayer.frame.size.width * 5,
                                   nubLayer.frame.size.height * 5);
-                                           
-    if (CGRectContainsPoint(largerNub, thePoint)) {
+    
+    if (CGRectContainsPoint(largerNub, point)) {
         return YES;
     }
     return NO;
+}
+
+#pragma mark UIControl
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+	CGPoint thePoint = [touch locationInView:self];
+    return [self pointInsideNub:thePoint];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {

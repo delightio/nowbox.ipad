@@ -23,6 +23,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.managedObjectContext = aManagedObjectContext;
+        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
     }
     return self;
 }
@@ -43,10 +44,12 @@
 {
     [super viewDidLoad];
     
-    pageControl.numberOfPages = gridView.numberOfPages;
-    
-    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
+    gridDataSource.gridView = gridView;
     gridView.dataSource = gridDataSource;
+    
+    pageControl.numberOfPages = gridView.numberOfPages;
+    pageControl.currentPage = currentPage;
+    [gridView setContentOffset:CGPointMake(currentPage * gridView.frame.size.width, 0) animated:NO];
 }
 
 - (void)viewDidUnload
@@ -54,7 +57,6 @@
     [super viewDidUnload];
 
     self.gridView = nil;
-    self.gridDataSource = nil;
     self.pageControl = nil;
 }
 
@@ -119,8 +121,7 @@
 
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView
 {
-    NSLog(@"begin rearranging");
-    // Don't want moves because then we get layoutSubviews which messes up our rearrange events
+    // Don't want moves because then the FRC changes trigger layoutSubviews which cancel our drags
     gridDataSource.ignoresMoveChanges = YES;
 }
 
@@ -131,7 +132,6 @@
 
 - (void)gridViewDidEndRearranging:(PagingGridView *)gridView
 {
-    NSLog(@"end rearranging");    
     gridDataSource.ignoresMoveChanges = NO;
 }
 
@@ -140,7 +140,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if (!scrollingToPage) {
-        NSUInteger currentPage = MAX(0, round(scrollView.contentOffset.x / scrollView.frame.size.width));
+        currentPage = MAX(0, round(scrollView.contentOffset.x / scrollView.frame.size.width));
         [pageControl setCurrentPage:currentPage];
     }    
 }
@@ -165,6 +165,7 @@
 - (void)pageControl:(CustomPageControl *)pageControl didSelectPageAtIndex:(NSUInteger)index
 {
     scrollingToPage = YES;
+    currentPage = index;
     [gridView setContentOffset:CGPointMake(index * gridView.frame.size.width, 0) animated:YES];
 }
 

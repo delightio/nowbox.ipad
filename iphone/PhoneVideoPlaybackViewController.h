@@ -47,6 +47,7 @@ enum {
 	IBOutlet UILabel * nextChannelSwitchingLabel;
 	IBOutlet UIActivityIndicatorView * previousChannelActivityView;
 	IBOutlet UIActivityIndicatorView * nextChannelActivityView;
+    UIView *movieBackgroundView;
 	NMMovieView * movieView;
 	
 	NSMutableArray * movieDetailViewArray;
@@ -98,6 +99,8 @@ enum {
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) IBOutlet PhoneMovieDetailView * loadedMovieDetailView;
 @property (nonatomic, retain) NMControlsView * loadedControlView;
+@property (nonatomic, retain) IBOutlet UIImageView * backgroundImage;
+@property (nonatomic, retain) UIView *movieBackgroundView;
 @property (nonatomic, readonly) UIScrollView * controlScrollView;
 @property (nonatomic, assign) ipadAppDelegate * appDelegate;
 @property (nonatomic, readonly) VideoPlaybackModelController * playbackModelController;
@@ -113,9 +116,6 @@ enum {
 - (void)playVideo:(NMVideo *)aVideo;
 - (void)launchPlayVideo:(NMVideo *)aVideo;
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-
-// launch view / onboard process
-- (void)showPlaybackView;
 
 - (BOOL)shouldShowRateUsReminder;
 - (void)showRateUsReminderCompletion:(void (^)(void))completion;

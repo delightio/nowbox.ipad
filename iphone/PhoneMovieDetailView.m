@@ -17,6 +17,7 @@
 @synthesize landscapeView;
 @synthesize controlsView;
 @synthesize infoPanelExpanded;
+@synthesize videoOverlayHidden;
 @synthesize delegate;
 
 - (void)awakeFromNib
@@ -90,6 +91,33 @@
     [landscapeView setInfoPanelExpanded:expanded animated:animated];
 }
 
+- (void)setVideoOverlayHidden:(BOOL)isVideoOverlayHidden
+{
+    [self setVideoOverlayHidden:isVideoOverlayHidden animated:NO];
+}
+
+- (void)setVideoOverlayHidden:(BOOL)hidden animated:(BOOL)animated
+{
+    videoOverlayHidden = hidden;
+    
+    void (^toggleVideoOverlay)(void) = ^{
+        landscapeView.topView.alpha = (hidden ? 0.0f : 1.0f);
+        landscapeView.bottomView.alpha = (hidden ? 0.0f : 1.0f);
+        controlsView.alpha = (hidden ? 0.0f : 1.0f);
+    };
+    
+    if (animated) {
+        [UIView animateWithDuration:0.15f
+                              delay:0.0f
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut
+                         animations:toggleVideoOverlay
+                         completion:^(BOOL finished){ 
+                         }];
+    } else {
+        toggleVideoOverlay();
+    }
+}
+
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     [currentOrientedView removeFromSuperview];
@@ -107,6 +135,10 @@
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {    
+    if (videoOverlayHidden && currentOrientedView == landscapeView) {
+        return NO;
+    }
+    
     return (CGRectContainsPoint(currentOrientedView.topView.frame, point) ||
             CGRectContainsPoint(currentOrientedView.bottomView.frame, point));
 }

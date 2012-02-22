@@ -46,7 +46,7 @@
 
 #define NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP         (60.0f * 40)
 
-#define VIDEO_HEIGHT 220.0f
+#define VIDEO_HEIGHT 218.0f
 
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
 
@@ -69,6 +69,7 @@
 - (NMMovieDetailView *)dequeueReusableMovieDetailView;
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo;
 - (void)cleanUpBadVideosMovieDetailView;
+- (PhoneMovieDetailView *)currentDetailView;
 
 // channel switching method
 - (void)resetChannelHeaderView:(BOOL)isPrev;
@@ -92,6 +93,8 @@
 @synthesize ratingsURL;
 @synthesize loadedMovieDetailView;
 @synthesize loadedControlView;
+@synthesize backgroundImage;
+@synthesize movieBackgroundView;
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -131,10 +134,15 @@
 #ifndef DEBUG_NO_VIDEO_PLAYBACK_VIEW
 	// === don't change the sequence in this block ===
 	// create movie view
-	movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height)];
+    movieView = [[NMMovieView alloc] initWithFrame:CGRectMake(movieXOffset, 0.0f, topLevelContainerView.frame.size.width, topLevelContainerView.frame.size.height)];
 	movieView.alpha = 0.0f;
     movieView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
+    
+    self.movieBackgroundView = [[[UIView alloc] initWithFrame:movieView.frame] autorelease];
+    movieBackgroundView.backgroundColor = [UIColor blackColor];
+    movieBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [controlScrollView addSubview:movieBackgroundView];
+    
 	// set target-action methods
 	UITapGestureRecognizer * dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
 	dblTapRcgr.numberOfTapsRequired = 2;
@@ -232,10 +240,14 @@
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         movieView.frame = CGRectMake(0, 42, topLevelContainerView.frame.size.width, VIDEO_HEIGHT);        
+        movieBackgroundView.frame = movieView.frame;
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+        backgroundImage.hidden = NO;
     } else {
         movieView.frame = topLevelContainerView.bounds;
+        movieBackgroundView.frame = movieView.frame;
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspect];        
+        backgroundImage.hidden = YES;
     }
     
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
@@ -270,6 +282,7 @@
 	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = controlScrollView.contentOffset.x + movieXOffset;
 	movieView.frame = theFrame;
+    movieBackgroundView.frame = theFrame;
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -279,6 +292,9 @@
 - (void)viewDidUnload {
     [self setPreviousChannelHeaderView:nil];
     [self setNextChannelHeaderView:nil];
+    self.backgroundImage = nil;
+    self.movieBackgroundView = nil;
+    
     [super viewDidUnload];
 }
 
@@ -297,75 +313,10 @@
     [previousChannelHeaderView release];
     [nextChannelHeaderView release];
     [ratingsURL release];
+    [backgroundImage release];
+    [movieBackgroundView release];
     
 	[super dealloc];
-}
-
-#pragma mark Launch / onboard process
-
-- (void)showLaunchView {
-	[launchController loadView];
-//	UIView * theView = launchController.progressContainerView;
-//	[theView removeFromSuperview];
-	[self.view addSubview:launchController.view];
-//	CGRect winRect = self.view.bounds;
-//	CGRect theRect = theView.frame;
-//	theRect.origin.x = winRect.size.width - theRect.size.width;
-//	theRect.origin.y = floorf(( winRect.size.height - theRect.size.height ) / 2.0f);
-//	theView.frame = theRect;
-//	[self.view addSubview:launchController.progressContainerView];
-}
-
-//- (void)showPlaybackViewWithTransitionStyle:(NSString *)aniStyle {
-- (void)showPlaybackView {
-	if ( launchModeActive ) {
-//		topLevelContainerView.center = CGPointMake(1536.0f, 384.0f);
-//		controlScrollView.scrollEnabled = NO;
-		// reset the alpha value
-		playbackModelController.currentVideo.video.nm_movie_detail_view.thumbnailContainerView.alpha = 1.0f;
-		movieView.alpha = 0.0f; // delayRestoreDetailView is called in controller:didUpdateVideoListWithTotalNumberOfVideo: when the channel is updated. The delay method will reset the alpha value of the views.
-		// bring the playback view to the front
-//		[self.view bringSubviewToFront:topLevelContainerView];
-		// cross fade the view
-		shouldFadeOutVideoThumbnail = YES;
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
-			// remove launch view
-			[launchController.view removeFromSuperview];
-			[launchController release];
-			launchController = nil;
-			launchModeActive = NO;
-			playFirstVideoOnLaunchWhenReady = YES;
-		}];
-		// slide in the view
-//		[UIView animateWithDuration:0.5f animations:^{
-//			topLevelContainerView.center = launchController.view.center;
-//			shouldFadeOutVideoThumbnail = YES;
-//		} completion:^(BOOL finished) {
-//			playFirstVideoOnLaunchWhenReady = YES;
-//			// do NOT remove launch view here. Launch view will be removed in scroll view delegate method.
-//		}];
-
-	} else {
-		// cross fade
-#if __IPHONE_4_3 < __IPHONE_OS_VERSION_MAX_ALLOWED
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:(NM_RUNNING_IOS_5 ? UIViewAnimationOptionTransitionCrossDissolve : UIViewAnimationOptionTransitionNone) completion:^(BOOL finished) {
-			// remove launch view
-			[launchController.view removeFromSuperview];
-			[launchController release];
-			launchController = nil;
-		}];
-#else
-		[UIView transitionFromView:launchController.view toView:topLevelContainerView duration:0.5f options:0 completion:^(BOOL finished) {
-			// remove launch view
-			[launchController.view removeFromSuperview];
-			[launchController release];
-			launchController = nil;
-		}];
-#endif
-		playFirstVideoOnLaunchWhenReady = YES;
-	}
-    
-    [self updateViewsForInterfaceOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
 
 #pragma mark Playback data structure
@@ -400,7 +351,6 @@
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	return vdoAy;
 }
-
 
 - (void)setCurrentChannel:(NMChannel *)chnObj {
 	[self setCurrentChannel:chnObj startPlaying:YES];
@@ -559,14 +509,15 @@
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
 				// we should hide
 				showMovieControlTimestamp = -1;
-//				[self hideControlView];
 //				[loadedControlView setControlsHidden:YES animated:YES];
+                [[self currentDetailView] setVideoOverlayHidden:YES animated:YES];
 			}
 		}
 	}];
 	// retain the time observer
 	[timeObserver retain];
 }
+
 
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
@@ -584,21 +535,15 @@
 	CGRect theFrame = movieView.frame;
 	theFrame.origin.x = currentXOffset;
 	movieView.frame = theFrame;
+    movieBackgroundView.frame = theFrame;
     
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 //        [loadedControlView setControlsHidden:NO animated:YES];
+        [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];                
 	}];
 }
-
-//- (void)hideControlView {
-//	if ( loadedControlView.alpha > 0.0f ) {
-//		[UIView animateWithDuration:0.25f animations:^{
-//			loadedControlView.alpha = 0.0f;
-//		}];
-//	}
-//}
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger ctxInt = (NSInteger)context;
@@ -699,6 +644,10 @@
 			[self reclaimMovieDetailViewForVideo:theView.video];
 		}
 	}
+}
+
+- (PhoneMovieDetailView *)currentDetailView {
+    return (PhoneMovieDetailView *) playbackModelController.currentVideo.video.nm_movie_detail_view;
 }
 
 #pragma mark Video queuing
@@ -876,6 +825,7 @@
 			CGRect theFrame = movieView.frame;
 			theFrame.origin.x = currentXOffset;
 			movieView.frame = theFrame;
+            movieBackgroundView.frame = theFrame;
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		} else {
 			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
@@ -1200,6 +1150,18 @@
 				if ( shouldFadeOutVideoThumbnail ) {
 					shouldFadeOutVideoThumbnail = NO;
 					[theItem.nmVideo.video.nm_movie_detail_view fadeOutThumbnailView:self context:(void *)NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT];
+                    
+                    // Restore the other thumbnail views - we only want one thumbnail faded out at a time
+                    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+                        if (detailView != theItem.nmVideo.video.nm_movie_detail_view) {
+                            [detailView restoreThumbnailView];
+                            [detailView setActivityViewHidden:YES];
+                        }
+                    }
+                    
+                    CGRect theFrame = movieBackgroundView.frame;
+                    theFrame.origin.x = currentXOffset;
+                    movieBackgroundView.frame = theFrame;
 				}
 			}
 		}
@@ -1267,6 +1229,7 @@
 //	[self hideControlView];
     
 //    [loadedControlView setControlsHidden:YES animated:YES];
+    [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1425,12 +1388,10 @@
 }
 
 #pragma mark Target-action methods
-- (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
-/*	[UIView animateWithDuration:0.25f animations:^{
-		loadedControlView.alpha = 1.0f;
-	} completion:^(BOOL finished) {
-		showMovieControlTimestamp = loadedControlView.timeElapsed;
-	}];*/
+- (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {    
+    PhoneMovieDetailView *currentDetailView = [self currentDetailView];
+    [currentDetailView setVideoOverlayHidden:!currentDetailView.videoOverlayHidden animated:YES];
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
 }
 
 - (void)movieViewDoubleTap:(id)sender {

@@ -30,5 +30,6 @@
 @property (nonatomic, readonly) CGPoint nubPosition;
 
 - (void)updateWidthPerPixel;
+- (BOOL)pointInsideNub:(CGPoint)point;
 
 @end

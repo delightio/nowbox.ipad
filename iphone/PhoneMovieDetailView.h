@@ -24,6 +24,7 @@
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *landscapeView;
 @property (nonatomic, retain) IBOutlet NMControlsView *controlsView;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
+@property (nonatomic, assign) BOOL videoOverlayHidden;
 @property (nonatomic, assign) id<PhoneMovieDetailViewDelegate> delegate;
 
 - (void)setChannelTitle:(NSString *)channelTitle;
@@ -31,6 +32,7 @@
 - (void)setDescriptionText:(NSString *)descriptionText;
 - (void)setChannelThumbnailForChannel:(NMChannel *)channel;
 - (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
+- (void)setVideoOverlayHidden:(BOOL)hidden animated:(BOOL)animated;
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (IBAction)gridButtonPressed:(id)sender;
 - (IBAction)playButtonPressed:(id)sender;
