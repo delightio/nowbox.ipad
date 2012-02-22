@@ -242,7 +242,6 @@
     view.tag = index;
     view.delegate = self;
     view.editing = rearranging;
-    [view.activityIndicator stopAnimating];
     [visibleViews addObject:view];
     [visibleIndexes addIndex:index];
     [self addSubview:view];    
@@ -330,6 +329,7 @@
     PagingGridViewCell *view = [[[recycledViews anyObject] retain] autorelease];
     if (view) {
         [recycledViews removeObject:view];
+        [view.activityIndicator stopAnimating];
     }
     
     return view;

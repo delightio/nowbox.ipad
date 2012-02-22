@@ -107,7 +107,7 @@
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.15f
+        [UIView animateWithDuration:0.3f
                               delay:0.0f
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut
                          animations:toggleVideoOverlay

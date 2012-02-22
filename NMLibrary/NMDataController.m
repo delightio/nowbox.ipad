@@ -1016,7 +1016,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMVideo *video = nil;
 	if ([results count]) {
 		video = [results objectAtIndex:0];
-	}
+    }
     
     [request release];
     [sortDescriptor release];

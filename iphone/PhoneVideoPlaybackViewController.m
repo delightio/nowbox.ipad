@@ -427,9 +427,9 @@
 }
 
 - (IBAction)playStopVideo:(id)sender {
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
 	if ( movieView.player.rate == 0.0 ) {
 		forceStopByUser = NO;
-		showMovieControlTimestamp = loadedControlView.timeElapsed;
 		[movieView.player play];
 	} else {
 		forceStopByUser = YES;
@@ -1542,6 +1542,8 @@
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded
 {
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+
     // Make all detail views have the same panel state
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
         if (detailView != videoInfoView) {
