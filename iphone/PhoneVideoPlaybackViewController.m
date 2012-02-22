@@ -336,10 +336,10 @@
     [ratingsURL release];
     [backgroundImage release];
     [movieBackgroundView release];
+    [controlScrollView release];
+    [topLevelContainerView release];
     
 	[super dealloc];
-	NSLog(@"dealloc, controller retain count: %d", [movieView retainCount]);
-	NSLog(@"dealloc, loadedControlView, controller retain count: %d", [loadedControlView retainCount]);	
 }
 
 #pragma mark Playback data structure
