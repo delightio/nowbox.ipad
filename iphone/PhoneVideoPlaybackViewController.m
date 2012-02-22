@@ -98,6 +98,8 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
+	NSLog(@"viewDidLoad, controller retain count: %d", [movieView retainCount]);
+	
     [super viewDidLoad];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
 //	[[UIApplication sharedApplication] setStatusBarHidden:NO];
@@ -155,11 +157,17 @@
 	[tapRcgr release];
 	[dblTapRcgr release];
 	
+	NSLog(@"before add subview, retain count %d", [movieView retainCount]);
+	
 	[controlScrollView addSubview:movieView];
+	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
 	controlScrollView.frame = CGRectMake(0.0f, 0.0f, topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
+	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
 	channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
+	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
 	[channelSwitchingScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
 
+	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
 	// double-tap handling
 	dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
 	dblTapRcgr.numberOfTapsRequired = 2;
@@ -231,6 +239,22 @@
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self playCurrentVideo];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[self stopVideo];
+	NSLog(@"viewWillDisappear, controller retain count: %d", [movieView retainCount]);
+	[movieView.player removeObserver:self forKeyPath:@"status"];
+	[movieView.player removeObserver:self forKeyPath:@"currentItem"];
+	[movieView.player removeObserver:self forKeyPath:@"airPlayVideoActive"];
+	[movieView.player removeObserver:self forKeyPath:@"rate"];
+	[movieView.player removeAllItems];
+	// get rid of time observer of video player
+ 	[movieView.player removeTimeObserver:timeObserver];
+	[timeObserver release], timeObserver = nil;
+	movieView.player = nil;
+	NSLog(@"viewWillDisappear, controller retain count: %d", [movieView retainCount]);
+	[super viewWillDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -305,9 +329,6 @@
 	[movieDetailViewArray release];
     [loadedControlView release];
 	[currentChannel release];
-	// get rid of time observer of video player
- 	[movieView.player removeTimeObserver:timeObserver];
-	[timeObserver release];
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
     [previousChannelHeaderView release];
@@ -317,6 +338,8 @@
     [movieBackgroundView release];
     
 	[super dealloc];
+	NSLog(@"dealloc, controller retain count: %d", [movieView retainCount]);
+	NSLog(@"dealloc, loadedControlView, controller retain count: %d", [loadedControlView retainCount]);	
 }
 
 #pragma mark Playback data structure
@@ -476,6 +499,7 @@
 
 #pragma mark Movie View Management
 - (void)setupPlayer {
+	NSLog(@"setupPlayer, controller retain count: %d", [movieView retainCount]);
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
 	player.playbackDelegate = self;
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
@@ -516,6 +540,8 @@
 	}];
 	// retain the time observer
 	[timeObserver retain];
+	[player release];
+	NSLog(@"setupPlayer, controller retain count: %d", [movieView retainCount]);
 }
 
 
@@ -867,6 +893,7 @@
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"loadedTimeRanges" options:0 context:(void *)NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT];
+	NSLog(@"observePlayerItem, controller retain count: %d", [movieView retainCount]);
 //	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
 	// no need to update status of NMVideo. "Queued" status is updated in "queueVideo" method
 }
@@ -889,6 +916,7 @@
 	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+	NSLog(@"stopObservingPlayerItem, controller retain count: %d", [movieView retainCount]);
 //	[anItem removeObserver:self forKeyPath:@"status"];
 }
 
