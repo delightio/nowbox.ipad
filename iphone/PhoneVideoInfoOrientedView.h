@@ -25,6 +25,7 @@
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
+@property (nonatomic, retain) IBOutlet UIButton *moreVideosButton;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
 @property (nonatomic, assign) IBOutlet id<PhoneVideoInfoOrientedViewDelegate> delegate;
 

@@ -79,6 +79,13 @@
     [landscapeView.channelThumbnail setImageForChannel:channel];
 }
 
+- (void)setMoreCount:(NSUInteger)moreCount
+{
+    NSString *moreString = [NSString stringWithFormat:@"%i more", moreCount];
+    [portraitView.moreVideosButton setTitle:moreString forState:UIControlStateNormal];
+    [landscapeView.moreVideosButton setTitle:moreString forState:UIControlStateNormal];
+}
+
 - (void)setInfoPanelExpanded:(BOOL)expanded
 {
     [self setInfoPanelExpanded:expanded animated:NO];

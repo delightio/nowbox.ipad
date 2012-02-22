@@ -21,6 +21,7 @@
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
+@synthesize moreVideosButton;
 @synthesize infoPanelExpanded;
 @synthesize delegate;
 
@@ -56,6 +57,7 @@
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabel release];
+    [moreVideosButton release];
     
     [super dealloc];
 }
