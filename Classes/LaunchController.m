@@ -119,6 +119,7 @@
     NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
     [taskQueueController beginNewSession:sid];
     [df setInteger:sid forKey:NM_SESSION_ID_KEY];
+    [df synchronize];
 }
 
 - (void)showVideoViewAnimated {
