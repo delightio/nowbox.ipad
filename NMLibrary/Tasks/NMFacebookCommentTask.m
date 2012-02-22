@@ -65,13 +65,13 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 	return [self.facebook requestWithGraphPath:_objectID andParams:nil andHttpMethod:@"DELETE" andDelegate:ctrl];
 }
 
-- (void)setParsedObjectsForResult:(id)result {
-	NSLog(@"%@", result);
-}
+//- (void)setParsedObjectsForResult:(id)result {
+//	NSLog(@"%@", result);
+//}
 
-- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-	return NO;
-}
+//- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+//	return NO;
+//}
 
 - (NSString *)willLoadNotificationName {
 	return command == NMCommandPostFacebookComment ? NMWillPostFacebookCommentNotification : NMWillDeleteFacebookCommentNotification;

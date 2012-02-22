@@ -413,6 +413,10 @@
 		A99C0B4D13E017BB0006FAA5 /* progress-dark-side.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */; };
 		A99C0B4E13E017BB0006FAA5 /* progress-gray-side.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */; };
 		A99C0B4F13E017BB0006FAA5 /* progress-nub.png in Resources */ = {isa = PBXBuildFile; fileRef = A99C0B4B13E017BB0006FAA5 /* progress-nub.png */; };
+		A99CCAD514F456A20050D93B /* NMOpenGraphWatchTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A99CCAD314F456A20050D93B /* NMOpenGraphWatchTask.h */; };
+		A99CCAD614F456A20050D93B /* NMOpenGraphWatchTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A99CCAD414F456A20050D93B /* NMOpenGraphWatchTask.m */; };
+		A99CCADA14F456B30050D93B /* NMOpenGraphSubscribeTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A99CCAD814F456B30050D93B /* NMOpenGraphSubscribeTask.h */; };
+		A99CCADB14F456B30050D93B /* NMOpenGraphSubscribeTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A99CCAD914F456B30050D93B /* NMOpenGraphSubscribeTask.m */; };
 		A99FB6C9140EAC0400689040 /* ChannelDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A99FB6C8140EAC0400689040 /* ChannelDetailViewController.m */; };
 		A99FB6CC140EAC1900689040 /* ChannelDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */; };
 		A99FB6CF140EB57700689040 /* button-gray-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A99FB6CD140EB57700689040 /* button-gray-background.png */; };
@@ -1007,6 +1011,10 @@
 		A99C0B4913E017BA0006FAA5 /* progress-dark-side.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-dark-side.png"; sourceTree = "<group>"; };
 		A99C0B4A13E017BA0006FAA5 /* progress-gray-side.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-gray-side.png"; sourceTree = "<group>"; };
 		A99C0B4B13E017BB0006FAA5 /* progress-nub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-nub.png"; sourceTree = "<group>"; };
+		A99CCAD314F456A20050D93B /* NMOpenGraphWatchTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMOpenGraphWatchTask.h; sourceTree = "<group>"; };
+		A99CCAD414F456A20050D93B /* NMOpenGraphWatchTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMOpenGraphWatchTask.m; sourceTree = "<group>"; };
+		A99CCAD814F456B30050D93B /* NMOpenGraphSubscribeTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMOpenGraphSubscribeTask.h; sourceTree = "<group>"; };
+		A99CCAD914F456B30050D93B /* NMOpenGraphSubscribeTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMOpenGraphSubscribeTask.m; sourceTree = "<group>"; };
 		A99FB6C7140EAC0400689040 /* ChannelDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelDetailViewController.h; sourceTree = "<group>"; };
 		A99FB6C8140EAC0400689040 /* ChannelDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelDetailViewController.m; sourceTree = "<group>"; };
 		A99FB6CB140EAC1900689040 /* ChannelDetailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelDetailView.xib; sourceTree = "<group>"; };
@@ -1893,6 +1901,10 @@
 				A966499814EC498F00F346D2 /* NMFacebookCommentTask.m */,
 				A966499C14EC499D00F346D2 /* NMFacebookLikeTask.h */,
 				A966499D14EC499D00F346D2 /* NMFacebookLikeTask.m */,
+				A99CCAD314F456A20050D93B /* NMOpenGraphWatchTask.h */,
+				A99CCAD414F456A20050D93B /* NMOpenGraphWatchTask.m */,
+				A99CCAD814F456B30050D93B /* NMOpenGraphSubscribeTask.h */,
+				A99CCAD914F456B30050D93B /* NMOpenGraphSubscribeTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -2040,6 +2052,8 @@
 				A9303A4614E0B09700B990C0 /* NMGetTwitterProfileTask.h in Headers */,
 				A966499914EC498F00F346D2 /* NMFacebookCommentTask.h in Headers */,
 				A966499E14EC499D00F346D2 /* NMFacebookLikeTask.h in Headers */,
+				A99CCAD514F456A20050D93B /* NMOpenGraphWatchTask.h in Headers */,
+				A99CCADA14F456B30050D93B /* NMOpenGraphSubscribeTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2577,6 +2591,8 @@
 				A9303A4714E0B09700B990C0 /* NMGetTwitterProfileTask.m in Sources */,
 				A966499A14EC498F00F346D2 /* NMFacebookCommentTask.m in Sources */,
 				A966499F14EC499D00F346D2 /* NMFacebookLikeTask.m in Sources */,
+				A99CCAD614F456A20050D93B /* NMOpenGraphWatchTask.m in Sources */,
+				A99CCADB14F456B30050D93B /* NMOpenGraphSubscribeTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

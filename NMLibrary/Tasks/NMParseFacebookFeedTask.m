@@ -70,6 +70,13 @@ static NSArray * youTubeRegexArray = nil;
 	[super dealloc];
 }
 
+- (NSInteger)commandIndex {
+	NSInteger idx = 0;
+	// use custom command index method
+	idx = ABS((NSInteger)[_user_id hash]);
+	return (((NSIntegerMax >> 6 ) & idx) << 6) | command;
+}
+
 - (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
 	theProfile.nm_id = [NSNumber numberWithInteger:theID];
 	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
@@ -382,8 +389,8 @@ static NSArray * youTubeRegexArray = nil;
 	if ( _feedDirectURLString == nil && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
 		// update the last checked time
 		_channel.subscription.nm_since_id = [NSString stringWithFormat:@"%d", maxUnixTime];
-		_channel.subscription.nm_video_last_refresh = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
 	}
+	_channel.subscription.nm_video_last_refresh = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
 	[objectCache release];
 	return YES;
 }

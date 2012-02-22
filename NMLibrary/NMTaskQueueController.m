@@ -569,6 +569,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
+	
+	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:YES];
+	[networkController addNewConnectionForTask:opTask];
+	[opTask release];
 }
 
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd {
@@ -578,6 +582,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	task.elapsedSeconds = sec;
 	[networkController addNewConnectionForTask:task];
 	[task release];
+	
+	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:aEnd];
+	[networkController addNewConnectionForTask:opTask];
+	[opTask release];
 }
 
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec {
