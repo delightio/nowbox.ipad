@@ -56,6 +56,7 @@
 		8305574F14EDD609004048F7 /* playback-play~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574D14EDD609004048F7 /* playback-play~iphone.png */; };
 		8305575014EDD609004048F7 /* playback-play@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */; };
 		8305575214EDE773004048F7 /* MovieDetailInfoView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */; };
+		831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */; };
 		83349C4714F427E800D7DFD2 /* phone_video_background_portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 83349C4514F427E800D7DFD2 /* phone_video_background_portrait.png */; };
 		83349C4814F427E800D7DFD2 /* phone_video_background_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83349C4614F427E800D7DFD2 /* phone_video_background_portrait@2x.png */; };
 		833A762314F31F0F00D3DF0E /* playback-play-active@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 833A762114F31F0F00D3DF0E /* playback-play-active@2x~iphone.png */; };
@@ -549,6 +550,8 @@
 		8305574D14EDD609004048F7 /* playback-play~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play~iphone.png"; sourceTree = "<group>"; };
 		8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play@2x~iphone.png"; sourceTree = "<group>"; };
 		8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "MovieDetailInfoView~iphone.xib"; sourceTree = "<group>"; };
+		831C592D14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneVideoInfoOrientedView.h; sourceTree = "<group>"; };
+		831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneVideoInfoOrientedView.m; sourceTree = "<group>"; };
 		83349C4514F427E800D7DFD2 /* phone_video_background_portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_background_portrait.png; sourceTree = "<group>"; };
 		83349C4614F427E800D7DFD2 /* phone_video_background_portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_background_portrait@2x.png"; sourceTree = "<group>"; };
 		833A762114F31F0F00D3DF0E /* playback-play-active@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play-active@2x~iphone.png"; sourceTree = "<group>"; };
@@ -1158,6 +1161,8 @@
 				8384CD9814E0B7DB00444755 /* CustomPageControl.m */,
 				838317BF14E9ECDA00185DE6 /* PhoneMovieDetailView.h */,
 				838317C014E9ECDA00185DE6 /* PhoneMovieDetailView.m */,
+				831C592D14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.h */,
+				831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */,
 				83C25F7614F33D100098757F /* TouchDelayingScrollView.h */,
 				83C25F7714F33D100098757F /* TouchDelayingScrollView.m */,
 			);
@@ -2530,6 +2535,7 @@
 				A96F926614EB2EE600B51509 /* NMSubscription.m in Sources */,
 				A927BCA614EB4B5E00298615 /* NMFacebookInfo.m in Sources */,
 				83C25F7814F33D100098757F /* TouchDelayingScrollView.m in Sources */,
+				831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,15 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "NMMovieDetailView.h"
-#import "NMCachedImageView.h"
 #import "NMControlsView.h"
 #import "NMChannel.h"
+#import "PhoneVideoInfoOrientedView.h"
 
 @protocol PhoneMovieDetailViewDelegate;
-@class PhoneVideoInfoOrientedView;
-@class InfiniteScrollView;
 
-@interface PhoneMovieDetailView : NMMovieDetailView {
+@interface PhoneMovieDetailView : NMMovieDetailView <PhoneVideoInfoOrientedViewDelegate> {
     PhoneVideoInfoOrientedView *currentOrientedView;
 }
 
@@ -53,31 +51,6 @@
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchDownSeekBar:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchUpSeekBar:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded;
-@end
-
-// A video info view contains two of these, one for portrait and one for landscape.
-
-@interface PhoneVideoInfoOrientedView : UIView {
-    CGRect originalVideoTitleFrame;
-}
-
-@property (nonatomic, retain) IBOutlet UIView *topView;
-@property (nonatomic, retain) IBOutlet UIView *bottomView;
-@property (nonatomic, retain) IBOutlet UIView *infoView;
-@property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
-@property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
-@property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
-@property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
-@property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
-@property (nonatomic, assign) BOOL infoPanelExpanded;
-
-- (void)positionLabels;
-- (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
-
-@end
-
-@interface InfiniteScrollView : UIScrollView <UIScrollViewDelegate>
-
-- (NSInteger)centerViewIndex;
-
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView willBeginDraggingScrollView:(UIScrollView *)scrollView;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didEndDraggingScrollView:(UIScrollView *)scrollView;
 @end

@@ -1516,4 +1516,14 @@
     }
 }
 
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView willBeginDraggingScrollView:(UIScrollView *)scrollView
+{
+    showMovieControlTimestamp = -1;
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didEndDraggingScrollView:(UIScrollView *)scrollView
+{
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+}
+
 @end
