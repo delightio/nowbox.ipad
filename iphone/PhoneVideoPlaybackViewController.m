@@ -120,10 +120,6 @@
 	nextChannelHeaderView.frame = theFrame;
 	[channelSwitchingScrollView addSubview:nextChannelHeaderView];
 	[self resetChannelHeaderView:NO];
-
-	// ribbon view
-//	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
-//	ribbonView.layer.shouldRasterize = YES;
 	
 	// playback data model controller
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
@@ -150,7 +146,7 @@
 	
 	UITapGestureRecognizer * tapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewTouchUp:)];
 	tapRcgr.numberOfTapsRequired = 1;
-	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
+//	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
 	[movieView addGestureRecognizer:tapRcgr];
 	[tapRcgr release];
 	[dblTapRcgr release];
@@ -159,29 +155,12 @@
 	controlScrollView.frame = CGRectMake(0.0f, 0.0f, topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
 	channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
 	[channelSwitchingScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
-
-	// double-tap handling
-	dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
-	dblTapRcgr.numberOfTapsRequired = 2;
-	dblTapRcgr.delegate = loadedControlView;
-	[loadedControlView addGestureRecognizer:dblTapRcgr];
-	// single-tap handling
-	tapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(controlsViewTouchUp:)];
-	tapRcgr.numberOfTapsRequired = 1;
-	tapRcgr.delegate = loadedControlView;
-	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
-	[loadedControlView addGestureRecognizer:tapRcgr];
-	[tapRcgr release];
-	[dblTapRcgr release];
-	 
-	loadedControlView.controlDelegate = self;
-	
+	 	
 	// set up player
 	[self setupPlayer];
 	
 	// ======
 #endif
-	[nowboxTaskController issueGetFeaturedCategories];
 	
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
@@ -206,21 +185,6 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
     
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidGetInfoNotification:) name:NMDidCheckUpdateNotification object:nil];
-
-	// setup gesture recognizer
-	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
-    pinRcr.delegate = self;
-	[controlScrollView addGestureRecognizer:pinRcr];
-	[pinRcr release];
-    
-    /*
-	// create the launch view
-	launchController = [[PhoneLaunchController alloc] init];
-	launchController.viewController = self;
-	[[NSBundle mainBundle] loadNibNamed:@"LaunchView" owner:launchController options:nil];
-	[self showLaunchView];
-     */
-    [self showPlaybackView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -1396,7 +1360,7 @@
 
 - (void)movieViewDoubleTap:(id)sender {
 	if ([self currentDetailView].videoOverlayHidden) {
-		[self movieViewTouchUp:sender];
+		//[self movieViewTouchUp:sender];
 	}
 	[self playStopVideo:sender];
 }
