@@ -1395,7 +1395,7 @@
 }
 
 - (void)movieViewDoubleTap:(id)sender {
-	if ( loadedControlView.hidden ) {
+	if ([self currentDetailView].videoOverlayHidden) {
 		[self movieViewTouchUp:sender];
 	}
 	[self playStopVideo:sender];

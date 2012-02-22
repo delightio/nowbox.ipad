@@ -240,7 +240,9 @@
 		[playPauseButton setImage:styleUtility.playImage forState:UIControlStateNormal];
 		[playPauseButton setImage:styleUtility.playActiveImage forState:UIControlStateHighlighted];
 		buttonPlayState = YES;
-		[self setControlsHidden:NO animated:YES];
+        if (NM_RUNNING_ON_IPAD) {
+            [self setControlsHidden:NO animated:YES];
+        }
 	} else if ( aRate > 0.0f && buttonPlayState ) {
 		buttonPlayState = NO;
 		[playPauseButton setImage:styleUtility.pauseImage forState:UIControlStateNormal];
