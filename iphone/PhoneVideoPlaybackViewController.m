@@ -69,6 +69,7 @@
 - (NMMovieDetailView *)dequeueReusableMovieDetailView;
 - (void)reclaimMovieDetailViewForVideo:(NMVideo *)vdo;
 - (void)cleanUpBadVideosMovieDetailView;
+- (PhoneMovieDetailView *)currentDetailView;
 
 // channel switching method
 - (void)resetChannelHeaderView:(BOOL)isPrev;
@@ -508,14 +509,15 @@
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
 				// we should hide
 				showMovieControlTimestamp = -1;
-//				[self hideControlView];
 //				[loadedControlView setControlsHidden:YES animated:YES];
+                [[self currentDetailView] setVideoOverlayHidden:YES animated:YES];
 			}
 		}
 	}];
 	// retain the time observer
 	[timeObserver retain];
 }
+
 
 #pragma mark Control Views Management
 - (void)configureControlViewForVideo:(NMVideo *)aVideo {
@@ -539,16 +541,9 @@
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 //        [loadedControlView setControlsHidden:NO animated:YES];
+        [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];                
 	}];
 }
-
-//- (void)hideControlView {
-//	if ( loadedControlView.alpha > 0.0f ) {
-//		[UIView animateWithDuration:0.25f animations:^{
-//			loadedControlView.alpha = 0.0f;
-//		}];
-//	}
-//}
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger ctxInt = (NSInteger)context;
@@ -649,6 +644,10 @@
 			[self reclaimMovieDetailViewForVideo:theView.video];
 		}
 	}
+}
+
+- (PhoneMovieDetailView *)currentDetailView {
+    return (PhoneMovieDetailView *) playbackModelController.currentVideo.video.nm_movie_detail_view;
 }
 
 #pragma mark Video queuing
@@ -1230,6 +1229,7 @@
 //	[self hideControlView];
     
 //    [loadedControlView setControlsHidden:YES animated:YES];
+    [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1388,12 +1388,10 @@
 }
 
 #pragma mark Target-action methods
-- (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {
-/*	[UIView animateWithDuration:0.25f animations:^{
-		loadedControlView.alpha = 1.0f;
-	} completion:^(BOOL finished) {
-		showMovieControlTimestamp = loadedControlView.timeElapsed;
-	}];*/
+- (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {    
+    PhoneMovieDetailView *currentDetailView = [self currentDetailView];
+    [currentDetailView setVideoOverlayHidden:!currentDetailView.videoOverlayHidden animated:YES];
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
 }
 
 - (void)movieViewDoubleTap:(id)sender {
