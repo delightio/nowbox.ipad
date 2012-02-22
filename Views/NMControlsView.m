@@ -284,8 +284,8 @@
 	// reset progress bar
 	progressSlider.duration = 0;
 	
-	self.alpha = 1.0;
     if (NM_RUNNING_ON_IPAD) {
+        self.alpha = 1.0;
         [self setControlsHidden:YES animated:NO];
     }
 }

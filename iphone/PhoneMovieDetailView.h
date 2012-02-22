@@ -34,6 +34,7 @@
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (IBAction)gridButtonPressed:(id)sender;
 - (IBAction)playButtonPressed:(id)sender;
+- (IBAction)thumbnailPressed:(id)sender;
 - (IBAction)seekBarValueChanged:(id)sender;
 - (IBAction)seekBarTouchDown:(id)sender;
 - (IBAction)seekBarTouchUp:(id)sender;
@@ -47,6 +48,7 @@
 @optional
 - (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView;
+- (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchDownSeekBar:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchUpSeekBar:(NMSeekBar *)seekBar;

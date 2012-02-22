@@ -505,7 +505,7 @@
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 //        [loadedControlView setControlsHidden:NO animated:YES];
-        [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];                
+        //[[self currentDetailView] setVideoOverlayHidden:NO animated:YES];                
 	}];
 }
 
@@ -1464,6 +1464,11 @@
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView
 {
     [self playStopVideo:nil];
+}
+
+- (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView
+{
+    [self movieViewTouchUp:nil];
 }
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar

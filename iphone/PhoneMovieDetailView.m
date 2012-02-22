@@ -135,6 +135,10 @@
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {    
+    if (thumbnailContainerView.alpha == 1.0f) {
+        return [super pointInside:point withEvent:event];
+    }
+    
     if (videoOverlayHidden && currentOrientedView == landscapeView) {
         return NO;
     }
@@ -157,6 +161,13 @@
     if ([delegate respondsToSelector:@selector(videoInfoViewDidTapPlayButton:)]) {
         [delegate videoInfoViewDidTapPlayButton:self];
     }
+}
+
+- (IBAction)thumbnailPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(videoInfoViewDidTapThumbnail:)]) {
+        [delegate videoInfoViewDidTapThumbnail:self];
+    }    
 }
 
 - (IBAction)seekBarValueChanged:(id)sender
