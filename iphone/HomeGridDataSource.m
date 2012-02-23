@@ -8,6 +8,7 @@
 
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
+#import "FacebookGridDataSource.h"
 #import "NMAccountManager.h"
 
 @implementation HomeGridDataSource
@@ -16,11 +17,12 @@
 {
     switch (index) {
         case 0: {
+            // Facebook
             NMAccountManager *accountManager = [NMAccountManager sharedAccountManager];
             if (![accountManager.facebook isSessionValid]) {
                 [accountManager authorizeFacebook];
             }
-            return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];            
+            return [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];            
             break;
         }
         default:

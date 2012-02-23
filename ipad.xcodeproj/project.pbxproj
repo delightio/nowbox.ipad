@@ -93,6 +93,7 @@
 		837E904E14587FA3009F32DD /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904614587FA3009F32DD /* NSData+MPBase64.m */; };
 		837E904F14587FA3009F32DD /* MixpanelAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904814587FA3009F32DD /* MixpanelAPI.m */; };
 		837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904A14587FA3009F32DD /* MixpanelEvent.m */; };
+		8380FA6014F6E305000CE0F7 /* FacebookGridDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8380FA5F14F6E305000CE0F7 /* FacebookGridDataSource.m */; };
 		838105E2149153CC00B3FCE5 /* PhoneLaunchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */; };
 		838105E514916AF600B3FCE5 /* LaunchView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */; };
 		8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381062A1491B6D600B3FCE5 /* TestGridController.m */; };
@@ -612,6 +613,8 @@
 		837E904814587FA3009F32DD /* MixpanelAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelAPI.m; sourceTree = "<group>"; };
 		837E904914587FA3009F32DD /* MixpanelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelEvent.h; sourceTree = "<group>"; };
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
+		8380FA5E14F6E304000CE0F7 /* FacebookGridDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookGridDataSource.h; sourceTree = "<group>"; };
+		8380FA5F14F6E305000CE0F7 /* FacebookGridDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookGridDataSource.m; sourceTree = "<group>"; };
 		838105E0149153CC00B3FCE5 /* PhoneLaunchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneLaunchController.h; sourceTree = "<group>"; };
 		838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneLaunchController.m; sourceTree = "<group>"; };
 		838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "LaunchView~iphone.xib"; sourceTree = "<group>"; };
@@ -1214,6 +1217,8 @@
 				837A299214E1C8A800065F32 /* HomeGridDataSource.m */,
 				837A299714E1CA0D00065F32 /* YouTubeGridDataSource.h */,
 				837A299814E1CA0D00065F32 /* YouTubeGridDataSource.m */,
+				8380FA5E14F6E304000CE0F7 /* FacebookGridDataSource.h */,
+				8380FA5F14F6E305000CE0F7 /* FacebookGridDataSource.m */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -2572,6 +2577,7 @@
 				83C25F7814F33D100098757F /* TouchDelayingScrollView.m in Sources */,
 				831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */,
 				830A599114F5DD1500086A70 /* PhoneControlsView.m in Sources */,
+				8380FA6014F6E305000CE0F7 /* FacebookGridDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
