@@ -52,6 +52,8 @@
 @optional
 - (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index;
 - (BOOL)gridView:(PagingGridView *)gridView canRearrangeItemAtIndex:(NSUInteger)index;
+- (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index;
+- (NSUInteger)gridView:(PagingGridView *)gridView rowSpanForCellAtIndex:(NSUInteger)index;
 @end
 
 @protocol PagingGridViewDelegate <NSObject>

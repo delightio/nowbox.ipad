@@ -54,6 +54,18 @@
     // To be overriden by subclasses    
 }
 
+- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex
+{
+    // The indexes in our grid and fetched results may not correspond. This method lets us define a mapping between the two.
+    return gridIndex;
+}
+
+- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex
+{
+    // The indexes in our grid and fetched results may not correspond. This method lets us define a mapping between the two.
+    return fetchedResultsIndex;
+}
+
 #pragma mark - PagingGridViewDataSource
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
@@ -83,19 +95,22 @@
 {    
     if (ignoresMoveChanges && type == NSFetchedResultsChangeMove) return;
     
+    NSUInteger index = [self mappedGridIndexForFetchedResultsIndex:indexPath.row];
+    NSUInteger newIndex = [self mappedGridIndexForFetchedResultsIndex:newIndexPath.row];
+    
     switch(type) {
         case NSFetchedResultsChangeInsert: 
-            [gridView insertItemAtIndex:newIndexPath.row];
+            [gridView insertItemAtIndex:newIndex];
             break;
         case NSFetchedResultsChangeDelete:
-            [gridView deleteItemAtIndex:indexPath.row animated:YES];
+            [gridView deleteItemAtIndex:index animated:YES];
             break;
         case NSFetchedResultsChangeUpdate:
-            [gridView updateItemAtIndex:indexPath.row];
+            [gridView updateItemAtIndex:index];
             break;
         case NSFetchedResultsChangeMove:
-            [gridView deleteItemAtIndex:indexPath.row animated:YES];
-            [gridView insertItemAtIndex:newIndexPath.row];
+            [gridView deleteItemAtIndex:index animated:YES];
+            [gridView insertItemAtIndex:newIndex];
             break;
     }
 }

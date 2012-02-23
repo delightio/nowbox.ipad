@@ -21,6 +21,9 @@
 @synthesize activityIndicator;
 @synthesize deleteButton;
 @synthesize highlightView;
+@synthesize index;
+@synthesize columnSpan;
+@synthesize rowSpan;
 @synthesize editing;
 @synthesize dragging;
 @synthesize lastDragLocation;

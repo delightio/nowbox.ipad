@@ -22,6 +22,9 @@
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) IBOutlet UIButton *deleteButton;
 @property (nonatomic, retain) IBOutlet UIView *highlightView;
+@property (nonatomic, assign) NSUInteger index;
+@property (nonatomic, assign) NSUInteger columnSpan;
+@property (nonatomic, assign) NSUInteger rowSpan;
 @property (nonatomic, assign, getter=isEditing) BOOL editing;
 @property (nonatomic, assign, getter=isDragging) BOOL dragging;
 @property (nonatomic, assign) CGPoint lastDragLocation;

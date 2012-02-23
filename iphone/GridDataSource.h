@@ -22,5 +22,7 @@
 - (id)objectAtIndex:(NSUInteger)index;
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
 - (void)deleteObjectAtIndex:(NSUInteger)index;
+- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex;
+- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex;
 
 @end

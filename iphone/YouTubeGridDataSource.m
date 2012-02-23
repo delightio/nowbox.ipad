@@ -24,13 +24,27 @@
     return nil;
 }
 
+- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex
+{
+    return (gridIndex == 0 ? 0 : gridIndex - 1);
+}
+
+- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex;
+{
+    return (fetchedResultsIndex == 0 ? 0 : fetchedResultsIndex + 1);
+}
+
 - (id)objectAtIndex:(NSUInteger)index
 {
+    index = [self mappedFetchedResultsIndexForGridIndex:index];
     return [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 }
 
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
+    oldIndex = [self mappedFetchedResultsIndexForGridIndex:oldIndex];
+    newIndex = [self mappedFetchedResultsIndexForGridIndex:newIndex];
+    
     NMChannel *displacedChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
     NSNumber *newSortOrder = displacedChannel.subscription.nm_sort_order;
     
@@ -63,6 +77,8 @@
 
 - (void)deleteObjectAtIndex:(NSUInteger)index
 {
+    index = [self mappedFetchedResultsIndexForGridIndex:index];
+    
     NMChannel *channelToDelete = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channelToDelete];
 }
@@ -135,17 +151,20 @@
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 1;
 }
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
-    PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
+    // index = 1 doesn't exist. First cell spans two columns.
+    if (index == 1) return nil;
     
+    PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
     }
 
+    index = [self mappedFetchedResultsIndexForGridIndex:index];
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     [self configureCell:view forChannel:channel];
     
@@ -154,8 +173,19 @@
 
 - (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
 {
+    index = [self mappedFetchedResultsIndexForGridIndex:index];
     NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
     return [channel.type integerValue] != NMChannelRecommendedType;
+}
+
+- (BOOL)gridView:(PagingGridView *)gridView canRearrangeItemAtIndex:(NSUInteger)index
+{
+    return index >= 2;
+}
+
+- (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index
+{
+    return (index == 0 ? 2 : 1);
 }
 
 @end
