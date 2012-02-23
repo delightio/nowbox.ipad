@@ -11,6 +11,8 @@
 #import "NMDataController.h"
 #import "NMPersonProfile.h"
 #import "NMChannel.h"
+#import "NMVideo.h"
+#import "NMConcreteVideo.h"
 
 static NMAccountManager * _sharedAccountManager = nil;
 
@@ -19,6 +21,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 @synthesize facebook = _facebook;
 @synthesize facebookAccountStatus = _facebookAccountStatus;
 @synthesize twitterAccountStatus = _twitterAccountStatus;
+@synthesize updatedChannels = _updatedChannels;
 
 @synthesize socialChannelParsingTimer = _socialChannelParsingTimer, videoImportTimer = _videoImportTimer;
 
@@ -42,6 +45,8 @@ static NMAccountManager * _sharedAccountManager = nil;
 	[nc addObserver:self selector:@selector(handleDidGetPersonProfile:) name:NMDidGetTwitterProfileNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidFailGetPersonProfile:) name:NMDidFailGetTwitterProfileNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
+	// listen to import notification, we only care about successful import
+	[nc addObserver:self selector:@selector(handleDidImportYoutubeVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
 	
 	// update facebook sync status
 	NMDataController * ctrl = [[NMTaskQueueController sharedTaskQueueController] dataController];
@@ -58,6 +63,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 	[_userDefaults release];
 	[_facebookAccountStatus release];
 	[_twitterAccountStatus release];
+	[_updatedChannels release];
 	if ( _socialChannelParsingTimer ) {
 		[_socialChannelParsingTimer invalidate], [_socialChannelParsingTimer release];
 	}
@@ -65,6 +71,33 @@ static NMAccountManager * _sharedAccountManager = nil;
 		[_videoImportTimer invalidate], [_videoImportTimer release];
 	}
 	[super dealloc];
+}
+
+- (NSMutableSet *)updatedChannels {
+	if ( _updatedChannels == nil ) {
+		self.updatedChannels = [NSMutableSet setWithCapacity:2];
+	}
+	return _updatedChannels;
+}
+
+- (void)setFacebookAccountStatus:(NSNumber *)aStatus {
+	if ( _facebookAccountStatus == aStatus ) return;
+	
+	[_facebookAccountStatus release], _facebookAccountStatus = nil;
+	if ( aStatus ) {
+		_facebookAccountStatus = [aStatus retain];
+		if ( [_facebookAccountStatus integerValue] == NMSyncAccountActive && numberOfVideoImported ) {
+			// send notification for every channel
+			NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+			for (NMChannel * chnObj in _updatedChannels) {
+				// arbitrarily fill in 1 as value
+				[nc postNotificationName:NMDidGetChannelVideoListNotification object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:1], @"num_video_added", [NSNumber numberWithUnsignedInteger:1], @"num_video_received", [NSNumber numberWithUnsignedInteger:1], @"num_video_requested", chnObj, @"channel", nil]];
+			}
+			// reset value
+			numberOfVideoImported = 0;
+			self.updatedChannels = nil;
+		}
+	}
 }
 
 #pragma mark Application life-cycle
@@ -110,7 +143,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 
 - (Facebook *)facebook {
 	if ( _facebook == nil ) {
-		_facebook = [[Facebook alloc] initWithAppId:@"190577807707530" andDelegate:self];
+		_facebook = [[Facebook alloc] initWithAppId:@"220704664661437" andDelegate:self];
 		if ([_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY] 
 			&& [_userDefaults objectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY]) {
 			_facebook.accessToken = [_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
@@ -129,7 +162,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 }
 
 - (void)authorizeFacebook {
-	NSArray *permissions = [NSArray arrayWithObjects:@"publish_stream", @"read_stream", nil];
+	NSArray *permissions = [NSArray arrayWithObjects:@"publish_stream", @"read_stream", @"publish_actions", nil];
 	[self.facebook authorize:permissions];
 }
 
@@ -208,6 +241,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 }
 
 #pragma mark Sync notification handlers
+
 - (void)handleDidGetPersonProfile:(NSNotification *)aNotification {
 	/*
 	 Listen to this notificaiton only when the user signs in Twitter or Facebook.
@@ -238,7 +272,6 @@ static NMAccountManager * _sharedAccountManager = nil;
 	if ( c ) {
 		// we found new video in the news feed
 		[self scheduleImportVideos];
-		numberOfVideosAddedFromFacebook += c;
 	}
 	NMChannel * chnObj = [infoDict objectForKey:@"channel"];
 	switch ([chnObj.type integerValue]) {
@@ -252,13 +285,20 @@ static NMAccountManager * _sharedAccountManager = nil;
 			NSString * urlStr = [infoDict objectForKey:@"next_url"];
 			if ( urlStr ) {
 				[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForFacebookChannel:chnObj directURLString:urlStr];
-			} else if ( numberOfVideosAddedFromFacebook == 0 ) {
-				self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
 			}
 			break;
 		}	
 		default:
 			break;
+	}
+}
+
+- (void)handleDidImportYoutubeVideoNotification:(NSNotification *)aNotification {
+	numberOfVideoImported++;
+	NMConcreteVideo * conVdo = [[aNotification userInfo] objectForKey:@"target_object"];
+	NSSet * vdoSet = conVdo.channels;
+	for (NMVideo * vdoObj in vdoSet) {
+		[self.updatedChannels addObject:vdoObj.channel];
 	}
 }
 
@@ -275,14 +315,19 @@ static NMAccountManager * _sharedAccountManager = nil;
 	for (NSUInteger i = 0; (i < c && i < 5); i++) {
 		[tqc issueProcessFeedForChannel:[theChannels objectAtIndex:i]];
 	}
+	if ( c ) {
+		self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
+	}
 	if ( c > 5 && _socialChannelParsingTimer == nil ) {
 		// schedule a timer task to process other channels
 		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
 	} else if ( _socialChannelParsingTimer ) {
 		[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+		if ( _videoImportTimer == nil ) {
+			// if there's no scheduled video import timer as well, it's safe to declare that this round of sync process has been completed
+			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+		}
 	}
-	// reset the value
-	numberOfVideosAddedFromFacebook = 0;
 }
 
 - (void)scheduleImportVideos {
@@ -309,7 +354,11 @@ static NMAccountManager * _sharedAccountManager = nil;
 #ifdef DEBUG_FACEBOOK_IMPORT
 		NSLog(@"no more video or profiles to import");
 #endif
-		self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+		// check if there's scheduled channel sync timer
+		if ( _socialChannelParsingTimer == nil ) {
+			// if there's no scheduled video import timer as well, it's safe to declare that this round of sync process has been completed
+			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+		}
 		// return immediately if no video
 		return;
 	}

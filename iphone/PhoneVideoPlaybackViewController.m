@@ -123,7 +123,7 @@
 	
 	// playback data model controller
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
-	playbackModelController = [VideoPlaybackModelController sharedVideoPlaybackModelController];
+	playbackModelController = [[VideoPlaybackModelController alloc] init];
 	playbackModelController.managedObjectContext = self.managedObjectContext;
 	playbackModelController.dataDelegate = self;
 
@@ -197,6 +197,20 @@
 	[self playCurrentVideo];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+	[self stopVideo];
+	[movieView.player removeObserver:self forKeyPath:@"status"];
+	[movieView.player removeObserver:self forKeyPath:@"currentItem"];
+	[movieView.player removeObserver:self forKeyPath:@"airPlayVideoActive"];
+	[movieView.player removeObserver:self forKeyPath:@"rate"];
+	[movieView.player removeAllItems];
+	// get rid of time observer of video player
+ 	[movieView.player removeTimeObserver:timeObserver];
+	[timeObserver release], timeObserver = nil;
+	movieView.player = nil;
+	[super viewWillDisappear:animated];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
@@ -256,8 +270,12 @@
 - (void)viewDidUnload {
     [self setPreviousChannelHeaderView:nil];
     [self setNextChannelHeaderView:nil];
+    
+    // Release objects that get recreated in viewDidLoad
     self.backgroundImage = nil;
     self.movieBackgroundView = nil;
+    [playbackModelController release]; playbackModelController = nil;
+    [movieView release]; movieView = nil;
     
     [super viewDidUnload];
 }
@@ -269,9 +287,6 @@
 	[movieDetailViewArray release];
     [loadedControlView release];
 	[currentChannel release];
-	// get rid of time observer of video player
- 	[movieView.player removeTimeObserver:timeObserver];
-	[timeObserver release];
 	// remove movie view. only allow this to happen after we have removed the time observer
 	[movieView release];
     [previousChannelHeaderView release];
@@ -279,6 +294,9 @@
     [ratingsURL release];
     [backgroundImage release];
     [movieBackgroundView release];
+    [controlScrollView release];
+    [topLevelContainerView release];
+    [playbackModelController release];
     
 	[super dealloc];
 }
@@ -480,6 +498,7 @@
 	}];
 	// retain the time observer
 	[timeObserver retain];
+	[player release];
 }
 
 

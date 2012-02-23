@@ -18,13 +18,14 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 @interface NMAccountManager : NSObject <FBSessionDelegate> {
 	id signOutTarget;
 	SEL signOutAction;
-	NSInteger numberOfVideosAddedFromFacebook;
+	NSInteger numberOfVideoImported;
 }
 
 @property (nonatomic, retain) NSUserDefaults * userDefaults;
 @property (nonatomic, readonly) Facebook * facebook;
 @property (nonatomic, retain) NSNumber * facebookAccountStatus;
 @property (nonatomic, retain) NSNumber * twitterAccountStatus;
+@property (nonatomic, retain) NSMutableSet * updatedChannels;
 
 @property (nonatomic, retain) NSTimer * socialChannelParsingTimer;
 @property (nonatomic, retain) NSTimer * videoImportTimer;

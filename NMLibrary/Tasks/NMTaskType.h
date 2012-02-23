@@ -31,3 +31,5 @@
 #import "NMGetTwitterProfileTask.h"
 #import "NMFacebookCommentTask.h"
 #import "NMFacebookLikeTask.h"
+#import "NMOpenGraphWatchTask.h"
+#import "NMOpenGraphSubscribeTask.h"
