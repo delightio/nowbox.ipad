@@ -1521,6 +1521,18 @@
     }
 }
 
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleBuzzPanelExpanded:(BOOL)expanded
+{
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    
+    // Make all detail views have the same panel state
+    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+        if (detailView != videoInfoView) {
+            [detailView setBuzzPanelExpanded:expanded];
+        }
+    }
+}
+
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView willBeginDraggingScrollView:(UIScrollView *)scrollView
 {
     showMovieControlTimestamp = -1;

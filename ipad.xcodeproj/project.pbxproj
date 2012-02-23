@@ -56,6 +56,8 @@
 		8305574F14EDD609004048F7 /* playback-play~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574D14EDD609004048F7 /* playback-play~iphone.png */; };
 		8305575014EDD609004048F7 /* playback-play@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */; };
 		8305575214EDE773004048F7 /* MovieDetailInfoView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */; };
+		830A597F14F5BB5B00086A70 /* phone_video_buzz_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 830A597D14F5BB5B00086A70 /* phone_video_buzz_background.png */; };
+		830A598014F5BB5B00086A70 /* phone_video_buzz_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 830A597E14F5BB5B00086A70 /* phone_video_buzz_background@2x.png */; };
 		831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */; };
 		83349C4714F427E800D7DFD2 /* phone_video_background_portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 83349C4514F427E800D7DFD2 /* phone_video_background_portrait.png */; };
 		83349C4814F427E800D7DFD2 /* phone_video_background_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83349C4614F427E800D7DFD2 /* phone_video_background_portrait@2x.png */; };
@@ -550,6 +552,8 @@
 		8305574D14EDD609004048F7 /* playback-play~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play~iphone.png"; sourceTree = "<group>"; };
 		8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play@2x~iphone.png"; sourceTree = "<group>"; };
 		8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "MovieDetailInfoView~iphone.xib"; sourceTree = "<group>"; };
+		830A597D14F5BB5B00086A70 /* phone_video_buzz_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_buzz_background.png; sourceTree = "<group>"; };
+		830A597E14F5BB5B00086A70 /* phone_video_buzz_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_buzz_background@2x.png"; sourceTree = "<group>"; };
 		831C592D14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneVideoInfoOrientedView.h; sourceTree = "<group>"; };
 		831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneVideoInfoOrientedView.m; sourceTree = "<group>"; };
 		83349C4514F427E800D7DFD2 /* phone_video_background_portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_background_portrait.png; sourceTree = "<group>"; };
@@ -1323,6 +1327,8 @@
 				8384CD6914E0836600444755 /* phone_home_logo@2x.png */,
 				83349C4514F427E800D7DFD2 /* phone_video_background_portrait.png */,
 				83349C4614F427E800D7DFD2 /* phone_video_background_portrait@2x.png */,
+				830A597D14F5BB5B00086A70 /* phone_video_buzz_background.png */,
+				830A597E14F5BB5B00086A70 /* phone_video_buzz_background@2x.png */,
 				838317AC14E9D9C000185DE6 /* phone_video_header_background_landscape.png */,
 				838317AD14E9D9C000185DE6 /* phone_video_header_background_landscape@2x.png */,
 				838317A814E9D4D700185DE6 /* phone_video_header_background_portrait.png */,
@@ -2432,6 +2438,8 @@
 				833A762414F31F0F00D3DF0E /* playback-play-active~iphone.png in Resources */,
 				83349C4714F427E800D7DFD2 /* phone_video_background_portrait.png in Resources */,
 				83349C4814F427E800D7DFD2 /* phone_video_background_portrait@2x.png in Resources */,
+				830A597F14F5BB5B00086A70 /* phone_video_buzz_background.png in Resources */,
+				830A598014F5BB5B00086A70 /* phone_video_buzz_background@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

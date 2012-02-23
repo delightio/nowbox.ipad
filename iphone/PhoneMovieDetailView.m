@@ -17,6 +17,7 @@
 @synthesize landscapeView;
 @synthesize controlsView;
 @synthesize infoPanelExpanded;
+@synthesize buzzPanelExpanded;
 @synthesize videoOverlayHidden;
 @synthesize delegate;
 
@@ -96,6 +97,17 @@
     infoPanelExpanded = expanded;
     [portraitView setInfoPanelExpanded:expanded animated:animated];
     [landscapeView setInfoPanelExpanded:expanded animated:animated];
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded
+{
+    [self setBuzzPanelExpanded:expanded animated:NO];
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded animated:(BOOL)animated
+{
+    buzzPanelExpanded = expanded;
+    [portraitView setBuzzPanelExpanded:expanded animated:animated];
 }
 
 - (void)setVideoOverlayHidden:(BOOL)isVideoOverlayHidden
@@ -214,6 +226,14 @@
     if ([delegate respondsToSelector:@selector(videoInfoView:didToggleInfoPanelExpanded:)]) {
         [delegate videoInfoView:self didToggleInfoPanelExpanded:infoPanelExpanded];
     }
+}
+
+- (IBAction)toggleBuzzPanel:(id)sender
+{
+    [self setBuzzPanelExpanded:!buzzPanelExpanded animated:YES];
+    if ([delegate respondsToSelector:@selector(videoInfoView:didToggleBuzzPanelExpanded:)]) {
+        [delegate videoInfoView:self didToggleBuzzPanelExpanded:buzzPanelExpanded];
+    }    
 }
 
 #pragma mark - PhoneVideoInfoOrientedViewDelegate
