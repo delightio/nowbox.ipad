@@ -353,7 +353,7 @@ static void *finishedContext = @"finishedContext";
  * Calls extendAccessToken if shouldExtendAccessToken returns YES.
  */
 - (void)extendAccessTokenIfNeeded {
-  if ([self shouldExtendAccessToken]) {
+  if (![self isSessionValid]) {
     [self extendAccessToken];
   }
 }
@@ -361,20 +361,20 @@ static void *finishedContext = @"finishedContext";
 /**
  * Returns YES if the last time a new token was obtained was over 24 hours ago.
  */
-- (BOOL)shouldExtendAccessToken {
-  if ([self isSessionValid]){
-    NSCalendar *calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
-    NSDateComponents *components = [calendar components:NSHourCalendarUnit
-                                              fromDate:_lastAccessTokenUpdate
-                                                toDate:[NSDate date]
-                                                options:0];
-
-    if (components.hour >= kTokenExtendThreshold) {
-      return YES;
-    }
-  }
-  return NO;
-}
+//- (BOOL)shouldExtendAccessToken {
+//  if ([self isSessionValid]){
+//    NSCalendar *calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+//    NSDateComponents *components = [calendar components:NSHourCalendarUnit
+//                                              fromDate:_lastAccessTokenUpdate
+//                                                toDate:[NSDate date]
+//                                                options:0];
+//
+//    if (components.hour >= kTokenExtendThreshold) {
+//      return YES;
+//    }
+//  }
+//  return NO;
+//}
 
 /**
  * This function processes the URL the Facebook application or Safari used to

@@ -18,6 +18,7 @@
 	NSInteger elapsedSeconds;	// time elapse
 	NSInteger startSecond;
 	NMVideo * video;
+	NSString * externalID;
 	NMChannel * channel;
 	NSNumber * channelID;
 	NSDictionary * resultDictionary;
@@ -28,6 +29,7 @@
 @property (nonatomic, retain) NMChannel * channel;
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NSNumber * channelID;
+@property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) NSDictionary * resultDictionary;
 @property (nonatomic) NSInteger elapsedSeconds;
 @property (nonatomic) NSInteger startSecond;

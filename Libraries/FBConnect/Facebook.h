@@ -59,7 +59,7 @@
 
 - (void)extendAccessTokenIfNeeded;
 
-- (BOOL)shouldExtendAccessToken;
+//- (BOOL)shouldExtendAccessToken;
 
 - (BOOL)handleOpenURL:(NSURL *)url;
 

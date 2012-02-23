@@ -75,6 +75,7 @@
 	NSInteger showMovieControlTimestamp;
 	// for posting seek event
 	NSInteger lastTimeElapsed, lastStartTime;
+	NSInteger tenSecCounter;	// this is only used for Open Graph view event
 		
 	@private
     NSManagedObjectContext *managedObjectContext_;

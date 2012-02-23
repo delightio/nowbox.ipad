@@ -204,6 +204,7 @@ static NMAccountManager * _sharedAccountManager = nil;
 
 - (void)fbDidLogin {
 	// save the token
+	NSLog(@"expration date: %@", [_facebook expirationDate]);
 	[_userDefaults setObject:[_facebook accessToken] forKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
 	[_userDefaults setObject:[_facebook expirationDate] forKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
 	[_userDefaults synchronize];

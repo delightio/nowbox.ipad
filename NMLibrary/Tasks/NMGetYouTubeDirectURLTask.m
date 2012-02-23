@@ -303,7 +303,6 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 	NSDictionary * theDict;
 	if ( command == NMCommandImportYouTubeVideo ) {
 		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:concreteVideo, @"target_object", nil] : nil;
-		NSLog(@"on send notification: imported video successfully: %@, %@", externalID, [[concreteVideo.channels anyObject] valueForKeyPath:@"channel.title"]);
 	} else {
 		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
 	}
