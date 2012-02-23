@@ -1212,7 +1212,12 @@
 //	[self hideControlView];
     
 //    [loadedControlView setControlsHidden:YES animated:YES];
-    [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];
+    // Make sure other detail views are showing their info overlays in landscape mode, hiding their controls in portrait mode
+    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+        if (detailView != [self currentDetailView]) {
+            [detailView setVideoOverlayHidden:UIInterfaceOrientationIsPortrait(self.interfaceOrientation)];
+        }
+    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1536,6 +1541,18 @@
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
         if (detailView != videoInfoView) {
             [detailView setInfoPanelExpanded:expanded];
+        }
+    }
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleBuzzPanelExpanded:(BOOL)expanded
+{
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    
+    // Make all detail views have the same panel state
+    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+        if (detailView != videoInfoView) {
+            [detailView setBuzzPanelExpanded:expanded];
         }
     }
 }

@@ -17,15 +17,13 @@
     for (UIView *subview in [self subviews]) {
         if ([subview isKindOfClass:[PhoneMovieDetailView class]] && CGRectContainsPoint(subview.frame, point)) {
             PhoneMovieDetailView *detailView = (PhoneMovieDetailView *)subview;
-            if (detailView.landscapeView.superview) {
-                NMSeekBar *slider = detailView.controlsView.progressSlider;
-                CGPoint pointInSlider = [self convertPoint:point toView:slider];
+            NMSeekBar *slider = detailView.controlsView.progressSlider;
+            CGPoint pointInSlider = [self convertPoint:point toView:slider];
 
-                if ([slider pointInsideNub:pointInSlider]) {
-                    self.delaysContentTouches = NO;
-                } else {
-                    self.delaysContentTouches = YES;
-                }
+            if ([slider pointInsideNub:pointInSlider]) {
+                self.delaysContentTouches = NO;
+            } else {
+                self.delaysContentTouches = YES;
             }
         }
     }

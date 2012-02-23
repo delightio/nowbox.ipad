@@ -9,6 +9,13 @@
 #import "PhoneVideoInfoOrientedView.h"
 #import <QuartzCore/QuartzCore.h>
 
+#define kPortraitInfoPanelHeightDefault   116
+#define kPortraitInfoPanelHeightExpanded  200
+#define kLandscapeInfoPanelHeightDefault  120
+#define kLandscapeInfoPanelHeightExpanded 160
+#define kBuzzPanelHeightDefault           80
+#define kBuzzPanelHeightExpanded          156
+
 #pragma mark - PhoneVideoInfoOrientedView
 
 @implementation PhoneVideoInfoOrientedView
@@ -16,19 +23,23 @@
 @synthesize topView;
 @synthesize bottomView;
 @synthesize infoView;
+@synthesize buzzView;
 @synthesize channelThumbnail;
 @synthesize infoButtonScrollView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
+@synthesize moreVideosButton;
+@synthesize buzzBackgroundImage;
 @synthesize infoPanelExpanded;
+@synthesize buzzPanelExpanded;
 @synthesize delegate;
 
 - (void)awakeFromNib
 {
     UIView *viewToMask = infoButtonScrollView.superview;
     
-    // Fade out info buttons
+    // Gradient fade-out for info buttons
     CAGradientLayer *mask = [CAGradientLayer layer];
     mask.frame = CGRectMake(0, 0, viewToMask.bounds.size.width, viewToMask.bounds.size.height * 2);
     mask.colors = [NSArray arrayWithObjects:
@@ -43,7 +54,15 @@
                       [NSNumber numberWithFloat:0.375], nil];
     viewToMask.layer.mask = mask; 
     
+    // Keep track of what our video title frame originally was - we will be resizing it later
     originalVideoTitleFrame = videoTitleLabel.frame;
+    
+    // Create a stretchable image for the buzz background
+    if ([buzzBackgroundImage respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
+        buzzBackgroundImage.image = [[UIImage imageNamed:@"phone_video_buzz_background.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(16, 6, 6, 6)];
+    } else {
+        buzzBackgroundImage.image = [[UIImage imageNamed:@"phone_video_buzz_background.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:16];
+    }
 }
 
 - (void)dealloc
@@ -51,17 +70,20 @@
     [topView release];
     [bottomView release];
     [infoView release];
+    [buzzView release];
     [channelThumbnail release];
     [infoButtonScrollView release];
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabel release];
+    [moreVideosButton release];
+    [buzzBackgroundImage release];
     
     [super dealloc];
 }
 
 - (void)positionLabels
-{
+{        
     // Position the description label below the video title
     videoTitleLabel.frame = originalVideoTitleFrame;
     [videoTitleLabel sizeToFit];
@@ -83,21 +105,11 @@
 }
 
 - (void)setInfoPanelExpanded:(BOOL)expanded animated:(BOOL)animated
-{    
+{        
     infoPanelExpanded = expanded;
     
-    CGRect frame = infoView.frame;
     BOOL landscape = (infoView == bottomView);
-    
-    if (landscape) {
-        // Landscape - resize view keeping the bottom position the same
-        frame.size.height = (expanded ? 160 : 120);
-        frame.origin.y = CGRectGetMaxY(infoView.frame) - frame.size.height;
-    } else {
-        // Portrait - resize view keeping the top position the same
-        frame.size.height = (expanded ? 200 : 116);
-    }
-    
+
     if (expanded) {
         infoButtonScrollView.scrollEnabled = NO;
         
@@ -130,19 +142,72 @@
     if (animated) {
         [CATransaction commit];
     }
-    
-    // Resize the panel
+
+    void (^animations)(void) = ^{
+        if (buzzPanelExpanded) {
+            [self setBuzzPanelExpanded:NO];
+        }
+        
+        CGRect frame = infoView.frame;
+        
+        if (landscape) {
+            // Landscape - resize view keeping the bottom position the same
+            frame.size.height = (expanded ? kLandscapeInfoPanelHeightExpanded : kLandscapeInfoPanelHeightDefault);
+            frame.origin.y = CGRectGetMaxY(infoView.frame) - frame.size.height;
+        } else {
+            // Portrait - resize view keeping the top position the same
+            frame.size.height = (expanded ? kPortraitInfoPanelHeightExpanded : kPortraitInfoPanelHeightDefault);
+        }
+        
+        // Resize the panel and move the buzz view accordingly
+        buzzView.frame = CGRectOffset(buzzView.frame, 0, frame.size.height - infoView.frame.size.height);
+        infoView.frame = frame;        
+    };
+
+    // Perform the animation
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
-                         animations:^{
-                             infoView.frame = frame;
-                         }
+                         animations:animations
                          completion:^(BOOL finished){
                          }];
     } else {
-        infoView.frame = frame;
+        animations();
+    }
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded
+{
+    [self setBuzzPanelExpanded:expanded animated:NO];
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded animated:(BOOL)animated
+{
+    buzzPanelExpanded = expanded;
+    
+    // Update the height but keep the distance from the bottom the same
+    CGRect frame = buzzView.frame;
+    frame.size.height = (expanded ? kBuzzPanelHeightExpanded : kBuzzPanelHeightDefault);
+    CGFloat distanceFromBottom = buzzView.superview.frame.size.height - CGRectGetMaxY(buzzView.frame);
+    frame.origin.y = buzzView.superview.frame.size.height - distanceFromBottom - frame.size.height;
+    
+    void (^animations)(void) = ^{
+        // Resize the buzz view and move the info panel accordingly
+        infoView.frame = CGRectOffset(infoView.frame, 0, buzzView.frame.size.height - frame.size.height);
+        buzzView.frame = frame;        
+    };
+    
+    // Perform the animation
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
+                         animations:animations
+                         completion:^(BOOL finished){
+                         }];
+    } else {
+        animations();
     }
 }
 

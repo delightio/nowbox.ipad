@@ -11,28 +11,30 @@
 
 #pragma mark - PhoneMovieDetailView
 
+@interface PhoneMovieDetailView (PrivatMethods)
+- (void)updateControlsViewForCurrentOrientation;
+@end
+
 @implementation PhoneMovieDetailView
 
 @synthesize portraitView;
 @synthesize landscapeView;
 @synthesize controlsView;
 @synthesize infoPanelExpanded;
+@synthesize buzzPanelExpanded;
 @synthesize videoOverlayHidden;
 @synthesize delegate;
 
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-        
+            
     [self addSubview:portraitView];
     currentOrientedView = portraitView;
     
     [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
-    controlsView.frame = CGRectMake(landscapeView.descriptionLabel.frame.origin.x - 13, 
-                                    landscapeView.frame.size.height - controlsView.frame.size.height, 
-                                    landscapeView.descriptionLabel.frame.size.width + 26, 
-                                    controlsView.frame.size.height);
-    [landscapeView addSubview:controlsView];
+    [self updateControlsViewForCurrentOrientation];
+    [currentOrientedView addSubview:controlsView];
 }
 
 - (void)dealloc
@@ -79,6 +81,13 @@
     [landscapeView.channelThumbnail setImageForChannel:channel];
 }
 
+- (void)setMoreCount:(NSUInteger)moreCount
+{
+    NSString *moreString = [NSString stringWithFormat:@"%i more", moreCount];
+    [portraitView.moreVideosButton setTitle:moreString forState:UIControlStateNormal];
+    [landscapeView.moreVideosButton setTitle:moreString forState:UIControlStateNormal];
+}
+
 - (void)setInfoPanelExpanded:(BOOL)expanded
 {
     [self setInfoPanelExpanded:expanded animated:NO];
@@ -89,6 +98,17 @@
     infoPanelExpanded = expanded;
     [portraitView setInfoPanelExpanded:expanded animated:animated];
     [landscapeView setInfoPanelExpanded:expanded animated:animated];
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded
+{
+    [self setBuzzPanelExpanded:expanded animated:NO];
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded animated:(BOOL)animated
+{
+    buzzPanelExpanded = expanded;
+    [portraitView setBuzzPanelExpanded:expanded animated:animated];
 }
 
 - (void)setVideoOverlayHidden:(BOOL)isVideoOverlayHidden
@@ -118,9 +138,27 @@
     }
 }
 
+- (void)updateControlsViewForCurrentOrientation
+{
+    if (currentOrientedView == portraitView) {
+        controlsView.frame = CGRectMake(-8,
+                                        portraitView.bottomView.frame.origin.y - controlsView.frame.size.height,
+                                        portraitView.frame.size.width + 8,
+                                        controlsView.frame.size.height);
+        controlsView.backgroundView.hidden = NO;
+    } else {
+        controlsView.frame = CGRectMake(landscapeView.descriptionLabel.frame.origin.x - 13, 
+                                        landscapeView.frame.size.height - controlsView.frame.size.height, 
+                                        landscapeView.descriptionLabel.frame.size.width + 26, 
+                                        controlsView.frame.size.height);
+        controlsView.backgroundView.hidden = YES;        
+    }
+}
+
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     [currentOrientedView removeFromSuperview];
+    [controlsView removeFromSuperview];
     
     if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
         currentOrientedView = portraitView;
@@ -128,6 +166,8 @@
         currentOrientedView = landscapeView;
     }
 
+    [self updateControlsViewForCurrentOrientation];
+    [currentOrientedView addSubview:controlsView];
     currentOrientedView.frame = self.bounds;
     [self addSubview:currentOrientedView];
     [currentOrientedView positionLabels];
@@ -142,9 +182,10 @@
     if (videoOverlayHidden && currentOrientedView == landscapeView) {
         return NO;
     }
-    
+        
     return (CGRectContainsPoint(currentOrientedView.topView.frame, point) ||
-            CGRectContainsPoint(currentOrientedView.bottomView.frame, point));
+            CGRectContainsPoint(currentOrientedView.bottomView.frame, point) ||
+            (!videoOverlayHidden && CGRectContainsPoint(controlsView.frame, point)));
 }
 
 #pragma mark - IBActions
@@ -207,6 +248,14 @@
     if ([delegate respondsToSelector:@selector(videoInfoView:didToggleInfoPanelExpanded:)]) {
         [delegate videoInfoView:self didToggleInfoPanelExpanded:infoPanelExpanded];
     }
+}
+
+- (IBAction)toggleBuzzPanel:(id)sender
+{
+    [self setBuzzPanelExpanded:!buzzPanelExpanded animated:YES];
+    if ([delegate respondsToSelector:@selector(videoInfoView:didToggleBuzzPanelExpanded:)]) {
+        [delegate videoInfoView:self didToggleBuzzPanelExpanded:buzzPanelExpanded];
+    }    
 }
 
 #pragma mark - PhoneVideoInfoOrientedViewDelegate
