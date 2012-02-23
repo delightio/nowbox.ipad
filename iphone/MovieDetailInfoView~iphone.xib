@@ -346,7 +346,6 @@
 										<reference key="NSNextKeyView" ref="778658861"/>
 										<string key="NSReuseIdentifierKey">_NS:567</string>
 										<bool key="IBUIClipsSubviews">YES</bool>
-										<int key="IBUIContentMode">5</int>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<object class="NSCustomResource" key="IBUIImage">
@@ -645,17 +644,29 @@
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="745827968"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
-								<object class="NSColor" key="IBUIBackgroundColor">
-									<int key="NSColorSpace">3</int>
-									<bytes key="NSWhite">MCAwAA</bytes>
-								</object>
+								<reference key="IBUIBackgroundColor" ref="481639952"/>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+							</object>
+							<object class="IBUIImageView" id="447933364">
+								<reference key="NSNextResponder" ref="1043643903"/>
+								<int key="NSvFlags">290</int>
+								<string key="NSFrameSize">{320, 9}</string>
+								<reference key="NSSuperview" ref="1043643903"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="43632160"/>
+								<string key="NSReuseIdentifierKey">_NS:9</string>
+								<bool key="IBUIUserInteractionEnabled">NO</bool>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">phone_video_shadow.png</string>
+								</object>
 							</object>
 						</array>
 						<string key="NSFrame">{{0, 260}, {320, 200}}</string>
 						<reference key="NSSuperview" ref="387434262"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="43632160"/>
+						<reference key="NSNextKeyView" ref="447933364"/>
 						<string key="NSReuseIdentifierKey">_NS:196</string>
 						<reference key="IBUIBackgroundColor" ref="481639952"/>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -1564,6 +1575,7 @@
 						<array class="NSMutableArray" key="children">
 							<reference ref="43632160"/>
 							<reference ref="837285267"/>
+							<reference ref="447933364"/>
 						</array>
 						<reference key="parent" ref="387434262"/>
 						<string key="objectName">Bottom View</string>
@@ -1769,6 +1781,12 @@
 						<reference key="parent" ref="837285267"/>
 						<string key="objectName">Touch Area</string>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">103</int>
+						<reference key="object" ref="447933364"/>
+						<reference key="parent" ref="1043643903"/>
+						<string key="objectName">Shadow</string>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -1779,6 +1797,7 @@
 				<string key="1.CustomClassName">PhoneMovieDetailView</string>
 				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="100.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="103.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="11.CustomClassName">PhoneVideoInfoOrientedView</string>
 				<string key="11.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="12.CustomClassName">PhoneVideoInfoOrientedView</string>
@@ -1844,7 +1863,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">102</int>
+			<int key="maxID">103</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2311,7 +2330,8 @@
 			<string key="phone_video_header_background_portrait.png">{320, 42}</string>
 			<string key="phone_video_info_background_bottom_portrait.png">{320, 22}</string>
 			<string key="phone_video_info_background_landscape.png">{466, 162}</string>
-			<string key="phone_video_info_background_top_portrait.png">{320, 178}</string>
+			<string key="phone_video_info_background_top_portrait.png">{320, 1}</string>
+			<string key="phone_video_shadow.png">{320, 9}</string>
 			<string key="phone_video_thumbnail.png">{41, 41}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1173</string>
