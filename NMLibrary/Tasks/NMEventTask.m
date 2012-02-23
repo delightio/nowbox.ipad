@@ -46,6 +46,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 
 @synthesize channel, video;
 @synthesize channelID;
+@synthesize externalID;
 @synthesize resultDictionary;
 @synthesize elapsedSeconds, startSecond;
 @synthesize playedToEnd;
@@ -58,7 +59,19 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	self.video = v;
 	// grab values in the video object to be used in the thread
 	self.targetID = v.video.nm_id;
-	self.channelID = [video valueForKeyPath:@"channel.nm_id"];
+	self.externalID = v.video.external_id;
+	NMChannel * chn = v.channel;
+	switch ( [chn.type integerValue] ) {
+		case NMChannelUserFacebookType:
+		case NMChannelUserTwitterType:
+			// these channels do not have a server assigned ID
+			self.channelID = (NSNumber *)kCFBooleanFalse;
+			break;
+			
+		default:
+			self.channelID = chn.nm_id;
+			break;
+	}
 	eventType = evtType;
 	
 	return self;
@@ -84,6 +97,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 - (void)dealloc {
 	[resultDictionary release];
 	[channelID release];
+	[externalID release];
 	[channel release];
 	[video release];
 	[super dealloc];
@@ -152,12 +166,20 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&action=%@&user_id=%d", NM_BASE_URL, targetID, evtStr, NM_USER_ACCOUNT_ID];
 			break;
 		default:
-			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&video_id=%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, targetID, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
-			break;
-	}
+		{
+			NSString * vdoIDStr = nil;
+			if ( [targetID integerValue] ) {
+				vdoIDStr = [NSString stringWithFormat:@"video_id=%@", targetID];
+			} else {
+				vdoIDStr = [NSString stringWithFormat:@"external_id=%@", externalID];
+			}
+			urlStr = [NSString stringWithFormat:@"http://%@/events?channel_id=%@&%@&video_start=%d&video_elapsed=%d&action=%@&user_id=%d", NM_BASE_URL, channelID, vdoIDStr, startSecond, elapsedSeconds, evtStr, NM_USER_ACCOUNT_ID];
 #ifdef DEBUG_EVENT_TRACKING
-	NSLog(@"send event: %@", urlStr);
+			NSLog(@"send view event: %@ %d %d", vdoIDStr, startSecond, elapsedSeconds);
 #endif
+			break;
+		}
+	}
 	NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:NM_URL_REQUEST_TIMEOUT];
 	[request setHTTPMethod:@"POST"];
 #ifndef DEBUG_DO_NOT_SEND_API_TOKEN
@@ -171,7 +193,7 @@ NSString * const NMDidFailDequeueVideoNotification = @"NMDidFailDequeueVideoNoti
 	if ( [buffer length] == 0 ) return;
 	self.resultDictionary = [buffer objectFromJSONData];
 #ifdef DEBUG_EVENT_TRACKING
-	NSLog(@"did post event: %@", resultDictionary);
+//	NSLog(@"did post event: %@", resultDictionary);
 #endif
 }
 

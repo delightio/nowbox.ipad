@@ -646,6 +646,7 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
+	NSLog(@"facebook error: %@", error);
  	NMFacebookTask * fbTask = request.task;
    // release the connection, and the data object
 	[commandIndexPool removeIndex:[fbTask commandIndex]];

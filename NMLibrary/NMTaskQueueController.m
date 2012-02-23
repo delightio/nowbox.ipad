@@ -547,6 +547,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTasks:taskAy];
 }
 
+#pragma mark Events
+
 - (void)issueShareEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
 	//	task.duration = vdur;
@@ -583,12 +585,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 	
-	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:aEnd];
-	[networkController addNewConnectionForTask:opTask];
-	[opTask release];
+//	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:aEnd];
+//	[networkController addNewConnectionForTask:opTask];
+//	[opTask release];
 }
 
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec {
+	NSLog(@"start %d elapse %d", aStart, sec);
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
 	// how long the user has watched a video
 	task.elapsedSeconds = sec;
@@ -611,6 +614,28 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
+
+#pragma mark Open Graph
+- (void)issueSendOpenGraphWatchVideo:(NMVideo *)aVideo backSeconds:(NSTimeInterval)sec {
+	// check if the user has logged in Facebook
+	if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] ) {
+		NMOpenGraphWatchTask * task = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:YES];
+		task.startTime = (NSInteger)[[NSDate dateWithTimeIntervalSinceNow:-sec] timeIntervalSince1970];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+}
+
+- (void)issueSentOpenGraphDidWatchVideo:(NMVideo *)aVideo {
+	// check if the user has logged in Facebook
+	if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] ) {
+		NMOpenGraphWatchTask * task = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:NO];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+}
+
+#pragma mark Social
 
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
 	switch ([chnObj.type integerValue]) {

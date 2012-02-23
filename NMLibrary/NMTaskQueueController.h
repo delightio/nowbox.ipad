@@ -127,6 +127,9 @@
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd;
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec;
 - (void)issueExamineVideo:(NMVideo *)aVideo errorInfo:(NSDictionary *)errDict;
+// Open Graph Event
+- (void)issueSendOpenGraphWatchVideo:(NMVideo *)aVideo backSeconds:(NSTimeInterval)sec;
+- (void)issueSentOpenGraphDidWatchVideo:(NMVideo *)aVideo;
 // Watch later
 - (void)issueEnqueue:(BOOL)shouldQueue video:(NMVideo *)aVideo;
 

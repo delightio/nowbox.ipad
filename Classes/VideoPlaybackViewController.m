@@ -362,6 +362,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// send event back to nowmov server
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 	return vdoAy;
 }
 
@@ -375,6 +376,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( currentChannel != chnObj ) {
 			// report event
 			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+			[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 			// clear all task related to the previous channel
 			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
@@ -491,6 +493,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = (NSInteger)CMTimeGetSeconds(t);
 			loadedControlView.timeElapsed = sec;
+		}
+		tenSecCounter++;
+		if ( tenSecCounter == 10 ) {
+			// send Open Graph View event for this video
+			[nowboxTaskController issueSendOpenGraphWatchVideo:self.currentVideo backSeconds:10];
 		}
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
@@ -783,6 +790,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// send tracking event
 	NMVideo * theVideo = [self playerCurrentVideo];
 	[nowboxTaskController issueSendViewEventForVideo:theVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 	// visually transit to next video just like the user has tapped next button
 	//if ( aEndOfVideo ) {
 	// disable interface scrolling
@@ -822,6 +830,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 	// report event
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 
 	// Channel View calls this method when user taps a video from the table
 	// stop video
@@ -1198,6 +1207,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		shouldFadeOutVideoThumbnail = YES;
 		lastTimeElapsed = 0, lastStartTime = 0;
+		tenSecCounter = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.video.nm_playback_status = NMVideoQueueStatusCurrentVideo;
@@ -1374,6 +1384,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// switch to the next/prev video
 //	scrollView.scrollEnabled = YES; move to animation handler
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
