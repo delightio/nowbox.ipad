@@ -510,7 +510,9 @@
 
 - (void)gridViewCellDidPressAndHold:(PagingGridViewCell *)gridViewCell
 {
-    [self setRearranging:YES];
+//    if (![dataSource respondsToSelector:@selector(gridView:canRearrangeItemAtIndex:)] || [dataSource gridView:self canRearrangeItemAtIndex:gridViewCell.tag]) {
+        [self setRearranging:YES];
+//    }
 }
 
 - (BOOL)gridViewCellShouldShowDeleteButton:(PagingGridViewCell *)gridViewCell
@@ -540,7 +542,7 @@
 
 - (BOOL)gridViewCellShouldStartDragging:(PagingGridViewCell *)gridViewCell
 {
-    return !dragging;
+    return !dragging && (![dataSource respondsToSelector:@selector(gridView:canRearrangeItemAtIndex:)] || [dataSource gridView:self canRearrangeItemAtIndex:gridViewCell.tag]);
 }
 
 - (void)gridViewCellDidStartDragging:(PagingGridViewCell *)gridViewCell
@@ -589,7 +591,9 @@
         NSUInteger oldIndex = gridViewCell.tag;
         NSInteger newIndex = [self repositioningIndexForFrame:gridViewCell.frame];
         
-        if (newIndex != oldIndex && newIndex >= 0) {
+        if (newIndex != oldIndex && newIndex >= 0 && 
+            (![dataSource respondsToSelector:@selector(gridView:canRearrangeItemAtIndex:)] || [dataSource gridView:self canRearrangeItemAtIndex:newIndex])) {
+            
             [self repositionView:gridViewCell fromIndex:oldIndex toIndex:newIndex animated:YES];
             if ([gridDelegate respondsToSelector:@selector(gridView:didMoveItemAtIndex:toIndex:)]) {
                 [gridDelegate gridView:self didMoveItemAtIndex:oldIndex toIndex:newIndex];

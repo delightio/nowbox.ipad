@@ -8,12 +8,27 @@
 
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
+#import "NMAccountManager.h"
 
 @implementation HomeGridDataSource
 
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
-    return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+    switch (index) {
+        case 0: {
+            NMAccountManager *accountManager = [NMAccountManager sharedAccountManager];
+            if (![accountManager.facebook isSessionValid]) {
+                [accountManager authorizeFacebook];
+            }
+            return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];            
+            break;
+        }
+        default:
+            return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+            break;
+    }
+    
+    return nil;
 }
 
 #pragma mark - PagingGridViewDataSource
@@ -57,7 +72,12 @@
 
 - (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
 {
-    return index >= 4;
+    return NO;
+}
+
+- (BOOL)gridView:(PagingGridView *)gridView canRearrangeItemAtIndex:(NSUInteger)index
+{
+    return NO;
 }
 
 @end
