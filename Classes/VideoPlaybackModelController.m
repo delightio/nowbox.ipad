@@ -19,7 +19,6 @@
 #define NM_MODEL_NEXT_VIDEO_MASK			0x02
 #define NM_MODEL_NEXT_NEXT_VIDEO_MASK		0x01
 
-static VideoPlaybackModelController * sharedVideoPlaybackModelController_ = nil;
 NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideoNotification";
 static NSPredicate * playbackModelFilterPredicate_ = nil;
 
@@ -38,13 +37,6 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
 @synthesize channel, dataDelegate, numberOfVideos;
 @synthesize fetchedResultsController=fetchedResultsController_, managedObjectContext;
 @synthesize debugMessageView;
-
-+ (VideoPlaybackModelController *)sharedVideoPlaybackModelController {
-	if ( sharedVideoPlaybackModelController_ == nil ) {
-		sharedVideoPlaybackModelController_ = [[VideoPlaybackModelController alloc] init];
-	}
-	return sharedVideoPlaybackModelController_;
-}
 
 + (NSPredicate *)playbackModelFilterPredicate {
 	if ( playbackModelFilterPredicate_ == nil ) {
@@ -68,6 +60,17 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    currentVideo.video.nm_movie_detail_view = nil;
+    nextVideo.video.nm_movie_detail_view = nil;
+    nextNextVideo.video.nm_movie_detail_view = nil;
+    previousVideo.video.nm_movie_detail_view = nil;
+    
+    currentVideo.video.nm_player_item = nil;
+    nextVideo.video.nm_player_item = nil;
+    nextNextVideo.video.nm_player_item = nil;
+    previousVideo.video.nm_player_item = nil;
+    
 	[currentVideo release];
 	[currentIndexPath release];
 	[nextNextVideo release];

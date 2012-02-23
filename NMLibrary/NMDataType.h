@@ -55,6 +55,8 @@ typedef enum {
 	NMCommandDeleteFacebookLike,
 	NMCommandPostFacebookComment,
 	NMCommandDeleteFacebookComment,
+	NMCommandPostOpenGraphWatch,
+	NMCommandPostOpenGraphSubscribe,
 	NMCommandFacebookCommandUpperBound,
 	NMCommandParseTwitterFeed,
 	NMCommandGetTwitterProfile,

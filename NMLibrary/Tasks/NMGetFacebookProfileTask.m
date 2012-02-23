@@ -40,6 +40,13 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	[super dealloc];
 }
 
+- (NSInteger)commandIndex {
+	NSInteger idx = 0;
+	// use custom command index method
+	idx = ABS((NSInteger)[_userID hash]);
+	return (((NSIntegerMax >> 6 ) & idx) << 6) | command;
+}
+
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
 #ifdef DEBUG_FACEBOOK_IMPORT
 	NSLog(@"get facebook profile - %@", profileOwnsByMe ? @"me" : _userID);

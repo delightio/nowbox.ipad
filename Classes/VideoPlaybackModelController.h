@@ -85,7 +85,6 @@
 
 @property (nonatomic, retain) UITextView * debugMessageView;
 
-+ (VideoPlaybackModelController *)sharedVideoPlaybackModelController;
 + (NSPredicate *)playbackModelFilterPredicate;
 /*!
  The next video will become the "currentVideo".
