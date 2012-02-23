@@ -127,6 +127,13 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 		NSLog(@"%d", idx);
 	}];
 	NSLog(@"======");
+	NSLog(@"======\nTask buffer");
+	[pendingTaskBufferLock lock];
+	for (NMTask * task in pendingTaskBuffer) {
+		NSLog(@"task command: %d idx: %d state: %d", task.command, [task commandIndex], task.state);
+	}
+	[pendingTaskBufferLock unlock];
+	NSLog(@"======");
 }
 
 #pragma mark Connection management
@@ -519,6 +526,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[commandIndexPool removeIndex:[task commandIndex]];
 	[pendingTaskBufferLock lock];
 	[pendingTaskBuffer removeObject:task];
+	if ( [pendingTaskBuffer count] ) {
+		[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
+	}
 	[pendingTaskBufferLock unlock];
 	
 	// inform the user
@@ -609,6 +619,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	// remove task
 	[pendingTaskBufferLock lock];
 	[pendingTaskBuffer removeObject:theTask];
+	if ( [pendingTaskBuffer count] ) {
+		[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
+	}
 	[pendingTaskBufferLock unlock];
 }
 
