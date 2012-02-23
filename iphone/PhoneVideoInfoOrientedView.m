@@ -83,7 +83,7 @@
 }
 
 - (void)positionLabels
-{
+{        
     // Position the description label below the video title
     videoTitleLabel.frame = originalVideoTitleFrame;
     [videoTitleLabel sizeToFit];

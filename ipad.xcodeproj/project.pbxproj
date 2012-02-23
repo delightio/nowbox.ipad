@@ -60,6 +60,7 @@
 		830A598014F5BB5B00086A70 /* phone_video_buzz_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 830A597E14F5BB5B00086A70 /* phone_video_buzz_background@2x.png */; };
 		830A598C14F5D56500086A70 /* phone_video_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 830A598A14F5D56500086A70 /* phone_video_shadow.png */; };
 		830A598D14F5D56500086A70 /* phone_video_shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 830A598B14F5D56500086A70 /* phone_video_shadow@2x.png */; };
+		830A599114F5DD1500086A70 /* PhoneControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A599014F5DD1500086A70 /* PhoneControlsView.m */; };
 		831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */; };
 		83349C4714F427E800D7DFD2 /* phone_video_background_portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 83349C4514F427E800D7DFD2 /* phone_video_background_portrait.png */; };
 		83349C4814F427E800D7DFD2 /* phone_video_background_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83349C4614F427E800D7DFD2 /* phone_video_background_portrait@2x.png */; };
@@ -562,6 +563,8 @@
 		830A597E14F5BB5B00086A70 /* phone_video_buzz_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_buzz_background@2x.png"; sourceTree = "<group>"; };
 		830A598A14F5D56500086A70 /* phone_video_shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_shadow.png; sourceTree = "<group>"; };
 		830A598B14F5D56500086A70 /* phone_video_shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_shadow@2x.png"; sourceTree = "<group>"; };
+		830A598F14F5DD1500086A70 /* PhoneControlsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneControlsView.h; sourceTree = "<group>"; };
+		830A599014F5DD1500086A70 /* PhoneControlsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneControlsView.m; sourceTree = "<group>"; };
 		831C592D14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneVideoInfoOrientedView.h; sourceTree = "<group>"; };
 		831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneVideoInfoOrientedView.m; sourceTree = "<group>"; };
 		83349C4514F427E800D7DFD2 /* phone_video_background_portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_background_portrait.png; sourceTree = "<group>"; };
@@ -1177,6 +1180,8 @@
 				8384CD9814E0B7DB00444755 /* CustomPageControl.m */,
 				838317BF14E9ECDA00185DE6 /* PhoneMovieDetailView.h */,
 				838317C014E9ECDA00185DE6 /* PhoneMovieDetailView.m */,
+				830A598F14F5DD1500086A70 /* PhoneControlsView.h */,
+				830A599014F5DD1500086A70 /* PhoneControlsView.m */,
 				831C592D14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.h */,
 				831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */,
 				83C25F7614F33D100098757F /* TouchDelayingScrollView.h */,
@@ -2566,6 +2571,7 @@
 				A927BCA614EB4B5E00298615 /* NMFacebookInfo.m in Sources */,
 				83C25F7814F33D100098757F /* TouchDelayingScrollView.m in Sources */,
 				831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */,
+				830A599114F5DD1500086A70 /* PhoneControlsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

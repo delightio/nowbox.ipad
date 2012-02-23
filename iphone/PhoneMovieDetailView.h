@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "NMMovieDetailView.h"
-#import "NMControlsView.h"
 #import "NMChannel.h"
 #import "PhoneVideoInfoOrientedView.h"
+#import "PhoneControlsView.h"
 
 @protocol PhoneMovieDetailViewDelegate;
 
@@ -20,7 +20,7 @@
 
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *portraitView;
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *landscapeView;
-@property (nonatomic, retain) IBOutlet NMControlsView *controlsView;
+@property (nonatomic, retain) IBOutlet PhoneControlsView *controlsView;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
 @property (nonatomic, assign) BOOL buzzPanelExpanded;
 @property (nonatomic, assign) BOOL videoOverlayHidden;

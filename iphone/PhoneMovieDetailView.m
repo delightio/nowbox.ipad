@@ -11,6 +11,10 @@
 
 #pragma mark - PhoneMovieDetailView
 
+@interface PhoneMovieDetailView (PrivatMethods)
+- (void)updateControlsViewForCurrentOrientation;
+@end
+
 @implementation PhoneMovieDetailView
 
 @synthesize portraitView;
@@ -24,16 +28,13 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-        
+            
     [self addSubview:portraitView];
     currentOrientedView = portraitView;
     
     [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
-    controlsView.frame = CGRectMake(landscapeView.descriptionLabel.frame.origin.x - 13, 
-                                    landscapeView.frame.size.height - controlsView.frame.size.height, 
-                                    landscapeView.descriptionLabel.frame.size.width + 26, 
-                                    controlsView.frame.size.height);
-    [landscapeView addSubview:controlsView];
+    [self updateControlsViewForCurrentOrientation];
+    [currentOrientedView addSubview:controlsView];
 }
 
 - (void)dealloc
@@ -137,9 +138,27 @@
     }
 }
 
+- (void)updateControlsViewForCurrentOrientation
+{
+    if (currentOrientedView == portraitView) {
+        controlsView.frame = CGRectMake(-8,
+                                        portraitView.bottomView.frame.origin.y - controlsView.frame.size.height,
+                                        portraitView.frame.size.width + 8,
+                                        controlsView.frame.size.height);
+        controlsView.backgroundView.hidden = NO;
+    } else {
+        controlsView.frame = CGRectMake(landscapeView.descriptionLabel.frame.origin.x - 13, 
+                                        landscapeView.frame.size.height - controlsView.frame.size.height, 
+                                        landscapeView.descriptionLabel.frame.size.width + 26, 
+                                        controlsView.frame.size.height);
+        controlsView.backgroundView.hidden = YES;        
+    }
+}
+
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     [currentOrientedView removeFromSuperview];
+    [controlsView removeFromSuperview];
     
     if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
         currentOrientedView = portraitView;
@@ -147,6 +166,8 @@
         currentOrientedView = landscapeView;
     }
 
+    [self updateControlsViewForCurrentOrientation];
+    [currentOrientedView addSubview:controlsView];
     currentOrientedView.frame = self.bounds;
     [self addSubview:currentOrientedView];
     [currentOrientedView positionLabels];
@@ -161,9 +182,10 @@
     if (videoOverlayHidden && currentOrientedView == landscapeView) {
         return NO;
     }
-    
+        
     return (CGRectContainsPoint(currentOrientedView.topView.frame, point) ||
-            CGRectContainsPoint(currentOrientedView.bottomView.frame, point));
+            CGRectContainsPoint(currentOrientedView.bottomView.frame, point) ||
+            (!videoOverlayHidden && CGRectContainsPoint(controlsView.frame, point)));
 }
 
 #pragma mark - IBActions
