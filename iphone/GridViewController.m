@@ -23,7 +23,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.managedObjectContext = aManagedObjectContext;
-        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
     }
     return self;
 }
@@ -38,16 +37,26 @@
     [super dealloc];
 }
 
+- (void)setGridDataSource:(GridDataSource *)aGridDataSource
+{
+    if (gridDataSource != aGridDataSource) {
+        [gridDataSource release];
+        gridDataSource = [aGridDataSource retain];
+        
+        gridView.dataSource = gridDataSource;
+        pageControl.numberOfPages = gridView.numberOfPages;
+    }
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    gridDataSource.gridView = gridView;
-    gridView.dataSource = gridDataSource;
+    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
     
-    pageControl.numberOfPages = gridView.numberOfPages;
+    // If view was unloaded, restore the page we were on
     pageControl.currentPage = currentPage;
     [gridView setContentOffset:CGPointMake(currentPage * gridView.frame.size.width, 0) animated:NO];
 }
@@ -82,6 +91,11 @@
     
 }
 
+- (IBAction)backButtonPressed:(id)sender
+{
+    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
+}
+
 #pragma mark - PagingGridViewDelegate
 
 - (void)gridView:(PagingGridView *)aGridView didSelectItemAtIndex:(NSUInteger)index
@@ -91,8 +105,6 @@
     if (nextDataSource) {
         // Load another set of grid items
         self.gridDataSource = nextDataSource;
-        aGridView.dataSource = gridDataSource;
-        pageControl.numberOfPages = aGridView.numberOfPages;
     } else {
         // Go to video player
         NMChannel *channel = [gridDataSource objectAtIndex:index];

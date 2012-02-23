@@ -25,5 +25,6 @@
 - (IBAction)searchButtonPressed:(id)sender;
 - (IBAction)refreshButtonPressed:(id)sender;
 - (IBAction)settingsButtonPressed:(id)sender;
+- (IBAction)backButtonPressed:(id)sender;
 
 @end
