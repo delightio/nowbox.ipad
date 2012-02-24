@@ -61,6 +61,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize usernameOrIDPredicateTemplate = _usernameOrIDPredicateTemplate;
 @synthesize pendingImportVideoPredicate = _pendingImportVideoPredicate;
 @synthesize pendingImportPredicate = _pendingImportPredicate;
+@synthesize socialObjectIDPredicateTemplate = _socialObjectIDPredicateTemplate;
 
 - (id)init {
 	self = [super init];
@@ -90,6 +91,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[_usernameOrIDPredicateTemplate release];
 	[_pendingImportVideoPredicate release];
 	[_pendingImportPredicate release];
+	[_socialObjectIDPredicateTemplate release];
 	[lastSessionVideoIDs release];
 	[categoryCacheDictionary release];
 	[channelCacheDictionary release];
@@ -226,6 +228,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		_pendingImportPredicate = [[NSPredicate predicateWithFormat:@"nm_error == %@", [NSNumber numberWithInteger:NMErrorPendingImport]] retain];
 	}
 	return _pendingImportPredicate;
+}
+
+- (NSPredicate *)socialObjectIDPredicateTemplate {
+	if ( _socialObjectIDPredicateTemplate == nil ) {
+		_socialObjectIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"object_id == $OBJECT_ID"] retain];
+	}
+	return _socialObjectIDPredicateTemplate;
 }
 
 #pragma mark First launch

@@ -30,9 +30,8 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 @synthesize page = _page;
 @synthesize since_id = _since_id;
 @synthesize user_id = _user_id;
-@synthesize profileArray = _profileArray;
 @synthesize newestTwitIDString = _newestTwitIDString;
-
+@synthesize feedDateFormatter = _feedDateFormatter;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj {
 	self = [super init];
@@ -64,9 +63,17 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	[_account release];
 	[_since_id release];
 	[_user_id release];
-	[_profileArray release];
 	[_newestTwitIDString release];
+	[_feedDateFormatter release];
 	[super dealloc];
+}
+
+- (NSDateFormatter *)feedDateFormatter {
+	if ( _feedDateFormatter == nil ) {
+		_feedDateFormatter = [[NSDateFormatter alloc] init];
+		[_feedDateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZ yyyy"];
+	}
+	return _feedDateFormatter;
 }
 
 - (NSURLRequest *)URLRequest {
@@ -102,11 +109,11 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	if ( feedCount == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
-	self.profileArray = [NSMutableArray arrayWithCapacity:feedCount];
 	NSDictionary * entityDict;
 	NSArray * urls;
 	NSDictionary * urlDict;
 	NSString * extID;
+	NSMutableDictionary * vdoDict = nil;
 	for (NSDictionary * twDict in objAy) {
 		if ( _page == 0 && _newestTwitIDString == nil ) {
 			self.newestTwitIDString = [twDict objectForKey:@"id_str"];
@@ -119,10 +126,15 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 			for (urlDict in urls) {
 				extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[urlDict	objectForKey:@"expanded_url"]];
 				if ( extID ) {
+					vdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
 					// the url contains a Youtube external ID
-					[parsedObjects addObject:extID];
+					[vdoDict setObject:extID forKey:@"external_id"];
+					[vdoDict setObject:[twDict objectForKey:@"id_str"] forKey:@"object_id"];
+					[vdoDict setObject:[twDict objectForKey:@"text"] forKey:@"message"];
+					[vdoDict setObject:[self.feedDateFormatter dateFromString:[twDict objectForKey:@"created_at"]] forKey:@"created_time"];
 					// save the person who submit this tweet
-					[_profileArray addObject:[twDict objectForKey:@"user"]];
+					[vdoDict setObject:[twDict objectForKey:@"user"] forKey:@"from"];
+					[parsedObjects addObject:vdoDict];
 				}
 			}
 		}
@@ -248,6 +260,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				manID = [fromDict objectForKey:@"id_str"];
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
+					// search for existing or insert new person
 					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
@@ -288,46 +301,26 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 						}
 					}
 				}
-			}
-			// check comments
-			NSDictionary * otherDict = [vdoFeedDict objectForKey:@"comments"];
-			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
-				// someone has liked this video
-				fbInfo.comments_count = [otherDict objectForKey:@"count"];
-				// remove all comments and reinsert everything
+				// save the tweet in the Comment object
+				BOOL saveTweet = NO;
 				if ( [fbInfo.comments count] ) {
-					[fbInfo removeComments:fbInfo.comments];
+					// check if the tweet is already saved
+					saveTweet = [[fbInfo.comments filteredSetUsingPredicate:[ctrl.socialObjectIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[vdoFeedDict objectForKey:@"object_id"] forKey:@"OBJECT_ID"]]] count] == 0;
+				} else {
+					saveTweet = YES;
 				}
-				NSArray * cmtAy = [otherDict objectForKey:@"data"];
-				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
-				NMSocialComment * cmtObj;
-				for (NSDictionary * cmtDict in cmtAy) {
-					cmtObj = [ctrl insertNewFacebookComment];
-					cmtObj.message = [cmtDict objectForKey:@"message"];
-					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
-					cmtObj.object_id = [cmtDict objectForKey:@"id"];
+				if ( saveTweet ) {
+					NMSocialComment * cmtObj = [ctrl insertNewFacebookComment];
+					cmtObj.message = [vdoFeedDict objectForKey:@"message"];
+					cmtObj.created_time = [vdoFeedDict objectForKey:@"created_time"];
+					cmtObj.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					// look up the person
-					fromDict = [cmtDict objectForKey:@"from"];
-					manID = [fromDict objectForKey:@"id"];
-					theProfile = [objectCache objectForKey:manID];
-					if ( theProfile == nil ) {
-						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
-						[objectCache setObject:theProfile forKey:manID];
-					}
-					if ( isNew ) {
-						personIDOffset++;
-						[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
-						theProfile.name = [fromDict objectForKey:@"name"];
-					}
+					fromDict = [vdoFeedDict objectForKey:@"from"];
 					cmtObj.fromPerson = theProfile;
-#ifdef DEBUG_FACEBOOK_IMPORT
-					NSLog(@"add comment: %@", cmtObj.message);
+#ifdef DEBUG_TWITTER_IMPORT
+					NSLog(@"add tweet: %@", cmtObj.message);
 #endif
-					[cmtSet addObject:cmtObj];
 				}
-				[fbInfo addComments:cmtSet];
-			} else if ( [fbInfo.comments count] ) {
-				[fbInfo removeComments:fbInfo.comments];
 			}
 		}
 	}

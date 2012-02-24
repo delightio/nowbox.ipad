@@ -22,8 +22,8 @@
 @property (nonatomic) NSInteger page;
 @property (nonatomic, retain) NSString * user_id;
 @property (nonatomic, retain) NSString * since_id;
-@property (nonatomic, retain) NSMutableArray * profileArray;
 @property (nonatomic, retain) NSString * newestTwitIDString;
+@property (nonatomic, retain) NSDateFormatter * feedDateFormatter;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj;
 - (id)initWithInfo:(NSDictionary *)aDict;

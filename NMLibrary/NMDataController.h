@@ -76,6 +76,7 @@
 @property (nonatomic, retain) NSPredicate * concreteVideoForExternalIDPredicateTemplate;
 @property (nonatomic, retain) NSPredicate * usernamePredicateTemplate;
 @property (nonatomic, retain) NSPredicate * usernameOrIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * socialObjectIDPredicateTemplate;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
