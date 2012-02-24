@@ -31,39 +31,32 @@
 
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
-    NMChannel *displacedChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
-    NSNumber *newSortOrder = displacedChannel.subscription.nm_sort_order;
+    NMSubscription *displacedSubscription = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
+    NSNumber *newSortOrder = displacedSubscription.nm_sort_order;
     
     if (newIndex < oldIndex) {
         for (NSInteger i = newIndex; i < oldIndex; i++) {
-            NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-            NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i+1 inSection:0]];            
-            thisChannel.subscription.nm_sort_order = nextChannel.subscription.nm_sort_order;
+            NMSubscription *thisSubscription = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            NMSubscription *nextSubscription = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i+1 inSection:0]];            
+            thisSubscription.nm_sort_order = nextSubscription.nm_sort_order;
         }
     } else {
         for (NSInteger i = newIndex; i > oldIndex; i--) {
-            NMChannel *thisChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-            NMChannel *nextChannel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i-1 inSection:0]];
-            thisChannel.subscription.nm_sort_order = nextChannel.subscription.nm_sort_order;
+            NMSubscription *thisSubscription = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            NMSubscription *nextSubscription = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:i-1 inSection:0]];
+            thisSubscription.nm_sort_order = nextSubscription.nm_sort_order;
         }        
     }
     
-    NMChannel *channelToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
-    channelToMove.subscription.nm_sort_order = newSortOrder;
+    NMSubscription *subscriptionToMove = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:oldIndex inSection:0]];
+    subscriptionToMove.nm_sort_order = newSortOrder;
     
     [self.managedObjectContext save:NULL];
-    
-    // Refresh channels to update sort order
-    NSError *error = nil;
-    if (![fetchedResultsController performFetch:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
 }
 
 - (void)deleteObjectAtIndex:(NSUInteger)index
 {
-    NMChannel *channelToDelete = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    NMChannel *channelToDelete = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channelToDelete];
 }
 
@@ -95,11 +88,11 @@
     if (!fetchedResultsController) {
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         [fetchRequest setReturnsObjectsAsFaults:NO];
-        [fetchRequest setEntity:[NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription.nm_hidden == NO AND type == %@", [NSNumber numberWithInteger:NMChannelUserFacebookType]]];
+        [fetchRequest setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:self.managedObjectContext]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND channel != nil AND channel.type == %@", [NSNumber numberWithInteger:NMChannelUserFacebookType]]];
         [fetchRequest setFetchBatchSize:20];
                         
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"subscription.nm_sort_order" ascending:YES];
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
         [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         [sortDescriptor release];
         
@@ -123,7 +116,7 @@
 {    
     if (type == NSFetchedResultsChangeUpdate) {
         // Don't replace the cell, it messes up our drags. Just change the properties of the old one.
-        NMChannel *channel = (NMChannel *)anObject;
+        NMChannel *channel = [anObject channel];
         PagingGridViewCell *cell = [self.gridView cellForIndex:indexPath.row];
         [self configureCell:cell forChannel:channel];
     } else {
@@ -146,7 +139,7 @@
         view = [[[PagingGridViewCell alloc] init] autorelease];
     }
     
-    NMChannel *channel = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];
     [self configureCell:view forChannel:channel];
     
     return view;

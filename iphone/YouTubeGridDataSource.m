@@ -66,13 +66,6 @@
     subscriptionToMove.nm_sort_order = newSortOrder;
 
     [self.managedObjectContext save:NULL];
-    
-/*    // Refresh channels to update sort order
-    NSError *error = nil;
-    if (![fetchedResultsController performFetch:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }*/
 }
 
 - (void)deleteObjectAtIndex:(NSUInteger)index
