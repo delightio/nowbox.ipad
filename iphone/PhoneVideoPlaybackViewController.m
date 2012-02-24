@@ -1535,7 +1535,9 @@
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded
 {
-    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    if (videoInfoView.thumbnailContainerView.alpha == 0.0f) {
+        showMovieControlTimestamp = loadedControlView.timeElapsed;
+    }
 
     // Make all detail views have the same panel state
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
@@ -1547,7 +1549,9 @@
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleBuzzPanelExpanded:(BOOL)expanded
 {
-    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    if (videoInfoView.thumbnailContainerView.alpha == 0.0f) {
+        showMovieControlTimestamp = loadedControlView.timeElapsed;
+    }
     
     // Make all detail views have the same panel state
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
