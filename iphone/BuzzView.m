@@ -87,8 +87,6 @@
     commentView.backgroundColor = [UIColor clearColor];
     [commentViews addObject:commentView];
     [scrollView insertSubview:commentView belowSubview:touchArea];
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, CGRectGetMaxY(commentView.frame));
-    touchArea.frame = CGRectMake(0, 0, scrollView.contentSize.width, scrollView.contentSize.height);
     
     // Configure the comment view
     UIImageView *userImageView = (UIImageView *) [commentView viewWithTag:1];
@@ -115,6 +113,9 @@
     frame = commentView.frame;
     frame.size.height = CGRectGetMaxY(commentLabel.frame) + userLabel.frame.origin.y;
     commentView.frame = frame;
+    
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, CGRectGetMaxY(commentView.frame));
+    touchArea.frame = CGRectMake(0, 0, scrollView.contentSize.width, scrollView.contentSize.height);
     
     // Release the loaded view
     self.commentView = nil;
