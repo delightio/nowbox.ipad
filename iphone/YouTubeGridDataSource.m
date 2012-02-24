@@ -140,7 +140,8 @@
     if (type == NSFetchedResultsChangeUpdate) {
         // Don't replace the cell, it messes up our drags. Just change the properties of the old one.
         NMChannel *channel = (NMChannel *)anObject;
-        PagingGridViewCell *cell = [self.gridView cellForIndex:indexPath.row];
+        NSUInteger gridIndex = [self mappedGridIndexForFetchedResultsIndex:indexPath.row];
+        PagingGridViewCell *cell = [self.gridView cellForIndex:gridIndex];
         [self configureCell:cell forChannel:channel];
     } else {
         [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
