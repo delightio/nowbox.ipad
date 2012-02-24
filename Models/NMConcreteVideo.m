@@ -35,7 +35,7 @@
 @dynamic channels;
 @dynamic detail;
 @dynamic author;
-@dynamic facebookMentions;
+@dynamic socialMentions;
 
 @synthesize nm_player_item;
 @synthesize nm_movie_detail_view;

@@ -60,7 +60,7 @@
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMAuthor" inverseName="videos" inverseEntity="NMAuthor" syncable="YES"/>
         <relationship name="channels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMVideo" inverseName="video" inverseEntity="NMVideo" indexed="YES"/>
         <relationship name="detail" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="NMVideoDetail" inverseName="video" inverseEntity="NMVideoDetail" indexed="YES"/>
-        <relationship name="facebookMentions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMSocialInfo" inverseName="video" inverseEntity="NMSocialInfo" syncable="YES"/>
+        <relationship name="socialMentions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMSocialInfo" inverseName="video" inverseEntity="NMSocialInfo" syncable="YES"/>
     </entity>
     <entity name="NMPersonProfile" representedClassName="NMPersonProfile" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -104,7 +104,7 @@
         <attribute name="object_id" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMSocialComment" inverseName="socialInfo" inverseEntity="NMSocialComment" syncable="YES"/>
         <relationship name="peopleLike" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMPersonProfile" inverseName="facebookLikes" inverseEntity="NMPersonProfile" syncable="YES"/>
-        <relationship name="video" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="facebookMentions" inverseEntity="NMConcreteVideo" syncable="YES"/>
+        <relationship name="video" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="socialMentions" inverseEntity="NMConcreteVideo" syncable="YES"/>
     </entity>
     <entity name="NMSubscription" representedClassName="NMSubscription" syncable="YES">
         <attribute name="nm_current_page" optional="YES" attributeType="Integer 32" defaultValueString="0"/>

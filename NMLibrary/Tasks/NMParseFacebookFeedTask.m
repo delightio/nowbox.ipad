@@ -206,7 +206,7 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				vdo.video = conVdo;
 				// check if the set contains the info from this person already
-				NSSet * fbMtnSet = conVdo.facebookMentions;
+				NSSet * fbMtnSet = conVdo.socialMentions;
 				BOOL postFound = NO;
 				for (fbInfo in fbMtnSet) {
 					if ( [fbInfo.nm_type integerValue] == NMChannelUserFacebookType && [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
@@ -251,7 +251,7 @@ static NSArray * youTubeRegexArray = nil;
 			case NMVideoExistsAndInChannel:
 			{
 				conVdo = vdo.video;
-				NSSet * fbMtnSet = conVdo.facebookMentions;
+				NSSet * fbMtnSet = conVdo.socialMentions;
 				BOOL postFound = NO;
 				for (fbInfo in fbMtnSet) {
 					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
