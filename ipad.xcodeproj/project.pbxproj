@@ -886,7 +886,7 @@
 		A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugFacebookCommentsAndLikes.h; sourceTree = "<group>"; };
 		A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugFacebookCommentsAndLikes.m; sourceTree = "<group>"; };
-		A927BCA414EB4B5E00298615 /* NMSocialInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; path = NMSocialInfo.h; sourceTree = "<group>"; };
+		A927BCA414EB4B5E00298615 /* NMSocialInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSocialInfo.h; sourceTree = "<group>"; };
 		A927BCA514EB4B5E00298615 /* NMSocialInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSocialInfo.m; sourceTree = "<group>"; };
 		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
 		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
@@ -2842,6 +2842,7 @@
 					DEBUG_SKIP_ONBOARD_PROCESS,
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_USE_STAGING_SERVER,
+					DEBUG_CONNECTION_CONTROLLER,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

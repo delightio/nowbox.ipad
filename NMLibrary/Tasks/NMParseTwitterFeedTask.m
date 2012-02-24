@@ -131,7 +131,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					[vdoDict setObject:extID forKey:@"external_id"];
 					[vdoDict setObject:[twDict objectForKey:@"id_str"] forKey:@"object_id"];
 					[vdoDict setObject:[twDict objectForKey:@"text"] forKey:@"message"];
-					[vdoDict setObject:[self.feedDateFormatter dateFromString:[twDict objectForKey:@"created_at"]] forKey:@"created_time"];
+					[vdoDict setObject:[NSNumber numberWithDouble:[[self.feedDateFormatter dateFromString:[twDict objectForKey:@"created_at"]] timeIntervalSince1970]] forKey:@"created_time"];
 					// save the person who submit this tweet
 					[vdoDict setObject:[twDict objectForKey:@"user"] forKey:@"from"];
 					[parsedObjects addObject:vdoDict];
@@ -196,8 +196,6 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
-					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
-					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 				} // else - object clean up will be done later below.
 				break;
 			}
@@ -219,8 +217,6 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				fbInfo.video = conVdo;
 				// set the link
 				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
-				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
-				fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 				break;
 				
 			case NMVideoExistsAndInChannel:
@@ -241,8 +237,6 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
-					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
-					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 				} // else - object clean up will be done later below.
 				break;
 			}
