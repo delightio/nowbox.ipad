@@ -171,6 +171,11 @@
 
 - (void)setRearranging:(BOOL)isRearranging
 {
+    [self setRearranging:isRearranging animated:YES];
+}
+
+- (void)setRearranging:(BOOL)isRearranging animated:(BOOL)animated
+{
     rearranging = isRearranging;
     
     for (PagingGridViewCell *cell in visibleViews) {
@@ -179,7 +184,7 @@
         }
         // Make the cell smaller, if we are allowed to move the cell
         if (!rearranging || (![dataSource respondsToSelector:@selector(gridView:canRearrangeItemAtIndex:)] || [dataSource gridView:self canRearrangeItemAtIndex:cell.index])) {
-            [cell setEditing:rearranging animated:YES];
+            [cell setEditing:rearranging animated:animated];
         }
     }
     

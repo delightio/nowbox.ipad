@@ -93,6 +93,7 @@
 
 - (IBAction)backButtonPressed:(id)sender
 {
+    [gridView setRearranging:NO animated:NO];
     self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
 }
 
