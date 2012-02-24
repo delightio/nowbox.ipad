@@ -148,7 +148,7 @@
 	NSEntityDescription * entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", _channel]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", _channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];	
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];

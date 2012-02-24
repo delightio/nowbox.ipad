@@ -15,6 +15,7 @@
 
 @implementation NMVideo
 
+@dynamic nm_make_dirty;
 @dynamic nm_sort_order;
 @dynamic nm_session_id;
 @dynamic video;

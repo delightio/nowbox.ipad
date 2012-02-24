@@ -14,6 +14,7 @@
 
 @interface NMVideo : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * nm_make_dirty;
 @property (nonatomic, retain) NSNumber * nm_sort_order;
 @property (nonatomic, retain) NSNumber * nm_session_id;
 @property (nonatomic, retain) NMConcreteVideo *video;

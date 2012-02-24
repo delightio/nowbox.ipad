@@ -244,7 +244,13 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 			}
 			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
 			[videoInfoDict removeObjectForKey:@"nm_description"];
-			if ( !encountersErrorDuringProcessing ) targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+			if ( !encountersErrorDuringProcessing ) {
+				targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+				// make the NMVideo object dirty so that FRC method will get notified
+				for (NMVideo * vdo in targetVideo.channels) {
+					vdo.nm_make_dirty = [NSNumber numberWithBool:![vdo.nm_make_dirty boolValue]];
+				}
+			}
 			// update Concrete Video
 			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
 			// author
@@ -261,7 +267,9 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 	if ( encountersErrorDuringProcessing ) {
 		targetVideo.nm_direct_url = nil;
 		targetVideo.nm_direct_sd_url = nil;
-		targetVideo.nm_error = [self.errorInfo objectForKey:@"error_code"];
+		if ( [targetVideo.nm_error integerValue] != NMErrorPendingImport ) {
+			targetVideo.nm_error = [self.errorInfo objectForKey:@"error_code"];
+		}
 		targetVideo.nm_playback_status = NMVideoQueueStatusError;
 	} else {
 		targetVideo.nm_direct_url = directURLString;
