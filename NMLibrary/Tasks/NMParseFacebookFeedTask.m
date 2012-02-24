@@ -195,7 +195,7 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-				conVdo = vdo.video;
+				vdo.video = conVdo;
 				// check if the set contains the info from this person already
 				NSSet * fbMtnSet = conVdo.facebookMentions;
 				BOOL postFound = NO;

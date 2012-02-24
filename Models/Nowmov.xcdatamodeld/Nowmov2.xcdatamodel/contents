@@ -120,6 +120,7 @@
         <relationship name="personProfile" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMPersonProfile" inverseName="subscription" inverseEntity="NMPersonProfile" syncable="YES"/>
     </entity>
     <entity name="NMVideo" representedClassName="NMVideo" syncable="YES">
+        <attribute name="nm_make_dirty" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_session_id" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="nm_sort_order" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="channel" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMChannel" inverseName="videos" inverseEntity="NMChannel" syncable="YES"/>
@@ -140,7 +141,7 @@
         <element name="NMPersonProfile" positionX="819" positionY="-36" width="128" height="225"/>
         <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMSubscription" positionX="558" positionY="-165" width="128" height="225"/>
-        <element name="NMVideo" positionX="558" positionY="159" width="128" height="105"/>
+        <element name="NMVideo" positionX="558" positionY="159" width="128" height="120"/>
         <element name="NMVideoDetail" positionX="7" positionY="522" width="128" height="75"/>
     </elements>
 </model>

@@ -198,7 +198,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (NSPredicate *)concreteVideoForExternalIDPredicateTemplate {
 	if ( _concreteVideoForExternalIDPredicateTemplate == nil ) 
-		_concreteVideoForExternalIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.external_id like[cd] $EXTERNAL_ID"] retain];
+		_concreteVideoForExternalIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"external_id like[cd] $EXTERNAL_ID"] retain];
 	return _concreteVideoForExternalIDPredicateTemplate;
 }
 
@@ -1155,28 +1155,23 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:self.videoEntityDescription];
+	[request setEntity:[NSEntityDescription entityForName:NMConcreteVideoEntityName inManagedObjectContext:managedObjectContext]];
 	[request setPredicate:[self.concreteVideoForExternalIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:anExtID forKey:@"EXTERNAL_ID"]]];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channels"]];
 	[request setReturnsObjectsAsFaults:NO];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	
 	NMVideoExistenceCheckResult checkResult = NMVideoDoesNotExist;
 	if ( [result count] ) {
+		// there's always (in theory) in single concrete bearing one particular external ID
+		NMConcreteVideo * conVdo = [result objectAtIndex:0];
 		// the video exists. check if the video exists in the channel
-		NMVideo * vdo = nil;
-		BOOL vdoInChn = NO;
-		for (vdo in result) {
-			if ( [vdo.channel isEqual:chn] ) {
-				// video already exists in the current channel
-				vdoInChn = YES;
-				break;
-			}
-		}
+		NSSet * rsVdoSet = [conVdo.channels filteredSetUsingPredicate:[self.channelPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chn forKey:@"CHANNEL"]]];
+		BOOL vdoInChn = [rsVdoSet count] > 0;
 		if ( vdoInChn ) {
 			checkResult = NMVideoExistsAndInChannel;
 		} else {
-			*outRealVdo = vdo.video;
+			*outRealVdo = conVdo;
 			checkResult = NMVideoExistsButNotInChannel;
 		}
 	}
