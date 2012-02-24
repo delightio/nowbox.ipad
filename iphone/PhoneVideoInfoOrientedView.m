@@ -30,7 +30,6 @@
 @synthesize videoTitleLabel;
 @synthesize descriptionLabel;
 @synthesize moreVideosButton;
-@synthesize buzzBackgroundImage;
 @synthesize infoPanelExpanded;
 @synthesize buzzPanelExpanded;
 @synthesize delegate;
@@ -56,13 +55,6 @@
     
     // Keep track of what our video title frame originally was - we will be resizing it later
     originalVideoTitleFrame = videoTitleLabel.frame;
-    
-    // Create a stretchable image for the buzz background
-    if ([buzzBackgroundImage respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
-        buzzBackgroundImage.image = [[UIImage imageNamed:@"phone_video_buzz_background.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(16, 6, 6, 6)];
-    } else {
-        buzzBackgroundImage.image = [[UIImage imageNamed:@"phone_video_buzz_background.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:16];
-    }
 }
 
 - (void)dealloc
@@ -77,7 +69,6 @@
     [videoTitleLabel release];
     [descriptionLabel release];
     [moreVideosButton release];
-    [buzzBackgroundImage release];
     
     [super dealloc];
 }

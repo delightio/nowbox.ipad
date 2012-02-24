@@ -94,6 +94,10 @@
 		837E904F14587FA3009F32DD /* MixpanelAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904814587FA3009F32DD /* MixpanelAPI.m */; };
 		837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904A14587FA3009F32DD /* MixpanelEvent.m */; };
 		8380FA6014F6E305000CE0F7 /* FacebookGridDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8380FA5F14F6E305000CE0F7 /* FacebookGridDataSource.m */; };
+		8380FA6414F71F7E000CE0F7 /* BuzzView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8380FA6314F71F7E000CE0F7 /* BuzzView.m */; };
+		8380FA6614F7276C000CE0F7 /* BuzzCommentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8380FA6514F7276C000CE0F7 /* BuzzCommentView.xib */; };
+		8380FA6914F738C3000CE0F7 /* phone_video_buzz_icon_facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 8380FA6714F738C3000CE0F7 /* phone_video_buzz_icon_facebook.png */; };
+		8380FA6A14F738C3000CE0F7 /* phone_video_buzz_icon_facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8380FA6814F738C3000CE0F7 /* phone_video_buzz_icon_facebook@2x.png */; };
 		838105E2149153CC00B3FCE5 /* PhoneLaunchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */; };
 		838105E514916AF600B3FCE5 /* LaunchView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */; };
 		8381062B1491B6D600B3FCE5 /* TestGridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381062A1491B6D600B3FCE5 /* TestGridController.m */; };
@@ -615,6 +619,11 @@
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
 		8380FA5E14F6E304000CE0F7 /* FacebookGridDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookGridDataSource.h; sourceTree = "<group>"; };
 		8380FA5F14F6E305000CE0F7 /* FacebookGridDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookGridDataSource.m; sourceTree = "<group>"; };
+		8380FA6214F71F7E000CE0F7 /* BuzzView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuzzView.h; sourceTree = "<group>"; };
+		8380FA6314F71F7E000CE0F7 /* BuzzView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuzzView.m; sourceTree = "<group>"; };
+		8380FA6514F7276C000CE0F7 /* BuzzCommentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BuzzCommentView.xib; sourceTree = "<group>"; };
+		8380FA6714F738C3000CE0F7 /* phone_video_buzz_icon_facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_buzz_icon_facebook.png; sourceTree = "<group>"; };
+		8380FA6814F738C3000CE0F7 /* phone_video_buzz_icon_facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_buzz_icon_facebook@2x.png"; sourceTree = "<group>"; };
 		838105E0149153CC00B3FCE5 /* PhoneLaunchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneLaunchController.h; sourceTree = "<group>"; };
 		838105E1149153CC00B3FCE5 /* PhoneLaunchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneLaunchController.m; sourceTree = "<group>"; };
 		838105E414916AF600B3FCE5 /* LaunchView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "LaunchView~iphone.xib"; sourceTree = "<group>"; };
@@ -1187,6 +1196,8 @@
 				830A599014F5DD1500086A70 /* PhoneControlsView.m */,
 				831C592D14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.h */,
 				831C592E14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m */,
+				8380FA6214F71F7E000CE0F7 /* BuzzView.h */,
+				8380FA6314F71F7E000CE0F7 /* BuzzView.m */,
 				83C25F7614F33D100098757F /* TouchDelayingScrollView.h */,
 				83C25F7714F33D100098757F /* TouchDelayingScrollView.m */,
 			);
@@ -1285,6 +1296,7 @@
 				8384CD8A14E0AC8C00444755 /* PagingGridViewCell.xib */,
 				8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */,
 				8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */,
+				8380FA6514F7276C000CE0F7 /* BuzzCommentView.xib */,
 				8384CD6714E082DD00444755 /* Prototype */,
 			);
 			name = iPhone;
@@ -1351,6 +1363,8 @@
 				83349C4614F427E800D7DFD2 /* phone_video_background_portrait@2x.png */,
 				830A597D14F5BB5B00086A70 /* phone_video_buzz_background.png */,
 				830A597E14F5BB5B00086A70 /* phone_video_buzz_background@2x.png */,
+				8380FA6714F738C3000CE0F7 /* phone_video_buzz_icon_facebook.png */,
+				8380FA6814F738C3000CE0F7 /* phone_video_buzz_icon_facebook@2x.png */,
 				838317AC14E9D9C000185DE6 /* phone_video_header_background_landscape.png */,
 				838317AD14E9D9C000185DE6 /* phone_video_header_background_landscape@2x.png */,
 				838317A814E9D4D700185DE6 /* phone_video_header_background_portrait.png */,
@@ -2472,6 +2486,9 @@
 				830A598014F5BB5B00086A70 /* phone_video_buzz_background@2x.png in Resources */,
 				830A598C14F5D56500086A70 /* phone_video_shadow.png in Resources */,
 				830A598D14F5D56500086A70 /* phone_video_shadow@2x.png in Resources */,
+				8380FA6614F7276C000CE0F7 /* BuzzCommentView.xib in Resources */,
+				8380FA6914F738C3000CE0F7 /* phone_video_buzz_icon_facebook.png in Resources */,
+				8380FA6A14F738C3000CE0F7 /* phone_video_buzz_icon_facebook@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2578,6 +2595,7 @@
 				831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */,
 				830A599114F5DD1500086A70 /* PhoneControlsView.m in Sources */,
 				8380FA6014F6E305000CE0F7 /* FacebookGridDataSource.m in Sources */,
+				8380FA6414F71F7E000CE0F7 /* BuzzView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

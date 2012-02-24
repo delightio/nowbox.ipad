@@ -14,7 +14,7 @@
 
 @protocol PhoneMovieDetailViewDelegate;
 
-@interface PhoneMovieDetailView : NMMovieDetailView <PhoneVideoInfoOrientedViewDelegate> {
+@interface PhoneMovieDetailView : NMMovieDetailView <PhoneVideoInfoOrientedViewDelegate, BuzzViewDelegate> {
     PhoneVideoInfoOrientedView *currentOrientedView;
 }
 

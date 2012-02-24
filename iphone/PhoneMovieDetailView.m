@@ -53,6 +53,14 @@
     [self setChannelThumbnailForChannel:video.channel];
     [self setVideoTitle:video.video.title];
     [self setDescriptionText:video.video.detail.nm_description];
+    
+    // Add buzz
+    [portraitView.buzzView removeAllComments];
+    for (NMFacebookInfo *facebookInfo in video.video.facebookMentions) {
+        for (NMFacebookComment *comment in facebookInfo.comments) {
+            [portraitView.buzzView addComment:comment.message fromUser:comment.fromPerson.name withImage:nil];
+        }
+    }
 }
 
 - (void)setChannelTitle:(NSString *)channelTitle
@@ -272,6 +280,13 @@
     if ([delegate respondsToSelector:@selector(videoInfoView:didEndDraggingScrollView:)]) {
         [delegate videoInfoView:self didEndDraggingScrollView:scrollView];
     }    
+}
+
+#pragma mark - BuzzViewDelegate
+
+- (void)buzzViewDidTap:(BuzzView *)buzzView
+{
+    [self toggleBuzzPanel:buzzView];
 }
 
 @end

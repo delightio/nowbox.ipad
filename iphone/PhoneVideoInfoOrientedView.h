@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "NMCachedImageView.h"
+#import "BuzzView.h"
 
 @protocol PhoneVideoInfoOrientedViewDelegate;
 @class InfiniteScrollView;
@@ -20,14 +21,13 @@
 @property (nonatomic, retain) IBOutlet UIView *topView;
 @property (nonatomic, retain) IBOutlet UIView *bottomView;
 @property (nonatomic, retain) IBOutlet UIView *infoView;
-@property (nonatomic, retain) IBOutlet UIView *buzzView;
+@property (nonatomic, retain) IBOutlet BuzzView *buzzView;
 @property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
 @property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
 @property (nonatomic, retain) IBOutlet UIButton *moreVideosButton;
-@property (nonatomic, retain) IBOutlet UIImageView *buzzBackgroundImage;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
 @property (nonatomic, assign) BOOL buzzPanelExpanded;
 @property (nonatomic, assign) IBOutlet id<PhoneVideoInfoOrientedViewDelegate> delegate;
