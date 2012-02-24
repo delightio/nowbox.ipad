@@ -18,20 +18,10 @@
     self.clipsToBounds = YES;
     commentViews = [[NSMutableArray alloc] init];  
     
-    // Create a stretchable image for the buzz background
-    backgroundImage = [[UIImageView alloc] initWithFrame:self.bounds];
-    if ([backgroundImage respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
-        backgroundImage.image = [[UIImage imageNamed:@"phone_video_buzz_background.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(16, 6, 6, 6)];
-    } else {
-        backgroundImage.image = [[UIImage imageNamed:@"phone_video_buzz_background.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:16];
-    }
-    backgroundImage.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self insertSubview:backgroundImage atIndex:0];
-    
     // Create a scroll view for scrolling through comments
     scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 16, self.bounds.size.width, self.bounds.size.height - 22)];
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self insertSubview:scrollView aboveSubview:backgroundImage];
+    [self addSubview:scrollView];
     
     touchArea = [UIButton buttonWithType:UIButtonTypeCustom];
     touchArea.frame = scrollView.bounds;
@@ -60,7 +50,6 @@
 
 - (void)dealloc
 {
-    [backgroundImage release];
     [commentViews release];
     [commentView release];
     [scrollView release];

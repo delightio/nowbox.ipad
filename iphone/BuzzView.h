@@ -11,7 +11,6 @@
 @protocol BuzzViewDelegate;
 
 @interface BuzzView : UIView {
-    UIImageView *backgroundImage;
     UIScrollView *scrollView;
     UIButton *touchArea;
     NSMutableArray *commentViews;

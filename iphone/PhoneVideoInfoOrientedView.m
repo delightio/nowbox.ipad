@@ -9,8 +9,8 @@
 #import "PhoneVideoInfoOrientedView.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kPortraitInfoPanelHeightDefault   116
-#define kPortraitInfoPanelHeightExpanded  200
+#define kPortraitInfoPanelHeightDefault   110
+#define kPortraitInfoPanelHeightExpanded  192
 #define kLandscapeInfoPanelHeightDefault  120
 #define kLandscapeInfoPanelHeightExpanded 160
 #define kBuzzPanelHeightDefault           80
