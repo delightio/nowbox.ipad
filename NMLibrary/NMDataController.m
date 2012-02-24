@@ -16,8 +16,8 @@
 #import "NMVideoDetail.h"
 #import "NMSubscription.h"
 #import "NMPersonProfile.h"
-#import "NMFacebookInfo.h"
-#import "NMFacebookComment.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
 #import "NMGetChannelVideoListTask.h"
 
 
@@ -31,8 +31,8 @@ NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
 NSString * const NMAuthorEntityName = @"NMAuthor";
 NSString * const NMSubscriptionEntityName = @"NMSubscription";
 NSString * const NMPersonProfileEntityName = @"NMPersonProfile";
-NSString * const NMFacebookInfoEntityName = @"NMFacebookInfo";
-NSString * const NMFacebookCommentEntityName = @"NMFacebookComment";
+NSString * const NMFacebookInfoEntityName = @"NMSocialInfo";
+NSString * const NMSocialCommentEntityName = @"NMSocialComment";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 
@@ -1180,12 +1180,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 #pragma mark Facebook
-- (NMFacebookInfo *)insertNewFacebookInfo {
+- (NMSocialInfo *)insertNewFacebookInfo {
 	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext];
 }
 
-- (NMFacebookComment *)insertNewFacebookComment {
-	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookCommentEntityName inManagedObjectContext:managedObjectContext];
+- (NMSocialComment *)insertNewFacebookComment {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMSocialCommentEntityName inManagedObjectContext:managedObjectContext];
 }
 
 - (void)deleteFacebookCacheForLogout {
@@ -1230,7 +1230,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"video", @"comments", @"peopleLike", nil]];
 	result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
-		for (NMFacebookInfo * fbInfo  in result) {
+		for (NMSocialInfo * fbInfo  in result) {
 			[managedObjectContext deleteObject:fbInfo];
 		}
 	}

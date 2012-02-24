@@ -15,8 +15,8 @@
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "NMSubscription.h"
-#import "NMFacebookInfo.h"
-#import "NMFacebookComment.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
 #import "FBConnect.h"
 #import "NMObjectCache.h"
 
@@ -178,7 +178,7 @@ static NSArray * youTubeRegexArray = nil;
 	// enumerate the feed
 	NSInteger idx = -1;
 	NSInteger personIDOffset = 0;
-	NMFacebookInfo * fbInfo;
+	NMSocialInfo * fbInfo;
 	NMConcreteVideo * conVdo = nil;
 	NMVideo * vdo = nil;
 	NSString * extID;
@@ -354,7 +354,7 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				NSArray * cmtAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
-				NMFacebookComment * cmtObj;
+				NMSocialComment * cmtObj;
 				for (NSDictionary * cmtDict in cmtAy) {
 					cmtObj = [ctrl insertNewFacebookComment];
 					cmtObj.message = [cmtDict objectForKey:@"message"];

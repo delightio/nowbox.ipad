@@ -689,9 +689,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueProcessFeedForChannel:chn];
 }
 
-- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info {
+- (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info {
 	// save the comment
-	NMFacebookComment * cmtObj = [dataController insertNewFacebookComment];
+	NMSocialComment * cmtObj = [dataController insertNewFacebookComment];
 	cmtObj.facebookInfo = info;
 	cmtObj.message = msg;
 	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
@@ -701,7 +701,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info {
+- (void)issuePostLike:(BOOL)aLike forPost:(NMSocialInfo *)info {
 	NMFacebookLikeTask * task = [[NMFacebookLikeTask alloc] initWithInfo:info like:aLike];
 	[networkController addNewConnectionForTask:task];
 	[task release];

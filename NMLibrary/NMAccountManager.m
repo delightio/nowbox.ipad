@@ -57,6 +57,11 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	} else {
 		self.facebookAccountStatus = (NSNumber *)kCFBooleanFalse;
 	}
+	if ( [ctrl myTwitterProfile] ) {
+		self.twitterAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+	} else {
+		self.twitterAccountStatus = (NSNumber *)kCFBooleanFalse;
+	}
 	return self;
 }
 
@@ -136,6 +141,9 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	theProfile.username = acObj.username;
 	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 	theProfile.nm_error = [NSNumber numberWithInteger:NMErrorPendingImport];
+	// update twitter account status
+	self.twitterAccountStatus = [NSNumber numberWithInteger:NMSyncPendingInitialSync];
+	
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];	
 	// issue call to get user info
 	[tqc issueGetProfile:theProfile account:acObj];
@@ -154,14 +162,6 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 		}
 	}
 	return _facebook;
-}
-
-- (BOOL)facebookAuthorized {
-	NSString * tk = [_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
-	if ( tk && ![tk isEqualToString:@""] ) {
-		return YES;
-	}
-	return NO;
 }
 
 - (void)authorizeFacebook {
@@ -312,28 +312,42 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 
 #pragma mark Sync methods
 - (void)scheduleSyncSocialChannels {
-	if ( [self.facebookAccountStatus integerValue] == 0 ) return;
-#ifdef DEBUG_FACEBOOK_IMPORT
+#if defined(DEBUG_FACEBOOK_IMPORT) || defined (DEBUG_TWITTER_IMPORT)
 	NSLog(@"scheduleSyncSocialChannels");
 #endif
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
-	// get the qualified channels
-	NSArray * theChannels = [tqc.dataController socialChannelsForSync];
-	NSUInteger c = [theChannels count];
-	for (NSUInteger i = 0; (i < c && i < 5); i++) {
-		[tqc issueProcessFeedForChannel:[theChannels objectAtIndex:i]];
-	}
-	if ( c ) {
-		self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
-	}
-	if ( c > 5 && _socialChannelParsingTimer == nil ) {
-		// schedule a timer task to process other channels
-		self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
-	} else if ( _socialChannelParsingTimer ) {
-		[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
-		if ( _videoImportTimer == nil ) {
-			// if there's no scheduled video import timer as well, it's safe to declare that this round of sync process has been completed
-			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+	if ( [self.facebookAccountStatus integerValue] || [self.twitterAccountStatus integerValue] ) {
+		// get the qualified channels
+		NSArray * theChannels = [tqc.dataController socialChannelsForSync];
+		NSUInteger c = [theChannels count];
+		BOOL foundFBChn = NO;
+		BOOL foundTWChn = NO;
+		NSInteger chnType = 0;
+		NSInteger idx = 0;
+		for (NMChannel * chn in theChannels) {
+			[tqc issueProcessFeedForChannel:chn];
+			chnType = [chn.type integerValue];
+			foundTWChn |= chnType == NMChannelUserTwitterType;
+			foundFBChn |= chnType == NMChannelUserFacebookType;
+			if ( ++idx == 5 ) {
+				break; // queue no more than 5 tasks
+			}
+		}
+		if ( foundFBChn ) {
+			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
+		}
+		if ( foundTWChn ) {
+			self.twitterAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
+		}
+		if ( c > 5 && _socialChannelParsingTimer == nil ) {
+			// schedule a timer task to process other channels
+			self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleSyncSocialChannels) userInfo:nil repeats:YES];
+		} else if ( _socialChannelParsingTimer ) {
+			[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+			if ( _videoImportTimer == nil ) {
+				// if there's no scheduled video import timer as well, it's safe to declare that this round of sync process has been completed
+				self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+			}
 		}
 	}
 }

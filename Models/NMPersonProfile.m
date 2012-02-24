@@ -7,8 +7,8 @@
 //
 
 #import "NMPersonProfile.h"
-#import "NMFacebookComment.h"
-#import "NMFacebookInfo.h"
+#import "NMSocialComment.h"
+#import "NMSocialInfo.h"
 #import "NMSubscription.h"
 
 

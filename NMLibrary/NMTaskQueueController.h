@@ -19,7 +19,7 @@
 @class NMVideoDetail;
 @class NMAuthor;
 @class NMPersonProfile;
-@class NMFacebookInfo;
+@class NMSocialInfo;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
 @class Reachability;
@@ -139,8 +139,8 @@
 - (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj directURLString:(NSString *)urlStr;
 - (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
-- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info;
-- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info;
+- (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info;
+- (void)issuePostLike:(BOOL)aLike forPost:(NMSocialInfo *)info;
 - (void)prepareSignOutFacebook;
 - (void)endSignOutFacebook;
 

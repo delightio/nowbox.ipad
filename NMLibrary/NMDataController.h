@@ -19,8 +19,8 @@
 @class NMAuthor;
 @class NMSubscription;
 @class NMPersonProfile;
-@class NMFacebookInfo;
-@class NMFacebookComment;
+@class NMSocialInfo;
+@class NMSocialComment;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -141,8 +141,8 @@
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 
 // video facebook info
-- (NMFacebookInfo *)insertNewFacebookInfo;
-- (NMFacebookComment *)insertNewFacebookComment;
+- (NMSocialInfo *)insertNewFacebookInfo;
+- (NMSocialComment *)insertNewFacebookComment;
 - (void)deleteFacebookCacheForLogout;
 
 // author
