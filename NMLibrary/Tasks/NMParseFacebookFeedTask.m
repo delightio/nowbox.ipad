@@ -200,7 +200,7 @@ static NSArray * youTubeRegexArray = nil;
 				NSSet * fbMtnSet = conVdo.facebookMentions;
 				BOOL postFound = NO;
 				for (fbInfo in fbMtnSet) {
-					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+					if ( [fbInfo.nm_type integerValue] == NMChannelUserFacebookType && [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
 						postFound = YES;
 						break;
 					}
@@ -209,6 +209,7 @@ static NSArray * youTubeRegexArray = nil;
 					// create facebook info
 					fbInfo = [ctrl insertNewFacebookInfo];
 					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -253,6 +254,7 @@ static NSArray * youTubeRegexArray = nil;
 					// create facebook info
 					fbInfo = [ctrl insertNewFacebookInfo];
 					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -264,7 +266,6 @@ static NSArray * youTubeRegexArray = nil;
 				break;
 		}
 		if ( vdo ) {
-			NSLog(@"working on video: %@, post: %@", conVdo.title, fbInfo.object_id);
 			// check person profile
 			BOOL isNew = NO;
 			NSDictionary * fromDict = [vdoFeedDict objectForKey:@"from"];

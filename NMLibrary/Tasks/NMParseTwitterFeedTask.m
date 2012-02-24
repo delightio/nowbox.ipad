@@ -10,12 +10,15 @@
 #import "NMParseFacebookFeedTask.h"
 #import "NMDataController.h"
 #import "NMObjectCache.h"
-
+#import "NMAccountManager.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "NMSubscription.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
+#import "NMObjectCache.h"
 
 NSString * const NMWillParseTwitterFeedNotification = @"NMWillParseTwitterFeedNotification";
 NSString * const NMDidParseTwitterFeedNotification = @"NMDidParseTwitterFeedNotification";
@@ -129,31 +132,65 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	}
 }
 
+- (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
+	theProfile.nm_id = [NSNumber numberWithInteger:theID];
+	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+	theProfile.nm_error = [NSNumber numberWithInteger:NMErrorPendingImport];
+}
+
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	if ( parsedObjects == nil ) return NO;
 	
 	// iterate through all external ID. check if we need to create NMVideo and related mananged object structure
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
-	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
+	NSInteger personIDBase = [ctrl maxPersonProfileID];
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	NSNumber * errNum = [NSNumber numberWithInteger:NMErrorPendingImport];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
-	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		NSString * extID = obj;
-		NMConcreteVideo * conVdo = nil;
-		NMVideo * vdo = nil;
+	NSInteger idx = -1;
+	NSInteger personIDOffset = 0;
+	NMSocialInfo * fbInfo;
+	NMConcreteVideo * conVdo = nil;
+	NMVideo * vdo = nil;
+	NSString * extID;
+	for (NSDictionary * vdoFeedDict in parsedObjects) {
+		extID = [vdoFeedDict objectForKey:@"external_id"];
+		idx++;
+		fbInfo = nil;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
+			{
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				vdo.video = conVdo;
+				// check if the set contains the info from this person already
+				NSSet * fbMtnSet = conVdo.facebookMentions;
+				BOOL postFound = NO;
+				for (fbInfo in fbMtnSet) {
+					if ( [fbInfo.nm_type integerValue] == NMChannelUserTwitterType && [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+						postFound = YES;
+						break;
+					}
+				}
+				if ( !postFound ) {
+					// create facebook info
+					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+					// set the link
+					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
+					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
+					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+				} // else - object clean up will be done later below.
 				break;
-				
+			}
 			case NMVideoDoesNotExist:
+				numberOfVideoAdded++;
 				// create the NMVideo and NMConcreteVideo objects
 				conVdo = [ctrl insertNewConcreteVideo];
 				conVdo.external_id = extID;
@@ -165,35 +202,135 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				// create facebook info
+				fbInfo = [ctrl insertNewFacebookInfo];
+				fbInfo.video = conVdo;
+				// set the link
+				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
+				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
+				fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 				break;
 				
+			case NMVideoExistsAndInChannel:
+			{
+				conVdo = vdo.video;
+				NSSet * fbMtnSet = conVdo.facebookMentions;
+				BOOL postFound = NO;
+				for (fbInfo in fbMtnSet) {
+					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+						postFound = YES;
+						break;
+					}
+				}
+				if ( !postFound ) {
+					// create facebook info
+					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+					// set the link
+					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
+					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
+					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+				} // else - object clean up will be done later below.
+				break;
+			}
 			default:
 				break;
 		}
-		// check person profile
 		if ( vdo ) {
+			NSLog(@"working on video: %@, post: %@", conVdo.title, fbInfo.object_id);
+			// check person profile
 			BOOL isNew = NO;
-			id fromDict = [_profileArray objectAtIndex:idx];
-			if ( fromDict != [NSNull null] ) {
-				NSString * manID = [fromDict objectForKey:@"id_str"];
-				NMPersonProfile * theProfile = [objectCache objectForKey:manID];
+			NSDictionary * fromDict = [vdoFeedDict objectForKey:@"from"];
+			NSString * manID;
+			NMPersonProfile * theProfile;
+			if ( fromDict ) {
+				manID = [fromDict objectForKey:@"id_str"];
+				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
 					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
-					// Twitter feed JSON provides enough user info to generate a full detail NMPersonProfile object. Therefore, no need to generate any "person profile task".
-					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
-					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+					personIDOffset++;
+					[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 					theProfile.name = [fromDict objectForKey:@"name"];
 					NSString * scName = [fromDict objectForKey:@"screen_name"];
 					if ( scName ) theProfile.username = scName;
 					scName = [fromDict objectForKey:@"profile_image_url"];
 					if ( scName ) theProfile.picture = scName;
+					// subscribe to this person as well
+					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+				}
+				if ( ![_user_id isEqual:manID] ) {
+					// the video is from another person. we should add the video to that person's channel as well
+					if ( isNew || chkResult == NMVideoDoesNotExist ) {
+						// this person profile is now. i.e. just insert the video to thi channel
+						// add the video into the channel
+						NMVideo * personVdo = [ctrl insertNewVideo];
+						personVdo.video = conVdo;
+						// add the new video proxy object to the person's channel
+						personVdo.channel = theProfile.subscription.channel;
+						personVdo.nm_session_id = bigSessionNum;
+						personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+					} else if ( !isNew && chkResult == NMVideoExistsButNotInChannel ) {
+						// check if the vido exists in this person's channel
+						NMChannel * personChn = theProfile.subscription.channel;
+						chkResult = [ctrl videoExistsWithExternalID:extID channel:personChn targetVideo:&conVdo];
+						if ( chkResult == NMVideoExistsButNotInChannel ) {
+							// add the video into the channel
+							NMVideo * personVdo = [ctrl insertNewVideo];
+							personVdo.video = conVdo;
+							// add the new video proxy object to the person's channel
+							personVdo.channel = personChn;
+							personVdo.nm_session_id = bigSessionNum;
+							personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+						}
+					}
 				}
 			}
+			// check comments
+			NSDictionary * otherDict = [vdoFeedDict objectForKey:@"comments"];
+			if ( otherDict && [[otherDict objectForKey:@"count"] integerValue] ) {
+				// someone has liked this video
+				fbInfo.comments_count = [otherDict objectForKey:@"count"];
+				// remove all comments and reinsert everything
+				if ( [fbInfo.comments count] ) {
+					[fbInfo removeComments:fbInfo.comments];
+				}
+				NSArray * cmtAy = [otherDict objectForKey:@"data"];
+				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
+				NMSocialComment * cmtObj;
+				for (NSDictionary * cmtDict in cmtAy) {
+					cmtObj = [ctrl insertNewFacebookComment];
+					cmtObj.message = [cmtDict objectForKey:@"message"];
+					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
+					cmtObj.object_id = [cmtDict objectForKey:@"id"];
+					// look up the person
+					fromDict = [cmtDict objectForKey:@"from"];
+					manID = [fromDict objectForKey:@"id"];
+					theProfile = [objectCache objectForKey:manID];
+					if ( theProfile == nil ) {
+						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						[objectCache setObject:theProfile forKey:manID];
+					}
+					if ( isNew ) {
+						personIDOffset++;
+						[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
+						theProfile.name = [fromDict objectForKey:@"name"];
+					}
+					cmtObj.fromPerson = theProfile;
+#ifdef DEBUG_FACEBOOK_IMPORT
+					NSLog(@"add comment: %@", cmtObj.message);
+#endif
+					[cmtSet addObject:cmtObj];
+				}
+				[fbInfo addComments:cmtSet];
+			} else if ( [fbInfo.comments count] ) {
+				[fbInfo removeComments:fbInfo.comments];
+			}
 		}
-	}];
+	}
 	// update the last checked time
 	time_t t;
 	time(&t);

@@ -14,6 +14,7 @@
 
 @interface NMParseTwitterFeedTask : NMTask {
 	BOOL isAccountOwner;
+	NSInteger numberOfVideoAdded;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
