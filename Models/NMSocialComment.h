@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMPersonProfile;
+@class NMPersonProfile, NMSocialInfo;
 
 @interface NMSocialComment : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * created_time;
 @property (nonatomic, retain) NSString * message;
 @property (nonatomic, retain) NSString * object_id;
-@property (nonatomic, retain) NSManagedObject *facebookInfo;
+@property (nonatomic, retain) NMSocialInfo *socialInfo;
 @property (nonatomic, retain) NMPersonProfile *fromPerson;
 
 @end

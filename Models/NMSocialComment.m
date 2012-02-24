@@ -15,7 +15,7 @@
 @dynamic created_time;
 @dynamic message;
 @synthesize object_id;
-@dynamic facebookInfo;
+@dynamic socialInfo;
 @dynamic fromPerson;
 
 @end

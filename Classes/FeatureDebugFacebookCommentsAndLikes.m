@@ -300,7 +300,7 @@
 	NSEntityDescription * entity = [NSEntityDescription entityForName:NMSocialCommentEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"facebookInfo == %@", _socialInfo]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"socialInfo == %@", _socialInfo]];
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:NO]]];
 	
