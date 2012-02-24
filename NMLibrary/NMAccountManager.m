@@ -15,6 +15,8 @@
 #import "NMConcreteVideo.h"
 
 static NMAccountManager * _sharedAccountManager = nil;
+static NSString * const NMFacebookAppID = @"220704664661437";
+static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430";
 
 @implementation NMAccountManager
 @synthesize userDefaults = _userDefaults;
@@ -143,7 +145,8 @@ static NMAccountManager * _sharedAccountManager = nil;
 
 - (Facebook *)facebook {
 	if ( _facebook == nil ) {
-		_facebook = [[Facebook alloc] initWithAppId:@"220704664661437" andDelegate:self];
+		_facebook = [[Facebook alloc] initWithAppId:NMFacebookAppID andDelegate:self];
+		_facebook.appSecret = NMFacebookAppSecret;
 		if ([_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY] 
 			&& [_userDefaults objectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY]) {
 			_facebook.accessToken = [_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
@@ -253,6 +256,10 @@ static NMAccountManager * _sharedAccountManager = nil;
 	if ( [theProfile.nm_me boolValue] ) {
 		// trigger feed parsing
 		[self scheduleSyncSocialChannels];
+		if ( [theProfile.nm_type integerValue] == NMChannelUserFacebookType ) {
+			// we should extend the token
+			[_facebook extendAccessTokenIfNeeded];
+		}
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:[aNotification name] object:nil];
 	}
 }

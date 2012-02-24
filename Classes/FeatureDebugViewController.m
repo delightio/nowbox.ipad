@@ -9,6 +9,7 @@
 #import "FeatureDebugViewController.h"
 #import "FeatureDebugSocialChannelViewController.h"
 #import "VideoPlaybackViewController.h"
+#import "FBConnect.h"
 
 @implementation FeatureDebugViewController
 @synthesize targetChannel, selectedChannel;
@@ -213,6 +214,10 @@
 
 - (IBAction)facebookFeedParse:(id)sender {
 	[[NMAccountManager sharedAccountManager] scheduleSyncSocialChannels];
+}
+
+- (IBAction)facebookRefreshToken:(id)sender {
+	[[NMAccountManager sharedAccountManager].facebook extendAccessToken];
 }
 
 - (IBAction)checkUpdate:(id)sender {

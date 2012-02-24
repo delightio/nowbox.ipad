@@ -36,5 +36,6 @@
 - (IBAction)facebookFilter:(id)sender;
 - (IBAction)facebookSignOut:(id)sender;
 - (IBAction)facebookFeedParse:(id)sender;
+- (IBAction)facebookRefreshToken:(id)sender;
 
 @end
