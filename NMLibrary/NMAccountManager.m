@@ -256,6 +256,10 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	if ( [theProfile.nm_me boolValue] ) {
 		// trigger feed parsing
 		[self scheduleSyncSocialChannels];
+		if ( [theProfile.nm_type integerValue] == NMChannelUserFacebookType ) {
+			// we should extend the token
+			[_facebook extendAccessTokenIfNeeded];
+		}
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:[aNotification name] object:nil];
 	}
 }
