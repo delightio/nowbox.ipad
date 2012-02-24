@@ -77,6 +77,7 @@
 @property (nonatomic, retain) NSPredicate * usernamePredicateTemplate;
 @property (nonatomic, retain) NSPredicate * usernameOrIDPredicateTemplate;
 @property (nonatomic, retain) NSPredicate * socialObjectIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * personProfileExistsPredicateTemplate;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
@@ -153,7 +154,7 @@
 
 // Person profile and subscription
 - (NMPersonProfile *)insertMyNewEmptyFacebookProfile:(BOOL *)isNew;
-- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
+- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID type:(NSNumber *)acType isNew:(BOOL *)isNewObj;
 - (NMPersonProfile *)insertNewPersonProfileWithAccountIdentifier:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NSArray *)personProfilesForSync:(NSInteger)aCount;
 - (NSInteger)maxPersonProfileID;

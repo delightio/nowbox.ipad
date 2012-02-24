@@ -62,6 +62,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize pendingImportVideoPredicate = _pendingImportVideoPredicate;
 @synthesize pendingImportPredicate = _pendingImportPredicate;
 @synthesize socialObjectIDPredicateTemplate = _socialObjectIDPredicateTemplate;
+@synthesize personProfileExistsPredicateTemplate = _personProfileExistsPredicateTemplate;
 
 - (id)init {
 	self = [super init];
@@ -235,6 +236,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		_socialObjectIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"object_id == $OBJECT_ID"] retain];
 	}
 	return _socialObjectIDPredicateTemplate;
+}
+
+- (NSPredicate *)personProfileExistsPredicateTemplate {
+	if ( _personProfileExistsPredicateTemplate == nil ) {
+		_personProfileExistsPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_user_id like $USER_ID AND nm_type == $PROFILE_TYPE"] retain];
+	}
+	return _personProfileExistsPredicateTemplate;
 }
 
 #pragma mark First launch
@@ -1330,10 +1338,10 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return thePerson;
 }
 
-- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj {
+- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID type:(NSNumber *)acType isNew:(BOOL *)isNewObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_user_id like %@", strID]];
+	[request setPredicate:[self.personProfileExistsPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:strID, @"USER_ID", acType, @"PROFILE_TYPE", nil]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMPersonProfile * profileObj = nil;

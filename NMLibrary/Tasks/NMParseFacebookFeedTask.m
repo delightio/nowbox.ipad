@@ -33,6 +33,7 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize user_id = _user_id;
 @synthesize since_id = _since_id;
 @synthesize feedDirectURLString = _feedDirectURLString;
+@synthesize facebookTypeNumber = _facebookTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -67,6 +68,7 @@ static NSArray * youTubeRegexArray = nil;
 	[_channel release];
 	[_nextPageURLString release];
 	[_feedDirectURLString release];
+	[_facebookTypeNumber release];
 	[super dealloc];
 }
 
@@ -75,6 +77,13 @@ static NSArray * youTubeRegexArray = nil;
 	// use custom command index method
 	idx = ABS((NSInteger)[_user_id hash]);
 	return (((NSIntegerMax >> 6 ) & idx) << 6) | command;
+}
+
+- (NSNumber *)facebookTypeNumber {
+	if ( _facebookTypeNumber == nil ) {
+		_facebookTypeNumber = [[NSNumber numberWithInteger:NMChannelUserFacebookType] retain];
+	}
+	return _facebookTypeNumber;
 }
 
 - (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
@@ -275,7 +284,7 @@ static NSArray * youTubeRegexArray = nil;
 				manID = [fromDict objectForKey:@"id"];
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
-					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
@@ -327,7 +336,7 @@ static NSArray * youTubeRegexArray = nil;
 					manID = [fromDict objectForKey:@"id"];
 					theProfile = [objectCache objectForKey:manID];
 					if ( theProfile == nil ) {
-						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
@@ -366,7 +375,7 @@ static NSArray * youTubeRegexArray = nil;
 					manID = [fromDict objectForKey:@"id"];
 					theProfile = [objectCache objectForKey:manID];
 					if ( theProfile == nil ) {
-						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {

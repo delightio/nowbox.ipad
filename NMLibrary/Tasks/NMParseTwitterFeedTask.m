@@ -32,6 +32,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 @synthesize user_id = _user_id;
 @synthesize newestTwitIDString = _newestTwitIDString;
 @synthesize feedDateFormatter = _feedDateFormatter;
+@synthesize twitterTypeNumber = _twitterTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj {
 	self = [super init];
@@ -65,6 +66,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	[_user_id release];
 	[_newestTwitIDString release];
 	[_feedDateFormatter release];
+	[_twitterTypeNumber release];
 	[super dealloc];
 }
 
@@ -76,8 +78,15 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	return _feedDateFormatter;
 }
 
+- (NSNumber *)twitterTypeNumber {
+	if ( _twitterTypeNumber == nil ) {
+		_twitterTypeNumber = [[NSNumber numberWithInteger:NMChannelUserTwitterType] retain];
+	}
+	return _twitterTypeNumber;
+}
+
 - (NSURLRequest *)URLRequest {
-	NSMutableDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:@"40", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"0", @"include_rts", nil];
+	NSMutableDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:@"100", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"0", @"include_rts", nil];
 	
 	if ( _since_id ) {
 		[params setObject:_since_id forKey:@"since_id"];
@@ -146,8 +155,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 
 - (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
 	theProfile.nm_id = [NSNumber numberWithInteger:theID];
-	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
-	theProfile.nm_error = [NSNumber numberWithInteger:NMErrorPendingImport];
+	theProfile.nm_type = self.twitterTypeNumber;
 }
 
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
@@ -255,7 +263,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
 					// search for existing or insert new person
-					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.twitterTypeNumber isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
@@ -319,9 +327,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 		}
 	}
 	// update the last checked time
-	time_t t;
-	time(&t);
-	_channel.subscription.nm_video_last_refresh = [NSNumber numberWithInteger:mktime(gmtime(&t))];
+	_channel.subscription.nm_video_last_refresh = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	// only update the since ID if we are parsing the first page. The rest of the tweets in other pages will have ID smaller than this one
 	if ( _page == 0 ) _channel.subscription.nm_since_id = _newestTwitIDString;
 	[objectCache release];

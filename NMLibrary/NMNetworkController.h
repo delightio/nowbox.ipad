@@ -32,6 +32,7 @@
 	NSLock *networkConnectionLock;
 	NSInteger numberOfConnections, maxNumberOfConnection;
 	NSMutableArray *connectionDateLog;
+	NSInteger twitterRemainLimit, twitterLimitResetTime;
 	
 	NSMutableIndexSet * commandIndexPool, * pendingDeleteCommandIndexPool;
 	
@@ -66,6 +67,7 @@
  */
 - (BOOL)tryGetNetworkResource;
 - (void)returnNetworkResource;
+- (void)updateTwitterAPIRemainLimit:(NSInteger)aLimit resetTime:(NSInteger)timestamp;
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
 

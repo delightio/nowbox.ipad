@@ -285,7 +285,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	switch ([chnObj.type integerValue]) {
 		case NMChannelUserTwitterType:
 		{
-			[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedWithTwitterInfo:infoDict];
+			// We are getting the user's first 100 tweets now. Probably don't need to iteratively crawl user's complete tweet history.
+//			[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedWithTwitterInfo:infoDict];
 			break;
 		}
 		case NMChannelUserFacebookType:
@@ -353,8 +354,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 }
 
 - (void)scheduleImportVideos {
-	if ( [self.facebookAccountStatus integerValue] == 0 ) return;
-#ifdef DEBUG_FACEBOOK_IMPORT
+	if ( [self.facebookAccountStatus integerValue] == 0 && [self.twitterAccountStatus integerValue] == 0 ) return;
+#if defined(DEBUG_FACEBOOK_IMPORT) || defined (DEBUG_TWITTER_IMPORT)
 	NSLog(@"scheduleImportVideos");
 #endif
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
@@ -379,19 +380,21 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 		// check if there's scheduled channel sync timer
 		if ( _socialChannelParsingTimer == nil ) {
 			// if there's no scheduled video import timer as well, it's safe to declare that this round of sync process has been completed
-			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+			if ( [_facebookAccountStatus integerValue] ) self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+			if ( [_twitterAccountStatus integerValue] ) self.twitterAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
 		}
 		// return immediately if no video
 		return;
 	}
-	self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
+	if ( [_facebookAccountStatus integerValue] ) self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
+	if ( [_twitterAccountStatus integerValue] ) self.twitterAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
 	for (NMConcreteVideo * vdo in theVideos) {
 		[tqc issueImportVideo:vdo];
 	}
 	for (NMPersonProfile * pfo in theProfiles) {
 		[tqc issueGetProfile:pfo account:nil];
 	}
-	if ( _videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
+	if ( _videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
 }
 
 

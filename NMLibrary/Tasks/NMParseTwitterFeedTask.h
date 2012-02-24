@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSString * since_id;
 @property (nonatomic, retain) NSString * newestTwitIDString;
 @property (nonatomic, retain) NSDateFormatter * feedDateFormatter;
+@property (nonatomic, retain) NSNumber * twitterTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj;
 - (id)initWithInfo:(NSDictionary *)aDict;

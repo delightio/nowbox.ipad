@@ -35,6 +35,7 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 - (void)authorizeFacebook;
 - (void)signOutFacebookOnCompleteTarget:(id)aTarget action:(SEL)completionSelector;
 
+// Twitter
 - (void)subscribeAccount:(ACAccount *)acObj;
 
 // Application lifecycle
