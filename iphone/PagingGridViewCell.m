@@ -200,7 +200,7 @@
 {
     if (dragging) {
         [self didStopDragging];
-    } else {
+    } else if (pressAndHoldTimer) {
         [self cancelPressAndHoldTimer];        
         [delegate gridViewCellDidTap:self];
     }
