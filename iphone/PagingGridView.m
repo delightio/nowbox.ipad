@@ -178,6 +178,7 @@
 {
     rearranging = isRearranging;
     
+    BOOL areAnyCellsEditing = NO;
     for (PagingGridViewCell *cell in visibleViews) {
         if (rearranging) {
             cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
@@ -185,10 +186,17 @@
         // Make the cell smaller, if we are allowed to move the cell
         if (!rearranging || (![dataSource respondsToSelector:@selector(gridView:canRearrangeItemAtIndex:)] || [dataSource gridView:self canRearrangeItemAtIndex:cell.index])) {
             [cell setEditing:rearranging animated:animated];
+            areAnyCellsEditing = YES;
         }
     }
-    
+        
     if (rearranging) {
+        if (!areAnyCellsEditing) {
+            // Nothing can be edited. No point in rearranging.
+            rearranging = NO;
+            return;
+        }
+
         if (!stopRearrangingButton) {
             // Put an invisible button on the last page to intercept any touch events in empty space
             stopRearrangingButton = [UIButton buttonWithType:UIButtonTypeCustom];
