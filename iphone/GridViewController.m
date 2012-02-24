@@ -108,7 +108,7 @@
         self.gridDataSource = nextDataSource;
     } else {
         // Go to video player
-        NMChannel *channel = [gridDataSource objectAtIndex:index];
+        NMChannel *channel = [[gridDataSource objectAtIndex:index] channel];
         
         PhoneVideoPlaybackViewController *playbackController = [[PhoneVideoPlaybackViewController alloc] initWithNibName:@"PhoneVideoPlaybackView" bundle:nil];
         [playbackController setManagedObjectContext:managedObjectContext];
