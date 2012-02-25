@@ -1,17 +1,19 @@
 //
-//  FeatureDebugFacebookCommentsAndLikes.m
+//  FeatureDebugTwitter.m
 //  ipad
 //
-//  Created by Bill So on 2/13/12.
+//  Created by Bill So on 2/24/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "FeatureDebugFacebookCommentsAndLikes.h"
+#import "FeatureDebugTwitter.h"
 
+@interface FeatureDebugTwitter ()
 
-@implementation FeatureDebugFacebookCommentsAndLikes
-@synthesize likesResultsController = _likesResultsController;
-@synthesize commentsResultsController = _commentsResultsController;
+@end
+
+@implementation FeatureDebugTwitter
+@synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize socialInfo = _socialInfo;
 
@@ -25,22 +27,11 @@
 }
 
 - (void)dealloc {
-	[_likesResultsController release];
-	[_commentsResultsController release];
-	[_managedObjectContext release];
+	[_fetchedResultsController release];
 	[_socialInfo release];
+	[_managedObjectContext release];
 	[super dealloc];
 }
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
-#pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
@@ -51,15 +42,11 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	UIBarButtonItem * likeBtn = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:self action:@selector(setLikeStatus:)];
-	UIBarButtonItem * unlikeBtn = [[UIBarButtonItem alloc] initWithTitle:@"Unlike" style:UIBarButtonItemStyleBordered target:self action:@selector(setUnlikeStatus:)];
-	UIBarButtonItem * cmtBtn = [[UIBarButtonItem alloc] initWithTitle:@"Comment" style:UIBarButtonItemStyleBordered target:self action:@selector(sendRandomComment:)];
-	self.toolbarItems = [NSArray arrayWithObjects:likeBtn, unlikeBtn, cmtBtn, nil];
-	[likeBtn release];
-	[cmtBtn release];
-	[unlikeBtn release];
-	
-	self.title = _socialInfo.video.title;
+	UIBarButtonItem * retweetBtn = [[UIBarButtonItem alloc] initWithTitle:@"Retweet" style:UIBarButtonItemStyleBordered target:self action:@selector(setLikeStatus:)];
+	UIBarButtonItem * replyBtn = [[UIBarButtonItem alloc] initWithTitle:@"Reply" style:UIBarButtonItemStyleBordered target:self action:@selector(setUnlikeStatus:)];
+	self.toolbarItems = [NSArray arrayWithObjects:retweetBtn, replyBtn, nil];
+	[retweetBtn release];
+	[replyBtn release];
 }
 
 - (void)viewDidUnload
@@ -75,136 +62,42 @@
 	self.navigationController.toolbarHidden = NO;
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
 	self.navigationController.toolbarHidden = YES;
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-#pragma mark - Target action methods
-- (void)setLikeStatus:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issuePostLike:YES forPost:_socialInfo];
-}
-
-- (void)setUnlikeStatus:(id)sender {
-	[[NMTaskQueueController sharedTaskQueueController] issuePostLike:NO forPost:_socialInfo];
-}
-
-- (void)sendRandomComment:(id)sender {
-	NSString * str = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci urna, iaculis lacinia ultrices vel";
-	[[NMTaskQueueController sharedTaskQueueController] issuePostComment:str forPost:_socialInfo];
-}
-
 #pragma mark - Table view data source
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-	switch (indexPath.section) {
-		case 0:
-		{
-			NMPersonProfile * thePerson = [self.likesResultsController objectAtIndexPath:indexPath];
-			cell.textLabel.text = thePerson.name;
-			break;
-		}
-		case 1:
-		{
-			NMSocialComment * theComment = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
-			cell.textLabel.text = theComment.message;
-			break;
-		}
-		default:
-			break;
-	}
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+	NMSocialComment * theComment = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	cell.textLabel.text = theComment.message;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	id <NSFetchedResultsSectionInfo> sectionInfo;
-	NSFetchedResultsController * ctrl = nil;
-	switch (section) {
-		case 0:
-			ctrl = self.likesResultsController;
-			break;
-		case 1:
-			ctrl = self.commentsResultsController;
-			break;
-			
-		default:
-			break;
-	}
-	sectionInfo = [[ctrl sections] objectAtIndex:0];
+	id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
 	return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
     
-	switch (indexPath.section) {
-		case 0:
-		{
-			// like section
-			NMPersonProfile * personObj = [self.likesResultsController objectAtIndexPath:indexPath];
-			cell.textLabel.text = personObj.name;
-			break;
-		}	
-		case 1:
-		{
-			// comment section
-			NMSocialComment * cmtObj = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
-			cell.textLabel.text = cmtObj.message;
-			break;
-		}	
-		default:
-			break;
-	}
-
     [self configureCell:cell atIndexPath:indexPath];
-	
+    
     return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	NSString * str = nil;
-	switch (section) {
-		case 0:
-			str = @"Likes";
-			break;
-			
-		case 1:
-			str = @"Comments";
-			break;
-			
-		default:
-			break;
-	}
-	return str;
 }
 
 /*
@@ -260,40 +153,11 @@
      */
 }
 
-#pragma mark - Fetched results controller and delegate
-
-- (NSFetchedResultsController *)likesResultsController {
-	if ( _likesResultsController ) {
-		return _likesResultsController;
-	}
-	
-	// create the fetched resutl controller
-	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NSEntityDescription * entity = [NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:_managedObjectContext];
-	[request setEntity:entity];
-	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"facebookLikes CONTAINS %@", _socialInfo]];
-	[request setFetchLimit:12];
-	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
-	
-	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-	resultCtrl.delegate = self;
-	self.likesResultsController = resultCtrl;
-	
-	[resultCtrl release];
-	[request release];
-	NSError * error = nil;
-	if ( ![_likesResultsController performFetch:&error] ) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-	}
-	
-	return _likesResultsController;
-}
+#pragma mark FRC
 
 - (NSFetchedResultsController *)commentsResultsController {
-	if ( _commentsResultsController ) {
-		return _commentsResultsController;
+	if ( _fetchedResultsController ) {
+		return _fetchedResultsController;
 	}
 	
 	// create the fetched resutl controller
@@ -307,17 +171,17 @@
 	
 	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
 	resultCtrl.delegate = self;
-	self.commentsResultsController = resultCtrl;
+	self.fetchedResultsController = resultCtrl;
 	
 	[resultCtrl release];
 	[request release];
 	NSError * error = nil;
-	if ( ![_commentsResultsController performFetch:&error] ) {
+	if ( ![_fetchedResultsController performFetch:&error] ) {
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
 	}
 	
-	return _commentsResultsController;
+	return _fetchedResultsController;
 }
 
 #pragma mark FetchedResultsController delegate
@@ -345,11 +209,6 @@
       newIndexPath:(NSIndexPath *)newIndexPath
 {
     UITableView *tableView = self.tableView;
-	if ( controller == _commentsResultsController ) {
-		// modify the index path
-		newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:1];
-		indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:1];
-	}
     
     switch(type) {
         case NSFetchedResultsChangeInsert:

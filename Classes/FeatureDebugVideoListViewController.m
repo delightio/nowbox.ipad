@@ -10,7 +10,7 @@
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
 #import "FeatureDebugFacebookCommentsAndLikes.h"
-
+#import "FeatureDebugTwitter.h"
 
 @implementation FeatureDebugVideoListViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
@@ -77,14 +77,31 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
 	NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	if ( [vdo.video.socialMentions count] == 0 ) {
+	NSSet * allMentions = vdo.video.socialMentions;
+	if ( allMentions == 0 ) {
 		return;
 	}
-	FeatureDebugFacebookCommentsAndLikes * ctrl = [[FeatureDebugFacebookCommentsAndLikes alloc] initWithStyle:UITableViewStylePlain];
-	ctrl.managedObjectContext = _managedObjectContext;
-	ctrl.socialInfo = [vdo.video.socialMentions anyObject];
-	[self.navigationController pushViewController:ctrl animated:YES];
-	[ctrl release];
+	NSInteger chnType = [_channel.type integerValue];
+	
+	for (NMSocialInfo * theInfo in allMentions) {
+		if ( [theInfo.nm_type integerValue] == chnType ) {
+			if ( chnType == NMChannelUserFacebookType ) {
+				FeatureDebugFacebookCommentsAndLikes * ctrl = [[FeatureDebugFacebookCommentsAndLikes alloc] initWithStyle:UITableViewStylePlain];
+				ctrl.managedObjectContext = _managedObjectContext;
+				// show the video detail
+				ctrl.socialInfo = theInfo;
+				[self.navigationController pushViewController:ctrl animated:YES];
+				[ctrl release];
+			} else if ( chnType == NMChannelUserTwitterType ) {
+				FeatureDebugTwitter * ctrl = [[FeatureDebugTwitter alloc] initWithStyle:UITableViewStylePlain];
+				ctrl.managedObjectContext = _managedObjectContext;
+				ctrl.socialInfo = theInfo;
+				[self.navigationController pushViewController:ctrl animated:YES];
+				[ctrl release];
+			}
+			break;
+		}
+	}
 }
 
 /*

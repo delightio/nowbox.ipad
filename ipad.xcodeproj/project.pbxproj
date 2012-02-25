@@ -441,6 +441,7 @@
 		A9B9FBF81473D97200953E40 /* NMUserSynchronizeTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B9FBF61473D97200953E40 /* NMUserSynchronizeTask.m */; };
 		A9B9FBFA1473DB1400953E40 /* NMTokenTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E9E0451465B41200EA8F81 /* NMTokenTask.m */; };
 		A9C473071473961400BE45CA /* YoutubeError.html in Resources */ = {isa = PBXBuildFile; fileRef = A9C473061473961400BE45CA /* YoutubeError.html */; };
+		A9C558C214F89E920024EEB3 /* FeatureDebugTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C558C114F89E920024EEB3 /* FeatureDebugTwitter.m */; };
 		A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */; };
 		A9D027B1142217590064A89D /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
 		A9D027B2142217590064A89D /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
@@ -1060,6 +1061,8 @@
 		A9B9FBF51473D97200953E40 /* NMUserSynchronizeTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMUserSynchronizeTask.h; sourceTree = "<group>"; };
 		A9B9FBF61473D97200953E40 /* NMUserSynchronizeTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMUserSynchronizeTask.m; sourceTree = "<group>"; };
 		A9C473061473961400BE45CA /* YoutubeError.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = YoutubeError.html; sourceTree = "<group>"; };
+		A9C558C014F89E920024EEB3 /* FeatureDebugTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugTwitter.h; sourceTree = "<group>"; };
+		A9C558C114F89E920024EEB3 /* FeatureDebugTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugTwitter.m; sourceTree = "<group>"; };
 		A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppleTVIndicationView.xib; sourceTree = "<group>"; };
 		A9D04873144FB39600EFD21F /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A9D19B29140E274E008CF101 /* NMChannelDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelDetail.h; sourceTree = "<group>"; };
@@ -1672,6 +1675,8 @@
 				A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */,
 				A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */,
 				A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */,
+				A9C558C014F89E920024EEB3 /* FeatureDebugTwitter.h */,
+				A9C558C114F89E920024EEB3 /* FeatureDebugTwitter.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -2585,6 +2590,7 @@
 				831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */,
 				830A599114F5DD1500086A70 /* PhoneControlsView.m in Sources */,
 				8380FA6014F6E305000CE0F7 /* FacebookGridDataSource.m in Sources */,
+				A9C558C214F89E920024EEB3 /* FeatureDebugTwitter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
