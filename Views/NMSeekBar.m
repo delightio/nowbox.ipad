@@ -65,13 +65,9 @@
     } else {
         theLayer.frame = CGRectMake(1.0f, 0.0f, 0.0f, brightImage.size.height);
         theLayer.backgroundColor = [UIColor colorWithPatternImage:brightImage].CGColor;
+        theLayer.transform = CATransform3DMakeScale(1.0f, -1.0f, 1.0f);
         theLayer.masksToBounds = YES;
         theLayer.cornerRadius = 5.0f;
-        
-        // Flip the image so it's the right way up
-        CATransform3D transform = CATransform3DMakeScale(1.0f, -1.0f, 1.0f);
-//        transform = CATransform3DTranslate(transform, 0, theLayer.frame.size.height, 0);
-        theLayer.transform = transform;
     }
 	[selfLayer addSublayer:theLayer];
 	selfLayer.progressLayer = theLayer;

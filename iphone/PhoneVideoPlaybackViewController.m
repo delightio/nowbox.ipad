@@ -263,6 +263,21 @@
     movieBackgroundView.frame = theFrame;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    // Don't show status bar in landscape mode
+    CGRect frame = self.view.frame;
+    if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation) && UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+        frame.origin.y -= 20;
+        frame.size.height += 20;        
+    } else if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation) && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        frame.origin.y += 20;
+        frame.size.height -= 20;
+    }
+    self.view.frame = frame;
+}
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [self updateViewsForInterfaceOrientation:toInterfaceOrientation];
 }
