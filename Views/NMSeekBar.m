@@ -58,14 +58,20 @@
 	// progress layer
     UIImage *brightImage = [UIImage imageNamed:@"progress-bright-side"];
 	theLayer = [CALayer layer];
-	theLayer.contents = (id)brightImage.CGImage;
 	theLayer.anchorPoint = CGPointMake(0.0, 0.5f);
     if (NM_RUNNING_ON_IPAD) {
         theLayer.frame = CGRectMake(1.0f, 1.0f, 0.0f, brightImage.size.height);
+        theLayer.contents = (id)brightImage.CGImage;
     } else {
         theLayer.frame = CGRectMake(1.0f, 0.0f, 0.0f, brightImage.size.height);
+        theLayer.backgroundColor = [UIColor colorWithPatternImage:brightImage].CGColor;
         theLayer.masksToBounds = YES;
         theLayer.cornerRadius = 5.0f;
+        
+        // Flip the image so it's the right way up
+        CATransform3D transform = CATransform3DMakeScale(1.0f, -1.0f, 1.0f);
+//        transform = CATransform3DTranslate(transform, 0, theLayer.frame.size.height, 0);
+        theLayer.transform = transform;
     }
 	[selfLayer addSublayer:theLayer];
 	selfLayer.progressLayer = theLayer;
