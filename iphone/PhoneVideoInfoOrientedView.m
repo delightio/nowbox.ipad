@@ -7,6 +7,7 @@
 //
 
 #import "PhoneVideoInfoOrientedView.h"
+#import "UIFont+BackupFont.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kPortraitInfoPanelHeightDefault   110
@@ -56,6 +57,11 @@
     
     // Keep track of what our video title frame originally was - we will be resizing it later
     originalVideoTitleFrame = videoTitleLabel.frame;
+    
+    channelTitleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:19.0f backupFontName:@"Futura-Medium" size:16.0f];
+    videoTitleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:30.0f backupFontName:@"Futura-Medium" size:26.0f];
+    descriptionLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
+    moreVideosButton.titleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:16.0f];
 }
 
 - (void)dealloc

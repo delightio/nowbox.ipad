@@ -7,10 +7,21 @@
 //
 
 #import "PhoneControlsView.h"
+#import "UIFont+BackupFont.h"
 
 @implementation PhoneControlsView
 
 @synthesize backgroundView;
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+
+    UIFont *labelFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:13.0f backupFontName:@"Futura-Medium" size:10.0f];
+    durationLabel.font = labelFont;
+    currentTimeLabel.font = labelFont;
+    seekBubbleButton.titleLabel.font = labelFont;
+}
 
 - (void)dealloc
 {

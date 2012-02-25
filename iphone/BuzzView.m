@@ -7,6 +7,7 @@
 //
 
 #import "BuzzView.h"
+#import "UIFont+BackupFont.h"
 
 @implementation BuzzView
 
@@ -83,6 +84,11 @@
     UIImageView *serviceIcon = (UIImageView *) [commentView viewWithTag:3];
     UILabel *timeLabel = (UILabel *) [commentView viewWithTag:4];
     UILabel *commentLabel = (UILabel *) [commentView viewWithTag:5];
+    
+    UIFont *labelFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
+    userLabel.font = labelFont;
+    timeLabel.font = labelFont;
+    commentLabel.font = labelFont;
     
     userImageView.image = userImage;
     userLabel.text = user;

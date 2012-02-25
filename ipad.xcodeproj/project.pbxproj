@@ -278,6 +278,7 @@
 		83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */; };
 		83DE119C14F8446100012806 /* phone_video_info_background_middle_portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 83DE119A14F8446100012806 /* phone_video_info_background_middle_portrait.png */; };
 		83DE119D14F8446100012806 /* phone_video_info_background_middle_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83DE119B14F8446100012806 /* phone_video_info_background_middle_portrait@2x.png */; };
+		83DE11A714F875E900012806 /* UIFont+BackupFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 83DE11A614F875E900012806 /* UIFont+BackupFont.m */; };
 		83E0466B144F468300C91525 /* ToolTipController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E0466A144F468300C91525 /* ToolTipController.m */; };
 		83E0466E144F4EA900C91525 /* Tooltips.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466D144F4EA900C91525 /* Tooltips.plist */; };
 		83E04676144F79EC00C91525 /* tooltip-bad-video.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E0466F144F79EC00C91525 /* tooltip-bad-video.png */; };
@@ -836,6 +837,8 @@
 		83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+InteractiveAnimation.m"; sourceTree = "<group>"; };
 		83DE119A14F8446100012806 /* phone_video_info_background_middle_portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_info_background_middle_portrait.png; sourceTree = "<group>"; };
 		83DE119B14F8446100012806 /* phone_video_info_background_middle_portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_info_background_middle_portrait@2x.png"; sourceTree = "<group>"; };
+		83DE11A514F875E900012806 /* UIFont+BackupFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+BackupFont.h"; sourceTree = "<group>"; };
+		83DE11A614F875E900012806 /* UIFont+BackupFont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+BackupFont.m"; sourceTree = "<group>"; };
 		83E04669144F468300C91525 /* ToolTipController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToolTipController.h; sourceTree = "<group>"; };
 		83E0466A144F468300C91525 /* ToolTipController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToolTipController.m; sourceTree = "<group>"; };
 		83E0466D144F4EA900C91525 /* Tooltips.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tooltips.plist; sourceTree = "<group>"; };
@@ -1515,6 +1518,15 @@
 			path = Nibs;
 			sourceTree = "<group>";
 		};
+		83DE119E14F86C6300012806 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				83DE11A514F875E900012806 /* UIFont+BackupFont.h */,
+				83DE11A614F875E900012806 /* UIFont+BackupFont.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		83EF90CA148433D000ED7993 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -1531,6 +1543,7 @@
 		A90BC4141461F7AC006AD644 /* iphone */ = {
 			isa = PBXGroup;
 			children = (
+				83DE119E14F86C6300012806 /* Categories */,
 				837A299614E1C8C500065F32 /* Objects */,
 				837A299514E1C8BE00065F32 /* Controllers */,
 				837A299414E1C8B500065F32 /* Views */,
@@ -2596,6 +2609,7 @@
 				830A599114F5DD1500086A70 /* PhoneControlsView.m in Sources */,
 				8380FA6014F6E305000CE0F7 /* FacebookGridDataSource.m in Sources */,
 				8380FA6414F71F7E000CE0F7 /* BuzzView.m in Sources */,
+				83DE11A714F875E900012806 /* UIFont+BackupFont.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
