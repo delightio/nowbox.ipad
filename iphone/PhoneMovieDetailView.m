@@ -155,9 +155,9 @@
                                         controlsView.frame.size.height);
         controlsView.backgroundView.hidden = NO;
     } else {
-        controlsView.frame = CGRectMake(landscapeView.descriptionLabel.frame.origin.x - 13, 
-                                        landscapeView.frame.size.height - controlsView.frame.size.height, 
-                                        landscapeView.descriptionLabel.frame.size.width + 26, 
+        controlsView.frame = CGRectMake(landscapeView.descriptionLabelContainer.frame.origin.x - 13, 
+                                        landscapeView.frame.size.height - controlsView.frame.size.height - 3, 
+                                        landscapeView.descriptionLabelContainer.frame.size.width + 26, 
                                         controlsView.frame.size.height);
         controlsView.backgroundView.hidden = YES;        
     }
@@ -191,8 +191,8 @@
         return NO;
     }
         
-    return (CGRectContainsPoint(currentOrientedView.topView.frame, point) ||
-            CGRectContainsPoint(currentOrientedView.bottomView.frame, point) ||
+    return ((!currentOrientedView.topView.hidden && CGRectContainsPoint(currentOrientedView.topView.frame, point)) ||
+            (!currentOrientedView.bottomView.hidden && CGRectContainsPoint(currentOrientedView.bottomView.frame, point)) ||
             (!videoOverlayHidden && CGRectContainsPoint(controlsView.frame, point)));
 }
 

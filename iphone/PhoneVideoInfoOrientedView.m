@@ -11,8 +11,8 @@
 
 #define kPortraitInfoPanelHeightDefault   110
 #define kPortraitInfoPanelHeightExpanded  192
-#define kLandscapeInfoPanelHeightDefault  120
-#define kLandscapeInfoPanelHeightExpanded 160
+#define kLandscapeInfoPanelHeightDefault  98
+#define kLandscapeInfoPanelHeightExpanded 156
 #define kBuzzPanelHeightDefault           80
 #define kBuzzPanelHeightExpanded          156
 
@@ -28,6 +28,7 @@
 @synthesize infoButtonScrollView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
+@synthesize descriptionLabelContainer;
 @synthesize descriptionLabel;
 @synthesize moreVideosButton;
 @synthesize infoPanelExpanded;
@@ -67,6 +68,7 @@
     [infoButtonScrollView release];
     [channelTitleLabel release];
     [videoTitleLabel release];
+    [descriptionLabelContainer release];
     [descriptionLabel release];
     [moreVideosButton release];
     
@@ -75,6 +77,8 @@
 
 - (void)positionLabels
 {        
+    if (descriptionLabelContainer) return;
+    
     // Position the description label below the video title
     videoTitleLabel.frame = originalVideoTitleFrame;
     [videoTitleLabel sizeToFit];

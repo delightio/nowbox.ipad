@@ -39,10 +39,10 @@
 					<object class="IBUIView" id="721214938">
 						<reference key="NSNextResponder" ref="600268807"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{0, 20}, {480, 42}}</string>
+						<string key="NSFrameSize">{480, 42}</string>
 						<reference key="NSSuperview" ref="600268807"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="38628471"/>
+						<reference key="NSNextKeyView" ref="562819206"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -57,7 +57,7 @@
 							<object class="IBUIButton" id="738950103">
 								<reference key="NSNextResponder" ref="562819206"/>
 								<int key="NSvFlags">276</int>
-								<string key="NSFrame">{{0, 10}, {60, 40}}</string>
+								<string key="NSFrame">{{0, 2}, {60, 40}}</string>
 								<reference key="NSSuperview" ref="562819206"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="641472266"/>
@@ -108,7 +108,7 @@
 									<object class="IBUILabel" id="199211040">
 										<reference key="NSNextResponder" ref="641472266"/>
 										<int key="NSvFlags">276</int>
-										<string key="NSFrameSize">{56, 40}</string>
+										<string key="NSFrameSize">{52, 40}</string>
 										<reference key="NSSuperview" ref="641472266"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="550208146"/>
@@ -146,7 +146,7 @@
 										<string key="NSFrame">{{385, 0}, {56, 40}}</string>
 										<reference key="NSSuperview" ref="641472266"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView" ref="721214938"/>
+										<reference key="NSNextKeyView" ref="38628471"/>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIClipsSubviews">YES</bool>
 										<int key="IBUIContentMode">7</int>
@@ -166,7 +166,7 @@
 									<object class="IBUIView" id="550208146">
 										<reference key="NSNextResponder" ref="641472266"/>
 										<int key="NSvFlags">274</int>
-										<string key="NSFrame">{{52, 9}, {335, 24}}</string>
+										<string key="NSFrame">{{48, 9}, {339, 24}}</string>
 										<reference key="NSSuperview" ref="641472266"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="741972352"/>
@@ -178,7 +178,7 @@
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 									</object>
 								</array>
-								<string key="NSFrame">{{40, 9}, {440, 40}}</string>
+								<string key="NSFrame">{{40, 1}, {440, 40}}</string>
 								<reference key="NSSuperview" ref="562819206"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="199211040"/>
@@ -190,7 +190,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
 						</array>
-						<string key="NSFrame">{{0, 12}, {480, 50}}</string>
+						<string key="NSFrameSize">{480, 42}</string>
 						<reference key="NSSuperview" ref="600268807"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="738950103"/>
@@ -203,7 +203,7 @@
 					<object class="IBUIButton" id="38628471">
 						<reference key="NSNextResponder" ref="600268807"/>
 						<int key="NSvFlags">269</int>
-						<string key="NSFrame">{{215, 5}, {47, 28}}</string>
+						<string key="NSFrame">{{215, -15}, {47, 28}}</string>
 						<reference key="NSSuperview" ref="600268807"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView"/>
@@ -233,10 +233,10 @@
 						<reference key="IBUIFont" ref="777642597"/>
 					</object>
 				</array>
-				<string key="NSFrameSize">{480, 62}</string>
+				<string key="NSFrameSize">{480, 42}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView" ref="562819206"/>
+				<reference key="NSNextKeyView" ref="721214938"/>
 				<reference key="IBUIBackgroundColor" ref="772111185"/>
 				<bool key="IBUIOpaque">NO</bool>
 				<object class="IBUISimulatedOrientationMetrics" key="IBUISimulatedOrientationMetrics">
@@ -481,6 +481,28 @@
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">BuzzView</string>
+					<string key="superclassName">UIView</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="commentView">UIView</string>
+						<string key="delegate">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="commentView">
+							<string key="name">commentView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="delegate">
+							<string key="name">delegate</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/BuzzView.h</string>
+					</object>
+				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">InfiniteScrollView</string>
 					<string key="superclassName">UIScrollView</string>
@@ -769,12 +791,12 @@
 					<string key="superclassName">UIView</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bottomView">UIView</string>
-						<string key="buzzBackgroundImage">UIImageView</string>
-						<string key="buzzView">UIView</string>
+						<string key="buzzView">BuzzView</string>
 						<string key="channelThumbnail">NMCachedImageView</string>
 						<string key="channelTitleLabel">UILabel</string>
 						<string key="delegate">id</string>
 						<string key="descriptionLabel">UILabel</string>
+						<string key="descriptionLabelContainer">UIView</string>
 						<string key="infoButtonScrollView">InfiniteScrollView</string>
 						<string key="infoView">UIView</string>
 						<string key="moreVideosButton">UIButton</string>
@@ -786,13 +808,9 @@
 							<string key="name">bottomView</string>
 							<string key="candidateClassName">UIView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="buzzBackgroundImage">
-							<string key="name">buzzBackgroundImage</string>
-							<string key="candidateClassName">UIImageView</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="buzzView">
 							<string key="name">buzzView</string>
-							<string key="candidateClassName">UIView</string>
+							<string key="candidateClassName">BuzzView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="channelThumbnail">
 							<string key="name">channelThumbnail</string>
@@ -809,6 +827,10 @@
 						<object class="IBToOneOutletInfo" key="descriptionLabel">
 							<string key="name">descriptionLabel</string>
 							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="descriptionLabelContainer">
+							<string key="name">descriptionLabelContainer</string>
+							<string key="candidateClassName">UIView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="infoButtonScrollView">
 							<string key="name">infoButtonScrollView</string>

@@ -9,6 +9,9 @@
 #import "NMSeekBar.h"
 #import "NMSeekBarLayoutLayer.h"
 
+#define kNubLayerXOffset (NM_RUNNING_ON_IPAD ? 0.5f : 2.5f)
+#define kNubLayerYOffset (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f)
+
 @implementation NMSeekBar
 @synthesize nubLayer, nubPosition;
 @synthesize currentTime, bufferTime, duration;
@@ -117,7 +120,7 @@
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.progressLayer.bounds = theRect;
-	nubLayer.position = CGPointMake(theRect.size.width + 0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
+	nubLayer.position = CGPointMake(theRect.size.width + kNubLayerXOffset, kNubLayerYOffset);
 	[CATransaction commit];
 }
 
@@ -152,7 +155,7 @@
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.progressLayer.bounds = theRect;
 	theLayer.bufferLayer.bounds = theRect;
-	nubLayer.position = CGPointMake(0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
+	nubLayer.position = CGPointMake(kNubLayerXOffset, kNubLayerYOffset);
 	[CATransaction commit];
 }
 
@@ -189,7 +192,7 @@
 	
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-	nubLayer.position = CGPointMake(thePoint.x + 0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
+	nubLayer.position = CGPointMake(thePoint.x + kNubLayerXOffset, kNubLayerYOffset);
 	[CATransaction commit];
 	currentTime = (NSInteger)(thePoint.x / widthPerSec);
 	[self sendActionsForControlEvents:UIControlEventValueChanged];

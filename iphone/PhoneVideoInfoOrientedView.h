@@ -26,6 +26,7 @@
 @property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
+@property (nonatomic, retain) IBOutlet UIView *descriptionLabelContainer;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
 @property (nonatomic, retain) IBOutlet UIButton *moreVideosButton;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
