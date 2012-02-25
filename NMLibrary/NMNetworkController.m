@@ -504,7 +504,10 @@ NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 		}
 		case NMCommandParseTwitterFeed:
 		case NMCommandGetTwitterProfile:
-		case NMCommandPostTwitterComment:
+// not rate controlled
+//		case NMCommandPostTweet:
+//		case NMCommandRetweet:
+//		case NMCommandReplyTweet:
 		{
 			NSNumber * remainLmt = [httpResponse.allHeaderFields objectForKey:@"X-RateLimit-Remaining"];
 			NSNumber * resetTm = [httpResponse.allHeaderFields objectForKey:@"X-RateLimit-Reset"];

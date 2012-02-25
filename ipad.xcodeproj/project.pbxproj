@@ -456,6 +456,8 @@
 		A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9452BC71415E75E00056361 /* NMFileExistsCache.m */; };
 		A9D04874144FB39600EFD21F /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D04873144FB39600EFD21F /* user_placeholder_image.png */; };
 		A9D19B2B140E274E008CF101 /* NMChannelDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B2A140E274E008CF101 /* NMChannelDetail.m */; };
+		A9D22B5714F854A8003742CE /* NMPostTweetTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D22B5514F854A7003742CE /* NMPostTweetTask.h */; };
+		A9D22B5814F854A8003742CE /* NMPostTweetTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D22B5614F854A7003742CE /* NMPostTweetTask.m */; };
 		A9D5CF8B14D40D2E001AFC95 /* NMObjectCache.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */; };
 		A9D5CF8C14D40D2E001AFC95 /* NMObjectCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */; };
 		A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */; };
@@ -1064,6 +1066,8 @@
 		A9D19B2A140E274E008CF101 /* NMChannelDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelDetail.m; sourceTree = "<group>"; };
 		A9D19B30140E2916008CF101 /* NMGetChannelDetailTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelDetailTask.h; sourceTree = "<group>"; };
 		A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelDetailTask.m; sourceTree = "<group>"; };
+		A9D22B5514F854A7003742CE /* NMPostTweetTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPostTweetTask.h; sourceTree = "<group>"; };
+		A9D22B5614F854A7003742CE /* NMPostTweetTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPostTweetTask.m; sourceTree = "<group>"; };
 		A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMObjectCache.h; sourceTree = "<group>"; };
 		A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMObjectCache.m; sourceTree = "<group>"; };
 		A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -1937,6 +1941,8 @@
 				A99CCAD414F456A20050D93B /* NMOpenGraphWatchTask.m */,
 				A99CCAD814F456B30050D93B /* NMOpenGraphSubscribeTask.h */,
 				A99CCAD914F456B30050D93B /* NMOpenGraphSubscribeTask.m */,
+				A9D22B5514F854A7003742CE /* NMPostTweetTask.h */,
+				A9D22B5614F854A7003742CE /* NMPostTweetTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -2086,6 +2092,7 @@
 				A966499E14EC499D00F346D2 /* NMFacebookLikeTask.h in Headers */,
 				A99CCAD514F456A20050D93B /* NMOpenGraphWatchTask.h in Headers */,
 				A99CCADA14F456B30050D93B /* NMOpenGraphSubscribeTask.h in Headers */,
+				A9D22B5714F854A8003742CE /* NMPostTweetTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2633,6 +2640,7 @@
 				A966499F14EC499D00F346D2 /* NMFacebookLikeTask.m in Sources */,
 				A99CCAD614F456A20050D93B /* NMOpenGraphWatchTask.m in Sources */,
 				A99CCADB14F456B30050D93B /* NMOpenGraphSubscribeTask.m in Sources */,
+				A9D22B5814F854A8003742CE /* NMPostTweetTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2777,7 +2785,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_FACEBOOK_IMPORT,
 					DEBUG,
-					DEBUG_SKIP_ONBOARD_PROCESS,
+					DEBUG_TWITTER_IMPORT,
 					DEBUG_PANEL_ENABLED,
 					DEBUG_USE_STAGING_SERVER,
 				);
@@ -2839,10 +2847,10 @@
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_FACEBOOK_IMPORT,
-					DEBUG_SKIP_ONBOARD_PROCESS,
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_USE_STAGING_SERVER,
 					DEBUG_CONNECTION_CONTROLLER,
+					DEBUG_TWITTER_IMPORT,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
