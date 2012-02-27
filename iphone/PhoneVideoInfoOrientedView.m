@@ -311,13 +311,15 @@
 - (void)layoutSubviews
 {
     // Do we need to loop any of the subviews to the top / bottom?
-    for (UIView *view in self.subviews) {
-        CGFloat distance = view.center.y - (self.contentOffset.y + self.frame.size.height / 2);
-        CGFloat newY = view.center.y + (distance > 0 ? -1.0f : 1.0f) * [self.subviews count] * self.frame.size.height;
-        CGFloat newDistance = newY - (self.contentOffset.y + self.frame.size.height / 2);
-        
-        if (ABS(newDistance) < ABS(distance)) {
-            view.center = CGPointMake(view.center.x, newY);
+    if (self.scrollEnabled) {
+        for (UIView *view in self.subviews) {
+            CGFloat distance = view.center.y - (self.contentOffset.y + self.frame.size.height / 2);
+            CGFloat newY = view.center.y + (distance > 0 ? -1.0f : 1.0f) * [self.subviews count] * self.frame.size.height;
+            CGFloat newDistance = newY - (self.contentOffset.y + self.frame.size.height / 2);
+            
+            if (ABS(newDistance) < ABS(distance)) {
+                view.center = CGPointMake(view.center.x, newY);
+            }
         }
     }
 }

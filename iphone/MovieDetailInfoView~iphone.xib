@@ -1068,7 +1068,7 @@
 										<bool key="IBUIShowsVerticalScrollIndicator">NO</bool>
 									</object>
 								</array>
-								<string key="NSFrame">{{403, 1}, {60, 134}}</string>
+								<string key="NSFrame">{{403, 1}, {60, 105}}</string>
 								<reference key="NSSuperview" ref="263006526"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="742024431"/>
