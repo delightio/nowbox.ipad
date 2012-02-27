@@ -19,7 +19,8 @@
 @class NMVideoDetail;
 @class NMAuthor;
 @class NMPersonProfile;
-@class NMFacebookInfo;
+@class NMSocialInfo;
+@class NMSocialComment;
 @class NMImageDownloadTask;
 @class NMGetChannelDetailTask;
 @class Reachability;
@@ -55,7 +56,6 @@
 @property (nonatomic, retain) NSMutableArray * unpopulatedChannels;
 @property (nonatomic) BOOL syncInProgress;
 @property (nonatomic) BOOL appFirstLaunch;
-@property (nonatomic, readonly) ACAccountStore * accountStore;
 
 + (NMTaskQueueController *)sharedTaskQueueController;
 
@@ -139,8 +139,10 @@
 - (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj directURLString:(NSString *)urlStr;
 - (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
-- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info;
-- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info;
+- (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info;
+- (void)issuePostLike:(BOOL)aLike forPost:(NMSocialInfo *)info;
+- (void)issueRetweet:(NMSocialComment *)srcCmt;
+- (void)issueReplyTweet:(NMSocialComment *)srcCmt message:(NSString *)msg;
 - (void)prepareSignOutFacebook;
 - (void)endSignOutFacebook;
 

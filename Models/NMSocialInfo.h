@@ -1,5 +1,5 @@
 //
-//  NMFacebookInfo.h
+//  NMSocialInfo.h
 //  ipad
 //
 //  Created by Bill So on 2/14/12.
@@ -9,24 +9,25 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMFacebookComment, NMPersonProfile, NMConcreteVideo;
+@class NMSocialComment, NMPersonProfile, NMConcreteVideo;
 
-@interface NMFacebookInfo : NSManagedObject
+@interface NMSocialInfo : NSManagedObject
 
 @property (nonatomic, retain) NSString * comment_post_url;
 @property (nonatomic, retain) NSNumber * comments_count;
 @property (nonatomic, retain) NSString * like_post_url;
 @property (nonatomic, retain) NSNumber * likes_count;
+@property (nonatomic, retain) NSNumber * nm_type;
 @property (nonatomic, retain) NSString * object_id;
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *peopleLike;
 @property (nonatomic, retain) NMConcreteVideo *video;
 @end
 
-@interface NMFacebookInfo (CoreDataGeneratedAccessors)
+@interface NMSocialInfo (CoreDataGeneratedAccessors)
 
-- (void)addCommentsObject:(NMFacebookComment *)value;
-- (void)removeCommentsObject:(NMFacebookComment *)value;
+- (void)addCommentsObject:(NMSocialComment *)value;
+- (void)removeCommentsObject:(NMSocialComment *)value;
 - (void)addComments:(NSSet *)values;
 - (void)removeComments:(NSSet *)values;
 

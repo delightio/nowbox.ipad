@@ -782,9 +782,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				{
 					NMAccountManager * acMgr = [NMAccountManager sharedAccountManager];
 					// reveal the social login view
-					SocialLoginViewController * socialCtrl;
 					if ( indexPath.row == 0 ) {
-						if ( NM_USER_TWITTER_CHANNEL_ID ) {
+						if ( [acMgr.twitterAccountStatus integerValue] ) {
 							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
 							channelDetailViewController.enableUnsubscribe = YES;
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
@@ -792,14 +791,11 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
 							// login twitter
-							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 							if ( NM_RUNNING_IOS_5 ) {
 								[self checkAndPushTwitterAccountView];
 							} else {
-								socialCtrl.loginType = NMLoginTwitterType;
-								[self.navigationController pushViewController:socialCtrl animated:YES];
+								// tell user that they are using iOS 4 and they should upgrade to use new Twitter integration in Nowbox 2. (:
 							}
-							[socialCtrl release];
 							
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
@@ -813,15 +809,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
-//							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-//							socialCtrl.loginType = NMLoginFacebookType;
-//							[self.navigationController pushViewController:socialCtrl animated:YES];
-//							[socialCtrl release];
-//							
-//							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
-							if (![acMgr.facebook isSessionValid]) {
-								[acMgr authorizeFacebook];
-							}
+							[acMgr authorizeFacebook];
 							return;
 						}
 					}

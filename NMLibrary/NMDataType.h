@@ -41,13 +41,13 @@ typedef enum {
 	NMCommandGetYouTubeDirectURL,
 	NMCommandImportYouTubeVideo,
 	NMCommandGetVimeoDirectURL,
+	NMCommandCheckUpdate,
+	NMCommandPostSharing,
 	NMCommandGetCategoryThumbnail,
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
 	NMCommandGetVideoThumbnail,
 	NMCommandGetPreviewThumbnail,
-	NMCommandCheckUpdate,
-	NMCommandPostSharing,
 	NMCommandFacebookCommandLowerBound,
 	NMCommandParseFacebookFeed,
 	NMCommandGetFacebookProfile,
@@ -60,6 +60,9 @@ typedef enum {
 	NMCommandFacebookCommandUpperBound,
 	NMCommandParseTwitterFeed,
 	NMCommandGetTwitterProfile,
+	NMCommandPostTweet,
+	NMCommandReplyTweet,
+	NMCommandRetweet,
 } NMCommand;
 
 typedef enum {
@@ -273,6 +276,9 @@ extern NSString * const NMDidFailParseTwitterFeedNotification;
 extern NSString * const NMWillGetTwitterProfileNotification;
 extern NSString * const NMDidGetTwitterProfileNotification;
 extern NSString * const NMDidFailGetTwitterProfileNotification;
+// twitter rate control
+extern NSString * const NMTwitterAPIRateControlNotification;
+extern NSString * const NMTwitterAPIRemainLimitKey;
 
 // Entity names
 extern NSString * const NMCategoryEntityName;
@@ -283,7 +289,7 @@ extern NSString * const NMConcreteVideoEntityName;
 extern NSString * const NMAuthorEntityName;
 extern NSString * const NMSubscriptionEntityName;
 extern NSString * const NMPersonProfileEntityName;
-extern NSString * const NMFacebookCommentEntityName;
+extern NSString * const NMSocialCommentEntityName;
 
 // Playback Notification
 extern NSString * const NMWillBeginPlayingVideoNotification;

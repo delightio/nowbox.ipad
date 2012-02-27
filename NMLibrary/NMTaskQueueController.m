@@ -61,7 +61,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize channelPollingTimer, userSyncTimer;
 @synthesize unpopulatedChannels;
 @synthesize syncInProgress, appFirstLaunch;
-@synthesize accountStore = _accountStore;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
 	if ( sharedTaskQueueController_ == nil ) {
@@ -135,7 +134,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
-	[_accountStore release];
 	[super dealloc];
 }
 
@@ -147,13 +145,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)debugPrintCommandPoolStatus {
 	[networkController performSelector:@selector(debugPrintCommandPoolStatus) onThread:networkController.controlThread withObject:nil waitUntilDone:NO];
-}
-
-- (ACAccountStore *)accountStore {
-	if ( _accountStore == nil ) {
-		_accountStore = [[ACAccountStore alloc] init];
-	}
-	return _accountStore;
 }
 
 #pragma mark Session management
@@ -641,7 +632,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	switch ([chnObj.type integerValue]) {
 		case NMChannelUserTwitterType:
 		{
-			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:[self.accountStore accountWithIdentifier:chnObj.subscription.personProfile.nm_account_identifier]];
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:[[NMAccountManager sharedAccountManager] currentTwitterAccount]];
 			[networkController addNewConnectionForTask:task];
 			[task release];
 			break;
@@ -689,20 +680,57 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueProcessFeedForChannel:chn];
 }
 
-- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info {
+- (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info {
 	// save the comment
-	NMFacebookComment * cmtObj = [dataController insertNewFacebookComment];
-	cmtObj.facebookInfo = info;
+	NMSocialComment * cmtObj = [dataController insertNewSocialComment];
+	cmtObj.socialInfo = info;
 	cmtObj.message = msg;
 	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
-	// send it to facebook
-	NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:msg];
+	NMChannelType chnType = [info.nm_type integerValue];
+	switch (chnType) {
+		case NMChannelUserFacebookType:
+		{
+			// send it to facebook
+			NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:msg];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		case NMChannelUserTwitterType:
+		{
+			// Send a new tweet to Twitter. Do NOT use this for replying or retweeting
+			NMPostTweetTask * task = [[NMPostTweetTask alloc] initPostComment:cmtObj];
+			task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+- (void)issuePostLike:(BOOL)aLike forPost:(NMSocialInfo *)info {
+	NMFacebookLikeTask * task = [[NMFacebookLikeTask alloc] initWithInfo:info like:aLike];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
 
-- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info {
-	NMFacebookLikeTask * task = [[NMFacebookLikeTask alloc] initWithInfo:info like:aLike];
+- (void)issueRetweet:(NMSocialComment *)srcCmt {
+	NMPostTweetTask * task = [[NMPostTweetTask alloc] initRetweetComment:srcCmt];
+	task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueReplyTweet:(NMSocialComment *)srcCmt message:(NSString *)msg {
+	// save the comment
+	NMSocialComment * cmtObj = [dataController insertNewSocialComment];
+	cmtObj.socialInfo = srcCmt.socialInfo;
+	cmtObj.message = msg;
+	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
+	NMPostTweetTask * task = [[NMPostTweetTask alloc] initReplyWithComment:cmtObj];
+	task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

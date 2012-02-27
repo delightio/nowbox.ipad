@@ -15,8 +15,8 @@
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "NMSubscription.h"
-#import "NMFacebookInfo.h"
-#import "NMFacebookComment.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
 #import "FBConnect.h"
 #import "NMObjectCache.h"
 
@@ -33,6 +33,7 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize user_id = _user_id;
 @synthesize since_id = _since_id;
 @synthesize feedDirectURLString = _feedDirectURLString;
+@synthesize facebookTypeNumber = _facebookTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chn {
 	self = [super init];
@@ -67,6 +68,7 @@ static NSArray * youTubeRegexArray = nil;
 	[_channel release];
 	[_nextPageURLString release];
 	[_feedDirectURLString release];
+	[_facebookTypeNumber release];
 	[super dealloc];
 }
 
@@ -75,6 +77,13 @@ static NSArray * youTubeRegexArray = nil;
 	// use custom command index method
 	idx = ABS((NSInteger)[_user_id hash]);
 	return (((NSIntegerMax >> 6 ) & idx) << 6) | command;
+}
+
+- (NSNumber *)facebookTypeNumber {
+	if ( _facebookTypeNumber == nil ) {
+		_facebookTypeNumber = [[NSNumber numberWithInteger:NMChannelUserFacebookType] retain];
+	}
+	return _facebookTypeNumber;
 }
 
 - (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
@@ -178,7 +187,7 @@ static NSArray * youTubeRegexArray = nil;
 	// enumerate the feed
 	NSInteger idx = -1;
 	NSInteger personIDOffset = 0;
-	NMFacebookInfo * fbInfo;
+	NMSocialInfo * fbInfo;
 	NMConcreteVideo * conVdo = nil;
 	NMVideo * vdo = nil;
 	NSString * extID;
@@ -197,18 +206,19 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				vdo.video = conVdo;
 				// check if the set contains the info from this person already
-				NSSet * fbMtnSet = conVdo.facebookMentions;
+				NSSet * fbMtnSet = conVdo.socialMentions;
 				BOOL postFound = NO;
 				for (fbInfo in fbMtnSet) {
-					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+					if ( [fbInfo.nm_type integerValue] == NMChannelUserFacebookType && [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
 						postFound = YES;
 						break;
 					}
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -230,8 +240,9 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				// create facebook info
-				fbInfo = [ctrl insertNewFacebookInfo];
+				fbInfo = [ctrl insertNewSocialInfo];
 				fbInfo.video = conVdo;
+				fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 				// set the link
 				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -241,7 +252,7 @@ static NSArray * youTubeRegexArray = nil;
 			case NMVideoExistsAndInChannel:
 			{
 				conVdo = vdo.video;
-				NSSet * fbMtnSet = conVdo.facebookMentions;
+				NSSet * fbMtnSet = conVdo.socialMentions;
 				BOOL postFound = NO;
 				for (fbInfo in fbMtnSet) {
 					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
@@ -251,8 +262,9 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -264,7 +276,6 @@ static NSArray * youTubeRegexArray = nil;
 				break;
 		}
 		if ( vdo ) {
-			NSLog(@"working on video: %@, post: %@", conVdo.title, fbInfo.object_id);
 			// check person profile
 			BOOL isNew = NO;
 			NSDictionary * fromDict = [vdoFeedDict objectForKey:@"from"];
@@ -274,7 +285,7 @@ static NSArray * youTubeRegexArray = nil;
 				manID = [fromDict objectForKey:@"id"];
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
-					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
@@ -326,7 +337,7 @@ static NSArray * youTubeRegexArray = nil;
 					manID = [fromDict objectForKey:@"id"];
 					theProfile = [objectCache objectForKey:manID];
 					if ( theProfile == nil ) {
-						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
@@ -354,9 +365,9 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				NSArray * cmtAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
-				NMFacebookComment * cmtObj;
+				NMSocialComment * cmtObj;
 				for (NSDictionary * cmtDict in cmtAy) {
-					cmtObj = [ctrl insertNewFacebookComment];
+					cmtObj = [ctrl insertNewSocialComment];
 					cmtObj.message = [cmtDict objectForKey:@"message"];
 					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
 					cmtObj.object_id = [cmtDict objectForKey:@"id"];
@@ -365,7 +376,7 @@ static NSArray * youTubeRegexArray = nil;
 					manID = [fromDict objectForKey:@"id"];
 					theProfile = [objectCache objectForKey:manID];
 					if ( theProfile == nil ) {
-						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {

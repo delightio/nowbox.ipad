@@ -321,7 +321,7 @@
 		A91A50FF14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */; };
 		A91A510214D1A52A00F41FE4 /* NMFacebookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A91A510014D1A52900F41FE4 /* NMFacebookTask.h */; };
 		A91A510314D1A52A00F41FE4 /* NMFacebookTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */; };
-		A922423214E4942A00A8FE4F /* NMFacebookComment.m in Sources */ = {isa = PBXBuildFile; fileRef = A922423114E4942A00A8FE4F /* NMFacebookComment.m */; };
+		A922423214E4942A00A8FE4F /* NMSocialComment.m in Sources */ = {isa = PBXBuildFile; fileRef = A922423114E4942A00A8FE4F /* NMSocialComment.m */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A925014B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250149134385BF001759F5 /* InfoPlist.strings */; };
@@ -330,7 +330,7 @@
 		A9250154134385BF001759F5 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9250152134385BF001759F5 /* MainWindow.xib */; };
 		A925F40E1439EB990059BB91 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */; };
 		A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */ = {isa = PBXBuildFile; fileRef = A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */; };
-		A927BCA614EB4B5E00298615 /* NMFacebookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A927BCA514EB4B5E00298615 /* NMFacebookInfo.m */; };
+		A927BCA614EB4B5E00298615 /* NMSocialInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A927BCA514EB4B5E00298615 /* NMSocialInfo.m */; };
 		A92B4DC913B5DD4D0008D8D0 /* ChannelContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */; };
 		A92BDA2513B431C500B846DF /* youtube_logo_36.png in Resources */ = {isa = PBXBuildFile; fileRef = A92BDA2413B431C500B846DF /* youtube_logo_36.png */; };
 		A92CE47213E56B4C00007B04 /* top-bar-author-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A92CE47013E56B4C00007B04 /* top-bar-author-background.png */; };
@@ -446,6 +446,7 @@
 		A9B9FBF81473D97200953E40 /* NMUserSynchronizeTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B9FBF61473D97200953E40 /* NMUserSynchronizeTask.m */; };
 		A9B9FBFA1473DB1400953E40 /* NMTokenTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9E9E0451465B41200EA8F81 /* NMTokenTask.m */; };
 		A9C473071473961400BE45CA /* YoutubeError.html in Resources */ = {isa = PBXBuildFile; fileRef = A9C473061473961400BE45CA /* YoutubeError.html */; };
+		A9C558C214F89E920024EEB3 /* FeatureDebugTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C558C114F89E920024EEB3 /* FeatureDebugTwitter.m */; };
 		A9CA3078140A8BF7002F567F /* AppleTVIndicationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */; };
 		A9D027B1142217590064A89D /* NMGetCategoriesTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A900603C13EFE78100B05645 /* NMGetCategoriesTask.m */; };
 		A9D027B2142217590064A89D /* NMGetChannelsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A970504C13438F860022BF2C /* NMGetChannelsTask.m */; };
@@ -461,6 +462,8 @@
 		A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9452BC71415E75E00056361 /* NMFileExistsCache.m */; };
 		A9D04874144FB39600EFD21F /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D04873144FB39600EFD21F /* user_placeholder_image.png */; };
 		A9D19B2B140E274E008CF101 /* NMChannelDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B2A140E274E008CF101 /* NMChannelDetail.m */; };
+		A9D22B5714F854A8003742CE /* NMPostTweetTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D22B5514F854A7003742CE /* NMPostTweetTask.h */; };
+		A9D22B5814F854A8003742CE /* NMPostTweetTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D22B5614F854A7003742CE /* NMPostTweetTask.m */; };
 		A9D5CF8B14D40D2E001AFC95 /* NMObjectCache.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */; };
 		A9D5CF8C14D40D2E001AFC95 /* NMObjectCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */; };
 		A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */; };
@@ -882,8 +885,8 @@
 		A91A50FD14D1A46B00F41FE4 /* NMGetFacebookProfileTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetFacebookProfileTask.m; sourceTree = "<group>"; };
 		A91A510014D1A52900F41FE4 /* NMFacebookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookTask.h; sourceTree = "<group>"; };
 		A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookTask.m; sourceTree = "<group>"; };
-		A922423014E4942A00A8FE4F /* NMFacebookComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookComment.h; sourceTree = "<group>"; };
-		A922423114E4942A00A8FE4F /* NMFacebookComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookComment.m; sourceTree = "<group>"; };
+		A922423014E4942A00A8FE4F /* NMSocialComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSocialComment.h; sourceTree = "<group>"; };
+		A922423114E4942A00A8FE4F /* NMSocialComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSocialComment.m; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -898,8 +901,8 @@
 		A925F40D1439EB990059BB91 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugFacebookCommentsAndLikes.h; sourceTree = "<group>"; };
 		A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugFacebookCommentsAndLikes.m; sourceTree = "<group>"; };
-		A927BCA414EB4B5E00298615 /* NMFacebookInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMFacebookInfo.h; sourceTree = "<group>"; };
-		A927BCA514EB4B5E00298615 /* NMFacebookInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookInfo.m; sourceTree = "<group>"; };
+		A927BCA414EB4B5E00298615 /* NMSocialInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSocialInfo.h; sourceTree = "<group>"; };
+		A927BCA514EB4B5E00298615 /* NMSocialInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSocialInfo.m; sourceTree = "<group>"; };
 		A92B4DC713B5DD4D0008D8D0 /* ChannelContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelContainerView.h; sourceTree = "<group>"; };
 		A92B4DC813B5DD4D0008D8D0 /* ChannelContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelContainerView.m; sourceTree = "<group>"; };
 		A92BDA2413B431C500B846DF /* youtube_logo_36.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = youtube_logo_36.png; sourceTree = "<group>"; };
@@ -1070,12 +1073,16 @@
 		A9B9FBF51473D97200953E40 /* NMUserSynchronizeTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMUserSynchronizeTask.h; sourceTree = "<group>"; };
 		A9B9FBF61473D97200953E40 /* NMUserSynchronizeTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMUserSynchronizeTask.m; sourceTree = "<group>"; };
 		A9C473061473961400BE45CA /* YoutubeError.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = YoutubeError.html; sourceTree = "<group>"; };
+		A9C558C014F89E920024EEB3 /* FeatureDebugTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugTwitter.h; sourceTree = "<group>"; };
+		A9C558C114F89E920024EEB3 /* FeatureDebugTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugTwitter.m; sourceTree = "<group>"; };
 		A9CA3077140A8BF7002F567F /* AppleTVIndicationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppleTVIndicationView.xib; sourceTree = "<group>"; };
 		A9D04873144FB39600EFD21F /* user_placeholder_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder_image.png; sourceTree = "<group>"; };
 		A9D19B29140E274E008CF101 /* NMChannelDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannelDetail.h; sourceTree = "<group>"; };
 		A9D19B2A140E274E008CF101 /* NMChannelDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelDetail.m; sourceTree = "<group>"; };
 		A9D19B30140E2916008CF101 /* NMGetChannelDetailTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelDetailTask.h; sourceTree = "<group>"; };
 		A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelDetailTask.m; sourceTree = "<group>"; };
+		A9D22B5514F854A7003742CE /* NMPostTweetTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPostTweetTask.h; sourceTree = "<group>"; };
+		A9D22B5614F854A7003742CE /* NMPostTweetTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPostTweetTask.m; sourceTree = "<group>"; };
 		A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMObjectCache.h; sourceTree = "<group>"; };
 		A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMObjectCache.m; sourceTree = "<group>"; };
 		A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -1695,6 +1702,8 @@
 				A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */,
 				A926195214EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.h */,
 				A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */,
+				A9C558C014F89E920024EEB3 /* FeatureDebugTwitter.h */,
+				A9C558C114F89E920024EEB3 /* FeatureDebugTwitter.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1849,8 +1858,8 @@
 				A96F926214EB2EE600B51509 /* NMPersonProfile.m */,
 				A96F926314EB2EE600B51509 /* NMSubscription.h */,
 				A96F926414EB2EE600B51509 /* NMSubscription.m */,
-				A922423014E4942A00A8FE4F /* NMFacebookComment.h */,
-				A922423114E4942A00A8FE4F /* NMFacebookComment.m */,
+				A922423014E4942A00A8FE4F /* NMSocialComment.h */,
+				A922423114E4942A00A8FE4F /* NMSocialComment.m */,
 				A942908414C5D38500107BE8 /* NMConcreteVideo.h */,
 				A942908514C5D38500107BE8 /* NMConcreteVideo.m */,
 				A90C89C214C9E728006DC909 /* NMAuthor.h */,
@@ -1867,8 +1876,8 @@
 				A992827814C6F1A900406A77 /* NMVideo.m */,
 				A9B40E5514E5E9400004DF03 /* NMChannel.h */,
 				A9B40E5614E5E9400004DF03 /* NMChannel.m */,
-				A927BCA414EB4B5E00298615 /* NMFacebookInfo.h */,
-				A927BCA514EB4B5E00298615 /* NMFacebookInfo.m */,
+				A927BCA414EB4B5E00298615 /* NMSocialInfo.h */,
+				A927BCA514EB4B5E00298615 /* NMSocialInfo.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1964,6 +1973,8 @@
 				A99CCAD414F456A20050D93B /* NMOpenGraphWatchTask.m */,
 				A99CCAD814F456B30050D93B /* NMOpenGraphSubscribeTask.h */,
 				A99CCAD914F456B30050D93B /* NMOpenGraphSubscribeTask.m */,
+				A9D22B5514F854A7003742CE /* NMPostTweetTask.h */,
+				A9D22B5614F854A7003742CE /* NMPostTweetTask.m */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -2113,6 +2124,7 @@
 				A966499E14EC499D00F346D2 /* NMFacebookLikeTask.h in Headers */,
 				A99CCAD514F456A20050D93B /* NMOpenGraphWatchTask.h in Headers */,
 				A99CCADA14F456B30050D93B /* NMOpenGraphSubscribeTask.h in Headers */,
+				A9D22B5714F854A8003742CE /* NMPostTweetTask.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2596,20 +2608,21 @@
 				A992827914C6F1A900406A77 /* NMVideo.m in Sources */,
 				A90C89C414C9E728006DC909 /* NMAuthor.m in Sources */,
 				A94D65E214CDF54D0033F661 /* TwitterAccountPickerViewController.m in Sources */,
-				A922423214E4942A00A8FE4F /* NMFacebookComment.m in Sources */,
+				A922423214E4942A00A8FE4F /* NMSocialComment.m in Sources */,
 				A952B47C14E56C79006D4EB7 /* FeatureDebugSocialChannelViewController.m in Sources */,
 				A9B40E5714E5E9400004DF03 /* NMChannel.m in Sources */,
 				A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */,
 				A926195414EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m in Sources */,
 				A96F926514EB2EE600B51509 /* NMPersonProfile.m in Sources */,
 				A96F926614EB2EE600B51509 /* NMSubscription.m in Sources */,
-				A927BCA614EB4B5E00298615 /* NMFacebookInfo.m in Sources */,
+				A927BCA614EB4B5E00298615 /* NMSocialInfo.m in Sources */,
 				83C25F7814F33D100098757F /* TouchDelayingScrollView.m in Sources */,
 				831C592F14F4968B00EA61C6 /* PhoneVideoInfoOrientedView.m in Sources */,
 				830A599114F5DD1500086A70 /* PhoneControlsView.m in Sources */,
 				8380FA6014F6E305000CE0F7 /* FacebookGridDataSource.m in Sources */,
 				8380FA6414F71F7E000CE0F7 /* BuzzView.m in Sources */,
 				83DE11A714F875E900012806 /* UIFont+BackupFont.m in Sources */,
+				A9C558C214F89E920024EEB3 /* FeatureDebugTwitter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2665,6 +2678,7 @@
 				A966499F14EC499D00F346D2 /* NMFacebookLikeTask.m in Sources */,
 				A99CCAD614F456A20050D93B /* NMOpenGraphWatchTask.m in Sources */,
 				A99CCADB14F456B30050D93B /* NMOpenGraphSubscribeTask.m in Sources */,
+				A9D22B5814F854A8003742CE /* NMPostTweetTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2809,7 +2823,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_FACEBOOK_IMPORT,
 					DEBUG,
-					DEBUG_SKIP_ONBOARD_PROCESS,
+					DEBUG_TWITTER_IMPORT,
 					DEBUG_PANEL_ENABLED,
 					DEBUG_USE_STAGING_SERVER,
 				);
@@ -2871,9 +2885,10 @@
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_FACEBOOK_IMPORT,
-					DEBUG_SKIP_ONBOARD_PROCESS,
 					DEBUG_PLAYER_NAVIGATION,
 					DEBUG_USE_STAGING_SERVER,
+					DEBUG_CONNECTION_CONTROLLER,
+					DEBUG_TWITTER_IMPORT,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

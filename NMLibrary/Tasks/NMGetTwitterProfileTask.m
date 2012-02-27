@@ -9,6 +9,7 @@
 #import "NMGetTwitterProfileTask.h"
 #import "NMDataController.h"
 #import "NMPersonProfile.h"
+#import "NMSubscription.h"
 
 NSString * const NMWillGetTwitterProfileNotification = @"NMWillGetTwitterProfileNotification";
 NSString * const NMDidGetTwitterProfileNotification = @"NMDidGetTwitterProfileNotification";
@@ -88,6 +89,10 @@ NSString * const NMDidFailGetTwitterProfileNotification = @"NMDidFailGetTwitterP
 	if ( profileOwnsByMe && _profile.subscription == nil ) {
 		[ctrl subscribeUserChannelWithPersonProfile:_profile];
 		_profile.nm_id = [NSNumber numberWithInteger:[ctrl maxPersonProfileID] + 1];
+		_profile.subscription.nm_subscription_tier = (NSNumber *)kCFBooleanFalse;
+		// save the channel ID
+		[[NSUserDefaults standardUserDefaults] setObject:_profile.nm_id forKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+		NM_USER_TWITTER_CHANNEL_ID = [_profile.nm_id integerValue];
 		return YES;
 	}
 	return NO;
@@ -107,6 +112,10 @@ NSString * const NMDidFailGetTwitterProfileNotification = @"NMDidFailGetTwitterP
 
 - (NSDictionary *)userInfo {
 	return [NSDictionary dictionaryWithObjectsAndKeys:_profile, @"target_object", nil];
+}
+
+- (NSDictionary *)failUserInfo {
+	return [NSDictionary dictionaryWithObject:_profile forKey:@"target_object"];
 }
 
 @end

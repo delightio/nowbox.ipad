@@ -1,21 +1,21 @@
 //
-//  NMFacebookComment.m
+//  NMSocialComment.m
 //  ipad
 //
 //  Created by Bill So on 2/9/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "NMFacebookComment.h"
+#import "NMSocialComment.h"
 #import "NMPersonProfile.h"
 
 
-@implementation NMFacebookComment
+@implementation NMSocialComment
 
 @dynamic created_time;
 @dynamic message;
 @synthesize object_id;
-@dynamic facebookInfo;
+@dynamic socialInfo;
 @dynamic fromPerson;
 
 - (NSString *)relativeTimeString

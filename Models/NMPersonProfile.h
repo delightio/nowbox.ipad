@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMFacebookComment, NMFacebookInfo, NMSubscription;
+@class NMSocialComment, NMSocialInfo, NMSubscription;
 
 @interface NMPersonProfile : NSManagedObject
 
@@ -29,13 +29,13 @@
 
 @interface NMPersonProfile (CoreDataGeneratedAccessors)
 
-- (void)addCommentsObject:(NMFacebookComment *)value;
-- (void)removeCommentsObject:(NMFacebookComment *)value;
+- (void)addCommentsObject:(NMSocialComment *)value;
+- (void)removeCommentsObject:(NMSocialComment *)value;
 - (void)addComments:(NSSet *)values;
 - (void)removeComments:(NSSet *)values;
 
-- (void)addFacebookLikesObject:(NMFacebookInfo *)value;
-- (void)removeFacebookLikesObject:(NMFacebookInfo *)value;
+- (void)addFacebookLikesObject:(NMSocialInfo *)value;
+- (void)removeFacebookLikesObject:(NMSocialInfo *)value;
 - (void)addFacebookLikes:(NSSet *)values;
 - (void)removeFacebookLikes:(NSSet *)values;
 
