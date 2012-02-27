@@ -37,5 +37,6 @@
 - (IBAction)facebookSignOut:(id)sender;
 - (IBAction)facebookFeedParse:(id)sender;
 - (IBAction)facebookRefreshToken:(id)sender;
+- (IBAction)twitterFilter:(id)sender;
 
 @end

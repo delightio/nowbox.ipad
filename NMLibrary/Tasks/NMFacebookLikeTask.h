@@ -8,13 +8,13 @@
 
 #import "NMFacebookTask.h"
 
-@class NMFacebookInfo;
+@class NMSocialInfo;
 
 @interface NMFacebookLikeTask : NMFacebookTask
 
-@property (nonatomic, retain) NMFacebookInfo * postInfo;
+@property (nonatomic, retain) NMSocialInfo * postInfo;
 @property (nonatomic, retain) NSString * objectID;
 
-- (id)initWithInfo:(NMFacebookInfo *)info like:(BOOL)aLike;
+- (id)initWithInfo:(NMSocialInfo *)info like:(BOOL)aLike;
 
 @end

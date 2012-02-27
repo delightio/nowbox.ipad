@@ -8,8 +8,8 @@
 
 #import "FBConnect.h"
 #import "NMFacebookCommentTask.h"
-#import "NMFacebookInfo.h"
-#import "NMFacebookComment.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
 #import "NMNetworkController.h"
 
 NSString * const NMWillPostFacebookCommentNotification = @"NMWillPostFacebookCommentNotification";
@@ -25,7 +25,7 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 @synthesize objectID = _objectID;
 @synthesize postInfo = _postInfo;
 
-- (id)initWithInfo:(NMFacebookInfo *)info message:(NSString *)msg {
+- (id)initWithInfo:(NMSocialInfo *)info message:(NSString *)msg {
 	self = [super init];
 	command = NMCommandPostFacebookComment;
 	self.message = msg;
@@ -34,7 +34,7 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 	return self;
 }
 
-- (id)initDeleteComment:(NMFacebookComment *)cmtObj {
+- (id)initDeleteComment:(NMSocialComment *)cmtObj {
 	self = [super init];
 	command = NMCommandDeleteFacebookComment;
 	self.objectID = cmtObj.object_id;

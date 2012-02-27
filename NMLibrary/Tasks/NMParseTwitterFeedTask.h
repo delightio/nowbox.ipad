@@ -14,6 +14,7 @@
 
 @interface NMParseTwitterFeedTask : NMTask {
 	BOOL isAccountOwner;
+	NSInteger numberOfVideoAdded;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
@@ -21,8 +22,9 @@
 @property (nonatomic) NSInteger page;
 @property (nonatomic, retain) NSString * user_id;
 @property (nonatomic, retain) NSString * since_id;
-@property (nonatomic, retain) NSMutableArray * profileArray;
 @property (nonatomic, retain) NSString * newestTwitIDString;
+@property (nonatomic, retain) NSDateFormatter * feedDateFormatter;
+@property (nonatomic, retain) NSNumber * twitterTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj;
 - (id)initWithInfo:(NSDictionary *)aDict;

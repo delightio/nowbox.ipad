@@ -220,6 +220,14 @@
 	[[NMAccountManager sharedAccountManager].facebook extendAccessToken];
 }
 
+- (IBAction)twitterFilter:(id)sender {
+	FeatureDebugSocialChannelViewController * viewCtrl = [[FeatureDebugSocialChannelViewController alloc] initWithStyle:UITableViewStylePlain];
+	viewCtrl.channelType = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+	viewCtrl.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
+	[self.navigationController pushViewController:viewCtrl animated:YES];
+	[viewCtrl release];
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

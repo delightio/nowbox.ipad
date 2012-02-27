@@ -16,8 +16,8 @@
 #import "NMVideoDetail.h"
 #import "NMSubscription.h"
 #import "NMPersonProfile.h"
-#import "NMFacebookInfo.h"
-#import "NMFacebookComment.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
 #import "NMGetChannelVideoListTask.h"
 
 
@@ -31,8 +31,8 @@ NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
 NSString * const NMAuthorEntityName = @"NMAuthor";
 NSString * const NMSubscriptionEntityName = @"NMSubscription";
 NSString * const NMPersonProfileEntityName = @"NMPersonProfile";
-NSString * const NMFacebookInfoEntityName = @"NMFacebookInfo";
-NSString * const NMFacebookCommentEntityName = @"NMFacebookComment";
+NSString * const NMSocialInfoEntityName = @"NMSocialInfo";
+NSString * const NMSocialCommentEntityName = @"NMSocialComment";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
 
@@ -61,6 +61,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize usernameOrIDPredicateTemplate = _usernameOrIDPredicateTemplate;
 @synthesize pendingImportVideoPredicate = _pendingImportVideoPredicate;
 @synthesize pendingImportPredicate = _pendingImportPredicate;
+@synthesize socialObjectIDPredicateTemplate = _socialObjectIDPredicateTemplate;
+@synthesize personProfileExistsPredicateTemplate = _personProfileExistsPredicateTemplate;
 
 - (id)init {
 	self = [super init];
@@ -90,6 +92,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[_usernameOrIDPredicateTemplate release];
 	[_pendingImportVideoPredicate release];
 	[_pendingImportPredicate release];
+	[_socialObjectIDPredicateTemplate release];
 	[lastSessionVideoIDs release];
 	[categoryCacheDictionary release];
 	[channelCacheDictionary release];
@@ -226,6 +229,20 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		_pendingImportPredicate = [[NSPredicate predicateWithFormat:@"nm_error == %@", [NSNumber numberWithInteger:NMErrorPendingImport]] retain];
 	}
 	return _pendingImportPredicate;
+}
+
+- (NSPredicate *)socialObjectIDPredicateTemplate {
+	if ( _socialObjectIDPredicateTemplate == nil ) {
+		_socialObjectIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"object_id == $OBJECT_ID"] retain];
+	}
+	return _socialObjectIDPredicateTemplate;
+}
+
+- (NSPredicate *)personProfileExistsPredicateTemplate {
+	if ( _personProfileExistsPredicateTemplate == nil ) {
+		_personProfileExistsPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_user_id like $USER_ID AND nm_type == $PROFILE_TYPE"] retain];
+	}
+	return _personProfileExistsPredicateTemplate;
 }
 
 #pragma mark First launch
@@ -1180,12 +1197,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 #pragma mark Facebook
-- (NMFacebookInfo *)insertNewFacebookInfo {
-	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext];
+- (NMSocialInfo *)insertNewSocialInfo {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMSocialInfoEntityName inManagedObjectContext:managedObjectContext];
 }
 
-- (NMFacebookComment *)insertNewFacebookComment {
-	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookCommentEntityName inManagedObjectContext:managedObjectContext];
+- (NMSocialComment *)insertNewSocialComment {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMSocialCommentEntityName inManagedObjectContext:managedObjectContext];
 }
 
 - (void)deleteFacebookCacheForLogout {
@@ -1226,11 +1243,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// delete all facebook info (cascade to comment automatically)
 	pool = [[NSAutoreleasePool alloc] init];
 	request = [[NSFetchRequest alloc] init];
-	[request setEntity:[NSEntityDescription entityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext]];
+	[request setEntity:[NSEntityDescription entityForName:NMSocialInfoEntityName inManagedObjectContext:managedObjectContext]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"video", @"comments", @"peopleLike", nil]];
 	result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
-		for (NMFacebookInfo * fbInfo  in result) {
+		for (NMSocialInfo * fbInfo  in result) {
 			[managedObjectContext deleteObject:fbInfo];
 		}
 	}
@@ -1321,10 +1338,10 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return thePerson;
 }
 
-- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj {
+- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID type:(NSNumber *)acType isNew:(BOOL *)isNewObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_user_id like %@", strID]];
+	[request setPredicate:[self.personProfileExistsPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:strID, @"USER_ID", acType, @"PROFILE_TYPE", nil]]];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMPersonProfile * profileObj = nil;

@@ -23,6 +23,8 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 
 @property (nonatomic, retain) NSUserDefaults * userDefaults;
 @property (nonatomic, readonly) Facebook * facebook;
+@property (nonatomic, readonly) ACAccountStore * accountStore;
+@property (nonatomic, retain) ACAccount * currentTwitterAccount;
 @property (nonatomic, retain) NSNumber * facebookAccountStatus;
 @property (nonatomic, retain) NSNumber * twitterAccountStatus;
 @property (nonatomic, retain) NSMutableSet * updatedChannels;
@@ -35,6 +37,7 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 - (void)authorizeFacebook;
 - (void)signOutFacebookOnCompleteTarget:(id)aTarget action:(SEL)completionSelector;
 
+// Twitter
 - (void)subscribeAccount:(ACAccount *)acObj;
 
 // Application lifecycle

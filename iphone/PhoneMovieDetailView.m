@@ -63,9 +63,9 @@
     
     // Add buzz
     [portraitView.buzzView removeAllComments];
-    for (NMFacebookInfo *facebookInfo in video.video.facebookMentions) {
+    for (NMSocialInfo *facebookInfo in video.video.socialMentions) {
         NSArray *sortedComments = [facebookInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
-        for (NMFacebookComment *comment in sortedComments) {
+        for (NMSocialComment *comment in sortedComments) {
             [portraitView.buzzView addComment:comment.message fromUser:comment.fromPerson.name withImage:nil atTime:[comment relativeTimeString]];
         }
     }

@@ -19,8 +19,8 @@
 #import "NMConcreteVideo.h"
 #import "NMAuthor.h"
 #import "NMPersonProfile.h"
-#import "NMFacebookInfo.h"
-#import "NMFacebookComment.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
 #import "NMImageDownloadTask.h"
 #import "NMAccountManager.h"
 

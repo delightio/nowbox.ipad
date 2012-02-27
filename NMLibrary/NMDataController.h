@@ -19,8 +19,8 @@
 @class NMAuthor;
 @class NMSubscription;
 @class NMPersonProfile;
-@class NMFacebookInfo;
-@class NMFacebookComment;
+@class NMSocialInfo;
+@class NMSocialComment;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -76,6 +76,8 @@
 @property (nonatomic, retain) NSPredicate * concreteVideoForExternalIDPredicateTemplate;
 @property (nonatomic, retain) NSPredicate * usernamePredicateTemplate;
 @property (nonatomic, retain) NSPredicate * usernameOrIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * socialObjectIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * personProfileExistsPredicateTemplate;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
@@ -140,9 +142,9 @@
 - (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid orExternalID:(NSString *)extID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 
-// video facebook info
-- (NMFacebookInfo *)insertNewFacebookInfo;
-- (NMFacebookComment *)insertNewFacebookComment;
+// video facebook/twitter info
+- (NMSocialInfo *)insertNewSocialInfo;
+- (NMSocialComment *)insertNewSocialComment;
 - (void)deleteFacebookCacheForLogout;
 
 // author
@@ -152,7 +154,7 @@
 
 // Person profile and subscription
 - (NMPersonProfile *)insertMyNewEmptyFacebookProfile:(BOOL *)isNew;
-- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
+- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID type:(NSNumber *)acType isNew:(BOOL *)isNewObj;
 - (NMPersonProfile *)insertNewPersonProfileWithAccountIdentifier:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NSArray *)personProfilesForSync:(NSInteger)aCount;
 - (NSInteger)maxPersonProfileID;

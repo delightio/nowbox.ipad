@@ -18,6 +18,8 @@
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
 NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
+NSString * const NMTwitterAPIRateControlNotification = @"NMTwitterAPIRateControlNotification";
+NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 
 @interface NMNetworkController (PrivateMethods)
 
@@ -53,14 +55,15 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[NSThread detachNewThreadSelector:@selector(controlThreadMain:) toTarget:self withObject:nil];
 	self.errorWindowStartDate = [NSDate distantPast];
 	
+	twitterRemainLimit = NSIntegerMax;
+	twitterLimitResetTime = 0;
+	
 	/* By default, the Cocoa URL loading system uses a small shared memory cache.
 	 We don't need this cache, so we set it to zero when the application launches. */
 	
     /* turn off the NSURLCache shared cache */
 	
-    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-                                                            diskCapacity:0
-                                                                diskPath:nil];
+    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
     [NSURLCache setSharedURLCache:sharedCache];
     [sharedCache release];
 	
@@ -460,6 +463,23 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	}
 }
 
+- (void)updateTwitterAPIRemainLimit:(NSInteger)aLimit resetTime:(NSInteger)timestamp {
+	if ( timestamp > twitterLimitResetTime ) {
+		twitterRemainLimit = timestamp;
+		twitterRemainLimit = aLimit;
+	} else if ( aLimit < twitterRemainLimit ) {
+		twitterRemainLimit = aLimit;
+	}
+	if ( twitterRemainLimit % 20 == 0 || twitterRemainLimit > 300 ) {
+		// send a notification on every decrement of 20 of limit
+		dispatch_async(dispatch_get_main_queue(), ^{
+			NSDictionary * infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:twitterRemainLimit] forKey:NMTwitterAPIRemainLimitKey];
+		   [[NSNotificationCenter defaultCenter] postNotificationName:NMTwitterAPIRateControlNotification object:self userInfo:infoDict];
+			// the notification listeners should decide what to do.
+		});
+	}
+}
+
 #pragma mark NSURLConnection delegate methods
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
 	return nil;
@@ -481,7 +501,21 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 			NMImageDownloadTask * imgTask = (NMImageDownloadTask *)task;
 			imgTask.httpResponse = (NSHTTPURLResponse *)response;
 			break;
-		}			
+		}
+		case NMCommandParseTwitterFeed:
+		case NMCommandGetTwitterProfile:
+// not rate controlled
+//		case NMCommandPostTweet:
+//		case NMCommandRetweet:
+//		case NMCommandReplyTweet:
+		{
+			NSNumber * remainLmt = [httpResponse.allHeaderFields objectForKey:@"X-RateLimit-Remaining"];
+			NSNumber * resetTm = [httpResponse.allHeaderFields objectForKey:@"X-RateLimit-Reset"];
+			if ( remainLmt && resetTm ) {
+				[self updateTwitterAPIRemainLimit:[remainLmt integerValue] resetTime:[resetTm integerValue]];
+			}
+			break;
+		}
 		default:
 			break;
 	}

@@ -1,5 +1,5 @@
 //
-//  NMFacebookComment.h
+//  NMSocialComment.h
 //  ipad
 //
 //  Created by Bill So on 2/9/12.
@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMPersonProfile;
+@class NMPersonProfile, NMSocialInfo;
 
-@interface NMFacebookComment : NSManagedObject
+@interface NMSocialComment : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * created_time;
 @property (nonatomic, retain) NSString * message;
 @property (nonatomic, retain) NSString * object_id;
-@property (nonatomic, retain) NSManagedObject *facebookInfo;
+@property (nonatomic, retain) NMSocialInfo *socialInfo;
 @property (nonatomic, retain) NMPersonProfile *fromPerson;
 
 - (NSString *)relativeTimeString;
