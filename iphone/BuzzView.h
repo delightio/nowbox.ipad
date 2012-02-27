@@ -16,10 +16,10 @@
     NSMutableArray *commentViews;
 }
 
-@property (nonatomic, retain) IBOutlet UIView *commentView;
+@property (nonatomic, retain) IBOutlet UIView *loadedCommentView;
 @property (nonatomic, assign) IBOutlet id<BuzzViewDelegate> delegate;
 
-- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage;
+- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText;
 - (void)removeAllComments;
 
 @end

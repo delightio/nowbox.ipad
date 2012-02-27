@@ -19,4 +19,6 @@
 @property (nonatomic, retain) NSManagedObject *facebookInfo;
 @property (nonatomic, retain) NMPersonProfile *fromPerson;
 
+- (NSString *)relativeTimeString;
+
 @end

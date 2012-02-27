@@ -9,9 +9,13 @@
 #import "BuzzView.h"
 #import "UIFont+BackupFont.h"
 
+@interface BuzzView (PrivateMethods)
+- (UIView *)loadCommentViewFromNib:(NSString *)nibName;
+@end
+
 @implementation BuzzView
 
-@synthesize commentView;
+@synthesize loadedCommentView;
 @synthesize delegate;
 
 - (void)setup
@@ -20,7 +24,7 @@
     commentViews = [[NSMutableArray alloc] init];  
     
     // Create a scroll view for scrolling through comments
-    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 16, self.bounds.size.width, self.bounds.size.height - 22)];
+    scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:scrollView];
     
@@ -52,7 +56,7 @@
 - (void)dealloc
 {
     [commentViews release];
-    [commentView release];
+    [loadedCommentView release];
     [scrollView release];
     
     [super dealloc];
@@ -65,16 +69,25 @@
     }
 }
 
-- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage
+- (UIView *)loadCommentViewFromNib:(NSString *)nibName
 {
-    // Load the comment view from a nib
-    [[NSBundle mainBundle] loadNibNamed:@"BuzzCommentView" owner:self options:nil];
+    [[NSBundle mainBundle] loadNibNamed:nibName owner:self options:nil];
     CGFloat y = 0;
     if ([commentViews count]) {
         y = CGRectGetMaxY([[commentViews lastObject] frame]);
     }
-    commentView.frame = CGRectMake(0, y, self.frame.size.width, commentView.frame.size.height);
-    commentView.backgroundColor = [UIColor clearColor];
+    loadedCommentView.frame = CGRectMake(0, y, self.frame.size.width, loadedCommentView.frame.size.height);
+    loadedCommentView.backgroundColor = [UIColor clearColor];
+
+    UIView *theView = [[loadedCommentView retain] autorelease];
+    self.loadedCommentView = nil;
+    
+    return theView;
+}
+
+- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText
+{
+    UIView *commentView = [self loadCommentViewFromNib:@"BuzzCommentView"];
     [commentViews addObject:commentView];
     [scrollView insertSubview:commentView belowSubview:touchArea];
     
@@ -93,6 +106,7 @@
     userImageView.image = userImage;
     userLabel.text = user;
     commentLabel.text = comment;
+    timeLabel.text = timeText;
     
     // Position views based on how much text there is in labels
     [userLabel sizeToFit];
@@ -111,9 +125,6 @@
     
     scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, CGRectGetMaxY(commentView.frame));
     touchArea.frame = CGRectMake(0, 0, scrollView.contentSize.width, scrollView.contentSize.height);
-    
-    // Release the loaded view
-    self.commentView = nil;
 }
 
 - (void)removeAllComments
