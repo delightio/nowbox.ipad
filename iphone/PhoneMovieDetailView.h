@@ -26,14 +26,11 @@
 @property (nonatomic, assign) BOOL videoOverlayHidden;
 @property (nonatomic, assign) id<PhoneMovieDetailViewDelegate> delegate;
 
-- (void)setChannelTitle:(NSString *)channelTitle;
-- (void)setVideoTitle:(NSString *)videoTitle;
-- (void)setDescriptionText:(NSString *)descriptionText;
-- (void)setChannelThumbnailForChannel:(NMChannel *)channel;
-- (void)setMoreCount:(NSUInteger)moreCount;
 - (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
 - (void)setBuzzPanelExpanded:(BOOL)buzzPanelExpanded animated:(BOOL)animated;
 - (void)setVideoOverlayHidden:(BOOL)hidden animated:(BOOL)animated;
+- (void)setWatchLater:(BOOL)watchLater;
+- (void)setFavorite:(BOOL)favorite;
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (IBAction)gridButtonPressed:(id)sender;
 - (IBAction)playButtonPressed:(id)sender;

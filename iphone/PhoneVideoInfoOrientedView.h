@@ -29,6 +29,9 @@
 @property (nonatomic, retain) IBOutlet UIView *descriptionLabelContainer;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
 @property (nonatomic, retain) IBOutlet UIButton *moreVideosButton;
+@property (nonatomic, retain) IBOutlet UIButton *watchLaterButton;
+@property (nonatomic, retain) IBOutlet UIButton *shareButton;
+@property (nonatomic, retain) IBOutlet UIButton *favoriteButton;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
 @property (nonatomic, assign) BOOL buzzPanelExpanded;
 @property (nonatomic, assign) IBOutlet id<PhoneVideoInfoOrientedViewDelegate> delegate;
@@ -36,6 +39,9 @@
 - (void)positionLabels;
 - (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
 - (void)setBuzzPanelExpanded:(BOOL)isBuzzPanelExpanded animated:(BOOL)animated;
+- (void)setWatchLater:(BOOL)watchLater;
+- (void)setFavorite:(BOOL)favorite;
+
 @end
 
 @protocol PhoneVideoInfoOrientedViewDelegate <NSObject>

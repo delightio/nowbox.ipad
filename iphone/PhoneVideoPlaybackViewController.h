@@ -36,11 +36,10 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, PhoneMovieDetailViewDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, PhoneMovieDetailViewDelegate, ToolTipControllerDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
-//	IBOutlet UIView * ribbonView;
 	IBOutlet UIButton * favoriteButton;
 	IBOutlet UIButton * watchLaterButton;
 	IBOutlet UILabel * previousChannelSwitchingLabel;
@@ -54,7 +53,6 @@ enum {
 		
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
-//	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
 	
 	CGFloat currentXOffset;
@@ -63,7 +61,6 @@ enum {
 	VideoPlaybackModelController * playbackModelController;
 	
 	BOOL didSkippedVideo;
-//	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;

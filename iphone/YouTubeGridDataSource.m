@@ -105,9 +105,10 @@
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND channel != nil AND (channel.type == %@ OR channel.type == %@)", 
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND channel != nil AND (channel.type == %@ OR channel.type == %@ OR channel.type == %@)", 
                                     [NSNumber numberWithInteger:NMChannelYouTubeType], 
-                                    [NSNumber numberWithInteger:NMChannelRecommendedType]]];
+                                    [NSNumber numberWithInteger:NMChannelRecommendedType],
+                                    [NSNumber numberWithInteger:NMChannelUserType]]];
         [fetchRequest setFetchBatchSize:20];
         
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];

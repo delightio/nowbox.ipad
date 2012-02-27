@@ -32,6 +32,9 @@
 @synthesize descriptionLabelContainer;
 @synthesize descriptionLabel;
 @synthesize moreVideosButton;
+@synthesize watchLaterButton;
+@synthesize shareButton;
+@synthesize favoriteButton;
 @synthesize infoPanelExpanded;
 @synthesize buzzPanelExpanded;
 @synthesize delegate;
@@ -77,6 +80,9 @@
     [descriptionLabelContainer release];
     [descriptionLabel release];
     [moreVideosButton release];
+    [watchLaterButton release];
+    [shareButton release];
+    [favoriteButton release];
     
     [super dealloc];
 }
@@ -209,6 +215,24 @@
                          }];
     } else {
         animations();
+    }
+}
+
+- (void)setWatchLater:(BOOL)watchLater
+{
+    if (watchLater) {
+        [watchLaterButton setImage:[UIImage imageNamed:@"phone_button_watch_later_active.png"] forState:UIControlStateNormal];
+    } else {
+        [watchLaterButton setImage:[UIImage imageNamed:@"phone_button_watch_later.png"] forState:UIControlStateNormal];        
+    }
+}
+
+- (void)setFavorite:(BOOL)favorite
+{
+    if (favorite) {
+        [favoriteButton setImage:[UIImage imageNamed:@"phone_button_like_active.png"] forState:UIControlStateNormal];
+    } else {
+        [favoriteButton setImage:[UIImage imageNamed:@"phone_button_like.png"] forState:UIControlStateNormal];        
     }
 }
 
