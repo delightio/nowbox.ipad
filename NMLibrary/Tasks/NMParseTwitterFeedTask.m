@@ -199,7 +199,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
 					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 					// set the link
@@ -220,9 +220,10 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-				// create facebook info
-				fbInfo = [ctrl insertNewFacebookInfo];
+				// create twitter info
+				fbInfo = [ctrl insertNewSocialInfo];
 				fbInfo.video = conVdo;
+				fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 				// set the link
 				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 				break;
@@ -240,7 +241,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
 					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 					// set the link
@@ -304,18 +305,17 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					}
 				}
 				// save the tweet in the Comment object
-				BOOL saveTweet = NO;
+				BOOL saveTweet = YES;
 				if ( [fbInfo.comments count] ) {
 					// check if the tweet is already saved
 					saveTweet = [[fbInfo.comments filteredSetUsingPredicate:[ctrl.socialObjectIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[vdoFeedDict objectForKey:@"object_id"] forKey:@"OBJECT_ID"]]] count] == 0;
-				} else {
-					saveTweet = YES;
 				}
 				if ( saveTweet ) {
-					NMSocialComment * cmtObj = [ctrl insertNewFacebookComment];
+					NMSocialComment * cmtObj = [ctrl insertNewSocialComment];
 					cmtObj.message = [vdoFeedDict objectForKey:@"message"];
 					cmtObj.created_time = [vdoFeedDict objectForKey:@"created_time"];
 					cmtObj.object_id = [vdoFeedDict objectForKey:@"object_id"];
+					cmtObj.socialInfo = fbInfo;
 					// look up the person
 					fromDict = [vdoFeedDict objectForKey:@"from"];
 					cmtObj.fromPerson = theProfile;

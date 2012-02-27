@@ -470,7 +470,7 @@ NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 	} else if ( aLimit < twitterRemainLimit ) {
 		twitterRemainLimit = aLimit;
 	}
-	if ( twitterRemainLimit % 20 == 0 ) {
+	if ( twitterRemainLimit % 20 == 0 || twitterRemainLimit > 300 ) {
 		// send a notification on every decrement of 20 of limit
 		dispatch_async(dispatch_get_main_queue(), ^{
 			NSDictionary * infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:twitterRemainLimit] forKey:NMTwitterAPIRemainLimitKey];

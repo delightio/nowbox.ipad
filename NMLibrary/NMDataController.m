@@ -31,7 +31,7 @@ NSString * const NMConcreteVideoEntityName = @"NMConcreteVideo";
 NSString * const NMAuthorEntityName = @"NMAuthor";
 NSString * const NMSubscriptionEntityName = @"NMSubscription";
 NSString * const NMPersonProfileEntityName = @"NMPersonProfile";
-NSString * const NMFacebookInfoEntityName = @"NMSocialInfo";
+NSString * const NMSocialInfoEntityName = @"NMSocialInfo";
 NSString * const NMSocialCommentEntityName = @"NMSocialComment";
 
 BOOL NMVideoPlaybackViewIsScrolling = NO;
@@ -1197,11 +1197,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 #pragma mark Facebook
-- (NMSocialInfo *)insertNewFacebookInfo {
-	return [NSEntityDescription insertNewObjectForEntityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext];
+- (NMSocialInfo *)insertNewSocialInfo {
+	return [NSEntityDescription insertNewObjectForEntityForName:NMSocialInfoEntityName inManagedObjectContext:managedObjectContext];
 }
 
-- (NMSocialComment *)insertNewFacebookComment {
+- (NMSocialComment *)insertNewSocialComment {
 	return [NSEntityDescription insertNewObjectForEntityForName:NMSocialCommentEntityName inManagedObjectContext:managedObjectContext];
 }
 
@@ -1243,7 +1243,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// delete all facebook info (cascade to comment automatically)
 	pool = [[NSAutoreleasePool alloc] init];
 	request = [[NSFetchRequest alloc] init];
-	[request setEntity:[NSEntityDescription entityForName:NMFacebookInfoEntityName inManagedObjectContext:managedObjectContext]];
+	[request setEntity:[NSEntityDescription entityForName:NMSocialInfoEntityName inManagedObjectContext:managedObjectContext]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"video", @"comments", @"peopleLike", nil]];
 	result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {

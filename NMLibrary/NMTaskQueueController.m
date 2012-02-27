@@ -691,7 +691,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info {
 	// save the comment
-	NMSocialComment * cmtObj = [dataController insertNewFacebookComment];
+	NMSocialComment * cmtObj = [dataController insertNewSocialComment];
 	cmtObj.socialInfo = info;
 	cmtObj.message = msg;
 	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];

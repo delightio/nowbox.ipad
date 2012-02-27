@@ -216,7 +216,7 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
 					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
@@ -240,8 +240,9 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				// create facebook info
-				fbInfo = [ctrl insertNewFacebookInfo];
+				fbInfo = [ctrl insertNewSocialInfo];
 				fbInfo.video = conVdo;
+				fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 				// set the link
 				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -261,7 +262,7 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
 					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
@@ -366,7 +367,7 @@ static NSArray * youTubeRegexArray = nil;
 				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
 				NMSocialComment * cmtObj;
 				for (NSDictionary * cmtDict in cmtAy) {
-					cmtObj = [ctrl insertNewFacebookComment];
+					cmtObj = [ctrl insertNewSocialComment];
 					cmtObj.message = [cmtDict objectForKey:@"message"];
 					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
 					cmtObj.object_id = [cmtDict objectForKey:@"id"];

@@ -142,9 +142,9 @@
 - (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid orExternalID:(NSString *)extID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 
-// video facebook info
-- (NMSocialInfo *)insertNewFacebookInfo;
-- (NMSocialComment *)insertNewFacebookComment;
+// video facebook/twitter info
+- (NMSocialInfo *)insertNewSocialInfo;
+- (NMSocialComment *)insertNewSocialComment;
 - (void)deleteFacebookCacheForLogout;
 
 // author
