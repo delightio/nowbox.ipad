@@ -16,6 +16,7 @@
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize socialInfo = _socialInfo;
+@synthesize selectedIndexPath = _selectedIndexPath;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -30,6 +31,7 @@
 	[_fetchedResultsController release];
 	[_socialInfo release];
 	[_managedObjectContext release];
+	[_selectedIndexPath release];
 	[super dealloc];
 }
 
@@ -42,8 +44,8 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-	UIBarButtonItem * retweetBtn = [[UIBarButtonItem alloc] initWithTitle:@"Retweet" style:UIBarButtonItemStyleBordered target:self action:@selector(setLikeStatus:)];
-	UIBarButtonItem * replyBtn = [[UIBarButtonItem alloc] initWithTitle:@"Reply" style:UIBarButtonItemStyleBordered target:self action:@selector(setUnlikeStatus:)];
+	UIBarButtonItem * retweetBtn = [[UIBarButtonItem alloc] initWithTitle:@"Retweet" style:UIBarButtonItemStyleBordered target:self action:@selector(retweet:)];
+	UIBarButtonItem * replyBtn = [[UIBarButtonItem alloc] initWithTitle:@"Reply" style:UIBarButtonItemStyleBordered target:self action:@selector(replyTweet:)];
 	self.toolbarItems = [NSArray arrayWithObjects:retweetBtn, replyBtn, nil];
 	[retweetBtn release];
 	[replyBtn release];
@@ -73,6 +75,21 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+#pragma mark - Target action methods
+- (void)retweet:(id)sender {
+	if ( _selectedIndexPath == nil ) return;
+	// get the currently selected Comment
+	NMSocialComment * cmtObj = [self.fetchedResultsController objectAtIndexPath:_selectedIndexPath];
+	[[NMTaskQueueController sharedTaskQueueController] issueRetweet:cmtObj];
+}
+
+- (void)replyTweet:(id)sender {
+	if ( _selectedIndexPath == nil ) return;
+	NSString * str = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci urna, iaculis lacinia ultrices vel";
+	NMSocialComment * cmtObj = [self.fetchedResultsController objectAtIndexPath:_selectedIndexPath];
+	[[NMTaskQueueController sharedTaskQueueController] issueReplyTweet:cmtObj message:str];
+}
+
 #pragma mark - Table view data source
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
 	NMSocialComment * theComment = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -94,6 +111,9 @@
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+    }
     
     [self configureCell:cell atIndexPath:indexPath];
     
@@ -151,11 +171,12 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
+	self.selectedIndexPath = indexPath;
 }
 
 #pragma mark FRC
 
-- (NSFetchedResultsController *)commentsResultsController {
+- (NSFetchedResultsController *)fetchedResultsController {
 	if ( _fetchedResultsController ) {
 		return _fetchedResultsController;
 	}

@@ -20,10 +20,10 @@
 @property (nonatomic, retain) NSString * tweetID;
 
 // for retweet init with comment
-- (id)initWithVideo:(NMVideo *)vdo comment:(NMSocialComment *)cmt;
+- (id)initRetweetComment:(NMSocialComment *)cmt;
 // to reply a tweet
-- (id)initWithVideo:(NMVideo *)vdo comment:(NMSocialComment *)cmt message:(NSString *)msg;
+- (id)initReplyWithComment:(NMSocialComment *)cmt;
 // to send a new tweet (probably only for iPad version)
-- (id)initWithVideo:(NMVideo *)vdo message:(NSString *)msg;
+- (id)initPostComment:(NMSocialComment *)cmt;
 
 @end

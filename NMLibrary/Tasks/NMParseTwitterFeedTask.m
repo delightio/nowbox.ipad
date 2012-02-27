@@ -86,7 +86,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 }
 
 - (NSURLRequest *)URLRequest {
-	NSMutableDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:@"100", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"0", @"include_rts", nil];
+	NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"200", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"1", @"include_rts", nil];
 	
 	if ( _since_id ) {
 		[params setObject:_since_id forKey:@"since_id"];

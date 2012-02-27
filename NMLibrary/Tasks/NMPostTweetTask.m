@@ -28,25 +28,25 @@ NSString * const NMDidFailPostTweetNotification = @"NMDidFailPostTweetNotificati
 @synthesize message = _message;
 @synthesize tweetID = _tweetID;
 
-- (id)initWithVideo:(NMVideo *)vdo comment:(NMSocialComment *)cmt {
+- (id)initRetweetComment:(NMSocialComment *)cmt {
 	self = [super init];
 	command = NMCommandRetweet;
 	self.tweetID = cmt.object_id;
 	return self;
 }
 
-- (id)initWithVideo:(NMVideo *)vdo comment:(NMSocialComment *)cmt message:(NSString *)msg {
+- (id)initReplyWithComment:(NMSocialComment *)cmt {
 	self = [super init];
 	command = NMCommandReplyTweet;
-	self.message = msg;
+	self.message = cmt.message;
 	self.tweetID = cmt.object_id;
 	return self;
 }
 
-- (id)initWithVideo:(NMVideo *)vdo message:(NSString *)msg {
+- (id)initPostComment:(NMSocialComment *)cmt {
 	self = [super init];
 	command = NMCommandPostTweet;
-	self.message = msg;
+	self.message = cmt.message;
 	return self;
 }
 

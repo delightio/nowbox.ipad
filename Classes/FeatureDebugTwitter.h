@@ -14,5 +14,6 @@
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NMSocialInfo * socialInfo;
+@property (nonatomic, retain) NSIndexPath * selectedIndexPath;
 
 @end

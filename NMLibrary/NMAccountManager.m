@@ -24,6 +24,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 @synthesize facebookAccountStatus = _facebookAccountStatus;
 @synthesize twitterAccountStatus = _twitterAccountStatus;
 @synthesize updatedChannels = _updatedChannels;
+@synthesize accountStore = _accountStore;
+@synthesize currentTwitterAccount = _currentTwitterAccount;
 
 @synthesize socialChannelParsingTimer = _socialChannelParsingTimer, videoImportTimer = _videoImportTimer;
 
@@ -68,6 +70,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 - (void)dealloc {
 	[_facebook release];
 	[_userDefaults release];
+	[_accountStore release];
+	[_currentTwitterAccount release];
 	[_facebookAccountStatus release];
 	[_twitterAccountStatus release];
 	[_updatedChannels release];
@@ -147,6 +151,24 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];	
 	// issue call to get user info
 	[tqc issueGetProfile:theProfile account:acObj];
+}
+
+- (ACAccountStore *)accountStore {
+	if ( _accountStore == nil ) {
+		_accountStore = [[ACAccountStore alloc] init];
+	}
+	return _accountStore;
+}
+
+- (ACAccount *)currentTwitterAccount {
+	if ( _currentTwitterAccount == nil ) {
+		// grab the account object
+		NMPersonProfile * thePerson = [[[NMTaskQueueController sharedTaskQueueController] dataController] myTwitterProfile];
+		if ( thePerson ) {
+			_currentTwitterAccount = [[self.accountStore accountWithIdentifier:thePerson.nm_account_identifier] retain];
+		}
+	}
+	return _currentTwitterAccount;
 }
 
 #pragma mark Facebook
