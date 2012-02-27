@@ -266,14 +266,17 @@
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     // Don't show status bar in landscape mode
     CGRect frame = self.view.frame;
-    if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation) && UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+    CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+    UIInterfaceOrientation statusBarOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
+    if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation) && UIInterfaceOrientationIsPortrait(statusBarOrientation)) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
-        frame.origin.y -= 20;
-        frame.size.height += 20;        
-    } else if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation) && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
+        frame.origin.y -= statusBarFrame.size.height;
+        frame.size.height += statusBarFrame.size.height;
+    } else if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation) && UIInterfaceOrientationIsLandscape(statusBarOrientation)) {
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
-        frame.origin.y += 20;
-        frame.size.height -= 20;
+        frame.origin.y += statusBarFrame.size.width;
+        frame.size.height -= statusBarFrame.size.width;
     }
     self.view.frame = frame;
 }
