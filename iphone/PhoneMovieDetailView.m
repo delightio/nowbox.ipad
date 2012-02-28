@@ -12,6 +12,11 @@
 #pragma mark - PhoneMovieDetailView
 
 @interface PhoneMovieDetailView (PrivatMethods)
+- (void)setChannelTitle:(NSString *)channelTitle;
+- (void)setVideoTitle:(NSString *)videoTitle;
+- (void)setDescriptionText:(NSString *)descriptionText;
+- (void)setChannelThumbnailForChannel:(NMChannel *)channel;
+- (void)setMoreCount:(NSUInteger)moreCount;
 - (void)updateControlsViewForCurrentOrientation;
 @end
 
@@ -53,6 +58,8 @@
     [self setChannelThumbnailForChannel:video.channel];
     [self setVideoTitle:video.video.title];
     [self setDescriptionText:video.video.detail.nm_description];
+    [self setWatchLater:[video.video.nm_watch_later boolValue]];
+    [self setFavorite:[video.video.nm_favorite boolValue]];
     
     // Add buzz
     [portraitView.buzzView removeAllComments];
@@ -145,6 +152,18 @@
     } else {
         toggleVideoOverlay();
     }
+}
+
+- (void)setWatchLater:(BOOL)watchLater
+{
+    [portraitView setWatchLater:watchLater];
+    [landscapeView setWatchLater:watchLater];
+}
+
+- (void)setFavorite:(BOOL)favorite
+{
+    [portraitView setFavorite:favorite];
+    [landscapeView setFavorite:favorite];
 }
 
 - (void)updateControlsViewForCurrentOrientation

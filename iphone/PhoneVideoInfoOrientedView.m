@@ -32,6 +32,9 @@
 @synthesize descriptionLabelContainer;
 @synthesize descriptionLabel;
 @synthesize moreVideosButton;
+@synthesize watchLaterButton;
+@synthesize shareButton;
+@synthesize favoriteButton;
 @synthesize infoPanelExpanded;
 @synthesize buzzPanelExpanded;
 @synthesize delegate;
@@ -77,6 +80,9 @@
     [descriptionLabelContainer release];
     [descriptionLabel release];
     [moreVideosButton release];
+    [watchLaterButton release];
+    [shareButton release];
+    [favoriteButton release];
     
     [super dealloc];
 }
@@ -212,6 +218,24 @@
     }
 }
 
+- (void)setWatchLater:(BOOL)watchLater
+{
+    if (watchLater) {
+        [watchLaterButton setImage:[UIImage imageNamed:@"phone_button_watch_later_active.png"] forState:UIControlStateNormal];
+    } else {
+        [watchLaterButton setImage:[UIImage imageNamed:@"phone_button_watch_later.png"] forState:UIControlStateNormal];        
+    }
+}
+
+- (void)setFavorite:(BOOL)favorite
+{
+    if (favorite) {
+        [favoriteButton setImage:[UIImage imageNamed:@"phone_button_like_active.png"] forState:UIControlStateNormal];
+    } else {
+        [favoriteButton setImage:[UIImage imageNamed:@"phone_button_like.png"] forState:UIControlStateNormal];        
+    }
+}
+
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -287,13 +311,15 @@
 - (void)layoutSubviews
 {
     // Do we need to loop any of the subviews to the top / bottom?
-    for (UIView *view in self.subviews) {
-        CGFloat distance = view.center.y - (self.contentOffset.y + self.frame.size.height / 2);
-        CGFloat newY = view.center.y + (distance > 0 ? -1.0f : 1.0f) * [self.subviews count] * self.frame.size.height;
-        CGFloat newDistance = newY - (self.contentOffset.y + self.frame.size.height / 2);
-        
-        if (ABS(newDistance) < ABS(distance)) {
-            view.center = CGPointMake(view.center.x, newY);
+    if (self.scrollEnabled) {
+        for (UIView *view in self.subviews) {
+            CGFloat distance = view.center.y - (self.contentOffset.y + self.frame.size.height / 2);
+            CGFloat newY = view.center.y + (distance > 0 ? -1.0f : 1.0f) * [self.subviews count] * self.frame.size.height;
+            CGFloat newDistance = newY - (self.contentOffset.y + self.frame.size.height / 2);
+            
+            if (ABS(newDistance) < ABS(distance)) {
+                view.center = CGPointMake(view.center.x, newY);
+            }
         }
     }
 }

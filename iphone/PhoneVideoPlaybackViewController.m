@@ -176,6 +176,7 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	// event
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
@@ -195,6 +196,8 @@
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self playCurrentVideo];
+    
+    [[ToolTipController sharedToolTipController] setDelegate:self];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -208,6 +211,9 @@
  	[movieView.player removeTimeObserver:timeObserver];
 	[timeObserver release], timeObserver = nil;
 	movieView.player = nil;
+    
+    [[ToolTipController sharedToolTipController] setDelegate:nil];
+    
 	[super viewWillDisappear:animated];
 }
 
@@ -920,15 +926,6 @@
 }
 
 #pragma mark Notification handling
-//- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
-//	if ( playbackModelController.nextVideo == nil ) {
-//		// finish up playing the whole channel
-//		[self dismissModalViewControllerAnimated:YES];
-//	} else {
-//		didPlayToEnd = YES;
-//		[self showNextVideo:YES];
-//	}
-//}
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 	// For unknown reason, AVPlayerItemDidPlayToEndTimeNotification is sent twice sometimes. Don't know why. This delay execution mechanism tries to solve this problem
@@ -1017,18 +1014,26 @@
 	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
 	// do nth if the video object is nil
 	if ( vidObj == nil ) return;
+
+    PhoneMovieDetailView *detailView = (PhoneMovieDetailView *) vidObj.video.nm_movie_detail_view;
 	
 	NSString * name = [aNotification name];
-	if ( [name isEqualToString:NMDidShareVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-//		[self animateFavoriteButtonsToActive];
-	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-//		[self animateFavoriteButtonsToActive];
-	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		// queued a video successfully, animate the icon to appropriate state
-//		[self animateWatchLaterButtonsToActive];
-	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		// dequeued a video successfully
-//		[self animateWatchLaterButtonsToActive];
+    NSLog(@"got event %@ for video %@", name, vidObj.video.title);
+          
+	if ([name isEqualToString:NMDidFavoriteVideoNotification]) {
+        if ([playbackModelController.currentVideo isEqual:vidObj]) {
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:nil];
+        }
+        [detailView setFavorite:YES];
+	} else if ([name isEqualToString:NMDidUnfavoriteVideoNotification]) {
+        [detailView setFavorite:NO];
+	} else if ([name isEqualToString:NMDidEnqueueVideoNotification]) {
+        if ([playbackModelController.currentVideo isEqual:vidObj]) {
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:nil];
+        }
+        [detailView setWatchLater:YES];
+	} else if ([name isEqualToString:NMDidDequeueVideoNotification]) {
+        [detailView setWatchLater:NO];
 	}
 }
 
@@ -1407,38 +1412,28 @@
 	[self playStopVideo:sender];
 }
 
-- (void)controlsViewTouchUp:(id)sender {
-//	UIView * v = (UIView *)sender;    
-/*	[UIView animateWithDuration:0.25f animations:^{
-		loadedControlView.alpha = 0.0f;
-	} completion:^(BOOL finished) {
-	}];*/
-}
-
 - (IBAction)addVideoToFavorite:(id)sender {
-	NMConcreteVideo * vdo = playbackModelController.currentVideo.video;
-    [nowboxTaskController issueMakeFavorite:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+    NMVideo *video = playbackModelController.currentVideo;
+    NSLog(@"adding %@ to favorite", video.video.title);
+    
+	BOOL isFav = [video.video.nm_favorite boolValue];
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    [nowboxTaskController issueMakeFavorite:!isFav video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	
+    [[MixpanelAPI sharedAPI] track:isFav ? AnalyticsEventUnfavoriteVideo : AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, video.video.title, AnalyticsPropertyVideoName, video.video.nm_id, AnalyticsPropertyVideoId, nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
-	NMConcreteVideo * vdo = playbackModelController.currentVideo.video;
+    NMVideo *video = playbackModelController.currentVideo;
+    NSLog(@"adding %@ to queue", video.video.title);
     
-    showMovieControlTimestamp = loadedControlView.timeElapsed;
-    if (![vdo.nm_watch_later boolValue]) {
-        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:sender];
-    }
-	
-	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
-    
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                          vdo.title, AnalyticsPropertyVideoName, 
-                                                                          vdo.nm_id, AnalyticsPropertyVideoId,
-                                                                          nil]];
-}
+    BOOL isEnqueued = [video.video.nm_watch_later boolValue];
+    showMovieControlTimestamp = loadedControlView.timeElapsed;    
+	[nowboxTaskController issueEnqueue:!isEnqueued video:video];
 
-# pragma mark Gestures
-- (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
-    
+    if (!isEnqueued) {
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId, nil]];
+    }
 }
 
 #pragma mark - Rate Us reminder
@@ -1587,6 +1582,21 @@
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didEndDraggingScrollView:(UIScrollView *)scrollView
 {
     showMovieControlTimestamp = loadedControlView.timeElapsed;
+}
+
+#pragma mark - ToolTipControllerDelegate
+
+- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender
+{
+    return ([tooltip.name isEqualToString:@"WatchLaterTip"] || [tooltip.name isEqualToString:@"FavoriteTip"]);
+}
+
+- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender
+{    
+    tooltip.center = [controlScrollView convertPoint:movieView.center toView:self.view];
+    tooltip.displayText = @"";
+    
+    return self.view;
 }
 
 @end

@@ -15,24 +15,23 @@
 
 @implementation BuzzView
 
+@synthesize contentView;
+@synthesize scrollView;
+@synthesize touchArea;
+@synthesize noCommentsView;
+@synthesize noCommentsLabel;
 @synthesize loadedCommentView;
 @synthesize delegate;
 
 - (void)setup
 {    
-    self.clipsToBounds = YES;
+    [[NSBundle mainBundle] loadNibNamed:@"BuzzView" owner:self options:nil];
+    contentView.frame = self.bounds;
+    [self addSubview:contentView];
+    
     commentViews = [[NSMutableArray alloc] init];  
     
-    // Create a scroll view for scrolling through comments
-    scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-    scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self addSubview:scrollView];
-    
-    touchArea = [UIButton buttonWithType:UIButtonTypeCustom];
-    touchArea.frame = scrollView.bounds;
-    touchArea.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [touchArea addTarget:self action:@selector(touchAreaPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [scrollView addSubview:touchArea];
+    noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:14.0f];
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -55,14 +54,18 @@
 
 - (void)dealloc
 {
+    [contentView release];
     [commentViews release];
-    [loadedCommentView release];
     [scrollView release];
+    [touchArea release];
+    [noCommentsView release];
+    [noCommentsLabel release];
+    [loadedCommentView release];
     
     [super dealloc];
 }
 
-- (void)touchAreaPressed:(id)sender
+- (IBAction)touchAreaPressed:(id)sender
 {
     if ([delegate respondsToSelector:@selector(buzzViewDidTap:)]) {
         [delegate buzzViewDidTap:self];
@@ -87,6 +90,8 @@
 
 - (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText
 {
+    noCommentsView.hidden = YES;
+    
     UIView *commentView = [self loadCommentViewFromNib:@"BuzzCommentView"];
     [commentViews addObject:commentView];
     [scrollView insertSubview:commentView belowSubview:touchArea];
@@ -133,6 +138,7 @@
         [view removeFromSuperview];
     }
     [commentViews removeAllObjects];
+    noCommentsView.hidden = NO;
 }
 
 @end

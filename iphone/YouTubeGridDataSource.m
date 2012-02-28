@@ -24,16 +24,6 @@
     return nil;
 }
 
-- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex
-{
-    return (gridIndex == 0 ? 0 : gridIndex - 1);
-}
-
-- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex;
-{
-    return (fetchedResultsIndex == 0 ? 0 : fetchedResultsIndex + 1);
-}
-
 - (id)objectAtIndex:(NSUInteger)index
 {
     index = [self mappedFetchedResultsIndexForGridIndex:index];
@@ -105,9 +95,8 @@
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         [fetchRequest setEntity:[NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:self.managedObjectContext]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND channel != nil AND (channel.type == %@ OR channel.type == %@)", 
-                                    [NSNumber numberWithInteger:NMChannelYouTubeType], 
-                                    [NSNumber numberWithInteger:NMChannelRecommendedType]]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND channel != nil AND channel.type == %@", 
+                                    [NSNumber numberWithInteger:NMChannelYouTubeType]]];
         [fetchRequest setFetchBatchSize:20];
         
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
@@ -147,14 +136,11 @@
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 1;
+    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
 }
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
-    // index = 1 doesn't exist. First cell spans two columns.
-    if (index == 1) return nil;
-    
     PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
@@ -176,12 +162,7 @@
 
 - (BOOL)gridView:(PagingGridView *)gridView canRearrangeItemAtIndex:(NSUInteger)index
 {
-    return index >= 2;
-}
-
-- (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index
-{
-    return (index == 0 ? 2 : 1);
+    return YES;
 }
 
 @end

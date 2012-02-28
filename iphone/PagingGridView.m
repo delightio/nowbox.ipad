@@ -37,8 +37,8 @@
 {
     numberOfColumns = 2;
     numberOfRows = 3;
-    internalPadding = CGSizeMake(7, 7);
-    externalPadding = CGSizeMake(7, 0);
+    internalPadding = CGSizeMake(10, 10);
+    externalPadding = CGSizeMake(12, 0);
     
     visibleIndexes = [[NSMutableIndexSet alloc] init];
     visibleViews = [[NSMutableSet alloc] init];

@@ -10,4 +10,6 @@
 
 @interface HomeGridDataSource : GridDataSource 
 
+@property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+
 @end

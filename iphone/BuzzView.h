@@ -11,16 +11,20 @@
 @protocol BuzzViewDelegate;
 
 @interface BuzzView : UIView {
-    UIScrollView *scrollView;
-    UIButton *touchArea;
     NSMutableArray *commentViews;
 }
 
+@property (nonatomic, retain) IBOutlet UIView *contentView;
+@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, retain) IBOutlet UIButton *touchArea;
+@property (nonatomic, retain) IBOutlet UIView *noCommentsView;
+@property (nonatomic, retain) IBOutlet UILabel *noCommentsLabel;
 @property (nonatomic, retain) IBOutlet UIView *loadedCommentView;
 @property (nonatomic, assign) IBOutlet id<BuzzViewDelegate> delegate;
 
 - (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText;
 - (void)removeAllComments;
+- (IBAction)touchAreaPressed:(id)sender;
 
 @end
 
