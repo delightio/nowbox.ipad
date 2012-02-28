@@ -951,6 +951,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideo * newVid = nil;
 	if ( result == nil || [result count] == 0 ) {
+		// mark all existing NMVideo dirty
+		NSSet * vdoSet = vid.video.channels;
+		for (NMVideo * otherVdo in vdoSet) {
+			otherVdo.nm_make_dirty = (NSNumber *)([otherVdo.nm_make_dirty boolValue] ? kCFBooleanFalse : kCFBooleanTrue);
+		}
 		// the video and channel is not related. relate now
 		newVid = [self insertNewVideo];
 		newVid.channel = chnObj;
