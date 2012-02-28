@@ -8,6 +8,10 @@
 
 #import "YouTubeGridDataSource.h"
 
+@interface YouTubeGridDataSource (PrivateMethods)
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate;
+@end
+
 @implementation YouTubeGridDataSource
 
 @synthesize fetchedResultsController;
@@ -66,7 +70,7 @@
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:subscriptionToDelete.channel];
 }
 
-- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate
 {
     cell.label.text = channel.title;
     
@@ -78,8 +82,14 @@
         [cell.activityIndicator stopAnimating];
     } else {
         [cell.image setImageForChannel:channel];
-        [cell.activityIndicator startAnimating];
-        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        
+        // Don't get more videos if the cell configuration is due to an update - will loop endlessly if channel has no videos
+        if (!isUpdate) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+            [cell.activityIndicator startAnimating];            
+        } else {
+            [cell.activityIndicator stopAnimating];
+        }
     }
 }
 
@@ -126,7 +136,7 @@
         NMChannel *channel = [(NMSubscription *)anObject channel];
         NSUInteger gridIndex = [self mappedGridIndexForFetchedResultsIndex:indexPath.row];
         PagingGridViewCell *cell = [self.gridView cellForIndex:gridIndex];
-        [self configureCell:cell forChannel:channel];
+        [self configureCell:cell forChannel:channel isUpdate:YES];
     } else {
         [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     }
@@ -148,7 +158,7 @@
 
     index = [self mappedFetchedResultsIndexForGridIndex:index];
     NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];
-    [self configureCell:view forChannel:channel];
+    [self configureCell:view forChannel:channel isUpdate:NO];
     
     return view;
 }
