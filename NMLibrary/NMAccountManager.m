@@ -13,6 +13,8 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
+#import <Accounts/Accounts.h>
+#import <Twitter/Twitter.h>
 
 static NMAccountManager * _sharedAccountManager = nil;
 static NSString * const NMFacebookAppID = @"220704664661437";
@@ -145,6 +147,38 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 		_twitterProfile = [[[[NMTaskQueueController sharedTaskQueueController] dataController] myTwitterProfile] retain];
 	}
 	return _twitterProfile;
+}
+
+- (void)checkAndPushTwitterAccountOnGranted:(void (^)(void))grantBlock {
+	// use built-in twitter integration
+	// Create an account store object.
+	ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+	
+	// Create an account type that ensures Twitter accounts are retrieved.
+	ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+	
+	// Request access from the user to use their Twitter accounts.
+	[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
+		if(granted) {
+			if ( [TWTweetComposeViewController canSendTweet] ) {
+				// pass the account store to Social Login Controller
+				dispatch_async(dispatch_get_main_queue(), grantBlock);
+			} else {
+				// We don't have right to access Twitter account. Send user to the Settings app
+				dispatch_async(dispatch_get_main_queue(), ^{
+					UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not yet signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
+					[alertView show];
+					[alertView release];
+				});
+			}
+		} else {
+			//			// unhighlight the cell
+			//			dispatch_async(dispatch_get_main_queue(), ^{
+			//				[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			//			});
+		}
+	}];
+	[accountStore release];
 }
 
 - (void)subscribeAccount:(ACAccount *)acObj {
