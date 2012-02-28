@@ -11,6 +11,10 @@
 #import "FacebookGridDataSource.h"
 #import "NMAccountManager.h"
 
+@interface HomeGridDataSource (PrivateMethods)
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate;
+@end
+
 @implementation HomeGridDataSource
 
 @synthesize fetchedResultsController;
@@ -63,7 +67,7 @@
     return (fetchedResultsIndex == 0 ? 0 : fetchedResultsIndex + 1);
 }
 
-- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate
 {
     cell.label.text = channel.title;
     
@@ -75,8 +79,14 @@
         [cell.activityIndicator stopAnimating];
     } else {
         [cell.image setImageForChannel:channel];
-        [cell.activityIndicator startAnimating];
-        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+    
+        // Don't get more videos if the cell configuration is due to an update - will loop endlessly if channel has no videos
+        if (!isUpdate) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+            [cell.activityIndicator startAnimating];            
+        } else {
+            [cell.activityIndicator stopAnimating];
+        }    
     }
 }
 
@@ -124,7 +134,7 @@
         NMChannel *channel = [(NMSubscription *)anObject channel];
         NSUInteger gridIndex = [self mappedGridIndexForFetchedResultsIndex:indexPath.row];
         PagingGridViewCell *cell = [self.gridView cellForIndex:gridIndex];
-        [self configureCell:cell forChannel:channel];
+        [self configureCell:cell forChannel:channel isUpdate:YES];
     } else {
         [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     }
@@ -153,7 +163,7 @@
     
     if (frcIndex < frcObjectCount) {
         NMSubscription *subscription = [self objectAtIndex:index];
-        [self configureCell:view forChannel:subscription.channel];
+        [self configureCell:view forChannel:subscription.channel isUpdate:NO];
     } else {
         switch (frcIndex - frcObjectCount) {
             case 0:

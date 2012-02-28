@@ -8,6 +8,10 @@
 
 #import "FacebookGridDataSource.h"
 
+@interface FacebookGridDataSource (PrivateMethods)
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate;
+@end
+
 @implementation FacebookGridDataSource
 
 @synthesize fetchedResultsController;
@@ -60,7 +64,7 @@
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channelToDelete];
 }
 
-- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel
+- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate
 {
     cell.label.text = channel.title;
     
@@ -72,8 +76,14 @@
         [cell.activityIndicator stopAnimating];
     } else {
         [cell.image setImageForChannel:channel];
-        [cell.activityIndicator startAnimating];
-        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        
+        // Don't get more videos if the cell configuration is due to an update - will loop endlessly if channel has no videos
+        if (!isUpdate) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+            [cell.activityIndicator startAnimating];            
+        } else {
+            [cell.activityIndicator stopAnimating];
+        }
     }
 }
 
@@ -118,7 +128,7 @@
         // Don't replace the cell, it messes up our drags. Just change the properties of the old one.
         NMChannel *channel = [anObject channel];
         PagingGridViewCell *cell = [self.gridView cellForIndex:indexPath.row];
-        [self configureCell:cell forChannel:channel];
+        [self configureCell:cell forChannel:channel isUpdate:YES];
     } else {
         [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     }
@@ -140,7 +150,7 @@
     }
     
     NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];
-    [self configureCell:view forChannel:channel];
+    [self configureCell:view forChannel:channel isUpdate:NO];
     
     return view;
 }
