@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BuzzCommentView.h"
 
 @protocol BuzzViewDelegate;
 
@@ -19,7 +20,8 @@
 @property (nonatomic, retain) IBOutlet UIButton *touchArea;
 @property (nonatomic, retain) IBOutlet UIView *noCommentsView;
 @property (nonatomic, retain) IBOutlet UILabel *noCommentsLabel;
-@property (nonatomic, retain) IBOutlet UIView *loadedCommentView;
+@property (nonatomic, retain) IBOutlet UIView *actionButtonsView;
+@property (nonatomic, assign) BOOL showsActionButtons;
 @property (nonatomic, assign) IBOutlet id<BuzzViewDelegate> delegate;
 
 - (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText;

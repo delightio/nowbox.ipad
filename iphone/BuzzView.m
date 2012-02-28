@@ -10,7 +10,7 @@
 #import "UIFont+BackupFont.h"
 
 @interface BuzzView (PrivateMethods)
-- (UIView *)loadCommentViewFromNib:(NSString *)nibName;
+- (void)repositionComments;
 @end
 
 @implementation BuzzView
@@ -20,13 +20,15 @@
 @synthesize touchArea;
 @synthesize noCommentsView;
 @synthesize noCommentsLabel;
-@synthesize loadedCommentView;
+@synthesize actionButtonsView;
+@synthesize showsActionButtons;
 @synthesize delegate;
 
 - (void)setup
 {    
     [[NSBundle mainBundle] loadNibNamed:@"BuzzView" owner:self options:nil];
     contentView.frame = self.bounds;
+    contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:contentView];
     
     commentViews = [[NSMutableArray alloc] init];  
@@ -60,8 +62,8 @@
     [touchArea release];
     [noCommentsView release];
     [noCommentsLabel release];
-    [loadedCommentView release];
-    
+    [actionButtonsView release];
+
     [super dealloc];
 }
 
@@ -72,64 +74,25 @@
     }
 }
 
-- (UIView *)loadCommentViewFromNib:(NSString *)nibName
-{
-    [[NSBundle mainBundle] loadNibNamed:nibName owner:self options:nil];
-    CGFloat y = 0;
-    if ([commentViews count]) {
-        y = CGRectGetMaxY([[commentViews lastObject] frame]);
-    }
-    loadedCommentView.frame = CGRectMake(0, y, self.frame.size.width, loadedCommentView.frame.size.height);
-    loadedCommentView.backgroundColor = [UIColor clearColor];
-
-    UIView *theView = [[loadedCommentView retain] autorelease];
-    self.loadedCommentView = nil;
-    
-    return theView;
-}
-
 - (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText
 {
     noCommentsView.hidden = YES;
     
-    UIView *commentView = [self loadCommentViewFromNib:@"BuzzCommentView"];
-    [commentViews addObject:commentView];
+    BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:scrollView.bounds] autorelease];
+    commentView.userImageView.image = userImage;
+    commentView.userLabel.text = user;
+    commentView.commentLabel.text = comment;
+    commentView.timeLabel.text = timeText;
+    
+    if ([commentViews count] == 0) {
+        commentView.frame = scrollView.bounds;
+    } else {
+        [commentView sizeToFit];
+    }
+    
     [scrollView insertSubview:commentView belowSubview:touchArea];
-    
-    // Configure the comment view
-    UIImageView *userImageView = (UIImageView *) [commentView viewWithTag:1];
-    UILabel *userLabel = (UILabel *) [commentView viewWithTag:2];
-    UIImageView *serviceIcon = (UIImageView *) [commentView viewWithTag:3];
-    UILabel *timeLabel = (UILabel *) [commentView viewWithTag:4];
-    UILabel *commentLabel = (UILabel *) [commentView viewWithTag:5];
-    
-    UIFont *labelFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
-    userLabel.font = labelFont;
-    timeLabel.font = labelFont;
-    commentLabel.font = labelFont;
-    
-    userImageView.image = userImage;
-    userLabel.text = user;
-    commentLabel.text = comment;
-    timeLabel.text = timeText;
-    
-    // Position views based on how much text there is in labels
-    [userLabel sizeToFit];
-    CGRect frame = serviceIcon.frame;
-    frame.origin.x = CGRectGetMaxX(userLabel.frame) + 5;
-    serviceIcon.frame = frame;
-    
-    frame = timeLabel.frame;
-    frame.origin.x = CGRectGetMaxX(serviceIcon.frame) + 5;
-    timeLabel.frame = frame;
-    
-    [commentLabel sizeToFit];
-    frame = commentView.frame;
-    frame.size.height = CGRectGetMaxY(commentLabel.frame) + userLabel.frame.origin.y;
-    commentView.frame = frame;
-    
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, CGRectGetMaxY(commentView.frame));
-    touchArea.frame = CGRectMake(0, 0, scrollView.contentSize.width, scrollView.contentSize.height);
+    [commentViews addObject:commentView];
+    [self repositionComments];
 }
 
 - (void)removeAllComments
@@ -139,6 +102,46 @@
     }
     [commentViews removeAllObjects];
     noCommentsView.hidden = NO;
+}
+
+- (void)repositionComments
+{    
+    CGFloat y = 0;
+    NSUInteger i = 0;
+    for (BuzzCommentView *commentView in commentViews) {
+        CGRect frame = commentView.frame;
+        frame.origin.y = y;
+
+        if (showsActionButtons || i > 0) {
+            frame.size.width = scrollView.bounds.size.width - actionButtonsView.bounds.size.width;
+            frame.size.height = 1000;    // Limit height arbitrarily to 1000 points
+        } else {
+            frame.size.width = scrollView.bounds.size.width;
+            frame.size.height = scrollView.bounds.size.height;
+        }
+        
+        commentView.frame = frame;
+        [commentView sizeToFit];
+        
+        y += commentView.bounds.size.height;
+        i++;        
+    }
+    
+    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, y);
+    touchArea.frame = CGRectMake(0, 0, scrollView.contentSize.width, MAX(scrollView.contentSize.height, scrollView.frame.size.height));
+}
+
+- (void)setShowsActionButtons:(BOOL)isShowsActionButtons
+{
+    if (showsActionButtons != isShowsActionButtons) {
+        showsActionButtons = isShowsActionButtons;
+        actionButtonsView.alpha = (showsActionButtons && [commentViews count] ? 1.0f : 0.0f);
+        scrollView.scrollEnabled = showsActionButtons && [commentViews count];
+        if (!showsActionButtons) {
+            scrollView.contentOffset = CGPointZero;
+        }
+        [self repositionComments];
+    }
 }
 
 @end

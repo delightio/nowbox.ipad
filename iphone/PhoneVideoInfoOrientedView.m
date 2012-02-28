@@ -202,7 +202,8 @@
     void (^animations)(void) = ^{
         // Resize the buzz view and move the info panel accordingly
         infoView.frame = CGRectOffset(infoView.frame, 0, buzzView.frame.size.height - frame.size.height);
-        buzzView.frame = frame;        
+        buzzView.frame = frame;
+        [buzzView setShowsActionButtons:expanded];
     };
     
     // Perform the animation
