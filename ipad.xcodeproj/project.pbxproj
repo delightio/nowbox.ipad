@@ -273,6 +273,9 @@
 		83C6F93114FC39ED00D043B1 /* phone_button_watch_later_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C6F92F14FC39ED00D043B1 /* phone_button_watch_later_active@2x.png */; };
 		83C6F93414FC39FB00D043B1 /* phone_button_like_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C6F93214FC39FB00D043B1 /* phone_button_like_active.png */; };
 		83C6F93514FC39FB00D043B1 /* phone_button_like_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C6F93314FC39FB00D043B1 /* phone_button_like_active@2x.png */; };
+		83C6F94014FC528C00D043B1 /* BuzzView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83C6F93F14FC528C00D043B1 /* BuzzView.xib */; };
+		83C6F94314FC595E00D043B1 /* phone_button_add_comment.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C6F94114FC595E00D043B1 /* phone_button_add_comment.png */; };
+		83C6F94414FC595E00D043B1 /* phone_button_add_comment@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C6F94214FC595E00D043B1 /* phone_button_add_comment@2x.png */; };
 		83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */; };
 		83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A14146DEC13008393F1 /* onboard-splash-button.png */; };
 		83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A19146DF107008393F1 /* onboard-button-next.png */; };
@@ -840,6 +843,9 @@
 		83C6F92F14FC39ED00D043B1 /* phone_button_watch_later_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_watch_later_active@2x.png"; sourceTree = "<group>"; };
 		83C6F93214FC39FB00D043B1 /* phone_button_like_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_like_active.png; sourceTree = "<group>"; };
 		83C6F93314FC39FB00D043B1 /* phone_button_like_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_like_active@2x.png"; sourceTree = "<group>"; };
+		83C6F93F14FC528C00D043B1 /* BuzzView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BuzzView.xib; sourceTree = "<group>"; };
+		83C6F94114FC595E00D043B1 /* phone_button_add_comment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_add_comment.png; sourceTree = "<group>"; };
+		83C6F94214FC595E00D043B1 /* phone_button_add_comment@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_add_comment@2x.png"; sourceTree = "<group>"; };
 		83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-new-indicator.png"; sourceTree = "<group>"; };
 		83D21A14146DEC13008393F1 /* onboard-splash-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button.png"; sourceTree = "<group>"; };
 		83D21A19146DF107008393F1 /* onboard-button-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next.png"; sourceTree = "<group>"; };
@@ -1318,6 +1324,7 @@
 				8384CD8A14E0AC8C00444755 /* PagingGridViewCell.xib */,
 				8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */,
 				8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */,
+				83C6F93F14FC528C00D043B1 /* BuzzView.xib */,
 				8380FA6514F7276C000CE0F7 /* BuzzCommentView.xib */,
 				8384CD6714E082DD00444755 /* Prototype */,
 			);
@@ -1351,6 +1358,8 @@
 		8384CD6214E082B500444755 /* iPhone */ = {
 			isa = PBXGroup;
 			children = (
+				83C6F94114FC595E00D043B1 /* phone_button_add_comment.png */,
+				83C6F94214FC595E00D043B1 /* phone_button_add_comment@2x.png */,
 				838317B014E9DD9800185DE6 /* phone_button_grid.png */,
 				838317B114E9DD9800185DE6 /* phone_button_grid@2x.png */,
 				83C6F93214FC39FB00D043B1 /* phone_button_like_active.png */,
@@ -2538,6 +2547,9 @@
 				83C6F93114FC39ED00D043B1 /* phone_button_watch_later_active@2x.png in Resources */,
 				83C6F93414FC39FB00D043B1 /* phone_button_like_active.png in Resources */,
 				83C6F93514FC39FB00D043B1 /* phone_button_like_active@2x.png in Resources */,
+				83C6F94014FC528C00D043B1 /* BuzzView.xib in Resources */,
+				83C6F94314FC595E00D043B1 /* phone_button_add_comment.png in Resources */,
+				83C6F94414FC595E00D043B1 /* phone_button_add_comment@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
