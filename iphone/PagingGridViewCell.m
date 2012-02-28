@@ -56,6 +56,7 @@
         [label setFont:font];
         
         self.clipsToBounds = NO;
+        columnSpan = 1;
         
         [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
         [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
@@ -151,6 +152,17 @@
                      }
                      completion:^(BOOL finished){
                      }];
+}
+
+- (void)setColumnSpan:(NSUInteger)aColumnSpan
+{
+    if (columnSpan != aColumnSpan) {
+        // Increase/decrease the font size accordingly
+        CGFloat sizeDifference = ((NSInteger)aColumnSpan - (NSInteger)columnSpan) * 10.0f;
+        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize + sizeDifference];
+        
+        columnSpan = aColumnSpan;
+    }
 }
 
 #pragma mark - IBActions
