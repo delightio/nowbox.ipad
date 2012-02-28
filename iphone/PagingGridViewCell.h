@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "NMCachedImageView.h"
+#import "GlowLabel.h"
 
 @protocol PagingGridViewCellDelegate;
 
@@ -18,7 +19,7 @@
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
 @property (nonatomic, retain) IBOutlet NMCachedImageView *image;
-@property (nonatomic, retain) IBOutlet UILabel *label;
+@property (nonatomic, retain) IBOutlet GlowLabel *label;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) IBOutlet UIButton *deleteButton;
 @property (nonatomic, retain) IBOutlet UIView *highlightView;

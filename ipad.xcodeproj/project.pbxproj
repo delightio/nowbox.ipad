@@ -296,6 +296,7 @@
 		83E348BF14BBD0E4002A376E /* find-channel-subscribed-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E348BD14BBD0E4002A376E /* find-channel-subscribed-button.png */; };
 		83E99A691485A469000E704D /* GridController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E99A681485A469000E704D /* GridController.m */; };
 		83E99A6C1485BA3B000E704D /* GridController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83E99A6B1485BA3B000E704D /* GridController.xib */; };
+		83EDAB6514FC74DE0058A074 /* GlowLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EDAB6414FC74DE0058A074 /* GlowLabel.m */; };
 		83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */; };
 		83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */; };
 		83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EF90C8148433B900ED7993 /* UIImage+Tint.m */; };
@@ -870,6 +871,8 @@
 		83E99A671485A469000E704D /* GridController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridController.h; sourceTree = "<group>"; };
 		83E99A681485A469000E704D /* GridController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridController.m; sourceTree = "<group>"; };
 		83E99A6B1485BA3B000E704D /* GridController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GridController.xib; sourceTree = "<group>"; };
+		83EDAB6314FC74DE0058A074 /* GlowLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlowLabel.h; sourceTree = "<group>"; };
+		83EDAB6414FC74DE0058A074 /* GlowLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlowLabel.m; sourceTree = "<group>"; };
 		83EF90C214841F0200ED7993 /* OnBoardProcessCategoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnBoardProcessCategoryView.h; sourceTree = "<group>"; };
 		83EF90C314841F0200ED7993 /* OnBoardProcessCategoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnBoardProcessCategoryView.m; sourceTree = "<group>"; };
 		83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OnBoardProcessCategoryView.xib; sourceTree = "<group>"; };
@@ -1228,6 +1231,8 @@
 				8380FA6314F71F7E000CE0F7 /* BuzzView.m */,
 				83C25F7614F33D100098757F /* TouchDelayingScrollView.h */,
 				83C25F7714F33D100098757F /* TouchDelayingScrollView.m */,
+				83EDAB6314FC74DE0058A074 /* GlowLabel.h */,
+				83EDAB6414FC74DE0058A074 /* GlowLabel.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2659,6 +2664,7 @@
 				8380FA6414F71F7E000CE0F7 /* BuzzView.m in Sources */,
 				83DE11A714F875E900012806 /* UIFont+BackupFont.m in Sources */,
 				A9C558C214F89E920024EEB3 /* FeatureDebugTwitter.m in Sources */,
+				83EDAB6514FC74DE0058A074 /* GlowLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

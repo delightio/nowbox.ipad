@@ -54,6 +54,7 @@
             font = [UIFont fontWithName:@"Futura-Medium" size:18];
         }
         [label setFont:font];
+        [label setGlowColor:[UIColor colorWithWhite:0.0 alpha:0.6]];
         
         self.clipsToBounds = NO;
         columnSpan = 1;
