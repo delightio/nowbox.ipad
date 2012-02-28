@@ -26,6 +26,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 @synthesize updatedChannels = _updatedChannels;
 @synthesize accountStore = _accountStore;
 @synthesize currentTwitterAccount = _currentTwitterAccount;
+@synthesize twitterProfile = _twitterProfile;
+@synthesize facebookProfile = _facebookProfile;
 
 @synthesize socialChannelParsingTimer = _socialChannelParsingTimer, videoImportTimer = _videoImportTimer;
 
@@ -68,6 +70,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 }
 
 - (void)dealloc {
+	[_twitterProfile release];
+	[_facebookProfile release];
 	[_facebook release];
 	[_userDefaults release];
 	[_accountStore release];
@@ -135,6 +139,14 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 
 #pragma mark Twitter
 
+- (NMPersonProfile *)twitterProfile {
+	if ( [self.twitterAccountStatus integerValue] == 0 ) return nil;
+	if ( _twitterProfile == nil ) {
+		_twitterProfile = [[[[NMTaskQueueController sharedTaskQueueController] dataController] myTwitterProfile] retain];
+	}
+	return _twitterProfile;
+}
+
 - (void)subscribeAccount:(ACAccount *)acObj {
 	NMDataController * ctrl = [NMTaskQueueController sharedTaskQueueController].dataController;
 	// create the person profile from the account object
@@ -171,7 +183,44 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	return _currentTwitterAccount;
 }
 
+- (void)signOutTwitterOnCompleteTarget:(id)aTarget action:(SEL)completionSelector {
+	signOutAction = completionSelector;
+	signOutTarget = aTarget;
+	dispatch_async(dispatch_get_main_queue(), ^{
+		// stop sync timer
+		if ( _videoImportTimer ) {
+			[_videoImportTimer invalidate], self.videoImportTimer = nil;
+		}
+		if ( _socialChannelParsingTimer ) {
+			[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+		}
+		// cancel all existing Twitter related tasks
+		NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+		[tqc prepareSignOutTwitter];
+		// make sure the backend will not queue any facebook tasks from now on.
+		// remove the data as well
+		double delayInSeconds = 2.0;	// chill for 2 sec. hopefully all the tasks are cancelled by then.
+		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+			[[tqc dataController] deleteCacheForSignOut:NMChannelUserTwitterType];
+			NM_USER_TWITTER_CHANNEL_ID = 0;
+			self.twitterAccountStatus = (NSNumber *)kCFBooleanFalse;
+			self.twitterProfile = nil;
+			// on-completion, begin sign out
+			[tqc endSignOutTwitter];
+		});
+	});
+}
+
 #pragma mark Facebook
+
+- (NMPersonProfile *)facebookProfile {
+	if ( [self.facebookAccountStatus integerValue] == 0 ) return nil;
+	if ( _facebookProfile == nil ) {
+		_facebookProfile = [[[[NMTaskQueueController sharedTaskQueueController] dataController] myFacebookProfile] retain];
+	}
+	return _facebookProfile;
+}
 
 - (Facebook *)facebook {
 	if ( _facebook == nil ) {
@@ -210,7 +259,7 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 		double delayInSeconds = 2.0;	// chill for 2 sec. hopefully all the tasks are cancelled by then.
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-			[[tqc dataController] deleteFacebookCacheForLogout];
+			[[tqc dataController] deleteCacheForSignOut:NMChannelUserFacebookType];
 			if ([_userDefaults objectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY]) {
 				[_userDefaults removeObjectForKey:NM_FACEBOOK_ACCESS_TOKEN_KEY];
 				[_userDefaults removeObjectForKey:NM_FACEBOOK_EXPIRATION_DATE_KEY];
@@ -218,6 +267,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 				[_userDefaults setObject:(NSNumber *)kCFBooleanFalse forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 				NM_USER_FACEBOOK_CHANNEL_ID = 0;
 			}
+			self.facebookAccountStatus = (NSNumber *)kCFBooleanFalse;
+			self.facebookProfile = nil;
 			// on-completion, begin sign out
 			[self.facebook logout];
 			[tqc endSignOutFacebook];

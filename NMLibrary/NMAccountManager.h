@@ -28,6 +28,8 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 @property (nonatomic, retain) NSNumber * facebookAccountStatus;
 @property (nonatomic, retain) NSNumber * twitterAccountStatus;
 @property (nonatomic, retain) NSMutableSet * updatedChannels;
+@property (nonatomic, retain) NMPersonProfile * twitterProfile;
+@property (nonatomic, retain) NMPersonProfile * facebookProfile;
 
 @property (nonatomic, retain) NSTimer * socialChannelParsingTimer;
 @property (nonatomic, retain) NSTimer * videoImportTimer;

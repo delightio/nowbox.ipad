@@ -145,7 +145,7 @@
 // video facebook/twitter info
 - (NMSocialInfo *)insertNewSocialInfo;
 - (NMSocialComment *)insertNewSocialComment;
-- (void)deleteFacebookCacheForLogout;
+- (void)deleteCacheForSignOut:(NMChannelType)accType;
 
 // author
 - (NMAuthor *)authorForID:(NSNumber *)authID orName:(NSString *)aName;

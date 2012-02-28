@@ -750,6 +750,19 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	networkController.suspendFacebook = NO;
 }
 
+- (void)prepareSignOutTwitter {
+	networkController.suspendTwitter = YES;
+	// cancel all existing Twitter related tasks
+	NSMutableIndexSet * cmdIdx = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(NMCommandFacebookCommandUpperBound, NMCommandTwitterCommandUpperBound - NMCommandFacebookCommandUpperBound + 1)];
+	// cancel all Youtube import task
+	[cmdIdx addIndex:NMCommandImportYouTubeVideo];
+	[networkController cancelTaskWithCommandSet:cmdIdx];
+}
+
+- (void)endSignOutTwitter {
+	networkController.suspendTwitter = NO;
+}
+
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
 }

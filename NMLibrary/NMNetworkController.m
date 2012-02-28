@@ -37,10 +37,12 @@ NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 @synthesize errorWindowStartDate;
 @synthesize tokenRenewMode;
 @synthesize suspendFacebook;
+@synthesize suspendTwitter;
 
 - (id)init {
 	self = [super init];
 	facebookCommandRange = NSMakeRange(NMCommandFacebookCommandLowerBound, NMCommandFacebookCommandUpperBound - NMCommandFacebookCommandLowerBound + 1);
+	twitterCommandRange = NSMakeRange(NMCommandFacebookCommandUpperBound, NMCommandTwitterCommandUpperBound - NMCommandFacebookCommandUpperBound + 1);
 	commandIndexPool = [[NSMutableIndexSet alloc] init];
 	pendingDeleteCommandIndexPool = [[NSMutableIndexSet alloc] init];
 	connectionPool = [[NSMutableSet alloc] initWithCapacity:8];
@@ -143,10 +145,19 @@ NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 - (void)addNewConnectionForTasks:(NSArray *)tasks {
 	[pendingTaskBufferLock lock];
 	NMTask *t;
+	// we assume the app only signs out from Facebook or Twitter preemptively. When signing out, say, Facebook, the app only allows Facebook sign out logic to happen.
 	if ( suspendFacebook ) {
 		// check if there's any facebook tasks
 		for (t in tasks) {
 			if ( NSLocationInRange(t.command, facebookCommandRange ) ) {
+				continue;
+			}
+			[pendingTaskBuffer addObject:t];
+			t.state = NMTaskExecutionStateWaitingInConnectionQueue;
+		}
+	} else if ( suspendTwitter ) {
+		for (t in tasks) {
+			if ( NSLocationInRange(t.command, twitterCommandRange ) ) {
 				continue;
 			}
 			[pendingTaskBuffer addObject:t];
@@ -163,7 +174,8 @@ NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 }
 
 - (void)addNewConnectionForTask:(NMTask *)aTask {
-	if ( suspendFacebook && NSLocationInRange(aTask.command, facebookCommandRange ) ) {
+	if ( (suspendFacebook && NSLocationInRange(aTask.command, facebookCommandRange )) ||
+		( suspendTwitter && NSLocationInRange(aTask.command, twitterCommandRange)) ) {
 		return;
 	}
 	[pendingTaskBufferLock lock];

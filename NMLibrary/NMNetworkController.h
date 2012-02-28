@@ -40,8 +40,9 @@
 	BOOL tokenRenewMode;
 	NSUInteger taskLogMark;
 	NSUInteger taskLogCount;
-	NSRange facebookCommandRange;
+	NSRange facebookCommandRange, twitterCommandRange;
 	BOOL suspendFacebook;
+	BOOL suspendTwitter;
 	// channel thumbnail_uri cache
 //	NSMutableSet * activeChannelThumbnailDownloadSet;
 }
@@ -53,6 +54,7 @@
 @property (nonatomic, retain) NSDate * errorWindowStartDate;
 @property (nonatomic, assign) BOOL tokenRenewMode;
 @property (nonatomic) BOOL suspendFacebook;
+@property (nonatomic) BOOL suspendTwitter;
 
 //- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 
