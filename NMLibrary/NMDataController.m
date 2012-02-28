@@ -966,7 +966,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)unrelateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
-	[self deleteVideo:vid];
+	vid.nm_deleted = (NSNumber *)kCFBooleanTrue;
 }
 
 - (NMVideo *)insertNewVideo {
