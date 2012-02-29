@@ -34,6 +34,16 @@
     return [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
 }
 
+- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex
+{
+    return (gridIndex == 0 ? 0 : gridIndex - 1);
+}
+
+- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex;
+{
+    return (fetchedResultsIndex == 0 ? 0 : fetchedResultsIndex + 1);
+}
+
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
     oldIndex = [self mappedFetchedResultsIndexForGridIndex:oldIndex];
@@ -151,6 +161,9 @@
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
+    // First cell spans two columns
+    if (index == 1) return nil;
+    
     PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
@@ -170,9 +183,14 @@
     return [subscription.channel.type integerValue] != NMChannelRecommendedType;
 }
 
+- (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index
+{
+    return (index == 0 ? 2 : 1);
+}
+
 - (BOOL)gridView:(PagingGridView *)gridView canRearrangeItemAtIndex:(NSUInteger)index
 {
-    return YES;
+    return index > 1;
 }
 
 @end
