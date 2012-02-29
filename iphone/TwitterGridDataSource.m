@@ -155,7 +155,8 @@
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 1;
+    NSUInteger numberOfItems = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    return (numberOfItems == 0 ? 0 : numberOfItems + 1);
 }
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
