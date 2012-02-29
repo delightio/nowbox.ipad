@@ -111,6 +111,7 @@ typedef enum {
 	NMSyncSyncInProgress,
 	NMSyncAccountActive,
 	NMSyncPendingDelete,
+	NMSyncInitialSyncError,
 } NMSyncStatusType;
 
 typedef enum {

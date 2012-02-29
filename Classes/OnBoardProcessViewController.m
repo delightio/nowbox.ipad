@@ -65,6 +65,9 @@
         [nc addObserver:self selector:@selector(handleDidFailVerifyUserNotification:) name:NMDidFailVerifyUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidCompareSubscribedChannelsNotification:) name:NMDidCompareSubscribedChannelsNotification object:nil];
         
+		// observe changes in account manager
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1001];
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1002];
         self.selectedCategoryIndexes = [NSMutableIndexSet indexSet];
     }
     
@@ -174,12 +177,14 @@
     [youtubeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     [youtubeButton setUserInteractionEnabled:!youtubeConnected];
     
-    [facebookButton setTitle:(facebookConnected ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+	NMSyncStatusType accType = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
+    [facebookButton setTitle:(accType ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [facebookButton setSelected:facebookConnected];
     [facebookButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     [facebookButton setUserInteractionEnabled:!facebookConnected];
 
-    [twitterButton setTitle:(twitterConnected ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+	accType = [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue];
+    [twitterButton setTitle:(accType ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [twitterButton setSelected:twitterConnected != 0];
     [twitterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     [twitterButton setUserInteractionEnabled:!twitterConnected];
@@ -419,6 +424,40 @@
 }
 
 #pragma mark - Notifications
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInt = (NSInteger)context;
+	NMSyncStatusType accStatus = 0;
+	switch (ctxInt) {
+		case 1001:
+			// twitter
+			accStatus = [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue];
+			if ( accStatus == NMSyncInitialSyncError ) {
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
+				[alertView release];
+				[self dismissModalViewControllerAnimated:YES];
+			}
+			[self updateSocialNetworkButtonTexts];
+			break;
+			
+		case 1002:
+			// facebook
+			accStatus = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
+			if ( accStatus == NMSyncInitialSyncError ) {
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
+				[alertView release];
+			}
+			[self updateSocialNetworkButtonTexts];
+			break;
+			
+		default:
+			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+			return;
+			break;
+	}
+}
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
 {    
