@@ -30,11 +30,25 @@
 
 - (id)objectAtIndex:(NSUInteger)index
 {
+    index = [self mappedFetchedResultsIndexForGridIndex:index];
     return [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+}
+
+- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex
+{
+    return (gridIndex == 0 ? 0 : gridIndex - 1);
+}
+
+- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex;
+{
+    return (fetchedResultsIndex == 0 ? 0 : fetchedResultsIndex + 1);
 }
 
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
+    oldIndex = [self mappedFetchedResultsIndexForGridIndex:oldIndex];
+    newIndex = [self mappedFetchedResultsIndexForGridIndex:newIndex];
+    
     NMSubscription *displacedSubscription = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]];
     NSNumber *newSortOrder = displacedSubscription.nm_sort_order;
     
@@ -60,8 +74,10 @@
 
 - (void)deleteObjectAtIndex:(NSUInteger)index
 {
-    NMChannel *channelToDelete = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];
-    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:channelToDelete];
+    index = [self mappedFetchedResultsIndexForGridIndex:index];
+    
+    NMSubscription *subscriptionToDelete = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:subscriptionToDelete.channel];
 }
 
 - (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate
@@ -126,8 +142,9 @@
 {    
     if (type == NSFetchedResultsChangeUpdate) {
         // Don't replace the cell, it messes up our drags. Just change the properties of the old one.
-        NMChannel *channel = [anObject channel];
-        PagingGridViewCell *cell = [self.gridView cellForIndex:indexPath.row];
+        NMChannel *channel = [(NMSubscription *)anObject channel];
+        NSUInteger gridIndex = [self mappedGridIndexForFetchedResultsIndex:indexPath.row];
+        PagingGridViewCell *cell = [self.gridView cellForIndex:gridIndex];
         [self configureCell:cell forChannel:channel isUpdate:YES];
     } else {
         [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
@@ -138,17 +155,21 @@
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 1;
 }
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
+    // First cell spans two columns
+    if (index == 1) return nil;
+    
     PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
     
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
     }
     
+    index = [self mappedFetchedResultsIndexForGridIndex:index];
     NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];
     [self configureCell:view forChannel:channel isUpdate:NO];
     
@@ -158,6 +179,16 @@
 - (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
 {
     return NO;
+}
+
+- (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index
+{
+    return (index == 0 ? 2 : 1);
+}
+
+- (BOOL)gridView:(PagingGridView *)gridView canRearrangeItemAtIndex:(NSUInteger)index
+{
+    return index > 1;
 }
 
 @end
