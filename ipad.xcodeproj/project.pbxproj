@@ -121,6 +121,8 @@
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
 		8382D56014FEE22E00DDEB6B /* TwitterGridDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8382D55F14FEE22E00DDEB6B /* TwitterGridDataSource.m */; };
+		8382D56414FEE62900DDEB6B /* youtube_logo_36@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8382D56214FEE62900DDEB6B /* youtube_logo_36@2x~iphone.png */; };
+		8382D56514FEE62900DDEB6B /* youtube_logo_36~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8382D56314FEE62900DDEB6B /* youtube_logo_36~iphone.png */; };
 		838317AA14E9D4D700185DE6 /* phone_video_header_background_portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317A814E9D4D700185DE6 /* phone_video_header_background_portrait.png */; };
 		838317AB14E9D4D700185DE6 /* phone_video_header_background_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317A914E9D4D700185DE6 /* phone_video_header_background_portrait@2x.png */; };
 		838317AE14E9D9C000185DE6 /* phone_video_header_background_landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317AC14E9D9C000185DE6 /* phone_video_header_background_landscape.png */; };
@@ -673,6 +675,8 @@
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
 		8382D55E14FEE22E00DDEB6B /* TwitterGridDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterGridDataSource.h; sourceTree = "<group>"; };
 		8382D55F14FEE22E00DDEB6B /* TwitterGridDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterGridDataSource.m; sourceTree = "<group>"; };
+		8382D56214FEE62900DDEB6B /* youtube_logo_36@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "youtube_logo_36@2x~iphone.png"; sourceTree = "<group>"; };
+		8382D56314FEE62900DDEB6B /* youtube_logo_36~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "youtube_logo_36~iphone.png"; sourceTree = "<group>"; };
 		838317A814E9D4D700185DE6 /* phone_video_header_background_portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_header_background_portrait.png; sourceTree = "<group>"; };
 		838317A914E9D4D700185DE6 /* phone_video_header_background_portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_header_background_portrait@2x.png"; sourceTree = "<group>"; };
 		838317AC14E9D9C000185DE6 /* phone_video_header_background_landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_header_background_landscape.png; sourceTree = "<group>"; };
@@ -1451,6 +1455,8 @@
 				83C6F92A14FC358400D043B1 /* tooltip-favorite@2x~iphone.png */,
 				83C6F92614FC324000D043B1 /* tooltip-watch-later~iphone.png */,
 				83C6F92514FC324000D043B1 /* tooltip-watch-later@2x~iphone.png */,
+				8382D56214FEE62900DDEB6B /* youtube_logo_36@2x~iphone.png */,
+				8382D56314FEE62900DDEB6B /* youtube_logo_36~iphone.png */,
 			);
 			path = iPhone;
 			sourceTree = "<group>";
@@ -2573,6 +2579,8 @@
 				83C6F94414FC595E00D043B1 /* phone_button_add_comment@2x.png in Resources */,
 				83EA128314FD891B00FDFD05 /* phone_button_comment.png in Resources */,
 				83EA128414FD891B00FDFD05 /* phone_button_comment@2x.png in Resources */,
+				8382D56414FEE62900DDEB6B /* youtube_logo_36@2x~iphone.png in Resources */,
+				8382D56514FEE62900DDEB6B /* youtube_logo_36~iphone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
