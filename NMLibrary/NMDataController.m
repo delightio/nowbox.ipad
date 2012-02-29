@@ -73,6 +73,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	categoryCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	channelCacheDictionary = [[NSMutableDictionary alloc] initWithCapacity:16];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLowMemoryNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+	
 	return self;
 }
 
@@ -119,6 +121,29 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		self.authorEntityDescription = nil;
 		self.subscriptionEntityDescription = nil;
 	}
+}
+
+- (void)handleLowMemoryNotification {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	
+	// free all cached predicate
+	self.pendingImportVideoPredicate = nil;
+	self.pendingImportPredicate = nil;
+	self.subscribedChannelsPredicate = nil;
+	self.socialChannelsToSyncPredicate = nil;
+	self.objectForIDPredicateTemplate = nil;
+	self.videoInChannelPredicateTemplate = nil;
+	self.channelPredicateTemplate = nil;
+	self.channelAndSessionPredicateTemplate = nil;
+	self.cachedChannelsPredicate = nil;
+	self.concreteVideoForIDPredicateTemplate = nil;
+	self.concreteVideoForExternalIDPredicateTemplate = nil;
+	self.usernamePredicateTemplate = nil;
+	self.usernameOrIDPredicateTemplate = nil;
+	self.socialObjectIDPredicateTemplate = nil;
+	self.personProfileExistsPredicateTemplate = nil;
+	
+	[pool release];
 }
 
 #pragma mark Entity descriptions
@@ -926,6 +951,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideo * newVid = nil;
 	if ( result == nil || [result count] == 0 ) {
+		// mark all existing NMVideo dirty
+		NSSet * vdoSet = vid.video.channels;
+		for (NMVideo * otherVdo in vdoSet) {
+			otherVdo.nm_make_dirty = (NSNumber *)([otherVdo.nm_make_dirty boolValue] ? kCFBooleanFalse : kCFBooleanTrue);
+		}
 		// the video and channel is not related. relate now
 		newVid = [self insertNewVideo];
 		newVid.channel = chnObj;
@@ -936,7 +966,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)unrelateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
-	[self deleteVideo:vid];
+	vid.nm_deleted = (NSNumber *)kCFBooleanTrue;
 }
 
 - (NMVideo *)insertNewVideo {
@@ -1205,13 +1235,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return [NSEntityDescription insertNewObjectForEntityForName:NMSocialCommentEntityName inManagedObjectContext:managedObjectContext];
 }
 
-- (void)deleteFacebookCacheForLogout {
-	NSNumber * fbChnType = [NSNumber numberWithInteger:NMChannelUserFacebookType];
+- (void)deleteCacheForSignOut:(NMChannelType)accType {
+	NSNumber * chnTypeNum = [NSNumber numberWithInteger:accType];
 	// delete all facebook subscription
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.subscriptionEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel.type == %@", fbChnType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel.type == %@", chnTypeNum]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"subscription", @"channel", @"channel.videos", @"channel.videos.video", nil]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
@@ -1225,11 +1255,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 	[pool release];
 	
+	// Predicate
+	NSPredicate * thePredicateTpl = [NSPredicate predicateWithFormat:@"nm_type == $TYPE"];
 	// delete all person profile
 	pool = [[NSAutoreleasePool alloc] init];
 	request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_type == %@", fbChnType]];
+	[request setPredicate:[thePredicateTpl predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chnTypeNum forKey:@"TYPE"]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"comments", @"facebookLikes", nil]];
 	result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {
@@ -1240,10 +1272,11 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 	[pool release];
 	
-	// delete all facebook info (cascade to comment automatically)
+	// delete all social info (cascade to comment automatically)
 	pool = [[NSAutoreleasePool alloc] init];
 	request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMSocialInfoEntityName inManagedObjectContext:managedObjectContext]];
+	[request setPredicate:[thePredicateTpl predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:chnTypeNum forKey:@"TYPE"]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"video", @"comments", @"peopleLike", nil]];
 	result = [managedObjectContext executeFetchRequest:request error:nil];
 	if ( [result count] ) {

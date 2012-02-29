@@ -63,6 +63,7 @@ typedef enum {
 	NMCommandPostTweet,
 	NMCommandReplyTweet,
 	NMCommandRetweet,
+	NMCommandTwitterCommandUpperBound,
 } NMCommand;
 
 typedef enum {

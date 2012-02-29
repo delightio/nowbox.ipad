@@ -10,16 +10,13 @@
 #import "OnBoardProcessCategoryView.h"
 #import "OnBoardProcessChannelView.h"
 #import "SocialLoginViewController.h"
-#import "NMTaskQueueController.h"
-#import "NMDataController.h"
-#import "NMDataType.h"
-#import "NMCategory.h"
-#import "NMChannel.h"
+#import "NMLibrary.h"
 #import "Analytics.h"
 #import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
+#import "TwitterAccountPickerViewController.h"
 
 #define kChannelGridNumberOfRows 4
 #define kChannelGridNumberOfColumns 3
@@ -348,7 +345,8 @@
 - (IBAction)loginToFacebook:(id)sender
 {
     if (![sender isSelected]) {    
-        [self loginToSocialNetworkWithType:NMLoginFacebookType];
+//        [self loginToSocialNetworkWithType:NMLoginFacebookType];
+		[[NMAccountManager sharedAccountManager] authorizeFacebook];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
@@ -356,7 +354,20 @@
 - (IBAction)loginToTwitter:(id)sender
 {
     if (![sender isSelected]) {    
-        [self loginToSocialNetworkWithType:NMLoginTwitterType];
+//        [self loginToSocialNetworkWithType:NMLoginTwitterType];
+		[[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
+			// user needs to pick which account(s) s/he wanna hook up to
+			TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+			UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:picker];
+			navController.navigationBar.barStyle = UIBarStyleBlack;
+			picker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSocialLogin:)] autorelease];
+			
+			[navController setModalPresentationStyle:UIModalPresentationFormSheet];
+			[self presentModalViewController:navController animated:YES];
+			
+			[navController release];      
+			[picker release];
+		}];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];                
     }
 }

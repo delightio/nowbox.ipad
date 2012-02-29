@@ -145,6 +145,8 @@
 - (void)issueReplyTweet:(NMSocialComment *)srcCmt message:(NSString *)msg;
 - (void)prepareSignOutFacebook;
 - (void)endSignOutFacebook;
+- (void)prepareSignOutTwitter;
+- (void)endSignOutTwitter;
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;

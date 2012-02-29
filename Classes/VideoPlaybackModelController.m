@@ -40,7 +40,7 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
 
 + (NSPredicate *)playbackModelFilterPredicate {
 	if ( playbackModelFilterPredicate_ == nil ) {
-		playbackModelFilterPredicate_ = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND video.nm_error == 0"] retain];
+		playbackModelFilterPredicate_ = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND video.nm_error == 0 AND nm_deleted == NO"] retain];
 	}
 	return playbackModelFilterPredicate_;
 }

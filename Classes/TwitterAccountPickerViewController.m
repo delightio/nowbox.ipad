@@ -19,7 +19,7 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        // Custom initialization
+		_accountStore = [[ACAccountStore alloc] init];
     }
     return self;
 }
@@ -67,7 +67,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+	return YES;
 }
 
 #pragma mark - Table view data source
