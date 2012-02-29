@@ -74,6 +74,20 @@
     }
 }
 
+- (IBAction)likeButtonPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(buzzView:didPressLikeButton:)]) {
+        [delegate buzzView:self didPressLikeButton:sender];
+    }
+}
+
+- (IBAction)commentButtonPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(buzzView:didPressCommentButton:)]) {
+        [delegate buzzView:self didPressCommentButton:sender];
+    }    
+}
+
 - (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
 {
     noCommentsView.hidden = YES;

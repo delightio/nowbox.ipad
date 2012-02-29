@@ -27,9 +27,14 @@
 - (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username;
 - (void)removeAllComments;
 - (IBAction)touchAreaPressed:(id)sender;
+- (IBAction)likeButtonPressed:(id)sender;
+- (IBAction)commentButtonPressed:(id)sender;
 
 @end
 
 @protocol BuzzViewDelegate <NSObject>
+@optional
 - (void)buzzViewDidTap:(BuzzView *)buzzView;
+- (void)buzzView:(BuzzView *)buzzView didPressLikeButton:(id)sender;
+- (void)buzzView:(BuzzView *)buzzView didPressCommentButton:(id)sender;
 @end

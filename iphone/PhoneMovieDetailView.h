@@ -49,6 +49,7 @@
 @optional
 - (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView;
+- (void)videoInfoViewDidTapLikeButton:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchDownSeekBar:(NMSeekBar *)seekBar;

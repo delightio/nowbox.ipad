@@ -317,4 +317,16 @@
     [self toggleBuzzPanel:buzzView];
 }
 
+- (void)buzzView:(BuzzView *)buzzView didPressLikeButton:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(videoInfoViewDidTapLikeButton:)]) {
+        [delegate videoInfoViewDidTapLikeButton:self];
+    }
+}
+
+- (void)buzzView:(BuzzView *)buzzView didPressCommentButton:(id)sender
+{
+    
+}
+
 @end

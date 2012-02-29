@@ -1503,6 +1503,11 @@
     [self playStopVideo:nil];
 }
 
+- (void)videoInfoViewDidTapLikeButton:(PhoneMovieDetailView *)videoInfoView
+{
+
+}
+
 - (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView
 {
     [self movieViewTouchUp:nil];
