@@ -24,7 +24,7 @@
 @property (nonatomic, assign) BOOL showsActionButtons;
 @property (nonatomic, assign) IBOutlet id<BuzzViewDelegate> delegate;
 
-- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText;
+- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username;
 - (void)removeAllComments;
 - (IBAction)touchAreaPressed:(id)sender;
 

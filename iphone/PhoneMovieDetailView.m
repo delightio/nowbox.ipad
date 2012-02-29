@@ -63,10 +63,18 @@
     
     // Add buzz
     [portraitView.buzzView removeAllComments];
-    for (NMSocialInfo *facebookInfo in video.video.socialMentions) {
-        NSArray *sortedComments = [facebookInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
+    for (NMSocialInfo *socialInfo in video.video.socialMentions) {
+        NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
         for (NMSocialComment *comment in sortedComments) {
-            [portraitView.buzzView addComment:comment.message fromUser:comment.fromPerson.name withImage:nil atTime:[comment relativeTimeString]];
+            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
+            commentView.userImageView.image = nil;
+            commentView.timeLabel.text = [comment relativeTimeString];
+            
+            if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {
+                commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];
+            } else {
+                commentView.serviceIcon.image = nil;
+            }
         }
     }
 }

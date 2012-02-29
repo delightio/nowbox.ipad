@@ -74,7 +74,28 @@
     }
 }
 
-- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage atTime:(NSString *)timeText
+- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
+{
+    noCommentsView.hidden = YES;
+    
+    BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:scrollView.bounds] autorelease];
+    commentView.commentLabel.text = text;
+    commentView.userLabel.text = username;
+    
+    if ([commentViews count] == 0) {
+        commentView.frame = scrollView.bounds;
+    } else {
+        [commentView sizeToFit];
+    }
+    
+    [scrollView insertSubview:commentView belowSubview:touchArea];
+    [commentViews addObject:commentView];
+    [self repositionComments];
+    
+    return commentView;
+}
+
+- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage withSocialNetworkImage:(UIImage *)networkImage atTime:(NSString *)timeText
 {
     noCommentsView.hidden = YES;
     
