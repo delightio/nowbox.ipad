@@ -87,7 +87,6 @@ enum {
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
     
-    ToolTip *pendingToolTip; 
     void (^alertCompletion)(void);
 
     BOOL scrollingNotFromUser;        
