@@ -9,6 +9,7 @@
 #import "ShareViewController.h"
 #import "ipadAppDelegate.h"
 #import "SocialLoginViewController.h"
+#import "TwitterAccountPickerViewController.h"
 #import "NMTaskQueueController.h"
 #import "NMDataType.h"
 #import "Analytics.h"
@@ -53,6 +54,8 @@
                                                                                   style:UIBarButtonItemStyleBordered
                                                                                  target:nil
                                                                                  action:nil] autorelease];
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1001];
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1002];
     }
     return self;
 }
@@ -60,6 +63,9 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
     
     [messageText release];
     [characterCountLabel release];
@@ -87,7 +93,7 @@
     }
 }
 
-- (void)showLoginPage
+- (void)showTwitterLoginPage
 {
     UIView *superview = self.navigationController.view.superview;
     
@@ -97,25 +103,14 @@
     void (^completion)(BOOL) = ^(BOOL finished){
         superview.layer.shadowOpacity = oldShadowOpacity;
         
-        // Go to Twitter/FB login page
-        SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
-        loginController.navigationItem.backBarButtonItem.title = @"Back";
-        NMSocialLoginType loginType;
-        NSString *analyticsEvent;
+		// show twitter login view
+		TwitterAccountPickerViewController * twitterAccountPicker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+		twitterAccountPicker.navigationItem.backBarButtonItem.title = @"Back";
+		
+        [self.navigationController pushViewController:twitterAccountPicker animated:YES];
+		[twitterAccountPicker release];
         
-        if (shareMode == ShareModeTwitter) {
-            loginType = NMLoginTwitterType;
-            analyticsEvent = AnalyticsEventStartTwitterLogin;
-        } else {
-            loginType = NMLoginFacebookType;
-            analyticsEvent = AnalyticsEventStartFacebookLogin;
-        }
-        
-        loginController.loginType = loginType;
-        [self.navigationController pushViewController:loginController animated:YES];
-        [loginController release];
-        
-        [[MixpanelAPI sharedAPI] track:analyticsEvent properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
     };
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -297,6 +292,30 @@
 
 #pragma mark - Notifications
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInd = (NSInteger)context;
+	switch (ctxInd) {
+		case 1001:
+			// facebook
+			if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncPendingInitialSync ) {
+				autoPost = YES;
+				[self dismissModalViewControllerAnimated:YES];
+			}
+			break;
+			
+		case 1002:
+			// twitter
+			if ( [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncPendingInitialSync ) {
+				autoPost = YES;
+				[self dismissModalViewControllerAnimated:YES];
+			}
+			break;
+			
+		default:
+			break;
+	}
+}
+
 - (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
 {
     void (^completion)(void) = ^{
@@ -386,7 +405,19 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        [self showLoginPage];
+		switch (shareMode) {
+			case ShareModeTwitter:
+				[self showTwitterLoginPage];
+				break;
+				
+			case ShareModeFacebook:
+				// jump to facebook page directly
+				[[NMAccountManager sharedAccountManager] authorizeFacebook];			
+				break;
+				
+			default:
+				break;
+		}
     }
 }
 
