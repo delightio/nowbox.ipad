@@ -94,7 +94,10 @@
 - (IBAction)backButtonPressed:(id)sender
 {
     [gridView setRearranging:NO animated:NO];
-    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
+    
+    if (![gridDataSource isKindOfClass:[HomeGridDataSource class]]) {
+        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
+    }
 }
 
 #pragma mark - PagingGridViewDelegate
