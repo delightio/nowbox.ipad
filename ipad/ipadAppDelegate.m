@@ -512,6 +512,7 @@ NSInteger NM_LAST_CHANNEL_ID;
     self.viewController = gridViewController;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     self.window.rootViewController = gridViewController;
+    [gridViewController release];
     [launchViewController release];
 }
 
