@@ -77,6 +77,8 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
 
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     [infoWaitTimer invalidate]; infoWaitTimer = nil;
@@ -362,16 +364,16 @@
 //        [self loginToSocialNetworkWithType:NMLoginTwitterType];
 		[[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
 			// user needs to pick which account(s) s/he wanna hook up to
-			TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
-			UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:picker];
+			twitterAccountPicker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+			UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:twitterAccountPicker];
 			navController.navigationBar.barStyle = UIBarStyleBlack;
-			picker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSocialLogin:)] autorelease];
+			twitterAccountPicker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSocialLogin:)] autorelease];
 			
 			[navController setModalPresentationStyle:UIModalPresentationFormSheet];
 			[self presentModalViewController:navController animated:YES];
 			
 			[navController release];      
-			[picker release];
+			[twitterAccountPicker release];
 		}];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];                
     }
@@ -436,8 +438,9 @@
 				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 				[alertView show];
 				[alertView release];
-				[self dismissModalViewControllerAnimated:YES];
 			}
+			[twitterAccountPicker dismissModalViewControllerAnimated:YES];
+			twitterAccountPicker = nil;
 			[self updateSocialNetworkButtonTexts];
 			break;
 			
