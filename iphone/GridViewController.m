@@ -54,7 +54,7 @@
 {
     [super viewDidLoad];
     
-    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
+    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
     
     // If view was unloaded, restore the page we were on
     pageControl.currentPage = currentPage;
@@ -96,7 +96,7 @@
     [gridView setRearranging:NO animated:NO];
     
     if (![gridDataSource isKindOfClass:[HomeGridDataSource class]]) {
-        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
+        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
     }
 }
 

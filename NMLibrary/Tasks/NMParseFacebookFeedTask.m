@@ -407,7 +407,7 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr {
-	if ( urlStr == nil ) return NO;
+	if ( urlStr == nil || (id)urlStr == [NSNull null] ) return NO;
 	if ( youTubeRegexArray == nil ) {
 		youTubeRegexArray = [[NSArray alloc] initWithObjects:
 							 [NSRegularExpression regularExpressionWithPattern:@"youtube\\.com/watch\\?v=([\\w-]+)" options:NSRegularExpressionCaseInsensitive error:nil],

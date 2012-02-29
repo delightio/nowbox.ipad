@@ -9,7 +9,10 @@
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
 #import "FacebookGridDataSource.h"
+#import "TwitterGridDataSource.h"
 #import "NMAccountManager.h"
+#import "TwitterAccountPickerViewController.h"
+#import "Analytics.h"
 
 @interface HomeGridDataSource (PrivateMethods)
 - (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate;
@@ -18,6 +21,15 @@
 @implementation HomeGridDataSource
 
 @synthesize fetchedResultsController;
+
+- (id)initWithGridView:(PagingGridView *)aGridView viewController:(UIViewController *)aViewController managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
+{
+    self = [super initWithGridView:aGridView managedObjectContext:aManagedObjectContext];
+    if (self) {
+        viewController = aViewController;
+    }
+    return self;
+}
 
 - (void)dealloc
 {    
@@ -28,6 +40,7 @@
 
 - (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
 {
+    NMAccountManager *accountManager = [NMAccountManager sharedAccountManager];
     NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
     index = [self mappedFetchedResultsIndexForGridIndex:index];
 
@@ -35,20 +48,60 @@
         switch (index - frcObjectCount) {
             case 0: {
                 // Facebook
-                NMAccountManager *accountManager = [NMAccountManager sharedAccountManager];
                 if (![accountManager.facebook isSessionValid]) {
                     [accountManager authorizeFacebook];
+                    [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"homegrid" forKey:AnalyticsPropertySender]];                     
                 }
                 return [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];            
                 break;
             }
-            default:
+            case 1: {
+                // YouTube
                 return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                break;
+            }
+            case 2: {
+                // Twitter
+                if ([accountManager.twitterAccountStatus integerValue]) {
+                    return [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                } else {
+                    // Not logged in to Twitter
+                    if (NM_RUNNING_IOS_5) {
+                        [[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
+                            // User should pick which Twitter account they want to log in to
+                            TwitterAccountPickerViewController *picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:picker];
+                            navController.navigationBar.barStyle = UIBarStyleBlack;
+                            [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+                            picker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissSocialLogin)] autorelease];
+                            
+                            [viewController presentModalViewController:navController animated:YES];
+                            
+                            [navController release];      
+                            [picker release];
+                            
+                            [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"homegrid" forKey:AnalyticsPropertySender]]; 
+                        }];
+                    } else {
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, but Twitter support requires iOS 5.0 or later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        [alertView show];
+                        [alertView release];
+                    }
+                    return self;
+                }
+                break;
+            }
+            default:
                 break;
         }
     }
     
     return nil;
+}
+
+- (void)dismissSocialLogin
+{
+    [viewController dismissModalViewControllerAnimated:YES];
 }
 
 - (id)objectAtIndex:(NSUInteger)index

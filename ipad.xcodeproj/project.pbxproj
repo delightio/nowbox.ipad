@@ -120,6 +120,7 @@
 		83818BF214EC7C7B00CE8C96 /* phone_button_like@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83818BF014EC7C7B00CE8C96 /* phone_button_like@2x.png */; };
 		8381B647145F6B0700696110 /* find-channel-list-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381B646145F6B0600696110 /* find-channel-list-highlighted.png */; };
 		8381B64A145F728A00696110 /* FindChannelTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8381B649145F728A00696110 /* FindChannelTableCell.m */; };
+		8382D56014FEE22E00DDEB6B /* TwitterGridDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 8382D55F14FEE22E00DDEB6B /* TwitterGridDataSource.m */; };
 		838317AA14E9D4D700185DE6 /* phone_video_header_background_portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317A814E9D4D700185DE6 /* phone_video_header_background_portrait.png */; };
 		838317AB14E9D4D700185DE6 /* phone_video_header_background_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317A914E9D4D700185DE6 /* phone_video_header_background_portrait@2x.png */; };
 		838317AE14E9D9C000185DE6 /* phone_video_header_background_landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 838317AC14E9D9C000185DE6 /* phone_video_header_background_landscape.png */; };
@@ -670,6 +671,8 @@
 		8381B646145F6B0600696110 /* find-channel-list-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-list-highlighted.png"; sourceTree = "<group>"; };
 		8381B648145F728A00696110 /* FindChannelTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindChannelTableCell.h; sourceTree = "<group>"; };
 		8381B649145F728A00696110 /* FindChannelTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindChannelTableCell.m; sourceTree = "<group>"; };
+		8382D55E14FEE22E00DDEB6B /* TwitterGridDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwitterGridDataSource.h; sourceTree = "<group>"; };
+		8382D55F14FEE22E00DDEB6B /* TwitterGridDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwitterGridDataSource.m; sourceTree = "<group>"; };
 		838317A814E9D4D700185DE6 /* phone_video_header_background_portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_header_background_portrait.png; sourceTree = "<group>"; };
 		838317A914E9D4D700185DE6 /* phone_video_header_background_portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_header_background_portrait@2x.png"; sourceTree = "<group>"; };
 		838317AC14E9D9C000185DE6 /* phone_video_header_background_landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_header_background_landscape.png; sourceTree = "<group>"; };
@@ -1272,6 +1275,8 @@
 				837A299814E1CA0D00065F32 /* YouTubeGridDataSource.m */,
 				8380FA5E14F6E304000CE0F7 /* FacebookGridDataSource.h */,
 				8380FA5F14F6E305000CE0F7 /* FacebookGridDataSource.m */,
+				8382D55E14FEE22E00DDEB6B /* TwitterGridDataSource.h */,
+				8382D55F14FEE22E00DDEB6B /* TwitterGridDataSource.m */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -2679,6 +2684,7 @@
 				A9C558C214F89E920024EEB3 /* FeatureDebugTwitter.m in Sources */,
 				83EDAB6514FC74DE0058A074 /* GlowLabel.m in Sources */,
 				83EA127F14FD6A0100FDFD05 /* BuzzCommentView.m in Sources */,
+				8382D56014FEE22E00DDEB6B /* TwitterGridDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
