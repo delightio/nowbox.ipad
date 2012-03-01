@@ -966,6 +966,19 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)unrelateChannel:(NMChannel *)chnObj withVideo:(NMVideo *)vid {
+	// check whether the video is in the channel
+	if ( ![chnObj.videos containsObject:vid] ) {
+		// grab the right target object to delete
+		NSSet * vdoProxySet = vid.video.channels;
+		for ( NMVideo * theVid in vdoProxySet) {
+			if ( [theVid.channel isEqual:chnObj] ) {
+				vid = theVid;
+			} else {
+				// make the rest of them dirty
+				vid.nm_make_dirty = (NSNumber *)([vid.nm_make_dirty boolValue] ? kCFBooleanFalse : kCFBooleanTrue);
+			}
+		}
+	}
 	vid.nm_deleted = (NSNumber *)kCFBooleanTrue;
 }
 
