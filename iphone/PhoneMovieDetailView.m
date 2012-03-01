@@ -62,18 +62,22 @@
     [self setFavorite:[video.video.nm_favorite boolValue]];
     
     // Add buzz
-    [portraitView.buzzView removeAllComments];
-    for (NMSocialInfo *socialInfo in video.video.socialMentions) {
-        NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
-        for (NMSocialComment *comment in sortedComments) {
-            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
-            commentView.userImageView.image = nil;
-            commentView.timeLabel.text = [comment relativeTimeString];
+    [portraitView.buzzView removeAllMentions];
+    for (NSUInteger i = 0; i < 3; i++) {
+        for (NMSocialInfo *socialInfo in video.video.socialMentions) {
+            [portraitView.buzzView addMention];
             
-            if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {
-                commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];
-            } else {
-                commentView.serviceIcon.image = nil;
+            NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
+            for (NMSocialComment *comment in sortedComments) {
+                BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
+                commentView.userImageView.image = nil;
+                commentView.timeLabel.text = [comment relativeTimeString];
+                
+                if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {
+                    commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];
+                } else {
+                    commentView.serviceIcon.image = nil;
+                }
             }
         }
     }

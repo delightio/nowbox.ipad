@@ -16,11 +16,10 @@
 @implementation BuzzView
 
 @synthesize contentView;
-@synthesize scrollView;
+@synthesize mentionsScrollView;
 @synthesize touchArea;
 @synthesize noCommentsView;
 @synthesize noCommentsLabel;
-@synthesize actionButtonsView;
 @synthesize showsActionButtons;
 @synthesize delegate;
 
@@ -31,7 +30,9 @@
     contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:contentView];
     
+    commentScrollViews = [[NSMutableArray alloc] init];
     commentViews = [[NSMutableArray alloc] init];  
+    actionButtonViews = [[NSMutableArray alloc] init];
     
     noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:14.0f];
 }
@@ -57,13 +58,14 @@
 - (void)dealloc
 {
     [contentView release];
+    [commentScrollViews release];
     [commentViews release];
-    [scrollView release];
+    [mentionsScrollView release];
     [touchArea release];
     [noCommentsView release];
     [noCommentsLabel release];
-    [actionButtonsView release];
-
+    [actionButtonViews release];
+    
     [super dealloc];
 }
 
@@ -88,93 +90,134 @@
     }    
 }
 
-- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
+- (void)addMention
 {
     noCommentsView.hidden = YES;
+    [commentViews removeAllObjects];
     
-    BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:scrollView.bounds] autorelease];
+    // Create the comments scroll view
+    UIScrollView *commentScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake([commentScrollViews count] * mentionsScrollView.bounds.size.width,
+                                                                                     0,
+                                                                                     mentionsScrollView.bounds.size.width,
+                                                                                     mentionsScrollView.bounds.size.height)];
+    commentScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    commentScrollView.tag = [commentScrollViews count];
+    [mentionsScrollView insertSubview:commentScrollView belowSubview:touchArea];
+    [commentScrollViews addObject:commentScrollView];
+    [commentScrollView release];
+    
+    // Create the action buttons
+    UIButton *likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *commentButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [likeButton setImage:[UIImage imageNamed:@"phone_button_like.png"] forState:UIControlStateNormal];
+    [commentButton setImage:[UIImage imageNamed:@"phone_button_comment.png"] forState:UIControlStateNormal];
+    likeButton.frame = CGRectMake(commentScrollView.frame.origin.x + 244, 4, 50, 50);
+    commentButton.frame = CGRectMake(commentScrollView.frame.origin.x + 244, 52, 50, 50);
+    likeButton.tag = commentScrollView.tag;
+    commentButton.tag = commentScrollView.tag;
+    likeButton.alpha = 0;
+    commentButton.alpha = 0;
+    [likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [mentionsScrollView addSubview:likeButton];
+    [mentionsScrollView addSubview:commentButton];
+    [actionButtonViews addObject:likeButton];
+    [actionButtonViews addObject:commentButton];
+    
+    mentionsScrollView.contentSize = CGSizeMake(CGRectGetMaxX(commentScrollView.frame), mentionsScrollView.bounds.size.height);
+    touchArea.frame = CGRectMake(0, 0, mentionsScrollView.contentSize.width, mentionsScrollView.contentSize.height);
+}
+
+- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
+{    
+    BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:mentionsScrollView.bounds] autorelease];
     commentView.commentLabel.text = text;
     commentView.userLabel.text = username;
     
-    if ([commentViews count] == 0) {
-        commentView.frame = scrollView.bounds;
-    } else {
+    if ([commentViews count] > 0) {
         [commentView sizeToFit];
     }
     
-    [scrollView insertSubview:commentView belowSubview:touchArea];
+    [[commentScrollViews lastObject] insertSubview:commentView belowSubview:touchArea];
     [commentViews addObject:commentView];
     [self repositionComments];
     
     return commentView;
 }
 
-- (void)addComment:(NSString *)comment fromUser:(NSString *)user withImage:(UIImage *)userImage withSocialNetworkImage:(UIImage *)networkImage atTime:(NSString *)timeText
+- (void)removeAllMentions
 {
-    noCommentsView.hidden = YES;
-    
-    BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:scrollView.bounds] autorelease];
-    commentView.userImageView.image = userImage;
-    commentView.userLabel.text = user;
-    commentView.commentLabel.text = comment;
-    commentView.timeLabel.text = timeText;
-    
-    if ([commentViews count] == 0) {
-        commentView.frame = scrollView.bounds;
-    } else {
-        [commentView sizeToFit];
+    for (UIScrollView *scrollView in commentScrollViews) {
+        [scrollView removeFromSuperview];
     }
     
-    [scrollView insertSubview:commentView belowSubview:touchArea];
-    [commentViews addObject:commentView];
-    [self repositionComments];
-}
-
-- (void)removeAllComments
-{
-    for (UIView *view in commentViews) {
+    for (UIView *view in actionButtonViews) {
         [view removeFromSuperview];
     }
+    
+    [commentScrollViews removeAllObjects];
     [commentViews removeAllObjects];
+    [actionButtonViews removeAllObjects];
     noCommentsView.hidden = NO;
+    
+    mentionsScrollView.contentSize = mentionsScrollView.bounds.size;
+    mentionsScrollView.contentOffset = CGPointZero;
+    touchArea.frame = CGRectMake(0, 0, mentionsScrollView.contentSize.width, mentionsScrollView.contentSize.height);    
 }
 
 - (void)repositionComments
 {    
-    CGFloat y = 0;
-    NSUInteger i = 0;
-    for (BuzzCommentView *commentView in commentViews) {
-        CGRect frame = commentView.frame;
-        frame.origin.y = y;
+    for (UIScrollView *commentScrollView in commentScrollViews) {
+        CGFloat y = 0;
+        NSUInteger i = 0;
 
-        if (showsActionButtons || i > 0) {
-            frame.size.width = scrollView.bounds.size.width - actionButtonsView.bounds.size.width;
-            frame.size.height = 1000;    // Limit height arbitrarily to 1000 points
-        } else {
-            frame.size.width = scrollView.bounds.size.width;
-            frame.size.height = scrollView.bounds.size.height;
+        for (UIView *view in commentScrollView.subviews) {
+            if ([view isKindOfClass:[BuzzCommentView class]]) {
+                BuzzCommentView *commentView = (BuzzCommentView *)view;
+                CGRect frame = commentView.frame;
+                frame.origin.y = y;
+
+                if (showsActionButtons || i > 0) {
+                    frame.size.width = commentScrollView.bounds.size.width - 55;
+                    frame.size.height = 1000;    // Limit height arbitrarily to 1000 points
+                } else {
+                    frame.size.width = commentScrollView.bounds.size.width;
+                    frame.size.height = commentScrollView.bounds.size.height;
+                }
+                
+                commentView.frame = frame;
+                
+                if (showsActionButtons || i > 0) {
+                    [commentView sizeToFit];
+                }
+                
+                y += commentView.bounds.size.height;
+                i++;
+            }
         }
         
-        commentView.frame = frame;
-        [commentView sizeToFit];
-        
-        y += commentView.bounds.size.height;
-        i++;        
-    }
-    
-    scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, y);
-    touchArea.frame = CGRectMake(0, 0, scrollView.contentSize.width, MAX(scrollView.contentSize.height, scrollView.frame.size.height));
+        commentScrollView.contentSize = CGSizeMake(commentScrollView.bounds.size.width, y);
+    }    
 }
 
 - (void)setShowsActionButtons:(BOOL)isShowsActionButtons
 {
     if (showsActionButtons != isShowsActionButtons) {
         showsActionButtons = isShowsActionButtons;
-        actionButtonsView.alpha = (showsActionButtons && [commentViews count] ? 1.0f : 0.0f);
-        scrollView.scrollEnabled = showsActionButtons && [commentViews count];
-        if (!showsActionButtons) {
-            scrollView.contentOffset = CGPointZero;
+        
+        for (UIView *view in actionButtonViews) {
+            view.alpha = (showsActionButtons && [commentViews count] ? 1.0f : 0.0f);
         }
+
+        for (UIScrollView *scrollView in commentScrollViews) {
+            if (!showsActionButtons) {
+                scrollView.contentOffset = CGPointZero;
+                scrollView.scrollEnabled = NO;
+            } else {
+                scrollView.scrollEnabled = YES;
+            }
+        }
+        
         [self repositionComments];
     }
 }
