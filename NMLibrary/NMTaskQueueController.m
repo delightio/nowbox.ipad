@@ -412,7 +412,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 #if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
 #endif
-	if ( sessionID ) {
+	if ( sessionID && (chnObj.resource_uri != nil && ![chnObj.resource_uri isEqualToString:@""] ) ) {
 		NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetMoreVideoForChannel:chnObj];
 		[networkController addNewConnectionForTask:task];
 		[task release];
@@ -557,15 +557,37 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueShareWithService:(NMSocialLoginType)serType video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString {
-	NMPostSharingTask * task = [[NMPostSharingTask alloc] initWithType:serType video:aVideo];
-	task.message = aString;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-	
-	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:YES];
-	[networkController addNewConnectionForTask:opTask];
-	[opTask release];
+	// every new share is treated as a separate instance on Facebook or Twitter
+	NMSocialInfo * info = [dataController insertNewSocialInfo];
+	info.video = aVideo.video;
+	info.nm_type = [NSNumber numberWithInteger:(serType == NMLoginFacebookType ? NMChannelUserFacebookType : NMChannelUserTwitterType)];
+	// This is a new info. Make sure the task saves the object_id and URLs back when submit is sucessful
+	NMSocialComment * cmtObj = [dataController insertNewSocialComment];
+	cmtObj.socialInfo = info;
+	cmtObj.message = aString;
+	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
+	NMChannelType chnType = [info.nm_type integerValue];
+	switch (chnType) {
+		case NMChannelUserFacebookType:
+		{
+			// send it to facebook
+			NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:aString];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		case NMChannelUserTwitterType:
+		{
+			// Send a new tweet to Twitter. Do NOT use this for replying or retweeting
+			NMPostTweetTask * task = [[NMPostTweetTask alloc] initPostComment:cmtObj];
+			task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		default:
+			break;
+	}
 }
 
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd {

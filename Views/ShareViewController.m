@@ -9,6 +9,7 @@
 #import "ShareViewController.h"
 #import "ipadAppDelegate.h"
 #import "SocialLoginViewController.h"
+#import "TwitterAccountPickerViewController.h"
 #import "NMTaskQueueController.h"
 #import "NMDataType.h"
 #import "Analytics.h"
@@ -19,7 +20,7 @@
 
 #define kMaxTwitterCharacters 119
 #define kDefaultFacebookText @"Watching \"%@\""
-#define kDefaultTwitterText @"Watching \"%@\""
+#define kDefaultTwitterText @"Watching \"%@\" http://youtu.be/%@"
 
 @implementation ShareViewController
 
@@ -42,10 +43,12 @@
         self.duration = aDuration;
         self.elapsedSeconds = anElapsedSeconds;
 
+		// Twitter and Facebook messages are sent locally in separate pathway. The set of notification to listen to below is different from original 1.x version.
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
-        [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
-        [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostNewFacebookLinkNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostNewFacebookLinkNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostTweetNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostTweetNotification object:nil];
         
         videoAlreadyFavorited = [aVideo.video.nm_favorite boolValue];
         
@@ -53,6 +56,8 @@
                                                                                   style:UIBarButtonItemStyleBordered
                                                                                  target:nil
                                                                                  action:nil] autorelease];
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1001];
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1002];
     }
     return self;
 }
@@ -60,6 +65,19 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+	
+	@try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
+	@try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
     
     [messageText release];
     [characterCountLabel release];
@@ -83,11 +101,11 @@
         self.title = @"Twitter";
         [shareButton setTitle:@"TWEET" forState:UIControlStateNormal];
         characterCountLabel.hidden = NO;
-        messageText.text = [NSString stringWithFormat:kDefaultTwitterText, video.video.title];            
+        messageText.text = [NSString stringWithFormat:kDefaultTwitterText, video.video.title, video.video.external_id];            
     }
 }
 
-- (void)showLoginPage
+- (void)showTwitterLoginPage
 {
     UIView *superview = self.navigationController.view.superview;
     
@@ -97,25 +115,16 @@
     void (^completion)(BOOL) = ^(BOOL finished){
         superview.layer.shadowOpacity = oldShadowOpacity;
         
-        // Go to Twitter/FB login page
-        SocialLoginViewController *loginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:[NSBundle mainBundle]];
-        loginController.navigationItem.backBarButtonItem.title = @"Back";
-        NMSocialLoginType loginType;
-        NSString *analyticsEvent;
+		// show twitter login view
+		[[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
+			TwitterAccountPickerViewController * twitterAccountPicker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+			twitterAccountPicker.navigationItem.backBarButtonItem.title = @"Back";
+			
+			[self.navigationController pushViewController:twitterAccountPicker animated:YES];
+			[twitterAccountPicker release];
+		}];
         
-        if (shareMode == ShareModeTwitter) {
-            loginType = NMLoginTwitterType;
-            analyticsEvent = AnalyticsEventStartTwitterLogin;
-        } else {
-            loginType = NMLoginFacebookType;
-            analyticsEvent = AnalyticsEventStartFacebookLogin;
-        }
-        
-        loginController.loginType = loginType;
-        [self.navigationController pushViewController:loginController animated:YES];
-        [loginController release];
-        
-        [[MixpanelAPI sharedAPI] track:analyticsEvent properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
     };
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -240,7 +249,7 @@
 - (IBAction)shareButtonPressed:(id)sender
 {
     if (shareMode == ShareModeFacebook) {
-        if (NM_USER_FACEBOOK_CHANNEL_ID != 0) {
+        if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] != 0) {
             // Post on Facebook
             [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:NMLoginFacebookType
                                                                                video:video 
@@ -259,7 +268,7 @@
             [alertView release];
         }
     } else {
-        if (NM_USER_TWITTER_CHANNEL_ID != 0) {
+        if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] != 0) {
             // Post on Twitter
             NSInteger remainingCharacters = kMaxTwitterCharacters - [[messageText text] length];
             if (remainingCharacters >= 0) {
@@ -296,6 +305,32 @@
 }
 
 #pragma mark - Notifications
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInd = (NSInteger)context;
+	switch (ctxInd) {
+		case 1001:
+			// facebook
+			if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress ) {
+				[self shareButtonPressed:self];
+				// stop listening so that we won't get repeated KVO
+				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+			}
+			break;
+			
+		case 1002:
+			// twitter
+			if ( [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncPendingInitialSync ) {
+				autoPost = YES;
+				[self.navigationController popViewControllerAnimated:YES];
+				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+			}
+			break;
+			
+		default:
+			break;
+	}
+}
 
 - (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
 {
@@ -362,11 +397,6 @@
                                                                          nil]];
 }
 
-- (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification 
-{
-    autoPost = YES;
-}
-
 #pragma mark - UITextViewDelegate
 
 - (void)textViewDidChange:(UITextView *)textView
@@ -386,7 +416,19 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        [self showLoginPage];
+		switch (shareMode) {
+			case ShareModeTwitter:
+				[self showTwitterLoginPage];
+				break;
+				
+			case ShareModeFacebook:
+				// jump to facebook page directly
+				[[NMAccountManager sharedAccountManager] authorizeFacebook];			
+				break;
+				
+			default:
+				break;
+		}
     }
 }
 

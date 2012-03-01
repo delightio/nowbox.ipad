@@ -707,6 +707,8 @@ NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
 	NSLog(@"facebook error: %@", error);
  	NMFacebookTask * fbTask = request.task;
+	fbTask.state = NMTaskExecutionStateConnectionFailed;
+	[self postConnectionErrorNotificationOnMainThread:error forTask:fbTask];
    // release the connection, and the data object
 	[commandIndexPool removeIndex:[fbTask commandIndex]];
 	// remove task

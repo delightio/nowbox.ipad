@@ -42,7 +42,7 @@ typedef enum {
 	NMCommandImportYouTubeVideo,
 	NMCommandGetVimeoDirectURL,
 	NMCommandCheckUpdate,
-	NMCommandPostSharing,
+//	NMCommandPostSharing,
 	NMCommandGetCategoryThumbnail,
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
@@ -54,6 +54,7 @@ typedef enum {
 	NMCommandPostFacebookLike,
 	NMCommandDeleteFacebookLike,
 	NMCommandPostFacebookComment,
+	NMCommandPostNewFacebookLink,
 	NMCommandDeleteFacebookComment,
 	NMCommandPostOpenGraphWatch,
 	NMCommandPostOpenGraphSubscribe,
@@ -111,6 +112,7 @@ typedef enum {
 	NMSyncSyncInProgress,
 	NMSyncAccountActive,
 	NMSyncPendingDelete,
+	NMSyncInitialSyncError,
 } NMSyncStatusType;
 
 typedef enum {
@@ -235,9 +237,9 @@ extern NSString * const NMDidFailEnqueueVideoNotification;
 extern NSString * const NMWillDequeueVideoNotification;
 extern NSString * const NMDidDequeueVideoNotification;
 extern NSString * const NMDidFailDequeueVideoNotification;
-extern NSString * const NMWillPostSharingNotification;
-extern NSString * const NMDidPostSharingNotification;
-extern NSString * const NMDidFailPostSharingNotification;
+//extern NSString * const NMWillPostSharingNotification;
+//extern NSString * const NMDidPostSharingNotification;
+//extern NSString * const NMDidFailPostSharingNotification;
 
 // video
 extern NSString * const NMWillGetChannelVideListNotification;
@@ -269,6 +271,15 @@ extern NSString * const NMDidFailGetFacebookProfileNotification;
 extern NSString * const NMWillParseFacebookFeedNotification;
 extern NSString * const NMDidParseFacebookFeedNotification;
 extern NSString * const NMDidFailParseFacebookFeedNotification;
+extern NSString * const NMWillPostNewFacebookLinkNotification;
+extern NSString * const NMDidPostNewFacebookLinkNotification;
+extern NSString * const NMDidFailPostNewFacebookLinkNotification;
+extern NSString * const NMWillPostFacebookCommentNotification;
+extern NSString * const NMDidPostFacebookCommentNotification;
+extern NSString * const NMDidFailPostFacebookCommentNotification;
+extern NSString * const NMWillDeleteFacebookCommentNotification;
+extern NSString * const NMDidDeleteFacebookCommentNotification;
+extern NSString * const NMDidFailDeleteFacebookCommentNotification;
 
 // twitter
 extern NSString * const NMWillParseTwitterFeedNotification;
@@ -277,6 +288,15 @@ extern NSString * const NMDidFailParseTwitterFeedNotification;
 extern NSString * const NMWillGetTwitterProfileNotification;
 extern NSString * const NMDidGetTwitterProfileNotification;
 extern NSString * const NMDidFailGetTwitterProfileNotification;
+extern NSString * const NMWillPostRetweetNotification;
+extern NSString * const NMDidPostRetweetNotification;
+extern NSString * const NMDidFailPostRetweetNotification;
+extern NSString * const NMWillReplyTweetNotificaiton;
+extern NSString * const NMDidReplyTweetNotificaiton;
+extern NSString * const NMDidFailReplyTweetNotificaiton;
+extern NSString * const NMWillPostTweetNotification;
+extern NSString * const NMDidPostTweetNotification;
+extern NSString * const NMDidFailPostTweetNotification;
 // twitter rate control
 extern NSString * const NMTwitterAPIRateControlNotification;
 extern NSString * const NMTwitterAPIRemainLimitKey;

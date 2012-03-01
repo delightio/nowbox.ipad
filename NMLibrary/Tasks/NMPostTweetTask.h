@@ -18,6 +18,7 @@
 @property (nonatomic, retain) ACAccount * account;
 @property (nonatomic, retain) NSString * message;
 @property (nonatomic, retain) NSString * tweetID;
+@property (nonatomic, retain) NMSocialComment * comment;
 
 // for retweet init with comment
 - (id)initRetweetComment:(NMSocialComment *)cmt;
