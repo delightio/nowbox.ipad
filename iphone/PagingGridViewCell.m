@@ -101,11 +101,13 @@
 - (void)setEditing:(BOOL)isEditing
 {
     editing = isEditing;
-    
+
     if (editing) {
         contentView.transform = CGAffineTransformMakeScale(kEditingScaleFactor, kEditingScaleFactor);
     } else {
         contentView.transform = CGAffineTransformIdentity;
+        contentView.frame = self.bounds;
+        contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     
     if (editing && [delegate respondsToSelector:@selector(gridViewCellShouldShowDeleteButton:)] && [delegate gridViewCellShouldShowDeleteButton:self]) {

@@ -281,10 +281,10 @@
     if (view) {
         view.index = index;
         view.delegate = self;
-        view.editing = rearranging;
         view.columnSpan = [self columnSpanForCellAtIndex:index];
         view.rowSpan = [self rowSpanForCellAtIndex:index];
         view.frame = [self frameForIndex:index columnSpan:view.columnSpan rowSpan:view.rowSpan];
+        view.editing = rearranging && [dataSource gridView:self canRearrangeItemAtIndex:index];
 
         [visibleViews addObject:view];
         [self addSubview:view];    
