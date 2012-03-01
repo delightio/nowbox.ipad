@@ -626,7 +626,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// check if any of the video is marked as error
 	// this for-loop does NOT guarantee to run. Sometimes, we can get free movie detail view even if there's movie detail view occupied by bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
-		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError ) {
+		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError || [theView.video.nm_deleted boolValue] ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
 			theView.alpha = 1.0f;
 			return theView;
@@ -947,7 +947,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
 #ifdef DEBUG_PLAYBACK_QUEUE
-			NSLog(@"current idx: %d video: %@", playbackModelController.currentIndexPath.row, playbackModelController.currentVideo.title);
+			NSLog(@"current idx: %d video: %@", playbackModelController.currentIndexPath.row, playbackModelController.currentVideo.video.title);
 #endif
 			// update offset
 			currentXOffset = newOffset;
@@ -996,7 +996,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
-	NSLog(@"KVO observing: %@", theItem.nmVideo.title);
+	NSLog(@"KVO observing: %@", theItem.nmVideo.video.title);
 #endif
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
@@ -1009,7 +1009,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
 	if ( theItem.nmVideo ) {
-		NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
+		NSLog(@"KVO stop observing: %@", theItem.nmVideo.video.title);
 	} else {
 		NSLog(@"KVO observing object is nil");
 	}
