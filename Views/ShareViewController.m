@@ -20,7 +20,7 @@
 
 #define kMaxTwitterCharacters 119
 #define kDefaultFacebookText @"Watching \"%@\""
-#define kDefaultTwitterText @"Watching \"%@\""
+#define kDefaultTwitterText @"Watching \"%@\" http://youtu.be/%@"
 
 @implementation ShareViewController
 
@@ -91,7 +91,7 @@
         self.title = @"Twitter";
         [shareButton setTitle:@"TWEET" forState:UIControlStateNormal];
         characterCountLabel.hidden = NO;
-        messageText.text = [NSString stringWithFormat:kDefaultTwitterText, video.video.title];            
+        messageText.text = [NSString stringWithFormat:kDefaultTwitterText, video.video.title, video.video.external_id];            
     }
 }
 
