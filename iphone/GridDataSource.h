@@ -18,8 +18,8 @@
 @property (nonatomic, assign) BOOL ignoresMoveChanges;
 
 - (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
-- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
 - (id)objectAtIndex:(NSUInteger)index;
+- (NMChannel *)selectObjectAtIndex:(NSUInteger)index;
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
 - (void)deleteObjectAtIndex:(NSUInteger)index;
 - (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex;

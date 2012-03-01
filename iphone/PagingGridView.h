@@ -59,10 +59,11 @@
 
 @protocol PagingGridViewDelegate <NSObject>
 @optional
+- (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource;
 - (void)gridView:(PagingGridView *)gridView didSelectItemAtIndex:(NSUInteger)index;
 - (void)gridView:(PagingGridView *)aGridView willDeleteItemAtIndex:(NSUInteger)index;
 - (BOOL)gridView:(PagingGridView *)aGridView shouldDeleteItemAtIndex:(NSUInteger)index;
-- (void)gridView:(PagingGridView *)aGridView didDeleteItemAtIndex:(NSUInteger)index;
+- (void)gridView:(PagingGridView *)aGridView numberOfItemsDidChange:(NSUInteger)numberOfItems;
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView;
 - (void)gridView:(PagingGridView *)gridView didMoveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 - (void)gridViewDidEndRearranging:(PagingGridView *)gridView;

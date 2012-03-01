@@ -38,7 +38,7 @@
     [super dealloc];
 }
 
-- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
+- (NMChannel *)selectObjectAtIndex:(NSUInteger)index
 {
     NMAccountManager *accountManager = [NMAccountManager sharedAccountManager];
     NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
@@ -52,18 +52,19 @@
                     [accountManager authorizeFacebook];
                     [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"homegrid" forKey:AnalyticsPropertySender]];                     
                 }
-                return [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];            
+                
+                self.gridView.dataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];            
                 break;
             }
             case 1: {
                 // YouTube
-                return [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                self.gridView.dataSource = [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
                 break;
             }
             case 2: {
                 // Twitter
                 if ([accountManager.twitterAccountStatus integerValue]) {
-                    return [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                    self.gridView.dataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];                    
                 } else {
                     // Not logged in to Twitter
                     if (NM_RUNNING_IOS_5) {
@@ -87,21 +88,23 @@
                         [alertView show];
                         [alertView release];
                     }
-                    return self;
                 }
                 break;
             }
             default:
                 break;
         }
+        
+        return nil;
+    } else {
+        return [[self objectAtIndex:index] channel];
     }
-    
-    return nil;
 }
 
 - (void)dismissSocialLogin
 {
     [viewController dismissModalViewControllerAnimated:YES];
+    self.gridView.dataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
 }
 
 - (id)objectAtIndex:(NSUInteger)index

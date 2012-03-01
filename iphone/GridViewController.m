@@ -76,17 +76,7 @@
 
 #pragma mark - Actions
 
-- (IBAction)searchButtonPressed:(id)sender
-{
-    
-}
-
 - (IBAction)refreshButtonPressed:(id)sender
-{
-    
-}
-
-- (IBAction)settingsButtonPressed:(id)sender
 {
     
 }
@@ -102,17 +92,16 @@
 
 #pragma mark - PagingGridViewDelegate
 
+- (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource
+{
+    self.gridDataSource = (GridDataSource *)newDataSource;
+}
+
 - (void)gridView:(PagingGridView *)aGridView didSelectItemAtIndex:(NSUInteger)index
 {
-    GridDataSource *nextDataSource = [gridDataSource nextDataSourceForIndex:index];
-    
-    if (nextDataSource) {
-        // Load another set of grid items
-        self.gridDataSource = nextDataSource;
-    } else {
+    NMChannel *channel = [gridDataSource selectObjectAtIndex:index];
+    if (channel) {
         // Go to video player
-        NMChannel *channel = [[gridDataSource objectAtIndex:index] channel];
-        
         PhoneVideoPlaybackViewController *playbackController = [[PhoneVideoPlaybackViewController alloc] initWithNibName:@"PhoneVideoPlaybackView" bundle:nil];
         [playbackController setManagedObjectContext:managedObjectContext];
         [self presentModalViewController:playbackController animated:NO];
@@ -129,10 +118,10 @@
     return NO;
 }
 
-- (void)gridView:(PagingGridView *)aGridView didDeleteItemAtIndex:(NSUInteger)index
+- (void)gridView:(PagingGridView *)aGridView numberOfItemsDidChange:(NSUInteger)numberOfItems
 {
     pageControl.numberOfPages = aGridView.numberOfPages;
-    pageControl.currentPage = aGridView.currentPage;
+    pageControl.currentPage = aGridView.currentPage;    
 }
 
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView

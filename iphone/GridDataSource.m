@@ -32,13 +32,13 @@
     [super dealloc];
 }
 
-- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
+- (id)objectAtIndex:(NSUInteger)index
 {
     // To be overriden by subclasses
     return nil;
 }
 
-- (id)objectAtIndex:(NSUInteger)index
+- (NMChannel *)selectObjectAtIndex:(NSUInteger)index
 {
     // To be overriden by subclasses
     return nil;

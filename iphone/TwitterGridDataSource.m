@@ -23,9 +23,9 @@
     [super dealloc];
 }
 
-- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
+- (NMChannel *)selectObjectAtIndex:(NSUInteger)index
 {
-    return nil;
+    return [[self objectAtIndex:index] channel];
 }
 
 - (id)objectAtIndex:(NSUInteger)index

@@ -128,6 +128,10 @@
     if (dataSource != aDataSource) {
         dataSource = aDataSource;
         [self reloadData];
+        
+        if ([gridDelegate respondsToSelector:@selector(gridView:dataSourceDidChange:)]) {
+            [gridDelegate gridView:self dataSourceDidChange:dataSource];
+        }
     }
 }
 
@@ -408,6 +412,10 @@
     [visibleIndexes removeAllIndexes];
     
     [self setNeedsLayout];
+    
+    if ([gridDelegate respondsToSelector:@selector(gridView:numberOfItemsDidChange:)]) {
+        [gridDelegate gridView:self numberOfItemsDidChange:numberOfItems];
+    }
 }
 
 #pragma mark - Updates
@@ -442,6 +450,10 @@
     numberOfItems++;
     [self updateNumberOfPages];
     [self setNeedsLayout];
+    
+    if ([gridDelegate respondsToSelector:@selector(gridView:numberOfItemsDidChange:)]) {
+        [gridDelegate gridView:self numberOfItemsDidChange:numberOfItems];
+    }
 }
 
 - (void)deleteItemAtIndex:(NSUInteger)index animated:(BOOL)animated
@@ -497,8 +509,8 @@
         
         [self setNeedsLayout];   
         
-        if ([gridDelegate respondsToSelector:@selector(gridView:didDeleteItemAtIndex:)]) {
-            [gridDelegate gridView:self didDeleteItemAtIndex:index];
+        if ([gridDelegate respondsToSelector:@selector(gridView:numberOfItemsDidChange:)]) {
+            [gridDelegate gridView:self numberOfItemsDidChange:numberOfItems];
         }
     };
     
