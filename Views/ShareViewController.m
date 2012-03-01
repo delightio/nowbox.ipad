@@ -66,8 +66,18 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 	
-	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
-	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+	@try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
+	@try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
     
     [messageText release];
     [characterCountLabel release];
@@ -301,8 +311,10 @@
 	switch (ctxInd) {
 		case 1001:
 			// facebook
-			if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncPendingInitialSync ) {
+			if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress ) {
 				[self shareButtonPressed:self];
+				// stop listening so that we won't get repeated KVO
+				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
 			}
 			break;
 			
@@ -311,6 +323,7 @@
 			if ( [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncPendingInitialSync ) {
 				autoPost = YES;
 				[self.navigationController popViewControllerAnimated:YES];
+				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
 			}
 			break;
 			
