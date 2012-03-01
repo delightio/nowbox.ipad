@@ -1503,9 +1503,9 @@
     [self playStopVideo:nil];
 }
 
-- (void)videoInfoViewDidTapLikeButton:(PhoneMovieDetailView *)videoInfoView
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didLike:(BOOL)like socialInfo:(NMSocialInfo *)socialInfo
 {
-
+    [[NMTaskQueueController sharedTaskQueueController] issuePostLike:like forPost:socialInfo];
 }
 
 - (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView

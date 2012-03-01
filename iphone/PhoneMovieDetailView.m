@@ -40,6 +40,8 @@
     [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
     [self updateControlsViewForCurrentOrientation];
     [currentOrientedView addSubview:controlsView];
+    
+    mentionsArray = [[NSMutableArray alloc] init];
 }
 
 - (void)dealloc
@@ -47,6 +49,7 @@
     [portraitView release];
     [landscapeView release];
     [controlsView release];
+    [mentionsArray release];
     
     [super dealloc];
 }
@@ -62,9 +65,14 @@
     [self setFavorite:[video.video.nm_favorite boolValue]];
     
     // Add buzz
+    [mentionsArray removeAllObjects];
     [portraitView.buzzView removeAllMentions];
+    
     for (NMSocialInfo *socialInfo in video.video.socialMentions) {
-        [portraitView.buzzView addMention];
+        BOOL mentionLikedByUser = [socialInfo.peopleLike containsObject:[[NMAccountManager sharedAccountManager] facebookProfile]];
+
+        [mentionsArray addObject:socialInfo];
+        [portraitView.buzzView addMentionLiked:mentionLikedByUser];
         
         NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
         for (NMSocialComment *comment in sortedComments) {
@@ -79,6 +87,7 @@
             }
         }
     }
+    [portraitView.buzzView doneAdding];
 }
 
 - (void)setChannelTitle:(NSString *)channelTitle
@@ -321,14 +330,28 @@
 
 - (void)buzzView:(BuzzView *)buzzView didPressLikeButton:(id)sender
 {
-    if ([delegate respondsToSelector:@selector(videoInfoViewDidTapLikeButton:)]) {
-        [delegate videoInfoViewDidTapLikeButton:self];
+    NSUInteger mentionIndex = [sender tag];
+    NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
+    
+    if ([delegate respondsToSelector:@selector(videoInfoView:didLike:socialInfo:)]) {
+        [delegate videoInfoView:self didLike:YES socialInfo:socialInfo];
+    }
+}
+
+- (void)buzzView:(BuzzView *)buzzView didPressUnlikeButton:(id)sender
+{
+    NSUInteger mentionIndex = [sender tag];
+    NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
+    
+    if ([delegate respondsToSelector:@selector(videoInfoView:didLike:socialInfo:)]) {
+        [delegate videoInfoView:self didLike:NO socialInfo:socialInfo];
     }
 }
 
 - (void)buzzView:(BuzzView *)buzzView didPressCommentButton:(id)sender
 {
-    
+//    NSUInteger mentionIndex = [sender tag];
+//    NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
 }
 
 @end

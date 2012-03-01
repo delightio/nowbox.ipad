@@ -16,6 +16,7 @@
 
 @interface PhoneMovieDetailView : NMMovieDetailView <PhoneVideoInfoOrientedViewDelegate, BuzzViewDelegate> {
     PhoneVideoInfoOrientedView *currentOrientedView;
+    NSMutableArray *mentionsArray;
 }
 
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *portraitView;
@@ -49,7 +50,7 @@
 @optional
 - (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView;
-- (void)videoInfoViewDidTapLikeButton:(PhoneMovieDetailView *)videoInfoView;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didLike:(BOOL)like socialInfo:(NMSocialInfo *)socialInfo;
 - (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchDownSeekBar:(NMSeekBar *)seekBar;
