@@ -21,7 +21,7 @@
 #import "NMUserSettingsTask.h"
 #import "NMCheckUpdateTask.h"
 #import "NMTokenTask.h"
-#import "NMPostSharingTask.h"
+//#import "NMPostSharingTask.h"
 #import "NMPollUserTask.h"
 #import "NMDeauthorizeUserTask.h"
 #import "NMUserSynchronizeTask.h"

@@ -27,11 +27,13 @@ NSString * const NMDidFailPostTweetNotification = @"NMDidFailPostTweetNotificati
 @synthesize account = _account;
 @synthesize message = _message;
 @synthesize tweetID = _tweetID;
+@synthesize comment = _comment;
 
 - (id)initRetweetComment:(NMSocialComment *)cmt {
 	self = [super init];
 	command = NMCommandRetweet;
 	self.tweetID = cmt.object_id;
+	self.comment = cmt;
 	return self;
 }
 
@@ -40,6 +42,7 @@ NSString * const NMDidFailPostTweetNotification = @"NMDidFailPostTweetNotificati
 	command = NMCommandReplyTweet;
 	self.message = cmt.message;
 	self.tweetID = cmt.object_id;
+	self.comment = cmt;
 	return self;
 }
 
@@ -47,6 +50,7 @@ NSString * const NMDidFailPostTweetNotification = @"NMDidFailPostTweetNotificati
 	self = [super init];
 	command = NMCommandPostTweet;
 	self.message = cmt.message;
+	self.comment = cmt;
 	return self;
 }
 
@@ -72,7 +76,7 @@ NSString * const NMDidFailPostTweetNotification = @"NMDidFailPostTweetNotificati
 		case NMCommandReplyTweet:
 		{
 			urlStr = @"http://api.twitter.com/1/statuses/update.json";
-			NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:_message, @"status", _tweetID, @"in_reply_to_status_id", nil];
+			NSDictionary * dict = [NSDictionary dictionaryWithObjectsAndKeys:[NMTask stringByAddingPercentEscapes:_message], @"status", _tweetID, @"in_reply_to_status_id", nil];
 			twitRequest	= [[TWRequest alloc] initWithURL:[NSURL URLWithString:urlStr] parameters:dict requestMethod:TWRequestMethodPOST];
 			break;
 		}	
@@ -161,6 +165,10 @@ NSString * const NMDidFailPostTweetNotification = @"NMDidFailPostTweetNotificati
 			break;
 	}
 	return str;
+}
+
+- (NSDictionary *)userInfo {
+	return [NSDictionary dictionaryWithObject:_comment forKey:@"socialComment"];
 }
 
 @end

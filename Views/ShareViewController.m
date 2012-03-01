@@ -43,10 +43,12 @@
         self.duration = aDuration;
         self.elapsedSeconds = anElapsedSeconds;
 
+		// Twitter and Facebook messages are sent locally in separate pathway. The set of notification to listen to below is different from original 1.x version.
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostSharingNotification object:nil];
-        [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostSharingNotification object:nil];
-        [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostNewFacebookLinkNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostNewFacebookLinkNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostTweetNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostTweetNotification object:nil];
         
         videoAlreadyFavorited = [aVideo.video.nm_favorite boolValue];
         
@@ -104,11 +106,13 @@
         superview.layer.shadowOpacity = oldShadowOpacity;
         
 		// show twitter login view
-		TwitterAccountPickerViewController * twitterAccountPicker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
-		twitterAccountPicker.navigationItem.backBarButtonItem.title = @"Back";
-		
-        [self.navigationController pushViewController:twitterAccountPicker animated:YES];
-		[twitterAccountPicker release];
+		[[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
+			TwitterAccountPickerViewController * twitterAccountPicker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+			twitterAccountPicker.navigationItem.backBarButtonItem.title = @"Back";
+			
+			[self.navigationController pushViewController:twitterAccountPicker animated:YES];
+			[twitterAccountPicker release];
+		}];
         
         [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];
     };
@@ -235,7 +239,7 @@
 - (IBAction)shareButtonPressed:(id)sender
 {
     if (shareMode == ShareModeFacebook) {
-        if (NM_USER_FACEBOOK_CHANNEL_ID != 0) {
+        if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] != 0) {
             // Post on Facebook
             [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:NMLoginFacebookType
                                                                                video:video 
@@ -254,7 +258,7 @@
             [alertView release];
         }
     } else {
-        if (NM_USER_TWITTER_CHANNEL_ID != 0) {
+        if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] != 0) {
             // Post on Twitter
             NSInteger remainingCharacters = kMaxTwitterCharacters - [[messageText text] length];
             if (remainingCharacters >= 0) {
@@ -298,8 +302,7 @@
 		case 1001:
 			// facebook
 			if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncPendingInitialSync ) {
-				autoPost = YES;
-				[self dismissModalViewControllerAnimated:YES];
+				[self shareButtonPressed:self];
 			}
 			break;
 			
@@ -307,7 +310,7 @@
 			// twitter
 			if ( [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncPendingInitialSync ) {
 				autoPost = YES;
-				[self dismissModalViewControllerAnimated:YES];
+				[self.navigationController popViewControllerAnimated:YES];
 			}
 			break;
 			
@@ -379,11 +382,6 @@
                                                                          video.video.nm_id, AnalyticsPropertyVideoId,
                                                                          (shareMode == ShareModeTwitter ? @"Twitter" : @"Facebook"), AnalyticsPropertyShareType,
                                                                          nil]];
-}
-
-- (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification 
-{
-    autoPost = YES;
 }
 
 #pragma mark - UITextViewDelegate

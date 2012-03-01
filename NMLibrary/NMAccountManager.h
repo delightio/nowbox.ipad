@@ -19,6 +19,8 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 	id signOutTarget;
 	SEL signOutAction;
 	NSInteger numberOfVideoImported;
+	BOOL leftAppSessionForTwitter;
+	void (^twitterGrantBlock)(void);
 }
 
 @property (nonatomic, retain) NSUserDefaults * userDefaults;

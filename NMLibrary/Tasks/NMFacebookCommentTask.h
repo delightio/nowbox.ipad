@@ -15,6 +15,7 @@
 @property (nonatomic, retain) NMSocialInfo * postInfo;
 @property (nonatomic, retain) NSString * objectID;
 @property (nonatomic, retain) NSString * message;
+@property (nonatomic, retain) NSString * externalID;
 
 - (id)initWithInfo:(NMSocialInfo *)info message:(NSString *)msg;
 

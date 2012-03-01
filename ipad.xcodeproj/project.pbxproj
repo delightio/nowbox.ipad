@@ -399,7 +399,6 @@
 		A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */; };
 		A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A989C592144D197B00CBC94D /* NMPollChannelTask.m */; };
 		A96BB8B21468AA31004B93ED /* NMPostSharingTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A96BB8B01468AA31004B93ED /* NMPostSharingTask.h */; };
-		A96BB8B31468AA31004B93ED /* NMPostSharingTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96BB8B11468AA31004B93ED /* NMPostSharingTask.m */; };
 		A96F926514EB2EE600B51509 /* NMPersonProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A96F926214EB2EE600B51509 /* NMPersonProfile.m */; };
 		A96F926614EB2EE600B51509 /* NMSubscription.m in Sources */ = {isa = PBXBuildFile; fileRef = A96F926414EB2EE600B51509 /* NMSubscription.m */; };
 		A970506B13438F860022BF2C /* VideoPlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A970501713438F860022BF2C /* VideoPlaybackViewController.m */; };
@@ -2710,7 +2709,6 @@
 				A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */,
 				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
 				A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */,
-				A96BB8B31468AA31004B93ED /* NMPostSharingTask.m in Sources */,
 				A9B9FBF81473D97200953E40 /* NMUserSynchronizeTask.m in Sources */,
 				A9E285EC14C300A700B4AB5C /* NMURLConnection.m in Sources */,
 				A9128C7514C3D98B00A3861D /* NMParseFacebookFeedTask.m in Sources */,

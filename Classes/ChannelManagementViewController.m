@@ -255,23 +255,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     massUpdate = YES;
 }
 
-- (void)handleAppResumeNotification:(NSNotification *)aNotification {
-	// check if the user is resuming the app after signing in twitter
-	if ( leftAppSessionForTwitter ) {
-		if ( [TWTweetComposeViewController canSendTweet] ) {
-			// push in the account selection view
-			[[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
-				// user needs to pick which account(s) s/he wanna hook up to
-				TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
-				[self.navigationController pushViewController:picker animated:YES];
-				[picker release];
-			}];
-		}
-		// unregister the notification
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
-	}
-}
-
 #pragma mark Target-action methods
 
 - (void)showSearchView:(id)sender {
@@ -1094,35 +1077,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         return textLabelSize.width + 40.0f;
     }
     return 0.0f;
-}
-
-#pragma mark UIAlertView delegates
-- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
-	// All alert view in this view controller has no delegate except the one for Twitter sign in. Code below should be useless.
-//    if (buttonIndex != [alertView cancelButtonIndex]) {
-//        UIActivityIndicatorView *actView;
-//        actView = (UIActivityIndicatorView *)[cellToUnsubscribeFrom viewWithTag:15];
-//        [actView startAnimating];
-//        
-//        UIButton *buttonView = (UIButton *)[cellToUnsubscribeFrom viewWithTag:11];
-//        
-//        [UIView animateWithInteractiveDuration:0.3
-//                         animations:^{
-//                             [actView setAlpha:1];
-//                             [buttonView setImage:nil forState:UIControlStateNormal];
-//                         }
-//                         completion:^(BOOL finished) {
-//                         }];
-//        
-//        [nowboxTaskController issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
-//    }
-	// the condition for Twitter sign in. 
-	if ( buttonIndex == 1 ) {
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=TWITTER"]];
-		leftAppSessionForTwitter = YES;
-		// listen to app switching notification
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppResumeNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
-	}
 }
  
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {

@@ -139,6 +139,30 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	// cancelling all tasks can cause problem when the app resumes. Say, if we are trying to resolve the vidoe, when canceling the resolution task, we should make reset the status variable of the NMVideo object so that the backend knows how to resolve them again.
 }
 
+- (void)handleAppResumeNotification:(NSNotification *)aNotification {
+	// check if the user is resuming the app after signing in twitter
+	if ( leftAppSessionForTwitter ) {
+		if ( [TWTweetComposeViewController canSendTweet] ) {
+			// push in the account selection view
+			twitterGrantBlock();
+			// unregister the notification
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+		}
+		[twitterGrantBlock release];
+	}
+}
+
+#pragma mark Alert view delegate
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
+	// the condition for Twitter sign in. 
+	if ( buttonIndex == 1 ) {
+		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=TWITTER"]];
+		leftAppSessionForTwitter = YES;
+		// listen to app switching notification
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppResumeNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
+	}
+}
+
 #pragma mark Twitter
 
 - (NMPersonProfile *)twitterProfile {
@@ -166,9 +190,10 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 			} else {
 				// We don't have right to access Twitter account. Send user to the Settings app
 				dispatch_async(dispatch_get_main_queue(), ^{
-					UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not yet signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
+					UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
 					[alertView show];
 					[alertView release];
+					twitterGrantBlock = [grantBlock retain];
 				});
 			}
 		} else {
