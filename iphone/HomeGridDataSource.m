@@ -38,11 +38,11 @@
     [super dealloc];
 }
 
-- (NMChannel *)selectObjectAtIndex:(NSUInteger)index
+- (NMChannel *)selectObjectAtIndex:(NSUInteger)gridIndex
 {
     NMAccountManager *accountManager = [NMAccountManager sharedAccountManager];
     NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
-    index = [self mappedFetchedResultsIndexForGridIndex:index];
+    NSUInteger index = [self mappedFetchedResultsIndexForGridIndex:gridIndex];
 
     if (index >= frcObjectCount) {
         switch (index - frcObjectCount) {
@@ -97,7 +97,7 @@
         
         return nil;
     } else {
-        return [[self objectAtIndex:index] channel];
+        return [[self objectAtIndex:gridIndex] channel];
     }
 }
 
