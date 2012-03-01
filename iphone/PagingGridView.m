@@ -357,7 +357,7 @@
     self.contentSize = CGSizeMake(numberOfPages * self.frame.size.width, self.frame.size.height);
     
     if (currentPage >= numberOfPages && currentPage > 0) {
-        self.currentPage = currentPage - 1;
+        self.currentPage = numberOfPages - 1;
     }
 }
 
