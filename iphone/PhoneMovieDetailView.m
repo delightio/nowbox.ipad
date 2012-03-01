@@ -15,7 +15,7 @@
 - (void)setChannelTitle:(NSString *)channelTitle;
 - (void)setVideoTitle:(NSString *)videoTitle;
 - (void)setDescriptionText:(NSString *)descriptionText;
-- (void)setChannelThumbnailForChannel:(NMChannel *)channel;
+- (void)setAuthorThumbnailForAuthor:(NMAuthor *)author;
 - (void)setMoreCount:(NSUInteger)moreCount;
 - (void)updateControlsViewForCurrentOrientation;
 @end
@@ -58,7 +58,7 @@
     [super setVideo:video];
     
     [self setChannelTitle:video.channel.title];
-    [self setChannelThumbnailForChannel:video.channel];
+    [self setAuthorThumbnailForAuthor:video.video.author];
     [self setVideoTitle:video.video.title];
     [self setDescriptionText:video.video.detail.nm_description];
     [self setWatchLater:[video.video.nm_watch_later boolValue]];
@@ -110,10 +110,10 @@
     [landscapeView.descriptionLabel setText:descriptionText];
 }
 
-- (void)setChannelThumbnailForChannel:(NMChannel *)channel
+- (void)setAuthorThumbnailForAuthor:(NMAuthor *)author
 {
-    [portraitView.channelThumbnail setImageForChannel:channel];
-    [landscapeView.channelThumbnail setImageForChannel:channel];
+    [portraitView.channelThumbnail setImageForAuthorThumbnail:author];
+    [landscapeView.channelThumbnail setImageForAuthorThumbnail:author];
 }
 
 - (void)setMoreCount:(NSUInteger)moreCount
