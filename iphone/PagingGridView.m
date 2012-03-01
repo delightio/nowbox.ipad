@@ -281,10 +281,10 @@
     if (view) {
         view.index = index;
         view.delegate = self;
-        view.editing = rearranging;
         view.columnSpan = [self columnSpanForCellAtIndex:index];
         view.rowSpan = [self rowSpanForCellAtIndex:index];
         view.frame = [self frameForIndex:index columnSpan:view.columnSpan rowSpan:view.rowSpan];
+        view.editing = rearranging && [dataSource gridView:self canRearrangeItemAtIndex:index];
 
         [visibleViews addObject:view];
         [self addSubview:view];    
@@ -336,12 +336,12 @@
 - (void)rearrangePageSwitchTimerFired:(NSTimer *)timer
 {
     rearrangePageSwitchTimer = nil;
-    CGPoint touchLocation = [[[timer userInfo] objectForKey:@"touchLocation"] CGPointValue];
+    BOOL scrollingLeft = [[[timer userInfo] objectForKey:@"scrollingLeft"] boolValue];
     
-    if (touchLocation.x - self.contentOffset.x < kRearrangePageSwitchDistance && currentPage > 0) {
+    if (scrollingLeft && currentPage > 0) {
         // Switch page left
         self.currentPage = currentPage - 1;
-    } else if (touchLocation.x - self.contentOffset.x > self.frame.size.width - kRearrangePageSwitchDistance && currentPage + 1 < numberOfPages) {
+    } else if (currentPage + 1 < numberOfPages) {
         // Switch page right
         self.currentPage = currentPage + 1;    
     }
@@ -628,7 +628,8 @@
         (touchLocation.x - self.contentOffset.x > self.frame.size.width - kRearrangePageSwitchDistance && currentPage + 1 < numberOfPages)) {
         // Close to left or right edge and page switch possible
         if (!rearrangePageSwitchTimer) {
-            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSValue valueWithCGPoint:touchLocation] forKey:@"touchLocation"];
+            BOOL scrollingLeft = touchLocation.x - self.contentOffset.x < kRearrangePageSwitchDistance;
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:scrollingLeft] forKey:@"scrollingLeft"];
             rearrangePageSwitchTimer = [NSTimer scheduledTimerWithTimeInterval:kRearrangePageSwitchDuration target:self selector:@selector(rearrangePageSwitchTimerFired:) userInfo:userInfo repeats:NO];
         }
         
