@@ -78,7 +78,8 @@
 
 - (IBAction)refreshButtonPressed:(id)sender
 {
-    
+    [gridDataSource refreshAllObjects];
+    [gridView reloadData];
 }
 
 - (IBAction)backButtonPressed:(id)sender

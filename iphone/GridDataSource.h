@@ -22,6 +22,7 @@
 - (NMChannel *)selectObjectAtIndex:(NSUInteger)index;
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
 - (void)deleteObjectAtIndex:(NSUInteger)index;
+- (void)refreshAllObjects;
 - (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex;
 - (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex;
 

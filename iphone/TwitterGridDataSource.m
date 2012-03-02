@@ -16,9 +16,24 @@
 
 @synthesize fetchedResultsController;
 
+- (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext
+{
+    self = [super initWithGridView:aGridView managedObjectContext:aManagedObjectContext];
+    if (self) {
+        refreshingChannels = [[NSMutableSet alloc] init];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+    }
+    return self;
+}
+
 - (void)dealloc
 {    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [fetchedResultsController release];
+    [refreshingChannels release];
     
     [super dealloc];
 }
@@ -89,18 +104,41 @@
     
     if (latestVideo) {
         [cell.image setImageForVideoThumbnail:latestVideo];
-        [cell.activityIndicator stopAnimating];
     } else {
         [cell.image setImageForChannel:channel];
         
         // Don't get more videos if the cell configuration is due to an update - will loop endlessly if channel has no videos
-        if (!isUpdate) {
+        if (!isUpdate && ![refreshingChannels containsObject:channel]) {
             [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-            [cell.activityIndicator startAnimating];            
-        } else {
-            [cell.activityIndicator stopAnimating];
+            [refreshingChannels addObject:channel];
         }
     }
+    
+    if ([refreshingChannels containsObject:channel] && !isUpdate) {
+        [cell.activityIndicator startAnimating];
+    } else {
+        [cell.activityIndicator stopAnimating];
+    }
+}
+
+- (void)refreshAllObjects
+{
+    for (NMSubscription *subscription in [self.fetchedResultsController fetchedObjects]) {
+        NMChannel *channel = subscription.channel;
+        
+        if (![refreshingChannels containsObject:channel]) {
+            [refreshingChannels addObject:channel];
+            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        }
+    }
+}
+
+#pragma mark - Notifications
+
+- (void)handleDidGetChannelVideoListNotification:(NSNotification *)notification
+{
+    NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
+    [refreshingChannels removeObject:channel];
 }
 
 #pragma mark - NSFetchedResultsController

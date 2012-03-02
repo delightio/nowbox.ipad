@@ -10,6 +10,7 @@
 
 @interface HomeGridDataSource : GridDataSource {
     UIViewController *viewController;
+    NSMutableSet *refreshingChannels;
 }
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;

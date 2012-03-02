@@ -8,7 +8,9 @@
 
 #import "GridDataSource.h"
 
-@interface TwitterGridDataSource : GridDataSource
+@interface TwitterGridDataSource : GridDataSource {
+    NSMutableSet *refreshingChannels;
+}
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 

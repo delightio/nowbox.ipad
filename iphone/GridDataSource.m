@@ -34,24 +34,24 @@
 
 - (id)objectAtIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     return nil;
 }
 
 - (NMChannel *)selectObjectAtIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     return nil;
 }
 
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
 }
 
 - (void)deleteObjectAtIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses    
+    // To be implemented by subclasses    
 }
 
 - (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex
@@ -66,18 +66,23 @@
     return fetchedResultsIndex;
 }
 
+- (void)refreshAllObjects
+{
+    // To be implemented by subclasses
+}
+
 #pragma mark - PagingGridViewDataSource
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     [self doesNotRecognizeSelector:_cmd];
     return 0;
 }
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     [self doesNotRecognizeSelector:_cmd];
     return nil;
 }

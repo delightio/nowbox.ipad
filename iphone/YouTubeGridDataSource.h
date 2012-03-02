@@ -8,7 +8,9 @@
 
 #import "GridDataSource.h"
 
-@interface YouTubeGridDataSource : GridDataSource
+@interface YouTubeGridDataSource : GridDataSource {
+    NSMutableSet *refreshingChannels;
+}
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 

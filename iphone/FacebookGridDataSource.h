@@ -8,7 +8,9 @@
 
 #import "GridDataSource.h"
 
-@interface FacebookGridDataSource : GridDataSource
+@interface FacebookGridDataSource : GridDataSource {
+    NSMutableSet *refreshingChannels;
+}
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 
