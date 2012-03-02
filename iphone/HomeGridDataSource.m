@@ -173,7 +173,9 @@
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)notification
 {
     NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
-    [refreshingChannels removeObject:channel];
+    if (channel) {
+        [refreshingChannels removeObject:channel];
+    }
 }
 
 #pragma mark - NSFetchedResultsController
