@@ -17,6 +17,7 @@
 - (void)setDescriptionText:(NSString *)descriptionText;
 - (void)setAuthorThumbnailForAuthor:(NMAuthor *)author;
 - (void)setMoreCount:(NSUInteger)moreCount;
+- (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex;
 - (void)updateControlsViewForCurrentOrientation;
 @end
 
@@ -63,6 +64,7 @@
     [self setDescriptionText:video.video.detail.nm_description];
     [self setWatchLater:[video.video.nm_watch_later boolValue]];
     [self setFavorite:[video.video.nm_favorite boolValue]];
+    [self setTopActionButtonIndex:([video.video.nm_favorite boolValue] ? 2 : 0)];
     
     // Add buzz
     [mentionsArray removeAllObjects];
@@ -183,6 +185,12 @@
 {
     [portraitView setFavorite:favorite];
     [landscapeView setFavorite:favorite];
+}
+
+- (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex
+{
+    [portraitView setTopActionButtonIndex:actionButtonIndex];
+    [landscapeView setTopActionButtonIndex:actionButtonIndex];
 }
 
 - (void)updateControlsViewForCurrentOrientation

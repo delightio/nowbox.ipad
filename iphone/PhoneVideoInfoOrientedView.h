@@ -37,6 +37,7 @@
 @property (nonatomic, assign) IBOutlet id<PhoneVideoInfoOrientedViewDelegate> delegate;
 
 - (void)positionLabels;
+- (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex;
 - (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
 - (void)setBuzzPanelExpanded:(BOOL)isBuzzPanelExpanded animated:(BOOL)animated;
 - (void)setWatchLater:(BOOL)watchLater;
@@ -52,6 +53,7 @@
 @interface InfiniteScrollView : UIScrollView
 
 - (NSInteger)centerViewIndex;
+- (void)centerViewAtIndex:(NSUInteger)index;
 - (void)centerContentOffset;
 
 @end

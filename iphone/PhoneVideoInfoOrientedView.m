@@ -106,6 +106,11 @@
     descriptionLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
+- (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex
+{
+    [infoButtonScrollView centerViewAtIndex:actionButtonIndex];
+}
+
 - (void)setInfoPanelExpanded:(BOOL)expanded
 {
     [self setInfoPanelExpanded:expanded animated:NO];
@@ -286,20 +291,23 @@
     return 0;
 }
 
-- (void)centerContentOffset
+- (void)centerViewAtIndex:(NSUInteger)index
 {
-    // Which view is closest to the center?
-    NSInteger centerViewIndex = [self centerViewIndex];
-    
-    // Make sure we don't get too close to the scroll limit
-    self.contentOffset = CGPointMake(0, round((self.contentSize.height / 2) / self.frame.size.height) * self.frame.size.height);
+    NSUInteger pageCount = round((self.contentSize.height / 2) / self.frame.size.height);
+    self.contentOffset = CGPointMake(0, (pageCount + index) * self.frame.size.height);    
     for (UIView *view in self.subviews) {
         CGRect frame = view.frame;
-        frame.origin.y = self.contentOffset.y + (view.tag - centerViewIndex) * self.frame.size.height;
+        frame.origin.y = (pageCount + view.tag) * self.frame.size.height;
         view.frame = frame;
-    }        
+    }
     
-    [self setNeedsLayout];
+    [self setNeedsLayout];    
+}
+
+- (void)centerContentOffset
+{
+    // Make sure we don't get too close to the scroll limit
+    [self centerViewAtIndex:[self centerViewIndex]];
 }
 
 - (void)awakeFromNib
