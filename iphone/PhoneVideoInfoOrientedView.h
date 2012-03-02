@@ -16,6 +16,7 @@
 // A movie detail view contains two of these, one for portrait and one for landscape.
 @interface PhoneVideoInfoOrientedView : UIView <UIScrollViewDelegate> {
     CGRect originalVideoTitleFrame;
+    UIButton *mostRecentActionButton;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *topView;
@@ -42,6 +43,7 @@
 - (void)setBuzzPanelExpanded:(BOOL)isBuzzPanelExpanded animated:(BOOL)animated;
 - (void)setWatchLater:(BOOL)watchLater;
 - (void)setFavorite:(BOOL)favorite;
+- (IBAction)actionButtonPressed:(id)sender;
 
 @end
 
@@ -54,6 +56,7 @@
 
 - (NSInteger)centerViewIndex;
 - (void)centerViewAtIndex:(NSUInteger)index;
+- (void)centerViewAtIndex:(NSUInteger)index avoidMovingViewsToAbove:(BOOL)avoidMovingAbove;
 - (void)centerContentOffset;
 
 @end

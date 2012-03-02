@@ -109,6 +109,7 @@
 - (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex
 {
     [infoButtonScrollView centerViewAtIndex:actionButtonIndex];
+    mostRecentActionButton = nil;
 }
 
 - (void)setInfoPanelExpanded:(BOOL)expanded
@@ -173,7 +174,12 @@
         
         // Resize the panel and move the buzz view accordingly
         buzzView.frame = CGRectOffset(buzzView.frame, 0, frame.size.height - infoView.frame.size.height);
-        infoView.frame = frame;        
+        infoView.frame = frame;
+        
+        // We want the most recent action item to be on top when we collapse
+        if (!expanded && mostRecentActionButton) {
+            [infoButtonScrollView centerViewAtIndex:[mostRecentActionButton tag] avoidMovingViewsToAbove:YES];
+        }
     };
 
     // Perform the animation
@@ -242,6 +248,11 @@
     }
 }
 
+- (IBAction)actionButtonPressed:(id)sender
+{
+    mostRecentActionButton = sender;
+}
+
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -291,17 +302,24 @@
     return 0;
 }
 
-- (void)centerViewAtIndex:(NSUInteger)index
+- (void)centerViewAtIndex:(NSUInteger)index avoidMovingViewsToAbove:(BOOL)avoidMovingAbove
 {
     NSUInteger pageCount = round((self.contentSize.height / 2) / self.frame.size.height);
     self.contentOffset = CGPointMake(0, (pageCount + index) * self.frame.size.height);    
     for (UIView *view in self.subviews) {
         CGRect frame = view.frame;
         frame.origin.y = (pageCount + view.tag) * self.frame.size.height;
-        view.frame = frame;
+        if (!avoidMovingAbove || frame.origin.y >= self.contentOffset.y) {
+            view.frame = frame;
+        }
     }
     
-    [self setNeedsLayout];    
+    [self setNeedsLayout];        
+}
+
+- (void)centerViewAtIndex:(NSUInteger)index
+{
+    [self centerViewAtIndex:index avoidMovingViewsToAbove:NO];
 }
 
 - (void)centerContentOffset
