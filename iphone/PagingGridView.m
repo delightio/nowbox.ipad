@@ -128,11 +128,52 @@
     if (dataSource != aDataSource) {
         dataSource = aDataSource;
         [self reloadData];
+        [self setCurrentPage:0];
         
         if ([gridDelegate respondsToSelector:@selector(gridView:dataSourceDidChange:)]) {
             [gridDelegate gridView:self dataSourceDidChange:dataSource];
         }
     }
+}
+
+- (void)setDataSource:(id<PagingGridViewDataSource>)newDataSource animated:(BOOL)animated
+{
+    // Not animating? Do it the old-fashioned way.
+    if (!animated) {
+        [self setDataSource:newDataSource];
+        return;
+    }
+    
+    NSUInteger newNumberOfItems = [newDataSource gridViewNumberOfItems:self];
+    
+    // Create fake cells to animate to. Once the animation is finished, the fake cells will be removed
+    // and we will call reloadData to get the real cells.
+    NSMutableSet *newCells = [NSMutableSet set];
+    for (NSUInteger i = 0; i < numberOfRows * numberOfColumns && i < newNumberOfItems; i++) {
+        PagingGridViewCell *newCell = [newDataSource gridView:self cellForIndex:i];
+        if (newCell) {
+            [newCell setColumnSpan:[self columnSpanForCellAtIndex:i]];
+            [newCell setRowSpan:[self rowSpanForCellAtIndex:i]];
+            newCell.frame = [self frameForIndex:i columnSpan:newCell.columnSpan rowSpan:newCell.rowSpan];
+            newCell.frame = CGRectOffset(newCell.frame, self.contentOffset.x, 0);
+            newCell.alpha = 0.0f;
+            [self insertSubview:newCell atIndex:0];
+            [newCells addObject:newCell];
+        }
+    }                         
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         [newCells setValue:[NSNumber numberWithFloat:1.0f] forKey:@"alpha"];
+                         [visibleViews setValue:[NSNumber numberWithFloat:0.0f] forKey:@"alpha"];   
+                     }
+                     completion:^(BOOL finished){
+                         [visibleViews setValue:[NSNumber numberWithFloat:1.0f] forKey:@"alpha"];   
+                         for (PagingGridViewCell *cell in newCells) {
+                             [cell removeFromSuperview];
+                         }
+                         [self setDataSource:newDataSource];                    
+                     }];    
 }
 
 - (void)setNumberOfRows:(NSUInteger)aNumberOfRows
@@ -169,8 +210,13 @@
 
 - (void)setCurrentPage:(NSUInteger)aCurrentPage
 {
+    [self setCurrentPage:aCurrentPage animated:NO];
+}
+
+- (void)setCurrentPage:(NSUInteger)aCurrentPage animated:(BOOL)animated
+{
     currentPage = aCurrentPage;
-    [self setContentOffset:CGPointMake(currentPage * self.frame.size.width, 0) animated:YES];
+    [self setContentOffset:CGPointMake(currentPage * self.frame.size.width, 0) animated:animated];
 }
 
 - (void)setRearranging:(BOOL)isRearranging
@@ -340,10 +386,10 @@
     
     if (scrollingLeft && currentPage > 0) {
         // Switch page left
-        self.currentPage = currentPage - 1;
+        [self setCurrentPage:currentPage - 1 animated:YES];
     } else if (currentPage + 1 < numberOfPages) {
         // Switch page right
-        self.currentPage = currentPage + 1;    
+        [self setCurrentPage:currentPage + 1 animated:YES];
     }
 }
 
@@ -357,7 +403,7 @@
     self.contentSize = CGSizeMake(numberOfPages * self.frame.size.width, self.frame.size.height);
     
     if (currentPage >= numberOfPages && currentPage > 0) {
-        self.currentPage = numberOfPages - 1;
+        [self setCurrentPage:numberOfPages - 1 animated:YES];
     }
 }
 

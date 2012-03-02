@@ -23,6 +23,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.managedObjectContext = aManagedObjectContext;
+        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:nil viewController:self managedObjectContext:managedObjectContext] autorelease];
     }
     return self;
 }
@@ -37,24 +38,14 @@
     [super dealloc];
 }
 
-- (void)setGridDataSource:(GridDataSource *)aGridDataSource
-{
-    if (gridDataSource != aGridDataSource) {
-        [gridDataSource release];
-        gridDataSource = [aGridDataSource retain];
-        
-        gridView.dataSource = gridDataSource;
-        pageControl.numberOfPages = gridView.numberOfPages;
-    }
-}
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
+
+    [gridDataSource setGridView:gridView];
+    [gridView setDataSource:gridDataSource animated:NO];
     
     // If view was unloaded, restore the page we were on
     pageControl.currentPage = currentPage;
@@ -87,7 +78,8 @@
     [gridView setRearranging:NO animated:NO];
     
     if (![gridDataSource isKindOfClass:[HomeGridDataSource class]]) {
-        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
+        GridDataSource *homeDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
+        [gridView setDataSource:homeDataSource animated:YES];
     }
 }
 
@@ -96,6 +88,8 @@
 - (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource
 {
     self.gridDataSource = (GridDataSource *)newDataSource;
+    pageControl.numberOfPages = gridView.numberOfPages;
+    pageControl.currentPage = gridView.currentPage;
 }
 
 - (void)gridView:(PagingGridView *)aGridView didSelectItemAtIndex:(NSUInteger)index

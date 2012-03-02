@@ -37,6 +37,8 @@
 
 - (PagingGridViewCell *)dequeueReusableCell;
 - (PagingGridViewCell *)cellForIndex:(NSUInteger)index;
+- (void)setDataSource:(id<PagingGridViewDataSource>)newDataSource animated:(BOOL)animated;
+- (void)setCurrentPage:(NSUInteger)aCurrentPage animated:(BOOL)animated;
 - (void)setRearranging:(BOOL)isRearranging animated:(BOOL)animated;
 - (void)reloadData;
 - (void)beginUpdates;

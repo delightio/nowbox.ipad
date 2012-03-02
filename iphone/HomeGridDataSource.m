@@ -60,18 +60,21 @@
                     [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"homegrid" forKey:AnalyticsPropertySender]];                     
                 }
                 
-                self.gridView.dataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];            
+                GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                [self.gridView setDataSource:facebookDataSource animated:YES];
                 break;
             }
             case 1: {
                 // YouTube
-                self.gridView.dataSource = [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                GridDataSource *youtubeDataSource = [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                [self.gridView setDataSource:youtubeDataSource animated:YES];
                 break;
             }
             case 2: {
                 // Twitter
                 if ([accountManager.twitterAccountStatus integerValue]) {
-                    self.gridView.dataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];                    
+                    GridDataSource *twitterDataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                    [self.gridView setDataSource:twitterDataSource animated:YES];
                 } else {
                     // Not logged in to Twitter
                     if (NM_RUNNING_IOS_5) {
@@ -111,7 +114,9 @@
 - (void)dismissSocialLogin
 {
     [viewController dismissModalViewControllerAnimated:YES];
-    self.gridView.dataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+    
+    GridDataSource *twitterDataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+    [self.gridView setDataSource:twitterDataSource animated:YES];
 }
 
 - (id)objectAtIndex:(NSUInteger)index
