@@ -20,7 +20,7 @@
 - (void)setup
 {
     numberOfPages = 1;
-    dotSpacing = 6;  
+    dotSpacing = 7;  
 
     dotImage = [[UIImage imageNamed:@"phone_grid_dot.png"] retain];
     filledDotImage = [[UIImage imageNamed:@"phone_grid_dot_filled.png"] retain];
@@ -62,16 +62,13 @@
     overallWidth = (dotWidth + dotSpacing) * numberOfPages - dotSpacing;
     
     CGFloat startX = (self.frame.size.width - overallWidth) / 2;
-    CGFloat y = (self.frame.size.height - dotImage.size.height) / 2;
     
     for (NSUInteger i = 0; i < numberOfPages; i++) {
-        CGRect rect = CGRectMake(startX + i*(dotWidth + dotSpacing), y, dotWidth, dotImage.size.height);
-
-        if (i == currentPage) {
-            [filledDotImage drawInRect:rect];
-        } else {
-            [dotImage drawInRect:rect];
-        }
+        UIImage *image = (i == currentPage ? filledDotImage : dotImage);
+        
+        CGFloat y = (self.frame.size.height - image.size.height) / 2;
+        CGRect rect = CGRectMake(startX + i*(dotWidth + dotSpacing) - (image.size.width - dotWidth) / 2, y, image.size.width, image.size.height);
+        [image drawInRect:rect];
     }
 }
 
