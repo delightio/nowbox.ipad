@@ -65,6 +65,7 @@
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
 		[playbackDelegate player:self observePlayerItem:targetItem];
 		[self insertItem:targetItem afterItem:anItem];
+		anItem.nmVideo.video.nm_player_item = nil;
 		[self removeItem:anItem];
 	} else {
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
