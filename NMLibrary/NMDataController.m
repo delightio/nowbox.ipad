@@ -1202,7 +1202,6 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		// there will only be one concrete video with the same ID
 		NMConcreteVideo * conVdo = [result objectAtIndex:0];
 		NSSet * vdoProxySet = conVdo.channels;
-		NSLog(@"concrete video exists: %@", conVdo.title);
 		for (NMVideo * vdo in vdoProxySet ) {
 			if ( [vdo.channel isEqual:chn] ) {
 				checkResult = NMVideoExistsAndInChannel;

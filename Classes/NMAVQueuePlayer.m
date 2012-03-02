@@ -53,6 +53,7 @@
 }
 
 - (void)insertVideo:(NMVideo *)vid afterItem:(NMAVPlayerItem *)anItem {
+	NSLog(@"insertVideo:afterItem:");
 	// insert the video and delete the item
 	NMAVPlayerItem * targetItem = vid.video.nm_player_item;
 	if ( targetItem == nil ) {
@@ -67,11 +68,13 @@
 		[self removeItem:anItem];
 	} else {
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
+		anItem.nmVideo.video.nm_player_item = nil;
 		[self removeItem:anItem];
 	}
 }
 
 - (void)removeAllItems {
+	NSLog(@"removeAllItems");
 	// stop observing all items
 	[self pause];
 	NSArray * allItems = self.items;
@@ -236,6 +239,7 @@
 }
 
 - (void)queueVideo:(NMVideo *)vid {
+	NSLog(@"queueVideo:");
 	/*!
 	 check if we should queue video when we model controller informs about direct URL resolved. Similar operation is carried when user flick the screen.
 	 */
@@ -328,6 +332,7 @@
 		{
 			// check if the video is before or after the current set of video. Only queue video to the front of the player for this case
 			if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
+				[queuedItems retain];
 				thePlayerItem = [queuedItems objectAtIndex:0];
 				if ( ![thePlayerItem.nmVideo isEqual:vid] ) {
 					// we need to queue this video
@@ -363,6 +368,7 @@
 					[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 					[self removeItem:otherItem];
 				}
+				[queuedItems release];
 			}
 			break;
 		}
