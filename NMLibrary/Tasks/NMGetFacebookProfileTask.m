@@ -107,6 +107,9 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 		[[NSUserDefaults standardUserDefaults] setObject:_profile.nm_id forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 		NM_USER_FACEBOOK_CHANNEL_ID = [_profile.nm_id integerValue];
 		return YES;
+	} else if ( _profile.subscription ) {
+		// this profile contains a channel
+		_profile.subscription.channel.thumbnail_uri = [_profileDictionary objectForKey:@"picture"];
 	}
 	return NO;
 }
