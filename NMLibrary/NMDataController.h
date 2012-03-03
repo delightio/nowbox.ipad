@@ -50,6 +50,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSEntityDescription * channelEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
+@property (nonatomic, retain) NSEntityDescription * concreteVideoEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * authorEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * subscriptionEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;

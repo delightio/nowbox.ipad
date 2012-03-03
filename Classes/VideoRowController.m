@@ -303,7 +303,6 @@ static NSPredicate * _sharedFilterPredicate = nil;
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
 //	static NSUInteger theCount = 0;
-    
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [videoTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]

@@ -40,6 +40,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize managedObjectContext;
 @synthesize channelEntityDescription = _channelEntityDescription, videoEntityDescription = _videoEntityDescription;
 @synthesize authorEntityDescription = _authorEntityDescription, subscriptionEntityDescription = _subscriptionEntityDescription;
+@synthesize concreteVideoEntityDescription = _concreteVideoEntityDescription;
 @synthesize categories, categoryCacheDictionary;
 @synthesize subscribedChannels;
 @synthesize internalSearchCategory;
@@ -104,6 +105,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[internalYouTubeCategory release];
 	[_channelEntityDescription release], [_videoEntityDescription release];
 	[_authorEntityDescription release], [_subscriptionEntityDescription release];
+	[_concreteVideoEntityDescription release];
 	[super dealloc];
 }
 
@@ -159,6 +161,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		self.videoEntityDescription = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:managedObjectContext];
 	}
 	return _videoEntityDescription;
+}
+
+- (NSEntityDescription *)concreteVideoEntityDescription {
+	if ( _concreteVideoEntityDescription == nil ) {
+		self.concreteVideoEntityDescription = [NSEntityDescription entityForName:NMConcreteVideoEntityName inManagedObjectContext:managedObjectContext];
+	}
+	return _concreteVideoEntityDescription;
 }
 
 - (NSEntityDescription *)authorEntityDescription {
@@ -220,7 +229,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (NSPredicate *)concreteVideoForIDPredicateTemplate {
 	if ( _concreteVideoForIDPredicateTemplate == nil )
-		_concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"video.nm_id = $OBJECT_ID OR video.external_id like[cd] $EXTERNAL_ID"] retain];
+		_concreteVideoForIDPredicateTemplate = [[NSPredicate predicateWithFormat:@"nm_id = $OBJECT_ID OR external_id like[cd] $EXTERNAL_ID"] retain];
 	return _concreteVideoForIDPredicateTemplate;
 }
 
@@ -950,12 +959,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideo * newVid = nil;
+	// mark all existing NMVideo dirty
+	NSSet * vdoSet = vid.video.channels;
+	for (NMVideo * otherVdo in vdoSet) {
+		otherVdo.nm_make_dirty = (NSNumber *)([otherVdo.nm_make_dirty boolValue] ? kCFBooleanFalse : kCFBooleanTrue);
+	}
 	if ( result == nil || [result count] == 0 ) {
-		// mark all existing NMVideo dirty
-		NSSet * vdoSet = vid.video.channels;
-		for (NMVideo * otherVdo in vdoSet) {
-			otherVdo.nm_make_dirty = (NSNumber *)([otherVdo.nm_make_dirty boolValue] ? kCFBooleanFalse : kCFBooleanTrue);
-		}
 		// the video and channel is not related. relate now
 		newVid = [self insertNewVideo];
 		newVid.channel = chnObj;
@@ -1182,31 +1191,24 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	*outRealVdo = nil;
 	// check whether the video exists in the given channel
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	[request setEntity:self.videoEntityDescription];
+	[request setEntity:self.concreteVideoEntityDescription];
 	[request setPredicate:[self.concreteVideoForIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:vid, @"OBJECT_ID", extID, @"EXTERNAL_ID", nil]]];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
-	[request setReturnsObjectsAsFaults:NO];
-	
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObjects:@"channels", @"channels.channel", nil]];
+		
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	NMVideoExistenceCheckResult checkResult = NMVideoDoesNotExist;
 	if ( result && [result count] ) {
-		BOOL vdoInChn = NO;
-		NMVideo * vdo = nil;
-		// check whether the video is in the channel
-		for (vdo in result) {
+		checkResult = NMVideoExistsButNotInChannel;
+		// there will only be one concrete video with the same ID
+		NMConcreteVideo * conVdo = [result objectAtIndex:0];
+		NSSet * vdoProxySet = conVdo.channels;
+		for (NMVideo * vdo in vdoProxySet ) {
 			if ( [vdo.channel isEqual:chn] ) {
-				// video already exists in the current channel
-				vdoInChn = YES;
+				checkResult = NMVideoExistsAndInChannel;
 				break;
 			}
 		}
-		if ( vdoInChn ) {
-			checkResult = NMVideoExistsAndInChannel;
-		} else if ( vdo ) {
-			*outRealVdo = vdo.video;
-			// video exists but not in "chn" channel. We just need to create the NMVideo object.
-			checkResult = NMVideoExistsButNotInChannel;
-		}
+		*outRealVdo = conVdo;
 	}
 	[request release];
 	// should return a result object which contains the video object (if necessary) and the comparison result

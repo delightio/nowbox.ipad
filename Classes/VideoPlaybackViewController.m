@@ -1009,9 +1009,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
 	if ( theItem.nmVideo ) {
-		NSLog(@"KVO stop observing: %@", theItem.nmVideo.video.title);
+		NSLog(@"\tKVO stop observing: %@", theItem.nmVideo.video.title);
 	} else {
-		NSLog(@"KVO observing object is nil");
+		NSLog(@"\tKVO observing object is nil");
 	}
 #endif
 	NMVideo * vdo = ((NMAVPlayerItem *)anItem).nmVideo;

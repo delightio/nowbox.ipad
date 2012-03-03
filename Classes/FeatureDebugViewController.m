@@ -194,6 +194,13 @@
 	NSLog(@"movie view info: %f %f scroll view: %f no. of videos: %d", theFrame.origin.x, alpha, playbackViewController.controlScrollView.contentOffset.x, [thePlayer.items count]);
 }
 
+- (IBAction)printPlaybackQueue:(id)sender {
+	NSArray * playerItems = playbackViewController.movieView.player.items;
+	for (NMAVPlayerItem * myItem in playerItems) {
+		NSLog(@"video in player: %@", myItem.nmVideo.video.title);
+	}
+}
+
 - (IBAction)importYouTube:(id)sender {
 	[[NMAccountManager sharedAccountManager] scheduleImportVideos];
 }
