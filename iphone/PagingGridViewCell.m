@@ -21,6 +21,8 @@
 @synthesize activityIndicator;
 @synthesize deleteButton;
 @synthesize highlightView;
+@synthesize authorView;
+@synthesize authorImage;
 @synthesize index;
 @synthesize columnSpan;
 @synthesize rowSpan;
@@ -77,6 +79,8 @@
     [activityIndicator release];
     [deleteButton release];
     [highlightView release];
+    [authorView release];
+    [authorImage release];
     
     [super dealloc];
 }

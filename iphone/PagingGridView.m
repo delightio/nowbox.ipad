@@ -422,6 +422,8 @@
     if (view) {
         [recycledViews removeObject:view];
         [view.activityIndicator stopAnimating];
+        [view.authorImage setImageDirectly:nil];
+        view.authorView.hidden = YES;
     }
     
     return view;

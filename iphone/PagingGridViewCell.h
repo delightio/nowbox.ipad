@@ -23,6 +23,8 @@
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) IBOutlet UIButton *deleteButton;
 @property (nonatomic, retain) IBOutlet UIView *highlightView;
+@property (nonatomic, retain) IBOutlet UIView *authorView;
+@property (nonatomic, retain) IBOutlet NMCachedImageView *authorImage;
 @property (nonatomic, assign) NSUInteger index;
 @property (nonatomic, assign) NSUInteger columnSpan;
 @property (nonatomic, assign) NSUInteger rowSpan;

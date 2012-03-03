@@ -104,6 +104,8 @@
     
     if (latestVideo) {
         [cell.image setImageForVideoThumbnail:latestVideo];
+        cell.authorView.hidden = NO;
+        [cell.authorImage setImageForChannel:channel];
     } else {
         [cell.image setImageForChannel:channel];
         
