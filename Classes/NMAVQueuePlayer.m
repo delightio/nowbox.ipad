@@ -53,7 +53,7 @@
 }
 
 - (void)insertVideo:(NMVideo *)vid afterItem:(NMAVPlayerItem *)anItem {
-	NSLog(@"insertVideo:afterItem:");
+	NSLog(@"insertVideo: %@ afterItem: %@", vid.video.title, anItem.nmVideo.video.title);
 	// insert the video and delete the item
 	NMAVPlayerItem * targetItem = vid.video.nm_player_item;
 	if ( targetItem == nil ) {
@@ -61,6 +61,7 @@
 		if ( targetItem == nil ) return;
 	}
 	if ( [self canInsertItem:targetItem afterItem:anItem] ) {
+		NSLog(@"\tcan insert");
 		// insert after anItem
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
 		[playbackDelegate player:self observePlayerItem:targetItem];
@@ -68,6 +69,15 @@
 		anItem.nmVideo.video.nm_player_item = nil;
 		[self removeItem:anItem];
 	} else {
+		// the player item is in the queue. We should move it to after "anItem"
+		[targetItem retain];
+		[self removeItem:targetItem];
+		if ( [self canInsertItem:targetItem afterItem:anItem] ) {
+			NSLog(@"we are moving the item");
+			[self insertItem:targetItem afterItem:anItem];
+		}
+		[targetItem release];
+		// even it we cannot insert the item. We still need to retire "anItem" since it's no longer needed.
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
 		anItem.nmVideo.video.nm_player_item = nil;
 		[self removeItem:anItem];
@@ -178,7 +188,9 @@
 			// remove the last item
 			NSArray * allItems = self.items;
 			if ( [allItems count] == 4 ) {
-				[self removeItem:[allItems objectAtIndex:3]];
+				vidItem = [allItems objectAtIndex:3];
+				vidItem.nmVideo.video.nm_player_item = nil;
+				[self removeItem:vidItem];
 			}
 		} 
 	}
@@ -333,31 +345,19 @@
 		{
 			// check if the video is before or after the current set of video. Only queue video to the front of the player for this case
 			if ( [vid isEqual:[playbackDelegate currentVideoForPlayer:self]] ) {
-				[queuedItems retain];
 				thePlayerItem = [queuedItems objectAtIndex:0];
 				if ( ![thePlayerItem.nmVideo isEqual:vid] ) {
 					// we need to queue this video
-					[self insertVideo:vid afterItem:thePlayerItem];
-//					[self advanceToVideo:vid];
-					// check if other videos make sense of not.
-					thePlayerItem = [queuedItems objectAtIndex:1];
+					[self insertVideo:vid afterItem:thePlayerItem];	// insert and delete head item
+					// work on the next video
+					// we may need to replace the 2nd item currently in queue player
+					thePlayerItem = [self.items objectAtIndex:1];
 					if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
-//						[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
-//						[self removeItem:thePlayerItem];
-						[self insertVideo:[playbackDelegate nextVideoForPlayer:self] afterItem:thePlayerItem];
-						thePlayerItem = [queuedItems objectAtIndex:2];
-						if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
-//							[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
-//							[self removeItem:thePlayerItem];
-							[self insertVideo:[playbackDelegate nextNextVideoForPlayer:self] afterItem:thePlayerItem];
-						}
-					} else {
-						thePlayerItem = [queuedItems objectAtIndex:2];
-						if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
-							[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
-							[self removeItem:thePlayerItem];
-						}
+						[self insertVideo:[playbackDelegate nextVideoForPlayer:self] afterItem:thePlayerItem]; // insert but do not delete
 					}
+					// insert the 3rd item
+					otherVideo = [playbackDelegate nextNextVideoForPlayer:self];
+					if ( otherVideo ) [self insertVideoToEndOfQueue:[playbackDelegate nextNextVideoForPlayer:self]];
 				} else {
 					NMAVPlayerItem * otherItem = [queuedItems objectAtIndex:1];
 					if ( ![otherItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
@@ -369,7 +369,6 @@
 					[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 					[self removeItem:otherItem];
 				}
-				[queuedItems release];
 			}
 			break;
 		}

@@ -32,6 +32,7 @@
 - (IBAction)syncRequest:(id)sender;
 - (IBAction)printCommandIndexPool:(id)sender;
 - (IBAction)printMovieViewInfo:(id)sender;
+- (IBAction)printPlaybackQueue:(id)sender;
 - (IBAction)importYouTube:(id)sender;
 - (IBAction)facebookFilter:(id)sender;
 - (IBAction)facebookSignOut:(id)sender;
