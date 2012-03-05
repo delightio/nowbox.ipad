@@ -179,8 +179,8 @@
 		}
 		[self play];
 		if ( cItem && [self canInsertItem:cItem afterItem:self.currentItem] ) {
-#ifdef DEBUG_PLAYER_NAVIGATION
 			NMAVPlayerItem * vidItem = (NMAVPlayerItem *)anItem;
+#ifdef DEBUG_PLAYER_NAVIGATION
 			NSLog(@"revertPreviousItem: re-insert original item back to the queue player: %@", vidItem.nmVideo.video.title);
 #endif
 			[self insertItem:cItem afterItem:self.currentItem];
