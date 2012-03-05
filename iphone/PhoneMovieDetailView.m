@@ -65,7 +65,7 @@
     [self setWatchLater:[video.video.nm_watch_later boolValue]];
     [self setFavorite:[video.video.nm_favorite boolValue]];
     [self setTopActionButtonIndex:([video.video.nm_favorite boolValue] ? 2 : 0)];
-    
+
     // Add buzz
     [mentionsArray removeAllObjects];
     [portraitView.buzzView removeAllMentions];

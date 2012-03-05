@@ -191,6 +191,7 @@
 - (void)doneAdding
 {
     [self repositionComments];
+    [self setShowsActionButtons:showsActionButtons];
 }
 
 - (void)repositionComments
@@ -232,22 +233,20 @@
 
 - (void)setShowsActionButtons:(BOOL)isShowsActionButtons
 {
-    if (showsActionButtons != isShowsActionButtons) {
-        showsActionButtons = isShowsActionButtons;
-        
-        for (UIView *view in actionButtonViews) {
-            view.alpha = (showsActionButtons && [commentViews count] ? 1.0f : 0.0f);
-        }
-
-        for (UIScrollView *scrollView in commentScrollViews) {
-            if (!showsActionButtons) {
-                scrollView.contentOffset = CGPointZero;
-            }
-            scrollView.scrollEnabled = showsActionButtons;
-        }
-        
-        [self repositionComments];
+    showsActionButtons = isShowsActionButtons;
+    
+    for (UIView *view in actionButtonViews) {
+        view.alpha = (showsActionButtons && [commentViews count] ? 1.0f : 0.0f);
     }
+
+    for (UIScrollView *scrollView in commentScrollViews) {
+        if (!showsActionButtons) {
+            scrollView.contentOffset = CGPointZero;
+        }
+        scrollView.scrollEnabled = showsActionButtons;
+    }
+    
+    [self repositionComments];
 }
 
 @end
