@@ -33,7 +33,7 @@
 	NMDataController * dataController;
 	
 	// polling channel population status
-	NSTimer * channelPollingTimer;
+//	NSTimer * channelPollingTimer;
 	NSTimer * youTubePollingTimer;
 	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
@@ -49,7 +49,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
-@property (nonatomic, retain) NSTimer * channelPollingTimer;
+//@property (nonatomic, retain) NSTimer * channelPollingTimer;
 @property (nonatomic, retain) NSTimer * youTubePollingTimer;
 @property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
