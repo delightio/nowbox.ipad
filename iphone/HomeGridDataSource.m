@@ -199,10 +199,20 @@
                                     [NSNumber numberWithInteger:NMChannelRecommendedType],
                                     [NSNumber numberWithInteger:NMChannelUserType]]];
         [fetchRequest setFetchBatchSize:20];
-        
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-        [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-        [sortDescriptor release];
+
+        NSSortDescriptor *sortOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+        NSSortDescriptor *recommendedFirstDescriptor = [[NSSortDescriptor alloc] initWithKey:@"channel.type" ascending:YES comparator:^(id type1, id type2){
+            if ([type1 integerValue] == NMChannelRecommendedType) {
+                return NSOrderedAscending;
+            } else if ([type2 integerValue] == NMChannelRecommendedType) {
+                return NSOrderedDescending;
+            } else {
+                return NSOrderedSame;
+            }
+        }];
+        [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:recommendedFirstDescriptor, sortOrderDescriptor, nil]];
+        [sortOrderDescriptor release];
+        [recommendedFirstDescriptor release];
         
         fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
         fetchedResultsController.delegate = self;
