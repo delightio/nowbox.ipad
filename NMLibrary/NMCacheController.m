@@ -162,34 +162,6 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 				//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
 			}
 		}
-	} else {
-		// this extra check is needed because author info is not properly normalized.
-		// same author info is stored repeatedly in NMVideoDetail object
-		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", anAuthor.nm_id]];
-		t = [fileExistenceCache fileExistsAtPath:fPath];
-		if ( t == NMFileExistsNotCached ) {
-			BOOL ex = [fileManager fileExistsAtPath:fPath];
-			[fileExistenceCache setFileExists:ex atPath:fPath];
-			t = ex ? NMFileExists : NMFileDoesNotExist;
-		}
-		if ( t == NMFileExists ) {
-			iv.image = [UIImage imageWithContentsOfFile:fPath];
-			anAuthor.nm_thumbnail_file_name = [NSString stringWithFormat:@"%@.jpg", anAuthor.nm_id];
-			return;
-		}
-		
-		fPath = [authorThumbnailCacheDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.png", anAuthor.nm_id]];
-		t = [fileExistenceCache fileExistsAtPath:fPath];
-		if ( t == NMFileExistsNotCached ) {
-			BOOL ex = [fileManager fileExistsAtPath:fPath];
-			[fileExistenceCache setFileExists:ex atPath:fPath];
-			t = ex ? NMFileExists : NMFileDoesNotExist;
-		}
-		if ( t == NMFileExists ) {
-			iv.image = [UIImage imageWithContentsOfFile:fPath];
-			anAuthor.nm_thumbnail_file_name = [NSString stringWithFormat:@"%@.png", anAuthor.nm_id];
-			return;
-		}
 	}
 	
 	if ( [anAuthor.thumbnail_uri length] ) {

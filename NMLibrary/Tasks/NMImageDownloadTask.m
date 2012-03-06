@@ -31,32 +31,52 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 
 + (NSInteger)commandIndexForCategory:(NMCategory *)cat {
 	NSInteger tid = [cat.nm_id unsignedIntegerValue];
-	return tid << 6 | NMCommandGetCategoryThumbnail;
+	return (((NSIntegerMax >> 6 ) & tid) << 6) | NMCommandGetCategoryThumbnail;
 }
 
 + (NSInteger)commandIndexForChannel:(NMChannel *)chn {
 	NSInteger tid = [chn.nm_id unsignedIntegerValue];
-	return tid << 6 | NMCommandGetChannelThumbnail;
+	if ( tid == 0 ) {
+		tid = ABS((NSInteger)[chn.title hash]);
+	} else {
+		return (((NSIntegerMax >> 6 ) & tid) << 6) | NMCommandGetChannelThumbnail;
+	}
+	return tid;
 }
 
 + (NSInteger)commandIndexForAuthor:(NMAuthor *)anAuthor {
 	NSInteger tid = [anAuthor.nm_id unsignedIntegerValue];
-	return tid << 6 | NMCommandGetAuthorThumbnail;
+	if ( tid == 0 ) {
+		tid = ABS((NSInteger)[anAuthor.username hash]);
+	} else {
+		return (((NSIntegerMax >> 6 ) & tid) << 6) | NMCommandGetAuthorThumbnail;
+	}
+	return tid;
 }
 
 + (NSInteger)commandIndexForVideo:(NMVideo *)vdo {
 	NSInteger tid = [vdo.video.nm_id unsignedIntegerValue];
-	return tid << 6 | NMCommandGetVideoThumbnail;
+	if ( tid == 0 ) {
+		tid = ABS((NSInteger)[vdo.video.external_id hash]);
+	} else {
+		return (((NSIntegerMax >> 6 ) & tid) << 6) | NMCommandGetVideoThumbnail;
+	}
+	return tid;
 }
 
 + (NSInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv {
 	NSInteger tid = [pv.nm_id unsignedIntegerValue];
-	return tid << 6 | NMCommandGetPreviewThumbnail;
+	return (((NSIntegerMax >> 6 ) & tid) << 6) | NMCommandGetPreviewThumbnail;
 }
 
 + (NSInteger)commandIndexForPersonProfile:(NMPersonProfile *)profile {
     NSInteger tid = [profile.nm_id unsignedIntegerValue];
-	return tid << 6 | NMCommandGetPersonProfileThumbnail;    
+	if ( tid == 0 ) {
+		tid = ABS((NSInteger)[profile.nm_user_id hash]);
+	} else {
+		return (((NSIntegerMax >> 6 ) & tid) << 6) | NMCommandGetPersonProfileThumbnail;
+	}
+	return tid;
 }
 
 - (id)initWithCategory:(NMCategory *)cat {
@@ -81,6 +101,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self.originalImagePath = chn.nm_thumbnail_file_name;
 	self.channel = chn;
 	self.targetID = chn.nm_id;
+	if ( [targetID integerValue] == 0 ) {
+		self.targetID = [NSNumber numberWithInteger:ABS((NSInteger)[chn.title hash])];
+	}
 	command = NMCommandGetChannelThumbnail;
 	retainCount = 1;
 	
@@ -95,6 +118,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	self.originalImagePath = anAuthor.nm_thumbnail_file_name;
 	self.author = anAuthor;
 	self.targetID = anAuthor.nm_id;
+	if ( [targetID integerValue] == 0 ) {
+		self.targetID = [NSNumber numberWithInteger:ABS((NSInteger)[anAuthor.username hash])];
+	}
 	command = NMCommandGetAuthorThumbnail;
 	retainCount = 1;
 	
@@ -110,6 +136,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	// self.originalImagePath = nil;
 	self.video = vdo;
 	self.targetID = vdo.video.nm_id;
+	if ( [targetID integerValue] == 0 ) {
+		self.targetID = [NSNumber numberWithInteger:ABS((NSInteger)[vdo.video.external_id hash])];
+	}
 	self.externalID = vdo.video.external_id;
 	command = NMCommandGetVideoThumbnail;
 	retainCount = 1;
@@ -143,6 +172,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	// self.originalImagePath = nil;
     self.personProfile = profile;
 	self.targetID = profile.nm_id;
+	if ( [targetID integerValue] == 0 ) {
+		self.targetID = [NSNumber numberWithInteger:ABS((NSInteger)[profile.nm_user_id hash])];
+	}
 	command = NMCommandGetPersonProfileThumbnail;
 	retainCount = 1;
     
@@ -201,10 +233,15 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 }
 
 - (void)processDownloadedDataInBuffer {
-	if ( originalImagePath ) {
+	if ( originalImagePath && ![originalImagePath isEqualToString:@""] ) {
 		// delete the original image
 		NSFileManager * fm = [[NSFileManager alloc] init];
-		[fm removeItemAtPath:originalImagePath error:nil];
+		@try {
+			[fm removeItemAtPath:originalImagePath error:nil];
+		}
+		@catch (NSException *exception) {
+			// Exception usually won't happen. This only happens when the path is messed up some how
+		}
 		[fm release];
 	}
 	// save the file in file system
