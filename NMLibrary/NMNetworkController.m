@@ -509,6 +509,7 @@ NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 		case NMCommandGetAuthorThumbnail:
 		case NMCommandGetVideoThumbnail:
 		case NMCommandGetPreviewThumbnail:
+        case NMCommandGetPersonProfileThumbnail:
 		{
 			NMImageDownloadTask * imgTask = (NMImageDownloadTask *)task;
 			imgTask.httpResponse = (NSHTTPURLResponse *)response;
