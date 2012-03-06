@@ -7,13 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NMCachedImageView.h"
 
 @interface BuzzCommentView : UIView {
     CGFloat commentRightPadding;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
-@property (nonatomic, retain) IBOutlet UIImageView *userImageView;
+@property (nonatomic, retain) IBOutlet NMCachedImageView *userImageView;
 @property (nonatomic, retain) IBOutlet UILabel *userLabel;
 @property (nonatomic, retain) IBOutlet UIImageView *serviceIcon;
 @property (nonatomic, retain) IBOutlet UILabel *timeLabel;

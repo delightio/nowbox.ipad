@@ -17,6 +17,7 @@
 @synthesize author;
 //@synthesize videoDetail;
 @synthesize previewThumbnail;
+@synthesize personProfile;
 @synthesize adjustsImageOnHighlight;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -47,6 +48,7 @@
 	[video release];
 	[author release];
 	[previewThumbnail release];
+    [personProfile release];
 	[super dealloc];
 }
 /*
@@ -74,7 +76,8 @@
         || (theTask.command == NMCommandGetVideoThumbnail && target != video)
         || (theTask.command == NMCommandGetAuthorThumbnail && target != author)
         || (theTask.command == NMCommandGetPreviewThumbnail && target != previewThumbnail)
-        || (theTask.command == NMCommandGetCategoryThumbnail && target != category)) {
+        || (theTask.command == NMCommandGetCategoryThumbnail && target != category)
+        || (theTask.command == NMCommandGetPersonProfileThumbnail && target != personProfile)) {
         // This is not the image download we wanted
         return;
     }
@@ -106,6 +109,10 @@
 	self.downloadTask = [cacheController downloadImageForVideo:video imageView:self];
 }
 
+- (void)delayedIssuePersonImageDownloadRequest {
+    self.downloadTask = [cacheController downloadImageForPersonProfile:personProfile imageView:self];
+}
+
 #pragma mark Setter
 
 - (void)clearAssociatedObjects {
@@ -114,6 +121,7 @@
     self.author = nil;
     self.previewThumbnail = nil;
     self.category = nil;
+    self.personProfile = nil;
 }
 
 - (void)setImageForChannel:(NMChannel *)chn {
@@ -147,6 +155,12 @@
     [self clearAssociatedObjects];    
 	self.category = cat;
 	[cacheController setImageForCategory:cat imageView:self];
+}
+
+- (void)setImageForPersonProfile:(NMPersonProfile *)profile {
+    [self clearAssociatedObjects];
+    self.personProfile = profile;
+    [cacheController setImageForPersonProfile:profile imageView:self];
 }
 
 - (void)setImageDirectly:(UIImage *)image {

@@ -15,6 +15,7 @@
 @class NMVideo;
 @class NMVideoDetail;
 @class NMAuthor;
+@class NMPersonProfile;
 @class NMTaskQueueController;
 @class NMStyleUtility;
 @class NMCachedImageView;
@@ -24,6 +25,7 @@
 	NSString * channelThumbnailCacheDir;
 	NSString * authorThumbnailCacheDir;
 	NSString * videoThumbnailCacheDir;
+    NSString * personThumbnailCacheDir;
 	NSFileManager * fileManager;
 	
 	NSMutableDictionary * targetObjectImageViewMap;
@@ -49,6 +51,7 @@
 - (void)setImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
 - (void)setImageForCategory:(NMCategory *)cat imageView:(NMCachedImageView *)iv;
+- (void)setImageForPersonProfile:(NMPersonProfile *)profile imageView:(NMCachedImageView *)iv;
 
 // interface for NMCachedImageView
 - (NMImageDownloadTask *)downloadImageForCategory:(NMCategory *)cat imageView:(NMCachedImageView *)iv;
@@ -56,6 +59,7 @@
 - (NMImageDownloadTask *)downloadImageForAuthor:(NMAuthor *)anAuthor imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForVideo:(NMVideo *)vdo imageView:(NMCachedImageView *)iv;
 - (NMImageDownloadTask *)downloadImageForPreviewThumbnail:(NMPreviewThumbnail *)pv imageView:(NMCachedImageView *)iv;
+- (NMImageDownloadTask *)downloadImageForPersonProfile:(NMPersonProfile *)profile imageView:(NMCachedImageView *)iv;
 //- (void)saveCacheWithInfo:(NSDictionary *)userInfo;
 
 // saving image from server
@@ -64,6 +68,7 @@
 - (void)writeChannelImageData:(NSData *)aData withFilename:(NSString *)fname;
 - (void)writeVideoImageData:(NSData *)aData withFileName:(NSString *)fname;
 - (void)writePreviewThumbnailImageData:(NSData *)aData withFileName:(NSString *)fname;
+- (void)writePersonProfileImageData:(NSData *)aData withFilename:(NSString *)fname;
 
 // notification handler
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification;

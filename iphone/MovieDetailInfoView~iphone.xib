@@ -70,6 +70,7 @@
 										<string key="NSFrame">{{41, 33}, {37, 37}}</string>
 										<reference key="NSSuperview" ref="865208808"/>
 										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:1062</string>
 										<bool key="IBUIOpaque">NO</bool>
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -385,7 +386,7 @@
 									<object class="IBUIImageView" id="1011880045">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">292</int>
-										<string key="NSFrame">{{21, 12}, {30, 30}}</string>
+										<string key="NSFrame">{{17, 9}, {35, 35}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="723129820"/>
@@ -608,6 +609,7 @@
 								<string key="NSFrame">{{0, 115}, {320, 80}}</string>
 								<reference key="NSSuperview" ref="1043643903"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<reference key="IBUIBackgroundColor" ref="481639952"/>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -828,7 +830,7 @@
 							<object class="IBUIImageView" id="371683563">
 								<reference key="NSNextResponder" ref="263006526"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{15, 15}, {37, 37}}</string>
+								<string key="NSFrame">{{14, 14}, {35, 35}}</string>
 								<reference key="NSSuperview" ref="263006526"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1063050122"/>
@@ -992,6 +994,7 @@
 												<string key="NSFrame">{{8, 92}, {42, 42}}</string>
 												<reference key="NSSuperview" ref="742024431"/>
 												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:225</string>
 												<bool key="IBUIOpaque">NO</bool>
 												<int key="IBUITag">2</int>
@@ -2065,8 +2068,6 @@
 						<string key="contentView">UIView</string>
 						<string key="delegate">id</string>
 						<string key="mentionsScrollView">UIScrollView</string>
-						<string key="noCommentsLabel">UILabel</string>
-						<string key="noCommentsView">UIView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="contentView">
@@ -2080,14 +2081,6 @@
 						<object class="IBToOneOutletInfo" key="mentionsScrollView">
 							<string key="name">mentionsScrollView</string>
 							<string key="candidateClassName">UIScrollView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="noCommentsLabel">
-							<string key="name">noCommentsLabel</string>
-							<string key="candidateClassName">UILabel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="noCommentsView">
-							<string key="name">noCommentsView</string>
-							<string key="candidateClassName">UIView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

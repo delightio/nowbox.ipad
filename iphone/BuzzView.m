@@ -167,7 +167,7 @@
     BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:mentionsScrollView.bounds] autorelease];
     commentView.commentLabel.text = text;
     commentView.userLabel.text = username;
-    
+
     UIScrollView *commentScrollView = [commentScrollViews lastObject];
     
     if ([commentViews count] > 0) {
