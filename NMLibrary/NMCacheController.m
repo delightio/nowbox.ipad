@@ -15,11 +15,13 @@
 #import "NMPreviewThumbnail.h"
 #import "NMVideoDetail.h"
 #import "NMCachedImageView.h"
+#import "NMPersonProfile.h"
 
 #define MEMORY_CACHE_CAPACITY	10
 #define CHANNEL_FILE_CACHE_SIZE	50
 #define AUTHOR_FILE_CACHE_SIZE	50
 #define VIDEO_THUMBNAIL_CACHE_SIZE	50
+#define PROFILE_FILE_CACHE_SIZE 50
 
 static NMCacheController * _sharedCacheController = nil;
 static NSString * const JPIndexPathDictionaryKey = @"idxpath";
@@ -55,6 +57,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	channelThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"channel_thumbnail"] retain];
 	authorThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"author_thumbnail"] retain];
 	videoThumbnailCacheDir = [[cacheBaseDir stringByAppendingPathComponent:@"video_thumbnail"] retain];
+    personThumbnailCacheDir = [[cacheBaseDir stringByAppendingFormat:@"profile_thumbnail"] retain];
 	// file manager
 	fileManager = [[NSFileManager alloc] init];
 	
@@ -81,6 +84,11 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 			NSException * e = [NSException exceptionWithName:@"CacheError" reason:@"cannot create cache directory" userInfo:nil];
 			[e raise];
 		}
+		[fileManager createDirectoryAtPath:personThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:&error];
+		if ( error ) {
+			NSException * e = [NSException exceptionWithName:@"CacheError" reason:@"cannot create cache directory" userInfo:nil];
+			[e raise];
+		}        
 	}
 	
 	fileExistenceCache = [[NMFileExistsCache alloc] initWithCapacity:48];
@@ -101,6 +109,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[channelThumbnailCacheDir release];
 	[authorThumbnailCacheDir release];
 	[videoThumbnailCacheDir release];
+    [personThumbnailCacheDir release];
 	[fileManager release];
 	[notificationCenter removeObserver:self];
 	[super dealloc];
@@ -470,6 +479,72 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	iv.image = nil;
 }
 
+- (void)setImageForPersonProfile:(NMPersonProfile *)profile imageView:(NMCachedImageView *)iv {
+	if ( profile == nil || iv == nil ) return;
+	// check if the image is in local file system
+	if ( [profile.nm_thumbnail_file_name length] ) {
+		NSString * fPath = [personThumbnailCacheDir stringByAppendingPathComponent:profile.nm_thumbnail_file_name];
+		NMFileExistsType t = [fileExistenceCache fileExistsAtPath:fPath];
+		if ( t == NMFileExistsNotCached ) {
+			BOOL ex = [fileManager fileExistsAtPath:fPath];
+			[fileExistenceCache setFileExists:ex atPath:fPath];
+			t = ex ? NMFileExists : NMFileDoesNotExist;
+		}
+		if ( t == NMFileExists ) {
+			UIImage * img = [UIImage imageWithContentsOfFile:fPath];
+			if ( img ) {
+				// file exists in path, load the file
+				iv.image = img;
+				return;
+			} else {
+				// the file specified by the cache does not exist
+				//chn.nm_thumbnail_file_name = nil; deadloop fix https://pipely.lighthouseapp.com/projects/77614-aji/tickets/153
+			}
+		}
+	}
+	// check if the channel contains a uri
+	if ( [profile.picture length] ) {
+		// check if there's already an existing task requesting the image
+		NSInteger idxNum = [NMImageDownloadTask commandIndexForPersonProfile:profile];
+		NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:[NSNumber numberWithUnsignedInteger:idxNum]];
+		
+		// cancel previous delayed method
+		[NSObject cancelPreviousPerformRequestsWithTarget:iv];
+		// we have the download task already exists for the current person profile thumbnail image
+		if ( task ) {
+			// check if "self" is requesting
+			if ( [iv.downloadTask commandIndex] == idxNum ) {
+				// actually the image view which request for the download task is asking for the same image again (the download hasn't completed yet)
+				// do nothing
+			} else {
+				// stop listening the notification
+				[notificationCenter removeObserver:iv];
+				// listen to notification
+				[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+				[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+				// release original download count
+				[iv.downloadTask releaseDownload];
+				// retain download count
+				[task retainDownload];
+				iv.downloadTask = task;
+			}
+		} else {
+			// the channel does not contain any existing download task.
+			// check the image view if it contains a download task
+			if ( iv.downloadTask ) {
+				// stop listening
+				[notificationCenter removeObserver:iv];
+				[iv.downloadTask releaseDownload];
+				iv.downloadTask = nil;
+			}
+			// no existing download task for this image. create new download task
+			[iv performSelector:@selector(delayedIssuePersonImageDownloadRequest) withObject:nil afterDelay:1.0];
+		}
+	}
+	iv.image = styleUtility.userPlaceholderImage;
+	
+}
+
 - (NMImageDownloadTask *)downloadImageForChannel:(NMChannel *)chn imageView:(NMCachedImageView *)iv {
 	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForChannel:chn]];
 	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
@@ -544,6 +619,19 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	return task;
 }
 
+- (NMImageDownloadTask *)downloadImageForPersonProfile:(NMPersonProfile *)profile imageView:(NMCachedImageView *)iv {
+	NSNumber * idxNum = [NSNumber numberWithUnsignedInteger:[NMImageDownloadTask commandIndexForPersonProfile:profile]];
+	NMImageDownloadTask * task = [commandIndexTaskMap objectForKey:idxNum];
+	if ( task == nil ) {
+		task = [nowboxTaskController issueGetThumbnailForPersonProfile:profile];
+		if ( task ) [commandIndexTaskMap setObject:task forKey:[NSNumber numberWithInteger:[task commandIndex]]];
+	}
+	iv.downloadTask = task;
+	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadNotification:) name:NMDidDownloadImageNotification object:task];
+	[notificationCenter addObserver:iv selector:@selector(handleImageDownloadFailedNotification:) name:NMDidFailDownloadImageNotification object:task];
+	return task;    
+}
+
 #pragma mark Notification handler
 
 - (void)handleImageDownloadNotification:(NSNotification *)aNotification {
@@ -568,6 +656,10 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 		case NMCommandGetPreviewThumbnail:
 			path = [videoThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
 			break;
+            
+        case NMCommandGetPersonProfileThumbnail:
+            path = [personThumbnailCacheDir stringByAppendingPathComponent:[obj valueForKey:@"nm_thumbnail_file_name"]];
+            break;
 			
 		default:
 			break;
@@ -618,6 +710,13 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[aData writeToFile:[videoThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
 }
 
+- (void)writePersonProfileImageData:(NSData *)aData withFilename:(NSString *)fname {
+#ifdef DEBUG_IMAGE_CACHE
+	NSLog(@"write person profile image: %@", [personThumbnailCacheDir stringByAppendingPathComponent:fname]);
+#endif
+	[aData writeToFile:[personThumbnailCacheDir stringByAppendingPathComponent:fname] options:0 error:nil];
+}
+
 #pragma mark housekeeping methods
 - (void)cacheWakeUpCheck {
 	// check the cache when the app is awaken or put to foreground
@@ -653,6 +752,7 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[self cleanUpDirectoryAtPath:channelThumbnailCacheDir withLimit:CHANNEL_FILE_CACHE_SIZE];
 	[self cleanUpDirectoryAtPath:videoThumbnailCacheDir withLimit:VIDEO_THUMBNAIL_CACHE_SIZE];
 	[self cleanUpDirectoryAtPath:authorThumbnailCacheDir withLimit:AUTHOR_FILE_CACHE_SIZE];
+    [self cleanUpDirectoryAtPath:personThumbnailCacheDir withLimit:PROFILE_FILE_CACHE_SIZE];
 }
 
 - (void)cleanBeforeSignout {
@@ -669,10 +769,13 @@ extern NSString * const NMChannelManagementDidDisappearNotification;
 	[fileManager removeItemAtPath:channelThumbnailCacheDir error:nil];
 	[fileManager removeItemAtPath:authorThumbnailCacheDir error:nil];
 	[fileManager removeItemAtPath:videoThumbnailCacheDir error:nil];
+    [fileManager removeItemAtPath:personThumbnailCacheDir error:nil];
+    
 	// re-create the directories
 	[fileManager createDirectoryAtPath:channelThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
 	[fileManager createDirectoryAtPath:authorThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
 	[fileManager createDirectoryAtPath:videoThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
+    [fileManager createDirectoryAtPath:personThumbnailCacheDir withIntermediateDirectories:YES attributes:nil error:nil];
 }
 
 @end

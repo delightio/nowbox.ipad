@@ -15,6 +15,7 @@
 @class NMVideoDetail;
 @class NMAuthor;
 @class NMCacheController;
+@class NMPersonProfile;
 
 @interface NMImageDownloadTask : NMTask {
 	NSString * imageURLString;
@@ -24,6 +25,7 @@
 	NMAuthor * author;
 	NMVideo * video;
 	NMPreviewThumbnail * previewThumbnail;
+    NMPersonProfile * personProfile;
 	NSString * externalID;
 	UIImage * image;
 	NSHTTPURLResponse * httpResponse;
@@ -36,6 +38,7 @@
 @property (nonatomic, retain) NMPreviewThumbnail * previewThumbnail;
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NMAuthor * author;
+@property (nonatomic, retain) NMPersonProfile * personProfile;
 @property (nonatomic, retain) NSString * imageURLString;
 @property (nonatomic, retain) NSString * externalID;
 @property (nonatomic, retain) UIImage * image;
@@ -47,12 +50,14 @@
 + (NSInteger)commandIndexForAuthor:(NMAuthor *)anAuthor;
 + (NSInteger)commandIndexForVideo:(NMVideo *)vdo;
 + (NSInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv;
++ (NSInteger)commandIndexForPersonProfile:(NMPersonProfile *)profile;
 
 - (id)initWithCategory:(NMCategory *)cat;
 - (id)initWithChannel:(NMChannel *)chn;
 - (id)initWithAuthor:(NMAuthor *)anAuthor;
 - (id)initWithVideoThumbnail:(NMVideo *)vdo;
 - (id)initWithPreviewThumbnail:(NMPreviewThumbnail *)pv;
+- (id)initWithPersonProfile:(NMPersonProfile *)profile;
 
 - (void)retainDownload;
 - (void)releaseDownload;

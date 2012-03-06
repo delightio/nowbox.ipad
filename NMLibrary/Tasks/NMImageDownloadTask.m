@@ -15,6 +15,7 @@
 #import "NMConcreteVideo.h"
 #import "NMVideoDetail.h"
 #import "NMAuthor.h"
+#import "NMPersonProfile.h"
 
 NSString * const NMWillDownloadImageNotification = @"NMWillDownloadImageNotification";
 NSString * const NMDidDownloadImageNotification = @"NMDidDownloadImageNotification";
@@ -25,7 +26,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 @synthesize category;
 @synthesize channel, imageURLString;
 @synthesize httpResponse, originalImagePath;
-@synthesize image, video, author;
+@synthesize image, video, author, personProfile;
 @synthesize externalID, previewThumbnail;
 
 + (NSInteger)commandIndexForCategory:(NMCategory *)cat {
@@ -51,6 +52,11 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 + (NSInteger)commandIndexForPreviewThumbnail:(NMPreviewThumbnail *)pv {
 	NSInteger tid = [pv.nm_id unsignedIntegerValue];
 	return tid << 6 | NMCommandGetPreviewThumbnail;
+}
+
++ (NSInteger)commandIndexForPersonProfile:(NMPersonProfile *)profile {
+    NSInteger tid = [profile.nm_id unsignedIntegerValue];
+	return tid << 6 | NMCommandGetPersonProfileThumbnail;    
 }
 
 - (id)initWithCategory:(NMCategory *)cat {
@@ -127,6 +133,21 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	return self;
 }
 
+- (id)initWithPersonProfile:(NMPersonProfile *)profile {
+	self = [super init];
+	
+	cacheController = [NMCacheController sharedCacheController];
+	self.imageURLString = profile.picture;
+    
+	// we do not store the image in cache for now.
+	// self.originalImagePath = nil;
+    self.personProfile = profile;
+	self.targetID = profile.nm_id;
+	command = NMCommandGetPersonProfileThumbnail;
+	retainCount = 1;
+    
+	return self;    
+}
 
 - (void)retainDownload {
 	retainCount++;
@@ -148,6 +169,7 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 	[channel release];
 	[video release];
 	[author release];
+    [personProfile release];
 	[externalID release];
 	[super dealloc];
 }
@@ -168,10 +190,10 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		case NMCommandGetPreviewThumbnail:
 			return [NSString stringWithFormat:@"%@.%@", externalID, [[httpResponse suggestedFilename] pathExtension]];
 		case NMCommandGetChannelThumbnail:
+        case NMCommandGetPersonProfileThumbnail:
 			return [NSString stringWithFormat:@"%@_%@", targetID, [httpResponse suggestedFilename]];
 		case NMCommandGetCategoryThumbnail:
 			return [NSString stringWithFormat:@"cat_%@", targetID, [httpResponse suggestedFilename]];
-			
 		default:
 			break;
 	}
@@ -205,6 +227,10 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		case NMCommandGetPreviewThumbnail:
 			[cacheController writePreviewThumbnailImageData:buffer withFileName:[self suggestedFilename]];
 			break;
+            
+        case NMCommandGetPersonProfileThumbnail:
+            [cacheController writePersonProfileImageData:buffer withFilename:[self suggestedFilename]];
+            break;
 			
 		default:
 			break;
@@ -237,6 +263,10 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 			case NMCommandGetPreviewThumbnail:
 				previewThumbnail.nm_thumbnail_file_name = [self suggestedFilename];
 				break;
+                
+            case NMCommandGetPersonProfileThumbnail:
+                personProfile.nm_thumbnail_file_name = [self suggestedFilename];
+                break;
 								
 			default:
 				// no need to save for NMVideo or NMPreviewThumbnail. These 2 object types use external_id to identify images
@@ -275,6 +305,9 @@ NSString * const NMDidFailDownloadImageNotification = @"NMDidFailDownloadImageNo
 		case NMCommandGetPreviewThumbnail:
 			return [NSDictionary dictionaryWithObjectsAndKeys:previewThumbnail, @"target_object", image, @"image", nil];
 			
+        case NMCommandGetPersonProfileThumbnail:
+            return [NSDictionary dictionaryWithObjectsAndKeys:personProfile, @"target_object", image, @"image", [NSNumber numberWithInteger:command], @"command", nil];
+            
 		default:
 			break;
 	}

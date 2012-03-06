@@ -65,7 +65,7 @@
     [self setWatchLater:[video.video.nm_watch_later boolValue]];
     [self setFavorite:[video.video.nm_favorite boolValue]];
     [self setTopActionButtonIndex:([video.video.nm_favorite boolValue] ? 2 : 0)];
-    
+
     // Add buzz
     [mentionsArray removeAllObjects];
     [portraitView.buzzView removeAllMentions];
@@ -79,7 +79,7 @@
         NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
         for (NMSocialComment *comment in sortedComments) {
             BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
-            commentView.userImageView.image = nil;
+            [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
             commentView.timeLabel.text = [comment relativeTimeString];
             
             if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {

@@ -17,10 +17,33 @@
 
 @synthesize contentView;
 @synthesize mentionsScrollView;
-@synthesize noCommentsView;
-@synthesize noCommentsLabel;
 @synthesize showsActionButtons;
 @synthesize delegate;
+
++ (UIView *)noCommentsViewWithFrame:(CGRect)frame
+{
+    UIView *noCommentsView = [[[UIView alloc] initWithFrame:frame] autorelease];
+    noCommentsView.backgroundColor = [UIColor clearColor];
+    noCommentsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    UILabel *noCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 20, noCommentsView.bounds.size.width - 30, 40)];
+    noCommentsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+    noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:14.0f];
+    noCommentsLabel.text = @"It's quiet here. Be the first to add a comment.";
+    noCommentsLabel.textColor = [UIColor whiteColor];
+    noCommentsLabel.backgroundColor = [UIColor clearColor];
+    noCommentsLabel.alpha = 0.74;
+    [noCommentsView addSubview:noCommentsLabel];
+    [noCommentsLabel release];
+    
+    UIButton *addCommentButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    addCommentButton.frame = CGRectMake(noCommentsView.bounds.size.width - 55, 15, 50, 50);
+    addCommentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [addCommentButton setImage:[UIImage imageNamed:@"phone_button_add_comment.png"] forState:UIControlStateNormal];
+    [noCommentsView addSubview:addCommentButton];
+    
+    return noCommentsView;
+}
 
 - (void)setup
 {    
@@ -31,10 +54,9 @@
     
     commentScrollViews = [[NSMutableArray alloc] init];
     commentViews = [[NSMutableArray alloc] init];  
+    noCommentViews = [[NSMutableArray alloc] init];
     actionButtonViews = [[NSMutableArray alloc] init];
-    
-    noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:14.0f];
-    
+        
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
     [tapGestureRecognizer setNumberOfTapsRequired:1];
     [self addGestureRecognizer:tapGestureRecognizer];
@@ -64,9 +86,8 @@
     [contentView release];
     [commentScrollViews release];
     [commentViews release];
+    [noCommentViews release];
     [mentionsScrollView release];
-    [noCommentsView release];
-    [noCommentsLabel release];
     [actionButtonViews release];
     
     [super dealloc];
@@ -108,8 +129,22 @@
     }    
 }
 
+- (void)addNoCommentsView
+{
+    UIView *noCommentsView = [BuzzView noCommentsViewWithFrame:CGRectMake(mentionsScrollView.contentSize.width - mentionsScrollView.bounds.size.width, 0,
+                                                                          mentionsScrollView.bounds.size.width, mentionsScrollView.bounds.size.height)];
+    [mentionsScrollView addSubview:noCommentsView];
+    [noCommentViews addObject:noCommentsView];
+}
+
 - (void)addMentionLiked:(BOOL)liked
 {
+    currentMentionIsLiked = liked;
+    
+    // Did last mention have no comments? If so, add a "no comments" view
+    if ([commentScrollViews count] > 0 && [commentViews count] == 0) {
+        [self addNoCommentsView];
+    }
     [commentViews removeAllObjects];
     
     // Create the comments scroll view
@@ -124,46 +159,46 @@
     [commentScrollViews addObject:commentScrollView];
     [commentScrollView release];
     
-    // Create the action buttons
-    UIButton *likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    likeButton.frame = CGRectMake(commentScrollView.frame.origin.x + 244, 4, 50, 50);
-    likeButton.tag = commentScrollView.tag;
-    likeButton.alpha = 0;
-    if (liked) {
-        [likeButton setImage:[UIImage imageNamed:@"phone_button_like_active.png"] forState:UIControlStateNormal];
-        [likeButton addTarget:self action:@selector(unlikeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    } else {
-        [likeButton setImage:[UIImage imageNamed:@"phone_button_like.png"] forState:UIControlStateNormal];
-        [likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    [mentionsScrollView addSubview:likeButton];
-    [actionButtonViews addObject:likeButton];
-    
-    UIButton *commentButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [commentButton setImage:[UIImage imageNamed:@"phone_button_comment.png"] forState:UIControlStateNormal];
-    commentButton.frame = CGRectMake(commentScrollView.frame.origin.x + 244, 52, 50, 50);
-    commentButton.tag = commentScrollView.tag;
-    commentButton.alpha = 0;
-    [commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [mentionsScrollView addSubview:commentButton];
-    [actionButtonViews addObject:commentButton];
-    
     mentionsScrollView.contentSize = CGSizeMake(CGRectGetMaxX(commentScrollView.frame), mentionsScrollView.bounds.size.height);
 }
 
 - (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
 {    
-    noCommentsView.hidden = YES;
-
     BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:mentionsScrollView.bounds] autorelease];
     commentView.commentLabel.text = text;
     commentView.userLabel.text = username;
+
+    UIScrollView *commentScrollView = [commentScrollViews lastObject];
     
     if ([commentViews count] > 0) {
         [commentView sizeToFit];
+    } else {
+        // This is the first comment - create the action buttons
+        UIButton *likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        likeButton.frame = CGRectMake(commentScrollView.frame.origin.x + 244, 4, 50, 50);
+        likeButton.tag = commentScrollView.tag;
+        likeButton.alpha = 0;
+        if (currentMentionIsLiked) {
+            [likeButton setImage:[UIImage imageNamed:@"phone_button_like_active.png"] forState:UIControlStateNormal];
+            [likeButton addTarget:self action:@selector(unlikeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        } else {
+            [likeButton setImage:[UIImage imageNamed:@"phone_button_like.png"] forState:UIControlStateNormal];
+            [likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        }
+        [mentionsScrollView addSubview:likeButton];
+        [actionButtonViews addObject:likeButton];
+        
+        UIButton *commentButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [commentButton setImage:[UIImage imageNamed:@"phone_button_comment.png"] forState:UIControlStateNormal];
+        commentButton.frame = CGRectMake(commentScrollView.frame.origin.x + 244, 52, 50, 50);
+        commentButton.tag = commentScrollView.tag;
+        commentButton.alpha = 0;
+        [commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [mentionsScrollView addSubview:commentButton];
+        [actionButtonViews addObject:commentButton];
     }
     
-    [[commentScrollViews lastObject] addSubview:commentView];
+    [commentScrollView addSubview:commentView];
     [commentViews addObject:commentView];
     
     return commentView;
@@ -179,10 +214,14 @@
         [view removeFromSuperview];
     }
     
+    for (UIView *view in noCommentViews) {
+        [view removeFromSuperview];
+    }
+    
     [commentScrollViews removeAllObjects];
     [commentViews removeAllObjects];
+    [noCommentViews removeAllObjects];
     [actionButtonViews removeAllObjects];
-    noCommentsView.hidden = NO;
     
     mentionsScrollView.contentSize = mentionsScrollView.bounds.size;
     mentionsScrollView.contentOffset = CGPointZero;
@@ -190,7 +229,13 @@
 
 - (void)doneAdding
 {
+    // Did last mention have no comments? If so, add a "no comments" view
+    if (commentViews && [commentViews count] == 0) {
+        [self addNoCommentsView];
+    }
+    
     [self repositionComments];
+    [self setShowsActionButtons:showsActionButtons];
 }
 
 - (void)repositionComments
@@ -232,22 +277,20 @@
 
 - (void)setShowsActionButtons:(BOOL)isShowsActionButtons
 {
-    if (showsActionButtons != isShowsActionButtons) {
-        showsActionButtons = isShowsActionButtons;
-        
-        for (UIView *view in actionButtonViews) {
-            view.alpha = (showsActionButtons && [commentViews count] ? 1.0f : 0.0f);
-        }
-
-        for (UIScrollView *scrollView in commentScrollViews) {
-            if (!showsActionButtons) {
-                scrollView.contentOffset = CGPointZero;
-            }
-            scrollView.scrollEnabled = showsActionButtons;
-        }
-        
-        [self repositionComments];
+    showsActionButtons = isShowsActionButtons;
+    
+    for (UIView *view in actionButtonViews) {
+        view.alpha = (showsActionButtons ? 1.0f : 0.0f);
     }
+
+    for (UIScrollView *scrollView in commentScrollViews) {
+        if (!showsActionButtons) {
+            scrollView.contentOffset = CGPointZero;
+        }
+        scrollView.scrollEnabled = showsActionButtons;
+    }
+    
+    [self repositionComments];
 }
 
 @end

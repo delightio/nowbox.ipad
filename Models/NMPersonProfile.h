@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_me;
+@property (nonatomic, retain) NSString * nm_thumbnail_file_name;
 @property (nonatomic, retain) NSNumber * nm_type;
 @property (nonatomic, retain) NSString * nm_user_id;
 @property (nonatomic, retain) NSString * picture;

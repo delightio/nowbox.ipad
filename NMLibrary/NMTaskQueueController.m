@@ -514,6 +514,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return task;
 }
 
+- (NMImageDownloadTask *)issueGetThumbnailForPersonProfile:(NMPersonProfile *)profile {
+	NMImageDownloadTask * task = nil;
+	if ( profile.picture ) {
+		task = [[NMImageDownloadTask alloc] initWithPersonProfile:profile];
+		[networkController addNewConnectionForTask:task];
+		[task autorelease];
+	}
+	return task;
+}
+
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj {
 	NMTask * task = nil;
 	if ( aSubscribe && [chnObj.nm_id integerValue] == 0 ) {

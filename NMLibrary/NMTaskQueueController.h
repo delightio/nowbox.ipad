@@ -147,6 +147,7 @@
 - (void)endSignOutFacebook;
 - (void)prepareSignOutTwitter;
 - (void)endSignOutTwitter;
+- (NMImageDownloadTask *)issueGetThumbnailForPersonProfile:(NMPersonProfile *)profile;
 
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;

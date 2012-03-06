@@ -16,6 +16,7 @@
 	NMVideo * video;
 	NMAuthor * author;
 	NMPreviewThumbnail * previewThumbnail;
+    NMPersonProfile * personProfile;    
 }
 
 @property (nonatomic, retain) NMImageDownloadTask * downloadTask;
@@ -24,6 +25,7 @@
 @property (nonatomic, retain) NMVideo * video;
 @property (nonatomic, retain) NMAuthor * author;
 @property (nonatomic, retain) NMPreviewThumbnail * previewThumbnail;
+@property (nonatomic, retain) NMPersonProfile * personProfile;
 @property (nonatomic, assign) BOOL adjustsImageOnHighlight;
 
 - (void)setImageForChannel:(NMChannel *)chn;
@@ -31,11 +33,13 @@
 - (void)setImageForVideoThumbnail:(NMVideo *)vdo;
 - (void)setImageForPreviewThumbnail:(NMPreviewThumbnail *)pv;
 - (void)setImageForCategory:(NMCategory *)cat;
+- (void)setImageForPersonProfile:(NMPersonProfile *)profile;
 - (void)setImageDirectly:(UIImage *)image;
 
 - (void)delayedIssueChannelImageDownloadRequest;
 - (void)delayedIssueAuthorImageDownloadRequest;
 - (void)delayedIssueVideoImageDownloadRequest;
+- (void)delayedIssuePersonImageDownloadRequest;
 
 - (void)cancelDownload;
 

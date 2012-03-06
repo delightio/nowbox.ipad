@@ -48,6 +48,7 @@ typedef enum {
 	NMCommandGetAuthorThumbnail,
 	NMCommandGetVideoThumbnail,
 	NMCommandGetPreviewThumbnail,
+    NMCommandGetPersonProfileThumbnail,
 	NMCommandFacebookCommandLowerBound,
 	NMCommandParseFacebookFeed,
 	NMCommandGetFacebookProfile,
