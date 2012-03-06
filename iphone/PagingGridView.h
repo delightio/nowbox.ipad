@@ -61,6 +61,7 @@
 
 @protocol PagingGridViewDelegate <NSObject>
 @optional
+- (void)gridView:(PagingGridView *)aGridView dataSourceWillAnimate:(id<PagingGridViewDataSource>)newDataSource;
 - (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource;
 - (void)gridView:(PagingGridView *)gridView didSelectItemAtIndex:(NSUInteger)index;
 - (void)gridView:(PagingGridView *)aGridView willDeleteItemAtIndex:(NSUInteger)index;

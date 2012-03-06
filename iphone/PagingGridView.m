@@ -144,6 +144,10 @@
         return;
     }
     
+    if ([gridDelegate respondsToSelector:@selector(gridView:dataSourceWillAnimate:)]) {
+        [gridDelegate gridView:self dataSourceWillAnimate:newDataSource];
+    }
+    
     NSUInteger newNumberOfItems = [newDataSource gridViewNumberOfItems:self];
     
     // Create fake cells to animate to. Once the animation is finished, the fake cells will be removed

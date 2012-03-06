@@ -14,6 +14,9 @@
 @implementation GridViewController
 
 @synthesize gridView;
+@synthesize nowboxLogo;
+@synthesize titleLabel;
+@synthesize backButton;
 @synthesize refreshButton;
 @synthesize pageControl;
 @synthesize gridDataSource;
@@ -32,6 +35,9 @@
 - (void)dealloc
 {    
     [gridView release];
+    [nowboxLogo release];
+    [titleLabel release];
+    [backButton release];
     [refreshButton release];
     [pageControl release];
     [gridDataSource release];
@@ -59,6 +65,9 @@
     [super viewDidUnload];
 
     self.gridView = nil;
+    self.nowboxLogo = nil;
+    self.titleLabel = nil;
+    self.backButton = nil;
     self.refreshButton = nil;
     self.pageControl = nil;
 }
@@ -86,11 +95,19 @@
         
         [UIView animateWithDuration:0.3 animations:^{
             refreshButton.alpha = 0.0f;
+            backButton.alpha = 0.0f;
+            titleLabel.alpha = 0.0f;
+            nowboxLogo.alpha = 1.0f;
         }];
     }
 }
 
 #pragma mark - PagingGridViewDelegate
+
+- (void)gridView:(PagingGridView *)aGridView dataSourceWillAnimate:(id<PagingGridViewDataSource>)newDataSource
+{
+    titleLabel.text = ((GridDataSource *)newDataSource).title;    
+}
 
 - (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource
 {
@@ -113,6 +130,9 @@
         // We're navigating to a new set of grid items
         [UIView animateWithDuration:0.3 animations:^{
             refreshButton.alpha = 1.0f;
+            backButton.alpha = 1.0f;
+            titleLabel.alpha = 1.0f;
+            nowboxLogo.alpha = 0.0f;
         }];
     }
 }
