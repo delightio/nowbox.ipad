@@ -112,7 +112,7 @@
 - (void)permanentDeleteMarkedChannels;
 - (NSInteger)maxSubscriptionSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
-- (void)updateFavoriteChannelHideStatus;
+//- (void)updateFavoriteChannelHideStatus;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NSArray *)socialChannelsForSync;
