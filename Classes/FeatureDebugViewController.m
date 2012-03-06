@@ -235,6 +235,16 @@
 	[viewCtrl release];
 }
 
+- (IBAction)twitterSignOut:(id)sender {
+	[syncActivityView startAnimating];
+	[[NMAccountManager sharedAccountManager] signOutTwitterOnCompleteTarget:self action:@selector(stopAnimating)];
+}
+
+- (IBAction)showVideoMentions:(id)sender {
+	// concrete video => all mentions (Facebook and Twitter)
+	// get all those concrete videos with mentions and list them out
+}
+
 - (IBAction)checkUpdate:(id)sender {
 	[[NMTaskQueueController sharedTaskQueueController] issueCheckUpdateForDevice:@"ipad"];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCheckUpdateNotification:) name:NMDidCheckUpdateNotification object:nil];

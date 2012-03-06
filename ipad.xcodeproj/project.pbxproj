@@ -481,6 +481,7 @@
 		A9D19B2B140E274E008CF101 /* NMChannelDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B2A140E274E008CF101 /* NMChannelDetail.m */; };
 		A9D22B5714F854A8003742CE /* NMPostTweetTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D22B5514F854A7003742CE /* NMPostTweetTask.h */; };
 		A9D22B5814F854A8003742CE /* NMPostTweetTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D22B5614F854A7003742CE /* NMPostTweetTask.m */; };
+		A9D339471506B700006163A6 /* FeatureDebugMentionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D339461506B700006163A6 /* FeatureDebugMentionsViewController.m */; };
 		A9D5CF8B14D40D2E001AFC95 /* NMObjectCache.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */; };
 		A9D5CF8C14D40D2E001AFC95 /* NMObjectCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */; };
 		A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */; };
@@ -1121,6 +1122,8 @@
 		A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelDetailTask.m; sourceTree = "<group>"; };
 		A9D22B5514F854A7003742CE /* NMPostTweetTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPostTweetTask.h; sourceTree = "<group>"; };
 		A9D22B5614F854A7003742CE /* NMPostTweetTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPostTweetTask.m; sourceTree = "<group>"; };
+		A9D339451506B6FF006163A6 /* FeatureDebugMentionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugMentionsViewController.h; sourceTree = "<group>"; };
+		A9D339461506B700006163A6 /* FeatureDebugMentionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugMentionsViewController.m; sourceTree = "<group>"; };
 		A9D5CF8914D40D2E001AFC95 /* NMObjectCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMObjectCache.h; sourceTree = "<group>"; };
 		A9D5CF8A14D40D2E001AFC95 /* NMObjectCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMObjectCache.m; sourceTree = "<group>"; };
 		A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -1763,6 +1766,8 @@
 				A926195314EA0CEA005D4496 /* FeatureDebugFacebookCommentsAndLikes.m */,
 				A9C558C014F89E920024EEB3 /* FeatureDebugTwitter.h */,
 				A9C558C114F89E920024EEB3 /* FeatureDebugTwitter.m */,
+				A9D339451506B6FF006163A6 /* FeatureDebugMentionsViewController.h */,
+				A9D339461506B700006163A6 /* FeatureDebugMentionsViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -2700,6 +2705,7 @@
 				83EDAB6514FC74DE0058A074 /* GlowLabel.m in Sources */,
 				83EA127F14FD6A0100FDFD05 /* BuzzCommentView.m in Sources */,
 				8382D56014FEE22E00DDEB6B /* TwitterGridDataSource.m in Sources */,
+				A9D339471506B700006163A6 /* FeatureDebugMentionsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2959,8 +2965,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG_FACEBOOK_IMPORT,
 					DEBUG_USE_STAGING_SERVER,
-					DEBUG_CONNECTION_CONTROLLER,
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

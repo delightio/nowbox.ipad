@@ -1,21 +1,21 @@
 //
-//  FeatureDebugVideoListViewController.m
+//  FeatureDebugMentionsViewController.m
 //  ipad
 //
-//  Created by Bill So on 2/13/12.
+//  Created by Bill So on 3/6/12.
 //  Copyright (c) 2012 Pipely Inc. All rights reserved.
 //
 
-#import "FeatureDebugVideoListViewController.h"
-#import "ipadAppDelegate.h"
-#import "VideoPlaybackViewController.h"
-#import "FeatureDebugFacebookCommentsAndLikes.h"
-#import "FeatureDebugTwitter.h"
+#import "FeatureDebugMentionsViewController.h"
 
-@implementation FeatureDebugVideoListViewController
+@interface FeatureDebugMentionsViewController ()
+
+@end
+
+@implementation FeatureDebugMentionsViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
-@synthesize channel = _channel;
+@synthesize concreteVideo = _concreteVideo;
 
 //- (id)initWithStyle:(UITableViewStyle)style
 //{
@@ -29,24 +29,34 @@
 - (void)dealloc {
 	[_fetchedResultsController release];
 	[_managedObjectContext release];
-	[_channel release];
+	[_concreteVideo release];
 	[super dealloc];
 }
 
-- (void)didReceiveMemoryWarning
+- (void)viewDidLoad
 {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
+    [super viewDidLoad];
+
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+ 
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{
-    NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	cell.textLabel.text = vdo.video.title;
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -63,45 +73,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-    }
     
-	[self configureCell:cell atIndexPath:indexPath];
+    // Configure the cell...
     
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-	NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	NSSet * allMentions = vdo.video.socialMentions;
-	if ( allMentions == 0 ) {
-		return;
-	}
-	NSInteger chnType = [_channel.type integerValue];
-	
-	for (NMSocialInfo * theInfo in allMentions) {
-		if ( [theInfo.nm_type integerValue] == chnType ) {
-			if ( chnType == NMChannelUserFacebookType ) {
-				FeatureDebugFacebookCommentsAndLikes * ctrl = [[FeatureDebugFacebookCommentsAndLikes alloc] initWithStyle:UITableViewStylePlain];
-				ctrl.managedObjectContext = _managedObjectContext;
-				// show the video detail
-				ctrl.socialInfo = theInfo;
-				[self.navigationController pushViewController:ctrl animated:YES];
-				[ctrl release];
-			} else if ( chnType == NMChannelUserTwitterType ) {
-				FeatureDebugTwitter * ctrl = [[FeatureDebugTwitter alloc] initWithStyle:UITableViewStylePlain];
-				ctrl.managedObjectContext = _managedObjectContext;
-				ctrl.socialInfo = theInfo;
-				[self.navigationController pushViewController:ctrl animated:YES];
-				[ctrl release];
-			}
-			break;
-		}
-	}
 }
 
 /*
@@ -147,40 +123,44 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	ipadAppDelegate * appDel = (ipadAppDelegate *)[UIApplication sharedApplication].delegate;
-	// play the selected channel
-	VideoPlaybackViewController * vdoCtrl = (VideoPlaybackViewController *)appDel.viewController;
-	[vdoCtrl playVideo:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+    // Navigation logic may go here. Create and push another view controller.
+    /*
+     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
+     // ...
+     // Pass the selected object to the new view controller.
+     [self.navigationController pushViewController:detailViewController animated:YES];
+     [detailViewController release];
+     */
 }
 
 #pragma mark - Fetched results controller and delegate
 
 - (NSFetchedResultsController *)fetchedResultsController {
-	if ( _fetchedResultsController ) {
-		return _fetchedResultsController;
-	}
-	
-	// create the fetched resutl controller
-	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NSEntityDescription * entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:_managedObjectContext];
-	[request setEntity:entity];
-	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", _channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
-	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];	
-	[request setFetchLimit:12];
-	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
-	
-	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-	resultCtrl.delegate = self;
-	self.fetchedResultsController = resultCtrl;
-	
-	[resultCtrl release];
-	[request release];
-	NSError * error = nil;
-	if ( ![_fetchedResultsController performFetch:&error] ) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-	}
+//	if ( _fetchedResultsController ) {
+//		return _fetchedResultsController;
+//	}
+//	
+//	// create the fetched resutl controller
+//	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+//	NSEntityDescription * entity = [NSEntityDescription entityForName:@"NMSocialInfo" inManagedObjectContext:_managedObjectContext];
+//	[request setEntity:entity];
+//	[request setReturnsObjectsAsFaults:NO];
+//	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", _channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
+//	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];	
+//	[request setFetchLimit:12];
+//	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+//	
+//	NSFetchedResultsController * resultCtrl = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+//	resultCtrl.delegate = self;
+//	self.fetchedResultsController = resultCtrl;
+//	
+//	[resultCtrl release];
+//	[request release];
+//	NSError * error = nil;
+//	if ( ![_fetchedResultsController performFetch:&error] ) {
+//        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+//        abort();
+//	}
 	
 	return _fetchedResultsController;
 }
@@ -221,7 +201,7 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+//            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
