@@ -14,6 +14,7 @@
 @implementation GridViewController
 
 @synthesize gridView;
+@synthesize refreshButton;
 @synthesize pageControl;
 @synthesize gridDataSource;
 @synthesize managedObjectContext;
@@ -31,6 +32,7 @@
 - (void)dealloc
 {    
     [gridView release];
+    [refreshButton release];
     [pageControl release];
     [gridDataSource release];
     [managedObjectContext release];
@@ -57,6 +59,7 @@
     [super viewDidUnload];
 
     self.gridView = nil;
+    self.refreshButton = nil;
     self.pageControl = nil;
 }
 
@@ -80,6 +83,10 @@
     if (![gridDataSource isKindOfClass:[HomeGridDataSource class]]) {
         GridDataSource *homeDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
         [gridView setDataSource:homeDataSource animated:YES];
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            refreshButton.alpha = 0.0f;
+        }];
     }
 }
 
@@ -102,6 +109,11 @@
         [self presentModalViewController:playbackController animated:NO];
         [playbackController setCurrentChannel:channel startPlaying:YES];
         [playbackController release];
+    } else {
+        // We're navigating to a new set of grid items
+        [UIView animateWithDuration:0.3 animations:^{
+            refreshButton.alpha = 1.0f;
+        }];
     }
 }
 

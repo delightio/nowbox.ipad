@@ -17,6 +17,7 @@
 }
 
 @property (nonatomic, retain) IBOutlet PagingGridView *gridView;
+@property (nonatomic, retain) IBOutlet UIButton *refreshButton;
 @property (nonatomic, retain) IBOutlet CustomPageControl *pageControl;
 @property (nonatomic, retain) GridDataSource *gridDataSource;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
