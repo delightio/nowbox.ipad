@@ -895,6 +895,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)pollingTimerMethod:(NSTimer *)aTimer {
+	NSLog(@"Polling server for channel");
 	for (NMChannel * chnObj in unpopulatedChannels) {
 		[self issuePollServerForChannel:chnObj];
 	}
