@@ -296,7 +296,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	if ( ![userDefaults boolForKey:NM_FIRST_LAUNCH_KEY] ) {
 		// poll the server to see if those hidden has got content now.
 		[tqc issueRefreshHiddenSubscribedChannels];
-		[tqc pollServerForChannelReadiness];
+//		[tqc pollServerForChannelReadiness];
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 			[tqc issueSyncRequest];
 		}

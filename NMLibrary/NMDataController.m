@@ -728,7 +728,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMChannel * chnObj = nil;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.subscriptionEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %@", [NSNumber numberWithInteger:NMChannelUserFacebookType]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserFacebookType]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	[request setReturnsObjectsAsFaults:NO];
 	
@@ -750,7 +750,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMChannel * chnObj = nil;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.subscriptionEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %@", [NSNumber numberWithInteger:NMChannelUserTwitterType]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserTwitterType]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	[request setReturnsObjectsAsFaults:NO];
 	
@@ -1013,7 +1013,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (NSArray *)pendingImportVideosForChannel:(NMChannel *)chn {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == %@", chn, [NSNumber numberWithInteger:NMErrorPendingImport]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == %d", chn, NMErrorPendingImport]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	
@@ -1073,7 +1073,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
     [request setEntity:self.videoEntityDescription];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %d", channel, NMErrorDequeueVideo]];
     [request setFetchBatchSize:1];
     
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
@@ -1512,7 +1512,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// this method is not expected to be called often. So, do not cache the predicate
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_me == YES AND nm_type == %@", [NSNumber numberWithInteger:NMChannelUserFacebookType]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_me == YES AND nm_type == %d", NMChannelUserFacebookType]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
@@ -1529,7 +1529,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// this method is not expected to be called often. So, do not cache the predicate
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_me == YES AND nm_type == %@", [NSNumber numberWithInteger:NMChannelUserTwitterType]]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_me == YES AND nm_type == %d", NMChannelUserTwitterType]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];

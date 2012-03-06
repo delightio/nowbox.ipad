@@ -253,7 +253,6 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				break;
 		}
 		if ( vdo ) {
-			NSLog(@"working on video: %@, post: %@", conVdo.title, fbInfo.object_id);
 			// check person profile
 			BOOL isNew = NO;
 			NSDictionary * fromDict = [vdoFeedDict objectForKey:@"from"];

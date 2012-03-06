@@ -39,5 +39,7 @@
 - (IBAction)facebookFeedParse:(id)sender;
 - (IBAction)facebookRefreshToken:(id)sender;
 - (IBAction)twitterFilter:(id)sender;
+- (IBAction)twitterSignOut:(id)sender;
+- (IBAction)showVideoMentions:(id)sender;
 
 @end

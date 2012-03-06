@@ -85,7 +85,6 @@
 }
 
 - (void)removeAllItems {
-	NSLog(@"removeAllItems");
 	// stop observing all items
 	[self pause];
 	NSArray * allItems = self.items;
@@ -253,7 +252,6 @@
 }
 
 - (void)queueVideo:(NMVideo *)vid {
-	NSLog(@"queueVideo:");
 	/*!
 	 check if we should queue video when we model controller informs about direct URL resolved. Similar operation is carried when user flick the screen.
 	 */

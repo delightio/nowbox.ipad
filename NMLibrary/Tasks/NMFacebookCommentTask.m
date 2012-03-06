@@ -36,9 +36,11 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 - (id)initWithInfo:(NMSocialInfo *)info message:(NSString *)msg {
 	self = [super init];
 	if ( info.object_id == nil ) {
+		// make a new share on Facebook
 		command = NMCommandPostNewFacebookLink;
 		self.objectID = [NMAccountManager sharedAccountManager].facebookProfile.nm_user_id;
 	} else {
+		// comment to an existing Facebook post
 		command = NMCommandPostFacebookComment;
 		self.objectID = info.object_id;
 	}
@@ -66,7 +68,14 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 - (NSInteger)commandIndex {
 	NSInteger idx = 0;
 	// use custom command index method
-	idx = ABS((NSInteger)[_objectID hash]);
+	switch (command) {
+		case NMCommandPostNewFacebookLink:
+			idx = (NSInteger)ABS([_message hash]);
+			break;
+		default:
+			idx = (NSInteger)ABS([_objectID hash]);
+			break;
+	}
 	return (((NSIntegerMax >> 6 ) & idx) << 6) | command;
 }
 

@@ -44,6 +44,7 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 // Twitter
 - (void)subscribeAccount:(ACAccount *)acObj;
 - (void)checkAndPushTwitterAccountOnGranted:(void (^)(void))grantBlock;
+- (void)signOutTwitterOnCompleteTarget:(id)aTarget action:(SEL)completionSelector;
 
 // Application lifecycle
 - (void)applicationDidLaunch;

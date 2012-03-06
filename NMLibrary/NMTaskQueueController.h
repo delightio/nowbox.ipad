@@ -33,7 +33,7 @@
 	NMDataController * dataController;
 	
 	// polling channel population status
-	NSTimer * channelPollingTimer;
+//	NSTimer * channelPollingTimer;
 	NSTimer * youTubePollingTimer;
 	NSTimer * userSyncTimer;
 	NSTimer * tokenRenewTimer;
@@ -49,7 +49,7 @@
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, readonly) NMNetworkController * networkController;
 @property (nonatomic, readonly) NMDataController * dataController;
-@property (nonatomic, retain) NSTimer * channelPollingTimer;
+//@property (nonatomic, retain) NSTimer * channelPollingTimer;
 @property (nonatomic, retain) NSTimer * youTubePollingTimer;
 @property (nonatomic, retain) NSTimer * userSyncTimer;
 @property (nonatomic, retain) NSTimer * tokenRenewTimer;
@@ -99,7 +99,7 @@
 - (void)issueSubscribeChannels:(NSArray *)chnArray;
 // Polling channel
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
-- (void)pollServerForChannelReadiness;
+//- (void)pollServerForChannelReadiness; don't need this since we don't need to support keyword channel
 - (void)stopPollingServer;
 // Poll for YouTube
 - (void)issuePollServerForYouTubeSyncSignal;
