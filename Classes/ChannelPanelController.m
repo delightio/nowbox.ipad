@@ -267,7 +267,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     
 	// channel
 	ChannelContainerView * ctnView = (ChannelContainerView *)[cell viewWithTag:1001];
-	NMChannel * theChannel = (NMChannel *)[self.fetchedResultsController objectAtIndexPath:indexPath];
+	NMSubscription * subrptObj = (NMSubscription *)[self.fetchedResultsController objectAtIndexPath:indexPath];
+	NMChannel * theChannel = subrptObj.channel;
 	ctnView.textLabel.text = theChannel.title;
     if ([[theChannel.title componentsSeparatedByString:@" "] count] == 1) {
         CGPoint labelCenter = ctnView.textLabel.center;
@@ -330,7 +331,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
         [ctnView setHighlighted:NO];
     }
     
-    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:theChannel];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:theChannel.subscription];
 
 	selectedIndex = indexPath.row;
     highlightedChannel = theChannel;
@@ -479,18 +480,18 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:NMChannelEntityName inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:NMSubscriptionEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
-	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
+	[fetchRequest setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_hidden == NO AND subscription.nm_subscription_tier == 0"]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND nm_subscription_tier == 0"]];
 	
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"subscription.nm_sort_order" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -582,8 +583,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 				}
 						   
 				if (nextChannelIndexPath) {
-					NMChannel *channel = [controller objectAtIndexPath:nextChannelIndexPath];
-                    NSArray *videos = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:channel];
+					NMSubscription * subrptObj = [controller objectAtIndexPath:nextChannelIndexPath];
+                    NSArray *videos = [[NMTaskQueueController sharedTaskQueueController].dataController sortedVideoListForChannel:subrptObj.channel];
 
                     // do not use setCurrentChannel:startPlaying:. It's for app launch case. This is not a good method name... But em... let's improve this later on if needed.
                     if ([videos count] > 0) {
@@ -677,7 +678,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 	NMChannel * targetChn = [[aNotification userInfo] objectForKey:@"channel"];
 	// do not proceed if not the same channel object as the current one.
 //    NSLog(@"CHDESC: %@", [targetChn description]);
-    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:targetChn];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:targetChn.subscription];
 //    NSLog(@"ROW: %d", [indexPath row]);
     if ([tableView numberOfRowsInSection:0]>0) {
         UITableViewCell *channelCell = [tableView cellForRowAtIndexPath:indexPath];
@@ -698,7 +699,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
     highlightedChannel = [newVideo channel];
-    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel.subscription];
     [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 

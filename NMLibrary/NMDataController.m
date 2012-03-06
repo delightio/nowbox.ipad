@@ -823,7 +823,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.videoEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == 0", chnObj]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_deleted == NO", chnObj]];
 	[request setFetchLimit:1];
 	[request setResultType:NSManagedObjectIDResultType];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
@@ -832,21 +832,21 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 }
 
-- (void)updateFavoriteChannelHideStatus {
-	if ( NM_USER_SHOW_FAVORITE_CHANNEL ) {
-		NSFetchRequest * request = [[NSFetchRequest alloc] init];
-		[request setEntity:self.videoEntityDescription];
-		[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == 0", favoriteVideoChannel]];
-		[request setFetchLimit:1];
-		[request setResultType:NSManagedObjectIDResultType];
-		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-		favoriteVideoChannel.subscription.nm_hidden = (NSNumber *)([result count] == 0 ? kCFBooleanTrue : kCFBooleanFalse);
-		[request release];
-	} else {
-		// always hide the channel
-		favoriteVideoChannel.subscription.nm_hidden = (NSNumber *)kCFBooleanTrue;
-	}
-}
+//- (void)updateFavoriteChannelHideStatus {
+//	if ( NM_USER_SHOW_FAVORITE_CHANNEL ) {
+//		NSFetchRequest * request = [[NSFetchRequest alloc] init];
+//		[request setEntity:self.videoEntityDescription];
+//		[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == 0", favoriteVideoChannel]];
+//		[request setFetchLimit:1];
+//		[request setResultType:NSManagedObjectIDResultType];
+//		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+//		favoriteVideoChannel.subscription.nm_hidden = (NSNumber *)([result count] == 0 ? kCFBooleanTrue : kCFBooleanFalse);
+//		[request release];
+//	} else {
+//		// always hide the channel
+//		favoriteVideoChannel.subscription.nm_hidden = (NSNumber *)kCFBooleanTrue;
+//	}
+//}
 
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
