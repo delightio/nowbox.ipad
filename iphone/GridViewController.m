@@ -92,13 +92,6 @@
     if (![gridDataSource isKindOfClass:[HomeGridDataSource class]]) {
         GridDataSource *homeDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
         [gridView setDataSource:homeDataSource animated:YES];
-        
-        [UIView animateWithDuration:0.3 animations:^{
-            refreshButton.alpha = 0.0f;
-            backButton.alpha = 0.0f;
-            titleLabel.alpha = 0.0f;
-            nowboxLogo.alpha = 1.0f;
-        }];
     }
 }
 
@@ -106,7 +99,23 @@
 
 - (void)gridView:(PagingGridView *)aGridView dataSourceWillAnimate:(id<PagingGridViewDataSource>)newDataSource
 {
-    titleLabel.text = ((GridDataSource *)newDataSource).title;    
+    titleLabel.text = ((GridDataSource *)newDataSource).title;
+    
+    if ([newDataSource isKindOfClass:[HomeGridDataSource class]]) {
+        [UIView animateWithDuration:0.3 animations:^{
+            refreshButton.alpha = 0.0f;
+            backButton.alpha = 0.0f;
+            titleLabel.alpha = 0.0f;
+            nowboxLogo.alpha = 1.0f;
+        }];
+    } else {
+        [UIView animateWithDuration:0.3 animations:^{
+            refreshButton.alpha = 1.0f;
+            backButton.alpha = 1.0f;
+            titleLabel.alpha = 1.0f;
+            nowboxLogo.alpha = 0.0f;
+        }];
+    }
 }
 
 - (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource
@@ -126,14 +135,6 @@
         [self presentModalViewController:playbackController animated:NO];
         [playbackController setCurrentChannel:channel startPlaying:YES];
         [playbackController release];
-    } else {
-        // We're navigating to a new set of grid items
-        [UIView animateWithDuration:0.3 animations:^{
-            refreshButton.alpha = 1.0f;
-            backButton.alpha = 1.0f;
-            titleLabel.alpha = 1.0f;
-            nowboxLogo.alpha = 0.0f;
-        }];
     }
 }
 
