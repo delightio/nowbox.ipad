@@ -10,7 +10,6 @@
 #import "NMMovieView.h"
 #import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
-#import "PhoneLaunchController.h"
 #import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
