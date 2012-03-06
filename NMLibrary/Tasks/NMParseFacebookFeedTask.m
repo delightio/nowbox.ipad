@@ -36,6 +36,9 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize facebookTypeNumber = _facebookTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chn {
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"Getting first page - Facebook");
+#endif
 	self = [super init];
 	command = NMCommandParseFacebookFeed;
 	self.channel = chn;
@@ -58,6 +61,9 @@ static NSArray * youTubeRegexArray = nil;
 	self.user_id = theProfile.nm_user_id;
 	isAccountOwner = [theProfile.nm_me boolValue];
 	self.targetID = chn.nm_id;
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"Getting next page - Facebook");
+#endif
 	
 	return self;
 }
@@ -196,9 +202,13 @@ static NSArray * youTubeRegexArray = nil;
 		idx++;
 		fbInfo = nil;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
+#ifdef DEBUG_FACEBOOK_IMPORT
+		NSLog(@"import check result: %@ %d", [vdoFeedDict objectForKey:@"external_id"], chkResult);
+#endif
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
 			{
+				numberOfVideoAdded++;
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
@@ -440,6 +450,9 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (NSDictionary *)userInfo {
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"Facebook feed: video added: %d", numberOfVideoAdded);
+#endif
 	_channel.video_count = [NSNumber numberWithUnsignedInteger:[_channel.videos count]];
 	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
 }

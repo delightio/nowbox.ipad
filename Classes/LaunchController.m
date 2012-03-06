@@ -159,6 +159,9 @@
 		// get channel
 		[taskQueueController issueGetSubscribedChannels];
 		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
+		if ( !appFirstLaunch ) {
+			[[NMAccountManager sharedAccountManager] applicationDidLaunch];
+		}
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
         [self beginNewSession];

@@ -85,7 +85,6 @@
 }
 
 - (void)removeAllItems {
-	NSLog(@"removeAllItems");
 	// stop observing all items
 	[self pause];
 	NSArray * allItems = self.items;
