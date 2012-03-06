@@ -247,7 +247,8 @@
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 4;
+    // +1 since first cell spans two columns, +4 for YT/FB/Twitter/More cells
+    return [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] + 5;
 }
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
@@ -260,7 +261,7 @@
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
     }
-     
+    
     NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
     NSUInteger frcIndex = [self mappedFetchedResultsIndexForGridIndex:index];
     
@@ -271,16 +272,23 @@
         switch (frcIndex - frcObjectCount) {
             case 0:
                 view.label.text = @"Facebook";
-                view.image.image = [UIImage imageNamed:@"social-facebook.png"];
+                view.image.image = nil;
                 break;
             case 1:
                 view.label.text = @"YouTube";
-                view.image.image = [UIImage imageNamed:@"social-youtube.png"];
+                view.image.image = nil;
                 break;
             case 2:
                 view.label.text = @"Twitter";
-                view.image.image = [UIImage imageNamed:@"social-twitter.png"];            
+                view.image.image = nil;
                 break;
+            case 3:
+                view.label.text = @"More";
+                view.label.textColor = [UIColor colorWithRed:167.0f/255.0f green:167.0f/255.0f blue:167.0f/255.0f alpha:1.0f];
+                view.label.highlightedTextColor = [UIColor colorWithRed:105.0f/255.0f green:105.0f/255.0f blue:105.0f/255.0f alpha:1.0f];
+                view.label.center = CGPointMake(view.label.center.x - 6, view.label.center.y);
+                view.image.image = [UIImage imageNamed:@"phone_grid_item_more.png"];
+                break;                
             default:
                 break;
         }

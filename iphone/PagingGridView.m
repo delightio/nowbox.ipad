@@ -421,9 +421,14 @@
     PagingGridViewCell *view = [[[recycledViews anyObject] retain] autorelease];
     if (view) {
         [recycledViews removeObject:view];
+        
+        // Reset the view to its original appearance
         [view.activityIndicator stopAnimating];
         [view.authorImage setImageDirectly:nil];
         view.authorView.hidden = YES;
+        view.label.textColor = [UIColor whiteColor];
+        view.label.highlightedTextColor = [UIColor whiteColor];
+        view.label.center = CGPointMake(view.frame.size.width / 2, view.frame.size.height / 2);
     }
     
     return view;
