@@ -99,7 +99,7 @@
 - (void)issueSubscribeChannels:(NSArray *)chnArray;
 // Polling channel
 - (void)issuePollServerForChannel:(NMChannel *)chnObj;
-- (void)pollServerForChannelReadiness;
+//- (void)pollServerForChannelReadiness; don't need this since we don't need to support keyword channel
 - (void)stopPollingServer;
 // Poll for YouTube
 - (void)issuePollServerForYouTubeSyncSignal;

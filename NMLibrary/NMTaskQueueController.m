@@ -91,7 +91,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleTokenNotification:) name:NMDidFailRequestTokenNotification object:nil];
 	
 	// listen to subscription as well
-	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil]; Not needed since we do not support keyword channel
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
@@ -207,15 +207,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-- (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
-	// when user has subscribed a channel, we need to check if the channel has contents populated.
-	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
-	if ( [chnObj.type integerValue] == NMChannelKeywordType && ![chnObj.populated_at boolValue] ) {
-		// this is a keyword channel. we need to check if if has been populated or not
-		// fire the polling logic
-		[self pollServerForChannelReadiness];
-	}
-}
+//- (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
+//	// when user has subscribed a channel, we need to check if the channel has contents populated.
+//	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+//	if ( [chnObj.type integerValue] == NMChannelKeywordType && ![chnObj.populated_at boolValue] ) {
+//		// this is a keyword channel. we need to check if if has been populated or not
+//		// fire the polling logic
+//		[self pollServerForChannelReadiness];
+//	}
+//}
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
 	if ( didFinishLogin ) {
@@ -230,39 +230,39 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		// stream channel (twitter/facebook), we don't distinguish here whether the user has just logged in twitter or facebook. no harm fetching video list for 
 		NMChannel * chnObj = nil;
 		NMSubscription * subtObj = nil;
-		BOOL shouldFirePollingLogic = NO;
+//		BOOL shouldFirePollingLogic = NO;
 		if ( NM_USER_TWITTER_CHANNEL_ID ) {
 			chnObj = dataController.userTwitterStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
 			subtObj = chnObj.subscription;
-			if ( [chnObj.populated_at boolValue] ) {
+//			if ( [chnObj.populated_at boolValue] ) {
 				if ( [subtObj.nm_hidden boolValue] ) {
 					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
 				}
 				// fetch the list of video in this twitter stream channel
 				[self issueGetMoreVideoForChannel:chnObj];
-			} else {
-				// never populated before
-				shouldFirePollingLogic = YES;
-			}
+//			} else {
+//				// never populated before
+//				shouldFirePollingLogic = YES;
+//			}
 		}
 		if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 			chnObj = dataController.userFacebookStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
 			subtObj = chnObj.subscription;
-			if ( [chnObj.populated_at boolValue] ) {
+//			if ( [chnObj.populated_at boolValue] ) {
 				if ( [subtObj.nm_hidden boolValue] ) {
 					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
 				}
 				// fetch the list of video in this twitter stream channel
 				[self issueGetMoreVideoForChannel:chnObj];
-			} else {
-				// never populated before
-				shouldFirePollingLogic = YES;
-			}
+//			} else {
+//				// never populated before
+//				shouldFirePollingLogic = YES;
+//			}
 		}
-		if ( shouldFirePollingLogic ) {
-			NSLog(@"Should schedule polling timer");
-			[self pollServerForChannelReadiness];
-		}
+//		if ( shouldFirePollingLogic ) {
+//			NSLog(@"Should schedule polling timer");
+//			[self pollServerForChannelReadiness];
+//		}
 	} else {
 		self.syncInProgress = NO;
 	}
@@ -861,21 +861,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return;
 }
 
-- (void)pollServerForChannelReadiness {
-	// check the list of channels
-	NSArray * result = [dataController channelsNeverPopulatedBefore];
-	if ( result ) {
-		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
-		// run the timer method
-		if ( channelPollingTimer ) {
-			[channelPollingTimer fire];
-		} else {
-			channelPollingRetryCount = 0;
-			self.channelPollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
-		}
-		// issue poll request for each channel
-	}
-}
+//- (void)pollServerForChannelReadiness {
+//	// check the list of channels
+//	NSArray * result = [dataController channelsNeverPopulatedBefore];
+//	if ( result ) {
+//		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
+//		// run the timer method
+//		if ( channelPollingTimer ) {
+//			[channelPollingTimer fire];
+//		} else {
+//			channelPollingRetryCount = 0;
+//			self.channelPollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
+//		}
+//		// issue poll request for each channel
+//	}
+//}
 
 - (void)stopPollingServer {
 	if ( youTubePollingTimer ) {
