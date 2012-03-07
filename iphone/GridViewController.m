@@ -11,6 +11,10 @@
 #import "YouTubeGridDataSource.h"
 #import "PhoneVideoPlaybackViewController.h"
 
+@interface GridViewController (PrivateMethods)
+- (void)updateTitleBarForDataSource:(id<PagingGridViewDataSource>)dataSource;
+@end
+
 @implementation GridViewController
 
 @synthesize gridView;
@@ -46,6 +50,21 @@
     [super dealloc];
 }
 
+- (void)updateTitleBarForDataSource:(id<PagingGridViewDataSource>)dataSource
+{
+    if ([dataSource isKindOfClass:[HomeGridDataSource class]]) {
+        refreshButton.alpha = 0.0f;
+        backButton.alpha = 0.0f;
+        titleLabel.alpha = 0.0f;
+        nowboxLogo.alpha = 1.0f;
+    } else {
+        refreshButton.alpha = 1.0f;
+        backButton.alpha = 1.0f;
+        titleLabel.alpha = 1.0f;
+        nowboxLogo.alpha = 0.0f;
+    }    
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -54,6 +73,7 @@
 
     [gridDataSource setGridView:gridView];
     [gridView setDataSource:gridDataSource animated:NO];
+    [self updateTitleBarForDataSource:gridDataSource];
     
     // If view was unloaded, restore the page we were on
     pageControl.currentPage = currentPage;
@@ -101,21 +121,9 @@
 {
     titleLabel.text = ((GridDataSource *)newDataSource).title;
     
-    if ([newDataSource isKindOfClass:[HomeGridDataSource class]]) {
-        [UIView animateWithDuration:0.3 animations:^{
-            refreshButton.alpha = 0.0f;
-            backButton.alpha = 0.0f;
-            titleLabel.alpha = 0.0f;
-            nowboxLogo.alpha = 1.0f;
-        }];
-    } else {
-        [UIView animateWithDuration:0.3 animations:^{
-            refreshButton.alpha = 1.0f;
-            backButton.alpha = 1.0f;
-            titleLabel.alpha = 1.0f;
-            nowboxLogo.alpha = 0.0f;
-        }];
-    }
+    [UIView animateWithDuration:0.3 animations:^{
+        [self updateTitleBarForDataSource:newDataSource];
+    }];
 }
 
 - (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource
