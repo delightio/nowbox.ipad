@@ -20,6 +20,7 @@
 {
     self = [super initWithGridView:aGridView managedObjectContext:aManagedObjectContext];
     if (self) {
+        self.title = @"Facebook";
         refreshingChannels = [[NSMutableSet alloc] init];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];

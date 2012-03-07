@@ -14,6 +14,7 @@
 @interface GridDataSource : NSObject <PagingGridViewDataSource, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, retain) PagingGridView *gridView;
+@property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, assign) BOOL ignoresMoveChanges;
 

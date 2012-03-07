@@ -11,6 +11,7 @@
 @implementation GridDataSource
 
 @synthesize gridView;
+@synthesize title;
 @synthesize ignoresMoveChanges;
 @synthesize managedObjectContext;
 
@@ -27,6 +28,7 @@
 - (void)dealloc
 {
     [gridView release];
+    [title release];
     [managedObjectContext release];
     
     [super dealloc];

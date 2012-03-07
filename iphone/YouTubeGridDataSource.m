@@ -20,6 +20,7 @@
 {
     self = [super initWithGridView:aGridView managedObjectContext:aManagedObjectContext];
     if (self) {
+        self.title = @"YouTube";
         refreshingChannels = [[NSMutableSet alloc] init];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];

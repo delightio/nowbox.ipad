@@ -95,6 +95,7 @@
 {
     [super setHighlighted:highlighted];    
     highlightView.hidden = !highlighted;
+    label.highlighted = highlighted;
 }
 
 - (void)didMoveToSuperview
