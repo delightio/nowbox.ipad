@@ -125,7 +125,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	}
 }
 
-- (void)handleLowMemoryNotification {
+- (void)handleLowMemoryNotification:(NSNotificationCenter *)notification {
 	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 	
 	// free all cached predicate
