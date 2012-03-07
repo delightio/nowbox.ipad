@@ -269,19 +269,35 @@
         NMSubscription *subscription = [self objectAtIndex:index];
         [self configureCell:view forChannel:subscription.channel isUpdate:NO];
     } else {
+        NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+        
         switch (frcIndex - frcObjectCount) {
-            case 0:
+            case 0: {
                 view.label.text = @"Facebook";
-                view.image.image = nil;
+                if (NM_USER_FACEBOOK_CHANNEL_ID != 0) {
+                    NMChannel *facebookChannel = [dataController userFacebookStreamChannel];
+                    [view.image setImageForVideoThumbnail:[dataController latestVideoForChannel:facebookChannel]];
+                } else {
+                    [view.image setImageDirectly:nil];
+                }
                 break;
-            case 1:
+            }
+            case 1: {
                 view.label.text = @"YouTube";
-                view.image.image = nil;
+                NMChannel *youTubeChannel = [dataController userYouTubeStreamChannel];
+                [view.image setImageForVideoThumbnail:[dataController latestVideoForChannel:youTubeChannel]];
                 break;
-            case 2:
+            }
+            case 2: {
                 view.label.text = @"Twitter";
-                view.image.image = nil;
+                if (NM_USER_TWITTER_CHANNEL_ID != 0) {
+                    NMChannel *twitterChannel = [dataController userTwitterStreamChannel];
+                    [view.image setImageForVideoThumbnail:[dataController latestVideoForChannel:twitterChannel]];
+                } else {
+                    [view.image setImageDirectly:nil];
+                }
                 break;
+            }
             case 3:
                 view.label.text = @"More";
                 view.label.textColor = [UIColor colorWithRed:167.0f/255.0f green:167.0f/255.0f blue:167.0f/255.0f alpha:1.0f];

@@ -46,7 +46,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 @synthesize internalSearchCategory;
 @synthesize internalYouTubeCategory;
 @synthesize myQueueChannel, favoriteVideoChannel;
-@synthesize userFacebookStreamChannel, userTwitterStreamChannel;
+@synthesize userFacebookStreamChannel, userTwitterStreamChannel, userYouTubeStreamChannel;
 @synthesize lastSessionVideoIDs;
 
 @synthesize subscribedChannelsPredicate = _subscribedChannelsPredicate;
@@ -81,7 +81,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 - (void)dealloc {
 	[myQueueChannel release], [favoriteVideoChannel release];
-	[userFacebookStreamChannel release], [userTwitterStreamChannel release];
+	[userFacebookStreamChannel release], [userTwitterStreamChannel release], [userYouTubeStreamChannel release];
 	[_subscribedChannelsPredicate release];
 	[_socialChannelsToSyncPredicate release];
 	[_objectForIDPredicateTemplate release];
@@ -760,6 +760,30 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		chnObj = [[result objectAtIndex:0] valueForKey:@"channel"];;
 	}
 	self.userTwitterStreamChannel = chnObj;
+	[request release];
+	return chnObj;
+}
+
+- (NMChannel *)userYouTubeStreamChannel {
+    if ( userYouTubeStreamChannel ) return userYouTubeStreamChannel;
+	NMChannel * chnObj = nil;
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:self.subscriptionEntityDescription];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden == NO AND channel != nil AND channel.type == %@", 
+                           [NSNumber numberWithInteger:NMChannelYouTubeType]]];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    [sortDescriptor release];
+
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
+	[request setReturnsObjectsAsFaults:NO];
+	
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	
+	if ( [result count] ) {
+		chnObj = [[result objectAtIndex:0] valueForKey:@"channel"];
+	}
+	self.userYouTubeStreamChannel = chnObj;
 	[request release];
 	return chnObj;
 }
