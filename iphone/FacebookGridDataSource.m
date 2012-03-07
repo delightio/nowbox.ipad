@@ -43,10 +43,10 @@
 {
     NMChannel *channel = [[self objectAtIndex:index] channel];
     
-    if (index > 0) {
+/*    if (index > 0) {
         // Start crawling user's feed for more videos
         [[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForChannel:channel];
-    }
+    }*/
     
     return channel;
 }
