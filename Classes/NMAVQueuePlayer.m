@@ -90,6 +90,8 @@
 	NSArray * allItems = self.items;
 	for (NMAVPlayerItem * anItem in allItems) {
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
+		anItem.nmVideo.video.nm_player_item = nil;
+		anItem.nmVideo = nil;
 	}
 	[super removeAllItems];
 }

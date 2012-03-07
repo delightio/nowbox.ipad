@@ -201,18 +201,18 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[self stopVideo];
+//	[self resetAllMovieDetailViews];
 	[movieView.player removeObserver:self forKeyPath:@"status"];
 	[movieView.player removeObserver:self forKeyPath:@"currentItem"];
 	[movieView.player removeObserver:self forKeyPath:@"airPlayVideoActive"];
 	[movieView.player removeObserver:self forKeyPath:@"rate"];
-	[movieView.player removeAllItems];
 	// get rid of time observer of video player
  	[movieView.player removeTimeObserver:timeObserver];
 	[timeObserver release], timeObserver = nil;
-	movieView.player = nil;
+	[movieView.player removeAllItems];
     
     [[ToolTipController sharedToolTipController] setDelegate:nil];
-    
+
 	[super viewWillDisappear:animated];
 }
 
@@ -311,6 +311,7 @@
     [loadedControlView release];
 	[currentChannel release];
 	// remove movie view. only allow this to happen after we have removed the time observer
+	movieView.player = nil;
 	[movieView release];
     [previousChannelHeaderView release];
     [nextChannelHeaderView release];
@@ -320,8 +321,10 @@
     [controlScrollView release];
     [topLevelContainerView release];
     [playbackModelController release];
+	[managedObjectContext_ release];
     
 	[super dealloc];
+	NSLog(@"dealloc phone video playback view");
 }
 
 #pragma mark Playback data structure

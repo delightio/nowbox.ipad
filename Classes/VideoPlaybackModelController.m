@@ -71,13 +71,13 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
     nextNextVideo.video.nm_player_item = nil;
     previousVideo.video.nm_player_item = nil;
     
-	[currentVideo release];
+//	[currentVideo release];
 	[currentIndexPath release];
-	[nextNextVideo release];
+//	[nextNextVideo release];
 	[nextIndexPath release];
-	[nextNextVideo release];
+//	[nextNextVideo release];
 	[nextNextIndexPath release];
-	[previousVideo release];
+//	[previousVideo release];
 	[previousIndexPath release];
 	[fetchedResultsController_ release];
 	[managedObjectContext release];
