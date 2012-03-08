@@ -169,13 +169,6 @@
     
     NSInteger duration = [theVideo.duration integerValue];
 	[cell setDuration:[NSString stringWithFormat:@"%02d:%02d", duration / 60, duration % 60]];
-    
-    if ([anIndexPath row] > 0) {
-        NMVideo *prevVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[anIndexPath row]-1 inSection:0]];
-        [cell setSessionStartCell:([[theVideo nm_session_id] intValue] != [[prevVideo nm_session_id] intValue])];
-    } else {
-        [cell setSessionStartCell:NO];
-    }
 
     if ( panelController.highlightedChannel == channel && [anIndexPath row] == panelController.highlightedVideoIndex ) {
 		[cell setIsPlayingVideo:YES];
