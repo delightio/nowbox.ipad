@@ -46,6 +46,7 @@
 - (void)insertItemAtIndex:(NSUInteger)index;
 - (void)deleteItemAtIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)updateItemAtIndex:(NSUInteger)index;
+- (void)updateVisibleItems;
 
 @end
 

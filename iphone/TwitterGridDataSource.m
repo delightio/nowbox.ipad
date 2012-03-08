@@ -25,12 +25,15 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+        
+        [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:NULL];
     }
     return self;
 }
 
 - (void)dealloc
 {    
+    [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [fetchedResultsController release];
@@ -136,6 +139,14 @@
     if (channel) {
         [refreshingChannels removeObject:channel];
     }
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    // Twitter sync status updated, we have imported some videos
+    [self.gridView updateVisibleItems];
 }
 
 #pragma mark - NSFetchedResultsController

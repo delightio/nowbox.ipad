@@ -601,6 +601,15 @@
     }
 }
 
+- (void)updateVisibleItems
+{
+    NSUInteger currentIndex = [visibleIndexes firstIndex];
+    while (currentIndex != NSNotFound) {
+        [self updateItemAtIndex:currentIndex];
+        currentIndex = [visibleIndexes indexGreaterThanIndex:currentIndex];
+    }
+}
+
 #pragma mark - PagingGridViewCellDelegate
 
 - (void)gridViewCellDidTap:(PagingGridViewCell *)gridViewCell

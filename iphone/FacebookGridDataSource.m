@@ -23,14 +23,18 @@
         self.title = @"Facebook";
         refreshingChannels = [[NSMutableSet alloc] init];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+        
+        [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:NULL];
     }
     return self;
 }
 
 - (void)dealloc
 {    
+    [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [fetchedResultsController release];
@@ -145,6 +149,14 @@
     if (channel) {
         [refreshingChannels removeObject:channel];
     }
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    // Facebook sync status updated, we have imported some videos
+    [self.gridView updateVisibleItems];
 }
 
 #pragma mark - NSFetchedResultsController
