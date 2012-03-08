@@ -311,6 +311,7 @@
     [loadedControlView release];
 	[currentChannel release];
 	// remove movie view. only allow this to happen after we have removed the time observer
+    movieView.player.playbackDelegate = nil;
 	movieView.player = nil;
 	[movieView release];
     [previousChannelHeaderView release];
