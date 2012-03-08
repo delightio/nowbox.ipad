@@ -276,7 +276,13 @@
                 view.label.text = @"Facebook";
                 if (NM_USER_FACEBOOK_CHANNEL_ID != 0) {
                     NMChannel *facebookChannel = [dataController userFacebookStreamChannel];
-                    [view.image setImageForVideoThumbnail:[dataController latestVideoForChannel:facebookChannel]];
+                    NMVideo *latestVideo = [dataController latestVideoForChannel:facebookChannel];
+                    
+                    if (latestVideo) {
+                        [view.image setImageForVideoThumbnail:latestVideo];
+                    } else {
+                        [view.image setImageDirectly:nil];                        
+                    }
                 } else {
                     [view.image setImageDirectly:nil];
                 }
@@ -285,14 +291,26 @@
             case 1: {
                 view.label.text = @"YouTube";
                 NMChannel *youTubeChannel = [dataController userYouTubeStreamChannel];
-                [view.image setImageForVideoThumbnail:[dataController latestVideoForChannel:youTubeChannel]];
+                NMVideo *latestVideo = [dataController latestVideoForChannel:youTubeChannel];
+                
+                if (latestVideo) {
+                    [view.image setImageForVideoThumbnail:latestVideo];
+                } else {
+                    [view.image setImageDirectly:nil];
+                }
                 break;
             }
             case 2: {
                 view.label.text = @"Twitter";
                 if (NM_USER_TWITTER_CHANNEL_ID != 0) {
                     NMChannel *twitterChannel = [dataController userTwitterStreamChannel];
-                    [view.image setImageForVideoThumbnail:[dataController latestVideoForChannel:twitterChannel]];
+                    NMVideo *latestVideo = [dataController latestVideoForChannel:twitterChannel];
+                    
+                    if (latestVideo) {
+                        [view.image setImageForVideoThumbnail:latestVideo];
+                    } else {
+                        [view.image setImageDirectly:nil];                        
+                    }
                 } else {
                     [view.image setImageDirectly:nil];
                 }
