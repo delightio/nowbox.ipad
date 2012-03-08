@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSNumber * comments_count;
 @property (nonatomic, retain) NSString * like_post_url;
 @property (nonatomic, retain) NSNumber * likes_count;
+@property (nonatomic, retain) NSNumber * nm_date_last_updated;
 @property (nonatomic, retain) NSNumber * nm_type;
 @property (nonatomic, retain) NSString * object_id;
 @property (nonatomic, retain) NSSet *comments;
