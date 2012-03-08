@@ -62,76 +62,76 @@
 	UIColor * blackColor;
 }
 
-@property (nonatomic, readonly) NSDateFormatter * videoDateFormatter;
-@property (nonatomic, readonly) NSNumberFormatter * viewCountFormatter;
-@property (nonatomic, readonly) UIFont * channelNameFont;
-@property (nonatomic, readonly) UIFont * videoTitleFont;
-@property (nonatomic, readonly) UIFont * videoDetailFont;
-@property (nonatomic, readonly) UIImage * videoShadowImage;
-//@property (nonatomic, readonly) UIImage * videoHighlightedBackgroundImage;
-//@property (nonatomic, readonly) UIImage * videoNormalBackgroundImage;
-//@property (nonatomic, readonly) UIImage * videoDimmedBackgroundImage;
-@property (nonatomic, readonly) UIColor * videoTitleFontColor;
-@property (nonatomic, readonly) UIColor * videoTitleHighlightedFontColor;
-@property (nonatomic, readonly) UIColor * videoTitlePlayedFontColor;
-@property (nonatomic, readonly) UIColor * videoDetailFontColor;
-@property (nonatomic, readonly) UIColor * videoDetailHighlightedFontColor;
-@property (nonatomic, readonly) UIColor * videoDetailPlayedFontColor;
-@property (nonatomic, readonly) UIImage * videoStatusBadImage;
-@property (nonatomic, readonly) UIImage * videoStatusHotImage;
-@property (nonatomic, readonly) UIImage * videoStatusFavImage;
-@property (nonatomic, readonly) UIImage * videoStatusQueuedImage;
-@property (nonatomic, readonly) UIImage * videoNewSessionIndicatorImage;
+@property (nonatomic, retain) NSDateFormatter * videoDateFormatter;
+@property (nonatomic, retain) NSNumberFormatter * viewCountFormatter;
+@property (nonatomic, retain) UIFont * channelNameFont;
+@property (nonatomic, retain) UIFont * videoTitleFont;
+@property (nonatomic, retain) UIFont * videoDetailFont;
+@property (nonatomic, retain) UIImage * videoShadowImage;
+//@property (nonatomic, retain) UIImage * videoHighlightedBackgroundImage;
+//@property (nonatomic, retain) UIImage * videoNormalBackgroundImage;
+//@property (nonatomic, retain) UIImage * videoDimmedBackgroundImage;
+@property (nonatomic, retain) UIColor * videoTitleFontColor;
+@property (nonatomic, retain) UIColor * videoTitleHighlightedFontColor;
+@property (nonatomic, retain) UIColor * videoTitlePlayedFontColor;
+@property (nonatomic, retain) UIColor * videoDetailFontColor;
+@property (nonatomic, retain) UIColor * videoDetailHighlightedFontColor;
+@property (nonatomic, retain) UIColor * videoDetailPlayedFontColor;
+@property (nonatomic, retain) UIImage * videoStatusBadImage;
+@property (nonatomic, retain) UIImage * videoStatusHotImage;
+@property (nonatomic, retain) UIImage * videoStatusFavImage;
+@property (nonatomic, retain) UIImage * videoStatusQueuedImage;
+@property (nonatomic, retain) UIImage * videoNewSessionIndicatorImage;
 
-@property (nonatomic, readonly) UIColor * clearColor;
-@property (nonatomic, readonly) UIColor * channelPanelFontColor;
-@property (nonatomic, readonly) UIColor * channelPanelBackgroundColor;
-@property (nonatomic, readonly) UIColor * channelPanelHighlightColor;
-@property (nonatomic, readonly) UIColor * channelPanelPlayedColor;
+@property (nonatomic, retain) UIColor * clearColor;
+@property (nonatomic, retain) UIColor * channelPanelFontColor;
+@property (nonatomic, retain) UIColor * channelPanelBackgroundColor;
+@property (nonatomic, retain) UIColor * channelPanelHighlightColor;
+@property (nonatomic, retain) UIColor * channelPanelPlayedColor;
 
-@property (nonatomic, readonly) UIColor * channelPanelCellDefaultBackgroundStart;
-@property (nonatomic, readonly) UIColor * channelPanelCellDefaultBackgroundEnd;
-@property (nonatomic, readonly) UIColor * channelPanelCellDefaultTopBorder;
-@property (nonatomic, readonly) UIColor * channelPanelCellDefaultBottomBorder;
-@property (nonatomic, readonly) UIColor * channelPanelCellDefaultDivider;
+@property (nonatomic, retain) UIColor * channelPanelCellDefaultBackgroundStart;
+@property (nonatomic, retain) UIColor * channelPanelCellDefaultBackgroundEnd;
+@property (nonatomic, retain) UIColor * channelPanelCellDefaultTopBorder;
+@property (nonatomic, retain) UIColor * channelPanelCellDefaultBottomBorder;
+@property (nonatomic, retain) UIColor * channelPanelCellDefaultDivider;
 
-@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedBackgroundStart;
-@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedBackgroundEnd;
-@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedTopBorder;
-@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedBottomBorder;
-@property (nonatomic, readonly) UIColor * channelPanelCellHighlightedDivider;
+@property (nonatomic, retain) UIColor * channelPanelCellHighlightedBackgroundStart;
+@property (nonatomic, retain) UIColor * channelPanelCellHighlightedBackgroundEnd;
+@property (nonatomic, retain) UIColor * channelPanelCellHighlightedTopBorder;
+@property (nonatomic, retain) UIColor * channelPanelCellHighlightedBottomBorder;
+@property (nonatomic, retain) UIColor * channelPanelCellHighlightedDivider;
 
-@property (nonatomic, readonly) UIColor * channelPanelCellDimmedBackgroundStart;
-@property (nonatomic, readonly) UIColor * channelPanelCellDimmedBackgroundEnd;
-@property (nonatomic, readonly) UIColor * channelPanelCellDimmedTopBorder;
-@property (nonatomic, readonly) UIColor * channelPanelCellDimmedBottomBorder;
-@property (nonatomic, readonly) UIColor * channelPanelCellDimmedDivider;
+@property (nonatomic, retain) UIColor * channelPanelCellDimmedBackgroundStart;
+@property (nonatomic, retain) UIColor * channelPanelCellDimmedBackgroundEnd;
+@property (nonatomic, retain) UIColor * channelPanelCellDimmedTopBorder;
+@property (nonatomic, retain) UIColor * channelPanelCellDimmedBottomBorder;
+@property (nonatomic, retain) UIColor * channelPanelCellDimmedDivider;
 
-@property (nonatomic, readonly) UIColor * channelBorderColor;
-@property (nonatomic, readonly) UIImage * userPlaceholderImage;
-@property (nonatomic, readonly) UIImage * channelPlaceholderImage;
-@property (nonatomic, readonly) UIImage * channelContainerBackgroundNormalImage;
-@property (nonatomic, readonly) UIImage * channelContainerBackgroundHighlightImage;
-@property (nonatomic, readonly) UIImage * toolbarExpandImage;
-@property (nonatomic, readonly) UIImage * toolbarExpandHighlightedImage;
-@property (nonatomic, readonly) UIImage * toolbarCollapseImage;
-@property (nonatomic, readonly) UIImage * toolbarCollapseHighlightedImage;
+@property (nonatomic, retain) UIColor * channelBorderColor;
+@property (nonatomic, retain) UIImage * userPlaceholderImage;
+@property (nonatomic, retain) UIImage * channelPlaceholderImage;
+@property (nonatomic, retain) UIImage * channelContainerBackgroundNormalImage;
+@property (nonatomic, retain) UIImage * channelContainerBackgroundHighlightImage;
+@property (nonatomic, retain) UIImage * toolbarExpandImage;
+@property (nonatomic, retain) UIImage * toolbarExpandHighlightedImage;
+@property (nonatomic, retain) UIImage * toolbarCollapseImage;
+@property (nonatomic, retain) UIImage * toolbarCollapseHighlightedImage;
 
-@property (nonatomic, readonly) UIImage * fullScreenImage;
-@property (nonatomic, readonly) UIImage * fullScreenActiveImage;
-@property (nonatomic, readonly) UIImage * splitScreenImage;
-@property (nonatomic, readonly) UIImage * splitScreenActiveImage;
+@property (nonatomic, retain) UIImage * fullScreenImage;
+@property (nonatomic, retain) UIImage * fullScreenActiveImage;
+@property (nonatomic, retain) UIImage * splitScreenImage;
+@property (nonatomic, retain) UIImage * splitScreenActiveImage;
 
-@property (nonatomic, readonly) UIImage * playImage;
-@property (nonatomic, readonly) UIImage * playActiveImage;
-@property (nonatomic, readonly) UIImage * pauseImage;
-@property (nonatomic, readonly) UIImage * pauseActiveImage;
-@property (nonatomic, readonly) UIImage * favoriteImage;
-@property (nonatomic, readonly) UIImage * favoriteActiveImage;
-@property (nonatomic, readonly) UIImage * watchLaterImage;
-@property (nonatomic, readonly) UIImage * watchLaterActiveImage;
+@property (nonatomic, retain) UIImage * playImage;
+@property (nonatomic, retain) UIImage * playActiveImage;
+@property (nonatomic, retain) UIImage * pauseImage;
+@property (nonatomic, retain) UIImage * pauseActiveImage;
+@property (nonatomic, retain) UIImage * favoriteImage;
+@property (nonatomic, retain) UIImage * favoriteActiveImage;
+@property (nonatomic, retain) UIImage * watchLaterImage;
+@property (nonatomic, retain) UIImage * watchLaterActiveImage;
 
-@property (nonatomic, readonly) UIColor * blackColor;
+@property (nonatomic, retain) UIColor * blackColor;
 
 + (NMStyleUtility *)sharedStyleUtility;
 

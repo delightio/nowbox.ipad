@@ -189,7 +189,6 @@ static NSArray * youTubeRegexArray = nil;
 	NSInteger personIDBase = [ctrl maxPersonProfileID];
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	NSNumber * errNum = [NSNumber numberWithInteger:NMErrorPendingImport];
-	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
 	NSInteger idx = -1;
 	NSInteger personIDOffset = 0;
@@ -212,7 +211,7 @@ static NSArray * youTubeRegexArray = nil;
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
-				vdo.nm_session_id = bigSessionNum;
+				vdo.nm_session_id = NM_SESSION_ID;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				vdo.video = conVdo;
 				// check if the set contains the info from this person already
@@ -247,7 +246,7 @@ static NSArray * youTubeRegexArray = nil;
 				vdo = [ctrl insertNewVideo];
 				vdo.video = conVdo;
 				vdo.channel = _channel;
-				vdo.nm_session_id = bigSessionNum;
+				vdo.nm_session_id = NM_SESSION_ID;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				// create facebook info
 				fbInfo = [ctrl insertNewSocialInfo];
@@ -261,6 +260,10 @@ static NSArray * youTubeRegexArray = nil;
 				
 			case NMVideoExistsAndInChannel:
 			{
+				// update sort order
+				vdo.nm_sort_order = [NSNumber numberWithInt:theOrder + idx];
+				vdo.nm_session_id = NM_SESSION_ID;
+				// update for mentions
 				conVdo = vdo.video;
 				NSSet * fbMtnSet = conVdo.socialMentions;
 				BOOL postFound = NO;
@@ -314,7 +317,7 @@ static NSArray * youTubeRegexArray = nil;
 						personVdo.video = conVdo;
 						// add the new video proxy object to the person's channel
 						personVdo.channel = theProfile.subscription.channel;
-						personVdo.nm_session_id = bigSessionNum;
+						personVdo.nm_session_id = NM_SESSION_ID;
 						personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 					} else if ( !isNew && chkResult == NMVideoExistsButNotInChannel ) {
 						// check if the vido exists in this person's channel
@@ -326,7 +329,7 @@ static NSArray * youTubeRegexArray = nil;
 							personVdo.video = conVdo;
 							// add the new video proxy object to the person's channel
 							personVdo.channel = personChn;
-							personVdo.nm_session_id = bigSessionNum;
+							personVdo.nm_session_id = NM_SESSION_ID;
 							personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 						}
 					}
@@ -376,11 +379,15 @@ static NSArray * youTubeRegexArray = nil;
 				NSArray * cmtAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
 				NMSocialComment * cmtObj;
+				NSNumber * lastTimeNum = nil;
 				for (NSDictionary * cmtDict in cmtAy) {
 					cmtObj = [ctrl insertNewSocialComment];
 					cmtObj.message = [cmtDict objectForKey:@"message"];
 					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
 					cmtObj.object_id = [cmtDict objectForKey:@"id"];
+					if ( lastTimeNum == nil || [cmtObj.created_time compare:lastTimeNum] == NSOrderedDescending ) {
+						lastTimeNum = cmtObj.created_time;
+					}
 					// look up the person
 					fromDict = [cmtDict objectForKey:@"from"];
 					manID = [fromDict objectForKey:@"id"];
@@ -401,6 +408,7 @@ static NSArray * youTubeRegexArray = nil;
 					[cmtSet addObject:cmtObj];
 				}
 				[fbInfo addComments:cmtSet];
+				fbInfo.nm_date_last_updated = lastTimeNum;
 			} else if ( [fbInfo.comments count] ) {
 				[fbInfo removeComments:fbInfo.comments];
 			}
