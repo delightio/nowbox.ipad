@@ -43,10 +43,10 @@
 {
     NMChannel *channel = [[self objectAtIndex:index] channel];
     
-/*    if (index > 0) {
+    if (index > 0) {
         // Start crawling user's feed for more videos
         [[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForChannel:channel];
-    }*/
+    }
     
     return channel;
 }
@@ -116,12 +116,6 @@
         [cell.authorImage setImageForChannel:channel];
     } else {
         [cell.image setImageForChannel:channel];
-        
-        // Don't get more videos if the cell configuration is due to an update - will loop endlessly if channel has no videos
-        if (!isUpdate && ![refreshingChannels containsObject:channel]) {
-            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-            [refreshingChannels addObject:channel];
-        }
     }
     
     if ([refreshingChannels containsObject:channel] && !isUpdate) {

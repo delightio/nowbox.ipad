@@ -107,12 +107,6 @@
         [cell.image setImageForVideoThumbnail:latestVideo];
     } else {
         [cell.image setImageForChannel:channel];
-        
-        // Don't get more videos if the cell configuration is due to an update - will loop endlessly if channel has no videos
-        if (!isUpdate && ![refreshingChannels containsObject:channel]) {
-            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-            [refreshingChannels addObject:channel];
-        }
     }
     
     if ([refreshingChannels containsObject:channel] && !isUpdate) {
