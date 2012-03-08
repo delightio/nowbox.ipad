@@ -109,6 +109,7 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 		_postInfo.comment_post_url = [NSString stringWithFormat:@"http://www.facebook.com/%@/posts/%@", _objectID, idStr];
 		_postInfo.like_post_url = [NSString stringWithFormat:@"http://www.facebook.com/%@/posts/%@", _objectID, idStr];
 		_postInfo.comments_count = (NSNumber *)kCFBooleanTrue;
+		_postInfo.nm_date_last_updated = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	}
 }
 

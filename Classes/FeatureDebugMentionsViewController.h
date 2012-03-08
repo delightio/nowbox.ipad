@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NMLibrary.h"
 
-@interface FeatureDebugMentionsViewController : UITableViewController
+@interface FeatureDebugMentionsViewController : UITableViewController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;

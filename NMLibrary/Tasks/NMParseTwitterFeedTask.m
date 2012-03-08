@@ -314,7 +314,11 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					cmtObj.message = [vdoFeedDict objectForKey:@"message"];
 					cmtObj.created_time = [vdoFeedDict objectForKey:@"created_time"];
 					cmtObj.object_id = [vdoFeedDict objectForKey:@"object_id"];
+					// assign to social info
 					cmtObj.socialInfo = fbInfo;
+					if ( fbInfo.nm_date_last_updated == nil || [cmtObj.created_time compare:fbInfo.nm_date_last_updated] == NSOrderedDescending ) {
+						fbInfo.nm_date_last_updated = cmtObj.created_time;
+					}
 					// look up the person
 					fromDict = [vdoFeedDict objectForKey:@"from"];
 					cmtObj.fromPerson = theProfile;
