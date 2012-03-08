@@ -48,6 +48,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 @synthesize channelPanelCellDimmedDivider;
 @synthesize channelBorderColor;
 @synthesize userPlaceholderImage;
+@synthesize channelPlaceholderImage;
 @synthesize channelContainerBackgroundNormalImage;
 @synthesize channelContainerBackgroundHighlightImage;
 @synthesize toolbarExpandImage;
@@ -90,50 +91,305 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	
 	viewCountFormatter = [[NSNumberFormatter alloc] init];
 	[viewCountFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+	    
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleLowMemoryNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 	
-	// video detail view font
-    channelNameFont = [[UIFont fontWithName:@"HelveticaNeue" size:12.0f] retain];
-	videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
-	videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
-	videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
-//    videoHighlightedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-highlight"] retain];
-//    videoNormalBackgroundImage = [[UIImage imageNamed:@"channel-video-background-normal"] retain];
-//    videoDimmedBackgroundImage = [[UIImage imageNamed:@"channel-video-background-dimmed"] retain];
-	videoDetailFontColor = [[UIColor colorWithRed:90.0f / 255.0f green:90.0f / 255.0f blue:90.0f / 255.0f alpha:1.0f] retain];
-	videoDetailHighlightedFontColor = [[UIColor colorWithRed:162.0f / 255.0f green:162.0f / 255.0f blue:162.0f / 255.0f alpha:1.0f] retain];
-	videoDetailPlayedFontColor = [[UIColor colorWithRed:159 / 255.0f green:159 / 255.0f blue:159 / 255.0f alpha:1.0f] retain];
-	videoTitleFontColor = [[UIColor colorWithRed:33.0f / 255.0f green:33.0f / 255.0f blue:33.0f / 255.0f alpha:1.0f] retain];
-	videoTitleHighlightedFontColor = [[UIColor whiteColor] retain];
-    videoTitlePlayedFontColor = [[UIColor colorWithRed:133.0f / 255.0f green:133.0f / 255.0f blue:133.0f / 255.0f alpha:1.0f] retain];
-	clearColor = [[UIColor clearColor] retain];
-	channelPanelFontColor = [[UIColor colorWithRed:225.0f / 255.0f green:225.0f / 255.0f blue:225.0f / 255.0f alpha:1.0] retain];
-	channelPanelHighlightColor = [[UIColor colorWithRed:62.0f/255.0f green:62.0f / 255.0f blue:62.0f / 255.0f alpha:1.0] retain];
-	channelPanelBackgroundColor = [[UIColor colorWithRed:245.0f / 255.0f green:245.0f / 255.0f blue:245.0f / 255.0f alpha:1.0] retain];
-    channelPanelPlayedColor = [[UIColor colorWithRed:233 / 255.0f green:233 / 255.0f blue:233 / 255.0f alpha:1.0] retain];
-    
-    channelPanelCellDefaultBackgroundStart = [[UIColor colorWithRed:240 / 255.0f green:240 / 255.0f blue:240 / 255.0f alpha:1.0] retain];    
-    channelPanelCellDefaultBackgroundEnd = [[UIColor colorWithRed:231 / 255.0f green:231 / 255.0f blue:231 / 255.0f alpha:1.0] retain];    
-    channelPanelCellDefaultTopBorder = [[UIColor colorWithRed:255 / 255.0f green:255 / 255.0f blue:255 / 255.0f alpha:1.0] retain];    
-    channelPanelCellDefaultBottomBorder = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];    
-    channelPanelCellDefaultDivider = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];    
-    
-    channelPanelCellHighlightedBackgroundStart = [[UIColor colorWithRed:47 / 255.0f green:47 / 255.0f blue:47 / 255.0f alpha:1.0] retain];    
-    channelPanelCellHighlightedBackgroundEnd = [[UIColor colorWithRed:61 / 255.0f green:61 / 255.0f blue:61 / 255.0f alpha:1.0] retain];    
-    channelPanelCellHighlightedTopBorder = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
-    channelPanelCellHighlightedBottomBorder = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
-    channelPanelCellHighlightedDivider = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
-    
-    channelPanelCellDimmedBackgroundStart = [[UIColor colorWithRed:211 / 255.0f green:211 / 255.0f blue:211 / 255.0f alpha:1.0] retain];    
-    channelPanelCellDimmedBackgroundEnd = [[UIColor colorWithRed:211 / 255.0f green:211 / 255.0f blue:211 / 255.0f alpha:1.0] retain];    
-    channelPanelCellDimmedTopBorder = [[UIColor colorWithRed:238 / 255.0f green:238 / 255.0f blue:238 / 255.0f alpha:1.0] retain];    
-    channelPanelCellDimmedBottomBorder = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];       
-    channelPanelCellDimmedDivider = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];       
-    
-	channelBorderColor = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0 alpha:1.0] retain];
-	
-	blackColor = [[UIColor blackColor] retain];
-    
 	return self;
+}
+
+- (void)handleLowMemoryNotification:(NSNotification *)aNotification {
+	self.channelNameFont = nil;
+	self.videoTitleFont = nil;
+	self.channelNameFont = nil;
+	self.videoTitleFont = nil;
+	self.videoDetailFont = nil;
+	self.videoShadowImage = nil;
+	self.videoTitleFontColor = nil;
+	self.videoTitleHighlightedFontColor = nil;
+	self.videoTitlePlayedFontColor = nil;
+	self.videoDetailFontColor = nil;
+	self.videoDetailHighlightedFontColor = nil;
+	self.videoDetailPlayedFontColor = nil;
+	self.clearColor = nil;
+	self.channelPanelFontColor = nil;
+	self.channelPanelBackgroundColor = nil;
+	self.channelPanelHighlightColor = nil;
+	self.channelPanelPlayedColor = nil;
+	self.channelPanelCellDefaultBackgroundStart = nil;
+	self.channelPanelCellDefaultBackgroundEnd = nil;
+	self.channelPanelCellDefaultTopBorder = nil;
+	self.channelPanelCellDefaultBottomBorder = nil;
+	self.channelPanelCellDefaultDivider = nil;
+	self.channelPanelCellHighlightedBackgroundStart = nil;
+	self.channelPanelCellHighlightedBackgroundEnd = nil;
+	self.channelPanelCellHighlightedTopBorder = nil;
+	self.channelPanelCellHighlightedBottomBorder = nil;
+	self.channelPanelCellHighlightedDivider = nil;
+	self.channelPanelCellDimmedBackgroundStart = nil;
+	self.channelPanelCellDimmedBackgroundEnd = nil;
+	self.channelPanelCellDimmedTopBorder = nil;
+	self.channelPanelCellDimmedBottomBorder = nil;
+	self.channelPanelCellDimmedDivider = nil;
+	self.channelBorderColor = nil;
+	self.userPlaceholderImage = nil;
+	self.channelContainerBackgroundNormalImage = nil;
+	self.channelContainerBackgroundHighlightImage = nil;
+	self.toolbarExpandImage = nil;
+	self.toolbarExpandHighlightedImage = nil;
+	self.toolbarCollapseImage = nil;
+	self.toolbarCollapseHighlightedImage = nil;
+	self.fullScreenImage = nil;
+	self.fullScreenActiveImage = nil;
+	self.splitScreenImage = nil;
+	self.splitScreenActiveImage = nil;
+	self.playImage = nil;
+	self.playActiveImage = nil;
+	self.pauseImage = nil;
+	self.pauseActiveImage = nil;
+	self.blackColor = nil;
+	self.videoStatusBadImage = nil;
+	self.videoStatusFavImage = nil;
+	self.videoStatusQueuedImage = nil;
+	self.videoStatusHotImage = nil;
+	self.videoNewSessionIndicatorImage = nil;
+	self.favoriteImage = nil;
+	self.favoriteActiveImage = nil;
+	self.watchLaterImage = nil;
+	self.watchLaterActiveImage = nil;
+}
+
+#pragma mark - Fonts
+- (UIFont *)channelNameFont  {
+	if ( channelNameFont == nil ) {
+		channelNameFont = [[UIFont fontWithName:@"HelveticaNeue" size:12.0f] retain];
+	}
+	return channelNameFont;
+}
+
+- (UIFont *)videoTitleFont  {
+	if ( videoTitleFont == nil ) {
+		videoTitleFont = [[UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f] retain];
+	}
+	return videoTitleFont;
+}
+
+- (UIFont *)videoDetailFont  {
+	if ( videoDetailFont == nil ) {
+		videoDetailFont = [[UIFont fontWithName:@"HelveticaNeue" size:13.0f] retain];
+	}
+	return videoDetailFont;
+}
+
+#pragma mark - Colors
+
+- (UIColor *)videoTitleFontColor {
+	if ( videoTitleFontColor == nil ) {
+		videoTitleFontColor = [[UIColor colorWithRed:33.0f / 255.0f green:33.0f / 255.0f blue:33.0f / 255.0f alpha:1.0f] retain];
+	}
+	return videoTitleFontColor;
+}
+
+- (UIColor *)videoTitleHighlightedFontColor {
+	if ( videoTitleHighlightedFontColor == nil ) {
+		videoTitleHighlightedFontColor = [[UIColor whiteColor] retain];
+	}
+	return videoTitleHighlightedFontColor;
+}
+
+- (UIColor *)videoTitlePlayedFontColor {
+	if ( videoTitlePlayedFontColor == nil ) {
+		videoTitlePlayedFontColor = [[UIColor colorWithRed:133.0f / 255.0f green:133.0f / 255.0f blue:133.0f / 255.0f alpha:1.0f] retain];
+	}
+	return videoTitlePlayedFontColor;
+}
+
+- (UIColor *)videoDetailFontColor {
+	if ( videoDetailFontColor == nil ) {
+		videoDetailFontColor = [[UIColor colorWithRed:90.0f / 255.0f green:90.0f / 255.0f blue:90.0f / 255.0f alpha:1.0f] retain];
+	}
+	return videoDetailFontColor;
+}
+
+- (UIColor *)videoDetailHighlightedFontColor {
+	if ( videoDetailHighlightedFontColor == nil ) {
+		videoDetailHighlightedFontColor = [[UIColor colorWithRed:162.0f / 255.0f green:162.0f / 255.0f blue:162.0f / 255.0f alpha:1.0f] retain];
+	}
+	return videoDetailHighlightedFontColor;
+}
+
+- (UIColor *)videoDetailPlayedFontColor {
+	if ( videoDetailHighlightedFontColor == nil ) {
+		videoDetailPlayedFontColor = [[UIColor colorWithRed:159 / 255.0f green:159 / 255.0f blue:159 / 255.0f alpha:1.0f] retain];
+	}
+	return videoDetailHighlightedFontColor;
+}
+
+
+- (UIColor *)clearColor {
+	if ( clearColor == nil ) {
+		clearColor = [[UIColor clearColor] retain];
+	}
+	return clearColor;
+}
+
+- (UIColor *)channelPanelFontColor {
+	if ( channelPanelFontColor == nil ) {
+		channelPanelFontColor = [[UIColor colorWithRed:225.0f / 255.0f green:225.0f / 255.0f blue:225.0f / 255.0f alpha:1.0] retain];
+	}
+	return channelPanelFontColor;
+}
+
+- (UIColor *)channelPanelBackgroundColor {
+	if ( channelPanelBackgroundColor == nil ) {
+		channelPanelBackgroundColor = [[UIColor colorWithRed:245.0f / 255.0f green:245.0f / 255.0f blue:245.0f / 255.0f alpha:1.0] retain];
+	}
+	return channelPanelBackgroundColor;
+}
+
+- (UIColor *)channelPanelHighlightColor {
+	if ( channelPanelHighlightColor == nil ) {
+		channelPanelHighlightColor = [[UIColor colorWithRed:62.0f/255.0f green:62.0f / 255.0f blue:62.0f / 255.0f alpha:1.0] retain];
+	}
+	return channelPanelHighlightColor;
+}
+
+- (UIColor *)channelPanelPlayedColor {
+	if ( channelPanelPlayedColor == nil ) {
+		channelPanelPlayedColor = [[UIColor colorWithRed:233 / 255.0f green:233 / 255.0f blue:233 / 255.0f alpha:1.0] retain];
+	}
+	return channelPanelPlayedColor;
+}
+
+
+- (UIColor *)channelPanelCellDefaultBackgroundStart {
+	if ( channelPanelCellDefaultBackgroundStart == nil ) {
+		channelPanelCellDefaultBackgroundStart = [[UIColor colorWithRed:240 / 255.0f green:240 / 255.0f blue:240 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellDefaultBackgroundStart;
+}
+
+- (UIColor *)channelPanelCellDefaultBackgroundEnd {
+	if ( channelPanelCellDefaultBackgroundEnd == nil ) {
+		channelPanelCellDefaultBackgroundEnd = [[UIColor colorWithRed:231 / 255.0f green:231 / 255.0f blue:231 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellDefaultBackgroundEnd;
+}
+
+- (UIColor *)channelPanelCellDefaultTopBorder {
+	if ( channelPanelCellDefaultTopBorder == nil ) {
+		channelPanelCellDefaultTopBorder = [[UIColor colorWithRed:255 / 255.0f green:255 / 255.0f blue:255 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellDefaultTopBorder;
+}
+
+- (UIColor *)channelPanelCellDefaultBottomBorder {
+	if ( channelPanelCellDefaultBottomBorder == nil ) {
+		channelPanelCellDefaultBottomBorder = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellDefaultBottomBorder;
+}
+
+- (UIColor *)channelPanelCellDefaultDivider {
+	if ( channelPanelCellDefaultDivider == nil ) {
+		channelPanelCellDefaultDivider = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellDefaultDivider;
+}
+
+
+- (UIColor *)channelPanelCellHighlightedBackgroundStart {
+	if ( channelPanelCellHighlightedBackgroundStart == nil ) {
+		channelPanelCellHighlightedBackgroundStart = [[UIColor colorWithRed:47 / 255.0f green:47 / 255.0f blue:47 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellHighlightedBackgroundStart;
+}
+
+- (UIColor *)channelPanelCellHighlightedBackgroundEnd {
+	if ( channelPanelCellHighlightedBackgroundEnd == nil ) {
+		channelPanelCellHighlightedBackgroundEnd = [[UIColor colorWithRed:61 / 255.0f green:61 / 255.0f blue:61 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellHighlightedBackgroundEnd;
+}
+
+- (UIColor *)channelPanelCellHighlightedTopBorder {
+	if ( channelPanelCellHighlightedTopBorder == nil ) {
+		channelPanelCellHighlightedTopBorder = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellHighlightedTopBorder;
+}
+
+- (UIColor *)channelPanelCellHighlightedBottomBorder {
+	if ( channelPanelCellHighlightedBottomBorder == nil ) {
+		channelPanelCellHighlightedBottomBorder = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellHighlightedBottomBorder;
+}
+
+- (UIColor *)channelPanelCellHighlightedDivider {
+	if ( channelPanelCellHighlightedDivider == nil ) {
+		channelPanelCellHighlightedDivider = [[UIColor colorWithRed:36 / 255.0f green:36 / 255.0f blue:36 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellHighlightedDivider;
+}
+
+
+- (UIColor *)channelPanelCellDimmedBackgroundStart {
+	if ( channelPanelCellDimmedBackgroundStart == nil ) {
+		channelPanelCellDimmedBackgroundStart = [[UIColor colorWithRed:211 / 255.0f green:211 / 255.0f blue:211 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellDimmedBackgroundStart;
+}
+
+- (UIColor *)channelPanelCellDimmedBackgroundEnd {
+	if ( channelPanelCellDimmedBackgroundEnd == nil ) {
+		channelPanelCellDimmedBackgroundEnd = [[UIColor colorWithRed:211 / 255.0f green:211 / 255.0f blue:211 / 255.0f alpha:1.0] retain];
+	}
+	return channelPanelCellDimmedBackgroundEnd;
+}
+
+- (UIColor *)channelPanelCellDimmedTopBorder {
+	if ( channelPanelCellDimmedTopBorder == nil ) {
+		channelPanelCellDimmedTopBorder = [[UIColor colorWithRed:238 / 255.0f green:238 / 255.0f blue:238 / 255.0f alpha:1.0] retain];    
+	}
+	return channelPanelCellDimmedTopBorder;
+}
+
+- (UIColor *)channelPanelCellDimmedBottomBorder {
+	if ( channelPanelCellDimmedBottomBorder == nil ) {
+		channelPanelCellDimmedBottomBorder = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];       
+	}
+	return channelPanelCellDimmedBottomBorder;
+}
+
+- (UIColor *)channelPanelCellDimmedDivider {
+	if ( channelPanelCellDimmedDivider == nil ) {
+		channelPanelCellDimmedDivider = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0f alpha:1.0] retain];
+	}
+	return channelPanelCellDimmedDivider;
+}
+
+- (UIColor *)channelBorderColor {
+	if ( channelBorderColor == nil ) {
+		channelBorderColor = [[UIColor colorWithRed:170 / 255.0f green:170 / 255.0f blue:170 / 255.0 alpha:1.0] retain];
+	}
+	return channelBorderColor;
+}
+
+- (UIColor *)blackColor {
+	if ( blackColor == nil ) {
+		blackColor = [[UIColor blackColor] retain];
+	}
+	return blackColor;
+}
+
+
+#pragma mark - Images
+
+- (UIImage *)videoShadowImage {
+	if ( videoShadowImage == nil ) {
+		videoShadowImage = [[UIImage imageNamed:@"playback_video_shadow"] retain];
+	}
+	return videoShadowImage;
 }
 
 - (UIImage *)userPlaceholderImage {
