@@ -157,7 +157,7 @@
 							<int key="NSfFlags">16</int>
 						</object>
 					</object>
-					<object class="IBUIButton" id="133617740">
+					<object class="IBUIButton" id="387662225">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{755, 0}, {68, 44}}</string>
@@ -175,6 +175,10 @@
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="223098180"/>
+						<object class="NSCustomResource" key="IBUIHighlightedImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">toolbar-refresh-active.png</string>
+						</object>
 						<object class="NSCustomResource" key="IBUINormalImage">
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">toolbar-refresh.png</string>
@@ -253,7 +257,7 @@
 						<string key="NSFrame">{{753, 0}, {2, 42}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="133617740"/>
+						<reference key="NSNextKeyView" ref="387662225"/>
 						<string key="NSReuseIdentifierKey">_NS:364</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -321,6 +325,7 @@
 						<string key="NSFrame">{{0, 44}, {1024, 8}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:554</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -464,7 +469,7 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">refreshChannels:</string>
-						<reference key="source" ref="133617740"/>
+						<reference key="source" ref="387662225"/>
 						<reference key="destination" ref="96030309"/>
 						<int key="IBEventType">7</int>
 					</object>
@@ -499,7 +504,7 @@
 							<reference ref="256796477"/>
 							<reference ref="16338747"/>
 							<reference ref="22993784"/>
-							<reference ref="133617740"/>
+							<reference ref="387662225"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -588,7 +593,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">69</int>
-						<reference key="object" ref="133617740"/>
+						<reference key="object" ref="387662225"/>
 						<reference key="parent" ref="191373211"/>
 						<string key="objectName">Refresh Button</string>
 					</object>
@@ -623,6 +628,7 @@
 					<string>64.IBPluginDependency</string>
 					<string>67.IBPluginDependency</string>
 					<string>69.IBPluginDependency</string>
+					<string>69.IBUIButtonInspectorSelectedStateConfigurationMetadataKey</string>
 				</object>
 				<object class="NSArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -651,6 +657,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<real value="0.0"/>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="unlocalizedProperties">
@@ -1267,6 +1274,7 @@
 				<string>toolbar-expand.png</string>
 				<string>toolbar-filter-active.png</string>
 				<string>toolbar-filter.png</string>
+				<string>toolbar-refresh-active.png</string>
 				<string>toolbar-refresh.png</string>
 				<string>toolbar-settings-active.png</string>
 				<string>toolbar-settings.png</string>
@@ -1283,6 +1291,7 @@
 				<string>{60, 40}</string>
 				<string>{68, 44}</string>
 				<string>{68, 44}</string>
+				<string>{34, 34}</string>
 				<string>{24, 26}</string>
 				<string>{60, 40}</string>
 				<string>{60, 40}</string>
