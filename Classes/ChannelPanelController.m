@@ -152,6 +152,13 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[tableView setEditing:!tableView.editing animated:YES];
 }
 
+- (IBAction)refreshChannels:(id)sender {
+    NSArray *allChannels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    for (NMChannel *channel in allChannels) {
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+    }
+}
+
 - (IBAction)showSettingsView:(id)sender {
 	SettingsViewController * settingCtrl = [[SettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	UINavigationController * navCtrl = [[UINavigationController alloc] initWithRootViewController:settingCtrl];

@@ -57,6 +57,7 @@ typedef enum {
 - (IBAction)showFeatureDebugView:(id)sender;
 
 - (IBAction)toggleTableEditMode:(id)sender;
+- (IBAction)refreshChannels:(id)sender;
 - (IBAction)showSettingsView:(id)sender;
 - (IBAction)showChannelManagementView:(id)sender;
 
