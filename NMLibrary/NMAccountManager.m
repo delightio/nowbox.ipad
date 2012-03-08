@@ -267,6 +267,7 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 			self.twitterProfile = nil;
 			// on-completion, begin sign out
 			[tqc endSignOutTwitter];
+			[signOutTarget performSelector:completionSelector];
 		});
 	});
 }
