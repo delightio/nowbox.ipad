@@ -18,19 +18,21 @@
 #import "ToolTipController.h"
 #import "NMNavigationController.h"
 #import "Analytics.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define VIDEO_ROW_LEFT_PADDING			181.0f
 #define NM_CHANNEL_CELL_LEFT_PADDING	10.0f
 #define NM_CHANNEL_CELL_TOP_PADDING		10.0f
 #define NM_CHANNEL_CELL_DETAIL_TOP_MARGIN	40.0f
 #define NM_CONTAINER_VIEW_POOL_SIZE		8
+#define NM_CHANNEL_REFRESH_TIMEOUT      10.0f
 
 NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlayNewlySubscribedChannelNotification";
 BOOL NM_AIRPLAY_ACTIVE = NO;
 
 
 @implementation ChannelPanelController
-@synthesize panelView, tableView;
+@synthesize panelView, tableView, refreshButton;
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoViewController;
@@ -52,7 +54,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].managedObjectContext;
 	containerViewPool = [[NSMutableArray alloc] initWithCapacity:NM_CONTAINER_VIEW_POOL_SIZE];
-    
+    refreshingChannels = [[NSMutableSet alloc] init];
+                                                    
     // Set up gesture recognizers
     UIPanGestureRecognizer *panningGesture = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(customPanning:)] autorelease];
     panningGesture.delegate = self;
@@ -73,7 +76,9 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[nc addObserver:self selector:@selector(handlePlayNewlySubscribedChannelNotification:) name:NMShouldPlayNewlySubscribedChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSubscriptionNotification:) name:NMDidSubscribeChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
-
+    [nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+    [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+    
 	// channel view is launched in split view configuration. set content inset
 	tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
     
@@ -88,9 +93,11 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     [tableView release];
 	[containerViewPool release];
 	[panelView release];
+    [refreshButton release];
 	[managedObjectContext_ release];
 	[fetchedResultsController_ release];
     [recycledVideoCells release];
+    [refreshingChannels release];
     
 	[super dealloc];
 }
@@ -152,9 +159,36 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[tableView setEditing:!tableView.editing animated:YES];
 }
 
+- (void)rotateRefreshButton {
+    CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.toValue = [NSNumber numberWithFloat:M_PI * 2.0];
+    rotationAnimation.duration = 0.5f;
+    rotationAnimation.delegate = self;
+
+    [refreshButton.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
+    if ([refreshingChannels count] == 0 || [[NSDate date] timeIntervalSince1970] - refreshStartTime > NM_CHANNEL_REFRESH_TIMEOUT) {
+        // Channel refreshing finished or timed out
+        refreshButton.userInteractionEnabled = YES;
+        [refreshButton.layer removeAllAnimations];
+    } else {
+        [self rotateRefreshButton];
+    }
+}
+
 - (IBAction)refreshChannels:(id)sender {
+    // Make the refresh button spin
+    refreshStartTime = [[NSDate date] timeIntervalSince1970];
+    refreshButton.userInteractionEnabled = NO;
+    [self performSelectorInBackground:@selector(rotateRefreshButton) withObject:nil];
+    
+    // Get more videos for each channel
     NSArray *allChannels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    [refreshingChannels removeAllObjects];
     for (NMChannel *channel in allChannels) {
+        [refreshingChannels addObject:channel];
         [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
     }
 }
@@ -677,6 +711,16 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     // Scroll to current channel
     NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:highlightedChannel];
     [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+}
+
+- (void)handleDidGetChannelVideoListNotification:(NSNotification *)notification {
+    NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
+    [refreshingChannels removeObject:channel];    
+}
+
+- (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)notification {
+    NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
+    [refreshingChannels removeObject:channel];  
 }
 
 #pragma mark play newly subscribed channel

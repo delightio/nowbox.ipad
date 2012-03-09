@@ -39,10 +39,13 @@ typedef enum {
     NMChannel *highlightedChannel;
 	NMPlaybackViewModeType displayMode;
     BOOL massUpdate;
+    NSMutableSet *refreshingChannels;
+    NSTimeInterval refreshStartTime;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
 @property (nonatomic, retain) IBOutlet UIView *panelView;
+@property (nonatomic, retain) IBOutlet UIButton *refreshButton;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, assign) VideoPlaybackViewController * videoViewController;
