@@ -267,6 +267,7 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 			self.twitterProfile = nil;
 			// on-completion, begin sign out
 			[tqc endSignOutTwitter];
+			[signOutTarget performSelector:completionSelector];
 		});
 	});
 }
@@ -493,10 +494,12 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 #endif
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
 	// get the qualified videos
-	NSArray * theProfiles = [tqc.dataController personProfilesForSync:2];
+	NSArray * theProfiles = [tqc.dataController personProfilesForSync:8];
 	NSInteger cnt = 4;
-	if ( theProfiles ) cnt = 2;
-	NSArray * theVideos = [tqc.dataController videosForSync:cnt];
+	if ( [theProfiles count] > 6 ) cnt = 0;
+	else if ( theProfiles ) cnt = 2;
+	
+	NSArray * theVideos = cnt ? [tqc.dataController videosForSync:cnt] : nil;
 	
 	if ( theVideos == nil && theProfiles == nil ) {
 		// stop the timer task
