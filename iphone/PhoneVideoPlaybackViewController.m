@@ -8,12 +8,10 @@
 
 #import "PhoneVideoPlaybackViewController.h"
 #import "NMMovieView.h"
-#import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
 #import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
-
 
 #define NM_PLAYER_STATUS_CONTEXT				100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT			101
@@ -29,14 +27,10 @@
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
 #define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
-//#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER			10001
 #define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT			10002
 #define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT				10003
 #define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
 #define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
-
-#define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
-#define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
 
 #define NM_MOVIE_VIEW_GAP								20
 #define NM_MOVIE_VIEW_GAP_FLOAT							20.0f
@@ -46,11 +40,10 @@
 #define NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP         (60.0f * 40)
 
 #define VIDEO_HEIGHT 218.0f
+#define VIDEO_OFFSET_WHEN_SHARING -60.0f
 
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
 
-//- (void)insertVideoAtIndex:(NSUInteger)idx;
-//- (void)queueVideoToPlayer:(NMVideo *)vid;
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewForVideo:(NMVideo *)aVideo;
 - (void)configureDetailViewForContext:(NSInteger)ctx;
@@ -58,8 +51,6 @@
 - (void)playCurrentVideo;
 - (void)stopVideo;
 - (void)setupPlayer;
-//- (void)hideControlView;
-
 - (NMVideo *)playerCurrentVideo;
 - (void)showLaunchView;
 
@@ -74,9 +65,6 @@
 - (void)resetChannelHeaderView:(BOOL)isPrev;
 - (void)startLoadingChannel:(BOOL)isPrev;
 - (void)stopLoadingChannel:(BOOL)isPrev;
-
-// debug message
-- (void)printDebugMessage:(NSString *)str;
 
 @end
 
@@ -99,8 +87,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-//	[[UIApplication sharedApplication] setStatusBarHidden:NO];
-//	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
@@ -241,7 +227,7 @@
     // Update scroll view sizes / content offsets
     channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
     
-    controlScrollView.frame = CGRectMake(0.0f, 0.0f, topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
+    controlScrollView.frame = CGRectMake(0.0f, (shareView ? VIDEO_OFFSET_WHEN_SHARING : 0.0f), topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
     controlScrollView.contentSize = CGSizeMake((CGFloat)( (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP) * playbackModelController.numberOfVideos), topLevelContainerView.frame.size.height);
     currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
     controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
@@ -299,6 +285,7 @@
     self.movieBackgroundView = nil;
     [playbackModelController release]; playbackModelController = nil;
     [movieView release]; movieView = nil;
+    shareView = nil;
     
     [super viewDidUnload];
 }
@@ -558,9 +545,6 @@
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger ctxInt = (NSInteger)context;
 	switch (ctxInt) {
-		case NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT:
-		case NM_ANIMATION_RIBBON_FADE_IN_CONTEXT:
-			break;
 			
 		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
 			// show the top bar with animation
@@ -569,11 +553,11 @@
 //			ribbonView.hidden = YES;
 			break;
 			
-		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
-//			controlScrollView.scrollEnabled = YES;
+		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT: {
 			[self configureControlViewForVideo:[self playerCurrentVideo]];
 			[self playCurrentVideo];
 			break;
+        }
 		default:
 			break;
 	}
@@ -1439,6 +1423,35 @@
     }
 }
 
+- (IBAction)shareVideo:(id)sender {
+    if (shareView) return;
+    
+    shareView = [[CommentShareView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 150)];
+    [shareView setVideo:playbackModelController.currentVideo timeElapsed:loadedControlView.timeElapsed];
+    shareView.delegate = self;
+    
+    if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
+        shareView.twitterButton.hidden = YES;
+        shareView.facebookButton.selected = YES;
+    }
+    if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
+        shareView.facebookButton.hidden = YES;
+        if (shareView.facebookButton.selected) {
+            shareView.emailButton.selected = YES;
+        }
+    }
+    
+    [self.view addSubview:shareView];
+    [shareView release];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         controlScrollView.frame = CGRectOffset(controlScrollView.frame, 0, VIDEO_OFFSET_WHEN_SHARING);
+                     }
+                     completion:^(BOOL finished){ 
+                     }];
+}
+
 #pragma mark - Rate Us reminder
 
 - (BOOL)shouldShowRateUsReminder {
@@ -1582,6 +1595,11 @@
     }
 }
 
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTapCommentButton:(id)sender socialInfo:(NMSocialInfo *)socialInfo
+{
+    
+}
+
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView willBeginDraggingScrollView:(UIScrollView *)scrollView
 {
     showMovieControlTimestamp = -1;
@@ -1590,6 +1608,33 @@
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didEndDraggingScrollView:(UIScrollView *)scrollView
 {
     showMovieControlTimestamp = loadedControlView.timeElapsed;
+}
+
+#pragma mark - CommentShareViewDelegate
+
+- (void)commentShareViewWillDismiss:(CommentShareView *)commentShareView
+{
+    [UIView animateWithDuration:0.15
+                     animations:^{
+                         CGRect frame = controlScrollView.frame;
+                         frame.origin.y = 0;
+                         controlScrollView.frame = frame;
+                     }];  
+}
+
+- (void)commentShareViewDidDismiss:(CommentShareView *)commentShareView
+{
+    [shareView removeFromSuperview];
+    shareView = nil;
+}
+
+- (void)commentShareView:(CommentShareView *)commentShareView didSubmitText:(NSString *)text socialLogin:(NMSocialLoginType)socialLogin timeElapsed:(NSInteger)timeElapsed
+{
+    [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:socialLogin
+                                                                       video:commentShareView.video 
+                                                                    duration:[commentShareView.video.video.duration integerValue]
+                                                              elapsedSeconds:timeElapsed
+                                                                     message:text];
 }
 
 #pragma mark - ToolTipControllerDelegate

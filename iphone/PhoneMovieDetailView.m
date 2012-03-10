@@ -337,29 +337,33 @@
 }
 
 - (void)buzzView:(BuzzView *)buzzView didPressLikeButton:(id)sender
-{
-    NSUInteger mentionIndex = [sender tag];
-    NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
-    
+{    
     if ([delegate respondsToSelector:@selector(videoInfoView:didLike:socialInfo:)]) {
+        NSUInteger mentionIndex = [sender tag];
+        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
+
         [delegate videoInfoView:self didLike:YES socialInfo:socialInfo];
     }
 }
 
 - (void)buzzView:(BuzzView *)buzzView didPressUnlikeButton:(id)sender
 {
-    NSUInteger mentionIndex = [sender tag];
-    NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
-    
     if ([delegate respondsToSelector:@selector(videoInfoView:didLike:socialInfo:)]) {
+        NSUInteger mentionIndex = [sender tag];
+        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
+        
         [delegate videoInfoView:self didLike:NO socialInfo:socialInfo];
     }
 }
 
 - (void)buzzView:(BuzzView *)buzzView didPressCommentButton:(id)sender
 {
-//    NSUInteger mentionIndex = [sender tag];
-//    NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
+    if ([delegate respondsToSelector:@selector(videoInfoView:didTapCommentButton:socialInfo:)]) {
+        NSUInteger mentionIndex = [sender tag];
+        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
+
+        [delegate videoInfoView:self didTapCommentButton:sender socialInfo:socialInfo];
+    }
 }
 
 @end

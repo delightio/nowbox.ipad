@@ -19,6 +19,7 @@
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
 #import "PhoneMovieDetailView.h"
+#import "CommentShareView.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -36,7 +37,7 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, PhoneMovieDetailViewDelegate, ToolTipControllerDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, PhoneMovieDetailViewDelegate, CommentShareViewDelegate, ToolTipControllerDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
@@ -48,7 +49,8 @@ enum {
 	IBOutlet UIActivityIndicatorView * nextChannelActivityView;
     UIView *movieBackgroundView;
 	NMMovieView * movieView;
-	
+	CommentShareView * shareView;
+    
 	NSMutableArray * movieDetailViewArray;
 		
 	UILabel * currentTimeLabel, * totalDurationLabel;
@@ -89,7 +91,7 @@ enum {
     
     void (^alertCompletion)(void);
 
-    BOOL scrollingNotFromUser;        
+    BOOL scrollingNotFromUser; 
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -107,6 +109,7 @@ enum {
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)addVideoToFavorite:(id)sender;
 - (IBAction)addVideoToQueue:(id)sender;
+- (IBAction)shareVideo:(id)sender;
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;
