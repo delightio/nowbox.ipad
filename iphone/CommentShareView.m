@@ -10,6 +10,7 @@
 #import "UIView+InteractiveAnimation.h"
 #import "NMConcreteVideo.h"
 #import "NMAuthor.h"
+#import "NMAccountManager.h"
 
 #define kMaxTwitterCharacters 119
 
@@ -24,6 +25,7 @@
 @synthesize twitterButton;
 @synthesize facebookButton;
 @synthesize emailButton;
+@synthesize touchArea;
 @synthesize video;
 @synthesize delegate;
 
@@ -47,6 +49,20 @@
         authorLabel.glowColor = [UIColor blackColor];
         textViewBackground.image = [textViewBackground.image stretchableImageWithLeftCapWidth:3 topCapHeight:3];
         
+        // User may not be logged into all accounts. Hide inactive service buttons for now.
+        if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
+            twitterButton.hidden = YES;
+            characterCountLabel.hidden = YES;
+            facebookButton.selected = YES;
+        }
+        if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
+            facebookButton.hidden = YES;
+            if (facebookButton.selected) {
+                emailButton.selected = YES;
+            }
+        }
+        
+        // Size the text view and show the keyboard
         [self textViewDidChange:textView];
         [textView becomeFirstResponder];
     }
@@ -65,6 +81,7 @@
     [twitterButton release];
     [facebookButton release];
     [emailButton release];
+    [touchArea release];
     
     [super dealloc];
 }
@@ -163,6 +180,23 @@
 - (void)orientationChanged:(NSNotification *)notification
 {
     [self textViewDidChange:textView];
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+{
+    // Accept all points above the view so that we may dismiss it by tapping in that area
+    if (point.y < 0) {
+        return YES;
+    }
+    return [super pointInside:point withEvent:event];
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    if (point.y) {
+        return touchArea;
+    }
+    return [super hitTest:point withEvent:event];
 }
 
 #pragma mark - UITextViewDelegate

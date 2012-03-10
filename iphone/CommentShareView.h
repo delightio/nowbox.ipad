@@ -27,6 +27,7 @@
 @property (nonatomic, retain) IBOutlet UIButton *twitterButton;
 @property (nonatomic, retain) IBOutlet UIButton *facebookButton;
 @property (nonatomic, retain) IBOutlet UIButton *emailButton;
+@property (nonatomic, retain) IBOutlet UIButton *touchArea;
 @property (nonatomic, retain) NMVideo *video;
 @property (nonatomic, assign) id<CommentShareViewDelegate> delegate;
 

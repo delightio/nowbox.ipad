@@ -1429,18 +1429,6 @@
     shareView = [[CommentShareView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 150)];
     [shareView setVideo:playbackModelController.currentVideo timeElapsed:loadedControlView.timeElapsed];
     shareView.delegate = self;
-    
-    if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
-        shareView.twitterButton.hidden = YES;
-        shareView.facebookButton.selected = YES;
-    }
-    if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
-        shareView.facebookButton.hidden = YES;
-        if (shareView.facebookButton.selected) {
-            shareView.emailButton.selected = YES;
-        }
-    }
-    
     [self.view addSubview:shareView];
     [shareView release];
     

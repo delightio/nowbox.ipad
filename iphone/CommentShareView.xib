@@ -447,6 +447,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">touchArea</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="963622783"/>
+					</object>
+					<int key="connectionID">29</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="999745112"/>
 						<reference key="destination" ref="372490531"/>
@@ -633,7 +641,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">28</int>
+			<int key="maxID">29</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -672,6 +680,7 @@
 						<string key="facebookButton">UIButton</string>
 						<string key="textView">UITextView</string>
 						<string key="textViewBackground">UIImageView</string>
+						<string key="touchArea">UIButton</string>
 						<string key="twitterButton">UIButton</string>
 						<string key="videoTitleLabel">GlowLabel</string>
 					</dictionary>
@@ -703,6 +712,10 @@
 						<object class="IBToOneOutletInfo" key="textViewBackground">
 							<string key="name">textViewBackground</string>
 							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="touchArea">
+							<string key="name">touchArea</string>
+							<string key="candidateClassName">UIButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="twitterButton">
 							<string key="name">twitterButton</string>
