@@ -13,6 +13,9 @@
 #import "NMAccountManager.h"
 
 #define kMaxTwitterCharacters 119
+#define kDefaultFacebookText @"Watching \"%@\""
+#define kDefaultTwitterText @"Watching \"%@\" http://youtu.be/%@"
+#define kDefaultEmailText @"Check out this video: %@"
 
 @implementation CommentShareView
 
@@ -50,15 +53,15 @@
         textViewBackground.image = [textViewBackground.image stretchableImageWithLeftCapWidth:3 topCapHeight:3];
         
         // User may not be logged into all accounts. Hide inactive service buttons for now.
+        [self twitterButtonPressed:nil];
         if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
             twitterButton.hidden = YES;
-            characterCountLabel.hidden = YES;
-            facebookButton.selected = YES;
+            [self facebookButtonPressed:nil];
         }
         if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
             facebookButton.hidden = YES;
             if (facebookButton.selected) {
-                emailButton.selected = YES;
+                [self emailButtonPressed:nil];
             }
         }
         
@@ -73,6 +76,9 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
+    [defaultTwitterText release];
+    [defaultFacebookText release];
+    [defaultEmailText release];
     [contentView release];
     [textViewBackground release];
     [textView release];
@@ -94,6 +100,21 @@
         
         videoTitleLabel.text = video.video.title;
         authorLabel.text = video.video.author.username;
+        
+        [defaultTwitterText release];
+        [defaultFacebookText release];
+        [defaultEmailText release];
+        defaultTwitterText = [[NSString alloc] initWithFormat:kDefaultTwitterText, video.video.title, video.video.external_id];
+        defaultFacebookText = [[NSString alloc] initWithFormat:kDefaultFacebookText, video.video.title];
+        defaultEmailText = [[NSString alloc] initWithFormat:kDefaultEmailText, video.video.title];
+
+        if (facebookButton.selected) {
+            [self facebookButtonPressed:nil];
+        } else if (twitterButton.selected) {
+            [self twitterButtonPressed:nil];
+        } else {
+            [self emailButtonPressed:nil];
+        }
     }
 }
 
@@ -111,6 +132,10 @@
     facebookButton.selected = NO;
     emailButton.selected = NO;
     characterCountLabel.hidden = NO;
+    
+    if ([textView.text length] == 0 || [textView.text isEqualToString:defaultFacebookText] || [textView.text isEqualToString:defaultEmailText]) {
+        textView.text = defaultTwitterText;
+    }
 }
 
 - (IBAction)facebookButtonPressed:(id)sender
@@ -118,7 +143,11 @@
     twitterButton.selected = NO;
     facebookButton.selected = YES;
     emailButton.selected = NO;
-    characterCountLabel.hidden = YES;    
+    characterCountLabel.hidden = YES;   
+    
+    if ([textView.text length] == 0 || [textView.text isEqualToString:defaultTwitterText] || [textView.text isEqualToString:defaultEmailText]) {
+        textView.text = defaultFacebookText;
+    }
 }
 
 - (IBAction)emailButtonPressed:(id)sender
@@ -126,7 +155,11 @@
     twitterButton.selected = NO;
     facebookButton.selected = NO;
     emailButton.selected = YES;
-    characterCountLabel.hidden = YES;    
+    characterCountLabel.hidden = YES;
+    
+    if ([textView.text length] == 0 || [textView.text isEqualToString:defaultTwitterText] || [textView.text isEqualToString:defaultFacebookText]) {
+        textView.text = defaultEmailText;
+    }
 }
 
 - (IBAction)touchAreaPressed:(id)sender
@@ -193,7 +226,7 @@
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-    if (point.y) {
+    if (point.y < 0) {
         return touchArea;
     }
     return [super hitTest:point withEvent:event];

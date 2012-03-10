@@ -16,6 +16,10 @@
 @interface CommentShareView : UIView <UITextViewDelegate> {
     BOOL dismissed;
     NSInteger timeElapsed;
+    
+    NSString *defaultTwitterText;
+    NSString *defaultFacebookText;
+    NSString *defaultEmailText;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
