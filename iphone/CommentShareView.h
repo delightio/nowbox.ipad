@@ -43,6 +43,7 @@ typedef enum {
 @property (nonatomic, retain) IBOutlet UIButton *facebookButton;
 @property (nonatomic, retain) IBOutlet UIButton *emailButton;
 @property (nonatomic, retain) IBOutlet UIButton *touchArea;
+@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) NMVideo *video;
 @property (nonatomic, assign) CommentShareService service;
 @property (nonatomic, assign) CommentShareMode mode;

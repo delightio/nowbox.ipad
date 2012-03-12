@@ -11,6 +11,7 @@
 #import "NMConcreteVideo.h"
 #import "NMAuthor.h"
 #import "NMAccountManager.h"
+#import "Analytics.h"
 
 #define kMaxTwitterCharacters 119
 
@@ -33,6 +34,7 @@
 @synthesize facebookButton;
 @synthesize emailButton;
 @synthesize touchArea;
+@synthesize activityIndicator;
 @synthesize video;
 @synthesize service;
 @synthesize mode;
@@ -53,7 +55,11 @@
         [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-        
+        [notificationCenter addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostNewFacebookLinkNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostNewFacebookLinkNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostTweetNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostTweetNotification object:nil];
+
         self.mode = aMode;
         
         videoTitleLabel.glowColor = [UIColor blackColor];
@@ -117,6 +123,7 @@
     [facebookButton release];
     [emailButton release];
     [touchArea release];
+    [activityIndicator release];
     
     [super dealloc];
 }
@@ -160,7 +167,7 @@
     // Update placeholder text if user hasn't typed anything
     if ([textView.text length] == 0 || 
         [textView.text isEqualToString:defaultTwitterText] || 
-        [textView.text isEqualToString:defaultEmailText] ||
+        [textView.text isEqualToString:defaultFacebookText] ||
         [textView.text isEqualToString:defaultEmailText]) {
         switch (service) {
             case CommentShareServiceTwitter:
@@ -252,6 +259,28 @@
     [self textViewDidChange:textView];
 }
 
+- (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
+{
+    [activityIndicator stopAnimating];
+    [self touchAreaPressed:nil];
+}
+
+- (void)handleDidFailShareVideoNotification:(NSNotification *)aNotification 
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                        message:[NSString stringWithFormat:@"Sorry, but something went wrong and your message could not be %@. Please try again a bit later.", 
+                                                                 (service == CommentShareServiceFacebook ? @"posted" : @"tweeted")]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
+    [alertView release];
+
+    [activityIndicator stopAnimating];
+}
+
+#pragma mark - UIView methods
+
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
     // Accept all points above the view so that we may dismiss it by tapping in that area
@@ -317,21 +346,23 @@
 - (BOOL)textView:(UITextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
     // Newline == return button pressed
-    if ([text isEqualToString:@"\n"]) {
+    if ([text isEqualToString:@"\n"] && ![activityIndicator isAnimating]) {
         switch (service) {
             case CommentShareServiceTwitter:
                 if ([aTextView.text length] <= kMaxTwitterCharacters) {
                     [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginTwitterType timeElapsed:timeElapsed];
+                    [activityIndicator startAnimating];
                 }
                 break;
             case CommentShareServiceFacebook:
                 [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginFacebookType timeElapsed:timeElapsed];
+                [activityIndicator startAnimating];
                 break;
             case CommentShareServiceEmail:
+                [self touchAreaPressed:nil];
                 break;
         }
 
-        [self touchAreaPressed:nil];
         return NO;
     }
     
