@@ -307,6 +307,8 @@ static NSArray * youTubeRegexArray = nil;
 					theProfile.name = [fromDict objectForKey:@"name"];
 					// subscribe to this person as well
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+				} else if ( theProfile.subscription == nil ) {
+					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
 				if ( ![_user_id isEqual:manID] ) {
 					// the video is from another person. we should add the video to that person's channel as well
