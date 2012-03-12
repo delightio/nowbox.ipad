@@ -59,7 +59,7 @@ typedef enum {
 @end
 
 @protocol CommentShareViewDelegate <NSObject>
-- (void)commentShareView:(CommentShareView *)commentShareView didSubmitText:(NSString *)text socialLogin:(NMSocialLoginType)socialLogin timeElapsed:(NSInteger)timeElapsed;
+- (void)commentShareView:(CommentShareView *)commentShareView didSubmitText:(NSString *)text service:(CommentShareService)service timeElapsed:(NSInteger)timeElapsed;
 @optional
 - (void)commentShareViewWillDismiss:(CommentShareView *)commentShareView;
 - (void)commentShareViewDidDismiss:(CommentShareView *)commentShareView;

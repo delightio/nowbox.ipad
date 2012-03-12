@@ -187,16 +187,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[self stopVideo];
-//	[self resetAllMovieDetailViews];
-	[movieView.player removeObserver:self forKeyPath:@"status"];
-	[movieView.player removeObserver:self forKeyPath:@"currentItem"];
-	[movieView.player removeObserver:self forKeyPath:@"airPlayVideoActive"];
-	[movieView.player removeObserver:self forKeyPath:@"rate"];
-	// get rid of time observer of video player
- 	[movieView.player removeTimeObserver:timeObserver];
-	[timeObserver release], timeObserver = nil;
-	[movieView.player removeAllItems];
-    
     [[ToolTipController sharedToolTipController] setDelegate:nil];
 
 	[super viewWillDisappear:animated];
@@ -1499,6 +1489,16 @@
 
 - (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView
 {
+    [self stopVideo];
+    [movieView.player removeObserver:self forKeyPath:@"status"];
+	[movieView.player removeObserver:self forKeyPath:@"currentItem"];
+	[movieView.player removeObserver:self forKeyPath:@"airPlayVideoActive"];
+	[movieView.player removeObserver:self forKeyPath:@"rate"];
+	// get rid of time observer of video player
+ 	[movieView.player removeTimeObserver:timeObserver];
+	[timeObserver release], timeObserver = nil;
+	[movieView.player removeAllItems];
+    
     [self dismissModalViewControllerAnimated:NO];
 }
 
@@ -1616,13 +1616,38 @@
     shareView = nil;
 }
 
-- (void)commentShareView:(CommentShareView *)commentShareView didSubmitText:(NSString *)text socialLogin:(NMSocialLoginType)socialLogin timeElapsed:(NSInteger)timeElapsed
+- (void)commentShareView:(CommentShareView *)commentShareView didSubmitText:(NSString *)text service:(CommentShareService)service timeElapsed:(NSInteger)timeElapsed
 {
-    [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:socialLogin
-                                                                       video:commentShareView.video 
-                                                                    duration:[commentShareView.video.video.duration integerValue]
-                                                              elapsedSeconds:timeElapsed
-                                                                     message:text];
+    NMVideo *video = commentShareView.video;
+    
+    if (service == CommentShareServiceFacebook || service == CommentShareServiceTwitter) {
+        [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:(service == CommentShareServiceFacebook ? NMLoginFacebookType : NMLoginTwitterType)
+                                                                           video:video 
+                                                                        duration:[video.video.duration integerValue]
+                                                                  elapsedSeconds:timeElapsed
+                                                                         message:text];
+    } else if (service == CommentShareServiceEmail) {
+        if ([MFMailComposeViewController canSendMail]) {
+            NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
+            
+    #ifdef DEBUG_USE_STAGING_SERVER
+            NSString *url = @"http://staging.nowbox.com/videos/";
+    #else
+            NSString *url = @"http://nowbox.com/videos/";        
+    #endif
+            
+            MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
+            [composeController setMailComposeDelegate:self];
+            [composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
+            [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
+            [self presentModalViewController:composeController animated:YES];
+            [composeController release];        
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"No mail accounts are configured. Please set up an account in Settings in order to share via email." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alertView show];
+            [alertView release];
+        }
+    }
 }
 
 #pragma mark - ToolTipControllerDelegate
@@ -1638,6 +1663,13 @@
     tooltip.displayText = @"";
     
     return self.view;
+}
+
+#pragma mark - MFMailComposeViewController
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error 
+{
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 @end

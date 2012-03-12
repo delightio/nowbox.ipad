@@ -350,15 +350,16 @@
         switch (service) {
             case CommentShareServiceTwitter:
                 if ([aTextView.text length] <= kMaxTwitterCharacters) {
-                    [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginTwitterType timeElapsed:timeElapsed];
+                    [delegate commentShareView:self didSubmitText:aTextView.text service:service timeElapsed:timeElapsed];
                     [activityIndicator startAnimating];
                 }
                 break;
             case CommentShareServiceFacebook:
-                [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginFacebookType timeElapsed:timeElapsed];
+                [delegate commentShareView:self didSubmitText:aTextView.text service:service timeElapsed:timeElapsed];
                 [activityIndicator startAnimating];
                 break;
             case CommentShareServiceEmail:
+                [delegate commentShareView:self didSubmitText:aTextView.text service:service timeElapsed:timeElapsed];
                 [self touchAreaPressed:nil];
                 break;
         }
