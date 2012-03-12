@@ -13,6 +13,17 @@
 
 @protocol CommentShareViewDelegate;
 
+typedef enum {
+    CommentShareServiceTwitter,
+    CommentShareServiceFacebook,
+    CommentShareServiceEmail
+} CommentShareService;
+
+typedef enum {
+    CommentShareModeShare,
+    CommentShareModeComment
+} CommentShareMode;
+
 @interface CommentShareView : UIView <UITextViewDelegate> {
     BOOL dismissed;
     NSInteger timeElapsed;
@@ -33,8 +44,11 @@
 @property (nonatomic, retain) IBOutlet UIButton *emailButton;
 @property (nonatomic, retain) IBOutlet UIButton *touchArea;
 @property (nonatomic, retain) NMVideo *video;
+@property (nonatomic, assign) CommentShareService service;
+@property (nonatomic, assign) CommentShareMode mode;
 @property (nonatomic, assign) id<CommentShareViewDelegate> delegate;
 
+- (id)initWithFrame:(CGRect)frame mode:(CommentShareMode)aMode;
 - (void)setVideo:(NMVideo *)video timeElapsed:(NSInteger)timeElapsed;
 - (IBAction)twitterButtonPressed:(id)sender;
 - (IBAction)facebookButtonPressed:(id)sender;

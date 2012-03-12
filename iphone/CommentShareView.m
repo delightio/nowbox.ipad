@@ -13,9 +13,13 @@
 #import "NMAccountManager.h"
 
 #define kMaxTwitterCharacters 119
+
 #define kDefaultFacebookText @"Watching \"%@\""
 #define kDefaultTwitterText @"Watching \"%@\" http://youtu.be/%@"
 #define kDefaultEmailText @"Check out this video: %@"
+
+#define kLastCommentServiceUserDefaultsKey @"NM_COMMENT_LAST_SERVICE"
+#define kLastShareServiceUserDefaultsKey @"NM_SHARE_LAST_SERVICE"
 
 @implementation CommentShareView
 
@@ -30,9 +34,11 @@
 @synthesize emailButton;
 @synthesize touchArea;
 @synthesize video;
+@synthesize service;
+@synthesize mode;
 @synthesize delegate;
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame mode:(CommentShareMode)aMode
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -48,21 +54,33 @@
         [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
         
+        self.mode = aMode;
+        
         videoTitleLabel.glowColor = [UIColor blackColor];
         authorLabel.glowColor = [UIColor blackColor];
         textViewBackground.image = [textViewBackground.image stretchableImageWithLeftCapWidth:3 topCapHeight:3];
         
-        // User may not be logged into all accounts. Hide inactive service buttons for now.
-        [self twitterButtonPressed:nil];
+        // Restore last service used
+        CommentShareService lastService = [[NSUserDefaults standardUserDefaults] integerForKey:(mode == CommentShareModeComment ?
+                                                                                                kLastCommentServiceUserDefaultsKey : 
+                                                                                                kLastShareServiceUserDefaultsKey)];
+        [self setService:lastService];
+        
+        // Hide inactive services
         if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
             twitterButton.hidden = YES;
-            [self facebookButtonPressed:nil];
+            if (service == CommentShareServiceTwitter) {
+                self.service = CommentShareServiceFacebook;
+            }
         }
         if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
             facebookButton.hidden = YES;
-            if (facebookButton.selected) {
-                [self emailButtonPressed:nil];
+            if (service == CommentShareServiceFacebook) {
+                self.service = CommentShareServiceEmail;
             }
+        }
+        if (mode == CommentShareModeComment && service == CommentShareServiceEmail) {
+            self.service = (!twitterButton.hidden ? CommentShareServiceTwitter : CommentShareServiceFacebook);
         }
         
         // Size the text view and show the keyboard
@@ -72,8 +90,19 @@
     return self;
 }
 
+- (id)initWithFrame:(CGRect)frame
+{
+    return [self initWithFrame:frame mode:CommentShareModeShare];
+}
+
 - (void)dealloc
 {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setInteger:service forKey:(mode == CommentShareModeComment ?
+                                             kLastCommentServiceUserDefaultsKey : 
+                                             kLastShareServiceUserDefaultsKey)];
+    [userDefaults synchronize];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [defaultTwitterText release];
@@ -108,13 +137,8 @@
         defaultFacebookText = [[NSString alloc] initWithFormat:kDefaultFacebookText, video.video.title];
         defaultEmailText = [[NSString alloc] initWithFormat:kDefaultEmailText, video.video.title];
 
-        if (facebookButton.selected) {
-            [self facebookButtonPressed:nil];
-        } else if (twitterButton.selected) {
-            [self twitterButtonPressed:nil];
-        } else {
-            [self emailButtonPressed:nil];
-        }
+        // Forces update of placeholder text
+        [self setService:service];
     }
 }
 
@@ -124,42 +148,55 @@
     timeElapsed = aTimeElapsed;
 }
 
+- (void)setService:(CommentShareService)aService
+{
+    service = aService;
+    
+    twitterButton.selected = (service == CommentShareServiceTwitter);
+    facebookButton.selected = (service == CommentShareServiceFacebook);
+    emailButton.selected = (service == CommentShareServiceEmail);
+    characterCountLabel.hidden = (service != CommentShareServiceTwitter);
+    
+    // Update placeholder text if user hasn't typed anything
+    if ([textView.text length] == 0 || 
+        [textView.text isEqualToString:defaultTwitterText] || 
+        [textView.text isEqualToString:defaultEmailText] ||
+        [textView.text isEqualToString:defaultEmailText]) {
+        switch (service) {
+            case CommentShareServiceTwitter:
+                textView.text = defaultTwitterText;
+                break;
+            case CommentShareServiceFacebook:
+                textView.text = defaultFacebookText;
+                break;
+            case CommentShareServiceEmail:
+                textView.text = defaultEmailText;
+                break;
+        }
+    }
+}
+
+- (void)setMode:(CommentShareMode)aMode
+{
+    mode = aMode;
+    emailButton.hidden = (mode == CommentShareModeComment);
+}
+
 #pragma mark - IBActions
 
 - (IBAction)twitterButtonPressed:(id)sender
 {
-    twitterButton.selected = YES;
-    facebookButton.selected = NO;
-    emailButton.selected = NO;
-    characterCountLabel.hidden = NO;
-    
-    if ([textView.text length] == 0 || [textView.text isEqualToString:defaultFacebookText] || [textView.text isEqualToString:defaultEmailText]) {
-        textView.text = defaultTwitterText;
-    }
+    [self setService:CommentShareServiceTwitter];
 }
 
 - (IBAction)facebookButtonPressed:(id)sender
 {
-    twitterButton.selected = NO;
-    facebookButton.selected = YES;
-    emailButton.selected = NO;
-    characterCountLabel.hidden = YES;   
-    
-    if ([textView.text length] == 0 || [textView.text isEqualToString:defaultTwitterText] || [textView.text isEqualToString:defaultEmailText]) {
-        textView.text = defaultFacebookText;
-    }
+    [self setService:CommentShareServiceFacebook];
 }
 
 - (IBAction)emailButtonPressed:(id)sender
 {
-    twitterButton.selected = NO;
-    facebookButton.selected = NO;
-    emailButton.selected = YES;
-    characterCountLabel.hidden = YES;
-    
-    if ([textView.text length] == 0 || [textView.text isEqualToString:defaultTwitterText] || [textView.text isEqualToString:defaultFacebookText]) {
-        textView.text = defaultEmailText;
-    }
+    [self setService:CommentShareServiceEmail];
 }
 
 - (IBAction)touchAreaPressed:(id)sender
@@ -281,13 +318,19 @@
 {
     // Newline == return button pressed
     if ([text isEqualToString:@"\n"]) {
-        if (facebookButton.selected) {
-            [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginFacebookType timeElapsed:timeElapsed];
-        } else if (twitterButton.selected) {
-            [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginTwitterType timeElapsed:timeElapsed];
-        } else {
-            // Email sharing: TODO
+        switch (service) {
+            case CommentShareServiceTwitter:
+                if ([aTextView.text length] <= kMaxTwitterCharacters) {
+                    [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginTwitterType timeElapsed:timeElapsed];
+                }
+                break;
+            case CommentShareServiceFacebook:
+                [delegate commentShareView:self didSubmitText:aTextView.text socialLogin:NMLoginFacebookType timeElapsed:timeElapsed];
+                break;
+            case CommentShareServiceEmail:
+                break;
         }
+
         [self touchAreaPressed:nil];
         return NO;
     }
