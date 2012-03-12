@@ -37,7 +37,7 @@ static NSArray * youTubeRegexArray = nil;
 
 - (id)initWithChannel:(NMChannel *)chn {
 #ifdef DEBUG_FACEBOOK_IMPORT
-	NSLog(@"Getting first page - Facebook");
+	NSLog(@"Getting first page - Facebook - %@", chn.title);
 #endif
 	self = [super init];
 	command = NMCommandParseFacebookFeed;
