@@ -16,6 +16,10 @@
 @interface CommentShareView : UIView <UITextViewDelegate> {
     BOOL dismissed;
     NSInteger timeElapsed;
+    
+    NSString *defaultTwitterText;
+    NSString *defaultFacebookText;
+    NSString *defaultEmailText;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
@@ -27,6 +31,7 @@
 @property (nonatomic, retain) IBOutlet UIButton *twitterButton;
 @property (nonatomic, retain) IBOutlet UIButton *facebookButton;
 @property (nonatomic, retain) IBOutlet UIButton *emailButton;
+@property (nonatomic, retain) IBOutlet UIButton *touchArea;
 @property (nonatomic, retain) NMVideo *video;
 @property (nonatomic, assign) id<CommentShareViewDelegate> delegate;
 
