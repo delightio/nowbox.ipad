@@ -249,8 +249,6 @@
 		838879D314B7739400566002 /* CrittercismRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8388798A14B7739400566002 /* CrittercismRootViewController.xib */; };
 		838879D414B7739400566002 /* CrittercismViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8388798B14B7739400566002 /* CrittercismViewController.xib */; };
 		8389F680148D61B2002165A2 /* tooltip-watch-later.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F67F148D61B2002165A2 /* tooltip-watch-later.png */; };
-		8389F68F148DA310002165A2 /* button-action.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F68E148DA30F002165A2 /* button-action.png */; };
-		8389F692148DA68D002165A2 /* button-action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F691148DA68D002165A2 /* button-action@2x.png */; };
 		8389F694148DBAC6002165A2 /* VideoControlView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */; };
 		838F27D51471949000935D5A /* onboard-social-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D21471949000935D5A /* onboard-social-facebook.png */; };
 		838F27D61471949000935D5A /* onboard-social-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D31471949000935D5A /* onboard-social-twitter.png */; };
@@ -829,8 +827,6 @@
 		8388798A14B7739400566002 /* CrittercismRootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrittercismRootViewController.xib; sourceTree = "<group>"; };
 		8388798B14B7739400566002 /* CrittercismViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrittercismViewController.xib; sourceTree = "<group>"; };
 		8389F67F148D61B2002165A2 /* tooltip-watch-later.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-watch-later.png"; sourceTree = "<group>"; };
-		8389F68E148DA30F002165A2 /* button-action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-action.png"; sourceTree = "<group>"; };
-		8389F691148DA68D002165A2 /* button-action@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-action@2x.png"; sourceTree = "<group>"; };
 		8389F693148DBAC6002165A2 /* VideoControlView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "VideoControlView~iphone.xib"; sourceTree = "<group>"; };
 		838F27D21471949000935D5A /* onboard-social-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-facebook.png"; sourceTree = "<group>"; };
 		838F27D31471949000935D5A /* onboard-social-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-twitter.png"; sourceTree = "<group>"; };
@@ -1786,8 +1782,6 @@
 				22A19763140D7E1C00DE074E /* channel-view-new-session.png */,
 				A9F4966013D2E83400A56F50 /* playback_background_pattern.png */,
 				A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */,
-				8389F68E148DA30F002165A2 /* button-action.png */,
-				8389F691148DA68D002165A2 /* button-action@2x.png */,
 				A98C241113D38C030061A594 /* button-like-active.png */,
 				A98C241213D38C030061A594 /* button-like.png */,
 				A9E3C05F1471AECB005C976F /* button-logout-background.png */,
@@ -2410,8 +2404,6 @@
 				83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */,
 				83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */,
 				8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */,
-				8389F68F148DA310002165A2 /* button-action.png in Resources */,
-				8389F692148DA68D002165A2 /* button-action@2x.png in Resources */,
 				8389F694148DBAC6002165A2 /* VideoControlView~iphone.xib in Resources */,
 				8393DDDC149065990031399A /* Default-Landscape~iphone.png in Resources */,
 				8393DDDD149065990031399A /* Default~iphone.png in Resources */,
