@@ -14,6 +14,7 @@
 #import "LaunchController.h"
 #import "Analytics.h"
 #import "UIView+InteractiveAnimation.h"
+#import "NSString+Formatting.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -1844,18 +1845,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         // Email share
         [[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
 
-        // Cut off the description at 160 chars
-        NSString *videoDescription = video.video.detail.nm_description;
-        if ([videoDescription length] > 160) {
-            videoDescription = [videoDescription substringToIndex:160];
-            NSRange lastWhitespace = [videoDescription rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]
-                                                                       options:NSBackwardsSearch];
-            if (lastWhitespace.location != NSNotFound) {
-                videoDescription = [videoDescription substringToIndex:lastWhitespace.location];
-            }
-            
-            videoDescription = [NSString stringWithFormat:@"%@...", videoDescription];
-        }
+        NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
         
 #ifdef DEBUG_USE_STAGING_SERVER
         NSString *url = @"http://staging.nowbox.com/videos/";

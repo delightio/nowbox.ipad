@@ -273,6 +273,7 @@
 		838F281C14722A7800935D5A /* onboard-divider-shadow-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */; };
 		8393DDDC149065990031399A /* Default-Landscape~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8393DDDA149065990031399A /* Default-Landscape~iphone.png */; };
 		8393DDDD149065990031399A /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8393DDDB149065990031399A /* Default~iphone.png */; };
+		83B330FC150E9DA400E9F9DE /* NSString+Formatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B330FB150E9DA400E9F9DE /* NSString+Formatting.m */; };
 		83C031641506C7D700C716CB /* phone_grid_item_more.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C031621506C7D700C716CB /* phone_grid_item_more.png */; };
 		83C031651506C7D700C716CB /* phone_grid_item_more@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C031631506C7D700C716CB /* phone_grid_item_more@2x.png */; };
 		83C031691506D1B800C716CB /* phone_button_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C031671506D1B800C716CB /* phone_button_back.png */; };
@@ -852,6 +853,8 @@
 		838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-up.png"; sourceTree = "<group>"; };
 		8393DDDA149065990031399A /* Default-Landscape~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~iphone.png"; sourceTree = "<group>"; };
 		8393DDDB149065990031399A /* Default~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default~iphone.png"; sourceTree = "<group>"; };
+		83B330FA150E9DA400E9F9DE /* NSString+Formatting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Formatting.h"; sourceTree = "<group>"; };
+		83B330FB150E9DA400E9F9DE /* NSString+Formatting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Formatting.m"; sourceTree = "<group>"; };
 		83C031621506C7D700C716CB /* phone_grid_item_more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_grid_item_more.png; sourceTree = "<group>"; };
 		83C031631506C7D700C716CB /* phone_grid_item_more@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_grid_item_more@2x.png"; sourceTree = "<group>"; };
 		83C031671506D1B800C716CB /* phone_button_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_back.png; sourceTree = "<group>"; };
@@ -1594,6 +1597,8 @@
 				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
 				83D84A2C147DD65A00474EBC /* UIView+InteractiveAnimation.h */,
 				83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */,
+				83B330FA150E9DA400E9F9DE /* NSString+Formatting.h */,
+				83B330FB150E9DA400E9F9DE /* NSString+Formatting.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -2700,6 +2705,7 @@
 				8382D56014FEE22E00DDEB6B /* TwitterGridDataSource.m in Sources */,
 				A9D339471506B700006163A6 /* FeatureDebugMentionsViewController.m in Sources */,
 				83804296150AA692009B9741 /* CommentShareView.m in Sources */,
+				83B330FC150E9DA400E9F9DE /* NSString+Formatting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
