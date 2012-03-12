@@ -22,6 +22,10 @@
 #define kLastCommentServiceUserDefaultsKey @"NM_COMMENT_LAST_SERVICE"
 #define kLastShareServiceUserDefaultsKey @"NM_SHARE_LAST_SERVICE"
 
+@interface CommentShareView (PrivateMethods)
+- (NSString *)serviceNameString;
+@end
+
 @implementation CommentShareView
 
 @synthesize contentView;
@@ -128,6 +132,25 @@
     [super dealloc];
 }
 
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+{
+    // Accept all points above the view so that we may dismiss it by tapping in that area
+    if (point.y < 0) {
+        return YES;
+    }
+    return [super pointInside:point withEvent:event];
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    if (point.y < 0) {
+        return touchArea;
+    }
+    return [super hitTest:point withEvent:event];
+}
+
+#pragma mark - Public methods
+
 - (void)setVideo:(NMVideo *)aVideo
 {
     if (video != aVideo) {
@@ -146,6 +169,11 @@
 
         // Forces update of placeholder text
         [self setService:service];
+        
+        NSString *eventName = (mode == CommentShareModeComment ? AnalyticsEventShowCommentDialog : AnalyticsEventShowShareDialog);
+        [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                             video.video.nm_id, AnalyticsPropertyVideoId,
+                                                             nil]];
     }
 }
 
@@ -189,6 +217,25 @@
     emailButton.hidden = (mode == CommentShareModeComment);
 }
 
+- (void)dismiss
+{
+    dismissed = YES;
+    [textView resignFirstResponder];
+}
+
+#pragma mark - Private methods
+
+- (NSString *)serviceNameString
+{
+    switch (service) {
+        case CommentShareServiceTwitter:  return @"Twitter";
+        case CommentShareServiceFacebook: return @"Facebook";
+        case CommentShareServiceEmail:    return @"Email";
+    }
+    
+    return nil;
+}
+
 #pragma mark - IBActions
 
 - (IBAction)twitterButtonPressed:(id)sender
@@ -207,9 +254,13 @@
 }
 
 - (IBAction)touchAreaPressed:(id)sender
-{
-    dismissed = YES;
-    [textView resignFirstResponder];
+{    
+    NSString *eventName = (mode == CommentShareModeComment ? AnalyticsEventCancelCommentDialog : AnalyticsEventCancelShareDialog);
+    [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                               video.video.nm_id, AnalyticsPropertyVideoId,
+                                                                               [self serviceNameString], AnalyticsPropertyShareType,
+                                                                               nil]];
+    [self dismiss];
 }
 
 #pragma mark - Notifications
@@ -262,7 +313,13 @@
 - (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
 {
     [activityIndicator stopAnimating];
-    [self touchAreaPressed:nil];
+    [self dismiss];
+    
+    NSString *eventName = (mode == CommentShareModeComment ? AnalyticsEventCompleteCommentDialog : AnalyticsEventCompleteShareDialog);
+    [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                                 video.video.nm_id, AnalyticsPropertyVideoId,
+                                                                                 [self serviceNameString], AnalyticsPropertyShareType,
+                                                                                 nil]];
 }
 
 - (void)handleDidFailShareVideoNotification:(NSNotification *)aNotification 
@@ -277,25 +334,12 @@
     [alertView release];
 
     [activityIndicator stopAnimating];
-}
-
-#pragma mark - UIView methods
-
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
-{
-    // Accept all points above the view so that we may dismiss it by tapping in that area
-    if (point.y < 0) {
-        return YES;
-    }
-    return [super pointInside:point withEvent:event];
-}
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    if (point.y < 0) {
-        return touchArea;
-    }
-    return [super hitTest:point withEvent:event];
+    
+    NSString *eventName = (mode == CommentShareModeComment ? AnalyticsEventCommentFailed : AnalyticsEventShareFailed);
+    [[MixpanelAPI sharedAPI] track:eventName properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                         video.video.nm_id, AnalyticsPropertyVideoId,
+                                                                         [self serviceNameString], AnalyticsPropertyShareType,
+                                                                         nil]];
 }
 
 #pragma mark - UITextViewDelegate
@@ -360,7 +404,11 @@
                 break;
             case CommentShareServiceEmail:
                 [delegate commentShareView:self didSubmitText:aTextView.text service:service timeElapsed:timeElapsed];
-                [self touchAreaPressed:nil];
+                [self dismiss];
+                [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                                             video.video.nm_id, AnalyticsPropertyVideoId,
+                                                                                             [self serviceNameString], AnalyticsPropertyShareType,
+                                                                                             nil]];
                 break;
         }
 

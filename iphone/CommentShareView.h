@@ -51,6 +51,7 @@ typedef enum {
 
 - (id)initWithFrame:(CGRect)frame mode:(CommentShareMode)aMode;
 - (void)setVideo:(NMVideo *)video timeElapsed:(NSInteger)timeElapsed;
+- (void)dismiss;
 - (IBAction)twitterButtonPressed:(id)sender;
 - (IBAction)facebookButtonPressed:(id)sender;
 - (IBAction)emailButtonPressed:(id)sender;
