@@ -58,6 +58,10 @@
 #define AnalyticsEventCancelShareDialog @"Cancel Share Dialog"
 #define AnalyticsEventCompleteShareDialog @"Complete Share Dialog"
 #define AnalyticsEventShareFailed @"Share Failed"
+#define AnalyticsEventShowCommentDialog @"Show Comment Dialog"
+#define AnalyticsEventCancelCommentDialog @"Cancel Comment Dialog"
+#define AnalyticsEventCompleteCommentDialog @"Complete Comment Dialog"
+#define AnalyticsEventCommentFailed @"Comment Failed"
 
 /*********************************************
  *                PROPERTIES                 *

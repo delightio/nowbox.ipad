@@ -423,7 +423,8 @@
 				
 			case ShareModeFacebook:
 				// jump to facebook page directly
-				[[NMAccountManager sharedAccountManager] authorizeFacebook];			
+				[[NMAccountManager sharedAccountManager] authorizeFacebook];	
+                [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"sharebutton" forKey:AnalyticsPropertySender]];                                     
 				break;
 				
 			default:
