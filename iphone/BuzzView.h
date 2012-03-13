@@ -22,7 +22,6 @@
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
 @property (nonatomic, retain) IBOutlet UIScrollView *mentionsScrollView;
-@property (nonatomic, retain) IBOutlet UIView *touchArea;
 @property (nonatomic, assign) BOOL showsActionButtons;
 @property (nonatomic, assign) IBOutlet id<BuzzViewDelegate> delegate;
 

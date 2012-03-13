@@ -19,7 +19,6 @@
 
 @synthesize contentView;
 @synthesize mentionsScrollView;
-@synthesize touchArea;
 @synthesize showsActionButtons;
 @synthesize delegate;
 
@@ -61,11 +60,6 @@
     commentViews = [[NSMutableArray alloc] init];  
     noCommentViews = [[NSMutableArray alloc] init];
     actionButtonViews = [[NSMutableArray alloc] init];
-        
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
-    [tapGestureRecognizer setNumberOfTapsRequired:1];
-    [touchArea addGestureRecognizer:tapGestureRecognizer];
-    [tapGestureRecognizer release];
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -91,7 +85,6 @@
     [contentView release];
     [commentScrollViews release];
     [commentViews release];
-    [touchArea release];
     [noCommentViews release];
     [mentionsScrollView release];
     [actionButtonViews release];
@@ -140,7 +133,7 @@
     UIView *noCommentsView = [self noCommentsViewWithFrame:CGRectMake(mentionsScrollView.contentSize.width - mentionsScrollView.bounds.size.width, 0,
                                                                       mentionsScrollView.bounds.size.width, mentionsScrollView.bounds.size.height)
                                         socialMentionIndex:index];
-    [mentionsScrollView addSubview:noCommentsView];
+    [mentionsScrollView insertSubview:noCommentsView atIndex:0];
     [noCommentViews addObject:noCommentsView];
 }
 
@@ -162,11 +155,16 @@
     commentScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     commentScrollView.tag = [commentScrollViews count];
     commentScrollView.scrollEnabled = NO;
-    [mentionsScrollView addSubview:commentScrollView];
+    [mentionsScrollView insertSubview:commentScrollView atIndex:0];
     [commentScrollViews addObject:commentScrollView];
     [commentScrollView release];
+
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
+    [tapGestureRecognizer setNumberOfTapsRequired:1];
+    [commentScrollView addGestureRecognizer:tapGestureRecognizer];
+    [tapGestureRecognizer release];
     
-    mentionsScrollView.contentSize = CGSizeMake(CGRectGetMaxX(commentScrollView.frame), mentionsScrollView.bounds.size.height);
+    mentionsScrollView.contentSize = CGSizeMake(CGRectGetMaxX(commentScrollView.frame), mentionsScrollView.bounds.size.height);   
 }
 
 - (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
