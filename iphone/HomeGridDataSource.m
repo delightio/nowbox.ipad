@@ -31,12 +31,21 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+        
+        [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:NULL];
     }
     return self;
 }
 
 - (void)dealloc
 {    
+	@try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [fetchedResultsController release];
@@ -58,10 +67,10 @@
                 if (![accountManager.facebook isSessionValid]) {
                     [accountManager authorizeFacebook];
                     [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"homegrid" forKey:AnalyticsPropertySender]];                     
+                } else {
+                    GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                    [self.gridView setDataSource:facebookDataSource animated:YES];
                 }
-                
-                GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
-                [self.gridView setDataSource:facebookDataSource animated:YES];
                 break;
             }
             case 1: {
@@ -180,6 +189,20 @@
     NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
     if (channel) {
         [refreshingChannels removeObject:channel];
+    }
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
+        // Facebook sync status updated, we have logged in successfully
+        GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+        [self.gridView setDataSource:facebookDataSource animated:YES];
+        
+        // stop listening so that we won't get repeated KVO
+        [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];        
     }
 }
 
