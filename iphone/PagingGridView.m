@@ -504,7 +504,7 @@
         [visibleIndexes addIndex:cell.index];
     }
     
-    numberOfItems++;
+    numberOfItems += [self columnSpanForCellAtIndex:index];
     [self updateNumberOfPages];
     [self setNeedsLayout];
     
@@ -561,7 +561,7 @@
             [visibleIndexes addIndex:cell.index];
         }
         
-        numberOfItems--;
+        numberOfItems -= [self columnSpanForCellAtIndex:index];
         [self updateNumberOfPages];
         
         [self setNeedsLayout];   
