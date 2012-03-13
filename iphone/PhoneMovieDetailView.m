@@ -11,7 +11,9 @@
 
 #pragma mark - PhoneMovieDetailView
 
-@interface PhoneMovieDetailView (PrivatMethods)
+@interface PhoneMovieDetailView (PrivateMethods)
++ (UIImage *)serviceIconForChannelType:(NMChannelType)channelType;
++ (NSString *)relativeTimeStringForTime:(NSTimeInterval)time;
 - (void)setChannelTitle:(NSString *)channelTitle;
 - (void)setVideoTitle:(NSString *)videoTitle;
 - (void)setDescriptionText:(NSString *)descriptionText;
@@ -30,6 +32,42 @@
 @synthesize buzzPanelExpanded;
 @synthesize videoOverlayHidden;
 @synthesize delegate;
+
++ (UIImage *)serviceIconForChannelType:(NMChannelType)channelType
+{
+    switch (channelType) {
+        case NMChannelUserFacebookType:
+            return [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];                    
+        case NMChannelUserTwitterType:
+            return [UIImage imageNamed:@"phone_video_buzz_icon_twitter.png"];                    
+        default:
+            return nil;
+    }    
+}
+
++ (NSString *)relativeTimeStringForTime:(NSTimeInterval)time
+{
+    NSTimeInterval ageInSeconds = [[NSDate date] timeIntervalSince1970] - time;
+    
+    if (ageInSeconds < 60) {
+        return [NSString stringWithFormat:@"%i sec ago", (NSInteger)ageInSeconds];
+    } else if (ageInSeconds < 60*60) {
+        return [NSString stringWithFormat:@"%i min ago", (NSInteger)(ageInSeconds / 60)];
+    } else if (ageInSeconds < 60*60*24) {
+        NSInteger hours = (NSInteger)(ageInSeconds / (60*60));
+        return [NSString stringWithFormat:@"%i %@ ago", hours, (hours == 1 ? @"hour" : @"hours")];
+    } else if (ageInSeconds < 60*60*24*30) {
+        NSInteger days = (NSInteger)(ageInSeconds / (60*60*24));
+        if (days == 1) return @"Yesterday";
+        return [NSString stringWithFormat:@"%i days ago", days];
+    } else if (ageInSeconds < 60*60*24*365) {
+        NSInteger months = (NSInteger)(ageInSeconds / (60*60*24*30));
+        return [NSString stringWithFormat:@"%i %@ ago", months, (months == 1 ? @"month": @"months")];
+    } else {
+        NSInteger years = (NSInteger)(ageInSeconds / (60*60*24*365));
+        return [NSString stringWithFormat:@"%i %@ ago", years, (years == 1 ? @"year" : @"years")];
+    }
+}
 
 - (void)awakeFromNib
 {
@@ -76,23 +114,20 @@
         [mentionsArray addObject:socialInfo];
         [portraitView.buzzView addMentionLiked:mentionLikedByUser];
         
+        // Show the original post as the first "comment"
+        BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:@"" username:video.channel.title];
+        [postView.userImageView setImageForChannel:video.channel];
+        postView.timeLabel.text = @"";
+        postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
+        postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i comments", [socialInfo.likes_count integerValue], ([socialInfo.likes_count integerValue] == 1 ? @"like" : @"likes"), [socialInfo.comments_count integerValue]];
+        
+        // Show the actual comments in chronological order
         NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
         for (NMSocialComment *comment in sortedComments) {
             BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
             [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
-            commentView.timeLabel.text = [comment relativeTimeString];
-            
-            switch ([socialInfo.nm_type integerValue]) {
-                case NMChannelUserFacebookType:
-                    commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];                    
-                    break;
-                case NMChannelUserTwitterType:
-                    commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_twitter.png"];                    
-                    break;
-                default:
-                    commentView.serviceIcon.image = nil;
-                    break;
-            }
+            commentView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[comment.created_time floatValue]];
+            commentView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
         }
     }
     [portraitView.buzzView doneAdding];

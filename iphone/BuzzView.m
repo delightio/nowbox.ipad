@@ -178,9 +178,13 @@
     UIScrollView *commentScrollView = [commentScrollViews lastObject];
     
     if ([commentViews count] > 0) {
+        [commentView setShowsLikesCount:NO];
         [commentView sizeToFit];
     } else {
-        // This is the first comment - create the action buttons
+        // This is the first comment
+        [commentView setShowsLikesCount:YES];
+
+        // Create the action buttons
         UIButton *likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         likeButton.frame = CGRectMake(commentScrollView.frame.origin.x + 244, 4, 50, 50);
         likeButton.tag = commentScrollView.tag;

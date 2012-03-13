@@ -19,6 +19,4 @@
 @property (nonatomic, retain) NMSocialInfo *socialInfo;
 @property (nonatomic, retain) NMPersonProfile *fromPerson;
 
-- (NSString *)relativeTimeString;
-
 @end
