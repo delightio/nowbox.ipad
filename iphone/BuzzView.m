@@ -11,16 +11,19 @@
 
 @interface BuzzView (PrivateMethods)
 - (void)repositionComments;
+- (void)addNoCommentsViewWithIndex:(NSUInteger)index;
+- (UIView *)noCommentsViewWithFrame:(CGRect)frame socialMentionIndex:(NSUInteger)index;
 @end
 
 @implementation BuzzView
 
 @synthesize contentView;
 @synthesize mentionsScrollView;
+@synthesize touchArea;
 @synthesize showsActionButtons;
 @synthesize delegate;
 
-+ (UIView *)noCommentsViewWithFrame:(CGRect)frame
+- (UIView *)noCommentsViewWithFrame:(CGRect)frame socialMentionIndex:(NSUInteger)index
 {
     UIView *noCommentsView = [[[UIView alloc] initWithFrame:frame] autorelease];
     noCommentsView.backgroundColor = [UIColor clearColor];
@@ -39,7 +42,9 @@
     UIButton *addCommentButton = [UIButton buttonWithType:UIButtonTypeCustom];
     addCommentButton.frame = CGRectMake(noCommentsView.bounds.size.width - 55, 15, 50, 50);
     addCommentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
+    addCommentButton.tag = index;
     [addCommentButton setImage:[UIImage imageNamed:@"phone_button_add_comment.png"] forState:UIControlStateNormal];
+    [addCommentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noCommentsView addSubview:addCommentButton];
     
     return noCommentsView;
@@ -59,7 +64,7 @@
         
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
     [tapGestureRecognizer setNumberOfTapsRequired:1];
-    [self addGestureRecognizer:tapGestureRecognizer];
+    [touchArea addGestureRecognizer:tapGestureRecognizer];
     [tapGestureRecognizer release];
 }
 
@@ -86,6 +91,7 @@
     [contentView release];
     [commentScrollViews release];
     [commentViews release];
+    [touchArea release];
     [noCommentViews release];
     [mentionsScrollView release];
     [actionButtonViews release];
@@ -129,10 +135,11 @@
     }    
 }
 
-- (void)addNoCommentsView
+- (void)addNoCommentsViewWithIndex:(NSUInteger)index
 {
-    UIView *noCommentsView = [BuzzView noCommentsViewWithFrame:CGRectMake(mentionsScrollView.contentSize.width - mentionsScrollView.bounds.size.width, 0,
-                                                                          mentionsScrollView.bounds.size.width, mentionsScrollView.bounds.size.height)];
+    UIView *noCommentsView = [self noCommentsViewWithFrame:CGRectMake(mentionsScrollView.contentSize.width - mentionsScrollView.bounds.size.width, 0,
+                                                                      mentionsScrollView.bounds.size.width, mentionsScrollView.bounds.size.height)
+                                        socialMentionIndex:index];
     [mentionsScrollView addSubview:noCommentsView];
     [noCommentViews addObject:noCommentsView];
 }
@@ -143,7 +150,7 @@
     
     // Did last mention have no comments? If so, add a "no comments" view
     if ([commentScrollViews count] > 0 && [commentViews count] == 0) {
-        [self addNoCommentsView];
+        [self addNoCommentsViewWithIndex:[commentScrollViews count] - 1];
     }
     [commentViews removeAllObjects];
     
@@ -231,7 +238,7 @@
 {
     // Did last mention have no comments? If so, add a "no comments" view
     if (commentViews && [commentViews count] == 0) {
-        [self addNoCommentsView];
+        [self addNoCommentsViewWithIndex:[commentScrollViews count] - 1];
     }
     
     [self repositionComments];

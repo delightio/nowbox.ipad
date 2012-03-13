@@ -1586,7 +1586,21 @@
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTapCommentButton:(id)sender socialInfo:(NMSocialInfo *)socialInfo
 {
+    if (shareView) return;
     
+    shareView = [[CommentShareView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 150) mode:CommentShareModeComment];
+    [shareView setVideo:playbackModelController.currentVideo timeElapsed:loadedControlView.timeElapsed];
+    shareView.delegate = self;
+    shareView.socialInfo = socialInfo;
+    [self.view addSubview:shareView];
+    [shareView release];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         controlScrollView.frame = CGRectOffset(controlScrollView.frame, 0, VIDEO_OFFSET_WHEN_SHARING);
+                     }
+                     completion:^(BOOL finished){ 
+                     }];
 }
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView willBeginDraggingScrollView:(UIScrollView *)scrollView
@@ -1621,27 +1635,33 @@
 {
     NMVideo *video = commentShareView.video;
     
-    if (service == CommentShareServiceFacebook || service == CommentShareServiceTwitter) {
-        [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:(service == CommentShareServiceFacebook ? NMLoginFacebookType : NMLoginTwitterType)
-                                                                           video:video 
-                                                                        duration:[video.video.duration integerValue]
-                                                                  elapsedSeconds:timeElapsed
-                                                                         message:text];
-    } else if (service == CommentShareServiceEmail) {
-        NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
-        
-#ifdef DEBUG_USE_STAGING_SERVER
-        NSString *url = @"http://staging.nowbox.com/videos/";
-#else
-        NSString *url = @"http://nowbox.com/videos/";        
-#endif
-        
-        MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
-        [composeController setMailComposeDelegate:self];
-        [composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
-        [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
-        [self presentModalViewController:composeController animated:YES];
-        [composeController release];        
+    if (commentShareView.mode == CommentShareModeShare) {
+        // Sharing a video
+        if (service == CommentShareServiceFacebook || service == CommentShareServiceTwitter) {
+            [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:(service == CommentShareServiceFacebook ? NMLoginFacebookType : NMLoginTwitterType)
+                                                                               video:video 
+                                                                            duration:[video.video.duration integerValue]
+                                                                      elapsedSeconds:timeElapsed
+                                                                             message:text];
+        } else if (service == CommentShareServiceEmail) {
+            NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
+            
+    #ifdef DEBUG_USE_STAGING_SERVER
+            NSString *url = @"http://staging.nowbox.com/videos/";
+    #else
+            NSString *url = @"http://nowbox.com/videos/";        
+    #endif
+            
+            MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
+            [composeController setMailComposeDelegate:self];
+            [composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
+            [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
+            [self presentModalViewController:composeController animated:YES];
+            [composeController release];        
+        }
+    } else {
+        // Commenting on a video
+        [[NMTaskQueueController sharedTaskQueueController] issuePostComment:text forPost:commentShareView.socialInfo];
     }
 }
 

@@ -10,6 +10,7 @@
 #import "GlowLabel.h"
 #import "NMDataType.h"
 #import "NMVideo.h"
+#import "NMSocialInfo.h"
 
 @protocol CommentShareViewDelegate;
 
@@ -26,6 +27,9 @@ typedef enum {
 
 @interface CommentShareView : UIView <UITextViewDelegate, UIAlertViewDelegate> {
     BOOL dismissed;
+    BOOL loggingInTwitter;
+    BOOL loggingInFacebook;
+
     NSInteger timeElapsed;
     
     NSString *defaultTwitterText;
@@ -45,6 +49,7 @@ typedef enum {
 @property (nonatomic, retain) IBOutlet UIButton *touchArea;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, retain) NMVideo *video;
+@property (nonatomic, retain) NMSocialInfo *socialInfo;
 @property (nonatomic, assign) CommentShareService service;
 @property (nonatomic, assign) CommentShareMode mode;
 @property (nonatomic, assign) id<CommentShareViewDelegate> delegate;

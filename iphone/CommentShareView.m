@@ -15,7 +15,8 @@
 #import "Analytics.h"
 #import <MessageUI/MessageUI.h>
 
-#define kMaxTwitterCharacters 119
+#define kMaxCharactersTwitterShare 119
+#define kMaxCharactersTwitterComment 140
 
 #define kDefaultFacebookText @"Watching \"%@\""
 #define kDefaultTwitterText @"Watching \"%@\" http://youtu.be/%@"
@@ -43,6 +44,7 @@
 @synthesize touchArea;
 @synthesize activityIndicator;
 @synthesize video;
+@synthesize socialInfo;
 @synthesize service;
 @synthesize mode;
 @synthesize delegate;
@@ -62,11 +64,15 @@
         [notificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-        [notificationCenter addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostNewFacebookLinkNotification object:nil];
-        [notificationCenter addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostNewFacebookLinkNotification object:nil];
-        [notificationCenter addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostTweetNotification object:nil];
-        [notificationCenter addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostTweetNotification object:nil];
-
+        [notificationCenter addObserver:self selector:@selector(handleDidShareOrCommentNotification:) name:NMDidPostNewFacebookLinkNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidFailShareOrCommentNotification:) name:NMDidFailPostNewFacebookLinkNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidShareOrCommentNotification:) name:NMDidPostTweetNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidFailShareOrCommentNotification:) name:NMDidFailPostTweetNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidShareOrCommentNotification:) name:NMDidPostFacebookCommentNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidFailShareOrCommentNotification:) name:NMDidFailPostFacebookCommentNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidShareOrCommentNotification:) name:NMDidReplyTweetNotificaiton object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleDidFailShareOrCommentNotification:) name:NMDidFailReplyTweetNotificaiton object:nil];
+        
         [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1001];
 		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1002];
 
@@ -139,6 +145,8 @@
     [emailButton release];
     [touchArea release];
     [activityIndicator release];
+    [video release];
+    [socialInfo release];
     
     [super dealloc];
 }
@@ -204,10 +212,11 @@
     characterCountLabel.hidden = (service != CommentShareServiceTwitter);
     
     // Update placeholder text if user hasn't typed anything
-    if ([textView.text length] == 0 || 
+    if (mode == CommentShareModeShare && 
+        ([textView.text length] == 0 || 
         [textView.text isEqualToString:defaultTwitterText] || 
         [textView.text isEqualToString:defaultFacebookText] ||
-        [textView.text isEqualToString:defaultEmailText]) {
+        [textView.text isEqualToString:defaultEmailText])) {
         switch (service) {
             case CommentShareServiceTwitter:
                 textView.text = defaultTwitterText;
@@ -287,7 +296,8 @@
 	switch (ctxInd) {
 		case 1001:
 			// Facebook
-			if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
+			if (loggingInFacebook && [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
+                loggingInFacebook = NO;
                 [self performShare];
 				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
 			}
@@ -295,9 +305,10 @@
 			
 		case 1002:
 			// Twitter
-			if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncPendingInitialSync) {
+			if (loggingInTwitter && [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncPendingInitialSync) {
+                loggingInTwitter = NO;
                 [self performShare];
-				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+                [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
 			}
 			break;
 			
@@ -351,7 +362,7 @@
     [self textViewDidChange:textView];
 }
 
-- (void)handleDidShareVideoNotification:(NSNotification *)aNotification 
+- (void)handleDidShareOrCommentNotification:(NSNotification *)aNotification 
 {
     [activityIndicator stopAnimating];
     [self dismiss];
@@ -365,7 +376,7 @@
     [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];
 }
 
-- (void)handleDidFailShareVideoNotification:(NSNotification *)aNotification 
+- (void)handleDidFailShareOrCommentNotification:(NSNotification *)aNotification 
 {
     NSDictionary *userInfo = [aNotification userInfo];
     NSInteger statusCode = [[userInfo objectForKey:@"code"] integerValue];
@@ -401,7 +412,8 @@
 
 - (void)textViewDidChange:(UITextView *)aTextView
 {
-    NSInteger remainingCharacters = kMaxTwitterCharacters - [[aTextView text] length];
+    NSUInteger maxCharacters = (mode == CommentShareModeShare ? kMaxCharactersTwitterShare : kMaxCharactersTwitterComment);
+    NSInteger remainingCharacters = maxCharacters - [[aTextView text] length];
     characterCountLabel.text = [NSString stringWithFormat:@"%i", remainingCharacters];
     
     if (remainingCharacters < 0) {
@@ -447,7 +459,9 @@
     // Newline == return button pressed
     if ([text isEqualToString:@"\n"] && ![activityIndicator isAnimating]) {
         switch (service) {
-            case CommentShareServiceTwitter:
+            case CommentShareServiceTwitter: {
+                NSUInteger maxCharacters = (mode == CommentShareModeShare ? kMaxCharactersTwitterShare : kMaxCharactersTwitterComment);
+
                 if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
                     // User is not logged in
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
@@ -457,7 +471,7 @@
                                                               otherButtonTitles:@"Log In", nil];
                     [alertView show];
                     [alertView release];
-                } else if ([aTextView.text length] <= kMaxTwitterCharacters) {
+                } else if ([aTextView.text length] <= maxCharacters) {
                     [self performShare];
                 } else {
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
@@ -469,7 +483,7 @@
                     [alertView release];
                 }
                 break;
-                
+            }
             case CommentShareServiceFacebook:
                 if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
                     // User is not logged in
@@ -515,9 +529,11 @@
     if (buttonIndex == 1) {
 		switch (service) {
             case CommentShareServiceTwitter:
+                loggingInTwitter = YES;
                 [delegate commentShareViewDidRequestTwitterLogin:self];
                 break;
 			case CommentShareServiceFacebook:
+                loggingInFacebook = YES;
                 [delegate commentShareViewDidRequestFacebookLogin:self];
 				break;
 			default:
@@ -528,15 +544,17 @@
 
 - (void)delayedNotifyShareVideo
 {
-    switch (service) {
-        case CommentShareServiceFacebook:
-            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareFacebook sender:nil];        
-            break;
-        case CommentShareServiceTwitter:
-            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareTwitter sender:nil];        
-            break;
-        default:
-            break;
+    if (mode == CommentShareModeShare) {
+        switch (service) {
+            case CommentShareServiceFacebook:
+                [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareFacebook sender:nil];        
+                break;
+            case CommentShareServiceTwitter:
+                [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareTwitter sender:nil];        
+                break;
+            default:
+                break;
+        }
     }
 }
 
