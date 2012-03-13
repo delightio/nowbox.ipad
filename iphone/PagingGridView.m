@@ -433,6 +433,7 @@
         view.label.textColor = [UIColor whiteColor];
         view.label.highlightedTextColor = [UIColor whiteColor];
         view.label.center = CGPointMake(view.frame.size.width / 2, view.frame.size.height / 2);
+        view.image.contentMode = UIViewContentModeScaleAspectFill;        
     }
     
     return view;
