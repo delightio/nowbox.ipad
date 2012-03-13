@@ -29,6 +29,7 @@
 @synthesize editing;
 @synthesize dragging;
 @synthesize lastDragLocation;
+@synthesize cropsThumbnail;
 @synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
@@ -59,6 +60,7 @@
         [label setGlowColor:[UIColor colorWithWhite:0.0 alpha:0.6]];
         
         self.clipsToBounds = NO;
+        self.cropsThumbnail = YES;
         columnSpan = 1;
         
         [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -171,6 +173,18 @@
         
         columnSpan = aColumnSpan;
     }
+}
+
+- (void)setCropsThumbnail:(BOOL)aCropsThumbnail
+{
+    cropsThumbnail = aCropsThumbnail;
+    
+    if (cropsThumbnail) {
+        image.frame = CGRectMake(0, -19, image.superview.bounds.size.width, image.superview.bounds.size.height + 38);
+    } else {
+        image.frame = image.superview.bounds;
+    }
+    image.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
 #pragma mark - IBActions

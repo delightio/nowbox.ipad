@@ -306,12 +306,12 @@
                     } else {
                         view.label.text = @"";                        
                         [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_facebook.png"]];
-                        view.image.contentMode = UIViewContentModeScaleAspectFit;                        
+                        view.cropsThumbnail = NO;
                     }
                 } else {
                     view.label.text = @"";                    
                     [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_facebook.png"]];
-                    view.image.contentMode = UIViewContentModeScaleAspectFit;                                            
+                    view.cropsThumbnail = NO;
                 }
                 break;
             }
@@ -326,12 +326,12 @@
                     } else {
                         view.label.text = @"";                        
                         [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_twitter.png"]];  
-                        view.image.contentMode = UIViewContentModeScaleAspectFit;                                                
+                        view.cropsThumbnail = NO;
                     }
                 } else {
                     view.label.text = @"";                    
                     [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_twitter.png"]];
-                    view.image.contentMode = UIViewContentModeScaleAspectFit;                    
+                    view.cropsThumbnail = NO;
                 }
                 break;
             }                
@@ -345,7 +345,7 @@
                 } else {
                     view.label.text = @"";
                     [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_youtube.png"]];
-                    view.image.contentMode = UIViewContentModeScaleAspectFit;                    
+                    view.cropsThumbnail = NO;
                 }
                 break;
             }
@@ -355,7 +355,7 @@
                 view.label.highlightedTextColor = [UIColor colorWithRed:105.0f/255.0f green:105.0f/255.0f blue:105.0f/255.0f alpha:1.0f];
                 view.label.center = CGPointMake(view.label.center.x - 12, view.label.center.y - 3);
                 view.image.image = [UIImage imageNamed:@"phone_grid_item_more.png"];
-                view.image.contentMode = UIViewContentModeScaleAspectFit;                
+                view.cropsThumbnail = NO;
                 break;                
             default:
                 break;
