@@ -24,7 +24,7 @@ typedef enum {
     CommentShareModeComment
 } CommentShareMode;
 
-@interface CommentShareView : UIView <UITextViewDelegate> {
+@interface CommentShareView : UIView <UITextViewDelegate, UIAlertViewDelegate> {
     BOOL dismissed;
     NSInteger timeElapsed;
     
@@ -61,6 +61,8 @@ typedef enum {
 
 @protocol CommentShareViewDelegate <NSObject>
 - (void)commentShareView:(CommentShareView *)commentShareView didSubmitText:(NSString *)text service:(CommentShareService)service timeElapsed:(NSInteger)timeElapsed;
+- (void)commentShareViewDidRequestTwitterLogin:(CommentShareView *)commentShareView;
+- (void)commentShareViewDidRequestFacebookLogin:(CommentShareView *)commentShareView;
 @optional
 - (void)commentShareViewWillDismiss:(CommentShareView *)commentShareView;
 - (void)commentShareViewDidDismiss:(CommentShareView *)commentShareView;

@@ -10,6 +10,7 @@
 #import "NMMovieView.h"
 #import "ipadAppDelegate.h"
 #import "UIView+InteractiveAnimation.h"
+#import "TwitterAccountPickerViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -1627,27 +1628,59 @@
                                                                   elapsedSeconds:timeElapsed
                                                                          message:text];
     } else if (service == CommentShareServiceEmail) {
-        if ([MFMailComposeViewController canSendMail]) {
-            NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
-            
-    #ifdef DEBUG_USE_STAGING_SERVER
-            NSString *url = @"http://staging.nowbox.com/videos/";
-    #else
-            NSString *url = @"http://nowbox.com/videos/";        
-    #endif
-            
-            MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
-            [composeController setMailComposeDelegate:self];
-            [composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
-            [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
-            [self presentModalViewController:composeController animated:YES];
-            [composeController release];        
-        } else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"No mail accounts are configured. Please set up an account in Settings in order to share via email." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alertView show];
-            [alertView release];
-        }
+        NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
+        
+#ifdef DEBUG_USE_STAGING_SERVER
+        NSString *url = @"http://staging.nowbox.com/videos/";
+#else
+        NSString *url = @"http://nowbox.com/videos/";        
+#endif
+        
+        MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
+        [composeController setMailComposeDelegate:self];
+        [composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
+        [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
+        [self presentModalViewController:composeController animated:YES];
+        [composeController release];        
     }
+}
+
+- (void)commentShareViewDidRequestTwitterLogin:(CommentShareView *)commentShareView
+{
+    if (NM_RUNNING_IOS_5) {
+        [[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
+            // User should pick which Twitter account they want to log in to
+            TwitterAccountPickerViewController *picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:picker];
+            navController.navigationBar.barStyle = UIBarStyleBlack;
+            [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+            picker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissTwitterLogin)] autorelease];
+            
+            [self presentModalViewController:navController animated:YES];
+            
+            [navController release];      
+            [picker release];
+            
+            [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:(commentShareView.mode == CommentShareModeShare ? @"sharebutton" : @"commentbutton")
+                                                                                                                  forKey:AnalyticsPropertySender]]; 
+        }];
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, but Twitter support requires iOS 5.0 or later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];
+    }
+}
+
+- (void)dismissTwitterLogin
+{
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)commentShareViewDidRequestFacebookLogin:(CommentShareView *)commentShareView
+{
+    [[NMAccountManager sharedAccountManager] authorizeFacebook];			
+    [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:(commentShareView.mode == CommentShareModeShare ? @"sharebutton" : @"commentbutton")
+                                                                                                           forKey:AnalyticsPropertySender]]; 
 }
 
 #pragma mark - ToolTipControllerDelegate

@@ -11,7 +11,9 @@
 #import "NMConcreteVideo.h"
 #import "NMAuthor.h"
 #import "NMAccountManager.h"
+#import "ToolTipController.h"
 #import "Analytics.h"
+#import <MessageUI/MessageUI.h>
 
 #define kMaxTwitterCharacters 119
 
@@ -24,6 +26,7 @@
 
 @interface CommentShareView (PrivateMethods)
 - (NSString *)serviceNameString;
+- (void)performShare;
 @end
 
 @implementation CommentShareView
@@ -64,6 +67,9 @@
         [notificationCenter addObserver:self selector:@selector(handleDidShareVideoNotification:) name:NMDidPostTweetNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleDidFailShareVideoNotification:) name:NMDidFailPostTweetNotification object:nil];
 
+        [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1001];
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1002];
+
         self.mode = aMode;
         
         videoTitleLabel.glowColor = [UIColor blackColor];
@@ -74,24 +80,16 @@
         CommentShareService lastService = [[NSUserDefaults standardUserDefaults] integerForKey:(mode == CommentShareModeComment ?
                                                                                                 kLastCommentServiceUserDefaultsKey : 
                                                                                                 kLastShareServiceUserDefaultsKey)];
+        if (lastService == CommentShareServiceTwitter && [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
+            lastService = CommentShareServiceFacebook;
+        }
+        if (lastService == CommentShareServiceFacebook && [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
+            lastService = CommentShareServiceTwitter;
+        }
+        if (lastService == CommentShareServiceTwitter && [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
+            lastService = CommentShareServiceEmail;
+        }
         [self setService:lastService];
-        
-        // Hide inactive services
-        if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
-            twitterButton.hidden = YES;
-            if (service == CommentShareServiceTwitter) {
-                self.service = CommentShareServiceFacebook;
-            }
-        }
-        if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
-            facebookButton.hidden = YES;
-            if (service == CommentShareServiceFacebook) {
-                self.service = CommentShareServiceEmail;
-            }
-        }
-        if (mode == CommentShareModeComment && service == CommentShareServiceEmail) {
-            self.service = (!twitterButton.hidden ? CommentShareServiceTwitter : CommentShareServiceFacebook);
-        }
         
         // Size the text view and show the keyboard
         [self textViewDidChange:textView];
@@ -113,6 +111,19 @@
                                              kLastShareServiceUserDefaultsKey)];
     [userDefaults synchronize];
 
+    @try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
+	@try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [defaultTwitterText release];
@@ -236,6 +247,12 @@
     return nil;
 }
 
+- (void)performShare
+{
+    [delegate commentShareView:self didSubmitText:textView.text service:service timeElapsed:timeElapsed];
+    [activityIndicator startAnimating];
+}
+
 #pragma mark - IBActions
 
 - (IBAction)twitterButtonPressed:(id)sender
@@ -264,6 +281,30 @@
 }
 
 #pragma mark - Notifications
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInd = (NSInteger)context;
+	switch (ctxInd) {
+		case 1001:
+			// Facebook
+			if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
+                [self performShare];
+				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+			}
+			break;
+			
+		case 1002:
+			// Twitter
+			if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncPendingInitialSync) {
+                [self performShare];
+				[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+			}
+			break;
+			
+		default:
+			break;
+	}
+}
 
 - (void)keyboardWillChangeFrame:(NSNotification *)notification
 {
@@ -320,18 +361,32 @@
                                                                                  video.video.nm_id, AnalyticsPropertyVideoId,
                                                                                  [self serviceNameString], AnalyticsPropertyShareType,
                                                                                  nil]];
+    
+    [self performSelector:@selector(delayedNotifyShareVideo) withObject:nil afterDelay:0.3];
 }
 
 - (void)handleDidFailShareVideoNotification:(NSNotification *)aNotification 
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:[NSString stringWithFormat:@"Sorry, but something went wrong and your message could not be %@. Please try again a bit later.", 
-                                                                 (service == CommentShareServiceFacebook ? @"posted" : @"tweeted")]
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    [alertView show];
-    [alertView release];
+    NSDictionary *userInfo = [aNotification userInfo];
+    NSInteger statusCode = [[userInfo objectForKey:@"code"] integerValue];
+    
+    if (statusCode == 400) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
+                                                            message:@"Sorry, but something went wrong and your message could not be posted. Please try logging in again."
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Cancel"
+                                                  otherButtonTitles:@"Log In", nil];
+        [alertView show];
+        [alertView release];
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                            message:[NSString stringWithFormat:@"Sorry, but something went wrong and your message could not be %@. Please try again a bit later.",                                                                  (service == CommentShareServiceFacebook ? @"posted" : @"tweeted")]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];        
+    }
 
     [activityIndicator stopAnimating];
     
@@ -393,22 +448,57 @@
     if ([text isEqualToString:@"\n"] && ![activityIndicator isAnimating]) {
         switch (service) {
             case CommentShareServiceTwitter:
-                if ([aTextView.text length] <= kMaxTwitterCharacters) {
-                    [delegate commentShareView:self didSubmitText:aTextView.text service:service timeElapsed:timeElapsed];
-                    [activityIndicator startAnimating];
+                if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == 0) {
+                    // User is not logged in
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
+                                                                        message:@"You are not logged in to Twitter. Would you like to log in now?"
+                                                                       delegate:self
+                                                              cancelButtonTitle:@"No Thanks"
+                                                              otherButtonTitles:@"Log In", nil];
+                    [alertView show];
+                    [alertView release];
+                } else if ([aTextView.text length] <= kMaxTwitterCharacters) {
+                    [self performShare];
+                } else {
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                        message:@"Sorry, but your message is too long. Try something a bit shorter."
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                    [alertView show];
+                    [alertView release];
                 }
                 break;
+                
             case CommentShareServiceFacebook:
-                [delegate commentShareView:self didSubmitText:aTextView.text service:service timeElapsed:timeElapsed];
-                [activityIndicator startAnimating];
+                if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == 0) {
+                    // User is not logged in
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil 
+                                                                        message:@"You are not logged in to Facebook. Would you like to log in now?"
+                                                                       delegate:self
+                                                              cancelButtonTitle:@"No Thanks"
+                                                              otherButtonTitles:@"Log In", nil];
+                    [alertView show];
+                    [alertView release];
+                } else {
+                    [self performShare];
+                }
                 break;
+                
             case CommentShareServiceEmail:
-                [delegate commentShareView:self didSubmitText:aTextView.text service:service timeElapsed:timeElapsed];
-                [self dismiss];
-                [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
-                                                                                             video.video.nm_id, AnalyticsPropertyVideoId,
-                                                                                             [self serviceNameString], AnalyticsPropertyShareType,
-                                                                                             nil]];
+                if ([MFMailComposeViewController canSendMail]) {
+                    [self performShare];
+                    [self dismiss];
+                    [[MixpanelAPI sharedAPI] track:AnalyticsEventCompleteShareDialog properties:[NSDictionary dictionaryWithObjectsAndKeys:video.video.title, AnalyticsPropertyVideoName, 
+                                                                                                 video.video.nm_id, AnalyticsPropertyVideoId,
+                                                                                                 [self serviceNameString], AnalyticsPropertyShareType,
+                                                                                                 nil]];
+                } else {
+                    // No mail account set up
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"No mail accounts are configured. Please set up an account in Settings in order to share via email." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alertView show];
+                    [alertView release];
+                }
                 break;
         }
 
@@ -416,6 +506,38 @@
     }
     
     return YES;
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+		switch (service) {
+            case CommentShareServiceTwitter:
+                [delegate commentShareViewDidRequestTwitterLogin:self];
+                break;
+			case CommentShareServiceFacebook:
+                [delegate commentShareViewDidRequestFacebookLogin:self];
+				break;
+			default:
+				break;
+		}
+    }
+}
+
+- (void)delayedNotifyShareVideo
+{
+    switch (service) {
+        case CommentShareServiceFacebook:
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareFacebook sender:nil];        
+            break;
+        case CommentShareServiceTwitter:
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventShareTwitter sender:nil];        
+            break;
+        default:
+            break;
+    }
 }
 
 @end
