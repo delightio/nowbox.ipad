@@ -427,6 +427,15 @@
 		A9552785150ED0AE00585856 /* toolbar-settings-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9552709150ED0AE00585856 /* toolbar-settings-active@2x.png */; };
 		A9552786150ED0AE00585856 /* toolbar-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A955270A150ED0AE00585856 /* toolbar-settings@2x.png */; };
 		A956EE1714CD70AD001C5C7E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A956EE1614CD70AD001C5C7E /* Accounts.framework */; };
+		A9576764150F75A10082540B /* channel-toolbar-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A957675B150F75A10082540B /* channel-toolbar-background@2x.png */; };
+		A9576765150F75A10082540B /* find-channel-not-subscribed-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A957675C150F75A10082540B /* find-channel-not-subscribed-button@2x.png */; };
+		A9576766150F75A10082540B /* find-channel-not-subscribed-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A957675D150F75A10082540B /* find-channel-not-subscribed-icon@2x.png */; };
+		A9576767150F75A10082540B /* find-channel-subscribed-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A957675E150F75A10082540B /* find-channel-subscribed-button@2x.png */; };
+		A9576768150F75A10082540B /* find-channel-subscribed-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A957675F150F75A10082540B /* find-channel-subscribed-icon@2x.png */; };
+		A9576769150F75A10082540B /* top-bar-author-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9576760150F75A10082540B /* top-bar-author-background@2x.png */; };
+		A957676A150F75A10082540B /* top-bar-channel-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9576761150F75A10082540B /* top-bar-channel-background@2x.png */; };
+		A957676B150F75A10082540B /* top-bar-image-frame@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9576762150F75A10082540B /* top-bar-image-frame@2x.png */; };
+		A957676C150F75A10082540B /* youtube_logo_36@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9576763150F75A10082540B /* youtube_logo_36@2x.png */; };
 		A95CE61A14E9A6AF005568FF /* FeatureDebugVideoListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */; };
 		A962DD5E13A82552004CC111 /* MovieDetailInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */; };
 		A962DD7213A82D3A004CC111 /* NMMovieDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = A962DD7113A82D3A004CC111 /* NMMovieDetailView.m */; };
@@ -1061,6 +1070,15 @@
 		A9552709150ED0AE00585856 /* toolbar-settings-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-settings-active@2x.png"; sourceTree = "<group>"; };
 		A955270A150ED0AE00585856 /* toolbar-settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-settings@2x.png"; sourceTree = "<group>"; };
 		A956EE1614CD70AD001C5C7E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		A957675B150F75A10082540B /* channel-toolbar-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-toolbar-background@2x.png"; sourceTree = "<group>"; };
+		A957675C150F75A10082540B /* find-channel-not-subscribed-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-not-subscribed-button@2x.png"; sourceTree = "<group>"; };
+		A957675D150F75A10082540B /* find-channel-not-subscribed-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-not-subscribed-icon@2x.png"; sourceTree = "<group>"; };
+		A957675E150F75A10082540B /* find-channel-subscribed-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-subscribed-button@2x.png"; sourceTree = "<group>"; };
+		A957675F150F75A10082540B /* find-channel-subscribed-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "find-channel-subscribed-icon@2x.png"; sourceTree = "<group>"; };
+		A9576760150F75A10082540B /* top-bar-author-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-author-background@2x.png"; sourceTree = "<group>"; };
+		A9576761150F75A10082540B /* top-bar-channel-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-channel-background@2x.png"; sourceTree = "<group>"; };
+		A9576762150F75A10082540B /* top-bar-image-frame@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "top-bar-image-frame@2x.png"; sourceTree = "<group>"; };
+		A9576763150F75A10082540B /* youtube_logo_36@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "youtube_logo_36@2x.png"; sourceTree = "<group>"; };
 		A95CE61814E9A6AF005568FF /* FeatureDebugVideoListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugVideoListViewController.h; sourceTree = "<group>"; };
 		A95CE61914E9A6AF005568FF /* FeatureDebugVideoListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugVideoListViewController.m; sourceTree = "<group>"; };
 		A962DD5D13A82552004CC111 /* MovieDetailInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MovieDetailInfoView.xib; sourceTree = "<group>"; };
@@ -1847,6 +1865,15 @@
 				A9552700150ED0AE00585856 /* playback-play-active@2x.png */,
 				A9552701150ED0AE00585856 /* playback-play@2x.png */,
 				A9552702150ED0AE00585856 /* ribbon@2x.png */,
+				A957675B150F75A10082540B /* channel-toolbar-background@2x.png */,
+				A957675C150F75A10082540B /* find-channel-not-subscribed-button@2x.png */,
+				A957675D150F75A10082540B /* find-channel-not-subscribed-icon@2x.png */,
+				A957675E150F75A10082540B /* find-channel-subscribed-button@2x.png */,
+				A957675F150F75A10082540B /* find-channel-subscribed-icon@2x.png */,
+				A9576760150F75A10082540B /* top-bar-author-background@2x.png */,
+				A9576761150F75A10082540B /* top-bar-channel-background@2x.png */,
+				A9576762150F75A10082540B /* top-bar-image-frame@2x.png */,
+				A9576763150F75A10082540B /* youtube_logo_36@2x.png */,
 				A9552703150ED0AE00585856 /* toolbar-channel-management-active@2x.png */,
 				A9552704150ED0AE00585856 /* toolbar-channel-management@2x.png */,
 				A9552705150ED0AE00585856 /* toolbar-collapse-active@2x.png */,
@@ -2711,6 +2738,15 @@
 				A9552784150ED0AE00585856 /* toolbar-expand@2x.png in Resources */,
 				A9552785150ED0AE00585856 /* toolbar-settings-active@2x.png in Resources */,
 				A9552786150ED0AE00585856 /* toolbar-settings@2x.png in Resources */,
+				A9576764150F75A10082540B /* channel-toolbar-background@2x.png in Resources */,
+				A9576765150F75A10082540B /* find-channel-not-subscribed-button@2x.png in Resources */,
+				A9576766150F75A10082540B /* find-channel-not-subscribed-icon@2x.png in Resources */,
+				A9576767150F75A10082540B /* find-channel-subscribed-button@2x.png in Resources */,
+				A9576768150F75A10082540B /* find-channel-subscribed-icon@2x.png in Resources */,
+				A9576769150F75A10082540B /* top-bar-author-background@2x.png in Resources */,
+				A957676A150F75A10082540B /* top-bar-channel-background@2x.png in Resources */,
+				A957676B150F75A10082540B /* top-bar-image-frame@2x.png in Resources */,
+				A957676C150F75A10082540B /* youtube_logo_36@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
