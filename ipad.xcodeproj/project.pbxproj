@@ -118,7 +118,6 @@
 		8381171814C0C7D300892799 /* tooltip-share-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171514C0C7D300892799 /* tooltip-share-twitter.png */; };
 		838125D714E4A2B7001652CD /* phone_grid_item_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 838125D514E4A2B7001652CD /* phone_grid_item_delete.png */; };
 		838125D814E4A2B7001652CD /* phone_grid_item_delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 838125D614E4A2B7001652CD /* phone_grid_item_delete@2x.png */; };
-		8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381549114885CFD003F2CA4 /* grid-channels-plus.png */; };
 		8381626A1492F4380084C516 /* tooltip-favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = 838162691492F4380084C516 /* tooltip-favorite.png */; };
 		83818BDE14EC4F5B00CE8C96 /* phone_video_info_background_bottom_portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 83818BDA14EC4F5B00CE8C96 /* phone_video_info_background_bottom_portrait.png */; };
 		83818BDF14EC4F5B00CE8C96 /* phone_video_info_background_bottom_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83818BDB14EC4F5B00CE8C96 /* phone_video_info_background_bottom_portrait@2x.png */; };
@@ -673,7 +672,6 @@
 		8381171514C0C7D300892799 /* tooltip-share-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-twitter.png"; sourceTree = "<group>"; };
 		838125D514E4A2B7001652CD /* phone_grid_item_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_grid_item_delete.png; sourceTree = "<group>"; };
 		838125D614E4A2B7001652CD /* phone_grid_item_delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_grid_item_delete@2x.png"; sourceTree = "<group>"; };
-		8381549114885CFD003F2CA4 /* grid-channels-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grid-channels-plus.png"; sourceTree = "<group>"; };
 		838162691492F4380084C516 /* tooltip-favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-favorite.png"; sourceTree = "<group>"; };
 		83818BDA14EC4F5B00CE8C96 /* phone_video_info_background_bottom_portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_video_info_background_bottom_portrait.png; sourceTree = "<group>"; };
 		83818BDB14EC4F5B00CE8C96 /* phone_video_info_background_bottom_portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_video_info_background_bottom_portrait@2x.png"; sourceTree = "<group>"; };
@@ -1803,7 +1801,6 @@
 				22A19756140D792900DE074E /* channel-video-status-hot.png */,
 				22A19759140D7AAA00DE074E /* channel-video-status-fav.png */,
 				2275AD5014214867003C3FFC /* channel-video-status-watch-later.png */,
-				8381549114885CFD003F2CA4 /* grid-channels-plus.png */,
 				A92E3E7C14040E4000B30313 /* internal-channel-favorites.png */,
 				A92E3E7D14040E4000B30313 /* internal-channel-history.png */,
 				A92E3E7E14040E4000B30313 /* internal-channel-queue.png */,
@@ -2403,7 +2400,6 @@
 				8383BD561473A111002956C4 /* onboard-social-footer.png in Resources */,
 				83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */,
 				83EF90C61484202000ED7993 /* OnBoardProcessCategoryView.xib in Resources */,
-				8381549214885CFD003F2CA4 /* grid-channels-plus.png in Resources */,
 				8389F694148DBAC6002165A2 /* VideoControlView~iphone.xib in Resources */,
 				8393DDDC149065990031399A /* Default-Landscape~iphone.png in Resources */,
 				8393DDDD149065990031399A /* Default~iphone.png in Resources */,
