@@ -82,10 +82,16 @@
             [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
             commentView.timeLabel.text = [comment relativeTimeString];
             
-            if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {
-                commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];
-            } else {
-                commentView.serviceIcon.image = nil;
+            switch ([socialInfo.nm_type integerValue]) {
+                case NMChannelUserFacebookType:
+                    commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];                    
+                    break;
+                case NMChannelUserTwitterType:
+                    commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_twitter.png"];                    
+                    break;
+                default:
+                    commentView.serviceIcon.image = nil;
+                    break;
             }
         }
     }
