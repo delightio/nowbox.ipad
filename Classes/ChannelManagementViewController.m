@@ -8,8 +8,8 @@
 
 #import "ChannelManagementViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import <Accounts/Accounts.h>
 #import <Twitter/Twitter.h>
+#import "TwitterAccountPickerViewController.h"
 #import "CategoriesOrientedTableView.h"
 #import "CategoryCellView.h"
 #import "CategoryTableCell.h"
@@ -17,7 +17,6 @@
 #import "SearchChannelViewController.h"
 #import "ChannelDetailViewController.h"
 #import "SocialLoginViewController.h"
-#import "TwitterAccountPickerViewController.h"
 #import "YouTubeAccountStatusViewController.h"
 #import "Analytics.h"
 #import "UIView+InteractiveAnimation.h"
@@ -78,44 +77,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
-}
-
-- (void)checkAndPushTwitterAccountView {
-	// use built-in twitter integration
-	// Create an account store object.
-	ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-	
-	// Create an account type that ensures Twitter accounts are retrieved.
-	ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-	
-	// Request access from the user to use their Twitter accounts.
-	[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
-		if(granted) {
-			if ( [TWTweetComposeViewController canSendTweet] ) {
-				// pass the account store to Social Login Controller
-				dispatch_async(dispatch_get_main_queue(), ^{
-					// user needs to pick which account(s) s/he wanna hook up to
-					TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
-					picker.accountStore = accountStore;
-					[self.navigationController pushViewController:picker animated:YES];
-					[picker release];
-				});
-			} else {
-				// We don't have right to access Twitter account. Send user to the Settings app
-				dispatch_async(dispatch_get_main_queue(), ^{
-					UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not yet signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
-					[alertView show];
-					[alertView release];
-				});
-			}
-		} else {
-//			// unhighlight the cell
-//			dispatch_async(dispatch_get_main_queue(), ^{
-//				[tableView deselectRowAtIndexPath:indexPath animated:YES];
-//			});
-		}
-	}];
-	[accountStore release];
 }
 
 #pragma mark - View lifecycle
@@ -292,18 +253,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 
 - (void)handleSocialMediaLoginNotification:(NSNotification *)aNotification {
     massUpdate = YES;
-}
-
-- (void)handleAppResumeNotification:(NSNotification *)aNotification {
-	// check if the user is resuming the app after signing in twitter
-	if ( leftAppSessionForTwitter ) {
-		if ( [TWTweetComposeViewController canSendTweet] ) {
-			// push in the account selection view
-			[self checkAndPushTwitterAccountView];
-		}
-		// unregister the notification
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
-	}
 }
 
 #pragma mark Target-action methods
@@ -782,9 +731,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				{
 					NMAccountManager * acMgr = [NMAccountManager sharedAccountManager];
 					// reveal the social login view
-					SocialLoginViewController * socialCtrl;
 					if ( indexPath.row == 0 ) {
-						if ( NM_USER_TWITTER_CHANNEL_ID ) {
+						if ( [acMgr.twitterAccountStatus integerValue] ) {
 							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
 							channelDetailViewController.enableUnsubscribe = YES;
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
@@ -792,14 +740,16 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
 							// login twitter
-							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
 							if ( NM_RUNNING_IOS_5 ) {
-								[self checkAndPushTwitterAccountView];
+								[[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
+									// user needs to pick which account(s) s/he wanna hook up to
+									TwitterAccountPickerViewController * picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+									[self.navigationController pushViewController:picker animated:YES];
+									[picker release];
+								}];
 							} else {
-								socialCtrl.loginType = NMLoginTwitterType;
-								[self.navigationController pushViewController:socialCtrl animated:YES];
+								// tell user that they are using iOS 4 and they should upgrade to use new Twitter integration in Nowbox 2. (:
 							}
-							[socialCtrl release];
 							
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
 							
@@ -813,15 +763,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
 						} else {
-//							socialCtrl = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
-//							socialCtrl.loginType = NMLoginFacebookType;
-//							[self.navigationController pushViewController:socialCtrl animated:YES];
-//							[socialCtrl release];
-//							
-//							[[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"channelmanagement" forKey:AnalyticsPropertySender]];
-							if (![acMgr.facebook isSessionValid]) {
-								[acMgr authorizeFacebook];
-							}
+							[acMgr authorizeFacebook];
 							return;
 						}
 					}
@@ -1135,35 +1077,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
         return textLabelSize.width + 40.0f;
     }
     return 0.0f;
-}
-
-#pragma mark UIAlertView delegates
-- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
-	// All alert view in this view controller has no delegate except the one for Twitter sign in. Code below should be useless.
-//    if (buttonIndex != [alertView cancelButtonIndex]) {
-//        UIActivityIndicatorView *actView;
-//        actView = (UIActivityIndicatorView *)[cellToUnsubscribeFrom viewWithTag:15];
-//        [actView startAnimating];
-//        
-//        UIButton *buttonView = (UIButton *)[cellToUnsubscribeFrom viewWithTag:11];
-//        
-//        [UIView animateWithInteractiveDuration:0.3
-//                         animations:^{
-//                             [actView setAlpha:1];
-//                             [buttonView setImage:nil forState:UIControlStateNormal];
-//                         }
-//                         completion:^(BOOL finished) {
-//                         }];
-//        
-//        [nowboxTaskController issueSubscribe:![channelToUnsubscribeFrom.nm_subscribed boolValue] channel:channelToUnsubscribeFrom];
-//    }
-	// the condition for Twitter sign in. 
-	if ( buttonIndex == 1 ) {
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=TWITTER"]];
-		leftAppSessionForTwitter = YES;
-		// listen to app switching notification
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppResumeNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
-	}
 }
  
 -(IBAction)toggleChannelSubscriptionStatus:(id)sender {

@@ -9,6 +9,9 @@
 #import "NMSeekBar.h"
 #import "NMSeekBarLayoutLayer.h"
 
+#define kNubLayerXOffset (NM_RUNNING_ON_IPAD ? 0.5f : 2.5f)
+#define kNubLayerYOffset (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f)
+
 @implementation NMSeekBar
 @synthesize nubLayer, nubPosition;
 @synthesize currentTime, bufferTime, duration;
@@ -55,12 +58,14 @@
 	// progress layer
     UIImage *brightImage = [UIImage imageNamed:@"progress-bright-side"];
 	theLayer = [CALayer layer];
-	theLayer.contents = (id)brightImage.CGImage;
 	theLayer.anchorPoint = CGPointMake(0.0, 0.5f);
     if (NM_RUNNING_ON_IPAD) {
         theLayer.frame = CGRectMake(1.0f, 1.0f, 0.0f, brightImage.size.height);
+        theLayer.contents = (id)brightImage.CGImage;
     } else {
         theLayer.frame = CGRectMake(1.0f, 0.0f, 0.0f, brightImage.size.height);
+        theLayer.backgroundColor = [UIColor colorWithPatternImage:brightImage].CGColor;
+        theLayer.transform = CATransform3DMakeScale(1.0f, -1.0f, 1.0f);
         theLayer.masksToBounds = YES;
         theLayer.cornerRadius = 5.0f;
     }
@@ -117,7 +122,7 @@
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.progressLayer.bounds = theRect;
-	nubLayer.position = CGPointMake(theRect.size.width + 0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
+	nubLayer.position = CGPointMake(theRect.size.width + kNubLayerXOffset, kNubLayerYOffset);
 	[CATransaction commit];
 }
 
@@ -152,7 +157,7 @@
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	theLayer.progressLayer.bounds = theRect;
 	theLayer.bufferLayer.bounds = theRect;
-	nubLayer.position = CGPointMake(0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
+	nubLayer.position = CGPointMake(kNubLayerXOffset, kNubLayerYOffset);
 	[CATransaction commit];
 }
 
@@ -189,7 +194,7 @@
 	
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-	nubLayer.position = CGPointMake(thePoint.x + 0.5f, (NM_RUNNING_ON_IPAD ? 3.5f : 4.0f));
+	nubLayer.position = CGPointMake(thePoint.x + kNubLayerXOffset, kNubLayerYOffset);
 	[CATransaction commit];
 	currentTime = (NSInteger)(thePoint.x / widthPerSec);
 	[self sendActionsForControlEvents:UIControlEventValueChanged];

@@ -8,14 +8,15 @@
 
 #import "NMFacebookTask.h"
 
-@class NMFacebookInfo;
+@class NMSocialInfo;
 
 @interface NMFacebookCommentTask : NMFacebookTask
 
-@property (nonatomic, retain) NMFacebookInfo * postInfo;
+@property (nonatomic, retain) NMSocialInfo * postInfo;
 @property (nonatomic, retain) NSString * objectID;
 @property (nonatomic, retain) NSString * message;
+@property (nonatomic, retain) NSString * externalID;
 
-- (id)initWithInfo:(NMFacebookInfo *)info message:(NSString *)msg;
+- (id)initWithInfo:(NMSocialInfo *)info message:(NSString *)msg;
 
 @end

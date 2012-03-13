@@ -8,7 +8,7 @@
 
 #import "FBConnect.h"
 #import "NMFacebookLikeTask.h"
-#import "NMFacebookInfo.h"
+#import "NMSocialInfo.h"
 #import "NMNetworkController.h"
 #import "NMDataController.h"
 
@@ -24,7 +24,7 @@ NSString * const NMDidFailDeleteFacebookLikeNotification = @"NMDidFailDeleteFace
 @synthesize postInfo = _postInfo;
 @synthesize objectID = _objectID;
 
-- (id)initWithInfo:(NMFacebookInfo *)info like:(BOOL)aLike {
+- (id)initWithInfo:(NMSocialInfo *)info like:(BOOL)aLike {
 	self = [super init];
 	command = aLike ? NMCommandPostFacebookLike : NMCommandDeleteFacebookLike;
 	self.postInfo = info;

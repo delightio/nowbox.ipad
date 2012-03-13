@@ -9,22 +9,21 @@
 #import "FeatureDebugVideoListViewController.h"
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
-#import "FeatureDebugFacebookCommentsAndLikes.h"
-
+#import "FeatureDebugMentionsViewController.h"
 
 @implementation FeatureDebugVideoListViewController
 @synthesize fetchedResultsController = _fetchedResultsController;
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize channel = _channel;
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+//- (id)initWithStyle:(UITableViewStyle)style
+//{
+//    self = [super initWithStyle:style];
+//    if (self) {
+//        // Custom initialization
+//    }
+//    return self;
+//}
 
 - (void)dealloc {
 	[_fetchedResultsController release];
@@ -77,14 +76,18 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
 	NMVideo * vdo = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	if ( [vdo.video.facebookMentions count] == 0 ) {
+	NSSet * allMentions = vdo.video.socialMentions;
+	if ( allMentions == 0 ) {
 		return;
 	}
-	FeatureDebugFacebookCommentsAndLikes * ctrl = [[FeatureDebugFacebookCommentsAndLikes alloc] initWithStyle:UITableViewStylePlain];
+	
+	FeatureDebugMentionsViewController * ctrl = [[FeatureDebugMentionsViewController alloc] initWithStyle:UITableViewStylePlain];
+	ctrl.concreteVideo = vdo.video;
 	ctrl.managedObjectContext = _managedObjectContext;
-	ctrl.socialInfo = [vdo.video.facebookMentions anyObject];
+	
 	[self.navigationController pushViewController:ctrl animated:YES];
 	[ctrl release];
+	
 }
 
 /*
@@ -148,7 +151,7 @@
 	NSEntityDescription * entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", _channel]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", _channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];	
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];

@@ -37,12 +37,16 @@
 
 - (PagingGridViewCell *)dequeueReusableCell;
 - (PagingGridViewCell *)cellForIndex:(NSUInteger)index;
+- (void)setDataSource:(id<PagingGridViewDataSource>)newDataSource animated:(BOOL)animated;
+- (void)setCurrentPage:(NSUInteger)aCurrentPage animated:(BOOL)animated;
+- (void)setRearranging:(BOOL)isRearranging animated:(BOOL)animated;
 - (void)reloadData;
 - (void)beginUpdates;
 - (void)endUpdates;
 - (void)insertItemAtIndex:(NSUInteger)index;
 - (void)deleteItemAtIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)updateItemAtIndex:(NSUInteger)index;
+- (void)updateVisibleItems;
 
 @end
 
@@ -51,14 +55,19 @@
 - (PagingGridViewCell *)gridView:(PagingGridView *)gridView cellForIndex:(NSUInteger)index;
 @optional
 - (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index;
+- (BOOL)gridView:(PagingGridView *)gridView canRearrangeItemAtIndex:(NSUInteger)index;
+- (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index;
+- (NSUInteger)gridView:(PagingGridView *)gridView rowSpanForCellAtIndex:(NSUInteger)index;
 @end
 
 @protocol PagingGridViewDelegate <NSObject>
 @optional
+- (void)gridView:(PagingGridView *)aGridView dataSourceWillAnimate:(id<PagingGridViewDataSource>)newDataSource;
+- (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource;
 - (void)gridView:(PagingGridView *)gridView didSelectItemAtIndex:(NSUInteger)index;
 - (void)gridView:(PagingGridView *)aGridView willDeleteItemAtIndex:(NSUInteger)index;
 - (BOOL)gridView:(PagingGridView *)aGridView shouldDeleteItemAtIndex:(NSUInteger)index;
-- (void)gridView:(PagingGridView *)aGridView didDeleteItemAtIndex:(NSUInteger)index;
+- (void)gridView:(PagingGridView *)aGridView numberOfItemsDidChange:(NSUInteger)numberOfItems;
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView;
 - (void)gridView:(PagingGridView *)gridView didMoveItemAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 - (void)gridViewDidEndRearranging:(PagingGridView *)gridView;

@@ -15,8 +15,6 @@
 
 - (void)didFinish
 {
-    [self beginNewSession];
-
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 	taskQueueController.appFirstLaunch = NO;
@@ -32,7 +30,8 @@
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification 
 {
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
-    
+    [self beginNewSession];
+
     [self didFinish];
 }
 

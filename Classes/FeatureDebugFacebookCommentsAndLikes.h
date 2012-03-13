@@ -14,6 +14,6 @@
 @property (nonatomic, retain) NSFetchedResultsController * likesResultsController;
 @property (nonatomic, retain) NSFetchedResultsController * commentsResultsController;
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
-@property (nonatomic, retain) NMFacebookInfo * socialInfo;
+@property (nonatomic, retain) NMSocialInfo * socialInfo;
 
 @end

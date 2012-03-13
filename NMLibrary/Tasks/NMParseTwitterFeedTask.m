@@ -10,12 +10,15 @@
 #import "NMParseFacebookFeedTask.h"
 #import "NMDataController.h"
 #import "NMObjectCache.h"
-
+#import "NMAccountManager.h"
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "NMSubscription.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
+#import "NMObjectCache.h"
 
 NSString * const NMWillParseTwitterFeedNotification = @"NMWillParseTwitterFeedNotification";
 NSString * const NMDidParseTwitterFeedNotification = @"NMDidParseTwitterFeedNotification";
@@ -27,9 +30,9 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 @synthesize page = _page;
 @synthesize since_id = _since_id;
 @synthesize user_id = _user_id;
-@synthesize profileArray = _profileArray;
 @synthesize newestTwitIDString = _newestTwitIDString;
-
+@synthesize feedDateFormatter = _feedDateFormatter;
+@synthesize twitterTypeNumber = _twitterTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj {
 	self = [super init];
@@ -61,13 +64,29 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	[_account release];
 	[_since_id release];
 	[_user_id release];
-	[_profileArray release];
 	[_newestTwitIDString release];
+	[_feedDateFormatter release];
+	[_twitterTypeNumber release];
 	[super dealloc];
 }
 
+- (NSDateFormatter *)feedDateFormatter {
+	if ( _feedDateFormatter == nil ) {
+		_feedDateFormatter = [[NSDateFormatter alloc] init];
+		[_feedDateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZ yyyy"];
+	}
+	return _feedDateFormatter;
+}
+
+- (NSNumber *)twitterTypeNumber {
+	if ( _twitterTypeNumber == nil ) {
+		_twitterTypeNumber = [[NSNumber numberWithInteger:NMChannelUserTwitterType] retain];
+	}
+	return _twitterTypeNumber;
+}
+
 - (NSURLRequest *)URLRequest {
-	NSMutableDictionary * params = [NSDictionary dictionaryWithObjectsAndKeys:@"40", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"0", @"include_rts", nil];
+	NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"200", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"1", @"include_rts", nil];
 	
 	if ( _since_id ) {
 		[params setObject:_since_id forKey:@"since_id"];
@@ -99,11 +118,11 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	if ( feedCount == 0 ) return;
 	
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
-	self.profileArray = [NSMutableArray arrayWithCapacity:feedCount];
 	NSDictionary * entityDict;
 	NSArray * urls;
 	NSDictionary * urlDict;
 	NSString * extID;
+	NSMutableDictionary * vdoDict = nil;
 	for (NSDictionary * twDict in objAy) {
 		if ( _page == 0 && _newestTwitIDString == nil ) {
 			self.newestTwitIDString = [twDict objectForKey:@"id_str"];
@@ -116,10 +135,15 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 			for (urlDict in urls) {
 				extID = [NMParseFacebookFeedTask youTubeExternalIDFromLink:[urlDict	objectForKey:@"expanded_url"]];
 				if ( extID ) {
+					vdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
 					// the url contains a Youtube external ID
-					[parsedObjects addObject:extID];
+					[vdoDict setObject:extID forKey:@"external_id"];
+					[vdoDict setObject:[twDict objectForKey:@"id_str"] forKey:@"object_id"];
+					[vdoDict setObject:[twDict objectForKey:@"text"] forKey:@"message"];
+					[vdoDict setObject:[NSNumber numberWithDouble:[[self.feedDateFormatter dateFromString:[twDict objectForKey:@"created_at"]] timeIntervalSince1970]] forKey:@"created_time"];
 					// save the person who submit this tweet
-					[_profileArray addObject:[twDict objectForKey:@"user"]];
+					[vdoDict setObject:[twDict objectForKey:@"user"] forKey:@"from"];
+					[parsedObjects addObject:vdoDict];
 				}
 			}
 		}
@@ -129,31 +153,62 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	}
 }
 
+- (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
+	theProfile.nm_id = [NSNumber numberWithInteger:theID];
+	theProfile.nm_type = self.twitterTypeNumber;
+}
+
 - (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
 	if ( parsedObjects == nil ) return NO;
 	
 	// iterate through all external ID. check if we need to create NMVideo and related mananged object structure
 	NSInteger theOrder = [ctrl maxVideoSortOrderInChannel:_channel sessionOnly:YES] + 1;
-	NSInteger theProfileOrder = [ctrl maxPersonProfileID] + 1;
+	NSInteger personIDBase = [ctrl maxPersonProfileID];
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	NSNumber * errNum = [NSNumber numberWithInteger:NMErrorPendingImport];
 	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
-	[parsedObjects enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		NSString * extID = obj;
-		NMConcreteVideo * conVdo = nil;
-		NMVideo * vdo = nil;
+	NSInteger idx = -1;
+	NSInteger personIDOffset = 0;
+	NMSocialInfo * fbInfo;
+	NMConcreteVideo * conVdo = nil;
+	NMVideo * vdo = nil;
+	NSString * extID;
+	for (NSDictionary * vdoFeedDict in parsedObjects) {
+		extID = [vdoFeedDict objectForKey:@"external_id"];
+		idx++;
+		fbInfo = nil;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
+			{
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				vdo.video = conVdo;
+				// check if the set contains the info from this person already
+				NSSet * fbMtnSet = conVdo.socialMentions;
+				BOOL postFound = NO;
+				for (fbInfo in fbMtnSet) {
+					if ( [fbInfo.nm_type integerValue] == NMChannelUserTwitterType && [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+						postFound = YES;
+						break;
+					}
+				}
+				if ( !postFound ) {
+					// create facebook info
+					fbInfo = [ctrl insertNewSocialInfo];
+					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+					// set the link
+					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
+				} // else - object clean up will be done later below.
 				break;
-				
+			}
 			case NMVideoDoesNotExist:
+				numberOfVideoAdded++;
 				// create the NMVideo and NMConcreteVideo objects
 				conVdo = [ctrl insertNewConcreteVideo];
 				conVdo.external_id = extID;
@@ -165,39 +220,117 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 				vdo.channel = _channel;
 				vdo.nm_session_id = bigSessionNum;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				// create twitter info
+				fbInfo = [ctrl insertNewSocialInfo];
+				fbInfo.video = conVdo;
+				fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+				// set the link
+				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 				break;
 				
+			case NMVideoExistsAndInChannel:
+			{
+				conVdo = vdo.video;
+				NSSet * fbMtnSet = conVdo.socialMentions;
+				BOOL postFound = NO;
+				for (fbInfo in fbMtnSet) {
+					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+						postFound = YES;
+						break;
+					}
+				}
+				if ( !postFound ) {
+					// create facebook info
+					fbInfo = [ctrl insertNewSocialInfo];
+					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+					// set the link
+					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
+				} // else - object clean up will be done later below.
+				break;
+			}
 			default:
 				break;
 		}
-		// check person profile
 		if ( vdo ) {
+			// check person profile
 			BOOL isNew = NO;
-			id fromDict = [_profileArray objectAtIndex:idx];
-			if ( fromDict != [NSNull null] ) {
-				NSString * manID = [fromDict objectForKey:@"id_str"];
-				NMPersonProfile * theProfile = [objectCache objectForKey:manID];
+			NSDictionary * fromDict = [vdoFeedDict objectForKey:@"from"];
+			NSString * manID;
+			NMPersonProfile * theProfile;
+			if ( fromDict ) {
+				manID = [fromDict objectForKey:@"id_str"];
+				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
-					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+					// search for existing or insert new person
+					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.twitterTypeNumber isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
-					// Twitter feed JSON provides enough user info to generate a full detail NMPersonProfile object. Therefore, no need to generate any "person profile task".
-					theProfile.nm_id = [NSNumber numberWithInteger:theProfileOrder + idx];
-					theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+					personIDOffset++;
+					[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 					theProfile.name = [fromDict objectForKey:@"name"];
 					NSString * scName = [fromDict objectForKey:@"screen_name"];
 					if ( scName ) theProfile.username = scName;
 					scName = [fromDict objectForKey:@"profile_image_url"];
 					if ( scName ) theProfile.picture = scName;
+					// subscribe to this person as well
+					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+				}
+				if ( ![_user_id isEqual:manID] ) {
+					// the video is from another person. we should add the video to that person's channel as well
+					if ( isNew || chkResult == NMVideoDoesNotExist ) {
+						// this person profile is now. i.e. just insert the video to thi channel
+						// add the video into the channel
+						NMVideo * personVdo = [ctrl insertNewVideo];
+						personVdo.video = conVdo;
+						// add the new video proxy object to the person's channel
+						personVdo.channel = theProfile.subscription.channel;
+						personVdo.nm_session_id = bigSessionNum;
+						personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+					} else if ( !isNew && chkResult == NMVideoExistsButNotInChannel ) {
+						// check if the vido exists in this person's channel
+						NMChannel * personChn = theProfile.subscription.channel;
+						chkResult = [ctrl videoExistsWithExternalID:extID channel:personChn targetVideo:&conVdo];
+						if ( chkResult == NMVideoExistsButNotInChannel ) {
+							// add the video into the channel
+							NMVideo * personVdo = [ctrl insertNewVideo];
+							personVdo.video = conVdo;
+							// add the new video proxy object to the person's channel
+							personVdo.channel = personChn;
+							personVdo.nm_session_id = bigSessionNum;
+							personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+						}
+					}
+				}
+				// save the tweet in the Comment object
+				BOOL saveTweet = YES;
+				if ( [fbInfo.comments count] ) {
+					// check if the tweet is already saved
+					saveTweet = [[fbInfo.comments filteredSetUsingPredicate:[ctrl.socialObjectIDPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[vdoFeedDict objectForKey:@"object_id"] forKey:@"OBJECT_ID"]]] count] == 0;
+				}
+				if ( saveTweet ) {
+					NMSocialComment * cmtObj = [ctrl insertNewSocialComment];
+					cmtObj.message = [vdoFeedDict objectForKey:@"message"];
+					cmtObj.created_time = [vdoFeedDict objectForKey:@"created_time"];
+					cmtObj.object_id = [vdoFeedDict objectForKey:@"object_id"];
+					// assign to social info
+					cmtObj.socialInfo = fbInfo;
+					if ( fbInfo.nm_date_last_updated == nil || [cmtObj.created_time compare:fbInfo.nm_date_last_updated] == NSOrderedDescending ) {
+						fbInfo.nm_date_last_updated = cmtObj.created_time;
+					}
+					// look up the person
+					fromDict = [vdoFeedDict objectForKey:@"from"];
+					cmtObj.fromPerson = theProfile;
+#ifdef DEBUG_TWITTER_IMPORT
+					NSLog(@"add tweet: %@", cmtObj.message);
+#endif
 				}
 			}
 		}
-	}];
+	}
 	// update the last checked time
-	time_t t;
-	time(&t);
-	_channel.subscription.nm_video_last_refresh = [NSNumber numberWithInteger:mktime(gmtime(&t))];
+	_channel.subscription.nm_video_last_refresh = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	// only update the since ID if we are parsing the first page. The rest of the tweets in other pages will have ID smaller than this one
 	if ( _page == 0 ) _channel.subscription.nm_since_id = _newestTwitIDString;
 	[objectCache release];

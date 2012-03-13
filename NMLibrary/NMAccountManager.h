@@ -19,13 +19,19 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 	id signOutTarget;
 	SEL signOutAction;
 	NSInteger numberOfVideoImported;
+	BOOL leftAppSessionForTwitter;
+	void (^twitterGrantBlock)(void);
 }
 
 @property (nonatomic, retain) NSUserDefaults * userDefaults;
 @property (nonatomic, readonly) Facebook * facebook;
+@property (nonatomic, readonly) ACAccountStore * accountStore;
+@property (nonatomic, retain) ACAccount * currentTwitterAccount;
 @property (nonatomic, retain) NSNumber * facebookAccountStatus;
 @property (nonatomic, retain) NSNumber * twitterAccountStatus;
 @property (nonatomic, retain) NSMutableSet * updatedChannels;
+@property (nonatomic, retain) NMPersonProfile * twitterProfile;
+@property (nonatomic, retain) NMPersonProfile * facebookProfile;
 
 @property (nonatomic, retain) NSTimer * socialChannelParsingTimer;
 @property (nonatomic, retain) NSTimer * videoImportTimer;
@@ -35,7 +41,10 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 - (void)authorizeFacebook;
 - (void)signOutFacebookOnCompleteTarget:(id)aTarget action:(SEL)completionSelector;
 
+// Twitter
 - (void)subscribeAccount:(ACAccount *)acObj;
+- (void)checkAndPushTwitterAccountOnGranted:(void (^)(void))grantBlock;
+- (void)signOutTwitterOnCompleteTarget:(id)aTarget action:(SEL)completionSelector;
 
 // Application lifecycle
 - (void)applicationDidLaunch;

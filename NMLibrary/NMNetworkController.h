@@ -32,6 +32,7 @@
 	NSLock *networkConnectionLock;
 	NSInteger numberOfConnections, maxNumberOfConnection;
 	NSMutableArray *connectionDateLog;
+	NSInteger twitterRemainLimit, twitterLimitResetTime;
 	
 	NSMutableIndexSet * commandIndexPool, * pendingDeleteCommandIndexPool;
 	
@@ -39,8 +40,9 @@
 	BOOL tokenRenewMode;
 	NSUInteger taskLogMark;
 	NSUInteger taskLogCount;
-	NSRange facebookCommandRange;
+	NSRange facebookCommandRange, twitterCommandRange;
 	BOOL suspendFacebook;
+	BOOL suspendTwitter;
 	// channel thumbnail_uri cache
 //	NSMutableSet * activeChannelThumbnailDownloadSet;
 }
@@ -52,6 +54,7 @@
 @property (nonatomic, retain) NSDate * errorWindowStartDate;
 @property (nonatomic, assign) BOOL tokenRenewMode;
 @property (nonatomic) BOOL suspendFacebook;
+@property (nonatomic) BOOL suspendTwitter;
 
 //- (BOOL)downloadInProgressForURLString:(NSString *)urlStr;
 
@@ -66,6 +69,7 @@
  */
 - (BOOL)tryGetNetworkResource;
 - (void)returnNetworkResource;
+- (void)updateTwitterAPIRemainLimit:(NSInteger)aLimit resetTime:(NSInteger)timestamp;
 
 - (void)postConnectionErrorNotificationOnMainThread:(NSError *)error forTask:(NMTask *)task;
 

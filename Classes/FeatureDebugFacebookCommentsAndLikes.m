@@ -57,6 +57,7 @@
 	self.toolbarItems = [NSArray arrayWithObjects:likeBtn, unlikeBtn, cmtBtn, nil];
 	[likeBtn release];
 	[cmtBtn release];
+	[unlikeBtn release];
 	
 	self.title = _socialInfo.video.title;
 }
@@ -122,7 +123,7 @@
 		}
 		case 1:
 		{
-			NMFacebookComment * theComment = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
+			NMSocialComment * theComment = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
 			cell.textLabel.text = theComment.message;
 			break;
 		}
@@ -176,7 +177,7 @@
 		case 1:
 		{
 			// comment section
-			NMFacebookComment * cmtObj = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
+			NMSocialComment * cmtObj = [self.commentsResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
 			cell.textLabel.text = cmtObj.message;
 			break;
 		}	
@@ -297,10 +298,10 @@
 	
 	// create the fetched resutl controller
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
-	NSEntityDescription * entity = [NSEntityDescription entityForName:NMFacebookCommentEntityName inManagedObjectContext:_managedObjectContext];
+	NSEntityDescription * entity = [NSEntityDescription entityForName:NMSocialCommentEntityName inManagedObjectContext:_managedObjectContext];
 	[request setEntity:entity];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"facebookInfo == %@", _socialInfo]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"socialInfo == %@", _socialInfo]];
 	[request setFetchLimit:12];
 	[request setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:NO]]];
 	

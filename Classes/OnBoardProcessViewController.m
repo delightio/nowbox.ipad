@@ -10,16 +10,13 @@
 #import "OnBoardProcessCategoryView.h"
 #import "OnBoardProcessChannelView.h"
 #import "SocialLoginViewController.h"
-#import "NMTaskQueueController.h"
-#import "NMDataController.h"
-#import "NMDataType.h"
-#import "NMCategory.h"
-#import "NMChannel.h"
+#import "NMLibrary.h"
 #import "Analytics.h"
 #import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
+#import "TwitterAccountPickerViewController.h"
 
 #define kChannelGridNumberOfRows 4
 #define kChannelGridNumberOfColumns 3
@@ -68,6 +65,9 @@
         [nc addObserver:self selector:@selector(handleDidFailVerifyUserNotification:) name:NMDidFailVerifyUserNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidCompareSubscribedChannelsNotification:) name:NMDidCompareSubscribedChannelsNotification object:nil];
         
+		// observe changes in account manager
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1001];
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:(void *)1002];
         self.selectedCategoryIndexes = [NSMutableIndexSet indexSet];
     }
     
@@ -77,6 +77,8 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
 
     [youtubeTimeoutTimer invalidate]; youtubeTimeoutTimer = nil;
     [infoWaitTimer invalidate]; infoWaitTimer = nil;
@@ -177,12 +179,14 @@
     [youtubeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     [youtubeButton setUserInteractionEnabled:!youtubeConnected];
     
-    [facebookButton setTitle:(facebookConnected ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+	NMSyncStatusType accType = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
+    [facebookButton setTitle:(accType ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [facebookButton setSelected:facebookConnected];
     [facebookButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     [facebookButton setUserInteractionEnabled:!facebookConnected];
 
-    [twitterButton setTitle:(twitterConnected ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
+	accType = [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue];
+    [twitterButton setTitle:(accType ? @"CONNECTED" : @"CONNECT") forState:UIControlStateNormal];
     [twitterButton setSelected:twitterConnected != 0];
     [twitterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected | UIControlStateHighlighted];
     [twitterButton setUserInteractionEnabled:!twitterConnected];
@@ -348,7 +352,8 @@
 - (IBAction)loginToFacebook:(id)sender
 {
     if (![sender isSelected]) {    
-        [self loginToSocialNetworkWithType:NMLoginFacebookType];
+//        [self loginToSocialNetworkWithType:NMLoginFacebookType];
+		[[NMAccountManager sharedAccountManager] authorizeFacebook];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];        
     }
 }
@@ -356,7 +361,20 @@
 - (IBAction)loginToTwitter:(id)sender
 {
     if (![sender isSelected]) {    
-        [self loginToSocialNetworkWithType:NMLoginTwitterType];
+//        [self loginToSocialNetworkWithType:NMLoginTwitterType];
+		[[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
+			// user needs to pick which account(s) s/he wanna hook up to
+			twitterAccountPicker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+			UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:twitterAccountPicker];
+			navController.navigationBar.barStyle = UIBarStyleBlack;
+			twitterAccountPicker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSocialLogin:)] autorelease];
+			
+			[navController setModalPresentationStyle:UIModalPresentationFormSheet];
+			[self presentModalViewController:navController animated:YES];
+			
+			[navController release];      
+			[twitterAccountPicker release];
+		}];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventStartTwitterLogin properties:[NSDictionary dictionaryWithObject:@"onboard" forKey:AnalyticsPropertySender]];                
     }
 }
@@ -408,6 +426,41 @@
 }
 
 #pragma mark - Notifications
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	NSInteger ctxInt = (NSInteger)context;
+	NMSyncStatusType accStatus = 0;
+	switch (ctxInt) {
+		case 1001:
+			// twitter
+			accStatus = [[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue];
+			if ( accStatus == NMSyncInitialSyncError ) {
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
+				[alertView release];
+			}
+			[twitterAccountPicker dismissModalViewControllerAnimated:YES];
+			twitterAccountPicker = nil;
+			[self updateSocialNetworkButtonTexts];
+			break;
+			
+		case 1002:
+			// facebook
+			accStatus = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
+			if ( accStatus == NMSyncInitialSyncError ) {
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+				[alertView show];
+				[alertView release];
+			}
+			[self updateSocialNetworkButtonTexts];
+			break;
+			
+		default:
+			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+			return;
+			break;
+	}
+}
 
 - (void)handleDidCreateUserNotification:(NSNotification *)aNotification 
 {    

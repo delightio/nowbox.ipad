@@ -22,6 +22,7 @@
 @property (nonatomic, retain) NSString * user_id;
 @property (nonatomic, retain) NSString * since_id;
 @property (nonatomic, retain) NSString * feedDirectURLString;
+@property (nonatomic, retain) NSNumber * facebookTypeNumber;
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 

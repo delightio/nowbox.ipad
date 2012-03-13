@@ -36,13 +36,14 @@
   NSString* _urlSchemeSuffix;
   NSArray* _permissions;
   BOOL _isExtendingAccessToken;
-  NSDate* _lastAccessTokenUpdate;
+//  NSDate* _lastAccessTokenUpdate;
 }
 
 @property(nonatomic, copy) NSString* accessToken;
 @property(nonatomic, copy) NSDate* expirationDate;
 @property(nonatomic, assign) id<FBSessionDelegate> sessionDelegate;
 @property(nonatomic, copy) NSString* urlSchemeSuffix;
+@property(nonatomic, retain) NSString * appSecret;
 
 - (id)initWithAppId:(NSString *)appId
         andDelegate:(id<FBSessionDelegate>)delegate;
@@ -59,7 +60,7 @@
 
 - (void)extendAccessTokenIfNeeded;
 
-- (BOOL)shouldExtendAccessToken;
+//- (BOOL)shouldExtendAccessToken;
 
 - (BOOL)handleOpenURL:(NSURL *)url;
 

@@ -56,7 +56,8 @@ static void *finishedContext = @"finishedContext";
         sessionDelegate = _sessionDelegate,
             permissions = _permissions,
         urlSchemeSuffix = _urlSchemeSuffix,
-                  appId = _appId;
+                  appId = _appId,
+appSecret = _appSecret;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +102,7 @@ static void *finishedContext = @"finishedContext";
   self = [super init];
   if (self) {
     _requests = [[NSMutableSet alloc] init];
-    _lastAccessTokenUpdate = [[NSDate distantPast] retain];
+//    _lastAccessTokenUpdate = [[NSDate distantPast] retain];
     self.appId = appId;
     self.sessionDelegate = delegate;
     self.urlSchemeSuffix = urlSchemeSuffix;
@@ -116,13 +117,14 @@ static void *finishedContext = @"finishedContext";
   for (FBRequest* _request in _requests) {
     [_request removeObserver:self forKeyPath:requestFinishedKeyPath];
   }
-  [_lastAccessTokenUpdate release];
+//  [_lastAccessTokenUpdate release];
   [_accessToken release];
   [_expirationDate release];
   [_requests release];
   [_loginDialog release];
   [_fbDialog release];
   [_appId release];
+	[_appSecret release];
   [_permissions release];
   [_urlSchemeSuffix release];
   [super dealloc];
@@ -343,38 +345,40 @@ static void *finishedContext = @"finishedContext";
         return;
     }
     _isExtendingAccessToken = YES;
-    NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                   @"auth.extendSSOAccessToken", @"method",
-                                   nil];
-    [self requestWithParams:params andDelegate:self];
+	
+	// the logic below is implemented by Bill - not originated from Facebook
+	// Implementation of this method is base on discussion in https://developers.facebook.com/docs/offline-access-deprecation/ under "Client-side OAuth and Extending Access_Token Expiration Time through New Endpoint"
+	NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_appId, @"client_id", _appSecret, @"client_secret", @"fb_exchange_token", @"grant_type", _accessToken, @"fb_exchange_token", @"json", @"format", nil];
+	[self requestWithGraphPath:@"oauth/access_token" andParams:params andDelegate:self];
 }
 
 /**
  * Calls extendAccessToken if shouldExtendAccessToken returns YES.
  */
 - (void)extendAccessTokenIfNeeded {
-  if ([self shouldExtendAccessToken]) {
-    [self extendAccessToken];
-  }
+	// we should try renewing a token anytime the token is in the last week of its life
+	if ( [self.expirationDate timeIntervalSinceNow] < 3600.0 * 24.0 * 5.0 ) {
+		[self extendAccessToken];
+	}
 }
 
 /**
  * Returns YES if the last time a new token was obtained was over 24 hours ago.
  */
-- (BOOL)shouldExtendAccessToken {
-  if ([self isSessionValid]){
-    NSCalendar *calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
-    NSDateComponents *components = [calendar components:NSHourCalendarUnit
-                                              fromDate:_lastAccessTokenUpdate
-                                                toDate:[NSDate date]
-                                                options:0];
-
-    if (components.hour >= kTokenExtendThreshold) {
-      return YES;
-    }
-  }
-  return NO;
-}
+//- (BOOL)shouldExtendAccessToken {
+//  if ([self isSessionValid]){
+//    NSCalendar *calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+//    NSDateComponents *components = [calendar components:NSHourCalendarUnit
+//                                              fromDate:_lastAccessTokenUpdate
+//                                                toDate:[NSDate date]
+//                                                options:0];
+//
+//    if (components.hour >= kTokenExtendThreshold) {
+//      return YES;
+//    }
+//  }
+//  return NO;
+//}
 
 /**
  * This function processes the URL the Facebook application or Safari used to
@@ -723,8 +727,8 @@ static void *finishedContext = @"finishedContext";
 - (void)fbDialogLogin:(NSString *)token expirationDate:(NSDate *)expirationDate {
   self.accessToken = token;
   self.expirationDate = expirationDate;
-  [_lastAccessTokenUpdate release];
-  _lastAccessTokenUpdate = [[NSDate date] retain];
+//  [_lastAccessTokenUpdate release];
+//  _lastAccessTokenUpdate = [[NSDate date] retain];
   if ([self.sessionDelegate respondsToSelector:@selector(fbDidLogin)]) {
     [self.sessionDelegate fbDidLogin];
   }
@@ -748,28 +752,24 @@ static void *finishedContext = @"finishedContext";
 }
 
 - (void)request:(FBRequest *)request didLoad:(id)result {
-  _isExtendingAccessToken = NO;
-  NSString* accessToken = [result objectForKey:@"access_token"];
-  NSString* expTime = [result objectForKey:@"expires_at"];
-
-  if (accessToken == nil || expTime == nil) {
-   return;
-  }
-
-  self.accessToken = accessToken;
-
-  NSTimeInterval timeInterval = [expTime doubleValue];
-  NSDate *expirationDate = [NSDate distantFuture];
-  if (timeInterval != 0) {
-    expirationDate = [NSDate dateWithTimeIntervalSince1970:timeInterval];
-  }
-  self.expirationDate = expirationDate;
-  [_lastAccessTokenUpdate release];
-  _lastAccessTokenUpdate = [[NSDate date] retain];
-
-  if ([self.sessionDelegate respondsToSelector:@selector(fbDidExtendToken:expiresAt:)]) {
-    [self.sessionDelegate fbDidExtendToken:accessToken expiresAt:expirationDate];
-  }
+	_isExtendingAccessToken = NO;
+	// for some reason, the API return a parametic string instead of JSON object even when we specify format=json
+	NSString * str = [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
+	NSDictionary * dict = [self parseURLParams:str];
+	NSString* accessToken = [dict objectForKey:@"access_token"];
+	NSString* expTime = [dict objectForKey:@"expires"];
+	
+	if (accessToken == nil || expTime == nil) {
+		return;
+	}
+	
+	// "expires" is the time the token has got extended from the token's original expiration time
+	self.expirationDate = [self.expirationDate dateByAddingTimeInterval:[expTime doubleValue]];
+	self.accessToken = accessToken;
+	
+	if ([self.sessionDelegate respondsToSelector:@selector(fbDidExtendToken:expiresAt:)]) {
+		[self.sessionDelegate fbDidExtendToken:accessToken expiresAt:_expirationDate];
+	}
 }
 
 - (void)request:(FBRequest *)request didLoadRawResponse:(NSData *)data {

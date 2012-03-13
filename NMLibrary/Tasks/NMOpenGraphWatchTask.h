@@ -15,6 +15,7 @@
 }
 
 @property (nonatomic, retain) NSString * externalID;
+@property (nonatomic) NSInteger startTime;
 
 - (id)initForVideo:(NMVideo *)vdo playsVideo:(BOOL)aflag;
 

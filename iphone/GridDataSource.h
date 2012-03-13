@@ -14,13 +14,17 @@
 @interface GridDataSource : NSObject <PagingGridViewDataSource, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, retain) PagingGridView *gridView;
+@property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, assign) BOOL ignoresMoveChanges;
 
 - (id)initWithGridView:(PagingGridView *)aGridView managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
-- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index;
 - (id)objectAtIndex:(NSUInteger)index;
+- (NMChannel *)selectObjectAtIndex:(NSUInteger)index;
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex;
 - (void)deleteObjectAtIndex:(NSUInteger)index;
+- (void)refreshAllObjects;
+- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex;
+- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex;
 
 @end

@@ -11,6 +11,7 @@
 @implementation GridDataSource
 
 @synthesize gridView;
+@synthesize title;
 @synthesize ignoresMoveChanges;
 @synthesize managedObjectContext;
 
@@ -27,45 +28,63 @@
 - (void)dealloc
 {
     [gridView release];
+    [title release];
     [managedObjectContext release];
     
     [super dealloc];
 }
 
-- (GridDataSource *)nextDataSourceForIndex:(NSUInteger)index
+- (id)objectAtIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     return nil;
 }
 
-- (id)objectAtIndex:(NSUInteger)index
+- (NMChannel *)selectObjectAtIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     return nil;
 }
 
 - (void)moveObjectAtIndex:(NSInteger)oldIndex toIndex:(NSInteger)newIndex
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
 }
 
 - (void)deleteObjectAtIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses    
+    // To be implemented by subclasses    
+}
+
+- (NSUInteger)mappedFetchedResultsIndexForGridIndex:(NSUInteger)gridIndex
+{
+    // The indexes in our grid and fetched results may not correspond. This method lets us define a mapping between the two.
+    return gridIndex;
+}
+
+- (NSUInteger)mappedGridIndexForFetchedResultsIndex:(NSUInteger)fetchedResultsIndex
+{
+    // The indexes in our grid and fetched results may not correspond. This method lets us define a mapping between the two.
+    return fetchedResultsIndex;
+}
+
+- (void)refreshAllObjects
+{
+    // To be implemented by subclasses
 }
 
 #pragma mark - PagingGridViewDataSource
 
 - (NSUInteger)gridViewNumberOfItems:(PagingGridView *)aGridView
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     [self doesNotRecognizeSelector:_cmd];
     return 0;
 }
 
 - (PagingGridViewCell *)gridView:(PagingGridView *)aGridView cellForIndex:(NSUInteger)index
 {
-    // To be overriden by subclasses
+    // To be implemented by subclasses
     [self doesNotRecognizeSelector:_cmd];
     return nil;
 }
@@ -83,19 +102,22 @@
 {    
     if (ignoresMoveChanges && type == NSFetchedResultsChangeMove) return;
     
+    NSUInteger index = [self mappedGridIndexForFetchedResultsIndex:indexPath.row];
+    NSUInteger newIndex = [self mappedGridIndexForFetchedResultsIndex:newIndexPath.row];
+    
     switch(type) {
         case NSFetchedResultsChangeInsert: 
-            [gridView insertItemAtIndex:newIndexPath.row];
+            [gridView insertItemAtIndex:newIndex];
             break;
         case NSFetchedResultsChangeDelete:
-            [gridView deleteItemAtIndex:indexPath.row animated:YES];
+            [gridView deleteItemAtIndex:index animated:YES];
             break;
         case NSFetchedResultsChangeUpdate:
-            [gridView updateItemAtIndex:indexPath.row];
+            [gridView updateItemAtIndex:index];
             break;
         case NSFetchedResultsChangeMove:
-            [gridView deleteItemAtIndex:indexPath.row animated:YES];
-            [gridView insertItemAtIndex:newIndexPath.row];
+            [gridView deleteItemAtIndex:index animated:YES];
+            [gridView insertItemAtIndex:newIndex];
             break;
     }
 }

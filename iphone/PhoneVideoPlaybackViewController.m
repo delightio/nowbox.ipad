@@ -8,13 +8,10 @@
 
 #import "PhoneVideoPlaybackViewController.h"
 #import "NMMovieView.h"
-#import "ChannelPanelController.h"
 #import "ipadAppDelegate.h"
-#import "PhoneLaunchController.h"
 #import "UIView+InteractiveAnimation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
-
 
 #define NM_PLAYER_STATUS_CONTEXT				100
 #define NM_PLAYER_CURRENT_ITEM_CONTEXT			101
@@ -30,14 +27,10 @@
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
 #define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
-//#define NM_ANIMATION_HIDE_CONTROL_VIEW_FOR_USER			10001
 #define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT			10002
 #define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT				10003
 #define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
 #define NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT			10008
-
-#define NM_SHOULD_TRANSIT_SPLIT_VIEW					1
-#define NM_SHOULD_TRANSIT_FULL_SCREEN_VIEW				2
 
 #define NM_MOVIE_VIEW_GAP								20
 #define NM_MOVIE_VIEW_GAP_FLOAT							20.0f
@@ -47,11 +40,10 @@
 #define NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP         (60.0f * 40)
 
 #define VIDEO_HEIGHT 218.0f
+#define VIDEO_OFFSET_WHEN_SHARING -60.0f
 
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
 
-//- (void)insertVideoAtIndex:(NSUInteger)idx;
-//- (void)queueVideoToPlayer:(NMVideo *)vid;
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewForVideo:(NMVideo *)aVideo;
 - (void)configureDetailViewForContext:(NSInteger)ctx;
@@ -59,8 +51,6 @@
 - (void)playCurrentVideo;
 - (void)stopVideo;
 - (void)setupPlayer;
-//- (void)hideControlView;
-
 - (NMVideo *)playerCurrentVideo;
 - (void)showLaunchView;
 
@@ -75,9 +65,6 @@
 - (void)resetChannelHeaderView:(BOOL)isPrev;
 - (void)startLoadingChannel:(BOOL)isPrev;
 - (void)stopLoadingChannel:(BOOL)isPrev;
-
-// debug message
-- (void)printDebugMessage:(NSString *)str;
 
 @end
 
@@ -98,12 +85,8 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	NSLog(@"viewDidLoad, controller retain count: %d", [movieView retainCount]);
-	
     [super viewDidLoad];
 	styleUtility = [NMStyleUtility sharedStyleUtility];
-//	[[UIApplication sharedApplication] setStatusBarHidden:NO];
-//	self.wantsFullScreenLayout = YES;
 	isAspectFill = YES;
 	currentXOffset = 0.0f;
 	movieXOffset = 0.0f;
@@ -122,10 +105,6 @@
 	nextChannelHeaderView.frame = theFrame;
 	[channelSwitchingScrollView addSubview:nextChannelHeaderView];
 	[self resetChannelHeaderView:NO];
-
-	// ribbon view
-//	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
-//	ribbonView.layer.shouldRasterize = YES;
 	
 	// playback data model controller
 	nowboxTaskController = [NMTaskQueueController sharedTaskQueueController];
@@ -152,44 +131,21 @@
 	
 	UITapGestureRecognizer * tapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewTouchUp:)];
 	tapRcgr.numberOfTapsRequired = 1;
-	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
+//	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
 	[movieView addGestureRecognizer:tapRcgr];
 	[tapRcgr release];
 	[dblTapRcgr release];
 	
-	NSLog(@"before add subview, retain count %d", [movieView retainCount]);
-	
 	[controlScrollView addSubview:movieView];
-	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
 	controlScrollView.frame = CGRectMake(0.0f, 0.0f, topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
-	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
 	channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
-	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
 	[channelSwitchingScrollView setDecelerationRate:UIScrollViewDecelerationRateFast];
-
-	NSLog(@"after add subview, retain count %d", [movieView retainCount]);
-	// double-tap handling
-	dblTapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(movieViewDoubleTap:)];
-	dblTapRcgr.numberOfTapsRequired = 2;
-	dblTapRcgr.delegate = loadedControlView;
-	[loadedControlView addGestureRecognizer:dblTapRcgr];
-	// single-tap handling
-	tapRcgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(controlsViewTouchUp:)];
-	tapRcgr.numberOfTapsRequired = 1;
-	tapRcgr.delegate = loadedControlView;
-	[tapRcgr requireGestureRecognizerToFail:dblTapRcgr];
-	[loadedControlView addGestureRecognizer:tapRcgr];
-	[tapRcgr release];
-	[dblTapRcgr release];
-	 
-	loadedControlView.controlDelegate = self;
-	
+	 	
 	// set up player
 	[self setupPlayer];
 	
 	// ======
 #endif
-	[nowboxTaskController issueGetFeaturedCategories];
 	
 	defaultNotificationCenter = [NSNotificationCenter defaultCenter];
 	// listen to item finish up playing notificaiton
@@ -205,6 +161,7 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	// event
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
+	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
@@ -214,21 +171,6 @@
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailDequeueVideoNotification object:nil];
     
 	[defaultNotificationCenter addObserver:self selector:@selector(handleDidGetInfoNotification:) name:NMDidCheckUpdateNotification object:nil];
-
-	// setup gesture recognizer
-	UIPinchGestureRecognizer * pinRcr = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovieViewPinched:)];
-    pinRcr.delegate = self;
-	[controlScrollView addGestureRecognizer:pinRcr];
-	[pinRcr release];
-    
-    /*
-	// create the launch view
-	launchController = [[PhoneLaunchController alloc] init];
-	launchController.viewController = self;
-	[[NSBundle mainBundle] loadNibNamed:@"LaunchView" owner:launchController options:nil];
-	[self showLaunchView];
-     */
-    [self showPlaybackView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -239,21 +181,14 @@
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self playCurrentVideo];
+    
+    [[ToolTipController sharedToolTipController] setDelegate:self];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
 	[self stopVideo];
-	NSLog(@"viewWillDisappear, controller retain count: %d", [movieView retainCount]);
-	[movieView.player removeObserver:self forKeyPath:@"status"];
-	[movieView.player removeObserver:self forKeyPath:@"currentItem"];
-	[movieView.player removeObserver:self forKeyPath:@"airPlayVideoActive"];
-	[movieView.player removeObserver:self forKeyPath:@"rate"];
-	[movieView.player removeAllItems];
-	// get rid of time observer of video player
- 	[movieView.player removeTimeObserver:timeObserver];
-	[timeObserver release], timeObserver = nil;
-	movieView.player = nil;
-	NSLog(@"viewWillDisappear, controller retain count: %d", [movieView retainCount]);
+    [[ToolTipController sharedToolTipController] setDelegate:nil];
+
 	[super viewWillDisappear:animated];
 }
 
@@ -282,7 +217,7 @@
     // Update scroll view sizes / content offsets
     channelSwitchingScrollView.contentSize = channelSwitchingScrollView.bounds.size;
     
-    controlScrollView.frame = CGRectMake(0.0f, 0.0f, topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
+    controlScrollView.frame = CGRectMake(0.0f, (shareView ? VIDEO_OFFSET_WHEN_SHARING : 0.0f), topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP_FLOAT, topLevelContainerView.frame.size.height);
     controlScrollView.contentSize = CGSizeMake((CGFloat)( (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP) * playbackModelController.numberOfVideos), topLevelContainerView.frame.size.height);
     currentXOffset = (CGFloat)(playbackModelController.currentIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
     controlScrollView.contentOffset = CGPointMake(currentXOffset, 0.0f);
@@ -309,6 +244,24 @@
     movieBackgroundView.frame = theFrame;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    // Don't show status bar in landscape mode
+    CGRect frame = self.view.frame;
+    CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+    UIInterfaceOrientation statusBarOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
+    if (UIInterfaceOrientationIsLandscape(toInterfaceOrientation) && UIInterfaceOrientationIsPortrait(statusBarOrientation)) {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+        frame.origin.y -= statusBarFrame.size.height;
+        frame.size.height += statusBarFrame.size.height;
+    } else if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation) && UIInterfaceOrientationIsLandscape(statusBarOrientation)) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        frame.origin.y += statusBarFrame.size.width;
+        frame.size.height -= statusBarFrame.size.width;
+    }
+    self.view.frame = frame;
+}
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [self updateViewsForInterfaceOrientation:toInterfaceOrientation];
 }
@@ -322,6 +275,7 @@
     self.movieBackgroundView = nil;
     [playbackModelController release]; playbackModelController = nil;
     [movieView release]; movieView = nil;
+    shareView = nil;
     
     [super viewDidUnload];
 }
@@ -334,6 +288,8 @@
     [loadedControlView release];
 	[currentChannel release];
 	// remove movie view. only allow this to happen after we have removed the time observer
+    movieView.player.playbackDelegate = nil;
+	movieView.player = nil;
 	[movieView release];
     [previousChannelHeaderView release];
     [nextChannelHeaderView release];
@@ -343,8 +299,10 @@
     [controlScrollView release];
     [topLevelContainerView release];
     [playbackModelController release];
+	[managedObjectContext_ release];
     
 	[super dealloc];
+	NSLog(@"dealloc phone video playback view");
 }
 
 #pragma mark Playback data structure
@@ -455,9 +413,9 @@
 }
 
 - (IBAction)playStopVideo:(id)sender {
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
 	if ( movieView.player.rate == 0.0 ) {
 		forceStopByUser = NO;
-		showMovieControlTimestamp = loadedControlView.timeElapsed;
 		[movieView.player play];
 	} else {
 		forceStopByUser = YES;
@@ -504,7 +462,6 @@
 
 #pragma mark Movie View Management
 - (void)setupPlayer {
-	NSLog(@"setupPlayer, controller retain count: %d", [movieView retainCount]);
 	NMAVQueuePlayer * player = [[NMAVQueuePlayer alloc] init];
 	player.playbackDelegate = self;
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
@@ -546,7 +503,6 @@
 	// retain the time observer
 	[timeObserver retain];
 	[player release];
-	NSLog(@"setupPlayer, controller retain count: %d", [movieView retainCount]);
 }
 
 
@@ -572,16 +528,13 @@
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
 //        [loadedControlView setControlsHidden:NO animated:YES];
-        [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];                
+        //[[self currentDetailView] setVideoOverlayHidden:NO animated:YES];                
 	}];
 }
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger ctxInt = (NSInteger)context;
 	switch (ctxInt) {
-		case NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT:
-		case NM_ANIMATION_RIBBON_FADE_IN_CONTEXT:
-			break;
 			
 		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
 			// show the top bar with animation
@@ -590,11 +543,11 @@
 //			ribbonView.hidden = YES;
 			break;
 			
-		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT:
-//			controlScrollView.scrollEnabled = YES;
+		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT: {
 			[self configureControlViewForVideo:[self playerCurrentVideo]];
 			[self playCurrentVideo];
 			break;
+        }
 		default:
 			break;
 	}
@@ -645,7 +598,7 @@
 	// check if any of the video is marked as error
 	// this for-loop does NOT guarantee to run. Sometimes, we can get free movie detail view even if there's movie detail view occupied by bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
-		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError ) {
+		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError || [theView.video.nm_deleted boolValue] ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
 			theView.alpha = 1.0f;
 			return theView;
@@ -893,12 +846,11 @@
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
-	NSLog(@"KVO observing: %@", theItem.nmVideo.title);
+	NSLog(@"KVO observing: %@", theItem.nmVideo.video.title);
 #endif
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"loadedTimeRanges" options:0 context:(void *)NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT];
-	NSLog(@"observePlayerItem, controller retain count: %d", [movieView retainCount]);
 //	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
 	// no need to update status of NMVideo. "Queued" status is updated in "queueVideo" method
 }
@@ -907,7 +859,7 @@
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
 	if ( theItem.nmVideo ) {
-		NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
+		NSLog(@"KVO stop observing: %@", theItem.nmVideo.video.title);
 	} else {
 		NSLog(@"KVO observing object is nil");
 	}
@@ -921,7 +873,6 @@
 	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-	NSLog(@"stopObservingPlayerItem, controller retain count: %d", [movieView retainCount]);
 //	[anItem removeObserver:self forKeyPath:@"status"];
 }
 
@@ -952,15 +903,6 @@
 }
 
 #pragma mark Notification handling
-//- (void)delayHandleDidPlayItem:(NMAVPlayerItem *)anItem {
-//	if ( playbackModelController.nextVideo == nil ) {
-//		// finish up playing the whole channel
-//		[self dismissModalViewControllerAnimated:YES];
-//	} else {
-//		didPlayToEnd = YES;
-//		[self showNextVideo:YES];
-//	}
-//}
 
 - (void)handleDidPlayItemNotification:(NSNotification *)aNotification {
 	// For unknown reason, AVPlayerItemDidPlayToEndTimeNotification is sent twice sometimes. Don't know why. This delay execution mechanism tries to solve this problem
@@ -1049,18 +991,26 @@
 	NMVideo * vidObj = [[aNotification userInfo] objectForKey:@"video"];
 	// do nth if the video object is nil
 	if ( vidObj == nil ) return;
+
+    PhoneMovieDetailView *detailView = (PhoneMovieDetailView *) vidObj.video.nm_movie_detail_view;
 	
 	NSString * name = [aNotification name];
-	if ( [name isEqualToString:NMDidShareVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-//		[self animateFavoriteButtonsToActive];
-	} else if ( [name isEqualToString:NMDidUnfavoriteVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-//		[self animateFavoriteButtonsToActive];
-	} else if ( [name isEqualToString:NMDidEnqueueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		// queued a video successfully, animate the icon to appropriate state
-//		[self animateWatchLaterButtonsToActive];
-	} else if ( [name isEqualToString:NMDidDequeueVideoNotification] && [playbackModelController.currentVideo isEqual:vidObj] ) {
-		// dequeued a video successfully
-//		[self animateWatchLaterButtonsToActive];
+    NSLog(@"got event %@ for video %@", name, vidObj.video.title);
+          
+	if ([name isEqualToString:NMDidFavoriteVideoNotification]) {
+        if ([playbackModelController.currentVideo isEqual:vidObj]) {
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventFavoriteTap sender:nil];
+        }
+        [detailView setFavorite:YES];
+	} else if ([name isEqualToString:NMDidUnfavoriteVideoNotification]) {
+        [detailView setFavorite:NO];
+	} else if ([name isEqualToString:NMDidEnqueueVideoNotification]) {
+        if ([playbackModelController.currentVideo isEqual:vidObj]) {
+            [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:nil];
+        }
+        [detailView setWatchLater:YES];
+	} else if ([name isEqualToString:NMDidDequeueVideoNotification]) {
+        [detailView setWatchLater:NO];
 	}
 }
 
@@ -1262,7 +1212,12 @@
 //	[self hideControlView];
     
 //    [loadedControlView setControlsHidden:YES animated:YES];
-    [[self currentDetailView] setVideoOverlayHidden:NO animated:YES];
+    // Make sure other detail views are showing their info overlays in landscape mode, hiding their controls in portrait mode
+    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+        if (detailView != [self currentDetailView]) {
+            [detailView setVideoOverlayHidden:UIInterfaceOrientationIsPortrait(self.interfaceOrientation)];
+        }
+    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1428,44 +1383,51 @@
 }
 
 - (void)movieViewDoubleTap:(id)sender {
-	if ( loadedControlView.hidden ) {
-		[self movieViewTouchUp:sender];
+	if ([self currentDetailView].videoOverlayHidden) {
+		//[self movieViewTouchUp:sender];
 	}
 	[self playStopVideo:sender];
 }
 
-- (void)controlsViewTouchUp:(id)sender {
-//	UIView * v = (UIView *)sender;    
-/*	[UIView animateWithDuration:0.25f animations:^{
-		loadedControlView.alpha = 0.0f;
-	} completion:^(BOOL finished) {
-	}];*/
-}
-
 - (IBAction)addVideoToFavorite:(id)sender {
-	NMConcreteVideo * vdo = playbackModelController.currentVideo.video;
-    [nowboxTaskController issueMakeFavorite:![vdo.nm_favorite boolValue] video:playbackModelController.currentVideo duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+    NMVideo *video = playbackModelController.currentVideo;
+    NSLog(@"adding %@ to favorite", video.video.title);
+    
+	BOOL isFav = [video.video.nm_favorite boolValue];
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+    [nowboxTaskController issueMakeFavorite:!isFav video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
+	
+    [[MixpanelAPI sharedAPI] track:isFav ? AnalyticsEventUnfavoriteVideo : AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, video.video.title, AnalyticsPropertyVideoName, video.video.nm_id, AnalyticsPropertyVideoId, nil]];
 }
 
 - (IBAction)addVideoToQueue:(id)sender {
-	NMConcreteVideo * vdo = playbackModelController.currentVideo.video;
+    NMVideo *video = playbackModelController.currentVideo;
+    NSLog(@"adding %@ to queue", video.video.title);
     
-    showMovieControlTimestamp = loadedControlView.timeElapsed;
-    if (![vdo.nm_watch_later boolValue]) {
-        [[ToolTipController sharedToolTipController] notifyEvent:ToolTipEventWatchLaterTap sender:sender];
+    BOOL isEnqueued = [video.video.nm_watch_later boolValue];
+    showMovieControlTimestamp = loadedControlView.timeElapsed;    
+	[nowboxTaskController issueEnqueue:!isEnqueued video:video];
+
+    if (!isEnqueued) {
+        [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId, nil]];
     }
-	
-	[nowboxTaskController issueEnqueue:![vdo.nm_watch_later boolValue] video:playbackModelController.currentVideo];
-    
-    [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, 
-                                                                          vdo.title, AnalyticsPropertyVideoName, 
-                                                                          vdo.nm_id, AnalyticsPropertyVideoId,
-                                                                          nil]];
 }
 
-# pragma mark Gestures
-- (void)handleMovieViewPinched:(UIPinchGestureRecognizer *)sender {
+- (IBAction)shareVideo:(id)sender {
+    if (shareView) return;
     
+    shareView = [[CommentShareView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 150)];
+    [shareView setVideo:playbackModelController.currentVideo timeElapsed:loadedControlView.timeElapsed];
+    shareView.delegate = self;
+    [self.view addSubview:shareView];
+    [shareView release];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         controlScrollView.frame = CGRectOffset(controlScrollView.frame, 0, VIDEO_OFFSET_WHEN_SHARING);
+                     }
+                     completion:^(BOOL finished){ 
+                     }];
 }
 
 #pragma mark - Rate Us reminder
@@ -1527,12 +1489,32 @@
 
 - (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView
 {
+    [self stopVideo];
+    [movieView.player removeObserver:self forKeyPath:@"status"];
+	[movieView.player removeObserver:self forKeyPath:@"currentItem"];
+	[movieView.player removeObserver:self forKeyPath:@"airPlayVideoActive"];
+	[movieView.player removeObserver:self forKeyPath:@"rate"];
+	// get rid of time observer of video player
+ 	[movieView.player removeTimeObserver:timeObserver];
+	[timeObserver release], timeObserver = nil;
+	[movieView.player removeAllItems];
+    
     [self dismissModalViewControllerAnimated:NO];
 }
 
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView
 {
     [self playStopVideo:nil];
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didLike:(BOOL)like socialInfo:(NMSocialInfo *)socialInfo
+{
+    [[NMTaskQueueController sharedTaskQueueController] issuePostLike:like forPost:socialInfo];
+}
+
+- (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView
+{
+    [self movieViewTouchUp:nil];
 }
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar
@@ -1575,12 +1557,119 @@
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded
 {
+    if (videoInfoView.thumbnailContainerView.alpha == 0.0f) {
+        showMovieControlTimestamp = loadedControlView.timeElapsed;
+    }
+
     // Make all detail views have the same panel state
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
         if (detailView != videoInfoView) {
             [detailView setInfoPanelExpanded:expanded];
         }
     }
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleBuzzPanelExpanded:(BOOL)expanded
+{
+    if (videoInfoView.thumbnailContainerView.alpha == 0.0f) {
+        showMovieControlTimestamp = loadedControlView.timeElapsed;
+    }
+    
+    // Make all detail views have the same panel state
+    for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
+        if (detailView != videoInfoView) {
+            [detailView setBuzzPanelExpanded:expanded];
+        }
+    }
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTapCommentButton:(id)sender socialInfo:(NMSocialInfo *)socialInfo
+{
+    
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView willBeginDraggingScrollView:(UIScrollView *)scrollView
+{
+    showMovieControlTimestamp = -1;
+}
+
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didEndDraggingScrollView:(UIScrollView *)scrollView
+{
+    showMovieControlTimestamp = loadedControlView.timeElapsed;
+}
+
+#pragma mark - CommentShareViewDelegate
+
+- (void)commentShareViewWillDismiss:(CommentShareView *)commentShareView
+{
+    [UIView animateWithDuration:0.15
+                     animations:^{
+                         CGRect frame = controlScrollView.frame;
+                         frame.origin.y = 0;
+                         controlScrollView.frame = frame;
+                     }];  
+}
+
+- (void)commentShareViewDidDismiss:(CommentShareView *)commentShareView
+{
+    [shareView removeFromSuperview];
+    shareView = nil;
+}
+
+- (void)commentShareView:(CommentShareView *)commentShareView didSubmitText:(NSString *)text service:(CommentShareService)service timeElapsed:(NSInteger)timeElapsed
+{
+    NMVideo *video = commentShareView.video;
+    
+    if (service == CommentShareServiceFacebook || service == CommentShareServiceTwitter) {
+        [[NMTaskQueueController sharedTaskQueueController] issueShareWithService:(service == CommentShareServiceFacebook ? NMLoginFacebookType : NMLoginTwitterType)
+                                                                           video:video 
+                                                                        duration:[video.video.duration integerValue]
+                                                                  elapsedSeconds:timeElapsed
+                                                                         message:text];
+    } else if (service == CommentShareServiceEmail) {
+        if ([MFMailComposeViewController canSendMail]) {
+            NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
+            
+    #ifdef DEBUG_USE_STAGING_SERVER
+            NSString *url = @"http://staging.nowbox.com/videos/";
+    #else
+            NSString *url = @"http://nowbox.com/videos/";        
+    #endif
+            
+            MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
+            [composeController setMailComposeDelegate:self];
+            [composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
+            [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
+            [self presentModalViewController:composeController animated:YES];
+            [composeController release];        
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"No mail accounts are configured. Please set up an account in Settings in order to share via email." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alertView show];
+            [alertView release];
+        }
+    }
+}
+
+#pragma mark - ToolTipControllerDelegate
+
+- (BOOL)toolTipController:(ToolTipController *)controller shouldPresentToolTip:(ToolTip *)tooltip sender:(id)sender
+{
+    return ([tooltip.name isEqualToString:@"WatchLaterTip"] || [tooltip.name isEqualToString:@"FavoriteTip"]);
+}
+
+- (UIView *)toolTipController:(ToolTipController *)controller viewForPresentingToolTip:(ToolTip *)tooltip sender:(id)sender
+{    
+    tooltip.center = [controlScrollView convertPoint:movieView.center toView:self.view];
+    tooltip.displayText = @"";
+    
+    return self.view;
+}
+
+#pragma mark - MFMailComposeViewController
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error 
+{
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 @end

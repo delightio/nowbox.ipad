@@ -8,6 +8,13 @@
 
 #import "GridDataSource.h"
 
-@interface HomeGridDataSource : GridDataSource 
+@interface HomeGridDataSource : GridDataSource {
+    UIViewController *viewController;
+    NSMutableSet *refreshingChannels;
+}
+
+@property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+
+- (id)initWithGridView:(PagingGridView *)aGridView viewController:(UIViewController *)aViewController managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext;
 
 @end

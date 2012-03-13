@@ -12,6 +12,8 @@
 #import "PanelVideoCell.h"
 #import "Analytics.h"
 
+static NSPredicate * _sharedFilterPredicate = nil;
+
 @implementation VideoRowController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
@@ -29,7 +31,12 @@
 #define kMediumVideoCellWidth    404.0f
 #define kLongVideoCellWidth    606.0f
 
-
++ (NSPredicate *)sharedFilterPredicate {
+	if ( _sharedFilterPredicate == nil ) {
+		_sharedFilterPredicate = [[NSPredicate predicateWithFormat:@"channel == $CHANNEL AND video.nm_error < $ERROR_CODE AND nm_deleted == NO"] retain];
+	}
+	return _sharedFilterPredicate;
+}
 
 - (id)init {
 	self = [super init];
@@ -229,6 +236,8 @@
 }
 
 - (NSFetchedResultsController *)fetchedResultsController {
+	
+	if ( channel == nil ) return nil;
     
     if (fetchedResultsController_ != nil) {
         return fetchedResultsController_;
@@ -247,8 +256,9 @@
 	
 	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
 	// set predicate
-	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
-    
+	[fetchRequest setPredicate:[[VideoRowController sharedFilterPredicate] predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObjectsAndKeys:channel, @"CHANNEL", [NSNumber numberWithInteger:NMErrorDequeueVideo], @"ERROR_CODE", nil]]];
+// 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %@", channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
+   
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];
     
@@ -293,7 +303,6 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
 //	static NSUInteger theCount = 0;
-    
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             [videoTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]

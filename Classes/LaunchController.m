@@ -119,6 +119,7 @@
     NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
     [taskQueueController beginNewSession:sid];
     [df setInteger:sid forKey:NM_SESSION_ID_KEY];
+    [df synchronize];
 }
 
 - (void)showVideoViewAnimated {
@@ -158,6 +159,9 @@
 		// get channel
 		[taskQueueController issueGetSubscribedChannels];
 		[progressLabel setTitle:@"Loading videos..." forState:UIControlStateNormal];
+		if ( !appFirstLaunch ) {
+			[[NMAccountManager sharedAccountManager] applicationDidLaunch];
+		}
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
         [self beginNewSession];

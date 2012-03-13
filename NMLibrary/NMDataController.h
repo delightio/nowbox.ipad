@@ -19,8 +19,8 @@
 @class NMAuthor;
 @class NMSubscription;
 @class NMPersonProfile;
-@class NMFacebookInfo;
-@class NMFacebookComment;
+@class NMSocialInfo;
+@class NMSocialComment;
 
 @interface NMDataController : NSObject {
 	NSNotificationCenter * notificationCenter;
@@ -44,17 +44,19 @@
 	
 	// internal channels
 	NMChannel * myQueueChannel, * favoriteVideoChannel;
-	NMChannel * userTwitterStreamChannel, * userFacebookStreamChannel;
+	NMChannel * userTwitterStreamChannel, * userFacebookStreamChannel, * userYouTubeStreamChannel;
 }
 
 @property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, retain) NSEntityDescription * channelEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * videoEntityDescription;
+@property (nonatomic, retain) NSEntityDescription * concreteVideoEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * authorEntityDescription;
 @property (nonatomic, retain) NSEntityDescription * subscriptionEntityDescription;
 @property (nonatomic, retain) NSMutableDictionary * categoryCacheDictionary;
 @property (nonatomic, retain) NMChannel * userTwitterStreamChannel;
 @property (nonatomic, retain) NMChannel * userFacebookStreamChannel;
+@property (nonatomic, retain) NMChannel * userYouTubeStreamChannel;
 @property (nonatomic, retain) NMCategory * internalSearchCategory;
 @property (nonatomic, readonly) NSPredicate * searchResultsPredicate;
 @property (nonatomic, retain) NMCategory * internalYouTubeCategory;
@@ -76,6 +78,8 @@
 @property (nonatomic, retain) NSPredicate * concreteVideoForExternalIDPredicateTemplate;
 @property (nonatomic, retain) NSPredicate * usernamePredicateTemplate;
 @property (nonatomic, retain) NSPredicate * usernameOrIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * socialObjectIDPredicateTemplate;
+@property (nonatomic, retain) NSPredicate * personProfileExistsPredicateTemplate;
 
 - (void)createDataParsingOperationForTask:(NMTask *)atask;
 
@@ -109,7 +113,7 @@
 - (void)permanentDeleteMarkedChannels;
 - (NSInteger)maxSubscriptionSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
-- (void)updateFavoriteChannelHideStatus;
+//- (void)updateFavoriteChannelHideStatus;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;
 - (NSArray *)socialChannelsForSync;
@@ -140,10 +144,10 @@
 - (NMVideoExistenceCheckResult)videoExistsWithID:(NSNumber *)vid orExternalID:(NSString *)extID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 - (NMVideoExistenceCheckResult)videoExistsWithExternalID:(NSString *)anExtID channel:(NMChannel *)chn targetVideo:(NMConcreteVideo **)outRealVdo;
 
-// video facebook info
-- (NMFacebookInfo *)insertNewFacebookInfo;
-- (NMFacebookComment *)insertNewFacebookComment;
-- (void)deleteFacebookCacheForLogout;
+// video facebook/twitter info
+- (NMSocialInfo *)insertNewSocialInfo;
+- (NMSocialComment *)insertNewSocialComment;
+- (void)deleteCacheForSignOut:(NMChannelType)accType;
 
 // author
 - (NMAuthor *)authorForID:(NSNumber *)authID orName:(NSString *)aName;
@@ -152,7 +156,7 @@
 
 // Person profile and subscription
 - (NMPersonProfile *)insertMyNewEmptyFacebookProfile:(BOOL *)isNew;
-- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID isNew:(BOOL *)isNewObj;
+- (NMPersonProfile *)insertNewPersonProfileWithID:(NSString *)strID type:(NSNumber *)acType isNew:(BOOL *)isNewObj;
 - (NMPersonProfile *)insertNewPersonProfileWithAccountIdentifier:(NSString *)strID isNew:(BOOL *)isNewObj;
 - (NSArray *)personProfilesForSync:(NSInteger)aCount;
 - (NSInteger)maxPersonProfileID;

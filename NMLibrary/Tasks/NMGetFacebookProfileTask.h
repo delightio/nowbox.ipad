@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSDictionary * profileDictionary;
 @property (nonatomic, retain) NMPersonProfile * profile;
 @property (nonatomic, retain) NSString * userID;
+@property (nonatomic, retain) NSNumber * facebookTypeNumber;
 
 - (id)initWithProfile:(NMPersonProfile *)aProfile;
 

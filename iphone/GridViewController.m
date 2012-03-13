@@ -11,9 +11,17 @@
 #import "YouTubeGridDataSource.h"
 #import "PhoneVideoPlaybackViewController.h"
 
+@interface GridViewController (PrivateMethods)
+- (void)updateTitleBarForDataSource:(id<PagingGridViewDataSource>)dataSource;
+@end
+
 @implementation GridViewController
 
 @synthesize gridView;
+@synthesize nowboxLogo;
+@synthesize titleLabel;
+@synthesize backButton;
+@synthesize refreshButton;
 @synthesize pageControl;
 @synthesize gridDataSource;
 @synthesize managedObjectContext;
@@ -23,7 +31,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.managedObjectContext = aManagedObjectContext;
-        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView managedObjectContext:managedObjectContext] autorelease];
+        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:nil viewController:self managedObjectContext:managedObjectContext] autorelease];
     }
     return self;
 }
@@ -31,6 +39,10 @@
 - (void)dealloc
 {    
     [gridView release];
+    [nowboxLogo release];
+    [titleLabel release];
+    [backButton release];
+    [refreshButton release];
     [pageControl release];
     [gridDataSource release];
     [managedObjectContext release];
@@ -38,16 +50,32 @@
     [super dealloc];
 }
 
+- (void)updateTitleBarForDataSource:(id<PagingGridViewDataSource>)dataSource
+{
+    if ([dataSource isKindOfClass:[HomeGridDataSource class]]) {
+        refreshButton.alpha = 0.0f;
+        backButton.alpha = 0.0f;
+        titleLabel.alpha = 0.0f;
+        nowboxLogo.alpha = 1.0f;
+    } else {
+        refreshButton.alpha = 1.0f;
+        backButton.alpha = 1.0f;
+        titleLabel.alpha = 1.0f;
+        nowboxLogo.alpha = 0.0f;
+    }    
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    [gridDataSource setGridView:gridView];
+    [gridView setDataSource:gridDataSource animated:NO];
+    [self updateTitleBarForDataSource:gridDataSource];
     
-    gridDataSource.gridView = gridView;
-    gridView.dataSource = gridDataSource;
-    
-    pageControl.numberOfPages = gridView.numberOfPages;
+    // If view was unloaded, restore the page we were on
     pageControl.currentPage = currentPage;
     [gridView setContentOffset:CGPointMake(currentPage * gridView.frame.size.width, 0) animated:NO];
 }
@@ -57,6 +85,10 @@
     [super viewDidUnload];
 
     self.gridView = nil;
+    self.nowboxLogo = nil;
+    self.titleLabel = nil;
+    self.backButton = nil;
+    self.refreshButton = nil;
     self.pageControl = nil;
 }
 
@@ -67,36 +99,45 @@
 
 #pragma mark - Actions
 
-- (IBAction)searchButtonPressed:(id)sender
-{
-    
-}
-
 - (IBAction)refreshButtonPressed:(id)sender
 {
-    
+    [gridDataSource refreshAllObjects];
+    [gridView reloadData];
 }
 
-- (IBAction)settingsButtonPressed:(id)sender
+- (IBAction)backButtonPressed:(id)sender
 {
+    [gridView setRearranging:NO animated:NO];
     
+    if (![gridDataSource isKindOfClass:[HomeGridDataSource class]]) {
+        GridDataSource *homeDataSource = [[[HomeGridDataSource alloc] initWithGridView:gridView viewController:self managedObjectContext:managedObjectContext] autorelease];
+        [gridView setDataSource:homeDataSource animated:YES];
+    }
 }
 
 #pragma mark - PagingGridViewDelegate
 
+- (void)gridView:(PagingGridView *)aGridView dataSourceWillAnimate:(id<PagingGridViewDataSource>)newDataSource
+{
+    titleLabel.text = ((GridDataSource *)newDataSource).title;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        [self updateTitleBarForDataSource:newDataSource];
+    }];
+}
+
+- (void)gridView:(PagingGridView *)aGridView dataSourceDidChange:(id<PagingGridViewDataSource>)newDataSource
+{
+    self.gridDataSource = (GridDataSource *)newDataSource;
+    pageControl.numberOfPages = gridView.numberOfPages;
+    pageControl.currentPage = gridView.currentPage;
+}
+
 - (void)gridView:(PagingGridView *)aGridView didSelectItemAtIndex:(NSUInteger)index
 {
-    GridDataSource *nextDataSource = [gridDataSource nextDataSourceForIndex:index];
-    
-    if (nextDataSource) {
-        // Load another set of grid items
-        self.gridDataSource = nextDataSource;
-        aGridView.dataSource = gridDataSource;
-        pageControl.numberOfPages = aGridView.numberOfPages;
-    } else {
+    NMChannel *channel = [gridDataSource selectObjectAtIndex:index];
+    if (channel) {
         // Go to video player
-        NMChannel *channel = [gridDataSource objectAtIndex:index];
-        
         PhoneVideoPlaybackViewController *playbackController = [[PhoneVideoPlaybackViewController alloc] initWithNibName:@"PhoneVideoPlaybackView" bundle:nil];
         [playbackController setManagedObjectContext:managedObjectContext];
         [self presentModalViewController:playbackController animated:NO];
@@ -113,10 +154,10 @@
     return NO;
 }
 
-- (void)gridView:(PagingGridView *)aGridView didDeleteItemAtIndex:(NSUInteger)index
+- (void)gridView:(PagingGridView *)aGridView numberOfItemsDidChange:(NSUInteger)numberOfItems
 {
     pageControl.numberOfPages = aGridView.numberOfPages;
-    pageControl.currentPage = aGridView.currentPage;
+    pageControl.currentPage = aGridView.currentPage;    
 }
 
 - (void)gridViewDidBeginRearranging:(PagingGridView *)gridView

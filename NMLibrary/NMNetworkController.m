@@ -18,6 +18,8 @@
 
 #define NM_MAX_NUMBER_OF_CONCURRENT_CONNECTION		8
 NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
+NSString * const NMTwitterAPIRateControlNotification = @"NMTwitterAPIRateControlNotification";
+NSString * const NMTwitterAPIRemainLimitKey = @"NMTwitterAPIRemainLimitKey";
 
 @interface NMNetworkController (PrivateMethods)
 
@@ -35,10 +37,12 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 @synthesize errorWindowStartDate;
 @synthesize tokenRenewMode;
 @synthesize suspendFacebook;
+@synthesize suspendTwitter;
 
 - (id)init {
 	self = [super init];
 	facebookCommandRange = NSMakeRange(NMCommandFacebookCommandLowerBound, NMCommandFacebookCommandUpperBound - NMCommandFacebookCommandLowerBound + 1);
+	twitterCommandRange = NSMakeRange(NMCommandFacebookCommandUpperBound, NMCommandTwitterCommandUpperBound - NMCommandFacebookCommandUpperBound + 1);
 	commandIndexPool = [[NSMutableIndexSet alloc] init];
 	pendingDeleteCommandIndexPool = [[NSMutableIndexSet alloc] init];
 	connectionPool = [[NSMutableSet alloc] initWithCapacity:8];
@@ -53,14 +57,15 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[NSThread detachNewThreadSelector:@selector(controlThreadMain:) toTarget:self withObject:nil];
 	self.errorWindowStartDate = [NSDate distantPast];
 	
+	twitterRemainLimit = NSIntegerMax;
+	twitterLimitResetTime = 0;
+	
 	/* By default, the Cocoa URL loading system uses a small shared memory cache.
 	 We don't need this cache, so we set it to zero when the application launches. */
 	
     /* turn off the NSURLCache shared cache */
 	
-    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-                                                            diskCapacity:0
-                                                                diskPath:nil];
+    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
     [NSURLCache setSharedURLCache:sharedCache];
     [sharedCache release];
 	
@@ -127,16 +132,32 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 		NSLog(@"%d", idx);
 	}];
 	NSLog(@"======");
+	NSLog(@"======\nTask buffer");
+	[pendingTaskBufferLock lock];
+	for (NMTask * task in pendingTaskBuffer) {
+		NSLog(@"task command: %d idx: %d state: %d", task.command, [task commandIndex], task.state);
+	}
+	[pendingTaskBufferLock unlock];
+	NSLog(@"======");
 }
 
 #pragma mark Connection management
 - (void)addNewConnectionForTasks:(NSArray *)tasks {
 	[pendingTaskBufferLock lock];
 	NMTask *t;
+	// we assume the app only signs out from Facebook or Twitter preemptively. When signing out, say, Facebook, the app only allows Facebook sign out logic to happen.
 	if ( suspendFacebook ) {
 		// check if there's any facebook tasks
 		for (t in tasks) {
 			if ( NSLocationInRange(t.command, facebookCommandRange ) ) {
+				continue;
+			}
+			[pendingTaskBuffer addObject:t];
+			t.state = NMTaskExecutionStateWaitingInConnectionQueue;
+		}
+	} else if ( suspendTwitter ) {
+		for (t in tasks) {
+			if ( NSLocationInRange(t.command, twitterCommandRange ) ) {
 				continue;
 			}
 			[pendingTaskBuffer addObject:t];
@@ -153,7 +174,8 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 }
 
 - (void)addNewConnectionForTask:(NMTask *)aTask {
-	if ( suspendFacebook && NSLocationInRange(aTask.command, facebookCommandRange ) ) {
+	if ( (suspendFacebook && NSLocationInRange(aTask.command, facebookCommandRange )) ||
+		( suspendTwitter && NSLocationInRange(aTask.command, twitterCommandRange)) ) {
 		return;
 	}
 	[pendingTaskBufferLock lock];
@@ -453,6 +475,23 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	}
 }
 
+- (void)updateTwitterAPIRemainLimit:(NSInteger)aLimit resetTime:(NSInteger)timestamp {
+	if ( timestamp > twitterLimitResetTime ) {
+		twitterRemainLimit = timestamp;
+		twitterRemainLimit = aLimit;
+	} else if ( aLimit < twitterRemainLimit ) {
+		twitterRemainLimit = aLimit;
+	}
+	if ( twitterRemainLimit % 20 == 0 || twitterRemainLimit > 300 ) {
+		// send a notification on every decrement of 20 of limit
+		dispatch_async(dispatch_get_main_queue(), ^{
+			NSDictionary * infoDict = [NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:twitterRemainLimit] forKey:NMTwitterAPIRemainLimitKey];
+		   [[NSNotificationCenter defaultCenter] postNotificationName:NMTwitterAPIRateControlNotification object:self userInfo:infoDict];
+			// the notification listeners should decide what to do.
+		});
+	}
+}
+
 #pragma mark NSURLConnection delegate methods
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
 	return nil;
@@ -470,11 +509,26 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 		case NMCommandGetAuthorThumbnail:
 		case NMCommandGetVideoThumbnail:
 		case NMCommandGetPreviewThumbnail:
+        case NMCommandGetPersonProfileThumbnail:
 		{
 			NMImageDownloadTask * imgTask = (NMImageDownloadTask *)task;
 			imgTask.httpResponse = (NSHTTPURLResponse *)response;
 			break;
-		}			
+		}
+		case NMCommandParseTwitterFeed:
+		case NMCommandGetTwitterProfile:
+// not rate controlled
+//		case NMCommandPostTweet:
+//		case NMCommandRetweet:
+//		case NMCommandReplyTweet:
+		{
+			NSNumber * remainLmt = [httpResponse.allHeaderFields objectForKey:@"X-RateLimit-Remaining"];
+			NSNumber * resetTm = [httpResponse.allHeaderFields objectForKey:@"X-RateLimit-Reset"];
+			if ( remainLmt && resetTm ) {
+				[self updateTwitterAPIRemainLimit:[remainLmt integerValue] resetTime:[resetTm integerValue]];
+			}
+			break;
+		}
 		default:
 			break;
 	}
@@ -519,6 +573,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	[commandIndexPool removeIndex:[task commandIndex]];
 	[pendingTaskBufferLock lock];
 	[pendingTaskBuffer removeObject:task];
+	if ( [pendingTaskBuffer count] ) {
+		[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
+	}
 	[pendingTaskBufferLock unlock];
 	
 	// inform the user
@@ -609,6 +666,9 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 	// remove task
 	[pendingTaskBufferLock lock];
 	[pendingTaskBuffer removeObject:theTask];
+	if ( [pendingTaskBuffer count] ) {
+		[self performSelector:@selector(createConnection) onThread:controlThread withObject:nil waitUntilDone:NO];
+	}
 	[pendingTaskBufferLock unlock];
 }
 
@@ -646,7 +706,10 @@ NSString * NMServiceErrorDomain = @"NMServiceErrorDomain";
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
+	NSLog(@"facebook error: %@", error);
  	NMFacebookTask * fbTask = request.task;
+	fbTask.state = NMTaskExecutionStateConnectionFailed;
+	[self postConnectionErrorNotificationOnMainThread:error forTask:fbTask];
    // release the connection, and the data object
 	[commandIndexPool removeIndex:[fbTask commandIndex]];
 	// remove task

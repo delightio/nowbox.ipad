@@ -7,8 +7,8 @@
 //
 
 #import "NMPersonProfile.h"
-#import "NMFacebookComment.h"
-#import "NMFacebookInfo.h"
+#import "NMSocialComment.h"
+#import "NMSocialInfo.h"
 #import "NMSubscription.h"
 
 
@@ -19,6 +19,7 @@
 @dynamic nm_error;
 @dynamic nm_id;
 @dynamic nm_me;
+@dynamic nm_thumbnail_file_name;
 @dynamic nm_type;
 @dynamic nm_user_id;
 @dynamic picture;

@@ -235,7 +235,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 			NSLog(@"error importing video: %@\n%@", self.targetID, self.errorInfo);
 #endif
 		}
-		if ( videoInfoDict && authorDict ) {
+		if ( !encountersErrorDuringProcessing && videoInfoDict && authorDict ) {
 			// detail Video
 			NMVideoDetail * dtlObj = targetVideo.detail;
 			if ( dtlObj == nil ) {
@@ -244,7 +244,11 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 			}
 			dtlObj.nm_description = [videoInfoDict objectForKey:@"nm_description"];
 			[videoInfoDict removeObjectForKey:@"nm_description"];
-			if ( !encountersErrorDuringProcessing ) targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
+			// make the NMVideo object dirty so that FRC method will get notified
+			for (NMVideo * vdo in targetVideo.channels) {
+				vdo.nm_make_dirty = [NSNumber numberWithBool:![vdo.nm_make_dirty boolValue]];
+			}
 			// update Concrete Video
 			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];
 			// author
@@ -259,10 +263,18 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 		}
 	}
 	if ( encountersErrorDuringProcessing ) {
-		targetVideo.nm_direct_url = nil;
-		targetVideo.nm_direct_sd_url = nil;
-		targetVideo.nm_error = [self.errorInfo objectForKey:@"error_code"];
-		targetVideo.nm_playback_status = NMVideoQueueStatusError;
+		if ( command == NMCommandImportYouTubeVideo ) {
+			// just delete the video
+			[ctrl deleteManagedObject:concreteVideo];
+			self.concreteVideo = nil;
+		} else {
+			targetVideo.nm_direct_url = nil;
+			targetVideo.nm_direct_sd_url = nil;
+			if ( [targetVideo.nm_error integerValue] != NMErrorPendingImport ) {
+				targetVideo.nm_error = [self.errorInfo objectForKey:@"error_code"];
+			}
+			targetVideo.nm_playback_status = NMVideoQueueStatusError;
+		}
 	} else {
 		targetVideo.nm_direct_url = directURLString;
 		targetVideo.nm_direct_sd_url = directSDURLString;
@@ -303,7 +315,6 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 	NSDictionary * theDict;
 	if ( command == NMCommandImportYouTubeVideo ) {
 		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:concreteVideo, @"target_object", nil] : nil;
-		NSLog(@"on send notification: imported video successfully: %@, %@", externalID, [[concreteVideo.channels anyObject] valueForKeyPath:@"channel.title"]);
 	} else {
 		theDict = directURLString ? [NSDictionary dictionaryWithObjectsAndKeys:video, @"target_object", nil] : nil;
 	}

@@ -8,38 +8,39 @@
 
 #import <UIKit/UIKit.h>
 #import "NMMovieDetailView.h"
-#import "NMCachedImageView.h"
-#import "NMControlsView.h"
 #import "NMChannel.h"
+#import "PhoneVideoInfoOrientedView.h"
+#import "PhoneControlsView.h"
 
 @protocol PhoneMovieDetailViewDelegate;
-@class PhoneVideoInfoOrientedView;
-@class InfiniteScrollView;
 
-@interface PhoneMovieDetailView : NMMovieDetailView {
+@interface PhoneMovieDetailView : NMMovieDetailView <PhoneVideoInfoOrientedViewDelegate, BuzzViewDelegate> {
     PhoneVideoInfoOrientedView *currentOrientedView;
+    NSMutableArray *mentionsArray;
 }
 
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *portraitView;
 @property (nonatomic, retain) IBOutlet PhoneVideoInfoOrientedView *landscapeView;
-@property (nonatomic, retain) IBOutlet NMControlsView *controlsView;
+@property (nonatomic, retain) IBOutlet PhoneControlsView *controlsView;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
+@property (nonatomic, assign) BOOL buzzPanelExpanded;
 @property (nonatomic, assign) BOOL videoOverlayHidden;
 @property (nonatomic, assign) id<PhoneMovieDetailViewDelegate> delegate;
 
-- (void)setChannelTitle:(NSString *)channelTitle;
-- (void)setVideoTitle:(NSString *)videoTitle;
-- (void)setDescriptionText:(NSString *)descriptionText;
-- (void)setChannelThumbnailForChannel:(NMChannel *)channel;
 - (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
+- (void)setBuzzPanelExpanded:(BOOL)buzzPanelExpanded animated:(BOOL)animated;
 - (void)setVideoOverlayHidden:(BOOL)hidden animated:(BOOL)animated;
+- (void)setWatchLater:(BOOL)watchLater;
+- (void)setFavorite:(BOOL)favorite;
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
 - (IBAction)gridButtonPressed:(id)sender;
 - (IBAction)playButtonPressed:(id)sender;
+- (IBAction)thumbnailPressed:(id)sender;
 - (IBAction)seekBarValueChanged:(id)sender;
 - (IBAction)seekBarTouchDown:(id)sender;
 - (IBAction)seekBarTouchUp:(id)sender;
 - (IBAction)toggleInfoPanel:(id)sender;
+- (IBAction)toggleBuzzPanel:(id)sender;
 
 @end
 
@@ -49,35 +50,14 @@
 @optional
 - (void)videoInfoViewDidTapGridButton:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didLike:(BOOL)like socialInfo:(NMSocialInfo *)socialInfo;
+- (void)videoInfoViewDidTapThumbnail:(PhoneMovieDetailView *)videoInfoView;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didSeek:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchDownSeekBar:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTouchUpSeekBar:(NMSeekBar *)seekBar;
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded;
-@end
-
-// A video info view contains two of these, one for portrait and one for landscape.
-
-@interface PhoneVideoInfoOrientedView : UIView {
-    CGRect originalVideoTitleFrame;
-}
-
-@property (nonatomic, retain) IBOutlet UIView *topView;
-@property (nonatomic, retain) IBOutlet UIView *bottomView;
-@property (nonatomic, retain) IBOutlet UIView *infoView;
-@property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
-@property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
-@property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
-@property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
-@property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
-@property (nonatomic, assign) BOOL infoPanelExpanded;
-
-- (void)positionLabels;
-- (void)setInfoPanelExpanded:(BOOL)isInfoPanelExpanded animated:(BOOL)animated;
-
-@end
-
-@interface InfiniteScrollView : UIScrollView <UIScrollViewDelegate>
-
-- (NSInteger)centerViewIndex;
-
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleBuzzPanelExpanded:(BOOL)expanded;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didTapCommentButton:(id)sender socialInfo:(NMSocialInfo *)socialInfo;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView willBeginDraggingScrollView:(UIScrollView *)scrollView;
+- (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didEndDraggingScrollView:(UIScrollView *)scrollView;
 @end

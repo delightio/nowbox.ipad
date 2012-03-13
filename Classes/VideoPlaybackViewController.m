@@ -14,6 +14,7 @@
 #import "LaunchController.h"
 #import "Analytics.h"
 #import "UIView+InteractiveAnimation.h"
+#import "NSString+Formatting.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreMedia/CoreMedia.h>
 
@@ -202,13 +203,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	[defaultNotificationCenter addObserver:self selector:@selector(handleChannelManagementNotification:) name:NMChannelManagementDidDisappearNotification object:nil];
 	// event
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidShareVideoNotification object:nil];
-    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidPostSharingNotification object:nil];
     [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidEnqueueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidDequeueVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailShareVideoNotification object:nil];
-    [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailPostSharingNotification object:nil];    
     [defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailFavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailUnfavoriteVideoNotification object:nil];
 	[defaultNotificationCenter addObserver:self selector:@selector(handleVideoEventNotification:) name:NMDidFailEnqueueVideoNotification object:nil];
@@ -362,6 +361,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	}
 	// send event back to nowmov server
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 	return vdoAy;
 }
 
@@ -375,6 +375,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( currentChannel != chnObj ) {
 			// report event
 			[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+			[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 			// clear all task related to the previous channel
 			[nowboxTaskController cancelAllPlaybackTasksForChannel:currentChannel];
 			[currentChannel release];
@@ -491,6 +492,11 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = (NSInteger)CMTimeGetSeconds(t);
 			loadedControlView.timeElapsed = sec;
+		}
+		tenSecCounter++;
+		if ( tenSecCounter == 10 ) {
+			// send Open Graph View event for this video
+			[nowboxTaskController issueSendOpenGraphWatchVideo:self.currentVideo backSeconds:10];
 		}
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
@@ -621,7 +627,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// check if any of the video is marked as error
 	// this for-loop does NOT guarantee to run. Sometimes, we can get free movie detail view even if there's movie detail view occupied by bad videos.
 	for ( NMMovieDetailView * theView in movieDetailViewArray ) {
-		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError ) {
+		if ( theView.video.video.nm_playback_status == NMVideoQueueStatusError || [theView.video.nm_deleted boolValue] ) {
 			[self reclaimMovieDetailViewForVideo:theView.video];
 			theView.alpha = 1.0f;
 			return theView;
@@ -783,6 +789,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// send tracking event
 	NMVideo * theVideo = [self playerCurrentVideo];
 	[nowboxTaskController issueSendViewEventForVideo:theVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 	// visually transit to next video just like the user has tapped next button
 	//if ( aEndOfVideo ) {
 	// disable interface scrolling
@@ -822,6 +829,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 	// report event
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo start:lastStartTime elapsedSeconds:loadedControlView.timeElapsed - lastStartTime];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 
 	// Channel View calls this method when user taps a video from the table
 	// stop video
@@ -940,7 +948,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	if ( totalNum ) {
 		if ( currentXOffset != newOffset ) {
 #ifdef DEBUG_PLAYBACK_QUEUE
-			NSLog(@"current idx: %d video: %@", playbackModelController.currentIndexPath.row, playbackModelController.currentVideo.title);
+			NSLog(@"current idx: %d video: %@", playbackModelController.currentIndexPath.row, playbackModelController.currentVideo.video.title);
 #endif
 			// update offset
 			currentXOffset = newOffset;
@@ -989,7 +997,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (void)player:(NMAVQueuePlayer *)aPlayer observePlayerItem:(AVPlayerItem *)anItem {
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
-	NSLog(@"KVO observing: %@", theItem.nmVideo.title);
+	NSLog(@"KVO observing: %@", theItem.nmVideo.video.title);
 #endif
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
@@ -1002,9 +1010,9 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 #ifdef DEBUG_PLAYBACK_QUEUE
 	NMAVPlayerItem * theItem = (NMAVPlayerItem *)anItem;
 	if ( theItem.nmVideo ) {
-		NSLog(@"KVO stop observing: %@", theItem.nmVideo.title);
+		NSLog(@"\tKVO stop observing: %@", theItem.nmVideo.video.title);
 	} else {
-		NSLog(@"KVO observing object is nil");
+		NSLog(@"\tKVO observing object is nil");
 	}
 #endif
 	NMVideo * vdo = ((NMAVPlayerItem *)anItem).nmVideo;
@@ -1198,6 +1206,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	} else if ( c == NM_PLAYER_CURRENT_ITEM_CONTEXT ) {
 		shouldFadeOutVideoThumbnail = YES;
 		lastTimeElapsed = 0, lastStartTime = 0;
+		tenSecCounter = 0;
 		// update video status
 		NMAVPlayerItem * curItem = (NMAVPlayerItem *)movieView.player.currentItem;
 		curItem.nmVideo.video.nm_playback_status = NMVideoQueueStatusCurrentVideo;
@@ -1374,6 +1383,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// switch to the next/prev video
 //	scrollView.scrollEnabled = YES; move to animation handler
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
+	[nowboxTaskController issueSentOpenGraphDidWatchVideo:playbackModelController.currentVideo];
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
 		[self stopVideo];
@@ -1835,18 +1845,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         // Email share
         [[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
 
-        // Cut off the description at 160 chars
-        NSString *videoDescription = video.video.detail.nm_description;
-        if ([videoDescription length] > 160) {
-            videoDescription = [videoDescription substringToIndex:160];
-            NSRange lastWhitespace = [videoDescription rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]
-                                                                       options:NSBackwardsSearch];
-            if (lastWhitespace.location != NSNotFound) {
-                videoDescription = [videoDescription substringToIndex:lastWhitespace.location];
-            }
-            
-            videoDescription = [NSString stringWithFormat:@"%@...", videoDescription];
-        }
+        NSString *videoDescription = [video.video.detail.nm_description stringLimitedToLength:160];
         
 #ifdef DEBUG_USE_STAGING_SERVER
         NSString *url = @"http://staging.nowbox.com/videos/";

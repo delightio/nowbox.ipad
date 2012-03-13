@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class NMFacebookComment, NMFacebookInfo, NMSubscription;
+@class NMSocialComment, NMSocialInfo, NMSubscription;
 
 @interface NMPersonProfile : NSManagedObject
 
@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSNumber * nm_error;
 @property (nonatomic, retain) NSNumber * nm_id;
 @property (nonatomic, retain) NSNumber * nm_me;
+@property (nonatomic, retain) NSString * nm_thumbnail_file_name;
 @property (nonatomic, retain) NSNumber * nm_type;
 @property (nonatomic, retain) NSString * nm_user_id;
 @property (nonatomic, retain) NSString * picture;
@@ -29,13 +30,13 @@
 
 @interface NMPersonProfile (CoreDataGeneratedAccessors)
 
-- (void)addCommentsObject:(NMFacebookComment *)value;
-- (void)removeCommentsObject:(NMFacebookComment *)value;
+- (void)addCommentsObject:(NMSocialComment *)value;
+- (void)removeCommentsObject:(NMSocialComment *)value;
 - (void)addComments:(NSSet *)values;
 - (void)removeComments:(NSSet *)values;
 
-- (void)addFacebookLikesObject:(NMFacebookInfo *)value;
-- (void)removeFacebookLikesObject:(NMFacebookInfo *)value;
+- (void)addFacebookLikesObject:(NMSocialInfo *)value;
+- (void)removeFacebookLikesObject:(NMSocialInfo *)value;
 - (void)addFacebookLikes:(NSSet *)values;
 - (void)removeFacebookLikes:(NSSet *)values;
 

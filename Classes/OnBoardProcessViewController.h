@@ -11,6 +11,7 @@
 #import "GridScrollView.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
+@class TwitterAccountPickerViewController;
 
 @interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {    
     UIView *currentView;    
@@ -28,6 +29,7 @@
     BOOL alertShowing;
     
     SocialLoginViewController *socialController;
+	TwitterAccountPickerViewController * twitterAccountPicker;
 }
 
 @property (nonatomic, retain) NSArray *featuredCategories;

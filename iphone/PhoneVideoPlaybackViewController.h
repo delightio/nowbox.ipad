@@ -16,9 +16,12 @@
 #import "NMAVPlayerItem.h"
 #import "ToolTipController.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import <MessageUI/MessageUI.h>
 #import "NMStyleUtility.h"
 #import "VideoPlaybackBaseViewController.h"
 #import "PhoneMovieDetailView.h"
+#import "CommentShareView.h"
+#import "NSString+Formatting.h"
 
 @class NMVideo;
 @class NMTaskQueueController;
@@ -36,11 +39,10 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, NMControlsViewDelegate, PhoneMovieDetailViewDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, PhoneMovieDetailViewDelegate, CommentShareViewDelegate, ToolTipControllerDelegate, MFMailComposeViewControllerDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;
-//	IBOutlet UIView * ribbonView;
 	IBOutlet UIButton * favoriteButton;
 	IBOutlet UIButton * watchLaterButton;
 	IBOutlet UILabel * previousChannelSwitchingLabel;
@@ -49,12 +51,12 @@ enum {
 	IBOutlet UIActivityIndicatorView * nextChannelActivityView;
     UIView *movieBackgroundView;
 	NMMovieView * movieView;
-	
+	CommentShareView * shareView;
+    
 	NSMutableArray * movieDetailViewArray;
 		
 	UILabel * currentTimeLabel, * totalDurationLabel;
 	BOOL isAspectFill;
-//	BOOL scrollBeyondThreshold;
 	CGFloat movieXOffset;
 	
 	CGFloat currentXOffset;
@@ -63,7 +65,6 @@ enum {
 	VideoPlaybackModelController * playbackModelController;
 	
 	BOOL didSkippedVideo;
-//	BOOL videoDurationInvalid;
 	BOOL bufferEmpty;
 	BOOL didPlayToEnd;
 	BOOL playFirstVideoOnLaunchWhenReady;
@@ -90,10 +91,9 @@ enum {
 	ipadAppDelegate * appDelegate;
 	NMStyleUtility * styleUtility;
     
-    ToolTip *pendingToolTip; 
     void (^alertCompletion)(void);
 
-    BOOL scrollingNotFromUser;        
+    BOOL scrollingNotFromUser; 
 }
 
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
@@ -111,6 +111,7 @@ enum {
 - (IBAction)playStopVideo:(id)sender;
 - (IBAction)addVideoToFavorite:(id)sender;
 - (IBAction)addVideoToQueue:(id)sender;
+- (IBAction)shareVideo:(id)sender;
 
 // interface for Channel List View
 - (void)playVideo:(NMVideo *)aVideo;

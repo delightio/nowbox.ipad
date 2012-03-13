@@ -9,6 +9,7 @@
 #import "FeatureDebugViewController.h"
 #import "FeatureDebugSocialChannelViewController.h"
 #import "VideoPlaybackViewController.h"
+#import "FBConnect.h"
 
 @implementation FeatureDebugViewController
 @synthesize targetChannel, selectedChannel;
@@ -193,6 +194,13 @@
 	NSLog(@"movie view info: %f %f scroll view: %f no. of videos: %d", theFrame.origin.x, alpha, playbackViewController.controlScrollView.contentOffset.x, [thePlayer.items count]);
 }
 
+- (IBAction)printPlaybackQueue:(id)sender {
+	NSArray * playerItems = playbackViewController.movieView.player.items;
+	for (NMAVPlayerItem * myItem in playerItems) {
+		NSLog(@"video in player: %@", myItem.nmVideo.video.title);
+	}
+}
+
 - (IBAction)importYouTube:(id)sender {
 	[[NMAccountManager sharedAccountManager] scheduleImportVideos];
 }
@@ -213,6 +221,28 @@
 
 - (IBAction)facebookFeedParse:(id)sender {
 	[[NMAccountManager sharedAccountManager] scheduleSyncSocialChannels];
+}
+
+- (IBAction)facebookRefreshToken:(id)sender {
+	[[NMAccountManager sharedAccountManager].facebook extendAccessToken];
+}
+
+- (IBAction)twitterFilter:(id)sender {
+	FeatureDebugSocialChannelViewController * viewCtrl = [[FeatureDebugSocialChannelViewController alloc] initWithStyle:UITableViewStylePlain];
+	viewCtrl.channelType = [NSNumber numberWithInteger:NMChannelUserTwitterType];
+	viewCtrl.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
+	[self.navigationController pushViewController:viewCtrl animated:YES];
+	[viewCtrl release];
+}
+
+- (IBAction)twitterSignOut:(id)sender {
+	[syncActivityView startAnimating];
+	[[NMAccountManager sharedAccountManager] signOutTwitterOnCompleteTarget:self action:@selector(stopAnimating)];
+}
+
+- (IBAction)showVideoMentions:(id)sender {
+	// concrete video => all mentions (Facebook and Twitter)
+	// get all those concrete videos with mentions and list them out
 }
 
 - (IBAction)checkUpdate:(id)sender {

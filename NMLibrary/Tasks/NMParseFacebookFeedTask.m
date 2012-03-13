@@ -15,8 +15,8 @@
 #import "NMConcreteVideo.h"
 #import "NMPersonProfile.h"
 #import "NMSubscription.h"
-#import "NMFacebookInfo.h"
-#import "NMFacebookComment.h"
+#import "NMSocialInfo.h"
+#import "NMSocialComment.h"
 #import "FBConnect.h"
 #import "NMObjectCache.h"
 
@@ -33,8 +33,12 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize user_id = _user_id;
 @synthesize since_id = _since_id;
 @synthesize feedDirectURLString = _feedDirectURLString;
+@synthesize facebookTypeNumber = _facebookTypeNumber;
 
 - (id)initWithChannel:(NMChannel *)chn {
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"Getting first page - Facebook - %@", chn.title);
+#endif
 	self = [super init];
 	command = NMCommandParseFacebookFeed;
 	self.channel = chn;
@@ -57,6 +61,9 @@ static NSArray * youTubeRegexArray = nil;
 	self.user_id = theProfile.nm_user_id;
 	isAccountOwner = [theProfile.nm_me boolValue];
 	self.targetID = chn.nm_id;
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"Getting next page - Facebook");
+#endif
 	
 	return self;
 }
@@ -67,6 +74,7 @@ static NSArray * youTubeRegexArray = nil;
 	[_channel release];
 	[_nextPageURLString release];
 	[_feedDirectURLString release];
+	[_facebookTypeNumber release];
 	[super dealloc];
 }
 
@@ -75,6 +83,13 @@ static NSArray * youTubeRegexArray = nil;
 	// use custom command index method
 	idx = ABS((NSInteger)[_user_id hash]);
 	return (((NSIntegerMax >> 6 ) & idx) << 6) | command;
+}
+
+- (NSNumber *)facebookTypeNumber {
+	if ( _facebookTypeNumber == nil ) {
+		_facebookTypeNumber = [[NSNumber numberWithInteger:NMChannelUserFacebookType] retain];
+	}
+	return _facebookTypeNumber;
 }
 
 - (void)setupPersonProfile:(NMPersonProfile *)theProfile withID:(NSInteger)theID {
@@ -174,11 +189,10 @@ static NSArray * youTubeRegexArray = nil;
 	NSInteger personIDBase = [ctrl maxPersonProfileID];
 	NMObjectCache * objectCache = [[NMObjectCache alloc] init];
 	NSNumber * errNum = [NSNumber numberWithInteger:NMErrorPendingImport];
-	NSNumber * bigSessionNum = [NSNumber numberWithInteger:NSIntegerMax];
 	// enumerate the feed
 	NSInteger idx = -1;
 	NSInteger personIDOffset = 0;
-	NMFacebookInfo * fbInfo;
+	NMSocialInfo * fbInfo;
 	NMConcreteVideo * conVdo = nil;
 	NMVideo * vdo = nil;
 	NSString * extID;
@@ -187,28 +201,33 @@ static NSArray * youTubeRegexArray = nil;
 		idx++;
 		fbInfo = nil;
 		NMVideoExistenceCheckResult chkResult = [ctrl videoExistsWithExternalID:extID channel:_channel targetVideo:&conVdo];
+#ifdef DEBUG_FACEBOOK_IMPORT
+		NSLog(@"import check result: %@ %d", [vdoFeedDict objectForKey:@"external_id"], chkResult);
+#endif
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
 			{
+				numberOfVideoAdded++;
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
-				vdo.nm_session_id = bigSessionNum;
+				vdo.nm_session_id = NM_SESSION_ID;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-				conVdo = vdo.video;
+				vdo.video = conVdo;
 				// check if the set contains the info from this person already
-				NSSet * fbMtnSet = conVdo.facebookMentions;
+				NSSet * fbMtnSet = conVdo.socialMentions;
 				BOOL postFound = NO;
 				for (fbInfo in fbMtnSet) {
-					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
+					if ( [fbInfo.nm_type integerValue] == NMChannelUserFacebookType && [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
 						postFound = YES;
 						break;
 					}
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -227,11 +246,12 @@ static NSArray * youTubeRegexArray = nil;
 				vdo = [ctrl insertNewVideo];
 				vdo.video = conVdo;
 				vdo.channel = _channel;
-				vdo.nm_session_id = bigSessionNum;
+				vdo.nm_session_id = NM_SESSION_ID;
 				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
 				// create facebook info
-				fbInfo = [ctrl insertNewFacebookInfo];
+				fbInfo = [ctrl insertNewSocialInfo];
 				fbInfo.video = conVdo;
+				fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 				// set the link
 				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -240,8 +260,12 @@ static NSArray * youTubeRegexArray = nil;
 				
 			case NMVideoExistsAndInChannel:
 			{
+				// update sort order
+				vdo.nm_sort_order = [NSNumber numberWithInt:theOrder + idx];
+				vdo.nm_session_id = NM_SESSION_ID;
+				// update for mentions
 				conVdo = vdo.video;
-				NSSet * fbMtnSet = conVdo.facebookMentions;
+				NSSet * fbMtnSet = conVdo.socialMentions;
 				BOOL postFound = NO;
 				for (fbInfo in fbMtnSet) {
 					if ( [fbInfo.object_id isEqualToString:[vdoFeedDict objectForKey:@"object_id"]] ) {
@@ -251,8 +275,9 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				if ( !postFound ) {
 					// create facebook info
-					fbInfo = [ctrl insertNewFacebookInfo];
+					fbInfo = [ctrl insertNewSocialInfo];
 					fbInfo.video = vdo.video;
+					fbInfo.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 					// set the link
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
@@ -264,7 +289,6 @@ static NSArray * youTubeRegexArray = nil;
 				break;
 		}
 		if ( vdo ) {
-			NSLog(@"working on video: %@, post: %@", conVdo.title, fbInfo.object_id);
 			// check person profile
 			BOOL isNew = NO;
 			NSDictionary * fromDict = [vdoFeedDict objectForKey:@"from"];
@@ -274,7 +298,7 @@ static NSArray * youTubeRegexArray = nil;
 				manID = [fromDict objectForKey:@"id"];
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
-					theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isNew ) {
@@ -283,31 +307,49 @@ static NSArray * youTubeRegexArray = nil;
 					theProfile.name = [fromDict objectForKey:@"name"];
 					// subscribe to this person as well
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+				} else if ( theProfile.subscription == nil ) {
+					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
 				if ( ![_user_id isEqual:manID] ) {
 					// the video is from another person. we should add the video to that person's channel as well
-					if ( isNew || chkResult == NMVideoDoesNotExist ) {
-						// this person profile is now. i.e. just insert the video to thi channel
-						// add the video into the channel
-						NMVideo * personVdo = [ctrl insertNewVideo];
-						personVdo.video = conVdo;
-						// add the new video proxy object to the person's channel
-						personVdo.channel = theProfile.subscription.channel;
-						personVdo.nm_session_id = bigSessionNum;
-						personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-					} else if ( !isNew && chkResult == NMVideoExistsButNotInChannel ) {
-						// check if the vido exists in this person's channel
-						NMChannel * personChn = theProfile.subscription.channel;
-						chkResult = [ctrl videoExistsWithExternalID:extID channel:personChn targetVideo:&conVdo];
-						if ( chkResult == NMVideoExistsButNotInChannel ) {
+					switch (chkResult) {
+						case NMVideoDoesNotExist:
+						{
+							// the video has never existed in the database. Add it to the originator's channel as well
 							// add the video into the channel
 							NMVideo * personVdo = [ctrl insertNewVideo];
 							personVdo.video = conVdo;
 							// add the new video proxy object to the person's channel
-							personVdo.channel = personChn;
-							personVdo.nm_session_id = bigSessionNum;
+							personVdo.channel = theProfile.subscription.channel;
+							personVdo.nm_session_id = NM_SESSION_ID;
 							personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+							break;
 						}
+						default:
+							// the video exists in the database before. If the person's profile is NEW, we are sure that the video has not beed added to the user's channel.
+							if ( isNew ) {
+								// though the video exists in some channel, this user profile is new and so does its channel. Just add the video in.
+								NMVideo * personVdo = [ctrl insertNewVideo];
+								personVdo.video = conVdo;
+								// add the new video proxy object to the person's channel
+								personVdo.channel = theProfile.subscription.channel;
+								personVdo.nm_session_id = NM_SESSION_ID;
+								personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+							} else {
+								// the video originally exists. We need to check if the video exists in the user's channel
+								NMChannel * personChn = theProfile.subscription.channel;
+								chkResult = [ctrl videoExistsWithExternalID:extID channel:personChn targetVideo:&conVdo];
+								if ( chkResult != NMVideoExistsAndInChannel ) {
+									// add the video into the channel
+									NMVideo * personVdo = [ctrl insertNewVideo];
+									personVdo.video = conVdo;
+									// add the new video proxy object to the person's channel
+									personVdo.channel = personChn;
+									personVdo.nm_session_id = NM_SESSION_ID;
+									personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+								}
+							}
+							break;
 					}
 				}
 			}
@@ -326,7 +368,7 @@ static NSArray * youTubeRegexArray = nil;
 					manID = [fromDict objectForKey:@"id"];
 					theProfile = [objectCache objectForKey:manID];
 					if ( theProfile == nil ) {
-						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
@@ -354,18 +396,22 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				NSArray * cmtAy = [otherDict objectForKey:@"data"];
 				NSMutableSet * cmtSet = [NSMutableSet setWithCapacity:[cmtAy count]];
-				NMFacebookComment * cmtObj;
+				NMSocialComment * cmtObj;
+				NSNumber * lastTimeNum = nil;
 				for (NSDictionary * cmtDict in cmtAy) {
-					cmtObj = [ctrl insertNewFacebookComment];
+					cmtObj = [ctrl insertNewSocialComment];
 					cmtObj.message = [cmtDict objectForKey:@"message"];
 					cmtObj.created_time = [cmtDict objectForKey:@"created_time"];
 					cmtObj.object_id = [cmtDict objectForKey:@"id"];
+					if ( lastTimeNum == nil || [cmtObj.created_time compare:lastTimeNum] == NSOrderedDescending ) {
+						lastTimeNum = cmtObj.created_time;
+					}
 					// look up the person
 					fromDict = [cmtDict objectForKey:@"from"];
 					manID = [fromDict objectForKey:@"id"];
 					theProfile = [objectCache objectForKey:manID];
 					if ( theProfile == nil ) {
-						theProfile = [ctrl insertNewPersonProfileWithID:manID isNew:&isNew];
+						theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 						[objectCache setObject:theProfile forKey:manID];
 					}
 					if ( isNew ) {
@@ -380,6 +426,7 @@ static NSArray * youTubeRegexArray = nil;
 					[cmtSet addObject:cmtObj];
 				}
 				[fbInfo addComments:cmtSet];
+				fbInfo.nm_date_last_updated = lastTimeNum;
 			} else if ( [fbInfo.comments count] ) {
 				[fbInfo removeComments:fbInfo.comments];
 			}
@@ -396,7 +443,7 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr {
-	if ( urlStr == nil ) return NO;
+	if ( urlStr == nil || (id)urlStr == [NSNull null] ) return NO;
 	if ( youTubeRegexArray == nil ) {
 		youTubeRegexArray = [[NSArray alloc] initWithObjects:
 							 [NSRegularExpression regularExpressionWithPattern:@"youtube\\.com/watch\\?v=([\\w-]+)" options:NSRegularExpressionCaseInsensitive error:nil],
@@ -429,6 +476,9 @@ static NSArray * youTubeRegexArray = nil;
 }
 
 - (NSDictionary *)userInfo {
+#ifdef DEBUG_FACEBOOK_IMPORT
+	NSLog(@"Facebook feed: video added: %d", numberOfVideoAdded);
+#endif
 	_channel.video_count = [NSNumber numberWithUnsignedInteger:[_channel.videos count]];
 	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
 }

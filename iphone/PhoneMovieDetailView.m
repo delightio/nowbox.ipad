@@ -11,28 +11,38 @@
 
 #pragma mark - PhoneMovieDetailView
 
+@interface PhoneMovieDetailView (PrivatMethods)
+- (void)setChannelTitle:(NSString *)channelTitle;
+- (void)setVideoTitle:(NSString *)videoTitle;
+- (void)setDescriptionText:(NSString *)descriptionText;
+- (void)setAuthorThumbnailForAuthor:(NMAuthor *)author;
+- (void)setMoreCount:(NSUInteger)moreCount;
+- (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex;
+- (void)updateControlsViewForCurrentOrientation;
+@end
+
 @implementation PhoneMovieDetailView
 
 @synthesize portraitView;
 @synthesize landscapeView;
 @synthesize controlsView;
 @synthesize infoPanelExpanded;
+@synthesize buzzPanelExpanded;
 @synthesize videoOverlayHidden;
 @synthesize delegate;
 
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-        
+            
     [self addSubview:portraitView];
     currentOrientedView = portraitView;
     
     [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
-    controlsView.frame = CGRectMake(landscapeView.descriptionLabel.frame.origin.x - 13, 
-                                    landscapeView.frame.size.height - controlsView.frame.size.height, 
-                                    landscapeView.descriptionLabel.frame.size.width + 26, 
-                                    controlsView.frame.size.height);
-    [landscapeView addSubview:controlsView];
+    [self updateControlsViewForCurrentOrientation];
+    [currentOrientedView addSubview:controlsView];
+    
+    mentionsArray = [[NSMutableArray alloc] init];
 }
 
 - (void)dealloc
@@ -40,6 +50,7 @@
     [portraitView release];
     [landscapeView release];
     [controlsView release];
+    [mentionsArray release];
     
     [super dealloc];
 }
@@ -48,9 +59,37 @@
     [super setVideo:video];
     
     [self setChannelTitle:video.channel.title];
-    [self setChannelThumbnailForChannel:video.channel];
+    [self setAuthorThumbnailForAuthor:video.video.author];
     [self setVideoTitle:video.video.title];
     [self setDescriptionText:video.video.detail.nm_description];
+    [self setWatchLater:[video.video.nm_watch_later boolValue]];
+    [self setFavorite:[video.video.nm_favorite boolValue]];
+    [self setTopActionButtonIndex:([video.video.nm_favorite boolValue] ? 2 : 0)];
+
+    // Add buzz
+    [mentionsArray removeAllObjects];
+    [portraitView.buzzView removeAllMentions];
+    
+    for (NMSocialInfo *socialInfo in video.video.socialMentions) {
+        BOOL mentionLikedByUser = [socialInfo.peopleLike containsObject:[[NMAccountManager sharedAccountManager] facebookProfile]];
+
+        [mentionsArray addObject:socialInfo];
+        [portraitView.buzzView addMentionLiked:mentionLikedByUser];
+        
+        NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
+        for (NMSocialComment *comment in sortedComments) {
+            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
+            [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
+            commentView.timeLabel.text = [comment relativeTimeString];
+            
+            if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {
+                commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];
+            } else {
+                commentView.serviceIcon.image = nil;
+            }
+        }
+    }
+    [portraitView.buzzView doneAdding];
 }
 
 - (void)setChannelTitle:(NSString *)channelTitle
@@ -73,10 +112,17 @@
     [landscapeView.descriptionLabel setText:descriptionText];
 }
 
-- (void)setChannelThumbnailForChannel:(NMChannel *)channel
+- (void)setAuthorThumbnailForAuthor:(NMAuthor *)author
 {
-    [portraitView.channelThumbnail setImageForChannel:channel];
-    [landscapeView.channelThumbnail setImageForChannel:channel];
+    [portraitView.channelThumbnail setImageForAuthorThumbnail:author];
+    [landscapeView.channelThumbnail setImageForAuthorThumbnail:author];
+}
+
+- (void)setMoreCount:(NSUInteger)moreCount
+{
+    NSString *moreString = [NSString stringWithFormat:@"%i more", moreCount];
+    [portraitView.moreVideosButton setTitle:moreString forState:UIControlStateNormal];
+    [landscapeView.moreVideosButton setTitle:moreString forState:UIControlStateNormal];
 }
 
 - (void)setInfoPanelExpanded:(BOOL)expanded
@@ -89,6 +135,17 @@
     infoPanelExpanded = expanded;
     [portraitView setInfoPanelExpanded:expanded animated:animated];
     [landscapeView setInfoPanelExpanded:expanded animated:animated];
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded
+{
+    [self setBuzzPanelExpanded:expanded animated:NO];
+}
+
+- (void)setBuzzPanelExpanded:(BOOL)expanded animated:(BOOL)animated
+{
+    buzzPanelExpanded = expanded;
+    [portraitView setBuzzPanelExpanded:expanded animated:animated];
 }
 
 - (void)setVideoOverlayHidden:(BOOL)isVideoOverlayHidden
@@ -107,7 +164,7 @@
     };
     
     if (animated) {
-        [UIView animateWithDuration:0.15f
+        [UIView animateWithDuration:0.3f
                               delay:0.0f
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseInOut
                          animations:toggleVideoOverlay
@@ -118,9 +175,45 @@
     }
 }
 
+- (void)setWatchLater:(BOOL)watchLater
+{
+    [portraitView setWatchLater:watchLater];
+    [landscapeView setWatchLater:watchLater];
+}
+
+- (void)setFavorite:(BOOL)favorite
+{
+    [portraitView setFavorite:favorite];
+    [landscapeView setFavorite:favorite];
+}
+
+- (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex
+{
+    [portraitView setTopActionButtonIndex:actionButtonIndex];
+    [landscapeView setTopActionButtonIndex:actionButtonIndex];
+}
+
+- (void)updateControlsViewForCurrentOrientation
+{
+    if (currentOrientedView == portraitView) {
+        controlsView.frame = CGRectMake(-8,
+                                        portraitView.bottomView.frame.origin.y - controlsView.frame.size.height,
+                                        portraitView.frame.size.width + 8,
+                                        controlsView.frame.size.height);
+        controlsView.backgroundView.hidden = NO;
+    } else {
+        controlsView.frame = CGRectMake(landscapeView.descriptionLabelContainer.frame.origin.x - 13, 
+                                        landscapeView.frame.size.height - controlsView.frame.size.height - 3, 
+                                        landscapeView.descriptionLabelContainer.frame.size.width + 26, 
+                                        controlsView.frame.size.height);
+        controlsView.backgroundView.hidden = YES;        
+    }
+}
+
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     [currentOrientedView removeFromSuperview];
+    [controlsView removeFromSuperview];
     
     if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
         currentOrientedView = portraitView;
@@ -128,6 +221,8 @@
         currentOrientedView = landscapeView;
     }
 
+    [self updateControlsViewForCurrentOrientation];
+    [currentOrientedView addSubview:controlsView];
     currentOrientedView.frame = self.bounds;
     [self addSubview:currentOrientedView];
     [currentOrientedView positionLabels];
@@ -135,12 +230,17 @@
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {    
+    if (thumbnailContainerView.alpha == 1.0f) {
+        return [super pointInside:point withEvent:event];
+    }
+    
     if (videoOverlayHidden && currentOrientedView == landscapeView) {
         return NO;
     }
-    
-    return (CGRectContainsPoint(currentOrientedView.topView.frame, point) ||
-            CGRectContainsPoint(currentOrientedView.bottomView.frame, point));
+        
+    return ((!currentOrientedView.topView.hidden && CGRectContainsPoint(currentOrientedView.topView.frame, point)) ||
+            (!currentOrientedView.bottomView.hidden && CGRectContainsPoint(currentOrientedView.bottomView.frame, point)) ||
+            (!videoOverlayHidden && CGRectContainsPoint(controlsView.frame, point)));
 }
 
 #pragma mark - IBActions
@@ -157,6 +257,13 @@
     if ([delegate respondsToSelector:@selector(videoInfoViewDidTapPlayButton:)]) {
         [delegate videoInfoViewDidTapPlayButton:self];
     }
+}
+
+- (IBAction)thumbnailPressed:(id)sender
+{
+    if ([delegate respondsToSelector:@selector(videoInfoViewDidTapThumbnail:)]) {
+        [delegate videoInfoViewDidTapThumbnail:self];
+    }    
 }
 
 - (IBAction)seekBarValueChanged:(id)sender
@@ -198,220 +305,64 @@
     }
 }
 
-@end
-
-#pragma mark - PhoneVideoInfoOrientedView
-
-@implementation PhoneVideoInfoOrientedView
-
-@synthesize topView;
-@synthesize bottomView;
-@synthesize infoView;
-@synthesize channelThumbnail;
-@synthesize infoButtonScrollView;
-@synthesize channelTitleLabel;
-@synthesize videoTitleLabel;
-@synthesize descriptionLabel;
-@synthesize infoPanelExpanded;
-
-- (void)awakeFromNib
+- (IBAction)toggleBuzzPanel:(id)sender
 {
-    UIView *viewToMask = infoButtonScrollView.superview;
-    
-    // Fade out info buttons
-    CAGradientLayer *mask = [CAGradientLayer layer];
-    mask.frame = CGRectMake(0, 0, viewToMask.bounds.size.width, viewToMask.bounds.size.height * 2);
-    mask.colors = [NSArray arrayWithObjects:
-                   (id)[UIColor whiteColor].CGColor,
-                   (id)[UIColor whiteColor].CGColor,                       
-                   (id)[UIColor clearColor].CGColor, nil];
-    mask.startPoint = CGPointMake(0.5, 0);
-    mask.endPoint = CGPointMake(0.5, 1);
-    mask.locations = [NSArray arrayWithObjects:
-                      [NSNumber numberWithFloat:0],
-                      [NSNumber numberWithFloat:0.25],
-                      [NSNumber numberWithFloat:0.375], nil];
-    viewToMask.layer.mask = mask; 
-    
-    originalVideoTitleFrame = videoTitleLabel.frame;
+    [self setBuzzPanelExpanded:!buzzPanelExpanded animated:YES];
+    if ([delegate respondsToSelector:@selector(videoInfoView:didToggleBuzzPanelExpanded:)]) {
+        [delegate videoInfoView:self didToggleBuzzPanelExpanded:buzzPanelExpanded];
+    }    
 }
 
-- (void)dealloc
+#pragma mark - PhoneVideoInfoOrientedViewDelegate
+
+- (void)phoneVideoInfoOrientedView:(PhoneVideoInfoOrientedView *)view willBeginDraggingWithScrollView:(UIScrollView *)scrollView
 {
-    [topView release];
-    [bottomView release];
-    [infoView release];
-    [channelThumbnail release];
-    [infoButtonScrollView release];
-    [channelTitleLabel release];
-    [videoTitleLabel release];
-    [descriptionLabel release];
-    
-    [super dealloc];
+    if ([delegate respondsToSelector:@selector(videoInfoView:willBeginDraggingScrollView:)]) {
+        [delegate videoInfoView:self willBeginDraggingScrollView:scrollView];
+    }
 }
 
-- (void)positionLabels
+- (void)phoneVideoInfoOrientedView:(PhoneVideoInfoOrientedView *)view didEndDraggingWithScrollView:(UIScrollView *)scrollView
 {
-    // Position the description label below the video title
-    videoTitleLabel.frame = originalVideoTitleFrame;
-    [videoTitleLabel sizeToFit];
-    CGRect frame = videoTitleLabel.frame;
-    frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
-    videoTitleLabel.frame = frame;
-    
-    frame = descriptionLabel.frame;
-    CGFloat distanceFromBottom = CGRectGetHeight(infoView.frame) - CGRectGetMaxY(frame);
-    frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
-    frame.size.height = infoView.frame.size.height - frame.origin.y - distanceFromBottom;
-    descriptionLabel.frame = frame;
-    descriptionLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    if ([delegate respondsToSelector:@selector(videoInfoView:didEndDraggingScrollView:)]) {
+        [delegate videoInfoView:self didEndDraggingScrollView:scrollView];
+    }    
 }
 
-- (void)setInfoPanelExpanded:(BOOL)expanded
+#pragma mark - BuzzViewDelegate
+
+- (void)buzzViewDidTap:(BuzzView *)buzzView
 {
-    [self setInfoPanelExpanded:expanded animated:NO];
+    [self toggleBuzzPanel:buzzView];
 }
 
-- (void)setInfoPanelExpanded:(BOOL)expanded animated:(BOOL)animated
+- (void)buzzView:(BuzzView *)buzzView didPressLikeButton:(id)sender
 {    
-    infoPanelExpanded = expanded;
-    
-    CGRect frame = infoView.frame;
-    BOOL landscape = (infoView == bottomView);
-    
-    if (landscape) {
-        // Landscape - resize view keeping the bottom position the same
-        frame.size.height = (expanded ? 160 : 120);
-        frame.origin.y = CGRectGetMaxY(infoView.frame) - frame.size.height;
-    } else {
-        // Portrait - resize view keeping the top position the same
-        frame.size.height = (expanded ? 200 : 116);
-    }
-    
-    if (expanded) {
-        infoButtonScrollView.scrollEnabled = NO;
-                
-        // We don't want buttons flying down from the top, looks bad. Reposition buttons to avoid it.
-        for (UIView *view in infoButtonScrollView.subviews) {
-            if (view.center.y < infoButtonScrollView.contentOffset.y) {
-                view.center = CGPointMake(view.center.x, view.center.y + [infoButtonScrollView.subviews count] * infoButtonScrollView.frame.size.height);
-            }
-        }
-    } else {
-        infoButtonScrollView.scrollEnabled = YES;
-    }
-    
-    // We don't want the button alpha mask when the panel is expanded
-    CAGradientLayer *mask = (CAGradientLayer *) infoButtonScrollView.superview.layer.mask;
-    if (animated) {
-        [CATransaction begin];
-        [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        [CATransaction setValue:[NSNumber numberWithDouble:0.3] forKey:kCATransactionAnimationDuration];
-    }
-    if (expanded) {
-        mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
-                          [NSNumber numberWithFloat:1.0],
-                          [NSNumber numberWithFloat:1.0], nil];
-    } else {
-        mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
-                          [NSNumber numberWithFloat:0.25],
-                          [NSNumber numberWithFloat:0.375], nil];
-    }
-    if (animated) {
-        [CATransaction commit];
-    }
-    
-    // Resize the panel
-    if (animated) {
-        [UIView animateWithDuration:0.3
-                              delay:0
-                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
-                         animations:^{
-                             infoView.frame = frame;
-                         }
-                         completion:^(BOOL finished){
-                         }];
-    } else {
-        infoView.frame = frame;
+    if ([delegate respondsToSelector:@selector(videoInfoView:didLike:socialInfo:)]) {
+        NSUInteger mentionIndex = [sender tag];
+        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
+
+        [delegate videoInfoView:self didLike:YES socialInfo:socialInfo];
     }
 }
 
-@end
-
-#pragma mark - InfiniteScrollView
-
-@implementation InfiniteScrollView
-
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+- (void)buzzView:(BuzzView *)buzzView didPressUnlikeButton:(id)sender
 {
-    if (self.superview) {
-        CGPoint pointInSuperview = [self convertPoint:point toView:self.superview];
-        return [self.superview pointInside:pointInSuperview withEvent:event];
-    }
-    
-    return [super pointInside:point withEvent:event];
-}
-
-- (NSInteger)centerViewIndex
-{
-    for (UIView *view in self.subviews) {
-        if (view.center.y > self.contentOffset.y &&
-            view.center.y < self.contentOffset.y + self.frame.size.height) {
-            return view.tag;
-        }
-    }
-    return 0;
-}
-
-- (void)centerContentOffset
-{
-    // Which view is closest to the center?
-    NSInteger centerViewIndex = [self centerViewIndex];
-    
-    // Make sure we don't get too close to the scroll limit
-    self.contentOffset = CGPointMake(0, round((self.contentSize.height / 2) / self.frame.size.height) * self.frame.size.height);
-    for (UIView *view in self.subviews) {
-        CGRect frame = view.frame;
-        frame.origin.y = self.contentOffset.y + (view.tag - centerViewIndex) * self.frame.size.height;
-        view.frame = frame;
-    }        
-    
-    [self scrollViewDidScroll:self];
-}
-
-- (void)awakeFromNib
-{
-    // "Infinite" scrolling
-    self.delegate = self;
-    self.contentSize = CGSizeMake(self.frame.size.width, 10000);
-    [self centerContentOffset];
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    // Do we need to loop any of the subviews to the top / bottom?
-    for (UIView *view in scrollView.subviews) {
-        CGFloat distance = view.center.y - (scrollView.contentOffset.y + scrollView.frame.size.height / 2);
-        CGFloat newY = view.center.y + (distance > 0 ? -1.0f : 1.0f) * [scrollView.subviews count] * scrollView.frame.size.height;
-        CGFloat newDistance = newY - (scrollView.contentOffset.y + scrollView.frame.size.height / 2);
+    if ([delegate respondsToSelector:@selector(videoInfoView:didLike:socialInfo:)]) {
+        NSUInteger mentionIndex = [sender tag];
+        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];
         
-        if (ABS(newDistance) < ABS(distance)) {
-            view.center = CGPointMake(view.center.x, newY);
-        }
+        [delegate videoInfoView:self didLike:NO socialInfo:socialInfo];
     }
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+- (void)buzzView:(BuzzView *)buzzView didPressCommentButton:(id)sender
 {
-    [self centerContentOffset];
-}
+    if ([delegate respondsToSelector:@selector(videoInfoView:didTapCommentButton:socialInfo:)]) {
+        NSUInteger mentionIndex = [sender tag];
+        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-    if (!decelerate) {
-        [self centerContentOffset];
+        [delegate videoInfoView:self didTapCommentButton:sender socialInfo:socialInfo];
     }
 }
 

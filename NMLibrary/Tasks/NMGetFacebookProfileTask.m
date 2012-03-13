@@ -21,6 +21,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 @synthesize profileDictionary = _profileDictionary;
 @synthesize userID = _userID;
 @synthesize profile = _profile;
+@synthesize facebookTypeNumber = _facebookTypeNumber;
 
 - (id)initWithProfile:(NMPersonProfile *)aProfile {
 	// For Facebook, the person's profile is always created before we perform fetch person profile detail.
@@ -37,6 +38,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	[_profileDictionary release];
 	[_userID release];
 	[_profile release];
+	[_facebookTypeNumber release];
 	[super dealloc];
 }
 
@@ -45,6 +47,13 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	// use custom command index method
 	idx = ABS((NSInteger)[_userID hash]);
 	return (((NSIntegerMax >> 6 ) & idx) << 6) | command;
+}
+
+- (NSNumber *)facebookTypeNumber {
+	if ( _facebookTypeNumber == nil ) {
+		_facebookTypeNumber = [[NSNumber numberWithInteger:NMChannelUserFacebookType] retain];
+	}
+	return _facebookTypeNumber;
 }
 
 - (FBRequest *)facebookRequestForController:(NMNetworkController *)ctrl {
@@ -82,7 +91,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	NSString * theID = [_profileDictionary objectForKey:@"nm_user_id"];
 	BOOL newState;
 	if ( _profile == nil ) {
-		self.profile = [ctrl insertNewPersonProfileWithID:theID isNew:&newState];
+		self.profile = [ctrl insertNewPersonProfileWithID:theID type:self.facebookTypeNumber isNew:&newState];
 	}
 	if ( newState ) _profile.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 	_profile.nm_error = (NSNumber *)kCFBooleanFalse;
@@ -98,6 +107,9 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 		[[NSUserDefaults standardUserDefaults] setObject:_profile.nm_id forKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
 		NM_USER_FACEBOOK_CHANNEL_ID = [_profile.nm_id integerValue];
 		return YES;
+	} else if ( _profile.subscription ) {
+		// this profile contains a channel
+		_profile.subscription.channel.thumbnail_uri = [_profileDictionary objectForKey:@"picture"];
 	}
 	return NO;
 }

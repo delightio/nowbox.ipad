@@ -58,10 +58,9 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 @synthesize networkController;
 @synthesize dataController;
 @synthesize youTubePollingTimer, tokenRenewTimer;
-@synthesize channelPollingTimer, userSyncTimer;
+@synthesize userSyncTimer;
 @synthesize unpopulatedChannels;
 @synthesize syncInProgress, appFirstLaunch;
-@synthesize accountStore = _accountStore;
 
 + (NMTaskQueueController *)sharedTaskQueueController {
 	if ( sharedTaskQueueController_ == nil ) {
@@ -84,7 +83,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 	// polling server for channel update
-	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleChannelPollingNotification:) name:NMDidPollChannelNotification object:nil];
 	[nc addObserver:self selector:@selector(handleYouTubePollingNotification:) name:NMDidPollUserNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidGetChannelsNotification:) name:NMDidGetChannelsNotification object:nil];
 	[nc addObserver:self selector:@selector(handleFailEditUserSettingsNotification:) name:NMDidFailEditUserSettingsNotification object:nil];
@@ -92,7 +91,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[nc addObserver:self selector:@selector(handleTokenNotification:) name:NMDidFailRequestTokenNotification object:nil];
 	
 	// listen to subscription as well
-	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidSubscribeChannelNotification:) name:NMDidSubscribeChannelNotification object:nil]; Not needed since we do not support keyword channel
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
@@ -135,7 +134,6 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 	[wifiReachability stopNotifier];
 	[wifiReachability release];
-	[_accountStore release];
 	[super dealloc];
 }
 
@@ -149,22 +147,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController performSelector:@selector(debugPrintCommandPoolStatus) onThread:networkController.controlThread withObject:nil waitUntilDone:NO];
 }
 
-- (ACAccountStore *)accountStore {
-	if ( _accountStore == nil ) {
-		_accountStore = [[ACAccountStore alloc] init];
-	}
-	return _accountStore;
-}
-
 #pragma mark Session management
 - (void)beginNewSession:(NSInteger)sid {
 	sessionID = sid;
 	NM_SESSION_ID = [[NSNumber alloc] initWithInteger:sid];
 	// delete expired videos
 #ifdef DEBUG_SESSION
-	NSLog(@"session to delete: %d", sessionID - 2);
+	NSLog(@"session to delete: %d", sessionID - 3);
 #endif
-	[dataController deleteVideosWithSessionID:sessionID - 2];
+	[dataController deleteVideosWithSessionID:sessionID - 3];
 	// update all page number
 	[dataController resetAllChannelsPageNumber];
 	// post notification
@@ -216,15 +207,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-- (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
-	// when user has subscribed a channel, we need to check if the channel has contents populated.
-	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
-	if ( [chnObj.type integerValue] == NMChannelKeywordType && ![chnObj.populated_at boolValue] ) {
-		// this is a keyword channel. we need to check if if has been populated or not
-		// fire the polling logic
-		[self pollServerForChannelReadiness];
-	}
-}
+//- (void)handleDidSubscribeChannelNotification:(NSNotification *)aNotification {
+//	// when user has subscribed a channel, we need to check if the channel has contents populated.
+//	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
+//	if ( [chnObj.type integerValue] == NMChannelKeywordType && ![chnObj.populated_at boolValue] ) {
+//		// this is a keyword channel. we need to check if if has been populated or not
+//		// fire the polling logic
+//		[self pollServerForChannelReadiness];
+//	}
+//}
 
 - (void)handleDidGetChannelsNotification:(NSNotification *)aNotification {
 	if ( didFinishLogin ) {
@@ -239,39 +230,39 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		// stream channel (twitter/facebook), we don't distinguish here whether the user has just logged in twitter or facebook. no harm fetching video list for 
 		NMChannel * chnObj = nil;
 		NMSubscription * subtObj = nil;
-		BOOL shouldFirePollingLogic = NO;
+//		BOOL shouldFirePollingLogic = NO;
 		if ( NM_USER_TWITTER_CHANNEL_ID ) {
 			chnObj = dataController.userTwitterStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
 			subtObj = chnObj.subscription;
-			if ( [chnObj.populated_at boolValue] ) {
+//			if ( [chnObj.populated_at boolValue] ) {
 				if ( [subtObj.nm_hidden boolValue] ) {
 					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
 				}
 				// fetch the list of video in this twitter stream channel
 				[self issueGetMoreVideoForChannel:chnObj];
-			} else {
-				// never populated before
-				shouldFirePollingLogic = YES;
-			}
+//			} else {
+//				// never populated before
+//				shouldFirePollingLogic = YES;
+//			}
 		}
 		if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 			chnObj = dataController.userFacebookStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
 			subtObj = chnObj.subscription;
-			if ( [chnObj.populated_at boolValue] ) {
+//			if ( [chnObj.populated_at boolValue] ) {
 				if ( [subtObj.nm_hidden boolValue] ) {
 					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
 				}
 				// fetch the list of video in this twitter stream channel
 				[self issueGetMoreVideoForChannel:chnObj];
-			} else {
-				// never populated before
-				shouldFirePollingLogic = YES;
-			}
+//			} else {
+//				// never populated before
+//				shouldFirePollingLogic = YES;
+//			}
 		}
-		if ( shouldFirePollingLogic ) {
-			NSLog(@"Should schedule polling timer");
-			[self pollServerForChannelReadiness];
-		}
+//		if ( shouldFirePollingLogic ) {
+//			NSLog(@"Should schedule polling timer");
+//			[self pollServerForChannelReadiness];
+//		}
 	} else {
 		self.syncInProgress = NO;
 	}
@@ -421,7 +412,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 #if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
 	NSLog(@"get video list - %@ %@", chnObj.title, chnObj.nm_id);
 #endif
-	if ( sessionID ) {
+	if ( sessionID && (chnObj.resource_uri != nil && ![chnObj.resource_uri isEqualToString:@""] ) ) {
 		NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetMoreVideoForChannel:chnObj];
 		[networkController addNewConnectionForTask:task];
 		[task release];
@@ -523,6 +514,16 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return task;
 }
 
+- (NMImageDownloadTask *)issueGetThumbnailForPersonProfile:(NMPersonProfile *)profile {
+	NMImageDownloadTask * task = nil;
+	if ( profile.picture ) {
+		task = [[NMImageDownloadTask alloc] initWithPersonProfile:profile];
+		[networkController addNewConnectionForTask:task];
+		[task autorelease];
+	}
+	return task;
+}
+
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj {
 	NMTask * task = nil;
 	if ( aSubscribe && [chnObj.nm_id integerValue] == 0 ) {
@@ -547,6 +548,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTasks:taskAy];
 }
 
+#pragma mark Events
+
 - (void)issueShareEventForVideo:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec {
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventShare forVideo:aVideo];
 	//	task.duration = vdur;
@@ -564,15 +567,37 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 - (void)issueShareWithService:(NMSocialLoginType)serType video:(NMVideo *)aVideo duration:(NSInteger)vdur elapsedSeconds:(NSInteger)sec message:(NSString *)aString {
-	NMPostSharingTask * task = [[NMPostSharingTask alloc] initWithType:serType video:aVideo];
-	task.message = aString;
-	task.elapsedSeconds = sec;
-	[networkController addNewConnectionForTask:task];
-	[task release];
-	
-	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:YES];
-	[networkController addNewConnectionForTask:opTask];
-	[opTask release];
+	// every new share is treated as a separate instance on Facebook or Twitter
+	NMSocialInfo * info = [dataController insertNewSocialInfo];
+	info.video = aVideo.video;
+	info.nm_type = [NSNumber numberWithInteger:(serType == NMLoginFacebookType ? NMChannelUserFacebookType : NMChannelUserTwitterType)];
+	// This is a new info. Make sure the task saves the object_id and URLs back when submit is sucessful
+	NMSocialComment * cmtObj = [dataController insertNewSocialComment];
+	cmtObj.socialInfo = info;
+	cmtObj.message = aString;
+	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
+	NMChannelType chnType = [info.nm_type integerValue];
+	switch (chnType) {
+		case NMChannelUserFacebookType:
+		{
+			// send it to facebook
+			NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:aString];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		case NMChannelUserTwitterType:
+		{
+			// Send a new tweet to Twitter. Do NOT use this for replying or retweeting
+			NMPostTweetTask * task = [[NMPostTweetTask alloc] initPostComment:cmtObj];
+			task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		default:
+			break;
+	}
 }
 
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo elapsedSeconds:(NSInteger)sec playedToEnd:(BOOL)aEnd {
@@ -583,12 +608,13 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[networkController addNewConnectionForTask:task];
 	[task release];
 	
-	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:aEnd];
-	[networkController addNewConnectionForTask:opTask];
-	[opTask release];
+//	NMOpenGraphWatchTask * opTask = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:aEnd];
+//	[networkController addNewConnectionForTask:opTask];
+//	[opTask release];
 }
 
 - (void)issueSendViewEventForVideo:(NMVideo *)aVideo start:(NSInteger)aStart elapsedSeconds:(NSInteger)sec {
+	NSLog(@"start %d elapse %d", aStart, sec);
 	NMEventTask * task = [[NMEventTask alloc] initWithEventType:NMEventView forVideo:aVideo];
 	// how long the user has watched a video
 	task.elapsedSeconds = sec;
@@ -612,11 +638,33 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
+#pragma mark Open Graph
+- (void)issueSendOpenGraphWatchVideo:(NMVideo *)aVideo backSeconds:(NSTimeInterval)sec {
+	// check if the user has logged in Facebook
+	if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] ) {
+		NMOpenGraphWatchTask * task = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:YES];
+		task.startTime = (NSInteger)[[NSDate dateWithTimeIntervalSinceNow:-sec] timeIntervalSince1970];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+}
+
+- (void)issueSentOpenGraphDidWatchVideo:(NMVideo *)aVideo {
+	// check if the user has logged in Facebook
+	if ( [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] ) {
+		NMOpenGraphWatchTask * task = [[NMOpenGraphWatchTask alloc] initForVideo:aVideo playsVideo:NO];
+		[networkController addNewConnectionForTask:task];
+		[task release];
+	}
+}
+
+#pragma mark Social
+
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
 	switch ([chnObj.type integerValue]) {
 		case NMChannelUserTwitterType:
 		{
-			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:[self.accountStore accountWithIdentifier:chnObj.subscription.personProfile.nm_account_identifier]];
+			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:[[NMAccountManager sharedAccountManager] currentTwitterAccount]];
 			[networkController addNewConnectionForTask:task];
 			[task release];
 			break;
@@ -664,20 +712,57 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueProcessFeedForChannel:chn];
 }
 
-- (void)issuePostComment:(NSString *)msg forPost:(NMFacebookInfo *)info {
+- (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info {
 	// save the comment
-	NMFacebookComment * cmtObj = [dataController insertNewFacebookComment];
-	cmtObj.facebookInfo = info;
+	NMSocialComment * cmtObj = [dataController insertNewSocialComment];
+	cmtObj.socialInfo = info;
 	cmtObj.message = msg;
 	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
-	// send it to facebook
-	NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:msg];
+	NMChannelType chnType = [info.nm_type integerValue];
+	switch (chnType) {
+		case NMChannelUserFacebookType:
+		{
+			// send it to facebook
+			NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:msg];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		case NMChannelUserTwitterType:
+		{
+			// Send a new tweet to Twitter. Do NOT use this for replying or retweeting
+			NMPostTweetTask * task = [[NMPostTweetTask alloc] initPostComment:cmtObj];
+			task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
+			[networkController addNewConnectionForTask:task];
+			[task release];
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+- (void)issuePostLike:(BOOL)aLike forPost:(NMSocialInfo *)info {
+	NMFacebookLikeTask * task = [[NMFacebookLikeTask alloc] initWithInfo:info like:aLike];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
 
-- (void)issuePostLike:(BOOL)aLike forPost:(NMFacebookInfo *)info {
-	NMFacebookLikeTask * task = [[NMFacebookLikeTask alloc] initWithInfo:info like:aLike];
+- (void)issueRetweet:(NMSocialComment *)srcCmt {
+	NMPostTweetTask * task = [[NMPostTweetTask alloc] initRetweetComment:srcCmt];
+	task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
+
+- (void)issueReplyTweet:(NMSocialComment *)srcCmt message:(NSString *)msg {
+	// save the comment
+	NMSocialComment * cmtObj = [dataController insertNewSocialComment];
+	cmtObj.socialInfo = srcCmt.socialInfo;
+	cmtObj.message = msg;
+	cmtObj.created_time = [NSNumber numberWithFloat:[[NSDate date] timeIntervalSince1970]];
+	NMPostTweetTask * task = [[NMPostTweetTask alloc] initReplyWithComment:cmtObj];
+	task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }
@@ -695,6 +780,19 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)endSignOutFacebook {
 	networkController.suspendFacebook = NO;
+}
+
+- (void)prepareSignOutTwitter {
+	networkController.suspendTwitter = YES;
+	// cancel all existing Twitter related tasks
+	NSMutableIndexSet * cmdIdx = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(NMCommandFacebookCommandUpperBound, NMCommandTwitterCommandUpperBound - NMCommandFacebookCommandUpperBound + 1)];
+	// cancel all Youtube import task
+	[cmdIdx addIndex:NMCommandImportYouTubeVideo];
+	[networkController cancelTaskWithCommandSet:cmdIdx];
+}
+
+- (void)endSignOutTwitter {
+	networkController.suspendTwitter = NO;
 }
 
 - (void)cancelAllTasks {
@@ -763,21 +861,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	return;
 }
 
-- (void)pollServerForChannelReadiness {
-	// check the list of channels
-	NSArray * result = [dataController channelsNeverPopulatedBefore];
-	if ( result ) {
-		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
-		// run the timer method
-		if ( channelPollingTimer ) {
-			[channelPollingTimer fire];
-		} else {
-			channelPollingRetryCount = 0;
-			self.channelPollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
-		}
-		// issue poll request for each channel
-	}
-}
+//- (void)pollServerForChannelReadiness {
+//	// check the list of channels
+//	NSArray * result = [dataController channelsNeverPopulatedBefore];
+//	if ( result ) {
+//		self.unpopulatedChannels = [NSMutableArray arrayWithArray:result];
+//		// run the timer method
+//		if ( channelPollingTimer ) {
+//			[channelPollingTimer fire];
+//		} else {
+//			channelPollingRetryCount = 0;
+//			self.channelPollingTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f target:self selector:@selector(pollingTimerMethod:) userInfo:nil repeats:YES];
+//		}
+//		// issue poll request for each channel
+//	}
+//}
 
 - (void)stopPollingServer {
 	if ( youTubePollingTimer ) {
@@ -789,37 +887,38 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	if ( tokenRenewTimer ) {
 		[tokenRenewTimer invalidate], self.tokenRenewTimer = nil;
 	}
-	if ( channelPollingTimer ) {
-		[channelPollingTimer invalidate], self.channelPollingTimer = nil;
-	}
+//	if ( channelPollingTimer ) {
+//		[channelPollingTimer invalidate], self.channelPollingTimer = nil;
+//	}
 	NSUserDefaults * defs = [NSUserDefaults standardUserDefaults];
 	[defs setObject:[NSNumber numberWithUnsignedInteger:NM_USER_YOUTUBE_LAST_SYNC] forKey:NM_USER_YOUTUBE_LAST_SYNC_KEY];
 }
 
-- (void)pollingTimerMethod:(NSTimer *)aTimer {
-	for (NMChannel * chnObj in unpopulatedChannels) {
-		[self issuePollServerForChannel:chnObj];
-	}
-}
+//- (void)pollingTimerMethod:(NSTimer *)aTimer {
+//	NSLog(@"Polling server for channel");
+//	for (NMChannel * chnObj in unpopulatedChannels) {
+//		[self issuePollServerForChannel:chnObj];
+//	}
+//}
 
-- (void)handleChannelPollingNotification:(NSNotification *)aNotification {
-	channelPollingRetryCount++;
-	// check polling status
-	NSDictionary * dict = [aNotification userInfo];
-	NMChannel * chnObj = [dict objectForKey:@"channel"];
-	BOOL popStatus = [[dict objectForKey:@"populated"] boolValue];
-	if ( popStatus ) {
-		// populated - remove from the list
-		[unpopulatedChannels removeObject:chnObj];
-		// fire the get channel list request
-		[self issueGetMoreVideoForChannel:chnObj];
-	}
-	if ( [unpopulatedChannels count] == 0 || channelPollingRetryCount > 5 ) {
-		// all channels have been processed and populated
-		[channelPollingTimer invalidate];
-		self.channelPollingTimer = nil;
-	}
-}
+//- (void)handleChannelPollingNotification:(NSNotification *)aNotification {
+//	channelPollingRetryCount++;
+//	// check polling status
+//	NSDictionary * dict = [aNotification userInfo];
+//	NMChannel * chnObj = [dict objectForKey:@"channel"];
+//	BOOL popStatus = [[dict objectForKey:@"populated"] boolValue];
+//	if ( popStatus ) {
+//		// populated - remove from the list
+//		[unpopulatedChannels removeObject:chnObj];
+//		// fire the get channel list request
+//		[self issueGetMoreVideoForChannel:chnObj];
+//	}
+//	if ( [unpopulatedChannels count] == 0 || channelPollingRetryCount > 5 ) {
+//		// all channels have been processed and populated
+//		[channelPollingTimer invalidate];
+//		self.channelPollingTimer = nil;
+//	}
+//}
 
 - (void)issuePollServerForYouTubeSyncSignal {
 	NMPollUserTask * task = [[NMPollUserTask alloc] init];

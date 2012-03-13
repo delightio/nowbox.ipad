@@ -10,6 +10,7 @@
 #import "NMAVQueuePlayer.h"
 #import "NMStyleUtility.h"
 
+#define kYouTubeLogoPadding (NM_RUNNING_ON_IPAD ? 10.0f : 5.0f)
 
 @implementation NMMovieView
 
@@ -57,7 +58,7 @@
 	UIImage * ytLogo = [UIImage imageNamed:@"youtube_logo_36"];
 	logoView = [[UIImageView alloc] initWithImage:ytLogo];
 	CGRect theFrame = logoView.frame;
-	theFrame.origin = CGPointMake(frame.size.width - 10.0f - ytLogo.size.width, frame.size.height - 10.0f - ytLogo.size.height);
+	theFrame.origin = CGPointMake(frame.size.width - kYouTubeLogoPadding - ytLogo.size.width, frame.size.height - kYouTubeLogoPadding - ytLogo.size.height);
 	logoView.frame = theFrame;
 	logoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
 	logoView.alpha = 0.5f;

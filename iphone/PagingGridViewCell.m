@@ -21,6 +21,11 @@
 @synthesize activityIndicator;
 @synthesize deleteButton;
 @synthesize highlightView;
+@synthesize authorView;
+@synthesize authorImage;
+@synthesize index;
+@synthesize columnSpan;
+@synthesize rowSpan;
 @synthesize editing;
 @synthesize dragging;
 @synthesize lastDragLocation;
@@ -51,8 +56,10 @@
             font = [UIFont fontWithName:@"Futura-Medium" size:18];
         }
         [label setFont:font];
+        [label setGlowColor:[UIColor colorWithWhite:0.0 alpha:0.6]];
         
         self.clipsToBounds = NO;
+        columnSpan = 1;
         
         [self addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
         [self addTarget:self action:@selector(handleTouchDown:withEvent:) forControlEvents:UIControlEventTouchDown];
@@ -72,6 +79,8 @@
     [activityIndicator release];
     [deleteButton release];
     [highlightView release];
+    [authorView release];
+    [authorImage release];
     
     [super dealloc];
 }
@@ -86,6 +95,7 @@
 {
     [super setHighlighted:highlighted];    
     highlightView.hidden = !highlighted;
+    label.highlighted = highlighted;
 }
 
 - (void)didMoveToSuperview
@@ -96,11 +106,13 @@
 - (void)setEditing:(BOOL)isEditing
 {
     editing = isEditing;
-    
+
     if (editing) {
         contentView.transform = CGAffineTransformMakeScale(kEditingScaleFactor, kEditingScaleFactor);
     } else {
         contentView.transform = CGAffineTransformIdentity;
+        contentView.frame = self.bounds;
+        contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     }
     
     if (editing && [delegate respondsToSelector:@selector(gridViewCellShouldShowDeleteButton:)] && [delegate gridViewCellShouldShowDeleteButton:self]) {
@@ -150,6 +162,17 @@
                      }];
 }
 
+- (void)setColumnSpan:(NSUInteger)aColumnSpan
+{
+    if (columnSpan != aColumnSpan) {
+        // Increase/decrease the font size accordingly
+        CGFloat sizeDifference = ((NSInteger)aColumnSpan - (NSInteger)columnSpan) * 10.0f;
+        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize + sizeDifference];
+        
+        columnSpan = aColumnSpan;
+    }
+}
+
 #pragma mark - IBActions
 
 - (IBAction)deleteButtonPressed:(id)sender
@@ -197,7 +220,7 @@
 {
     if (dragging) {
         [self didStopDragging];
-    } else {
+    } else if (pressAndHoldTimer) {
         [self cancelPressAndHoldTimer];        
         [delegate gridViewCellDidTap:self];
     }
