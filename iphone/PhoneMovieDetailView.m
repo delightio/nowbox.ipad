@@ -11,7 +11,9 @@
 
 #pragma mark - PhoneMovieDetailView
 
-@interface PhoneMovieDetailView (PrivatMethods)
+@interface PhoneMovieDetailView (PrivateMethods)
++ (UIImage *)serviceIconForChannelType:(NMChannelType)channelType;
++ (NSString *)relativeTimeStringForTime:(NSTimeInterval)time;
 - (void)setChannelTitle:(NSString *)channelTitle;
 - (void)setVideoTitle:(NSString *)videoTitle;
 - (void)setDescriptionText:(NSString *)descriptionText;
@@ -31,6 +33,42 @@
 @synthesize videoOverlayHidden;
 @synthesize delegate;
 
++ (UIImage *)serviceIconForChannelType:(NMChannelType)channelType
+{
+    switch (channelType) {
+        case NMChannelUserFacebookType:
+            return [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];                    
+        case NMChannelUserTwitterType:
+            return [UIImage imageNamed:@"phone_video_buzz_icon_twitter.png"];                    
+        default:
+            return nil;
+    }    
+}
+
++ (NSString *)relativeTimeStringForTime:(NSTimeInterval)time
+{
+    NSTimeInterval ageInSeconds = [[NSDate date] timeIntervalSince1970] - time;
+    
+    if (ageInSeconds < 60) {
+        return [NSString stringWithFormat:@"%i sec ago", (NSInteger)ageInSeconds];
+    } else if (ageInSeconds < 60*60) {
+        return [NSString stringWithFormat:@"%i min ago", (NSInteger)(ageInSeconds / 60)];
+    } else if (ageInSeconds < 60*60*24) {
+        NSInteger hours = (NSInteger)(ageInSeconds / (60*60));
+        return [NSString stringWithFormat:@"%i %@ ago", hours, (hours == 1 ? @"hour" : @"hours")];
+    } else if (ageInSeconds < 60*60*24*30) {
+        NSInteger days = (NSInteger)(ageInSeconds / (60*60*24));
+        if (days == 1) return @"Yesterday";
+        return [NSString stringWithFormat:@"%i days ago", days];
+    } else if (ageInSeconds < 60*60*24*365) {
+        NSInteger months = (NSInteger)(ageInSeconds / (60*60*24*30));
+        return [NSString stringWithFormat:@"%i %@ ago", months, (months == 1 ? @"month": @"months")];
+    } else {
+        NSInteger years = (NSInteger)(ageInSeconds / (60*60*24*365));
+        return [NSString stringWithFormat:@"%i %@ ago", years, (years == 1 ? @"year" : @"years")];
+    }
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];
@@ -43,10 +81,21 @@
     [currentOrientedView addSubview:controlsView];
     
     mentionsArray = [[NSMutableArray alloc] init];
+    
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidPostFacebookCommentNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidReplyTweetNotificaiton object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidPostRetweetNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidShareVideoNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidPostTweetNotification object:nil];    
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:@"NMDidPostFacebookLikeNotificaiton" object:nil];    
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:@"NMDidDeleteFacebookLikeNotification" object:nil];
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [portraitView release];
     [landscapeView release];
     [controlsView release];
@@ -66,30 +115,7 @@
     [self setFavorite:[video.video.nm_favorite boolValue]];
     [self setTopActionButtonIndex:([video.video.nm_favorite boolValue] ? 2 : 0)];
 
-    // Add buzz
-    [mentionsArray removeAllObjects];
-    [portraitView.buzzView removeAllMentions];
-    
-    for (NMSocialInfo *socialInfo in video.video.socialMentions) {
-        BOOL mentionLikedByUser = [socialInfo.peopleLike containsObject:[[NMAccountManager sharedAccountManager] facebookProfile]];
-
-        [mentionsArray addObject:socialInfo];
-        [portraitView.buzzView addMentionLiked:mentionLikedByUser];
-        
-        NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
-        for (NMSocialComment *comment in sortedComments) {
-            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
-            [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
-            commentView.timeLabel.text = [comment relativeTimeString];
-            
-            if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {
-                commentView.serviceIcon.image = [UIImage imageNamed:@"phone_video_buzz_icon_facebook.png"];
-            } else {
-                commentView.serviceIcon.image = nil;
-            }
-        }
-    }
-    [portraitView.buzzView doneAdding];
+    [self updateSocialMentions];
 }
 
 - (void)setChannelTitle:(NSString *)channelTitle
@@ -228,6 +254,37 @@
     [currentOrientedView positionLabels];
 }
 
+- (void)updateSocialMentions
+{
+    // Add buzz
+    [mentionsArray removeAllObjects];
+    [portraitView.buzzView removeAllMentions];
+    
+    for (NMSocialInfo *socialInfo in self.video.video.socialMentions) {
+        BOOL mentionLikedByUser = [socialInfo.peopleLike containsObject:[[NMAccountManager sharedAccountManager] facebookProfile]];
+        
+        [mentionsArray addObject:socialInfo];
+        [portraitView.buzzView addMentionLiked:mentionLikedByUser];
+        
+        // Show the original post as the first "comment"
+        BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:@"" username:self.video.channel.title];
+        [postView.userImageView setImageForChannel:self.video.channel];
+        postView.timeLabel.text = @"";
+        postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
+        postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i comments", [socialInfo.likes_count integerValue], ([socialInfo.likes_count integerValue] == 1 ? @"like" : @"likes"), [socialInfo.comments_count integerValue]];
+        
+        // Show the actual comments in chronological order
+        NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
+        for (NMSocialComment *comment in sortedComments) {
+            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
+            [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
+            commentView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[comment.created_time floatValue]];
+            commentView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
+        }
+    }
+    [portraitView.buzzView doneAdding];
+}
+
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {    
     if (thumbnailContainerView.alpha == 1.0f) {
@@ -313,6 +370,13 @@
     }    
 }
 
+#pragma mark - Notifications
+
+- (void)handleSocialMentionUpdate:(NSNotification *)notification
+{
+    [self updateSocialMentions];
+}
+
 #pragma mark - PhoneVideoInfoOrientedViewDelegate
 
 - (void)phoneVideoInfoOrientedView:(PhoneVideoInfoOrientedView *)view willBeginDraggingWithScrollView:(UIScrollView *)scrollView
@@ -360,9 +424,10 @@
 {
     if ([delegate respondsToSelector:@selector(videoInfoView:didTapCommentButton:socialInfo:)]) {
         NSUInteger mentionIndex = [sender tag];
-        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
-
-        [delegate videoInfoView:self didTapCommentButton:sender socialInfo:socialInfo];
+        if (mentionIndex < [mentionsArray count]) {
+            NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
+            [delegate videoInfoView:self didTapCommentButton:sender socialInfo:socialInfo];
+        }
     }
 }
 

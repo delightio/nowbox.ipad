@@ -25,7 +25,6 @@
 @property (nonatomic, assign) BOOL showsActionButtons;
 @property (nonatomic, assign) IBOutlet id<BuzzViewDelegate> delegate;
 
-+ (UIView *)noCommentsViewWithFrame:(CGRect)frame;
 - (void)addMentionLiked:(BOOL)liked;
 - (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username;
 - (void)doneAdding;
