@@ -31,12 +31,21 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+        
+        [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:NULL];
     }
     return self;
 }
 
 - (void)dealloc
 {    
+	@try {
+		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
+	}
+	@catch (NSException *exception) {
+		
+	}
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [fetchedResultsController release];
@@ -58,19 +67,13 @@
                 if (![accountManager.facebook isSessionValid]) {
                     [accountManager authorizeFacebook];
                     [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"homegrid" forKey:AnalyticsPropertySender]];                     
+                } else {
+                    GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                    [self.gridView setDataSource:facebookDataSource animated:YES];
                 }
-                
-                GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
-                [self.gridView setDataSource:facebookDataSource animated:YES];
                 break;
             }
             case 1: {
-                // YouTube
-                GridDataSource *youtubeDataSource = [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
-                [self.gridView setDataSource:youtubeDataSource animated:YES];
-                break;
-            }
-            case 2: {
                 // Twitter
                 if ([accountManager.twitterAccountStatus integerValue]) {
                     GridDataSource *twitterDataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
@@ -99,6 +102,12 @@
                         [alertView release];
                     }
                 }
+                break;
+            }
+            case 2: {
+                // YouTube
+                GridDataSource *youtubeDataSource = [[[YouTubeGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+                [self.gridView setDataSource:youtubeDataSource animated:YES];
                 break;
             }
             default:
@@ -183,6 +192,20 @@
     }
 }
 
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
+        // Facebook sync status updated, we have logged in successfully
+        GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+        [self.gridView setDataSource:facebookDataSource animated:YES];
+        
+        // stop listening so that we won't get repeated KVO
+        [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];        
+    }
+}
+
 #pragma mark - NSFetchedResultsController
 
 - (NSFetchedResultsController *)fetchedResultsController 
@@ -257,14 +280,14 @@
     if (index == 1) return nil;
     
     PagingGridViewCell *view = (PagingGridViewCell *) [aGridView dequeueReusableCell];
-    
+
     if (!view) {
         view = [[[PagingGridViewCell alloc] init] autorelease];
     }
     
     NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
     NSUInteger frcIndex = [self mappedFetchedResultsIndexForGridIndex:index];
-    
+
     if (frcIndex < frcObjectCount) {
         NMSubscription *subscription = [self objectAtIndex:index];
         [self configureCell:view forChannel:subscription.channel isUpdate:NO];
@@ -273,46 +296,56 @@
         
         switch (frcIndex - frcObjectCount) {
             case 0: {
-                view.label.text = @"Facebook";
                 if (NM_USER_FACEBOOK_CHANNEL_ID != 0) {
                     NMChannel *facebookChannel = [dataController userFacebookStreamChannel];
                     NMVideo *latestVideo = [dataController latestVideoForChannel:facebookChannel];
                     
                     if (latestVideo) {
+                        view.label.text = @"Facebook";                        
                         [view.image setImageForVideoThumbnail:latestVideo];
                     } else {
-                        [view.image setImageDirectly:nil];                        
+                        view.label.text = @"";                        
+                        [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_facebook.png"]];
+                        view.cropsThumbnail = NO;
                     }
                 } else {
-                    [view.image setImageDirectly:nil];
+                    view.label.text = @"";                    
+                    [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_facebook.png"]];
+                    view.cropsThumbnail = NO;
                 }
                 break;
             }
             case 1: {
-                view.label.text = @"YouTube";
-                NMChannel *youTubeChannel = [dataController userYouTubeStreamChannel];
-                NMVideo *latestVideo = [dataController latestVideoForChannel:youTubeChannel];
-                
-                if (latestVideo) {
-                    [view.image setImageForVideoThumbnail:latestVideo];
-                } else {
-                    [view.image setImageDirectly:nil];
-                }
-                break;
-            }
-            case 2: {
-                view.label.text = @"Twitter";
                 if (NM_USER_TWITTER_CHANNEL_ID != 0) {
                     NMChannel *twitterChannel = [dataController userTwitterStreamChannel];
                     NMVideo *latestVideo = [dataController latestVideoForChannel:twitterChannel];
                     
                     if (latestVideo) {
+                        view.label.text = @"Twitter";                        
                         [view.image setImageForVideoThumbnail:latestVideo];
                     } else {
-                        [view.image setImageDirectly:nil];                        
+                        view.label.text = @"";                        
+                        [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_twitter.png"]];  
+                        view.cropsThumbnail = NO;
                     }
                 } else {
-                    [view.image setImageDirectly:nil];
+                    view.label.text = @"";                    
+                    [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_twitter.png"]];
+                    view.cropsThumbnail = NO;
+                }
+                break;
+            }                
+            case 2: {
+                NMChannel *youTubeChannel = [dataController userYouTubeStreamChannel];
+                NMVideo *latestVideo = [dataController latestVideoForChannel:youTubeChannel];
+                
+                if (latestVideo) {
+                    view.label.text = @"YouTube";
+                    [view.image setImageForVideoThumbnail:latestVideo];
+                } else {
+                    view.label.text = @"";
+                    [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_youtube.png"]];
+                    view.cropsThumbnail = NO;
                 }
                 break;
             }
@@ -320,8 +353,9 @@
                 view.label.text = @"More";
                 view.label.textColor = [UIColor colorWithRed:167.0f/255.0f green:167.0f/255.0f blue:167.0f/255.0f alpha:1.0f];
                 view.label.highlightedTextColor = [UIColor colorWithRed:105.0f/255.0f green:105.0f/255.0f blue:105.0f/255.0f alpha:1.0f];
-                view.label.center = CGPointMake(view.label.center.x - 6, view.label.center.y);
+                view.label.center = CGPointMake(view.label.center.x - 12, view.label.center.y - 3);
                 view.image.image = [UIImage imageNamed:@"phone_grid_item_more.png"];
+                view.cropsThumbnail = NO;
                 break;                
             default:
                 break;

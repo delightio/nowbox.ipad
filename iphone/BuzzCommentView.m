@@ -17,6 +17,8 @@
 @synthesize serviceIcon;
 @synthesize timeLabel;
 @synthesize commentLabel;
+@synthesize likesCountLabel;
+@synthesize showsLikesCount;
 
 - (void)setup
 {    
@@ -28,9 +30,11 @@
     contentView.backgroundColor = [UIColor clearColor];
     commentRightPadding = self.frame.size.width - CGRectGetMaxX(commentLabel.frame);
     
-    userLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
-    timeLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
-    commentLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
+    UIFont *labelFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
+    userLabel.font = labelFont;
+    timeLabel.font = labelFont;
+    commentLabel.font = labelFont;
+    likesCountLabel.font = labelFont;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -59,8 +63,15 @@
     [serviceIcon release];
     [timeLabel release];
     [commentLabel release];
+    [likesCountLabel release];
     
     [super dealloc];
+}
+
+- (void)setShowsLikesCount:(BOOL)aShowsLikesCount
+{
+    showsLikesCount = aShowsLikesCount;
+    likesCountLabel.hidden = !showsLikesCount;
 }
 
 - (CGSize)sizeThatFits:(CGSize)size
@@ -82,14 +93,33 @@
     frame = commentLabel.frame;
     frame.size.width = self.frame.size.width - commentRightPadding - frame.origin.x;
 
-    // Comment label too tall for view - shrink it
+    if ([commentLabel.text length] > 0) {
+        likesCountLabel.frame = CGRectMake(frame.origin.x, frame.origin.y + frame.size.height + padding, frame.size.width, likesCountLabel.frame.size.height);    
+    } else {
+        // No comment - show likes instead
+        likesCountLabel.frame = CGRectMake(frame.origin.x, frame.origin.y, likesCountLabel.frame.size.width, likesCountLabel.frame.size.height);
+    }
+
+    CGFloat maxY;
     if (CGRectGetMaxY(commentLabel.frame) + padding > size.height) {
+        // Comment label too tall for view - shrink it
         frame.size.height = size.height - padding - frame.origin.y;
+        
+        maxY = CGRectGetMaxY(frame) + padding;
+        likesCountLabel.hidden = YES;
+    } else if (showsLikesCount && (CGRectGetMaxY(likesCountLabel.frame) + padding > size.height || [commentLabel.text length] == 0)) {
+        // Comment label and likes count fit
+        maxY = CGRectGetMaxY(likesCountLabel.frame) + padding;    
+        likesCountLabel.hidden = NO;        
+    } else {
+        // Comment label fits but likes count doesn't, or likes count hidden
+        maxY = CGRectGetMaxY(frame) + padding;
+        likesCountLabel.hidden = YES;
     }
     
     commentLabel.frame = frame;
     
-    return CGSizeMake(theSize.width, CGRectGetMaxY(commentLabel.frame) + padding);
+    return CGSizeMake(theSize.width, maxY);
 }
 
 @end
