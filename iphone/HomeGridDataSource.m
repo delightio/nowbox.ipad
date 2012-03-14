@@ -303,6 +303,7 @@
                     if (latestVideo) {
                         view.label.text = @"Facebook";                        
                         [view.image setImageForVideoThumbnail:latestVideo];
+                        view.cropsThumbnail = YES;
                     } else {
                         view.label.text = @"";                        
                         [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_facebook.png"]];
@@ -323,6 +324,7 @@
                     if (latestVideo) {
                         view.label.text = @"Twitter";                        
                         [view.image setImageForVideoThumbnail:latestVideo];
+                        view.cropsThumbnail = YES;                        
                     } else {
                         view.label.text = @"";                        
                         [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_twitter.png"]];  
@@ -342,6 +344,7 @@
                 if (latestVideo) {
                     view.label.text = @"YouTube";
                     [view.image setImageForVideoThumbnail:latestVideo];
+                    view.cropsThumbnail = YES;                    
                 } else {
                     view.label.text = @"";
                     [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_youtube.png"]];
