@@ -304,6 +304,14 @@
 		A9EA9EF31510055400B233F8 /* onboard-nowbox-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EEF1510055400B233F8 /* onboard-nowbox-logo@2x.png */; };
 		A9EA9EF41510055400B233F8 /* onboard-splash-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EF01510055400B233F8 /* onboard-splash-button@2x.png */; };
 		A9EA9EF51510055400B233F8 /* onboard-welcome-text@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EF11510055400B233F8 /* onboard-welcome-text@2x.png */; };
+		A9EA9EFF15101F4500B233F8 /* category-list-selected-arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EF715101F4500B233F8 /* category-list-selected-arrow@2x.png */; };
+		A9EA9F0015101F4500B233F8 /* onboard-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EF815101F4500B233F8 /* onboard-background@2x.png */; };
+		A9EA9F0115101F4500B233F8 /* onboard-button-connect-default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EF915101F4500B233F8 /* onboard-button-connect-default@2x.png */; };
+		A9EA9F0215101F4500B233F8 /* onboard-button-connect-selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EFA15101F4500B233F8 /* onboard-button-connect-selected@2x.png */; };
+		A9EA9F0315101F4500B233F8 /* onboard-button-next@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EFB15101F4500B233F8 /* onboard-button-next@2x.png */; };
+		A9EA9F0415101F4500B233F8 /* onboard-social-facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EFC15101F4500B233F8 /* onboard-social-facebook@2x.png */; };
+		A9EA9F0515101F4500B233F8 /* onboard-social-twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EFD15101F4500B233F8 /* onboard-social-twitter@2x.png */; };
+		A9EA9F0615101F4500B233F8 /* onboard-social-youtube@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9EA9EFE15101F4500B233F8 /* onboard-social-youtube@2x.png */; };
 		A9F1BE6F13FB83CE0006B569 /* NMAirPlayContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F1BE6E13FB83CE0006B569 /* NMAirPlayContainerView.m */; };
 		A9F4966113D2E83400A56F50 /* playback_background_pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966013D2E83400A56F50 /* playback_background_pattern.png */; };
 		A9F4966313D2EE5900A56F50 /* playback_video_shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = A9F4966213D2EE5900A56F50 /* playback_video_shadow.png */; };
@@ -739,6 +747,14 @@
 		A9EA9EEF1510055400B233F8 /* onboard-nowbox-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-nowbox-logo@2x.png"; sourceTree = "<group>"; };
 		A9EA9EF01510055400B233F8 /* onboard-splash-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button@2x.png"; sourceTree = "<group>"; };
 		A9EA9EF11510055400B233F8 /* onboard-welcome-text@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-welcome-text@2x.png"; sourceTree = "<group>"; };
+		A9EA9EF715101F4500B233F8 /* category-list-selected-arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-selected-arrow@2x.png"; sourceTree = "<group>"; };
+		A9EA9EF815101F4500B233F8 /* onboard-background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-background@2x.png"; sourceTree = "<group>"; };
+		A9EA9EF915101F4500B233F8 /* onboard-button-connect-default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-connect-default@2x.png"; sourceTree = "<group>"; };
+		A9EA9EFA15101F4500B233F8 /* onboard-button-connect-selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-connect-selected@2x.png"; sourceTree = "<group>"; };
+		A9EA9EFB15101F4500B233F8 /* onboard-button-next@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next@2x.png"; sourceTree = "<group>"; };
+		A9EA9EFC15101F4500B233F8 /* onboard-social-facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-facebook@2x.png"; sourceTree = "<group>"; };
+		A9EA9EFD15101F4500B233F8 /* onboard-social-twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-twitter@2x.png"; sourceTree = "<group>"; };
+		A9EA9EFE15101F4500B233F8 /* onboard-social-youtube@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-youtube@2x.png"; sourceTree = "<group>"; };
 		A9ECD60E135E9611004B7F78 /* NMCacheController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMCacheController.h; sourceTree = "<group>"; };
 		A9ECD60F135E9611004B7F78 /* NMCacheController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMCacheController.m; sourceTree = "<group>"; };
 		A9ECD612135E9703004B7F78 /* NMImageDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMImageDownloadTask.h; sourceTree = "<group>"; };
@@ -1037,6 +1053,7 @@
 				A9552692150ED0AE00585856 /* button-share@2x.png */,
 				A9552693150ED0AE00585856 /* button-watch-later-active@2x.png */,
 				A9552694150ED0AE00585856 /* button-watch-later@2x.png */,
+				A9EA9EF715101F4500B233F8 /* category-list-selected-arrow@2x.png */,
 				A9552695150ED0AE00585856 /* channel-thumbnail-frame@2x.png */,
 				A9552696150ED0AE00585856 /* channel-video-status-bad@2x.png */,
 				A9552697150ED0AE00585856 /* channel-video-status-fav@2x.png */,
@@ -1046,6 +1063,13 @@
 				A9EA9EEF1510055400B233F8 /* onboard-nowbox-logo@2x.png */,
 				A9EA9EF01510055400B233F8 /* onboard-splash-button@2x.png */,
 				A9EA9EF11510055400B233F8 /* onboard-welcome-text@2x.png */,
+				A9EA9EF815101F4500B233F8 /* onboard-background@2x.png */,
+				A9EA9EF915101F4500B233F8 /* onboard-button-connect-default@2x.png */,
+				A9EA9EFA15101F4500B233F8 /* onboard-button-connect-selected@2x.png */,
+				A9EA9EFB15101F4500B233F8 /* onboard-button-next@2x.png */,
+				A9EA9EFC15101F4500B233F8 /* onboard-social-facebook@2x.png */,
+				A9EA9EFD15101F4500B233F8 /* onboard-social-twitter@2x.png */,
+				A9EA9EFE15101F4500B233F8 /* onboard-social-youtube@2x.png */,
 				A95526F9150ED0AE00585856 /* playback_background_pattern@2x.png */,
 				A95526FA150ED0AE00585856 /* playback-full-screen-active@2x.png */,
 				A95526FB150ED0AE00585856 /* playback-full-screen@2x.png */,
@@ -1759,6 +1783,14 @@
 				A9EA9EF31510055400B233F8 /* onboard-nowbox-logo@2x.png in Resources */,
 				A9EA9EF41510055400B233F8 /* onboard-splash-button@2x.png in Resources */,
 				A9EA9EF51510055400B233F8 /* onboard-welcome-text@2x.png in Resources */,
+				A9EA9EFF15101F4500B233F8 /* category-list-selected-arrow@2x.png in Resources */,
+				A9EA9F0015101F4500B233F8 /* onboard-background@2x.png in Resources */,
+				A9EA9F0115101F4500B233F8 /* onboard-button-connect-default@2x.png in Resources */,
+				A9EA9F0215101F4500B233F8 /* onboard-button-connect-selected@2x.png in Resources */,
+				A9EA9F0315101F4500B233F8 /* onboard-button-next@2x.png in Resources */,
+				A9EA9F0415101F4500B233F8 /* onboard-social-facebook@2x.png in Resources */,
+				A9EA9F0515101F4500B233F8 /* onboard-social-twitter@2x.png in Resources */,
+				A9EA9F0615101F4500B233F8 /* onboard-social-youtube@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
