@@ -33,6 +33,7 @@
 - (void)setWatchLater:(BOOL)watchLater;
 - (void)setFavorite:(BOOL)favorite;
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation;
+- (void)updateSocialMentions;
 - (IBAction)gridButtonPressed:(id)sender;
 - (IBAction)playButtonPressed:(id)sender;
 - (IBAction)thumbnailPressed:(id)sender;

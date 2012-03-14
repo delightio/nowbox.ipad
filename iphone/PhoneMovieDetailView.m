@@ -81,10 +81,21 @@
     [currentOrientedView addSubview:controlsView];
     
     mentionsArray = [[NSMutableArray alloc] init];
+    
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidPostFacebookCommentNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidReplyTweetNotificaiton object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidPostRetweetNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidShareVideoNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:NMDidPostTweetNotification object:nil];    
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:@"NMDidPostFacebookLikeNotificaiton" object:nil];    
+    [notificationCenter addObserver:self selector:@selector(handleSocialMentionUpdate:) name:@"NMDidDeleteFacebookLikeNotification" object:nil];
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [portraitView release];
     [landscapeView release];
     [controlsView release];
@@ -104,33 +115,7 @@
     [self setFavorite:[video.video.nm_favorite boolValue]];
     [self setTopActionButtonIndex:([video.video.nm_favorite boolValue] ? 2 : 0)];
 
-    // Add buzz
-    [mentionsArray removeAllObjects];
-    [portraitView.buzzView removeAllMentions];
-    
-    for (NMSocialInfo *socialInfo in video.video.socialMentions) {
-        BOOL mentionLikedByUser = [socialInfo.peopleLike containsObject:[[NMAccountManager sharedAccountManager] facebookProfile]];
-
-        [mentionsArray addObject:socialInfo];
-        [portraitView.buzzView addMentionLiked:mentionLikedByUser];
-        
-        // Show the original post as the first "comment"
-        BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:@"" username:video.channel.title];
-        [postView.userImageView setImageForChannel:video.channel];
-        postView.timeLabel.text = @"";
-        postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
-        postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i comments", [socialInfo.likes_count integerValue], ([socialInfo.likes_count integerValue] == 1 ? @"like" : @"likes"), [socialInfo.comments_count integerValue]];
-        
-        // Show the actual comments in chronological order
-        NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
-        for (NMSocialComment *comment in sortedComments) {
-            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
-            [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
-            commentView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[comment.created_time floatValue]];
-            commentView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
-        }
-    }
-    [portraitView.buzzView doneAdding];
+    [self updateSocialMentions];
 }
 
 - (void)setChannelTitle:(NSString *)channelTitle
@@ -269,6 +254,37 @@
     [currentOrientedView positionLabels];
 }
 
+- (void)updateSocialMentions
+{
+    // Add buzz
+    [mentionsArray removeAllObjects];
+    [portraitView.buzzView removeAllMentions];
+    
+    for (NMSocialInfo *socialInfo in self.video.video.socialMentions) {
+        BOOL mentionLikedByUser = [socialInfo.peopleLike containsObject:[[NMAccountManager sharedAccountManager] facebookProfile]];
+        
+        [mentionsArray addObject:socialInfo];
+        [portraitView.buzzView addMentionLiked:mentionLikedByUser];
+        
+        // Show the original post as the first "comment"
+        BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:@"" username:self.video.channel.title];
+        [postView.userImageView setImageForChannel:self.video.channel];
+        postView.timeLabel.text = @"";
+        postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
+        postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i comments", [socialInfo.likes_count integerValue], ([socialInfo.likes_count integerValue] == 1 ? @"like" : @"likes"), [socialInfo.comments_count integerValue]];
+        
+        // Show the actual comments in chronological order
+        NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
+        for (NMSocialComment *comment in sortedComments) {
+            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
+            [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
+            commentView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[comment.created_time floatValue]];
+            commentView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
+        }
+    }
+    [portraitView.buzzView doneAdding];
+}
+
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {    
     if (thumbnailContainerView.alpha == 1.0f) {
@@ -352,6 +368,13 @@
     if ([delegate respondsToSelector:@selector(videoInfoView:didToggleBuzzPanelExpanded:)]) {
         [delegate videoInfoView:self didToggleBuzzPanelExpanded:buzzPanelExpanded];
     }    
+}
+
+#pragma mark - Notifications
+
+- (void)handleSocialMentionUpdate:(NSNotification *)notification
+{
+    [self updateSocialMentions];
 }
 
 #pragma mark - PhoneVideoInfoOrientedViewDelegate
