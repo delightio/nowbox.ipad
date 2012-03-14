@@ -104,33 +104,38 @@
     frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
     videoTitleLabel.frame = frame;
     
-    // Position the author label below the video title
-    frame = authorLabel.frame;
-    frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
-    authorLabel.frame = frame;
-    
-    // Position the upload date label below the author label
-    frame = dateLabel.frame;
-    frame.origin.y = CGRectGetMaxY(authorLabel.frame);
-    
-    if (CGRectGetMaxY(frame) > infoView.frame.size.height) {
-        // Doesn't fit. Position it where it won't be shown.
-        frame.origin.y = infoView.frame.size.height;
-    }
-    dateLabel.frame = frame;
+    if (infoPanelExpanded) {
+        // Position the author label below the video title
+        frame = authorLabel.frame;
+        frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
+        authorLabel.frame = frame;
+        
+        // Position the upload date label below the author label
+        frame = dateLabel.frame;
+        frame.origin.y = CGRectGetMaxY(authorLabel.frame);
+        dateLabel.frame = frame;
 
-    // Position the description label below the upload date label
-    frame = descriptionLabel.frame;
-    frame.origin.y = CGRectGetMaxY(dateLabel.frame) + 6;
-
-    CGFloat height = infoView.frame.size.height - frame.origin.y - 4;
-    if (height > 0) {
-        frame.size.height = height;
+        // Position the description label below the upload date label
+        frame = descriptionLabel.frame;
+        frame.origin.y = CGRectGetMaxY(dateLabel.frame) + 6;
+        frame.size.height = infoView.frame.size.height - frame.origin.y - 4;
+        descriptionLabel.frame = frame;
     } else {
-        frame.size.height = 18;
+        // Position the author label below the video title
+        frame = authorLabel.frame;
+        frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
+        authorLabel.frame = frame;
+        
+        // Position the upload date label just offscreen
+        frame = dateLabel.frame;
+        frame.origin.y = infoView.frame.size.height;
+        dateLabel.frame = frame;
+        
+        // Position the description label below the upload date label
+        frame = descriptionLabel.frame;
+        frame.origin.y = CGRectGetMaxY(dateLabel.frame) + 6;
+        descriptionLabel.frame = frame;
     }
-    
-    descriptionLabel.frame = frame;
 }
 
 - (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex
