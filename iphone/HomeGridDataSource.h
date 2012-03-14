@@ -11,6 +11,8 @@
 @interface HomeGridDataSource : GridDataSource {
     UIViewController *viewController;
     NSMutableSet *refreshingChannels;
+    
+    BOOL facebookButtonPressed;
 }
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
