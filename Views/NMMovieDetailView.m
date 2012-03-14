@@ -42,6 +42,8 @@
 - (void)awakeFromNib {
 	style = [NMStyleUtility sharedStyleUtility];
 	
+	self.contentScaleFactor = [[UIScreen mainScreen] scale];
+	
 	if ( NM_RUNNING_ON_IPAD ) {
 		descriptionDefaultFrame  = descriptionLabel.frame;
 		titleDefaultFrame = titleLabel.frame;

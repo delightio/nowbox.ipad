@@ -31,6 +31,7 @@
 @property (nonatomic, assign, getter=isEditing) BOOL editing;
 @property (nonatomic, assign, getter=isDragging) BOOL dragging;
 @property (nonatomic, assign) CGPoint lastDragLocation;
+@property (nonatomic, assign) BOOL cropsThumbnail;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewCellDelegate> delegate;
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated;

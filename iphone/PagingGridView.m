@@ -433,6 +433,7 @@
         view.label.textColor = [UIColor whiteColor];
         view.label.highlightedTextColor = [UIColor whiteColor];
         view.label.center = CGPointMake(view.frame.size.width / 2, view.frame.size.height / 2);
+        view.cropsThumbnail = YES;
     }
     
     return view;
@@ -504,7 +505,7 @@
         [visibleIndexes addIndex:cell.index];
     }
     
-    numberOfItems++;
+    numberOfItems += [self columnSpanForCellAtIndex:index];
     [self updateNumberOfPages];
     [self setNeedsLayout];
     
@@ -561,7 +562,7 @@
             [visibleIndexes addIndex:cell.index];
         }
         
-        numberOfItems--;
+        numberOfItems -= [self columnSpanForCellAtIndex:index];
         [self updateNumberOfPages];
         
         [self setNeedsLayout];   

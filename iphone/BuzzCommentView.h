@@ -19,5 +19,7 @@
 @property (nonatomic, retain) IBOutlet UIImageView *serviceIcon;
 @property (nonatomic, retain) IBOutlet UILabel *timeLabel;
 @property (nonatomic, retain) IBOutlet UILabel *commentLabel;
+@property (nonatomic, retain) IBOutlet UILabel *likesCountLabel;
+@property (nonatomic, assign) BOOL showsLikesCount;
 
 @end
