@@ -147,7 +147,7 @@
 						<string key="NSFrame">{{54, 28}, {254, 22}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="437499281"/>
+						<reference key="NSNextKeyView" ref="138796135"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -167,12 +167,13 @@
 						<reference key="IBUIFontDescription" ref="1009701966"/>
 						<reference key="IBUIFont" ref="289743300"/>
 					</object>
-					<object class="IBUILabel" id="437499281">
+					<object class="IBUILabel" id="138796135">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">-2147483358</int>
-						<string key="NSFrame">{{54, 51}, {254, 22}}</string>
+						<string key="NSFrame">{{54, 51}, {254, 16}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -258,7 +259,7 @@
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">likesCountLabel</string>
 						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="437499281"/>
+						<reference key="destination" ref="138796135"/>
 					</object>
 					<int key="connectionID">19</int>
 				</object>
@@ -281,7 +282,7 @@
 							<reference ref="61168210"/>
 							<reference ref="21265919"/>
 							<reference ref="157470630"/>
-							<reference ref="437499281"/>
+							<reference ref="138796135"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -334,7 +335,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">18</int>
-						<reference key="object" ref="437499281"/>
+						<reference key="object" ref="138796135"/>
 						<reference key="parent" ref="191373211"/>
 						<string key="objectName">Likes Count Label</string>
 					</object>
