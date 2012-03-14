@@ -424,9 +424,10 @@
 {
     if ([delegate respondsToSelector:@selector(videoInfoView:didTapCommentButton:socialInfo:)]) {
         NSUInteger mentionIndex = [sender tag];
-        NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
-
-        [delegate videoInfoView:self didTapCommentButton:sender socialInfo:socialInfo];
+        if (mentionIndex < [mentionsArray count]) {
+            NMSocialInfo *socialInfo = [mentionsArray objectAtIndex:mentionIndex];    
+            [delegate videoInfoView:self didTapCommentButton:sender socialInfo:socialInfo];
+        }
     }
 }
 

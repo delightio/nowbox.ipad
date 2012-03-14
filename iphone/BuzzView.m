@@ -135,6 +135,11 @@
                                         socialMentionIndex:index];
     [mentionsScrollView insertSubview:noCommentsView atIndex:0];
     [noCommentViews addObject:noCommentsView];
+    
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
+    [tapGestureRecognizer setNumberOfTapsRequired:1];
+    [noCommentsView addGestureRecognizer:tapGestureRecognizer];
+    [tapGestureRecognizer release];
 }
 
 - (void)addMentionLiked:(BOOL)liked
