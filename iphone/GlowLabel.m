@@ -97,7 +97,10 @@
 {
     self.gradientStartColor = startColor;
     self.gradientEndColor = endColor;
-    [self updateGradient];
+    
+    if ([self.text length]) {
+        [self updateGradient];
+    }
 }
 
 - (void)drawRect:(CGRect)rect
