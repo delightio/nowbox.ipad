@@ -40,7 +40,7 @@
 
 #define NM_RATE_US_REMINDER_MINIMUM_TIME_ON_APP         (60.0f * 40)
 
-#define VIDEO_HEIGHT 218.0f
+#define VIDEO_HEIGHT 220.0f
 #define VIDEO_OFFSET_WHEN_SHARING -60.0f
 
 @interface PhoneVideoPlaybackViewController (PrivateMethods)
@@ -199,7 +199,7 @@
 
 - (void)updateViewsForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-        movieView.frame = CGRectMake(0, 42, topLevelContainerView.frame.size.width, VIDEO_HEIGHT);        
+        movieView.frame = CGRectMake(0, 38, topLevelContainerView.frame.size.width, VIDEO_HEIGHT);        
         movieBackgroundView.frame = movieView.frame;
         [movieView setVideoGravity:AVLayerVideoGravityResizeAspectFill];
         backgroundImage.hidden = NO;

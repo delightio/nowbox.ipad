@@ -30,6 +30,8 @@
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
 @synthesize descriptionLabelContainer;
+@synthesize authorLabel;
+@synthesize dateLabel;
 @synthesize descriptionLabel;
 @synthesize moreVideosButton;
 @synthesize watchLaterButton;
@@ -63,6 +65,8 @@
     
     channelTitleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:19.0f backupFontName:@"Futura-Medium" size:16.0f];
     videoTitleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:30.0f backupFontName:@"Futura-Medium" size:26.0f];
+    authorLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
+    dateLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
     descriptionLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
     moreVideosButton.titleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:16.0f];
 }
@@ -78,6 +82,8 @@
     [channelTitleLabel release];
     [videoTitleLabel release];
     [descriptionLabelContainer release];
+    [authorLabel release];
+    [dateLabel release];
     [descriptionLabel release];
     [moreVideosButton release];
     [watchLaterButton release];
@@ -91,19 +97,45 @@
 {        
     if (descriptionLabelContainer) return;
     
-    // Position the description label below the video title
+    // Size the title label to fit
     videoTitleLabel.frame = originalVideoTitleFrame;
     [videoTitleLabel sizeToFit];
     CGRect frame = videoTitleLabel.frame;
     frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
     videoTitleLabel.frame = frame;
     
-    frame = descriptionLabel.frame;
-    CGFloat distanceFromBottom = CGRectGetHeight(infoView.frame) - CGRectGetMaxY(frame);
-    frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
-    frame.size.height = infoView.frame.size.height - frame.origin.y - distanceFromBottom;
-    descriptionLabel.frame = frame;
-    descriptionLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    if (infoPanelExpanded) {
+        // Position the author label below the video title
+        frame = authorLabel.frame;
+        frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
+        authorLabel.frame = frame;
+        
+        // Position the upload date label below the author label
+        frame = dateLabel.frame;
+        frame.origin.y = CGRectGetMaxY(authorLabel.frame);
+        dateLabel.frame = frame;
+
+        // Position the description label below the upload date label
+        frame = descriptionLabel.frame;
+        frame.origin.y = CGRectGetMaxY(dateLabel.frame) + 6;
+        frame.size.height = infoView.frame.size.height - frame.origin.y - 4;
+        descriptionLabel.frame = frame;
+    } else {
+        // Position the author label below the video title
+        frame = authorLabel.frame;
+        frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
+        authorLabel.frame = frame;
+        
+        // Position the upload date label just offscreen
+        frame = dateLabel.frame;
+        frame.origin.y = infoView.frame.size.height;
+        dateLabel.frame = frame;
+        
+        // Position the description label below the upload date label
+        frame = descriptionLabel.frame;
+        frame.origin.y = CGRectGetMaxY(dateLabel.frame) + 6;
+        descriptionLabel.frame = frame;
+    }
 }
 
 - (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex
@@ -176,22 +208,27 @@
         buzzView.frame = CGRectOffset(buzzView.frame, 0, frame.size.height - infoView.frame.size.height);
         infoView.frame = frame;
         
+        [self positionLabels];
+        
         // We want the most recent action item to be on top when we collapse
         if (!expanded && mostRecentActionButton) {
             [infoButtonScrollView centerViewAtIndex:[mostRecentActionButton tag] avoidMovingViewsToAbove:YES];
         }
     };
 
+    void (^completion)(BOOL) = ^(BOOL finished){
+    };
+    
     // Perform the animation
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState
                          animations:animations
-                         completion:^(BOOL finished){
-                         }];
+                         completion:completion];
     } else {
         animations();
+        completion(YES);
     }
 }
 

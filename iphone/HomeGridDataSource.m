@@ -39,13 +39,7 @@
 
 - (void)dealloc
 {    
-	@try {
-		[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
-	}
-	@catch (NSException *exception) {
-		
-	}
-    
+    [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [fetchedResultsController release];
@@ -65,6 +59,7 @@
             case 0: {
                 // Facebook
                 if (![accountManager.facebook isSessionValid]) {
+                    facebookButtonPressed = YES;
                     [accountManager authorizeFacebook];
                     [[MixpanelAPI sharedAPI] track:AnalyticsEventStartFacebookLogin properties:[NSDictionary dictionaryWithObject:@"homegrid" forKey:AnalyticsPropertySender]];                     
                 } else {
@@ -196,13 +191,12 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
+    if (facebookButtonPressed && [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
         // Facebook sync status updated, we have logged in successfully
         GridDataSource *facebookDataSource = [[[FacebookGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
         [self.gridView setDataSource:facebookDataSource animated:YES];
         
-        // stop listening so that we won't get repeated KVO
-        [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];        
+        facebookButtonPressed = NO;
     }
 }
 
@@ -303,6 +297,7 @@
                     if (latestVideo) {
                         view.label.text = @"Facebook";                        
                         [view.image setImageForVideoThumbnail:latestVideo];
+                        view.cropsThumbnail = YES;
                     } else {
                         view.label.text = @"";                        
                         [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_facebook.png"]];
@@ -323,6 +318,7 @@
                     if (latestVideo) {
                         view.label.text = @"Twitter";                        
                         [view.image setImageForVideoThumbnail:latestVideo];
+                        view.cropsThumbnail = YES;                        
                     } else {
                         view.label.text = @"";                        
                         [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_twitter.png"]];  
@@ -342,6 +338,7 @@
                 if (latestVideo) {
                     view.label.text = @"YouTube";
                     [view.image setImageForVideoThumbnail:latestVideo];
+                    view.cropsThumbnail = YES;                    
                 } else {
                     view.label.text = @"";
                     [view.image setImageDirectly:[UIImage imageNamed:@"phone_grid_item_youtube.png"]];

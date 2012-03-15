@@ -16,8 +16,9 @@
 + (NSString *)relativeTimeStringForTime:(NSTimeInterval)time;
 - (void)setChannelTitle:(NSString *)channelTitle;
 - (void)setVideoTitle:(NSString *)videoTitle;
+- (void)setDate:(NSDate *)date;
 - (void)setDescriptionText:(NSString *)descriptionText;
-- (void)setAuthorThumbnailForAuthor:(NMAuthor *)author;
+- (void)setAuthor:(NMAuthor *)author;
 - (void)setMoreCount:(NSUInteger)moreCount;
 - (void)setTopActionButtonIndex:(NSUInteger)actionButtonIndex;
 - (void)updateControlsViewForCurrentOrientation;
@@ -108,8 +109,9 @@
     [super setVideo:video];
     
     [self setChannelTitle:video.channel.title];
-    [self setAuthorThumbnailForAuthor:video.video.author];
+    [self setAuthor:video.video.author];
     [self setVideoTitle:video.video.title];
+    [self setDate:video.video.published_at];
     [self setDescriptionText:video.video.detail.nm_description];
     [self setWatchLater:[video.video.nm_watch_later boolValue]];
     [self setFavorite:[video.video.nm_favorite boolValue]];
@@ -132,14 +134,27 @@
     [landscapeView positionLabels];
 }
 
+- (void)setDate:(NSDate *)date
+{
+    NSString *dateString = [NSDateFormatter localizedStringFromDate:date 
+                                                          dateStyle:NSDateFormatterLongStyle 
+                                                          timeStyle:NSDateFormatterNoStyle];
+    
+    NSString *labelText = [NSString stringWithFormat:@"Uploaded on %@", dateString];
+    [portraitView.dateLabel setText:labelText];
+    [landscapeView.dateLabel setText:labelText];
+}
+
 - (void)setDescriptionText:(NSString *)descriptionText
 {
     [portraitView.descriptionLabel setText:descriptionText];
     [landscapeView.descriptionLabel setText:descriptionText];
 }
 
-- (void)setAuthorThumbnailForAuthor:(NMAuthor *)author
+- (void)setAuthor:(NMAuthor *)author
 {
+    [portraitView.authorLabel setText:author.username];
+    [landscapeView.authorLabel setText:author.username];
     [portraitView.channelThumbnail setImageForAuthorThumbnail:author];
     [landscapeView.channelThumbnail setImageForAuthorThumbnail:author];
 }

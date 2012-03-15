@@ -28,6 +28,8 @@
 @property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
 @property (nonatomic, retain) IBOutlet UIView *descriptionLabelContainer;
+@property (nonatomic, retain) IBOutlet UILabel *authorLabel;
+@property (nonatomic, retain) IBOutlet UILabel *dateLabel;
 @property (nonatomic, retain) IBOutlet UILabel *descriptionLabel;
 @property (nonatomic, retain) IBOutlet UIButton *moreVideosButton;
 @property (nonatomic, retain) IBOutlet UIButton *watchLaterButton;
