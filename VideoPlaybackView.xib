@@ -74,7 +74,7 @@
 										<reference key="NSNextKeyView" ref="696672566"/>
 										<bool key="IBUIOpaque">NO</bool>
 										<int key="IBUIContentMode">9</int>
-										<int key="IBUITag">1002</int>
+										<int key="IBUITag">1003</int>
 										<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 										<int key="IBUIContentHorizontalAlignment">0</int>
 										<int key="IBUIContentVerticalAlignment">0</int>
@@ -142,6 +142,7 @@
 										<string key="NSFrame">{{132, 1}, {46, 40}}</string>
 										<reference key="NSSuperview" ref="902033821"/>
 										<reference key="NSWindow"/>
+										<reference key="NSNextKeyView"/>
 										<bool key="IBUIOpaque">NO</bool>
 										<int key="IBUIContentMode">9</int>
 										<int key="IBUITag">1001</int>
@@ -399,7 +400,7 @@
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<real value="2"/>
+					<real value="0.0"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<real value="0.0"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

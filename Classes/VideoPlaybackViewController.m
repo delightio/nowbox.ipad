@@ -113,7 +113,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	splitViewRect = CGRectMake(0.0f, 0.0f, NM_IPAD_SCREEN_WIDTH, 380.0f);
 	topLeftRect = CGRectMake(0.0f, 0.0f, 200.0f, 200.0f);
 	
+	CGFloat scaleValue = [[UIScreen mainScreen] scale];
+	self.view.contentScaleFactor = scaleValue;
+	controlScrollView.contentScaleFactor = scaleValue;
+	ribbonView.contentScaleFactor = scaleValue;
 	// ribbon view
+//	ribbonView.contentScaleFactor = self.view.window.contentScaleFactor;
 	ribbonView.layer.contents = (id)[UIImage imageNamed:@"ribbon"].CGImage;
 	ribbonView.layer.shouldRasterize = YES;
 	
@@ -146,6 +151,8 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	// pre-load control view
 	// load the nib
 	[[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
+	loadedControlView.contentScaleFactor = scaleValue;
+	loadedControlView.topbarContainerView.contentScaleFactor = scaleValue;
 //	// top left corner gesture recognizer
 //	UITapGestureRecognizer * topLeftRcgr = [[UITapGestureRecognizer alloc] initWithTarget:@selector() action:self];
 //	topLeftRcgr.
