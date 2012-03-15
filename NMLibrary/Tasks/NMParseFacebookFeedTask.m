@@ -328,7 +328,7 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				// we only add the video to a channel if we are parsing the user's own account OR the video is from user's own friend!!
 				// logic below will skip friends of friends
-				if ( isAccountOwner || [_user_id isEqual:manID] ) {
+				if ( isAccountOwner /*|| [_user_id isEqual:manID]*/ ) {
 					// the video is from another person. we should add the video to that person's channel as well
 					switch (chkResult) {
 						case NMVideoDoesNotExist:
