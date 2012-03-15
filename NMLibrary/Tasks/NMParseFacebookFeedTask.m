@@ -146,6 +146,7 @@ static NSArray * youTubeRegexArray = nil;
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
 	NSString * extID = nil;
 	NSString * dataType = nil;
+	NSString * msgStr = nil;
 	NSInteger theTime;
 	NSDictionary * otherDict;
 	NSMutableDictionary * vdoDict = nil;
@@ -159,6 +160,8 @@ static NSArray * youTubeRegexArray = nil;
 				vdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
 				// we just need the external ID
 				[vdoDict setObject:extID forKey:@"external_id"];
+				msgStr = [theDict objectForKey:@"message"];
+				if ( msgStr ) [vdoDict setObject:msgStr forKey:@"message"];
 				[vdoDict setObject:[theDict objectForKey:@"id"] forKey:@"object_id"];
 				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
 				
@@ -246,6 +249,7 @@ static NSArray * youTubeRegexArray = nil;
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
 					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+					fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 				} // else - object clean up will be done later below.
 				break;
 			}
@@ -270,6 +274,7 @@ static NSArray * youTubeRegexArray = nil;
 				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
 				fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+				fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 				break;
 				
 			case NMVideoExistsAndInChannel:
@@ -296,6 +301,7 @@ static NSArray * youTubeRegexArray = nil;
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
 					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+					fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 				} // else - object clean up will be done later below.
 				break;
 			}
