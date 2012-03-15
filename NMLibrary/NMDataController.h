@@ -68,6 +68,7 @@
 @property (nonatomic, retain) NSPredicate * pendingImportVideoPredicate;
 @property (nonatomic, retain) NSPredicate * pendingImportPredicate;
 @property (nonatomic, retain) NSPredicate * subscribedChannelsPredicate;
+@property (nonatomic, retain) NSPredicate * socialChannelsToShowPredicateTemplate;
 @property (nonatomic, retain) NSPredicate * socialChannelsToSyncPredicate;
 @property (nonatomic, retain) NSPredicate * objectForIDPredicateTemplate;
 @property (nonatomic, retain) NSPredicate * videoInChannelPredicateTemplate;
@@ -113,6 +114,7 @@
 - (void)permanentDeleteMarkedChannels;
 - (NSInteger)maxSubscriptionSortOrder;
 - (void)updateChannelHiddenStatus:(NMChannel *)chnObj;
+- (void)updateSocialChannelsHiddenStatus;
 //- (void)updateFavoriteChannelHideStatus;
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj;
 - (NSArray *)channelsNeverPopulatedBefore;

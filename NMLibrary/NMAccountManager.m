@@ -502,6 +502,9 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	
 	NSArray * theVideos = cnt ? [tqc.dataController videosForSync:cnt] : nil;
 	
+	// update nm_hidden status of channel
+	[[NMTaskQueueController sharedTaskQueueController].dataController updateSocialChannelsHiddenStatus];
+	
 	if ( theVideos == nil && theProfiles == nil ) {
 		// stop the timer task
 		if ( _videoImportTimer ) {
