@@ -269,14 +269,6 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 			// just delete the video
 			[ctrl deleteManagedObject:concreteVideo];
 			self.concreteVideo = nil;
-			// check if the channel still contains other video
-			NSSet * vdoSet = concreteVideo.channels;
-			for (NMVideo * vdoObj in vdoSet) {
-				if ( ![vdoObj.channel.videos count] ) {
-					// the channel is now empty
-					vdoObj.channel.subscription.nm_hidden = (NSNumber *)kCFBooleanTrue;
-				}
-			}
 		} else {
 			targetVideo.nm_direct_url = nil;
 			targetVideo.nm_direct_sd_url = nil;

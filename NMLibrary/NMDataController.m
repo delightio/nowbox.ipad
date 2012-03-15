@@ -51,6 +51,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 
 @synthesize subscribedChannelsPredicate = _subscribedChannelsPredicate;
 @synthesize socialChannelsToSyncPredicate = _socialChannelsToSyncPredicate;
+@synthesize socialChannelsToShowPredicateTemplate = _socialChannelsToShowPredicateTemplate;
 @synthesize objectForIDPredicateTemplate = _objectForIDPredicateTemplate;
 @synthesize videoInChannelPredicateTemplate = _videoInChannelPredicateTemplate;
 @synthesize channelPredicateTemplate = _channelPredicateTemplate;
@@ -84,6 +85,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[userFacebookStreamChannel release], [userTwitterStreamChannel release], [userYouTubeStreamChannel release];
 	[_subscribedChannelsPredicate release];
 	[_socialChannelsToSyncPredicate release];
+	[_socialChannelsToShowPredicateTemplate release];
 	[_objectForIDPredicateTemplate release];
 	[_videoInChannelPredicateTemplate release];
 	[_channelPredicateTemplate release];
@@ -195,6 +197,13 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	if ( _socialChannelsToSyncPredicate == nil ) 
 		_socialChannelsToSyncPredicate = [[NSPredicate predicateWithFormat:@"subscription != nil AND subscription.nm_subscription_tier == 0 AND type IN %@ AND subscription.nm_video_last_refresh < $LAST_REFRESH", [NSArray arrayWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], nil]] retain];
 	return _socialChannelsToSyncPredicate;
+}
+
+- (NSPredicate *)socialChannelsToShowPredicateTemplate {
+	if ( _socialChannelsToShowPredicateTemplate == nil ) {
+		_socialChannelsToShowPredicateTemplate = [[NSPredicate predicateWithFormat:@"type IN %@ AND subscription != nil AND subscription.nm_hidden == $HIDDEN AND subquery(videos, $x, $x.video.nm_error == %d).@count > 0", [NSArray arrayWithObjects:[NSNumber numberWithInteger:NMChannelUserFacebookType], [NSNumber numberWithInteger:NMChannelUserTwitterType], NMErrorNone, nil]] retain];
+	}
+	return _socialChannelsToShowPredicateTemplate;
 }
 
 - (NSPredicate *)objectForIDPredicateTemplate {
@@ -550,7 +559,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.channelEntityDescription];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[self.subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"HIDDEN"]]];
+	[request setPredicate:[self.subscribedChannelsPredicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:(NSNumber *)kCFBooleanFalse forKey:@"HIDDEN"]]];
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
 	[request release];
 	return [result count] ? result : nil;
@@ -856,21 +865,31 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 }
 
-//- (void)updateFavoriteChannelHideStatus {
-//	if ( NM_USER_SHOW_FAVORITE_CHANNEL ) {
-//		NSFetchRequest * request = [[NSFetchRequest alloc] init];
-//		[request setEntity:self.videoEntityDescription];
-//		[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error == 0", favoriteVideoChannel]];
-//		[request setFetchLimit:1];
-//		[request setResultType:NSManagedObjectIDResultType];
-//		NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
-//		favoriteVideoChannel.subscription.nm_hidden = (NSNumber *)([result count] == 0 ? kCFBooleanTrue : kCFBooleanFalse);
-//		[request release];
-//	} else {
-//		// always hide the channel
-//		favoriteVideoChannel.subscription.nm_hidden = (NSNumber *)kCFBooleanTrue;
+- (void)updateSocialChannelsHiddenStatus {
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:self.channelEntityDescription];
+	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
+	[request setPredicate:[self.socialChannelsToShowPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:(NSNumber *)kCFBooleanTrue forKey:@"HIDDEN"]]];
+	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
+	// show channels
+	for (NMChannel * chnObj in result) {
+		if ( [chnObj.subscription.nm_hidden boolValue] ) chnObj.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
+	}
+	[request release];
+	
+	// the following code will crash... not sure why...
+	// hide channels
+//	request = [[NSFetchRequest alloc] init];
+//	[request setEntity:self.channelEntityDescription];
+//	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"subscription"]];
+//	[request setPredicate:[self.socialChannelsToShowPredicateTemplate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:(NSNumber *)kCFBooleanFalse forKey:@"HIDDEN"]]];
+//	result = [managedObjectContext executeFetchRequest:request error:nil];
+//	// hide channels
+//	for (NMChannel * chnObj in result) {
+//		if ( ![chnObj.subscription.nm_hidden boolValue] ) chnObj.subscription.nm_hidden = (NSNumber *)kCFBooleanTrue;
 //	}
-//}
+//	[request release];
+}
 
 - (BOOL)channelContainsVideo:(NMChannel *)chnObj {
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
@@ -1487,6 +1506,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		subtObj.channel = chnObj;
 		subtObj.personProfile = aProfile;
 		subtObj.nm_subscription_tier = [NSNumber numberWithInteger:1];
+		subtObj.nm_hidden = (NSNumber *)kCFBooleanTrue;
 	}
 	return chnObj;
 }
