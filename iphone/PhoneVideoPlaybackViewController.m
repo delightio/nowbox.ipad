@@ -1558,7 +1558,8 @@
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleInfoPanelExpanded:(BOOL)expanded
 {
-    if (videoInfoView.thumbnailContainerView.alpha == 0.0f) {
+    // Keep the info view visible a bit longer if in landscape
+    if (videoInfoView.thumbnailContainerView.alpha == 0.0f && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
         showMovieControlTimestamp = loadedControlView.timeElapsed;
     }
 
@@ -1572,7 +1573,8 @@
 
 - (void)videoInfoView:(PhoneMovieDetailView *)videoInfoView didToggleBuzzPanelExpanded:(BOOL)expanded
 {
-    if (videoInfoView.thumbnailContainerView.alpha == 0.0f) {
+    // Keep the info view visible a bit longer if in landscape
+    if (videoInfoView.thumbnailContainerView.alpha == 0.0f && UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
         showMovieControlTimestamp = loadedControlView.timeElapsed;
     }
     
