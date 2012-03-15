@@ -282,7 +282,7 @@
         [portraitView.buzzView addMentionLiked:mentionLikedByUser];
         
         // Show the original post as the first "comment"
-        BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:socialInfo.message username:socialInfo.poster.username];
+        BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:socialInfo.message username:socialInfo.poster.name];
         [postView.userImageView setImageForPersonProfile:socialInfo.poster];
         postView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[socialInfo.nm_date_last_updated floatValue]];
         postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
