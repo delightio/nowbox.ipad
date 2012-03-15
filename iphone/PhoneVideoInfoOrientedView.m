@@ -10,11 +10,11 @@
 #import "UIFont+BackupFont.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kPortraitInfoPanelHeightDefault   110
+#define kPortraitInfoPanelHeightDefault   112
 #define kPortraitInfoPanelHeightExpanded  192
 #define kLandscapeInfoPanelHeightDefault  98
 #define kLandscapeInfoPanelHeightExpanded 156
-#define kBuzzPanelHeightDefault           80
+#define kBuzzPanelHeightDefault           74
 #define kBuzzPanelHeightExpanded          186
 
 #pragma mark - PhoneVideoInfoOrientedView
@@ -185,7 +185,7 @@
     } else {
         mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
                           [NSNumber numberWithFloat:0.25],
-                          [NSNumber numberWithFloat:0.375], nil];
+                          [NSNumber numberWithFloat:0.425], nil];
     }
     if (animated) {
         [CATransaction commit];
@@ -220,6 +220,9 @@
     };
 
     void (^completion)(BOOL) = ^(BOOL finished){
+        if (!expanded) {
+            [infoButtonScrollView setNeedsLayout];
+        }
     };
     
     // Perform the animation

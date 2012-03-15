@@ -104,9 +104,9 @@
     BOOL hideLikesCount = NO;
     if (CGRectGetMaxY(commentLabel.frame) + padding > size.height) {
         // Comment label too tall for view - shrink it
-        frame.size.height = size.height - padding - frame.origin.y;
+        frame.size.height = size.height - frame.origin.y;
         
-        maxY = CGRectGetMaxY(frame) + padding;
+        maxY = CGRectGetMaxY(frame);
         hideLikesCount = YES;
     } else if (showsLikesCount && (CGRectGetMaxY(likesCountLabel.frame) + padding < size.height || [commentLabel.text length] == 0)) {
         // Comment label and likes count fit

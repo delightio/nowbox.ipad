@@ -160,6 +160,7 @@
     commentScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     commentScrollView.tag = [commentScrollViews count];
     commentScrollView.scrollEnabled = NO;
+    commentScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
     [mentionsScrollView insertSubview:commentScrollView atIndex:0];
     [commentScrollViews addObject:commentScrollView];
     [commentScrollView release];

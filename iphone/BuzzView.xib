@@ -89,7 +89,6 @@
 						<string key="NSFrame">{{10, 1}, {299, 77}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
@@ -233,7 +232,6 @@
 						<string key="contentView">UIView</string>
 						<string key="delegate">id</string>
 						<string key="mentionsScrollView">UIScrollView</string>
-						<string key="touchArea">UIView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="contentView">
@@ -247,10 +245,6 @@
 						<object class="IBToOneOutletInfo" key="mentionsScrollView">
 							<string key="name">mentionsScrollView</string>
 							<string key="candidateClassName">UIScrollView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="touchArea">
-							<string key="name">touchArea</string>
-							<string key="candidateClassName">UIView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
