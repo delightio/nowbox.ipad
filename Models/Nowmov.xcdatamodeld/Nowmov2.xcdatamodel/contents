@@ -75,6 +75,7 @@
         <attribute name="username" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMSocialComment" inverseName="fromPerson" inverseEntity="NMSocialComment" syncable="YES"/>
         <relationship name="facebookLikes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMSocialInfo" inverseName="peopleLike" inverseEntity="NMSocialInfo" syncable="YES"/>
+        <relationship name="socialMentions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMSocialInfo" inverseName="poster" inverseEntity="NMSocialInfo" syncable="YES"/>
         <relationship name="subscription" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMSubscription" inverseName="personProfile" inverseEntity="NMSubscription" syncable="YES"/>
     </entity>
     <entity name="NMPreviewThumbnail" representedClassName="NMPreviewThumbnail">
@@ -107,6 +108,7 @@
         <attribute name="object_id" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMSocialComment" inverseName="socialInfo" inverseEntity="NMSocialComment" syncable="YES"/>
         <relationship name="peopleLike" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NMPersonProfile" inverseName="facebookLikes" inverseEntity="NMPersonProfile" syncable="YES"/>
+        <relationship name="poster" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="NMPersonProfile" inverseName="socialMentions" inverseEntity="NMPersonProfile" syncable="YES"/>
         <relationship name="video" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NMConcreteVideo" inverseName="socialMentions" inverseEntity="NMConcreteVideo" syncable="YES"/>
     </entity>
     <entity name="NMSubscription" representedClassName="NMSubscription" syncable="YES">
@@ -141,10 +143,10 @@
         <element name="NMChannel" positionX="288" positionY="-207" width="153" height="270"/>
         <element name="NMChannelDetail" positionX="88" positionY="15" width="128" height="75"/>
         <element name="NMConcreteVideo" positionX="261" positionY="270" width="128" height="375"/>
-        <element name="NMPersonProfile" positionX="819" positionY="-36" width="128" height="240"/>
+        <element name="NMPersonProfile" positionX="819" positionY="-36" width="128" height="255"/>
         <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMSocialComment" positionX="1098" positionY="330" width="128" height="120"/>
-        <element name="NMSocialInfo" positionX="826" positionY="252" width="128" height="210"/>
+        <element name="NMSocialInfo" positionX="826" positionY="252" width="128" height="225"/>
         <element name="NMSubscription" positionX="558" positionY="-165" width="128" height="225"/>
         <element name="NMVideo" positionX="558" positionY="159" width="128" height="135"/>
         <element name="NMVideoDetail" positionX="7" positionY="522" width="128" height="75"/>

@@ -22,6 +22,7 @@
 @property (nonatomic, retain) NSNumber * nm_type;
 @property (nonatomic, retain) NSString * object_id;
 @property (nonatomic, retain) NSSet *comments;
+@property (nonatomic, retain) NMPersonProfile * poster;
 @property (nonatomic, retain) NSSet *peopleLike;
 @property (nonatomic, retain) NMConcreteVideo *video;
 @end

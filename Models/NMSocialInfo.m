@@ -23,6 +23,7 @@
 @dynamic nm_type;
 @dynamic object_id;
 @dynamic comments;
+@dynamic poster;
 @dynamic peopleLike;
 @dynamic video;
 

@@ -332,6 +332,8 @@ static NSArray * youTubeRegexArray = nil;
 				} else if ( !isAccountOwner && theProfile.subscription == nil && [_user_id isEqualToString:manID] ) {
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
+				// set who posted this video
+				fbInfo.poster = theProfile;
 				// we only add the video to a channel if we are parsing the user's own account OR the video is from user's own friend!!
 				// logic below will skip friends of friends
 				if ( isAccountOwner /*|| [_user_id isEqual:manID]*/ ) {
