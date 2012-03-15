@@ -268,7 +268,6 @@
                     frame.size.width = commentScrollView.bounds.size.width - 50;
                     frame.size.height = 1000;    // Limit height arbitrarily to 1000 points
                 } else {
-                    frame.origin.y = 12;
                     frame.size.width = commentScrollView.bounds.size.width;
                     frame.size.height = commentScrollView.bounds.size.height;
                 }

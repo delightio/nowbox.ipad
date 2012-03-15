@@ -101,20 +101,29 @@
     }
 
     CGFloat maxY;
+    BOOL hideLikesCount = NO;
     if (CGRectGetMaxY(commentLabel.frame) + padding > size.height) {
         // Comment label too tall for view - shrink it
         frame.size.height = size.height - padding - frame.origin.y;
         
         maxY = CGRectGetMaxY(frame) + padding;
-        likesCountLabel.hidden = YES;
-    } else if (showsLikesCount && (CGRectGetMaxY(likesCountLabel.frame) + padding > size.height || [commentLabel.text length] == 0)) {
+        hideLikesCount = YES;
+    } else if (showsLikesCount && (CGRectGetMaxY(likesCountLabel.frame) + padding < size.height || [commentLabel.text length] == 0)) {
         // Comment label and likes count fit
         maxY = CGRectGetMaxY(likesCountLabel.frame) + padding;    
-        likesCountLabel.hidden = NO;        
     } else {
         // Comment label fits but likes count doesn't, or likes count hidden
         maxY = CGRectGetMaxY(frame) + padding;
-        likesCountLabel.hidden = YES;
+        hideLikesCount = YES;
+    }
+    
+    if (hideLikesCount) {
+        // Position it offscreen so it doesn't show up
+        CGRect frame = likesCountLabel.frame;
+        if (frame.origin.y < size.height) {
+            frame.origin.y = size.height;
+        }
+        likesCountLabel.frame = frame;
     }
     
     commentLabel.frame = frame;
