@@ -319,12 +319,16 @@ static NSArray * youTubeRegexArray = nil;
 					personIDOffset++;
 					[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 					theProfile.name = [fromDict objectForKey:@"name"];
-					// subscribe to this person as well
-					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
-				} else if ( theProfile.subscription == nil ) {
+					// subscribe to this person if the person is friend of user
+					if ( isAccountOwner || [_user_id isEqualToString:manID] ) {
+						[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+					}
+				} else if ( !isAccountOwner && theProfile.subscription == nil && [_user_id isEqualToString:manID] ) {
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
-				if ( ![_user_id isEqual:manID] ) {
+				// we only add the video to a channel if we are parsing the user's own account OR the video is from user's own friend!!
+				// logic below will skip friends of friends
+				if ( isAccountOwner || [_user_id isEqual:manID] ) {
 					// the video is from another person. we should add the video to that person's channel as well
 					switch (chkResult) {
 						case NMVideoDoesNotExist:
