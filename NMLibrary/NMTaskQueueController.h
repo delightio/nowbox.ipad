@@ -136,7 +136,7 @@
 // Facebook or Twitter (social)
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
 - (void)issueProcessFeedWithTwitterInfo:(NSDictionary *)twChnInfo;
-- (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj directURLString:(NSString *)urlStr;
+- (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj taskInfo:(NSDictionary *)infoDict;
 - (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;
 - (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
 - (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info;

@@ -51,6 +51,20 @@ static NSArray * youTubeRegexArray = nil;
 	return self;
 }
 
+- (id)initWithChannel:(NMChannel *)chn taskInfo:(NSDictionary *)infoDict {
+	self = [super init];
+	
+	command = NMCommandParseFacebookFeed;
+	self.feedDirectURLString = [infoDict objectForKey:@"next_url"];
+	numberOfIterations = [[infoDict objectForKey:@"iteration"] integerValue] + 1;
+	self.channel = chn;
+	NMPersonProfile * theProfile =  chn.subscription.personProfile;
+	self.user_id = theProfile.nm_user_id;
+	isAccountOwner = [theProfile.nm_me boolValue];
+	self.targetID = chn.nm_id;
+	return self;
+}
+
 - (id)initWithChannel:(NMChannel *)chn directURLString:(NSString *)urlStr {
 	self = [super init];
 	
@@ -480,7 +494,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSLog(@"Facebook feed: video added: %d", numberOfVideoAdded);
 #endif
 	_channel.video_count = [NSNumber numberWithUnsignedInteger:[_channel.videos count]];
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", [NSNumber numberWithInteger:numberOfIterations], @"iteration", nil];
 }
 
 @end

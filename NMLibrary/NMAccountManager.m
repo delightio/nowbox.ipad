@@ -426,8 +426,9 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 		case NMChannelUserFacebookType:
 		{
 			NSString * urlStr = [infoDict objectForKey:@"next_url"];
-			if ( urlStr ) {
-				[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForFacebookChannel:chnObj directURLString:urlStr];
+			NSInteger numIterate = [[infoDict objectForKey:@"iteration"] integerValue];
+			if ( urlStr && numIterate < 5 ) {
+				[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForFacebookChannel:chnObj taskInfo:infoDict];
 			}
 			break;
 		}	
