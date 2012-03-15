@@ -26,6 +26,7 @@
 @dynamic username;
 @dynamic comments;
 @dynamic facebookLikes;
+@dynamic socialMentions;
 @dynamic subscription;
 
 @end

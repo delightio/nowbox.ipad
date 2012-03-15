@@ -247,7 +247,7 @@ NSString * const NMDidFailImportYouTubeVideoNotification = @"NMDidFailImportYouT
 			targetVideo.nm_error = (NSNumber *)kCFBooleanFalse;
 			// make the NMVideo object dirty so that FRC method will get notified
 			for (NMVideo * vdo in targetVideo.channels) {
-				vdo.nm_make_dirty = [NSNumber numberWithBool:![vdo.nm_make_dirty boolValue]];
+				vdo.nm_make_dirty = (NSNumber *)([vdo.nm_make_dirty boolValue] ? kCFBooleanFalse : kCFBooleanTrue);
 			}
 			// update Concrete Video
 			[targetVideo setValuesForKeysWithDictionary:videoInfoDict];

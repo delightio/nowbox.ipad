@@ -687,8 +687,8 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[task release];
 }
 
-- (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj directURLString:(NSString *)urlStr {
-	NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj directURLString:urlStr];
+- (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj taskInfo:(NSDictionary *)infoDict {
+	NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj taskInfo:infoDict];
 	[networkController addNewConnectionForTask:task];
 	[task release];
 }

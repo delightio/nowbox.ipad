@@ -56,10 +56,10 @@
 - (void)addChannels:(NSSet *)values;
 - (void)removeChannels:(NSSet *)values;
 
-- (void)addFacebookMentionsObject:(NMSocialInfo *)value;
-- (void)removeFacebookMentionsObject:(NMSocialInfo *)value;
-- (void)addFacebookMentions:(NSSet *)values;
-- (void)removeFacebookMentions:(NSSet *)values;
+- (void)addSocialMentionsObject:(NMSocialInfo *)value;
+- (void)removeSocialMentionsObject:(NMSocialInfo *)value;
+- (void)addSocialMentions:(NSSet *)values;
+- (void)removeSocialMentions:(NSSet *)values;
 
 - (NSString *)primitiveNm_direct_url;
 - (NSString *)primitiveNm_direct_sd_url;

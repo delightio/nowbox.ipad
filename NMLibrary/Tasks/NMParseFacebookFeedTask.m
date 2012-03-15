@@ -51,6 +51,20 @@ static NSArray * youTubeRegexArray = nil;
 	return self;
 }
 
+- (id)initWithChannel:(NMChannel *)chn taskInfo:(NSDictionary *)infoDict {
+	self = [super init];
+	
+	command = NMCommandParseFacebookFeed;
+	self.feedDirectURLString = [infoDict objectForKey:@"next_url"];
+	numberOfIterations = [[infoDict objectForKey:@"iteration"] integerValue] + 1;
+	self.channel = chn;
+	NMPersonProfile * theProfile =  chn.subscription.personProfile;
+	self.user_id = theProfile.nm_user_id;
+	isAccountOwner = [theProfile.nm_me boolValue];
+	self.targetID = chn.nm_id;
+	return self;
+}
+
 - (id)initWithChannel:(NMChannel *)chn directURLString:(NSString *)urlStr {
 	self = [super init];
 	
@@ -132,6 +146,7 @@ static NSArray * youTubeRegexArray = nil;
 	parsedObjects = [[NSMutableArray alloc] initWithCapacity:feedCount];
 	NSString * extID = nil;
 	NSString * dataType = nil;
+	NSString * msgStr = nil;
 	NSInteger theTime;
 	NSDictionary * otherDict;
 	NSMutableDictionary * vdoDict = nil;
@@ -145,6 +160,8 @@ static NSArray * youTubeRegexArray = nil;
 				vdoDict = [NSMutableDictionary dictionaryWithCapacity:4];
 				// we just need the external ID
 				[vdoDict setObject:extID forKey:@"external_id"];
+				msgStr = [theDict objectForKey:@"message"];
+				if ( msgStr ) [vdoDict setObject:msgStr forKey:@"message"];
 				[vdoDict setObject:[theDict objectForKey:@"id"] forKey:@"object_id"];
 				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
 				
@@ -232,6 +249,7 @@ static NSArray * youTubeRegexArray = nil;
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
 					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+					fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 				} // else - object clean up will be done later below.
 				break;
 			}
@@ -256,6 +274,7 @@ static NSArray * youTubeRegexArray = nil;
 				fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 				fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
 				fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+				fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 				break;
 				
 			case NMVideoExistsAndInChannel:
@@ -282,6 +301,7 @@ static NSArray * youTubeRegexArray = nil;
 					fbInfo.object_id = [vdoFeedDict objectForKey:@"object_id"];
 					fbInfo.comment_post_url = [vdoFeedDict objectForKey:@"comment_post_url"];
 					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
+					fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 				} // else - object clean up will be done later below.
 				break;
 			}
@@ -305,12 +325,18 @@ static NSArray * youTubeRegexArray = nil;
 					personIDOffset++;
 					[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
 					theProfile.name = [fromDict objectForKey:@"name"];
-					// subscribe to this person as well
-					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
-				} else if ( theProfile.subscription == nil ) {
+					// subscribe to this person if the person is friend of user
+					if ( isAccountOwner || [_user_id isEqualToString:manID] ) {
+						[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+					}
+				} else if ( !isAccountOwner && theProfile.subscription == nil && [_user_id isEqualToString:manID] ) {
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
-				if ( ![_user_id isEqual:manID] ) {
+				// set who posted this video
+				fbInfo.poster = theProfile;
+				// we only add the video to a channel if we are parsing the user's own account OR the video is from user's own friend!!
+				// logic below will skip friends of friends
+				if ( isAccountOwner /*|| [_user_id isEqual:manID]*/ ) {
 					// the video is from another person. we should add the video to that person's channel as well
 					switch (chkResult) {
 						case NMVideoDoesNotExist:
@@ -480,7 +506,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSLog(@"Facebook feed: video added: %d", numberOfVideoAdded);
 #endif
 	_channel.video_count = [NSNumber numberWithUnsignedInteger:[_channel.videos count]];
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _nextPageURLString, @"next_url", [NSNumber numberWithInteger:numberOfIterations], @"iteration", nil];
 }
 
 @end

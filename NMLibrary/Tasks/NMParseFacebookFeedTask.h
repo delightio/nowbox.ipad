@@ -15,6 +15,7 @@
 	BOOL isAccountOwner;
 	NSString * feedDirectURLString;
 	NSInteger numberOfVideoAdded;
+	NSInteger numberOfIterations;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
@@ -28,5 +29,6 @@
 
 - (id)initWithChannel:(NMChannel *)chn;
 - (id)initWithChannel:(NMChannel *)chn directURLString:(NSString *)urlStr;
+- (id)initWithChannel:(NMChannel *)chn taskInfo:(NSDictionary *)infoDict;
 
 @end

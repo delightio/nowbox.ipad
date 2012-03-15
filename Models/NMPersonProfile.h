@@ -25,6 +25,7 @@
 @property (nonatomic, retain) NSString * username;
 @property (nonatomic, retain) NSSet *comments;
 @property (nonatomic, retain) NSSet *facebookLikes;
+@property (nonatomic, retain) NSSet * socialMentions;
 @property (nonatomic, retain) NMSubscription *subscription;
 @end
 
@@ -39,5 +40,10 @@
 - (void)removeFacebookLikesObject:(NMSocialInfo *)value;
 - (void)addFacebookLikes:(NSSet *)values;
 - (void)removeFacebookLikes:(NSSet *)values;
+
+- (void)addSocialMentionsObject:(NMSocialInfo *)value;
+- (void)removeSocialMentionsObject:(NMSocialInfo *)value;
+- (void)addSocialMentions:(NSSet *)values;
+- (void)removeSocialMentions:(NSSet *)values;
 
 @end
