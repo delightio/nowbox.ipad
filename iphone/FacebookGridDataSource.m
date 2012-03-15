@@ -134,7 +134,7 @@
     for (NMSubscription *subscription in [self.fetchedResultsController fetchedObjects]) {
         NMChannel *channel = subscription.channel;
         
-        if (![refreshingChannels containsObject:channel]) {
+        if (![refreshingChannels containsObject:channel] && [channel.resource_uri length]) {
             [refreshingChannels addObject:channel];
             [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
         }
