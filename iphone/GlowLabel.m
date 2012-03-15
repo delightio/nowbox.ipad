@@ -88,7 +88,7 @@
 {
     [super setText:text];
     
-    if (gradientStartColor) {
+    if (gradientStartColor && [text length]) {
         [self updateGradient];
     }
 }
