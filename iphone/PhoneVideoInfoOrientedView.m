@@ -69,6 +69,9 @@
     dateLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
     descriptionLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:14.0f backupFontName:@"Futura-Medium" size:12.0f];
     moreVideosButton.titleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:16.0f];
+    
+    [channelTitleLabel setGradientStartColor:[UIColor colorWithRed:255.0/255.0f green:223.0/255.0f blue:93.0/255.0f alpha:1.0f]
+                                    endColor:[UIColor colorWithRed:255.0/255.0f green:197.0/255.0f blue:61.0/255.0f alpha:1.0f]];
 }
 
 - (void)dealloc

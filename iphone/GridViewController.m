@@ -75,6 +75,9 @@
     [gridView setDataSource:gridDataSource animated:NO];
     [self updateTitleBarForDataSource:gridDataSource];
     
+    [titleLabel setGradientStartColor:[UIColor colorWithRed:255.0/255.0f green:223.0/255.0f blue:93.0/255.0f alpha:1.0f]
+                             endColor:[UIColor colorWithRed:255.0/255.0f green:197.0/255.0f blue:61.0/255.0f alpha:1.0f]];
+
     // If view was unloaded, restore the page we were on
     pageControl.currentPage = currentPage;
     [gridView setContentOffset:CGPointMake(currentPage * gridView.frame.size.width, 0) animated:NO];

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NMCachedImageView.h"
 #import "BuzzView.h"
+#import "GlowLabel.h"
 
 @protocol PhoneVideoInfoOrientedViewDelegate;
 @class InfiniteScrollView;
@@ -25,7 +26,7 @@
 @property (nonatomic, retain) IBOutlet BuzzView *buzzView;
 @property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
 @property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
-@property (nonatomic, retain) IBOutlet UILabel *channelTitleLabel;
+@property (nonatomic, retain) IBOutlet GlowLabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
 @property (nonatomic, retain) IBOutlet UIView *descriptionLabelContainer;
 @property (nonatomic, retain) IBOutlet UILabel *authorLabel;

@@ -10,6 +10,7 @@
 #import "PagingGridView.h"
 #import "CustomPageControl.h"
 #import "GridDataSource.h"
+#import "GlowLabel.h"
 
 @interface GridViewController : UIViewController <PagingGridViewDelegate, UIScrollViewDelegate, CustomPageControlDelegate> {
     BOOL scrollingToPage;
@@ -18,7 +19,7 @@
 
 @property (nonatomic, retain) IBOutlet PagingGridView *gridView;
 @property (nonatomic, retain) IBOutlet UIView *nowboxLogo;
-@property (nonatomic, retain) IBOutlet UILabel *titleLabel;
+@property (nonatomic, retain) IBOutlet GlowLabel *titleLabel;
 @property (nonatomic, retain) IBOutlet UIButton *backButton;
 @property (nonatomic, retain) IBOutlet UIButton *refreshButton;
 @property (nonatomic, retain) IBOutlet CustomPageControl *pageControl;
