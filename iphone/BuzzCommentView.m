@@ -85,9 +85,27 @@
     frame.origin.x = CGRectGetMaxX(userLabel.frame) + 5;
     serviceIcon.frame = frame;
     
+    [timeLabel sizeToFit];
     frame = timeLabel.frame;
     frame.origin.x = CGRectGetMaxX(serviceIcon.frame) + 5;
     timeLabel.frame = frame;
+    
+    // If first line too long, truncate the name
+    if (CGRectGetMaxX(timeLabel.frame) + 7 > self.frame.size.width) {
+        CGFloat overshootAmount = CGRectGetMaxX(timeLabel.frame) + 7 - self.frame.size.width;
+        
+        CGRect frame = userLabel.frame;
+        frame.size.width -= overshootAmount;
+        userLabel.frame = frame;
+        
+        frame = serviceIcon.frame;
+        frame.origin.x -= overshootAmount;
+        serviceIcon.frame = frame;
+        
+        frame = timeLabel.frame;
+        frame.origin.x -= overshootAmount;
+        timeLabel.frame = frame;
+    }
     
     [commentLabel sizeToFit];
     frame = commentLabel.frame;
