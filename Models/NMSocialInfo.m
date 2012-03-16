@@ -20,6 +20,7 @@
 @dynamic likes_count;
 @dynamic message;
 @dynamic nm_date_last_updated;
+@dynamic nm_date_posted;
 @dynamic nm_type;
 @dynamic object_id;
 @dynamic comments;
