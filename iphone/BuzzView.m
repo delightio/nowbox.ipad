@@ -173,7 +173,7 @@
     mentionsScrollView.contentSize = CGSizeMake(CGRectGetMaxX(commentScrollView.frame), mentionsScrollView.bounds.size.height);   
 }
 
-- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
+- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username showLikes:(BOOL)showLikes
 {    
     BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:mentionsScrollView.bounds] autorelease];
     commentView.commentLabel.text = text;
@@ -182,11 +182,11 @@
     UIScrollView *commentScrollView = [commentScrollViews lastObject];
     
     if ([commentViews count] > 0) {
-        [commentView setShowsLikesCount:NO];
+        [commentView setShowsLikesCount:showLikes];
         [commentView sizeToFit];
     } else {
         // This is the first comment
-        [commentView setShowsLikesCount:YES];
+        [commentView setShowsLikesCount:showLikes];
 
         // Create the action buttons
         UIButton *likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
