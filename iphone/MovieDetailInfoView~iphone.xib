@@ -441,7 +441,7 @@
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<string key="IBUIText">Author</string>
-										<object class="NSColor" key="IBUITextColor" id="134360097">
+										<object class="NSColor" key="IBUITextColor" id="31826758">
 											<int key="NSColorSpace">1</int>
 											<bytes key="NSRGB">MC42NDc0Mjk0MzU1IDAuNjQ2OTU2OTA1MiAwLjY0NzY0OTk0OTYAA</bytes>
 										</object>
@@ -937,7 +937,7 @@
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<string key="IBUIText">Author</string>
-										<reference key="IBUITextColor" ref="134360097"/>
+										<reference key="IBUITextColor" ref="31826758"/>
 										<nil key="IBUIHighlightedColor"/>
 										<int key="IBUIBaselineAdjustment">1</int>
 										<float key="IBUIMinimumFontSize">10</float>
@@ -1104,7 +1104,7 @@
 												<reference key="IBUIFont" ref="906640287"/>
 											</object>
 										</array>
-										<string key="NSFrame">{{0, 13}, {60, 48}}</string>
+										<string key="NSFrame">{{0, 12}, {60, 47}}</string>
 										<reference key="NSSuperview" ref="327096284"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="975811355"/>

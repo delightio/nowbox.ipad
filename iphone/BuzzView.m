@@ -28,7 +28,7 @@
     noCommentsView.backgroundColor = [UIColor clearColor];
     noCommentsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-    UILabel *noCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 17, noCommentsView.bounds.size.width - 30, 40)];
+    UILabel *noCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 16, noCommentsView.bounds.size.width - 30, 40)];
     noCommentsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:14.0f];
     noCommentsLabel.text = @"It's quiet here. Be the first to add a comment.";
@@ -39,7 +39,7 @@
     [noCommentsLabel release];
     
     UIButton *addCommentButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    addCommentButton.frame = CGRectMake(noCommentsView.bounds.size.width - 55, 12, 50, 50);
+    addCommentButton.frame = CGRectMake(noCommentsView.bounds.size.width - 55, 11, 50, 50);
     addCommentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
     addCommentButton.tag = index;
     [addCommentButton setImage:[UIImage imageNamed:@"phone_button_add_comment.png"] forState:UIControlStateNormal];
