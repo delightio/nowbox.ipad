@@ -21,10 +21,6 @@
     self = [super initWithGridView:aGridView managedObjectContext:aManagedObjectContext];
     if (self) {
         self.title = @"Twitter";
-        refreshingChannels = [[NSMutableSet alloc] init];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
         
         [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:NULL];
     }
@@ -34,10 +30,8 @@
 - (void)dealloc
 {    
     [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [fetchedResultsController release];
-    [refreshingChannels release];
     
     [super dealloc];
 }
@@ -112,8 +106,10 @@
         [cell.image setImageForChannel:channel];
     }
     
-    if ([refreshingChannels containsObject:channel] && !isUpdate) {
-        [cell.activityIndicator startAnimating];
+    if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue] == NMSyncSyncInProgress) {
+        if (![cell.activityIndicator isAnimating]) {        
+            [cell.activityIndicator startAnimating];
+        }
     } else {
         [cell.activityIndicator stopAnimating];
     }
@@ -121,24 +117,7 @@
 
 - (void)refreshAllObjects
 {
-    for (NMSubscription *subscription in [self.fetchedResultsController fetchedObjects]) {
-        NMChannel *channel = subscription.channel;
-        
-        if (![refreshingChannels containsObject:channel]) {
-            [refreshingChannels addObject:channel];
-            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-        }
-    }
-}
-
-#pragma mark - Notifications
-
-- (void)handleDidGetChannelVideoListNotification:(NSNotification *)notification
-{
-    NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
-    if (channel) {
-        [refreshingChannels removeObject:channel];
-    }
+    [[NMAccountManager sharedAccountManager] scheduleSyncSocialChannels];
 }
 
 #pragma mark - KVO

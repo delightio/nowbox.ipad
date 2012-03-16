@@ -21,11 +21,6 @@
     self = [super initWithGridView:aGridView managedObjectContext:aManagedObjectContext];
     if (self) {
         self.title = @"Facebook";
-        refreshingChannels = [[NSMutableSet alloc] init];
-        
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        [notificationCenter addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-        [notificationCenter addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
         
         [[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:NULL];
     }
@@ -35,10 +30,8 @@
 - (void)dealloc
 {    
     [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [fetchedResultsController release];
-    [refreshingChannels release];
     
     [super dealloc];
 }
@@ -122,8 +115,10 @@
         [cell.image setImageForChannel:channel];
     }
     
-    if ([refreshingChannels containsObject:channel] && !isUpdate) {
-        [cell.activityIndicator startAnimating];
+    if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
+        if (![cell.activityIndicator isAnimating]) {
+            [cell.activityIndicator startAnimating];
+        }
     } else {
         [cell.activityIndicator stopAnimating];
     }
@@ -131,24 +126,7 @@
 
 - (void)refreshAllObjects
 {
-    for (NMSubscription *subscription in [self.fetchedResultsController fetchedObjects]) {
-        NMChannel *channel = subscription.channel;
-        
-        if (![refreshingChannels containsObject:channel] && [channel.resource_uri length]) {
-            [refreshingChannels addObject:channel];
-            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-        }
-    }
-}
-
-#pragma mark - Notifications
-
-- (void)handleDidGetChannelVideoListNotification:(NSNotification *)notification
-{
-    NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
-    if (channel) {
-        [refreshingChannels removeObject:channel];
-    }
+    [[NMAccountManager sharedAccountManager] scheduleSyncSocialChannels];
 }
 
 #pragma mark - KVO
