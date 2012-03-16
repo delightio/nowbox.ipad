@@ -17,7 +17,7 @@
 {
     [super awakeFromNib];
 
-    UIFont *labelFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:13.0f backupFontName:@"Futura-Medium" size:10.0f];
+    UIFont *labelFont = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:13.0f];
     durationLabel.font = labelFont;
     currentTimeLabel.font = labelFont;
     seekBubbleButton.titleLabel.font = labelFont;
