@@ -64,9 +64,20 @@
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
 		[playbackDelegate player:self observePlayerItem:targetItem];
 		[self insertItem:targetItem afterItem:anItem];
+		anItem.nmVideo.nm_player_item = nil;
 		[self removeItem:anItem];
 	} else {
+		// the player item is in the queue. We should move it to after "anItem"
+		[targetItem retain];
+		[self removeItem:targetItem];
+		if ( [self canInsertItem:targetItem afterItem:anItem] ) {
+			NSLog(@"we are moving the item");
+			[self insertItem:targetItem afterItem:anItem];
+		}
+		[targetItem release];
+		// even it we cannot insert the item. We still need to retire "anItem" since it's no longer needed.
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
+		anItem.nmVideo.nm_player_item = nil;
 		[self removeItem:anItem];
 	}
 }
@@ -77,6 +88,8 @@
 	NSArray * allItems = self.items;
 	for (NMAVPlayerItem * anItem in allItems) {
 		[playbackDelegate player:self stopObservingPlayerItem:anItem];
+		anItem.nmVideo.nm_player_item = nil;
+		anItem.nmVideo = nil;
 	}
 	[super removeAllItems];
 }
@@ -164,8 +177,9 @@
 		}
 		[self play];
 		if ( cItem && [self canInsertItem:cItem afterItem:self.currentItem] ) {
+			NMAVPlayerItem * vidItem = nil;
 #ifdef DEBUG_PLAYER_NAVIGATION
-			NMAVPlayerItem * vidItem = (NMAVPlayerItem *)anItem;
+			vidItem = (NMAVPlayerItem *)anItem;
 			NSLog(@"revertPreviousItem: re-insert original item back to the queue player: %@", vidItem.nmVideo.title);
 #endif
 			[self insertItem:cItem afterItem:self.currentItem];
@@ -173,7 +187,9 @@
 			// remove the last item
 			NSArray * allItems = self.items;
 			if ( [allItems count] == 4 ) {
-				[self removeItem:[allItems objectAtIndex:3]];
+				vidItem = [allItems objectAtIndex:3];
+				vidItem.nmVideo.nm_player_item = nil;
+				[self removeItem:vidItem];
 			}
 		} 
 	}
@@ -311,7 +327,7 @@
 
 				// we wanna play the current video while there's already videos in the queue. This indicates user has scrolled back to the previous video
 					NMAVPlayerItem * otherItem = [queuedItems objectAtIndex:1];
-					if ( otherItem.nmVideo != [playbackDelegate nextNextVideoForPlayer:self] ) {
+					if ( ![otherItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
 						// remove
 						[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 						[self removeItem:otherItem];
@@ -333,27 +349,16 @@
 					[self insertVideo:vid afterItem:thePlayerItem];
 //					[self advanceToVideo:vid];
 					// check if other videos make sense of not.
-					thePlayerItem = [queuedItems objectAtIndex:1];
+					thePlayerItem = [self.items objectAtIndex:1];
 					if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextVideoForPlayer:self]] ) {
-//						[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
-//						[self removeItem:thePlayerItem];
-						[self insertVideo:[playbackDelegate nextVideoForPlayer:self] afterItem:thePlayerItem];
-						thePlayerItem = [queuedItems objectAtIndex:2];
-						if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
-//							[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
-//							[self removeItem:thePlayerItem];
-							[self insertVideo:[playbackDelegate nextNextVideoForPlayer:self] afterItem:thePlayerItem];
-						}
-					} else {
-						thePlayerItem = [queuedItems objectAtIndex:2];
-						if ( ![thePlayerItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
-							[playbackDelegate player:self stopObservingPlayerItem:thePlayerItem];
-							[self removeItem:thePlayerItem];
-						}
+						[self insertVideo:[playbackDelegate nextVideoForPlayer:self] afterItem:thePlayerItem]; // insert but do not delete
 					}
+					// insert the 3rd item
+					otherVideo = [playbackDelegate nextNextVideoForPlayer:self];
+					if ( otherVideo ) [self insertVideoToEndOfQueue:[playbackDelegate nextNextVideoForPlayer:self]];
 				} else {
 					NMAVPlayerItem * otherItem = [queuedItems objectAtIndex:1];
-					if ( otherItem.nmVideo != [playbackDelegate nextNextVideoForPlayer:self] ) {
+					if ( ![otherItem.nmVideo isEqual:[playbackDelegate nextNextVideoForPlayer:self]] ) {
 						// remove
 						[playbackDelegate player:self stopObservingPlayerItem:otherItem];
 						[self removeItem:otherItem];

@@ -31,6 +31,7 @@
 */
 
 - (void)awakeFromNib {
+	self.contentScaleFactor = [[UIScreen mainScreen] scale];
 	self.layer.shouldRasterize = YES;
 	self.layer.shadowOffset = CGSizeZero;
 	self.layer.shadowOpacity = 0.75f;

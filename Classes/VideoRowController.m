@@ -235,9 +235,8 @@
     [fetchRequest setFetchBatchSize:5];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
+	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:NO];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
     
@@ -249,7 +248,6 @@
     
     [aFetchedResultsController release];
     [fetchRequest release];
-    [sortDescriptor release];
 	[timestampDesc release];
     [sortDescriptors release];
     

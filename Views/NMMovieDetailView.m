@@ -68,6 +68,8 @@
 		otherInfoLabel.font = theFont;
 		authorLabel.font = [NMStyleUtility sharedStyleUtility].videoDetailFont;
 	}
+    
+    self.contentScaleFactor = [[UIScreen mainScreen] scale];
 	
 	CALayer * theLayer = activityView.layer;
 	theLayer.backgroundColor = [[NMStyleUtility sharedStyleUtility].blackColor colorWithAlphaComponent:0.5f].CGColor;
