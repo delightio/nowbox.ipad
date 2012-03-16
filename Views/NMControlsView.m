@@ -90,7 +90,11 @@
 		volumeView = [[MPVolumeView alloc] init];
 		[volumeView setShowsVolumeSlider:NO];
 		[volumeView sizeToFit];
-		volumeView.center = CGPointMake(26.5f, 18.0f);
+		if ( kCFCoreFoundationVersionNumber >= 690.0 ) {
+			volumeView.center = CGPointMake(30.0f, 20.0f);
+		} else {
+			volumeView.center = CGPointMake(26.5f, 18.0f);
+		}
 		[theView addSubview:volumeView];
 		
 		[theView release];
