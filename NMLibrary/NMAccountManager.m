@@ -47,14 +47,20 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	// facebook
 	[nc addObserver:self selector:@selector(handleDidGetPersonProfile:) name:NMDidGetFacebookProfileNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidFailGetPersonProfile:) name:NMDidFailGetFacebookProfileNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidFailGetPersonProfile:) name:NMDidFailGetFacebookProfileNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseFacebookFeedNotification object:nil];
 	// twitter
 	[nc addObserver:self selector:@selector(handleDidGetPersonProfile:) name:NMDidGetTwitterProfileNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidFailGetPersonProfile:) name:NMDidFailGetTwitterProfileNotification object:nil];
+//	[nc addObserver:self selector:@selector(handleDidFailGetPersonProfile:) name:NMDidFailGetTwitterProfileNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidParseFeedNotification:) name:NMDidParseTwitterFeedNotification object:nil];
 	// listen to import notification, we only care about successful import
 	[nc addObserver:self selector:@selector(handleDidImportYoutubeVideoNotification:) name:NMDidImportYouTubeVideoNotification object:nil];
+	// listen to error as well
+	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailGetFacebookProfileNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailGetTwitterProfileNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailParseTwitterFeedNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
 	
 	// update facebook sync status
 	NMDataController * ctrl = [[NMTaskQueueController sharedTaskQueueController] dataController];
@@ -72,6 +78,7 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 }
 
 - (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[_twitterProfile release];
 	[_facebookProfile release];
 	[_facebook release];
@@ -379,6 +386,19 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 
 #pragma mark Sync notification handlers
 
+- (void)handleSyncErrorNotification:(NSNotification *)aNotification {
+	NSString * theName = [aNotification name];
+	// fail to sync
+	if ( [theName isEqualToString:NMDidFailGetFacebookProfileNotification] ) {
+		NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
+		if ( [theProfile.nm_me boolValue] ) {
+			// fail to sync my facebook account. try grab the profile again after 2.0
+			[self performSelector:@selector(scheduleImportVideos) withObject:nil afterDelay:2.0];
+			// scheduleImportVideos checks for person profile to update too. This is what we need.
+		}
+	}
+}
+
 - (void)handleDidGetPersonProfile:(NSNotification *)aNotification {
 	/*
 	 Listen to this notificaiton only when the user signs in Twitter or Facebook.
@@ -395,16 +415,6 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
 		}
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:[aNotification name] object:nil];
-	}
-}
-
-- (void)handleDidFailGetPersonProfile:(NSNotification *)aNotificaton {
-	// fail to sync
-	NMPersonProfile * theProfile = [[aNotificaton userInfo] objectForKey:@"target_object"];
-	if ( [[aNotificaton name] isEqualToString:NMDidFailGetFacebookProfileNotification] && [theProfile.nm_me boolValue] ) {
-		// fail to sync my facebook account. try grab the profile again after 2.0
-		[self performSelector:@selector(scheduleImportVideos) withObject:nil afterDelay:2.0];
-		// scheduleImportVideos checks for person profile to update too. This is what we need.
 	}
 }
 
