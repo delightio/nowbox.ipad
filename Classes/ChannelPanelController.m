@@ -715,12 +715,16 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)notification {
     NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
-    [refreshingChannels removeObject:channel];    
+    if (channel) {
+        [refreshingChannels removeObject:channel];    
+    }
 }
 
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)notification {
     NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
-    [refreshingChannels removeObject:channel];  
+    if (channel) {
+        [refreshingChannels removeObject:channel];  
+    }
 }
 
 #pragma mark play newly subscribed channel
