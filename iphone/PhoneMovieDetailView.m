@@ -285,7 +285,7 @@
             // Show the original post as the first "comment"
             BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:socialInfo.message username:socialInfo.poster.name showLikes:YES];
             [postView.userImageView setImageForPersonProfile:socialInfo.poster];
-            postView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[socialInfo.nm_date_last_updated floatValue]];
+            postView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[socialInfo.nm_date_posted floatValue]];
             postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
             postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i %@", 
                                              [socialInfo.likes_count integerValue], 
