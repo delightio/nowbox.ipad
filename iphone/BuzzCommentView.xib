@@ -39,7 +39,7 @@
 					<object class="IBUIImageView" id="157470630">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{9, 9}, {41, 41}}</string>
+						<string key="NSFrame">{{10, 9}, {37, 37}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="715300428"/>
@@ -55,7 +55,7 @@
 					<object class="IBUIImageView" id="715300428">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{10, 10}, {35, 35}}</string>
+						<string key="NSFrame">{{11, 10}, {35, 35}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="686651189"/>
@@ -441,7 +441,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="phone_video_buzz_icon_facebook.png">{14, 13}</string>
-			<string key="phone_video_thumbnail.png">{41, 41}</string>
+			<string key="phone_video_thumbnail.png">{37, 37}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1179</string>
 	</data>

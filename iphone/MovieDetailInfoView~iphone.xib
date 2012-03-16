@@ -340,7 +340,7 @@
 									<object class="IBUIImageView" id="277591630">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">274</int>
-										<string key="NSFrameSize">{320, 108}</string>
+										<string key="NSFrameSize">{320, 106}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="778658861"/>
@@ -356,7 +356,7 @@
 									<object class="IBUIImageView" id="77442608">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">266</int>
-										<string key="NSFrame">{{0, 108}, {320, 4}}</string>
+										<string key="NSFrame">{{0, 106}, {320, 6}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="476363426"/>
@@ -371,7 +371,7 @@
 									<object class="IBUIImageView" id="672753707">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">292</int>
-										<string key="NSFrame">{{18, 10}, {41, 41}}</string>
+										<string key="NSFrame">{{19, 9}, {37, 37}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="1011880045"/>
@@ -386,7 +386,7 @@
 									<object class="IBUIImageView" id="1011880045">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">292</int>
-										<string key="NSFrame">{{19, 11}, {35, 35}}</string>
+										<string key="NSFrame">{{20, 10}, {35, 35}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="723129820"/>
@@ -399,7 +399,7 @@
 									<object class="IBUILabel" id="723129820">
 										<reference key="NSNextResponder" ref="43632160"/>
 										<int key="NSvFlags">290</int>
-										<string key="NSFrame">{{67, 6}, {186, 75}}</string>
+										<string key="NSFrame">{{68, 6}, {184, 75}}</string>
 										<reference key="NSSuperview" ref="43632160"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="301057947"/>
@@ -441,7 +441,7 @@
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<string key="IBUIText">Author</string>
-										<object class="NSColor" key="IBUITextColor" id="884769564">
+										<object class="NSColor" key="IBUITextColor" id="871961799">
 											<int key="NSColorSpace">1</int>
 											<bytes key="NSRGB">MC42NDc0Mjk0MzU1IDAuNjQ2OTU2OTA1MiAwLjY0NzY0OTk0OTYAA</bytes>
 										</object>
@@ -654,7 +654,7 @@
 							<object class="IBUIView" id="837285267">
 								<reference key="NSNextResponder" ref="1043643903"/>
 								<int key="NSvFlags">293</int>
-								<string key="NSFrame">{{0, 120}, {320, 74}}</string>
+								<string key="NSFrame">{{0, 119}, {320, 75}}</string>
 								<reference key="NSSuperview" ref="1043643903"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
@@ -866,7 +866,7 @@
 							<object class="IBUIImageView" id="617965680">
 								<reference key="NSNextResponder" ref="263006526"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{13, 13}, {41, 41}}</string>
+								<string key="NSFrame">{{13, 13}, {37, 37}}</string>
 								<reference key="NSSuperview" ref="263006526"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="371683563"/>
@@ -937,7 +937,7 @@
 										<bool key="IBUIUserInteractionEnabled">NO</bool>
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 										<string key="IBUIText">Author</string>
-										<reference key="IBUITextColor" ref="884769564"/>
+										<reference key="IBUITextColor" ref="871961799"/>
 										<nil key="IBUIHighlightedColor"/>
 										<int key="IBUIBaselineAdjustment">1</int>
 										<float key="IBUIMinimumFontSize">10</float>
@@ -2801,11 +2801,11 @@
 			<string key="phone_button_watch_later.png">{42, 42}</string>
 			<string key="phone_video_header_background_landscape.png">{466, 33}</string>
 			<string key="phone_video_header_background_portrait.png">{320, 38}</string>
-			<string key="phone_video_info_background_bottom_portrait.png">{320, 4}</string>
+			<string key="phone_video_info_background_bottom_portrait.png">{320, 6}</string>
 			<string key="phone_video_info_background_landscape.png">{466, 156}</string>
-			<string key="phone_video_info_background_middle_portrait.png">{320, 111}</string>
+			<string key="phone_video_info_background_middle_portrait.png">{320, 159}</string>
 			<string key="phone_video_shadow.png">{320, 5}</string>
-			<string key="phone_video_thumbnail.png">{41, 41}</string>
+			<string key="phone_video_thumbnail.png">{37, 37}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1179</string>
 	</data>
