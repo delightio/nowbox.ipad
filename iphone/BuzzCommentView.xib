@@ -39,7 +39,7 @@
 					<object class="IBUIImageView" id="157470630">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{7, 7}, {41, 41}}</string>
+						<string key="NSFrame">{{10, 9}, {37, 37}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="715300428"/>
@@ -55,7 +55,7 @@
 					<object class="IBUIImageView" id="715300428">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{8, 8}, {35, 35}}</string>
+						<string key="NSFrame">{{11, 10}, {35, 35}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="686651189"/>
@@ -69,7 +69,7 @@
 					<object class="IBUILabel" id="686651189">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{54, 8}, {143, 19}}</string>
+						<string key="NSFrame">{{58, 8}, {143, 19}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="21265919"/>
@@ -99,6 +99,7 @@
 							<double key="NSSize">14</double>
 							<int key="NSfFlags">16</int>
 						</object>
+						<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 					</object>
 					<object class="IBUIImageView" id="21265919">
 						<reference key="NSNextResponder" ref="191373211"/>
@@ -144,7 +145,7 @@
 					<object class="IBUILabel" id="1002090865">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">290</int>
-						<string key="NSFrame">{{54, 28}, {254, 22}}</string>
+						<string key="NSFrame">{{58, 28}, {252, 22}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="138796135"/>
@@ -173,7 +174,6 @@
 						<string key="NSFrame">{{54, 51}, {254, 16}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
@@ -441,7 +441,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="phone_video_buzz_icon_facebook.png">{14, 13}</string>
-			<string key="phone_video_thumbnail.png">{41, 41}</string>
+			<string key="phone_video_thumbnail.png">{37, 37}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1179</string>
 	</data>

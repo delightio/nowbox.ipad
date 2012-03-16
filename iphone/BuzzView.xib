@@ -39,7 +39,7 @@
 					<object class="IBUIImageView" id="583251433">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">290</int>
-						<string key="NSFrameSize">{320, 4}</string>
+						<string key="NSFrameSize">{320, 5}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="114525955"/>
@@ -55,7 +55,7 @@
 					<object class="IBUIImageView" id="114525955">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{0, 4}, {320, 72}}</string>
+						<string key="NSFrame">{{0, 5}, {320, 69}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="864951019"/>
@@ -71,7 +71,7 @@
 					<object class="IBUIImageView" id="864951019">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">266</int>
-						<string key="NSFrame">{{0, 76}, {320, 4}}</string>
+						<string key="NSFrame">{{0, 74}, {320, 6}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="783709924"/>
@@ -233,7 +233,6 @@
 						<string key="contentView">UIView</string>
 						<string key="delegate">id</string>
 						<string key="mentionsScrollView">UIScrollView</string>
-						<string key="touchArea">UIView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="contentView">
@@ -247,10 +246,6 @@
 						<object class="IBToOneOutletInfo" key="mentionsScrollView">
 							<string key="name">mentionsScrollView</string>
 							<string key="candidateClassName">UIScrollView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="touchArea">
-							<string key="name">touchArea</string>
-							<string key="candidateClassName">UIView</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -269,9 +264,9 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="phone_video_info_background_bottom_portrait.png">{320, 4}</string>
-			<string key="phone_video_info_background_middle_portrait.png">{320, 111}</string>
-			<string key="phone_video_info_background_top_portrait.png">{320, 4}</string>
+			<string key="phone_video_info_background_bottom_portrait.png">{320, 6}</string>
+			<string key="phone_video_info_background_middle_portrait.png">{320, 159}</string>
+			<string key="phone_video_info_background_top_portrait.png">{320, 5}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1179</string>
 	</data>

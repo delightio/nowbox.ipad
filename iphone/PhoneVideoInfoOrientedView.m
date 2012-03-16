@@ -10,12 +10,12 @@
 #import "UIFont+BackupFont.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kPortraitInfoPanelHeightDefault   110
+#define kPortraitInfoPanelHeightDefault   112
 #define kPortraitInfoPanelHeightExpanded  192
 #define kLandscapeInfoPanelHeightDefault  98
 #define kLandscapeInfoPanelHeightExpanded 156
-#define kBuzzPanelHeightDefault           80
-#define kBuzzPanelHeightExpanded          186
+#define kBuzzPanelHeightDefault           75
+#define kBuzzPanelHeightExpanded          172
 
 #pragma mark - PhoneVideoInfoOrientedView
 
@@ -57,7 +57,7 @@
     mask.locations = [NSArray arrayWithObjects:
                       [NSNumber numberWithFloat:0],
                       [NSNumber numberWithFloat:0.25],
-                      [NSNumber numberWithFloat:0.375], nil];
+                      [NSNumber numberWithFloat:0.425], nil];
     viewToMask.layer.mask = mask; 
     
     // Keep track of what our video title frame originally was - we will be resizing it later
@@ -185,7 +185,7 @@
     } else {
         mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
                           [NSNumber numberWithFloat:0.25],
-                          [NSNumber numberWithFloat:0.375], nil];
+                          [NSNumber numberWithFloat:0.425], nil];
     }
     if (animated) {
         [CATransaction commit];
@@ -220,6 +220,9 @@
     };
 
     void (^completion)(BOOL) = ^(BOOL finished){
+        if (!expanded) {
+            [infoButtonScrollView setNeedsLayout];
+        }
     };
     
     // Perform the animation

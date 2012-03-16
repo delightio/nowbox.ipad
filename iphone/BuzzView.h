@@ -26,7 +26,7 @@
 @property (nonatomic, assign) IBOutlet id<BuzzViewDelegate> delegate;
 
 - (void)addMentionLiked:(BOOL)liked;
-- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username;
+- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username showLikes:(BOOL)showLikes;
 - (void)doneAdding;
 - (void)removeAllMentions;
 - (IBAction)likeButtonPressed:(id)sender;

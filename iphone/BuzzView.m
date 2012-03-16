@@ -28,7 +28,7 @@
     noCommentsView.backgroundColor = [UIColor clearColor];
     noCommentsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-    UILabel *noCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 20, noCommentsView.bounds.size.width - 30, 40)];
+    UILabel *noCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 16, noCommentsView.bounds.size.width - 30, 40)];
     noCommentsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:14.0f];
     noCommentsLabel.text = @"It's quiet here. Be the first to add a comment.";
@@ -39,7 +39,7 @@
     [noCommentsLabel release];
     
     UIButton *addCommentButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    addCommentButton.frame = CGRectMake(noCommentsView.bounds.size.width - 55, 15, 50, 50);
+    addCommentButton.frame = CGRectMake(noCommentsView.bounds.size.width - 55, 11, 50, 50);
     addCommentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
     addCommentButton.tag = index;
     [addCommentButton setImage:[UIImage imageNamed:@"phone_button_add_comment.png"] forState:UIControlStateNormal];
@@ -160,6 +160,7 @@
     commentScrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     commentScrollView.tag = [commentScrollViews count];
     commentScrollView.scrollEnabled = NO;
+    commentScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
     [mentionsScrollView insertSubview:commentScrollView atIndex:0];
     [commentScrollViews addObject:commentScrollView];
     [commentScrollView release];
@@ -172,7 +173,7 @@
     mentionsScrollView.contentSize = CGSizeMake(CGRectGetMaxX(commentScrollView.frame), mentionsScrollView.bounds.size.height);   
 }
 
-- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username
+- (BuzzCommentView *)addCommentWithText:(NSString *)text username:(NSString *)username showLikes:(BOOL)showLikes
 {    
     BuzzCommentView *commentView = [[[BuzzCommentView alloc] initWithFrame:mentionsScrollView.bounds] autorelease];
     commentView.commentLabel.text = text;
@@ -181,11 +182,11 @@
     UIScrollView *commentScrollView = [commentScrollViews lastObject];
     
     if ([commentViews count] > 0) {
-        [commentView setShowsLikesCount:NO];
+        [commentView setShowsLikesCount:showLikes];
         [commentView sizeToFit];
     } else {
         // This is the first comment
-        [commentView setShowsLikesCount:YES];
+        [commentView setShowsLikesCount:showLikes];
 
         // Create the action buttons
         UIButton *likeButton = [UIButton buttonWithType:UIButtonTypeCustom];

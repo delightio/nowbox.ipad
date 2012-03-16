@@ -281,17 +281,23 @@
         [mentionsArray addObject:socialInfo];
         [portraitView.buzzView addMentionLiked:mentionLikedByUser];
         
-        // Show the original post as the first "comment"
-        BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:socialInfo.message username:socialInfo.poster.name];
-        [postView.userImageView setImageForPersonProfile:socialInfo.poster];
-        postView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[socialInfo.nm_date_last_updated floatValue]];
-        postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
-        postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i comments", [socialInfo.likes_count integerValue], ([socialInfo.likes_count integerValue] == 1 ? @"like" : @"likes"), [socialInfo.comments_count integerValue]];
+        if ([socialInfo.nm_type integerValue] == NMChannelUserFacebookType) {
+            // Show the original post as the first "comment"
+            BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:socialInfo.message username:socialInfo.poster.name showLikes:YES];
+            [postView.userImageView setImageForPersonProfile:socialInfo.poster];
+            postView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[socialInfo.nm_date_last_updated floatValue]];
+            postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
+            postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i %@", 
+                                             [socialInfo.likes_count integerValue], 
+                                             ([socialInfo.likes_count integerValue] == 1 ? @"like" : @"likes"), 
+                                             [socialInfo.comments_count integerValue],
+                                             ([socialInfo.comments_count integerValue] == 1 ? @"comment" : @"comments")];
+        }
         
         // Show the actual comments in chronological order
         NSArray *sortedComments = [socialInfo.comments sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_time" ascending:YES]]];
         for (NMSocialComment *comment in sortedComments) {
-            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name];
+            BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name showLikes:NO];
             [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
             commentView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[comment.created_time floatValue]];
             commentView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];

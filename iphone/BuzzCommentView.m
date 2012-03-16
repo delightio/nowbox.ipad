@@ -85,9 +85,27 @@
     frame.origin.x = CGRectGetMaxX(userLabel.frame) + 5;
     serviceIcon.frame = frame;
     
+    [timeLabel sizeToFit];
     frame = timeLabel.frame;
     frame.origin.x = CGRectGetMaxX(serviceIcon.frame) + 5;
     timeLabel.frame = frame;
+    
+    // If first line too long, truncate the name
+    if (CGRectGetMaxX(timeLabel.frame) + 7 > self.frame.size.width) {
+        CGFloat overshootAmount = CGRectGetMaxX(timeLabel.frame) + 7 - self.frame.size.width;
+        
+        CGRect frame = userLabel.frame;
+        frame.size.width -= overshootAmount;
+        userLabel.frame = frame;
+        
+        frame = serviceIcon.frame;
+        frame.origin.x -= overshootAmount;
+        serviceIcon.frame = frame;
+        
+        frame = timeLabel.frame;
+        frame.origin.x -= overshootAmount;
+        timeLabel.frame = frame;
+    }
     
     [commentLabel sizeToFit];
     frame = commentLabel.frame;
@@ -104,9 +122,9 @@
     BOOL hideLikesCount = NO;
     if (CGRectGetMaxY(commentLabel.frame) + padding > size.height) {
         // Comment label too tall for view - shrink it
-        frame.size.height = size.height - padding - frame.origin.y;
+        frame.size.height = size.height - frame.origin.y;
         
-        maxY = CGRectGetMaxY(frame) + padding;
+        maxY = CGRectGetMaxY(frame);
         hideLikesCount = YES;
     } else if (showsLikesCount && (CGRectGetMaxY(likesCountLabel.frame) + padding < size.height || [commentLabel.text length] == 0)) {
         // Comment label and likes count fit
