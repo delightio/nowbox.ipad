@@ -25,7 +25,7 @@
 #define NM_CHANNEL_CELL_TOP_PADDING		10.0f
 #define NM_CHANNEL_CELL_DETAIL_TOP_MARGIN	40.0f
 #define NM_CONTAINER_VIEW_POOL_SIZE		8
-#define NM_CHANNEL_REFRESH_TIMEOUT      10.0f
+#define NM_CHANNEL_REFRESH_TIMEOUT      30.0f
 
 NSString * const NMShouldPlayNewlySubscribedChannelNotification = @"NMShouldPlayNewlySubscribedChannelNotification";
 BOOL NM_AIRPLAY_ACTIVE = NO;
