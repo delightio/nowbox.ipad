@@ -163,6 +163,7 @@ static NSArray * youTubeRegexArray = nil;
 				msgStr = [theDict objectForKey:@"message"];
 				if ( msgStr ) [vdoDict setObject:msgStr forKey:@"message"];
 				[vdoDict setObject:[theDict objectForKey:@"id"] forKey:@"object_id"];
+				[vdoDict setObject:[theDict objectForKey:@"created_time"] forKey:@"created_time"];
 				theTime = [[theDict objectForKey:@"updated_time"] integerValue];
 				[vdoDict setObject:[theDict objectForKey:@"updated_time"] forKey:@"updated_time"];
 				
@@ -252,6 +253,7 @@ static NSArray * youTubeRegexArray = nil;
 					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 					fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 					fbInfo.nm_date_last_updated = [vdoFeedDict objectForKey:@"updated_time"];
+					fbInfo.nm_date_posted = [vdoFeedDict objectForKey:@"created_time"];
 				} // else - object clean up will be done later below.
 				break;
 			}
@@ -278,6 +280,7 @@ static NSArray * youTubeRegexArray = nil;
 				fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 				fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 				fbInfo.nm_date_last_updated = [vdoFeedDict objectForKey:@"updated_time"];
+				fbInfo.nm_date_posted = [vdoFeedDict objectForKey:@"created_time"];
 				break;
 				
 			case NMVideoExistsAndInChannel:
@@ -306,6 +309,7 @@ static NSArray * youTubeRegexArray = nil;
 					fbInfo.like_post_url = [vdoFeedDict objectForKey:@"like_post_url"];
 					fbInfo.message = [vdoFeedDict objectForKey:@"message"];
 					fbInfo.nm_date_last_updated = [vdoFeedDict objectForKey:@"updated_time"];
+					fbInfo.nm_date_posted = [vdoFeedDict objectForKey:@"created_time"];
 				} // else - object clean up will be done later below.
 				break;
 			}

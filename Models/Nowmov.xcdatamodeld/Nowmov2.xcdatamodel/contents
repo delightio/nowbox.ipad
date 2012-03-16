@@ -104,6 +104,7 @@
         <attribute name="likes_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nm_date_last_updated" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="nm_date_posted" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="object_id" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="NMSocialComment" inverseName="socialInfo" inverseEntity="NMSocialComment" syncable="YES"/>
@@ -146,7 +147,7 @@
         <element name="NMPersonProfile" positionX="819" positionY="-36" width="128" height="255"/>
         <element name="NMPreviewThumbnail" positionX="-101" positionY="-27" width="128" height="195"/>
         <element name="NMSocialComment" positionX="1098" positionY="330" width="128" height="120"/>
-        <element name="NMSocialInfo" positionX="826" positionY="252" width="128" height="225"/>
+        <element name="NMSocialInfo" positionX="826" positionY="252" width="128" height="240"/>
         <element name="NMSubscription" positionX="558" positionY="-165" width="128" height="225"/>
         <element name="NMVideo" positionX="558" positionY="159" width="128" height="135"/>
         <element name="NMVideoDetail" positionX="7" positionY="522" width="128" height="75"/>
