@@ -273,6 +273,11 @@
 		A99FB6CF140EB57700689040 /* button-gray-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A99FB6CD140EB57700689040 /* button-gray-background.png */; };
 		A99FB6D0140EB57700689040 /* button-yellow-background.png in Resources */ = {isa = PBXBuildFile; fileRef = A99FB6CE140EB57700689040 /* button-yellow-background.png */; };
 		A99FB6D3140EE30700689040 /* NMPreviewThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = A99FB6D2140EE30700689040 /* NMPreviewThumbnail.m */; };
+		A9A1F18B1513F2350049DDDF /* airplay-tv-indicator_@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A1F18A1513F2350049DDDF /* airplay-tv-indicator_@2x.png */; };
+		A9A1F1911513F4AB0049DDDF /* category-list-my-channels@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A1F18D1513F4AB0049DDDF /* category-list-my-channels@2x.png */; };
+		A9A1F1921513F4AB0049DDDF /* social-facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A1F18E1513F4AB0049DDDF /* social-facebook@2x.png */; };
+		A9A1F1931513F4AB0049DDDF /* social-twitter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A1F18F1513F4AB0049DDDF /* social-twitter@2x.png */; };
+		A9A1F1941513F4AB0049DDDF /* user_place_holder_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A9A1F1901513F4AB0049DDDF /* user_place_holder_image@2x.png */; };
 		A9A4810D13FD181500850536 /* FeatureDebugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A4810C13FD181500850536 /* FeatureDebugViewController.m */; };
 		A9A4811013FD189F00850536 /* FeatureDebugView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A4810F13FD189F00850536 /* FeatureDebugView.xib */; };
 		A9A73FA513A73A3D005D9013 /* LaunchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9A73FA413A73A3D005D9013 /* LaunchView.xib */; };
@@ -728,6 +733,11 @@
 		A99FB6CE140EB57700689040 /* button-yellow-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button-yellow-background.png"; sourceTree = "<group>"; };
 		A99FB6D1140EE30700689040 /* NMPreviewThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPreviewThumbnail.h; sourceTree = "<group>"; };
 		A99FB6D2140EE30700689040 /* NMPreviewThumbnail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPreviewThumbnail.m; sourceTree = "<group>"; };
+		A9A1F18A1513F2350049DDDF /* airplay-tv-indicator_@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "airplay-tv-indicator_@2x.png"; sourceTree = "<group>"; };
+		A9A1F18D1513F4AB0049DDDF /* category-list-my-channels@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category-list-my-channels@2x.png"; sourceTree = "<group>"; };
+		A9A1F18E1513F4AB0049DDDF /* social-facebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-facebook@2x.png"; sourceTree = "<group>"; };
+		A9A1F18F1513F4AB0049DDDF /* social-twitter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "social-twitter@2x.png"; sourceTree = "<group>"; };
+		A9A1F1901513F4AB0049DDDF /* user_place_holder_image@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_place_holder_image@2x.png"; sourceTree = "<group>"; };
 		A9A4810B13FD181500850536 /* FeatureDebugViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugViewController.h; sourceTree = "<group>"; };
 		A9A4810C13FD181500850536 /* FeatureDebugViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureDebugViewController.m; sourceTree = "<group>"; };
 		A9A4810F13FD189F00850536 /* FeatureDebugView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FeatureDebugView.xib; sourceTree = "<group>"; };
@@ -1078,7 +1088,12 @@
 		A970501813438F860022BF2C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A9A1F18D1513F4AB0049DDDF /* category-list-my-channels@2x.png */,
+				A9A1F18E1513F4AB0049DDDF /* social-facebook@2x.png */,
+				A9A1F18F1513F4AB0049DDDF /* social-twitter@2x.png */,
+				A9A1F1901513F4AB0049DDDF /* user_place_holder_image@2x.png */,
 				A955268E150ED0AE00585856 /* airplay@2x.png */,
+				A9A1F18A1513F2350049DDDF /* airplay-tv-indicator_@2x.png */,
 				A955268F150ED0AE00585856 /* button-like-active@2x.png */,
 				A9552690150ED0AE00585856 /* button-like@2x.png */,
 				A9552691150ED0AE00585856 /* button-share-active@2x.png */,
@@ -1777,6 +1792,11 @@
 				A9041D9B15116603006B1951 /* tooltip-watch-later@2x.png in Resources */,
 				83833FC41513ECE4006078F6 /* toolbar-refresh-active@2x.png in Resources */,
 				83833FC71513ECE9006078F6 /* toolbar-refresh@2x.png in Resources */,
+				A9A1F18B1513F2350049DDDF /* airplay-tv-indicator_@2x.png in Resources */,
+				A9A1F1911513F4AB0049DDDF /* category-list-my-channels@2x.png in Resources */,
+				A9A1F1921513F4AB0049DDDF /* social-facebook@2x.png in Resources */,
+				A9A1F1931513F4AB0049DDDF /* social-twitter@2x.png in Resources */,
+				A9A1F1941513F4AB0049DDDF /* user_place_holder_image@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
