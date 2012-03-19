@@ -84,6 +84,7 @@
 		8389F680148D61B2002165A2 /* tooltip-watch-later.png in Resources */ = {isa = PBXBuildFile; fileRef = 8389F67F148D61B2002165A2 /* tooltip-watch-later.png */; };
 		838B820E1517B83800FF2ABA /* toolbar-refresh-no-shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 838B820C1517B83800FF2ABA /* toolbar-refresh-no-shadow.png */; };
 		838B820F1517B83800FF2ABA /* toolbar-refresh-no-shadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 838B820D1517B83800FF2ABA /* toolbar-refresh-no-shadow@2x.png */; };
+		838B82161517DEDC00FF2ABA /* SortOrderSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 838B82151517DEDC00FF2ABA /* SortOrderSettingViewController.m */; };
 		838F27D51471949000935D5A /* onboard-social-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D21471949000935D5A /* onboard-social-facebook.png */; };
 		838F27D61471949000935D5A /* onboard-social-twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D31471949000935D5A /* onboard-social-twitter.png */; };
 		838F27D71471949000935D5A /* onboard-social-youtube.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F27D41471949000935D5A /* onboard-social-youtube.png */; };
@@ -489,6 +490,8 @@
 		8389F67F148D61B2002165A2 /* tooltip-watch-later.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-watch-later.png"; sourceTree = "<group>"; };
 		838B820C1517B83800FF2ABA /* toolbar-refresh-no-shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-refresh-no-shadow.png"; sourceTree = "<group>"; };
 		838B820D1517B83800FF2ABA /* toolbar-refresh-no-shadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-refresh-no-shadow@2x.png"; sourceTree = "<group>"; };
+		838B82141517DEDC00FF2ABA /* SortOrderSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortOrderSettingViewController.h; sourceTree = "<group>"; };
+		838B82151517DEDC00FF2ABA /* SortOrderSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortOrderSettingViewController.m; sourceTree = "<group>"; };
 		838F27D21471949000935D5A /* onboard-social-facebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-facebook.png"; sourceTree = "<group>"; };
 		838F27D31471949000935D5A /* onboard-social-twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-twitter.png"; sourceTree = "<group>"; };
 		838F27D41471949000935D5A /* onboard-social-youtube.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-social-youtube.png"; sourceTree = "<group>"; };
@@ -1059,6 +1062,8 @@
 				A9D9EE1D13AABEB0009ABBEA /* NMStyleUtility.m */,
 				A991188813E759E20067E987 /* SettingsViewController.h */,
 				A991188913E759E20067E987 /* SettingsViewController.m */,
+				838B82141517DEDC00FF2ABA /* SortOrderSettingViewController.h */,
+				838B82151517DEDC00FF2ABA /* SortOrderSettingViewController.m */,
 				A9E2A93713F652DB00807C17 /* ChannelManagementViewController.h */,
 				A9E2A93813F652DB00807C17 /* ChannelManagementViewController.m */,
 				A97EBE5B13F7B2AF00CC0F5C /* SocialLoginViewController.h */,
@@ -1876,6 +1881,7 @@
 				83D84A2E147DD65B00474EBC /* UIView+InteractiveAnimation.m in Sources */,
 				83EF90C414841F0200ED7993 /* OnBoardProcessCategoryView.m in Sources */,
 				83EF90C9148433B900ED7993 /* UIImage+Tint.m in Sources */,
+				838B82161517DEDC00FF2ABA /* SortOrderSettingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

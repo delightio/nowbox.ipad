@@ -12,6 +12,10 @@
 #import "PanelVideoCell.h"
 #import "Analytics.h"
 
+@interface VideoRowController (PrivateMethods)
+- (NSArray *)sortDescriptors;
+@end
+
 @implementation VideoRowController
 @synthesize managedObjectContext=managedObjectContext_;
 @synthesize fetchedResultsController=fetchedResultsController_;
@@ -42,6 +46,8 @@
 	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSortOrderDidChangeNotification:) name:NMSortOrderDidChangeNotification object:nil];
+
     return self;
 }
 
@@ -211,6 +217,15 @@
 }
 
 #pragma mark Fetched Results Controller
+
+- (NSArray *)sortDescriptors {
+    NSSortDescriptor *timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:(NM_SORT_ORDER == NMSortOrderTypeOldestFirst)];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:timestampDesc];
+    [timestampDesc release];
+
+    return sortDescriptors;
+}
+
 - (NSFetchedResultsController *)fetchedResultsController {
     
     if (fetchedResultsController_ != nil) {
@@ -233,12 +248,7 @@
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];
-    
-    // Edit the sort key as appropriate.
-	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:NO];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, nil];
-    
-    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setSortDescriptors:[self sortDescriptors]];
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
@@ -248,8 +258,6 @@
     
     [aFetchedResultsController release];
     [fetchRequest release];
-	[timestampDesc release];
-    [sortDescriptors release];
     
     NSError *error = nil;
     if (![fetchedResultsController_ performFetch:&error]) {
@@ -381,6 +389,18 @@
 
 - (void)handleNewSessionNotification:(NSNotification *)aNotification {
 	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+}
+
+- (void)handleSortOrderDidChangeNotification:(NSNotification *)aNotification {
+    [self.fetchedResultsController.fetchRequest setSortDescriptors:[self sortDescriptors]];
+    
+    NSError *error = nil;
+    if (![self.fetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    [videoTableView reloadData];
 }
 
 #pragma mark trigger load new

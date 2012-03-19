@@ -12,6 +12,7 @@
 #import "ToolTipController.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
+#import "SortOrderSettingViewController.h"
 
 #define NM_SETTING_HD_SWITCH_TAG					1001
 //#define NM_SETTING_FAVORITE_CHANNEL_SWITCH_TAG		1002
@@ -38,6 +39,7 @@
 	userDefaults = [NSUserDefaults standardUserDefaults];
 	self.title = @"Settings";
 	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissView:)] autorelease];
+	self.navigationItem.backBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:nil action:nil] autorelease];
 	
     NSString *apiURL;
     CGRect footerLabelFrame;
@@ -100,6 +102,7 @@
 		[[NSNotificationCenter defaultCenter] postNotificationName:NMChannelManagementWillAppearNotification object:self];
 		viewPushedByNavigationController = YES;
 	}
+    [self.tableView reloadData];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -161,7 +164,7 @@
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 2;
+	return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -173,8 +176,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * CellIdentifier = @"Cell";
-	static NSString * EmailIdentifier = @"EmailCell";
-
+	static NSString * SortOrderIdentifier = @"SortOrderCell";
+    static NSString * EmailIdentifier = @"EmailCell";
+    
     UITableViewCell * cell = nil;
 	NSString * lblStr = nil;
 	switch (indexPath.section) {
@@ -199,7 +203,18 @@
 			}
 			cell.textLabel.text = lblStr;
 			break;
-		case 1:
+            
+        case 1:
+            cell = [tableView dequeueReusableCellWithIdentifier:SortOrderIdentifier];
+            if (cell == nil) {
+				cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:SortOrderIdentifier] autorelease];
+			}
+            cell.textLabel.text = @"Sort Order";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.detailTextLabel.text = (NM_SORT_ORDER == NMSortOrderTypeNewestFirst ? @"Newer First" : @"Older First");
+            break;
+            
+		case 2:
             cell = [tableView dequeueReusableCellWithIdentifier:EmailIdentifier];
             if (cell == nil) {
                 cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EmailIdentifier] autorelease];
@@ -225,16 +240,26 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (indexPath.section == 1) {
-		[self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-		
-		MFMailComposeViewController * mvc = [[MFMailComposeViewController alloc] init];
-		mvc.mailComposeDelegate = self;
-		[mvc setSubject:@"NOWBOX iPad app user feedback"];
-		[mvc setToRecipients:[NSArray arrayWithObject:@"feedback@nowbox.com"]];
-		[mvc setMessageBody:[NSString stringWithFormat:@"\n\nVersion: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID] isHTML:NO];
-		[self presentModalViewController:mvc animated:YES];
-		[mvc release];
+    switch (indexPath.section) {
+        case 1: {
+            SortOrderSettingViewController *sortOrderViewController = [[SortOrderSettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
+            [self.navigationController pushViewController:sortOrderViewController animated:YES];
+            [sortOrderViewController release];
+            break;
+        }
+        case 2: {
+            [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+            
+            MFMailComposeViewController * mvc = [[MFMailComposeViewController alloc] init];
+            mvc.mailComposeDelegate = self;
+            [mvc setSubject:@"NOWBOX iPad app user feedback"];
+            [mvc setToRecipients:[NSArray arrayWithObject:@"feedback@nowbox.com"]];
+            [mvc setMessageBody:[NSString stringWithFormat:@"\n\nVersion: %@\nUser ID: %d", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], NM_USER_ACCOUNT_ID] isHTML:NO];
+            [self presentModalViewController:mvc animated:YES];
+            [mvc release];
+            
+            break;
+        }
     }
 }
 

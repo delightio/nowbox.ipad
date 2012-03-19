@@ -13,6 +13,7 @@
 	#import <UIKit/UIKit.h>
 	#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "NMDataType.h"
 
 #define NM_VIDEO_CELL_HEIGHT		100.0f
 #define NM_CHANNEL_COLUMN_WIDTH		181.0f
@@ -30,12 +31,14 @@ extern NSString * NM_USER_YOUTUBE_USER_NAME;
 extern NSUInteger NM_USER_YOUTUBE_LAST_SYNC;
 extern NSUInteger NM_USER_YOUTUBE_SYNC_SERVER_TIME;
 extern NSInteger NM_VIDEO_QUALITY;
+extern NMSortOrderType NM_SORT_ORDER; 
 //extern BOOL NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION;
 extern BOOL NM_USER_SHOW_FAVORITE_CHANNEL;
 extern BOOL NM_RUNNING_IOS_5;
 extern NSString * const NMChannelManagementWillAppearNotification;
 extern NSString * const NMChannelManagementDidDisappearNotification;
 extern NSString * const NMBeginNewSessionNotification;
+extern NSString * const NMSortOrderDidChangeNotification;
 extern BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO;
 extern BOOL NM_AIRPLAY_ACTIVE;
 extern BOOL NM_RATE_US_REMINDER_SHOWN;

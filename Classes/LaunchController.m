@@ -72,6 +72,8 @@
 	NM_USER_YOUTUBE_LAST_SYNC = [[userDefaults objectForKey:NM_USER_YOUTUBE_LAST_SYNC_KEY] unsignedIntegerValue];
 	
 	NM_VIDEO_QUALITY = [userDefaults integerForKey:NM_VIDEO_QUALITY_KEY];
+    NM_SORT_ORDER = [userDefaults integerForKey:NM_SORT_ORDER_KEY];
+    
 	NM_USER_YOUTUBE_USER_NAME = [[userDefaults stringForKey:NM_USER_YOUTUBE_USER_NAME_KEY] retain];
 //	NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION = [userDefaults boolForKey:NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY];
 	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];

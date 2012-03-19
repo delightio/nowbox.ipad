@@ -67,6 +67,11 @@ typedef enum {
 } NMVideoQualityType;
 
 typedef enum {
+    NMSortOrderTypeNewestFirst,
+    NMSortOrderTypeOldestFirst
+} NMSortOrderType;
+
+typedef enum {
 	NMEventSubscribeChannel,
 	NMEventUnsubscribeChannel,
 	NMEventEnqueue,

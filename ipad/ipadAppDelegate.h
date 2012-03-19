@@ -25,6 +25,7 @@ extern NSString * const NM_RATE_US_REMINDER_SHOWN_KEY;
 extern NSString * const NM_RATE_US_REMINDER_DEFER_COUNT_KEY;
 extern NSString * const NM_SHARE_COUNT_KEY;
 extern NSString * const NM_VIDEO_QUALITY_KEY;
+extern NSString * const NM_SORT_ORDER_KEY;
 //extern NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY;
 extern NSString * const NM_SESSION_ID_KEY;
 extern NSString * const NM_FIRST_LAUNCH_KEY;
