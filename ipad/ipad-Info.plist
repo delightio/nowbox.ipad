@@ -13,6 +13,7 @@
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Icon.png</string>
+		<string>Icon@2x~ipad.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.pipelyinc.${PRODUCT_NAME:rfc1034identifier}</string>
