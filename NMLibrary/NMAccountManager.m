@@ -13,6 +13,7 @@
 #import "NMChannel.h"
 #import "NMVideo.h"
 #import "NMConcreteVideo.h"
+#import "Reachability.h"
 #import <Accounts/Accounts.h>
 #import <Twitter/Twitter.h>
 
@@ -61,6 +62,7 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailParseTwitterFeedNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailParseFacebookFeedNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSyncErrorNotification:) name:NMDidFailImportYouTubeVideoNotification object:nil];
+    [nc addObserver: self selector: @selector(handleReachabilityChangedNotification:) name:kReachabilityChangedNotification object:nil];
 	
 	// update facebook sync status
 	NMDataController * ctrl = [[NMTaskQueueController sharedTaskQueueController] dataController];
@@ -387,14 +389,41 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 #pragma mark Sync notification handlers
 
 - (void)handleSyncErrorNotification:(NSNotification *)aNotification {
-	NSString * theName = [aNotification name];
-	// fail to sync
-	if ( [theName isEqualToString:NMDidFailGetFacebookProfileNotification] ) {
-		NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
-		if ( [theProfile.nm_me boolValue] ) {
-			// fail to sync my facebook account. try grab the profile again after 2.0
-			[self performSelector:@selector(scheduleImportVideos) withObject:nil afterDelay:2.0];
-			// scheduleImportVideos checks for person profile to update too. This is what we need.
+//	NSString * theName = [aNotification name];
+//	// fail to sync
+//	if ( [theName isEqualToString:NMDidFailGetFacebookProfileNotification] ) {
+//		NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
+//		if ( [theProfile.nm_me boolValue] ) {
+//			// fail to sync my facebook account. try grab the profile again after 2.0
+//			[self performSelector:@selector(scheduleImportVideos) withObject:nil afterDelay:2.0];
+//			// scheduleImportVideos checks for person profile to update too. This is what we need.
+//		}
+//	}
+	// check error type
+	NSError * errObj = [[aNotification userInfo] objectForKey:@"error"];
+	if ( [[errObj domain] isEqualToString:NSURLErrorDomain] ) {
+		// whatever network error, we should just stop syncing.
+		if ( ++syncErrorCounter > 5 ) {
+			// stop the sync process completely. So, sync will either be stopped here or in reachability noticiation method (if connection is not reachable)
+			[self stopAllSyncActivity];
+		}
+		// add a hook in the network reachability object to trigger sync
+	}
+	NSLog(@"error captured in Account Manager: %@", errObj);
+}
+
+- (void)handleReachabilityChangedNotification:(NSNotification *)aNotification {
+	Reachability * wifiReachability = [aNotification object];
+    NetworkStatus netStatus = [wifiReachability currentReachabilityStatus];
+    BOOL connectionRequired = [wifiReachability connectionRequired];
+	if ( !connectionRequired ) {
+		if ( netStatus == NotReachable ) {
+			// stop all sync timer
+			[self stopAllSyncActivity];
+		} else {
+			// enable sync again
+			[self performSelector:@selector(scheduleSyncSocialChannels) withObject:nil afterDelay:2.0];
+			[self performSelector:@selector(scheduleImportVideos) withObject:nil afterDelay:1.0];
 		}
 	}
 }
@@ -547,5 +576,19 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	if ( _videoImportTimer == nil ) self.videoImportTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(scheduleImportVideos) userInfo:nil repeats:YES];
 }
 
+- (void)stopAllSyncActivity {
+	// stop timer
+	if ( _videoImportTimer ) {
+		[_videoImportTimer invalidate], self.videoImportTimer = nil;
+	}
+	if ( _socialChannelParsingTimer ) {
+		[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+	}
+	// cancel all sync tasks
+	[[NMTaskQueueController sharedTaskQueueController] cancelAllSyncTasks];
+	// update sync variable
+	if ( [_facebookAccountStatus integerValue] ) self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+	if ( [_twitterAccountStatus integerValue] ) self.twitterAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+}
 
 @end

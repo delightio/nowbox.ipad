@@ -95,7 +95,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	
     wifiReachability = [[Reachability reachabilityWithHostName:@"api.nowbox.com"] retain];
 	[wifiReachability startNotifier];
-    [nc addObserver: self selector: @selector(reachabilityChanged:) name:kReachabilityChangedNotification object: nil];
+    [nc addObserver: self selector: @selector(handleReachabilityChangedNotification:) name:kReachabilityChangedNotification object: nil];
 	
 	NM_USER_TOKEN = [[NSString stringWithString:@"no_token"] retain];
 
@@ -279,7 +279,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	[self issueEditUserSettings];
 }
 
-- (void)reachabilityChanged:(NSNotification *)aNotification {
+- (void)handleReachabilityChangedNotification:(NSNotification *)aNotification {
     NetworkStatus netStatus = [wifiReachability currentReachabilityStatus];
     BOOL connectionRequired = [wifiReachability connectionRequired];
 	if ( !connectionRequired ) {
@@ -797,6 +797,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 
 - (void)cancelAllTasks {
 	[networkController performSelector:@selector(forceCancelAllTasks) onThread:networkController.controlThread withObject:nil waitUntilDone:YES];
+}
+
+- (void)cancelAllSyncTasks {
+	NSMutableIndexSet * cmdIdx = [NSMutableIndexSet indexSetWithIndex:NMCommandParseFacebookFeed];
+	[cmdIdx addIndex:NMCommandGetFacebookProfile];
+	[cmdIdx addIndex:NMCommandParseTwitterFeed];
+	[cmdIdx addIndex:NMCommandGetTwitterProfile];
+	// only adding above commands. For other facebook or twitter tasks, we will just let them fail so that we will get the fail notificaiton.
+	// cancel all Youtube import task
+	[cmdIdx addIndex:NMCommandImportYouTubeVideo];
+	[networkController cancelTaskWithCommandSet:cmdIdx];
 }
 
 - (void)issueCheckUpdateForDevice:(NSString *)devType {

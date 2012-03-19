@@ -152,5 +152,6 @@
 // Debug task queue status
 - (void)debugPrintCommandPoolStatus;
 
+- (void)cancelAllSyncTasks;
 - (void)cancelAllTasks;
 @end
