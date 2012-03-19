@@ -40,7 +40,6 @@ typedef enum {
 	NMPlaybackViewModeType displayMode;
     BOOL massUpdate;
     NSMutableSet *refreshingChannels;
-    NSTimeInterval refreshStartTime;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView * tableView;
