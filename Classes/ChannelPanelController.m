@@ -160,29 +160,30 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 }
 
 - (void)rotateRefreshButton {
+    refreshButton.userInteractionEnabled = NO;
+    [refreshButton setImage:[UIImage imageNamed:@"toolbar-refresh-no-shadow.png"] forState:UIControlStateNormal];
+
     CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     rotationAnimation.toValue = [NSNumber numberWithFloat:M_PI * 2.0];
     rotationAnimation.duration = 0.5f;
     rotationAnimation.delegate = self;
-
+    rotationAnimation.repeatCount = round(NM_CHANNEL_REFRESH_TIMEOUT / rotationAnimation.duration);
     [refreshButton.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
 }
 
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
-    if ([refreshingChannels count] == 0 || [[NSDate date] timeIntervalSince1970] - refreshStartTime > NM_CHANNEL_REFRESH_TIMEOUT) {
-        // Channel refreshing finished or timed out
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)finished {
+    if (theAnimation.repeatCount == 0 || finished) {
+        // "Return to start" animation finished, or refresh timed out after many rotations
         refreshButton.userInteractionEnabled = YES;
+        refreshButton.layer.transform = CATransform3DIdentity;
         [refreshButton.layer removeAllAnimations];
-    } else {
-        [self rotateRefreshButton];
+        [refreshButton setImage:[UIImage imageNamed:@"toolbar-refresh.png"] forState:UIControlStateNormal];        
     }
 }
 
 - (IBAction)refreshChannels:(id)sender {
     // Make the refresh button spin
-    refreshStartTime = [[NSDate date] timeIntervalSince1970];
-    refreshButton.userInteractionEnabled = NO;
-    [self performSelectorInBackground:@selector(rotateRefreshButton) withObject:nil];
+    [self rotateRefreshButton];
     
     // Get more videos for each channel
     NSArray *allChannels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
@@ -715,16 +716,27 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)notification {
     NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
-    if (channel) {
-        [refreshingChannels removeObject:channel];    
+    if (channel && [refreshingChannels count]) {
+        [refreshingChannels removeObject:channel];
+        
+        if ([refreshingChannels count] == 0 && !refreshButton.userInteractionEnabled) {
+            // We're done refreshing all channels, stop rotating refresh button
+            CALayer *presentationLayer = refreshButton.layer.presentationLayer;
+            refreshButton.layer.transform = presentationLayer.transform;
+            [refreshButton.layer removeAnimationForKey:@"rotationAnimation"];
+            
+            // Rotate the refresh button back to the original position
+            CABasicAnimation *rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+            rotationAnimation.toValue = [NSNumber numberWithFloat:M_PI * 2.0];
+            rotationAnimation.duration = 0.5f;
+            rotationAnimation.delegate = self;
+            [refreshButton.layer addAnimation:rotationAnimation forKey:@"returnToStartAnimation"];
+        }
     }
 }
 
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)notification {
-    NMChannel *channel = [[notification userInfo] objectForKey:@"channel"];
-    if (channel) {
-        [refreshingChannels removeObject:channel];  
-    }
+    [self handleDidGetChannelVideoListNotification:notification];
 }
 
 #pragma mark play newly subscribed channel
