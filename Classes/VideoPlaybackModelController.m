@@ -25,7 +25,8 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 @interface VideoPlaybackModelController (PrivateMethods)
 
 - (void)initializePlayHead;
-	
+- (NSArray *)sortDescriptors;
+
 @end
 
 @implementation VideoPlaybackModelController
@@ -426,6 +427,20 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	}
 	//TODO: remove the video from playlist
 }
+
+- (void)handleSortOrderDidChangeNotification:(NSNotification *)aNotification {
+    // Update the sort descriptors
+    [fetchedResultsController_.fetchRequest setSortDescriptors:[self sortDescriptors]];
+    
+    NSError *error = nil;
+    if (![self.fetchedResultsController performFetch:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    // TODO: Flush the videos that were previously loaded
+}
+
 /*
 - (void)handleDidGetVideoListNotification:(NSNotification *)aNotification {
 	// MOC changes were made where notification is received
@@ -443,6 +458,15 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	} 
 }
 */
+
+- (NSArray *)sortDescriptors {
+    NSSortDescriptor *timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:(NM_SORT_ORDER == NMSortOrderTypeOldestFirst)];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:timestampDesc];
+    [timestampDesc release];
+    
+    return sortDescriptors;
+}
+
 #pragma mark Fetched Results Controller
 - (NSFetchedResultsController *)fetchedResultsController {
     
@@ -469,11 +493,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
     [fetchRequest setFetchBatchSize:5];
     
     // Edit the sort key as appropriate.
-//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:NO];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, nil];
-    
-    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setSortDescriptors:[self sortDescriptors]];
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
@@ -483,10 +503,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
     
     [aFetchedResultsController release];
     [fetchRequest release];
-//    [sortDescriptor release];
-	[timestampDesc release];
-    [sortDescriptors release];
-    
+
     NSError *error = nil;
     if (![fetchedResultsController_ performFetch:&error]) {
         /*
