@@ -392,7 +392,14 @@
 }
 
 - (void)handleSortOrderDidChangeNotification:(NSNotification *)aNotification {
-    [self.fetchedResultsController.fetchRequest setSortDescriptors:[self sortDescriptors]];
+    // Keep the same video highlighted once the sort order is reversed
+    NMVideo *highlightedVideo = nil;
+    if (panelController.highlightedChannel == channel) {
+        highlightedVideo = [fetchedResultsController_ objectAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0]];
+    }
+    
+    // Update the sort descriptors and reload the table
+    [fetchedResultsController_.fetchRequest setSortDescriptors:[self sortDescriptors]];
     
     NSError *error = nil;
     if (![self.fetchedResultsController performFetch:&error]) {
@@ -400,7 +407,15 @@
         abort();
     }
     
-    [videoTableView reloadData];
+    if (highlightedVideo) {
+        panelController.highlightedVideoIndex = [fetchedResultsController_ indexPathForObject:highlightedVideo].row;
+        [videoTableView reloadData];
+        [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0] 
+                              atScrollPosition:UITableViewScrollPositionMiddle
+                                      animated:YES];
+    } else {
+        [videoTableView reloadData];
+    }
 }
 
 #pragma mark trigger load new
