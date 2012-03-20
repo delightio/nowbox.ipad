@@ -829,7 +829,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn {
-	return [chn.videos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nm_sort_order" ascending:YES]]];
+	return [chn.videos sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"published_at" ascending:(NM_SORT_ORDER == NMSortOrderTypeOldestFirst)]]];
 }
 
 - (NMVideo *)videoForID:(NSNumber *)vid {
