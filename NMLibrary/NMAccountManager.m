@@ -492,6 +492,7 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 #endif
 	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
 	if ( [self.facebookAccountStatus integerValue] || [self.twitterAccountStatus integerValue] ) {
+		syncErrorCounter = 0;
 		// get the qualified channels
 		NSArray * theChannels = [tqc.dataController socialChannelsForSync];
 		NSUInteger c = [theChannels count];

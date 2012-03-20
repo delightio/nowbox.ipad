@@ -277,6 +277,8 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 					// subscribe to this person as well
 					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
 				}
+				// we do NOT need "poster" in twitter. All posters are in the comment
+				//fbInfo.poster = theProfile;
 				if ( ![_user_id isEqual:manID] ) {
 					// the video is from another person. we should add the video to that person's channel as well
 					if ( isNew || chkResult == NMVideoDoesNotExist ) {
