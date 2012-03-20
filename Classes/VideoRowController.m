@@ -19,6 +19,7 @@
 #define kMediumVideoCellWidth       404.0f
 #define kLongVideoCellWidth         606.0f
 #define kLoadingViewWidth           154.0f
+#define kPullToRefreshDistance      (kLoadingViewWidth * 0.8)
 
 @interface VideoRowController (PrivateMethods)
 - (NSArray *)sortDescriptors;
@@ -321,14 +322,14 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
     // Update the highlighted index
-    NSIndexPath *highlightedIndexPath = [fetchedResultsController_ indexPathForObject:highlightedVideo];
-    panelController.highlightedVideoIndex = highlightedIndexPath.row;
-    [highlightedVideo release];
-    highlightedVideo = nil;
-    
-    CGPoint contentOffset = videoTableView.contentOffset;
+    if (highlightedVideo) {
+        NSIndexPath *highlightedIndexPath = [fetchedResultsController_ indexPathForObject:highlightedVideo];
+        panelController.highlightedVideoIndex = highlightedIndexPath.row;
+        [highlightedVideo release];
+        highlightedVideo = nil;
+    }
+
     [videoTableView endUpdates];
-    videoTableView.contentOffset = contentOffset;
 }
 
 - (void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate 
@@ -344,6 +345,33 @@
     }
 }
 
+- (void)reloadDataKeepOffset
+{
+    CGPoint contentOffset = videoTableView.contentOffset;
+    [videoTableView reloadData];
+    
+    if (reloadingFromLeft) {
+        // Reloading from left - keep distance from left the same
+        videoTableView.contentOffset = contentOffset;        
+    } else if (reloadingFromRight) {
+        // Reloading from right - keep distance from right the same
+        [videoTableView scrollRectToVisible:CGRectMake(0, videoTableView.contentSize.height - 1, 1, 1) animated:YES];
+    }    
+}
+
+- (void)loadingDidFinishAnimateCell:(BOOL)animateNewContentCell
+{
+    if (animateNewContentCell) {
+        [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
+    }
+    
+    isLoadingNewContent = NO;
+    isAnimatingNewContentCell = animateNewContentCell;
+    [self reloadDataKeepOffset];
+    [self hidePullToRefreshView];
+    reloadingFromLeft = NO;
+    reloadingFromRight = NO;
+}
 
 #pragma mark - Notification handling
 
@@ -362,11 +390,7 @@
 			// poll the server again
 			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 		} else {
-            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
-            isLoadingNewContent = NO;
-            isAnimatingNewContentCell = YES;
-			[videoTableView reloadData];
-            [self hidePullToRefreshView];
+            [self loadingDidFinishAnimateCell:YES];
 		}
     }
 }
@@ -374,20 +398,14 @@
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification {
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
     if (chnObj && [chnObj isEqual:channel] ) {
-        isLoadingNewContent = NO;
-        isAnimatingNewContentCell = NO;
-        [videoTableView reloadData];
-        [self hidePullToRefreshView];        
+        [self loadingDidFinishAnimateCell:NO];       
     }
 }
 
 - (void)handleDidCancelGetChannelVideListNotification:(NSNotification *)aNotification {
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
     if (chnObj && [chnObj isEqual:channel] ) {
-        isLoadingNewContent = NO;
-        isAnimatingNewContentCell = NO;
-        [videoTableView reloadData];
-        [self hidePullToRefreshView];        
+        [self loadingDidFinishAnimateCell:NO];              
     }
 }
 
@@ -435,6 +453,7 @@
     if(y > h + reload_distance) {
         if (!isLoadingNewContent && !isAnimatingNewContentCell) {
             isLoadingNewContent = YES;
+            reloadingFromRight = YES;
             [videoTableView beginUpdates];
             [videoTableView endUpdates];
             
@@ -442,21 +461,38 @@
 			[schdlr issueGetMoreVideoForChannel:channel];
         }
     }
+    
+    float leftY = aScrollView.contentOffset.y + aScrollView.contentInset.top;
+    if (!reloadingFromLeft) {
+        if (leftY < -kPullToRefreshDistance && dragging) {
+            pullToRefreshView.loadingText.text = @"Release to refresh";
+        } else {
+            pullToRefreshView.loadingText.text = @"Pull to refresh";        
+        }
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    dragging = YES;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate
 {
+    dragging = NO;
     if (isLoadingNewContent) return;
 
     // Pull to refresh from left
     float leftY = aScrollView.contentOffset.y + aScrollView.contentInset.top;
     
-    if (leftY < -kLoadingViewWidth / 2) {
+    if (leftY < -kPullToRefreshDistance) {
         isLoadingNewContent = YES;
         [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
         
         [pullToRefreshView.activityIndicator startAnimating];
         pullToRefreshView.loadingText.text = @"Loading videos...";
+        reloadingFromLeft = YES;
+        
         [UIView animateWithInteractiveDuration:0.2
                                     animations:^{
                                         aScrollView.contentInset = UIEdgeInsetsMake(kLoadingViewWidth, 0.0f, 0.0f, 0.0f);
