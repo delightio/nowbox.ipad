@@ -42,7 +42,7 @@
 						<array class="NSMutableArray" key="NSSubviews">
 							<object class="IBUILabel" id="586839416">
 								<reference key="NSNextResponder" ref="745524954"/>
-								<int key="NSvFlags">266</int>
+								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{12, 75}, {285, 17}}</string>
 								<reference key="NSSuperview" ref="745524954"/>
 								<reference key="NSWindow"/>
@@ -53,7 +53,7 @@
 								<int key="IBUIContentMode">7</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<string key="IBUIText"/>
+								<string key="IBUIText">Loading videos...</string>
 								<object class="NSColor" key="IBUITextColor">
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MC4zNTI5NDExNzY1IDAuMzUyOTQxMTc2NSAwLjM1Mjk0MTE3NjUAA</bytes>
@@ -76,13 +76,15 @@
 							</object>
 							<object class="IBUIActivityIndicatorView" id="901974237">
 								<reference key="NSNextResponder" ref="745524954"/>
-								<int key="NSvFlags">-2147483356</int>
+								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{122, 73}, {20, 20}}</string>
 								<reference key="NSSuperview" ref="745524954"/>
 								<reference key="NSWindow"/>
 								<string key="NSReuseIdentifierKey">_NS:1062</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<bool key="IBUIHidesWhenStopped">NO</bool>
+								<bool key="IBUIAnimating">YES</bool>
 								<int key="IBUIStyle">2</int>
 							</object>
 						</array>
@@ -121,7 +123,7 @@
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="1015133379"/>
 					</object>
-					<int key="connectionID">23</int>
+					<int key="connectionID">4</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -167,13 +169,11 @@
 							<reference ref="901974237"/>
 						</array>
 						<reference key="parent" ref="0"/>
-						<string key="objectName">Load Videos View from Right</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">5</int>
 						<reference key="object" ref="586839416"/>
 						<reference key="parent" ref="1015133379"/>
-						<string key="objectName">Loading Label</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">10</int>
@@ -196,7 +196,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">23</int>
+			<int key="maxID">12</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
