@@ -15,6 +15,7 @@
 
 @interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
     BOOL isAnimatingNewContentCell;
+    NMVideo *highlightedVideo;
 }
 
 @property (nonatomic, retain) AGOrientedTableView *videoTableView;

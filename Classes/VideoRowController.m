@@ -285,6 +285,15 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller 
 {
+    // Remember which video was highlighted (easier than keeping track of an index which may be moved around)
+    if (highlightedVideo) {
+        [highlightedVideo release];
+        highlightedVideo = nil;
+    }
+    if (panelController.highlightedVideoIndex >= 0 && panelController.highlightedVideoIndex < [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]) {
+        highlightedVideo = [[fetchedResultsController_ objectAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0]] retain];
+    }
+    
     [videoTableView beginUpdates];
 }
 
@@ -311,6 +320,12 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
+    // Update the highlighted index
+    NSIndexPath *highlightedIndexPath = [fetchedResultsController_ indexPathForObject:highlightedVideo];
+    panelController.highlightedVideoIndex = highlightedIndexPath.row;
+    [highlightedVideo release];
+    highlightedVideo = nil;
+    
     CGPoint contentOffset = videoTableView.contentOffset;
     [videoTableView endUpdates];
     videoTableView.contentOffset = contentOffset;
@@ -382,9 +397,9 @@
 
 - (void)handleSortOrderDidChangeNotification:(NSNotification *)aNotification {
     // Keep the same video highlighted once the sort order is reversed
-    NMVideo *highlightedVideo = nil;
+    NMVideo *currentVideo = nil;
     if (panelController.highlightedChannel == channel) {
-        highlightedVideo = [fetchedResultsController_ objectAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0]];
+        currentVideo = [fetchedResultsController_ objectAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0]];
     }
     
     // Update the sort descriptors and reload the table
@@ -396,8 +411,8 @@
         abort();
     }
     
-    if (highlightedVideo) {
-        panelController.highlightedVideoIndex = [fetchedResultsController_ indexPathForObject:highlightedVideo].row;
+    if (currentVideo) {
+        panelController.highlightedVideoIndex = [fetchedResultsController_ indexPathForObject:currentVideo].row;
         [videoTableView reloadData];
         [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0] 
                               atScrollPosition:UITableViewScrollPositionMiddle
