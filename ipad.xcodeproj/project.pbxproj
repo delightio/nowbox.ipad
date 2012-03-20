@@ -64,6 +64,7 @@
 		837E905014587FA3009F32DD /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 837E904A14587FA3009F32DD /* MixpanelEvent.m */; };
 		837FA53F15094DB300173CC5 /* toolbar-refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 837FA53E15094DB300173CC5 /* toolbar-refresh.png */; };
 		837FA5421509581600173CC5 /* toolbar-refresh-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 837FA5411509581600173CC5 /* toolbar-refresh-active.png */; };
+		83807E9B151927D400A1CCC3 /* VideoPanelPullToRefreshView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83807E9A151927D400A1CCC3 /* VideoPanelPullToRefreshView.xib */; };
 		83810AE01464A633003D3F76 /* GridScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83810ADF1464A633003D3F76 /* GridScrollView.m */; };
 		8381171614C0C7D300892799 /* tooltip-share-email.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171314C0C7D300892799 /* tooltip-share-email.png */; };
 		8381171714C0C7D300892799 /* tooltip-share-facebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 8381171414C0C7D300892799 /* tooltip-share-facebook.png */; };
@@ -437,6 +438,7 @@
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
 		837FA53E15094DB300173CC5 /* toolbar-refresh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-refresh.png"; sourceTree = "<group>"; };
 		837FA5411509581600173CC5 /* toolbar-refresh-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbar-refresh-active.png"; sourceTree = "<group>"; };
+		83807E9A151927D400A1CCC3 /* VideoPanelPullToRefreshView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoPanelPullToRefreshView.xib; sourceTree = "<group>"; };
 		83810ADE1464A633003D3F76 /* GridScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridScrollView.h; sourceTree = "<group>"; };
 		83810ADF1464A633003D3F76 /* GridScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridScrollView.m; sourceTree = "<group>"; };
 		8381171314C0C7D300892799 /* tooltip-share-email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tooltip-share-email.png"; sourceTree = "<group>"; };
@@ -1472,6 +1474,7 @@
 				83407B851461F55A009E707A /* OnBoardProcessViewController.xib */,
 				83EF90C51484202000ED7993 /* OnBoardProcessCategoryView.xib */,
 				837C741714631044009F3C2A /* OnBoardProcessChannelView.xib */,
+				83807E9A151927D400A1CCC3 /* VideoPanelPullToRefreshView.xib */,
 				221EE3B4142BEACA00519DF8 /* VideoPanelLoadMoreView.xib */,
 				83F8E2DF1468C4B40051D990 /* ShareView.xib */,
 			);
@@ -1814,6 +1817,7 @@
 				A958C3EB1517D42F00E28ACE /* Icon@2x~ipad.png in Resources */,
 				838B820E1517B83800FF2ABA /* toolbar-refresh-no-shadow.png in Resources */,
 				838B820F1517B83800FF2ABA /* toolbar-refresh-no-shadow@2x.png in Resources */,
+				83807E9B151927D400A1CCC3 /* VideoPanelPullToRefreshView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

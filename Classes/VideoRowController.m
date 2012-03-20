@@ -22,8 +22,7 @@
 
 @interface VideoRowController (PrivateMethods)
 - (NSArray *)sortDescriptors;
-- (void)positionPullToRefreshViews;
-- (void)hidePullToRefreshViews;
+- (void)hidePullToRefreshView;
 @end
 
 @implementation VideoRowController
@@ -34,8 +33,8 @@
 @synthesize channel, panelController;
 @synthesize indexInTable;
 @synthesize isLoadingNewContent;
-@synthesize leftPullToRefreshView;
-@synthesize rightPullToRefreshView;
+@synthesize pullToRefreshView;
+@synthesize loadingCell;
 
 - (id)init {
 	self = [super init];
@@ -50,9 +49,8 @@
         [nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
         [nc addObserver:self selector:@selector(handleSortOrderDidChangeNotification:) name:NMSortOrderDidChangeNotification object:nil];
         
-        [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
-        leftPullToRefreshView.transform = CGAffineTransformMakeRotation(M_PI_2);
-        rightPullToRefreshView.transform = CGAffineTransformMakeRotation(M_PI_2);
+        [[NSBundle mainBundle] loadNibNamed:@"VideoPanelPullToRefreshView" owner:self options:nil];
+        pullToRefreshView.transform = CGAffineTransformMakeRotation(M_PI_2);
     }
     
     return self;
@@ -72,8 +70,8 @@
         [cell setVideoRowDelegate:nil];
     }
     [videoTableView release];
-    [leftPullToRefreshView release];
-    [rightPullToRefreshView release];
+    [pullToRefreshView release];
+    [loadingCell release];
     
 	[super dealloc];
 }
@@ -85,29 +83,19 @@
         videoTableView = [aVideoTableView retain];
     }
 
-    [self positionPullToRefreshViews];
-    [videoTableView insertSubview:leftPullToRefreshView atIndex:0];
-    [videoTableView insertSubview:rightPullToRefreshView atIndex:0];
+    pullToRefreshView.frame = CGRectMake(0, -kLoadingViewWidth, videoTableView.frame.size.height, kLoadingViewWidth);
+    [videoTableView insertSubview:pullToRefreshView atIndex:0];
 }
 
-- (void)positionPullToRefreshViews
+- (void)hidePullToRefreshView
 {
-    leftPullToRefreshView.frame = CGRectMake(0, -kLoadingViewWidth, videoTableView.frame.size.height, kLoadingViewWidth);
-    rightPullToRefreshView.frame = CGRectMake(0, MAX(videoTableView.frame.size.width, videoTableView.contentSize.height), videoTableView.frame.size.height, kLoadingViewWidth);
-}
-
-- (void)hidePullToRefreshViews
-{
-    [self positionPullToRefreshViews];
     [UIView animateWithInteractiveDuration:0.3
                                 animations:^{
                                     videoTableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
                                 }
                                 completion:^(BOOL finished){
-                                    [leftPullToRefreshView.activityIndicator stopAnimating];
-                                    leftPullToRefreshView.loadingText.text = @"Pull to refresh";
-                                    [rightPullToRefreshView.activityIndicator stopAnimating];
-                                    rightPullToRefreshView.loadingText.text = @"";
+                                    [pullToRefreshView.activityIndicator stopAnimating];
+                                    pullToRefreshView.loadingText.text = @"Pull to refresh";
                                 }];            
 }
 
@@ -115,8 +103,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id<NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	return [sectionInfo numberOfObjects];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	return [sectionInfo numberOfObjects]+1;
 }
 
 - (void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender 
@@ -154,6 +142,32 @@
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
 {    
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
+        static NSString *CellIdentifier = @"LoadMoreView";
+        
+        PanelVideoCell *cell = (PanelVideoCell *) [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) {
+            [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
+            cell = loadingCell;
+            [cell setLoadingCell:YES];
+            self.loadingCell = nil;
+        }
+        [cell setHidden:!isLoadingNewContent];
+        
+        if ([channel.populated_at timeIntervalSince1970] > 0 || [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] > 0) {
+            cell.loadingText.text = @"Loading videos...";
+        } else {
+            cell.loadingText.text = @"Processing channel...";
+        }
+        
+        CGRect frame = cell.activityIndicator.frame;
+        frame.origin.x = [cell.loadingText.text sizeWithFont:cell.loadingText.font constrainedToSize:cell.loadingText.frame.size lineBreakMode:cell.loadingText.lineBreakMode].width + 22;
+        cell.activityIndicator.frame = frame;
+        
+        return (UITableViewCell *)cell;
+    }
+    
     static NSString *CellIdentifier = @"VideoCell";
     PanelVideoCell *cell = [[[panelController.recycledVideoCells anyObject] retain] autorelease];
     if (cell) {
@@ -195,13 +209,21 @@
 		[cell setIsPlayingVideo:NO];
 	}
     
-    [cell setLastCell:(anIndexPath.row == [self tableView:aTableView numberOfRowsInSection:anIndexPath.section] - 1)];
+    [cell setLastCell:(anIndexPath.row == [self tableView:aTableView numberOfRowsInSection:anIndexPath.section] - 2)];
     
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath 
 {    
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	if ([sectionInfo numberOfObjects] == [indexPath row]) {
+        if (!isLoadingNewContent) {
+            return 0;
+        }
+        return 170;
+    }
+    
     NMVideo *theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
 
     if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
@@ -284,9 +306,7 @@
 			break;
 		default:
 			break;
-	}
-    
-    [self positionPullToRefreshViews];
+	}    
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
@@ -327,9 +347,11 @@
 			// poll the server again
 			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 		} else {
+            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
             isLoadingNewContent = NO;
+            isAnimatingNewContentCell = YES;
 			[videoTableView reloadData];
-            [self hidePullToRefreshViews];
+            [self hidePullToRefreshView];
 		}
     }
 }
@@ -338,8 +360,9 @@
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
     if (chnObj && [chnObj isEqual:channel] ) {
         isLoadingNewContent = NO;
+        isAnimatingNewContentCell = NO;
         [videoTableView reloadData];
-        [self hidePullToRefreshViews];        
+        [self hidePullToRefreshView];        
     }
 }
 
@@ -347,8 +370,9 @@
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
     if (chnObj && [chnObj isEqual:channel] ) {
         isLoadingNewContent = NO;
+        isAnimatingNewContentCell = NO;
         [videoTableView reloadData];
-        [self hidePullToRefreshViews];        
+        [self hidePullToRefreshView];        
     }
 }
 
@@ -375,36 +399,34 @@
     if (highlightedVideo) {
         panelController.highlightedVideoIndex = [fetchedResultsController_ indexPathForObject:highlightedVideo].row;
         [videoTableView reloadData];
-        [self positionPullToRefreshViews];        
         [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0] 
                               atScrollPosition:UITableViewScrollPositionMiddle
                                       animated:YES];
     } else {
         [videoTableView reloadData];
-        [self positionPullToRefreshViews];        
     }
 }
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)aScrollView 
-{
-    if (isLoadingNewContent) return;
-    
-    // Scroll to refresh from right
-    float rightY = aScrollView.contentOffset.y + aScrollView.bounds.size.height - aScrollView.contentInset.bottom;
-        
-    if (rightY > aScrollView.contentSize.height + kLoadingViewWidth / 2) {
-        isLoadingNewContent = YES;
-        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-
-        [rightPullToRefreshView.activityIndicator startAnimating];
-        rightPullToRefreshView.loadingText.text = @"Loading videos...";
-        [UIView animateWithInteractiveDuration:0.2
-                                    animations:^{
-                                        aScrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, kLoadingViewWidth, 0.0f);
-                                    }];
-    }    
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
+    CGPoint offset = aScrollView.contentOffset;
+    CGRect bounds = aScrollView.bounds;
+    CGSize size = aScrollView.contentSize;
+    UIEdgeInsets inset = aScrollView.contentInset;
+    float y = offset.y + bounds.size.height - inset.bottom;
+    float h = size.height;
+    float reload_distance = -kMediumVideoCellWidth-100;
+    if(y > h + reload_distance) {
+        if (!isLoadingNewContent && !isAnimatingNewContentCell) {
+            isLoadingNewContent = YES;
+            [videoTableView beginUpdates];
+            [videoTableView endUpdates];
+            
+            NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
+			[schdlr issueGetMoreVideoForChannel:channel];
+        }
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate
@@ -418,13 +440,20 @@
         isLoadingNewContent = YES;
         [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
         
-        [leftPullToRefreshView.activityIndicator startAnimating];
-        leftPullToRefreshView.loadingText.text = @"Loading videos...";
+        [pullToRefreshView.activityIndicator startAnimating];
+        pullToRefreshView.loadingText.text = @"Loading videos...";
         [UIView animateWithInteractiveDuration:0.2
                                     animations:^{
                                         aScrollView.contentInset = UIEdgeInsetsMake(kLoadingViewWidth, 0.0f, 0.0f, 0.0f);
                                     }];            
     }    
+}
+
+#pragma mark helpers
+
+- (void)resetAnimatingVariable {
+    isLoadingNewContent = NO;
+    isAnimatingNewContentCell = NO;
 }
 
 @end

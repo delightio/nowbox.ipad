@@ -13,7 +13,9 @@
 @class ChannelPanelController;
 @class AGOrientedTableView;
 
-@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIScrollViewDelegate>
+@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
+    BOOL isAnimatingNewContentCell;
+}
 
 @property (nonatomic, retain) AGOrientedTableView *videoTableView;
 @property (nonatomic, assign) ChannelPanelController *panelController;
@@ -22,8 +24,8 @@
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, assign) BOOL isLoadingNewContent;
-@property (nonatomic, assign) IBOutlet PanelVideoCell *leftPullToRefreshView;
-@property (nonatomic, assign) IBOutlet PanelVideoCell *rightPullToRefreshView;
+@property (nonatomic, assign) IBOutlet PanelVideoCell *pullToRefreshView;
+@property (nonatomic, assign) IBOutlet PanelVideoCell *loadingCell;
 
 - (void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;
 - (void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender;
