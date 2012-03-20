@@ -171,19 +171,27 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
     [nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
     
     if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
-        [nowboxTaskController addObserver:self forKeyPath:@"syncInProgress" options:0 context:(void *)1001];
-        observingYouTubeSync = YES;
+        YouTubeSyncContext = (void *)1001;
+        [nowboxTaskController addObserver:self forKeyPath:@"syncInProgress" options:0 context:YouTubeSyncContext];
     } else {
-        observingYouTubeSync = NO;
+        YouTubeSyncContext = NULL;
     }
+	FacebookSyncContext = (void *)1002;
+	TwitterSyncContext = (void *)1003;
+	NMAccountManager * acMgr = [NMAccountManager sharedAccountManager];
+	[acMgr addObserver:self forKeyPath:@"facebookAccountStatus" options:0 context:FacebookSyncContext];
+	[acMgr addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:TwitterSyncContext];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    if (observingYouTubeSync) {
+    if (YouTubeSyncContext) {
         [nowboxTaskController removeObserver:self forKeyPath:@"syncInProgress"];
     }
+	NMAccountManager * acMgr = [NMAccountManager sharedAccountManager];
+	[acMgr removeObserver:self forKeyPath:@"facebookAccountStatus"];
+	[acMgr removeObserver:self forKeyPath:@"twitterAccountStatus"];
     
     [super viewWillDisappear:animated];
 }
@@ -290,18 +298,82 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 #pragma mark - KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	NSInteger ctxInt = (NSInteger)context;
-	switch (ctxInt) {
-		case 1001:
-            if (selectedIndex == 0) {
-                // Reload YouTube cell
-                [channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-            }
-			break;
-			
-		default:
-			[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-			break;
+	// check only if YouTubeSyncContext is not NULL
+	if ( YouTubeSyncContext && context == YouTubeSyncContext ) {
+		if (selectedIndex == 0) {
+			// Reload YouTube cell
+			[channelsTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+		}
+	} else if ( context == FacebookSyncContext ) {
+		NMAccountManager * acMgr = object;
+		NSLog(@"channel management - facebook sync");
+		UITableViewCell * cell = [channelsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+		if ( cell ) {
+			UIActivityIndicatorView *actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+			UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
+			UIImageView *backgroundView = (UIImageView *)[cell viewWithTag:14];
+			NMCachedImageView * thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
+			switch ([acMgr.facebookAccountStatus integerValue]) {
+				case NMSyncNotConfigured:
+				case NMSyncAccountActive:
+					// do not show the activity indicator
+					actView.alpha = 0.0;
+					[actView stopAnimating];
+					[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+                    [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];
+					[backgroundView setImage:channelSubscribedBackgroundImage];  
+					buttonView.userInteractionEnabled = YES;
+					// set the thumbnail image
+					[thumbnailView setImageForChannel:acMgr.facebookProfile.subscription.channel];
+					break;
+					
+				default:
+					// show the activity indicator
+					[actView startAnimating];
+					[UIView animateWithDuration:0.3 animations:^{
+						actView.alpha = 1.0;
+						[buttonView setImage:nil forState:UIControlStateNormal];
+						buttonView.userInteractionEnabled = NO;
+					}];
+					break;
+			}
+		}
+	} else if ( context == TwitterSyncContext ) {
+		NMAccountManager * acMgr = object;
+		NSLog(@"channel management - twitter sync");
+		UITableViewCell * cell = [channelsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+		if ( cell ) {
+			UIActivityIndicatorView *actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
+			UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
+			UIImageView *backgroundView = (UIImageView *)[cell viewWithTag:14];
+			NMCachedImageView * thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
+			switch ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue]) {
+				case NMSyncNotConfigured:
+				case NMSyncAccountActive:
+					// do not show the activity indicator
+					actView.alpha = 0.0;
+					[actView stopAnimating];
+					[buttonView setImage:channelSubscribedIcon forState:UIControlStateNormal];
+                    [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];
+					[backgroundView setImage:channelSubscribedBackgroundImage];
+					buttonView.userInteractionEnabled = YES;
+					// set the thumbnail image
+					[thumbnailView setImageForChannel:acMgr.twitterProfile.subscription.channel];
+					break;
+					
+				default:
+					// show the activity indicator
+					[actView startAnimating];
+					[UIView animateWithDuration:0.3 animations:^{
+						actView.alpha = 1.0;
+						[buttonView setImage:nil forState:UIControlStateNormal];
+						buttonView.userInteractionEnabled = NO;
+					}];
+					break;
+			}
+		}
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
 }
 

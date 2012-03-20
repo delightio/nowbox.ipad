@@ -34,7 +34,9 @@
 	BOOL firstLoadView, dismissViewController;
     UITableViewCell *channelCell;
 	BOOL didUnsubscribeSomeChannels;
-    BOOL observingYouTubeSync;
+	void * YouTubeSyncContext;
+	void * FacebookSyncContext;
+	void * TwitterSyncContext;
     
     int selectedIndex;
     
