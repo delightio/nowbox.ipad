@@ -11,49 +11,58 @@
 #import "VideoPlaybackViewController.h"
 #import "PanelVideoCell.h"
 #import "Analytics.h"
+#import "UIView+InteractiveAnimation.h"
+
+#define kShortVideoLengthSeconds    120
+#define kMediumVideoLengthSeconds   600
+#define kShortVideoCellWidth        202.0f
+#define kMediumVideoCellWidth       404.0f
+#define kLongVideoCellWidth         606.0f
+#define kLoadingViewWidth           154.0f
 
 @interface VideoRowController (PrivateMethods)
 - (NSArray *)sortDescriptors;
+- (void)positionPullToRefreshViews;
+- (void)hidePullToRefreshViews;
 @end
 
 @implementation VideoRowController
-@synthesize managedObjectContext=managedObjectContext_;
-@synthesize fetchedResultsController=fetchedResultsController_;
+
+@synthesize managedObjectContext = managedObjectContext_;
+@synthesize fetchedResultsController = fetchedResultsController_;
 @synthesize videoTableView;
 @synthesize channel, panelController;
 @synthesize indexInTable;
 @synthesize isLoadingNewContent;
-@synthesize loadingCell;
-
-
-#define kShortVideoLengthSeconds   120
-#define kMediumVideoLengthSeconds   600
-#define kShortVideoCellWidth    202.0f
-#define kMediumVideoCellWidth    404.0f
-#define kLongVideoCellWidth    606.0f
-
-
+@synthesize leftPullToRefreshView;
+@synthesize rightPullToRefreshView;
 
 - (id)init {
 	self = [super init];
-	styleUtility = [NMStyleUtility sharedStyleUtility];
+    if (self) {
+        self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
+        
+        NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
+        [nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
+        [nc addObserver:self selector:@selector(handleSortOrderDidChangeNotification:) name:NMSortOrderDidChangeNotification object:nil];
+        
+        [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
+        leftPullToRefreshView.transform = CGAffineTransformMakeRotation(M_PI_2);
+        rightPullToRefreshView.transform = CGAffineTransformMakeRotation(M_PI_2);
+    }
     
-	self.managedObjectContext = [NMTaskQueueController sharedTaskQueueController].dataController.managedObjectContext;
-    NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver:self selector:@selector(handleDidGetBeginPlayingVideoNotification:) name:NMWillBeginPlayingVideoNotification object:nil];
-	[nc addObserver:self selector:@selector(handleWillGetChannelVideListNotification:) name:NMWillGetChannelVideListNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
-	[nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
-	[nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
-	[nc addObserver:self selector:@selector(handleSortOrderDidChangeNotification:) name:NMSortOrderDidChangeNotification object:nil];
-
     return self;
 }
 
 
-- (void)dealloc {
+- (void)dealloc 
+{
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 	[channel release];
 	[fetchedResultsController_ release];
 	[managedObjectContext_ release];
@@ -63,24 +72,56 @@
         [cell setVideoRowDelegate:nil];
     }
     [videoTableView release];
+    [leftPullToRefreshView release];
+    [rightPullToRefreshView release];
     
 	[super dealloc];
 }
 
-#pragma mark -
-#pragma mark UITableViewDelegate and UITableViewDatasource methods
+- (void)setVideoTableView:(AGOrientedTableView *)aVideoTableView
+{
+    if (videoTableView != aVideoTableView) {
+        [videoTableView release];
+        videoTableView = [aVideoTableView retain];
+    }
+
+    [self positionPullToRefreshViews];
+    [videoTableView insertSubview:leftPullToRefreshView atIndex:0];
+    [videoTableView insertSubview:rightPullToRefreshView atIndex:0];
+}
+
+- (void)positionPullToRefreshViews
+{
+    leftPullToRefreshView.frame = CGRectMake(0, -kLoadingViewWidth, videoTableView.frame.size.height, kLoadingViewWidth);
+    rightPullToRefreshView.frame = CGRectMake(0, MAX(videoTableView.frame.size.width, videoTableView.contentSize.height), videoTableView.frame.size.height, kLoadingViewWidth);
+}
+
+- (void)hidePullToRefreshViews
+{
+    [self positionPullToRefreshViews];
+    [UIView animateWithInteractiveDuration:0.3
+                                animations:^{
+                                    videoTableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
+                                }
+                                completion:^(BOOL finished){
+                                    [leftPullToRefreshView.activityIndicator stopAnimating];
+                                    leftPullToRefreshView.loadingText.text = @"Pull to refresh";
+                                    [rightPullToRefreshView.activityIndicator stopAnimating];
+                                    rightPullToRefreshView.loadingText.text = @"";
+                                }];            
+}
+
+#pragma mark - UITableViewDelegate and UITableViewDatasource methods
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	return [sectionInfo numberOfObjects]+1;
+    id<NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+	return [sectionInfo numberOfObjects];
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-}
-
--(void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender {
-	PanelVideoCell * vdoCell = (PanelVideoCell *)[videoTableView cellForRowAtIndexPath:indexPath];
+- (void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender 
+{
+	PanelVideoCell *vdoCell = (PanelVideoCell *)[videoTableView cellForRowAtIndexPath:indexPath];
 	if ( vdoCell.isPlayingVideo ) {
 		return;
 	}
@@ -89,7 +130,6 @@
     [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[indexPath row]];
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
     [panelController.videoViewController playVideo:theVideo];
-    
     
     NSString *senderStr;
     if ([sender isKindOfClass:[PanelVideoCell class]]) {
@@ -114,34 +154,7 @@
 
 - (UITableViewCell *)tableView:(AGOrientedTableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)anIndexPath
 {    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	if ([sectionInfo numberOfObjects] == [anIndexPath row]) {
-        static NSString *CellIdentifier = @"LoadMoreView";
-        
-        PanelVideoCell *cell = (PanelVideoCell *) [aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (cell == nil) {
-            [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
-            cell = loadingCell;
-            [cell setLoadingCell:YES];
-            self.loadingCell = nil;
-        }
-        [cell setHidden:!isLoadingNewContent];
-        
-        if ([channel.populated_at timeIntervalSince1970] > 0 || [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects] > 0) {
-            cell.loadingText.text = @"Loading videos...";
-        } else {
-            cell.loadingText.text = @"Processing channel...";
-        }
-        
-        CGRect frame = cell.activityIndicator.frame;
-        frame.origin.x = [cell.loadingText.text sizeWithFont:cell.loadingText.font constrainedToSize:cell.loadingText.frame.size lineBreakMode:cell.loadingText.lineBreakMode].width + 22;
-        cell.activityIndicator.frame = frame;
-        
-        return (UITableViewCell *)cell;
-    }
-    
     static NSString *CellIdentifier = @"VideoCell";
-//    PanelVideoCell *cell = (PanelVideoCell *)[aTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     PanelVideoCell *cell = [[[panelController.recycledVideoCells anyObject] retain] autorelease];
     if (cell) {
         [panelController.recycledVideoCells removeObject:cell];
@@ -182,31 +195,20 @@
 		[cell setIsPlayingVideo:NO];
 	}
     
-    [cell setLastCell:(anIndexPath.row == [self tableView:aTableView numberOfRowsInSection:anIndexPath.section] - 2)];
+    [cell setLastCell:(anIndexPath.row == [self tableView:aTableView numberOfRowsInSection:anIndexPath.section] - 1)];
     
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-	if ([sectionInfo numberOfObjects] == [indexPath row]) {
-        if (!isLoadingNewContent) {
-            return 0;
-        }
-        return 170;
-    }
-    
-
-    NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath 
+{    
+    NMVideo *theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
 
     if ([theVideo.duration intValue] <= kShortVideoLengthSeconds) {
         return kShortVideoCellWidth;
-    }
-    else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
+    } else if ([theVideo.duration intValue] <= kMediumVideoLengthSeconds) {
         return kMediumVideoCellWidth;
-    }
-    else {
+    } else {
         return kLongVideoCellWidth;
     }
 }
@@ -216,9 +218,10 @@
     return 1;
 }
 
-#pragma mark Fetched Results Controller
+#pragma mark - Fetched Results Controller
 
-- (NSArray *)sortDescriptors {
+- (NSArray *)sortDescriptors 
+{
     NSSortDescriptor *timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:(NM_SORT_ORDER == NMSortOrderTypeOldestFirst)];
     NSArray *sortDescriptors = [NSArray arrayWithObject:timestampDesc];
     [timestampDesc release];
@@ -226,32 +229,22 @@
     return sortDescriptors;
 }
 
-- (NSFetchedResultsController *)fetchedResultsController {
-    
+- (NSFetchedResultsController *)fetchedResultsController 
+{    
     if (fetchedResultsController_ != nil) {
         return fetchedResultsController_;
     }
     
-    /*
-     Set up the fetched results controller.
-	 */
-    // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:NMVideoEntityName inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 	[fetchRequest setReturnsObjectsAsFaults:NO];
 	
 	// Make sure the condition here - predicate and sort order is EXACTLY the same as in deleteVideoInChannel:afterVideo: in data controller!!!
-	// set predicate
 	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND nm_error < %@", channel, [NSNumber numberWithInteger:NMErrorDequeueVideo]]];
-    
-    // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:5];
     [fetchRequest setSortDescriptors:[self sortDescriptors]];
     
-    // Edit the section name key path and cache name if appropriate.
-    // nil for section name key path means "no sections".
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
@@ -261,11 +254,6 @@
     
     NSError *error = nil;
     if (![fetchedResultsController_ performFetch:&error]) {
-        /*
-         Replace this implementation with code to handle the error appropriately.
-         
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-         */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
@@ -273,75 +261,60 @@
     return fetchedResultsController_;
 }
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller 
+{
     [videoTableView beginUpdates];
-    tempOffset = [videoTableView contentOffset];
 }
 
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-//	static NSUInteger theCount = 0;
-    
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath 
+{
     switch (type) {
-        case NSFetchedResultsChangeInsert: {
+        case NSFetchedResultsChangeInsert:
             [videoTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
-                             withRowAnimation:UITableViewRowAnimationFade];
+                                  withRowAnimation:UITableViewRowAnimationFade];
             break;
-        }
 		case NSFetchedResultsChangeDelete:
-		{
             [videoTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                          withRowAnimation:UITableViewRowAnimationFade];
+                                  withRowAnimation:UITableViewRowAnimationFade];
 			break;
-		}
 		case NSFetchedResultsChangeUpdate:
-        {
             [videoTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
-        }
 		case NSFetchedResultsChangeMove:
 			break;
-			
 		default:
-		{
 			break;
-		}
 	}
+    
+    [self positionPullToRefreshViews];
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    //[videoTableView scrollRectToVisible:CGRectMake(tempOffset.x, tempOffset.y, 1, 1) animated:NO];
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
+{
+    CGPoint contentOffset = videoTableView.contentOffset;
     [videoTableView endUpdates];
+    videoTableView.contentOffset = contentOffset;
 }
 
--(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate {
-    if (newVideo) {
-        if ([newVideo channel] == channel) {
-            // select / deselect cells
-            [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
-            
-            // scroll to the current video
-            [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:shouldAnimate];
-        }
-        else {
-            // let other channels deal with their own notifications: do nothing!
-        }
+- (void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate 
+{
+    if (newVideo && [newVideo channel] == channel) {
+        // select / deselect cells
+        [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
+        
+        // scroll to the current video
+        [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] 
+                              atScrollPosition:UITableViewScrollPositionMiddle 
+                                      animated:shouldAnimate];
     }
 }
 
 
-#pragma mark Notification handling
+#pragma mark - Notification handling
+
 - (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification {
     NMVideo *newVideo = [[aNotification userInfo] objectForKey:@"video"];
     [self updateChannelTableView:newVideo animated:YES];
-}
-
-- (void)handleWillGetChannelVideListNotification:(NSNotification *)aNotification {
-    // BOOL set in scroll action already
-    //    isLoadingNewContent = YES;
-    if ([[aNotification userInfo] objectForKey:@"channel"] == channel) {
-//        NSLog(@"handleWillGetChannelVideListNotification");
-    }
 }
 
 - (void)handleDidGetChannelVideoListNotification:(NSNotification *)aNotification {
@@ -354,15 +327,9 @@
 			// poll the server again
 			[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 		} else {
-//            if ([[info objectForKey:@"num_video_added"] integerValue]==0) {
-//            }
-//			NSLog(@"should hide \"loading label\": %@", channel.title);
-            [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
             isLoadingNewContent = NO;
-            isAnimatingNewContentCell = YES;
 			[videoTableView reloadData];
-            [videoTableView beginUpdates];
-            [videoTableView endUpdates];
+            [self hidePullToRefreshViews];
 		}
     }
 }
@@ -370,20 +337,18 @@
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)aNotification {
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
     if (chnObj && [chnObj isEqual:channel] ) {
-//        NSLog(@"handleDidFailGetChannelVideoListNotification");
         isLoadingNewContent = NO;
-        isAnimatingNewContentCell = NO;
         [videoTableView reloadData];
+        [self hidePullToRefreshViews];        
     }
 }
 
 - (void)handleDidCancelGetChannelVideListNotification:(NSNotification *)aNotification {
 	NMChannel * chnObj = [[aNotification userInfo] objectForKey:@"channel"];
     if (chnObj && [chnObj isEqual:channel] ) {
-//        NSLog(@"handleDidCancelGetChannelVideListNotification");
         isLoadingNewContent = NO;
-        isAnimatingNewContentCell = NO;
         [videoTableView reloadData];
+        [self hidePullToRefreshViews];        
     }
 }
 
@@ -410,41 +375,56 @@
     if (highlightedVideo) {
         panelController.highlightedVideoIndex = [fetchedResultsController_ indexPathForObject:highlightedVideo].row;
         [videoTableView reloadData];
+        [self positionPullToRefreshViews];        
         [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0] 
                               atScrollPosition:UITableViewScrollPositionMiddle
                                       animated:YES];
     } else {
         [videoTableView reloadData];
+        [self positionPullToRefreshViews];        
     }
 }
 
-#pragma mark trigger load new
-- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
-    CGPoint offset = aScrollView.contentOffset;
-    CGRect bounds = aScrollView.bounds;
-    CGSize size = aScrollView.contentSize;
-    UIEdgeInsets inset = aScrollView.contentInset;
-    float y = offset.y + bounds.size.height - inset.bottom;
-    float h = size.height;
-    float reload_distance = -kMediumVideoCellWidth-100;
-    if(y > h + reload_distance) {
-        if (!isLoadingNewContent && !isAnimatingNewContentCell) {
-//            id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
-//            NSLog(@"Load new videos y:%f, h:%f, r:%f",y,h,reload_distance);
-            isLoadingNewContent = YES;
-            [videoTableView beginUpdates];
-            [videoTableView endUpdates];
+#pragma mark - UIScrollViewDelegate
 
-            NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-			[schdlr issueGetMoreVideoForChannel:channel];
-        }
-    }
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView 
+{
+    if (isLoadingNewContent) return;
+    
+    // Scroll to refresh from right
+    float rightY = aScrollView.contentOffset.y + aScrollView.bounds.size.height - aScrollView.contentInset.bottom;
+        
+    if (rightY > aScrollView.contentSize.height + kLoadingViewWidth / 2) {
+        isLoadingNewContent = YES;
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+
+        [rightPullToRefreshView.activityIndicator startAnimating];
+        rightPullToRefreshView.loadingText.text = @"Loading videos...";
+        [UIView animateWithInteractiveDuration:0.2
+                                    animations:^{
+                                        aScrollView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, kLoadingViewWidth, 0.0f);
+                                    }];
+    }    
 }
 
-#pragma mark helpers
-- (void)resetAnimatingVariable {
-    isLoadingNewContent = NO;
-    isAnimatingNewContentCell = NO;
+- (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate
+{
+    if (isLoadingNewContent) return;
+
+    // Pull to refresh from left
+    float leftY = aScrollView.contentOffset.y + aScrollView.contentInset.top;
+    
+    if (leftY < -kLoadingViewWidth / 2) {
+        isLoadingNewContent = YES;
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        
+        [leftPullToRefreshView.activityIndicator startAnimating];
+        leftPullToRefreshView.loadingText.text = @"Loading videos...";
+        [UIView animateWithInteractiveDuration:0.2
+                                    animations:^{
+                                        aScrollView.contentInset = UIEdgeInsetsMake(kLoadingViewWidth, 0.0f, 0.0f, 0.0f);
+                                    }];            
+    }    
 }
 
 @end

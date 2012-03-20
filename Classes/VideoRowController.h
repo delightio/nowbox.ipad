@@ -13,34 +13,20 @@
 @class ChannelPanelController;
 @class AGOrientedTableView;
 
-@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIScrollViewDelegate> {
-	AGOrientedTableView * videoTableView;
-    NSFetchedResultsController *fetchedResultsController_;
-    NSManagedObjectContext *managedObjectContext_;
-	NMChannel * channel;
-	NSInteger indexInTable;
-	NMStyleUtility * styleUtility;
-	ChannelPanelController * panelController;
-    BOOL isLoadingNewContent, isAnimatingNewContentCell;
-    CGPoint tempOffset;
-    
-    IBOutlet PanelVideoCell *loadingCell;
-}
+@interface VideoRowController : NSObject <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, retain) AGOrientedTableView * videoTableView;
-@property (nonatomic, assign) ChannelPanelController * panelController;
-@property (nonatomic, retain) NMChannel * channel;
+@property (nonatomic, retain) AGOrientedTableView *videoTableView;
+@property (nonatomic, assign) ChannelPanelController *panelController;
+@property (nonatomic, retain) NMChannel *channel;
 @property (nonatomic, assign) NSInteger indexInTable;
-@property (nonatomic, retain) NSManagedObjectContext * managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, assign) BOOL isLoadingNewContent;
-@property (nonatomic, assign) PanelVideoCell *loadingCell;
+@property (nonatomic, assign) IBOutlet PanelVideoCell *leftPullToRefreshView;
+@property (nonatomic, assign) IBOutlet PanelVideoCell *rightPullToRefreshView;
 
-- (id)init;
--(void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;
-- (void)handleDidGetBeginPlayingVideoNotification:(NSNotification *)aNotification;
--(void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender;
+- (void)updateChannelTableView:(NMVideo *)newVideo animated:(BOOL)shouldAnimate;
+- (void)playVideoForIndexPath:(NSIndexPath *)indexPath sender:(id)sender;
 - (void)recycleCell:(PanelVideoCell *)cell;
-- (void)resetAnimatingVariable;
 
 @end
