@@ -267,7 +267,7 @@
 	[segmentChannelButton setTitle:@"" forState:UIControlStateNormal];
 	videoTitleLabel.text = @"";
 	durationLabel.text = @"--:--";
-	currentTimeLabel.text = @"--:--";
+	currentTimeLabel.text = @"00:00";
 	authorImageView.image = nil;
 	channelImageView.image = nil;
 	if ( lastVideoMessage ) {

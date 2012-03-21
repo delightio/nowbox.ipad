@@ -452,7 +452,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 - (IBAction)playStopVideo:(id)sender {
 	if ( movieView.player.rate == 0.0 ) {
 		forceStopByUser = NO;
-		showMovieControlTimestamp = loadedControlView.timeElapsed;
+		showMovieControlTimestamp = MAX(0, loadedControlView.timeElapsed);
 		[movieView.player play];
 	} else {
 		forceStopByUser = YES;
@@ -498,14 +498,12 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		}
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
-//			[movieView setActivityIndicationHidden:YES animated:YES];
 		}
-		if ( showMovieControlTimestamp > 0 ) {
+		if ( showMovieControlTimestamp >= 0 ) {
 			// check if it's time to auto hide control
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
 				// we should hide
 				showMovieControlTimestamp = -1;
-//				[self hideControlView];
 				[loadedControlView setControlsHidden:YES animated:YES];
 			}
 		}
@@ -856,7 +854,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 		chnObj.nm_is_new = (NSNumber *)kCFBooleanFalse;
 	}
 	[playbackModelController setVideo:aVideo];
-	forceStopByUser = NO;
+////	forceStopByUser = NO;
 	[loadedControlView resetView];
 	[pool release];
 }
@@ -1349,7 +1347,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 
 #pragma mark Scroll View Delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-	forceStopByUser = NO;	// reset force stop variable when scrolling begins
+////	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
 	if ( NM_RUNNING_IOS_5 ) {
 		[UIView animateWithInteractiveDuration:0.25f animations:^{
