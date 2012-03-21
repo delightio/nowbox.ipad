@@ -116,8 +116,8 @@
 	}
 	if ( !NM_AIRPLAY_ACTIVE ) 
 		[panelController.videoViewController channelPanelToggleToFullScreen:NO resumePlaying:NO centerToRow:indexInTable];
-    [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[indexPath row]];
     NMVideo * theVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:[indexPath row] inSection:0]];
+    [panelController didSelectNewVideo:theVideo withChannel:channel];
     [panelController.videoViewController playVideo:theVideo];
     
     NSString *senderStr;
@@ -204,7 +204,7 @@
     NSInteger duration = [theVideo.duration integerValue];
 	[cell setDuration:[NSString stringWithFormat:@"%02d:%02d", duration / 60, duration % 60]];
 
-    if ( panelController.highlightedChannel == channel && [anIndexPath row] == panelController.highlightedVideoIndex ) {
+    if ( panelController.highlightedChannel == channel && theVideo == panelController.highlightedVideo ) {
 		[cell setIsPlayingVideo:YES];
 	} else {
 		[cell setIsPlayingVideo:NO];
@@ -286,15 +286,6 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller 
 {
-    // Remember which video was highlighted (easier than keeping track of an index which may be moved around)
-    if (highlightedVideo) {
-        [highlightedVideo release];
-        highlightedVideo = nil;
-    }
-    if (panelController.highlightedVideoIndex >= 0 && panelController.highlightedVideoIndex < [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects]) {
-        highlightedVideo = [[fetchedResultsController_ objectAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0]] retain];
-    }
-    
     // Add to the offset as new cells are inserted to the left
     tableViewOffset = videoTableView.contentOffset;
     
@@ -327,16 +318,6 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
-    // Update the highlighted index
-    if (highlightedVideo) {
-        NSIndexPath *highlightedIndexPath = [fetchedResultsController_ indexPathForObject:highlightedVideo];
-        if (highlightedIndexPath) {
-            panelController.highlightedVideoIndex = highlightedIndexPath.row;
-        }
-        [highlightedVideo release];
-        highlightedVideo = nil;
-    }
-    
     [videoTableView endUpdates];
 }
 
@@ -344,7 +325,7 @@
 {
     if (newVideo && [newVideo channel] == channel) {
         // select / deselect cells
-        [panelController didSelectNewVideoWithChannel:channel andVideoIndex:[[fetchedResultsController_ indexPathForObject:newVideo] row]];
+        [panelController didSelectNewVideo:newVideo withChannel:channel];
         
         // scroll to the current video
         [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[[fetchedResultsController_ indexPathForObject:newVideo] row] inSection:0] 
@@ -417,7 +398,7 @@
     // Keep the same video highlighted once the sort order is reversed
     NMVideo *currentVideo = nil;
     if (panelController.highlightedChannel == channel) {
-        currentVideo = [fetchedResultsController_ objectAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0]];
+        currentVideo = panelController.highlightedVideo;
     }
     
     // Update the sort descriptors and reload the table
@@ -430,11 +411,13 @@
     }
     
     if (currentVideo) {
-        panelController.highlightedVideoIndex = [fetchedResultsController_ indexPathForObject:currentVideo].row;
         [videoTableView reloadData];
-        [videoTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0] 
-                              atScrollPosition:UITableViewScrollPositionMiddle
-                                      animated:YES];
+        NSIndexPath *indexPathForCurrentVideo = [fetchedResultsController_ indexPathForObject:panelController.highlightedVideo];
+        if (indexPathForCurrentVideo) {
+            [videoTableView scrollToRowAtIndexPath:indexPathForCurrentVideo 
+                                  atScrollPosition:UITableViewScrollPositionMiddle
+                                          animated:YES];
+        }
     } else {
         [videoTableView reloadData];
     }

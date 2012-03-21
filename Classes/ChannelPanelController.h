@@ -35,7 +35,6 @@ typedef enum {
 	NSMutableArray *containerViewPool;
 	VideoPlaybackViewController * videoViewController;
 	NSInteger selectedIndex;
-    NSInteger highlightedVideoIndex;
     NMChannel *highlightedChannel;
 	NMPlaybackViewModeType displayMode;
     BOOL massUpdate;
@@ -49,12 +48,12 @@ typedef enum {
 @property (nonatomic, retain) NSFetchedResultsController * fetchedResultsController;
 @property (nonatomic, assign) VideoPlaybackViewController * videoViewController;
 @property (nonatomic, readonly) NSInteger selectedIndex;
-@property (nonatomic, assign) NSInteger highlightedVideoIndex;
+@property (nonatomic, retain) NMVideo *highlightedVideo;
 @property (nonatomic, assign) NMChannel *highlightedChannel;
 @property (nonatomic, assign) NMPlaybackViewModeType displayMode;
 @property (nonatomic, retain) NSMutableSet *recycledVideoCells;
 
-- (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex;
+- (void)didSelectNewVideo:(NMVideo *)theVideo withChannel:(NMChannel *)theChannel;
 
 - (IBAction)showFeatureDebugView:(id)sender;
 

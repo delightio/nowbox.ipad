@@ -37,13 +37,12 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 @synthesize fetchedResultsController=fetchedResultsController_;
 @synthesize videoViewController;
 @synthesize selectedIndex;
-@synthesize highlightedChannel, highlightedVideoIndex;
+@synthesize highlightedChannel, highlightedVideo;
 @synthesize displayMode;
 @synthesize recycledVideoCells;
 
 - (void)awakeFromNib {
 	displayMode = NMHalfScreenMode;
-    highlightedVideoIndex = -1;
 	
 #ifdef DEBUG_PANEL_ENABLED
 	filterButton.hidden = NO;
@@ -98,6 +97,7 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[fetchedResultsController_ release];
     [recycledVideoCells release];
     [refreshingChannels release];
+    [highlightedVideo release];
     
 	[super dealloc];
 }
@@ -356,7 +356,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     [self configureCell:cell atIndexPath:indexPath retainPosition:NO];
 }
 
-- (void)didSelectNewVideoWithChannel:(NMChannel *)theChannel andVideoIndex:(NSInteger)newVideoIndex {
+- (void)didSelectNewVideo:(NMVideo *)theVideo withChannel:(NMChannel *)theChannel {
     // used for highlight / unhighlight row, and what to do when row is selected(?)
 //    NSLog(@"deselected channel index: %@, video index: %d",[highlightedChannel title],highlightedVideoIndex);
 
@@ -376,7 +376,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 	selectedIndex = indexPath.row;
     highlightedChannel = theChannel;
-    highlightedVideoIndex = newVideoIndex;
+    self.highlightedVideo = theVideo;
 
 //    NSLog(@"selected channel index: %@, video index: %d",[theChannel title],newVideoIndex);
 
@@ -387,9 +387,9 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     [ctnView setHighlighted:YES];
     [ctnView.newChannelIndicator setHidden:![theChannel.nm_is_new boolValue]];
 
-    NSIndexPath* rowToReload = [NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0];
+    NSIndexPath* rowToReload = [htView.tableController.fetchedResultsController indexPathForObject:highlightedVideo];
     
-    if ([htView numberOfRowsInSection:0] > 1) {
+    if (rowToReload && [htView numberOfRowsInSection:0] > 1) {
         PanelVideoCell *cell = (PanelVideoCell *)[htView cellForRowAtIndexPath:rowToReload];
         [cell setIsPlayingVideo:YES];
     }
@@ -490,7 +490,8 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
     
 	// check if user has tapped the currently selected channel
 	if ( [highlightedChannel isEqual:htView.tableController.channel] ) {
-        [htView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:highlightedVideoIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+        NSIndexPath *indexPath = [htView.tableController.fetchedResultsController indexPathForObject:highlightedVideo];
+        [htView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
         return;
     }
     
@@ -642,7 +643,7 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
             AGOrientedTableView * htView = (AGOrientedTableView *)[cell viewWithTag:1009];
             htView.tableController.indexInTable = [newIndexPath row];
             if (htView.tableController.channel == highlightedChannel) {
-                [self didSelectNewVideoWithChannel:htView.tableController.channel andVideoIndex:highlightedVideoIndex];
+                [self didSelectNewVideo:highlightedVideo withChannel:htView.tableController.channel];
             }
             //            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath retainPosition:YES];	
             break;
