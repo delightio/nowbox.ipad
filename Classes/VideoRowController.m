@@ -440,18 +440,15 @@
     }
     
     float leftY = aScrollView.contentOffset.y + aScrollView.contentInset.top;
-    if (!reloadingFromLeft) {
-        if (leftY < -kPullToRefreshDistance && dragging) {
-            pullToRefreshView.loadingText.text = @"Release to refresh";
-        } else {
-            pullToRefreshView.loadingText.text = @"Pull to refresh";        
-        }
+    if (!reloadingFromLeft && leftY < -kPullToRefreshDistance && dragging) {
+        pullToRefreshView.loadingText.text = @"Release to refresh";
     }
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     dragging = YES;
+    pullToRefreshView.loadingText.text = @"Pull to refresh";            
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)aScrollView willDecelerate:(BOOL)decelerate
