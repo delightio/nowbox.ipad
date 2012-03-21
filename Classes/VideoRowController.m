@@ -96,7 +96,7 @@
                                 }
                                 completion:^(BOOL finished){
                                     [pullToRefreshView.activityIndicator stopAnimating];
-                                    pullToRefreshView.loadingText.text = @"Pull to refresh";
+                                    pullToRefreshView.loadingText.text = @"";
                                 }];            
 }
 
@@ -295,6 +295,9 @@
         highlightedVideo = [[fetchedResultsController_ objectAtIndexPath:[NSIndexPath indexPathForRow:panelController.highlightedVideoIndex inSection:0]] retain];
     }
     
+    // Add to the offset as new cells are inserted to the left
+    tableViewOffset = videoTableView.contentOffset;
+    
     [videoTableView beginUpdates];
 }
 
@@ -304,6 +307,9 @@
         case NSFetchedResultsChangeInsert:
             [videoTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                                   withRowAnimation:UITableViewRowAnimationFade];
+            if (newIndexPath.row < 5 && reloadingFromRight) {
+                tableViewOffset.y += [self tableView:videoTableView heightForRowAtIndexPath:newIndexPath];
+            }
             break;
 		case NSFetchedResultsChangeDelete:
             [videoTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
@@ -316,7 +322,7 @@
 			break;
 		default:
 			break;
-	}    
+	}
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
@@ -324,11 +330,13 @@
     // Update the highlighted index
     if (highlightedVideo) {
         NSIndexPath *highlightedIndexPath = [fetchedResultsController_ indexPathForObject:highlightedVideo];
-        panelController.highlightedVideoIndex = highlightedIndexPath.row;
+        if (highlightedIndexPath) {
+            panelController.highlightedVideoIndex = highlightedIndexPath.row;
+        }
         [highlightedVideo release];
         highlightedVideo = nil;
     }
-
+    
     [videoTableView endUpdates];
 }
 
@@ -345,29 +353,21 @@
     }
 }
 
-- (void)reloadDataKeepOffset
-{
-    CGPoint contentOffset = videoTableView.contentOffset;
-    [videoTableView reloadData];
-    
-    if (reloadingFromLeft) {
-        // Reloading from left - keep distance from left the same
-        videoTableView.contentOffset = contentOffset;        
-    } else if (reloadingFromRight) {
-        // Reloading from right - keep distance from right the same
-        [videoTableView scrollRectToVisible:CGRectMake(0, videoTableView.contentSize.height - 1, 1, 1) animated:YES];
-    }    
-}
-
 - (void)loadingDidFinishAnimateCell:(BOOL)animateNewContentCell
 {
     if (animateNewContentCell) {
         [self performSelector:@selector(resetAnimatingVariable) withObject:nil afterDelay:1.0];
     }
-    
+        
     isLoadingNewContent = NO;
     isAnimatingNewContentCell = animateNewContentCell;
-    [self reloadDataKeepOffset];
+    [videoTableView reloadData];
+
+    if (reloadingFromRight) {
+        tableViewOffset.y = MAX(0, MIN(tableViewOffset.y, videoTableView.contentSize.height - videoTableView.frame.size.width));
+        [videoTableView setContentOffset:tableViewOffset animated:NO];
+    }
+    
     [self hidePullToRefreshView];
     reloadingFromLeft = NO;
     reloadingFromRight = NO;
@@ -443,6 +443,8 @@
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
+    tableViewOffset = aScrollView.contentOffset;
+    
     CGPoint offset = aScrollView.contentOffset;
     CGRect bounds = aScrollView.bounds;
     CGSize size = aScrollView.contentSize;

@@ -20,6 +20,8 @@
     BOOL reloadingFromLeft;
     BOOL reloadingFromRight;
     BOOL dragging;
+    
+    CGPoint tableViewOffset;
 }
 
 @property (nonatomic, retain) AGOrientedTableView *videoTableView;
