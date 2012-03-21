@@ -55,6 +55,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 //	[nc addObserver:self selector:@selector(handleDidGetVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:NMDidFailGetYouTubeDirectURLNotification object:nil];
 	[nc addObserver:self selector:@selector(handleErrorNotification:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:nil];
+    [nc addObserver:self selector:@selector(handleSortOrderDidChangeNotification:) name:NMSortOrderDidChangeNotification object:nil];
 
 	return self;
 }
@@ -267,6 +268,52 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
 	}
 }
 
+- (void)flushVideoQueue {
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+    numberOfVideos = [sectionInfo numberOfObjects];
+		
+	self.previousVideo = nil;
+	self.previousIndexPath = nil;
+	self.currentIndexPath = nil;
+	self.nextIndexPath = nil;
+	self.nextVideo = nil;
+	self.nextNextIndexPath = nil;
+	self.nextNextVideo = nil;
+	
+	self.currentIndexPath = [self.fetchedResultsController indexPathForObject:currentVideo];
+	[dataDelegate didLoadCurrentVideoManagedObjectForController:self];
+	
+	// init the playhead. sth similar to initializePlayHead
+	if ( currentIndexPath.row + 1 < numberOfVideos ) {
+		self.nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 1 inSection:0];
+		self.nextVideo = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+		
+		// set the detail movie view for the next video
+		[dataDelegate didLoadNextVideoManagedObjectForController:self];
+		
+	}
+	if ( currentIndexPath.row + 2 < numberOfVideos ) {
+		self.nextNextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row + 2 inSection:0];
+		self.nextNextVideo = [self.fetchedResultsController objectAtIndexPath:nextNextIndexPath];
+		[dataDelegate didLoadNextNextVideoManagedObjectForController:self];
+		// no need to set detail video object
+	}
+	if ( currentIndexPath.row > 0 ) {
+		self.previousIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row - 1 inSection:0];
+		self.previousVideo = [self.fetchedResultsController objectAtIndexPath:self.previousIndexPath];
+		
+		// set the detail movie view for the previous video
+		[dataDelegate didLoadPreviousVideoManagedObjectForController:self];
+	}
+	
+	// check if we need to download more. Or, in the case where there's no video, download
+	if ( numberOfVideos == 0 || currentIndexPath.row + NM_NMVIDEO_CACHE_SIZE > numberOfVideos) {
+		// download more video from Nowmov
+		[nowboxTaskController issueGetMoreVideoForChannel:channel];
+	}
+	[dataDelegate controller:self didUpdateVideoListWithTotalNumberOfVideo:numberOfVideos];
+}
+
 - (NMVideo *)firstVideo {
 	if ( numberOfVideos ) 
 		return [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -438,7 +485,7 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
         abort();
     }
     
-    // TODO: Flush the videos that were previously loaded
+    [self flushVideoQueue];
 }
 
 /*

@@ -86,6 +86,12 @@
 @property (nonatomic, retain) UITextView * debugMessageView;
 
 + (VideoPlaybackModelController *)sharedVideoPlaybackModelController;
+
+/*
+ Clears all videos in the queue and re-queues from the FRC.
+ */
+- (void)flushVideoQueue;
+
 /*!
  The next video will become the "currentVideo".
  Returns YES if move is successful. No if the currentVideo is currently the last video
