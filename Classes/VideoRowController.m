@@ -395,12 +395,6 @@
 }
 
 - (void)handleSortOrderDidChangeNotification:(NSNotification *)aNotification {
-    // Keep the same video highlighted once the sort order is reversed
-    NMVideo *currentVideo = nil;
-    if (panelController.highlightedChannel == channel) {
-        currentVideo = panelController.highlightedVideo;
-    }
-    
     // Update the sort descriptors and reload the table
     [fetchedResultsController_.fetchRequest setSortDescriptors:[self sortDescriptors]];
     
@@ -410,16 +404,14 @@
         abort();
     }
     
-    if (currentVideo) {
-        [videoTableView reloadData];
+    [videoTableView reloadData];
+    if (panelController.highlightedChannel == channel) {
         NSIndexPath *indexPathForCurrentVideo = [fetchedResultsController_ indexPathForObject:panelController.highlightedVideo];
         if (indexPathForCurrentVideo) {
             [videoTableView scrollToRowAtIndexPath:indexPathForCurrentVideo 
                                   atScrollPosition:UITableViewScrollPositionMiddle
                                           animated:YES];
         }
-    } else {
-        [videoTableView reloadData];
     }
 }
 
