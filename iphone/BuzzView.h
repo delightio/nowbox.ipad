@@ -16,7 +16,6 @@
     NSMutableArray *actionButtonViews;
     NSMutableArray *commentViews;
     NSMutableArray *noCommentViews;
-    UITapGestureRecognizer *tapGestureRecognizer;
     
     BOOL currentMentionIsLiked;
 }
