@@ -60,6 +60,9 @@
     commentViews = [[NSMutableArray alloc] init];  
     noCommentViews = [[NSMutableArray alloc] init];
     actionButtonViews = [[NSMutableArray alloc] init];
+    
+    tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
+    [tapGestureRecognizer setNumberOfTapsRequired:1];    
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -88,6 +91,7 @@
     [noCommentViews release];
     [mentionsScrollView release];
     [actionButtonViews release];
+    [tapGestureRecognizer release];
     
     [super dealloc];
 }
@@ -136,10 +140,7 @@
     [mentionsScrollView insertSubview:noCommentsView atIndex:0];
     [noCommentViews addObject:noCommentsView];
     
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
-    [tapGestureRecognizer setNumberOfTapsRequired:1];
     [noCommentsView addGestureRecognizer:tapGestureRecognizer];
-    [tapGestureRecognizer release];
 }
 
 - (void)addMentionLiked:(BOOL)liked
@@ -165,10 +166,7 @@
     [commentScrollViews addObject:commentScrollView];
     [commentScrollView release];
 
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapView:)];
-    [tapGestureRecognizer setNumberOfTapsRequired:1];
     [commentScrollView addGestureRecognizer:tapGestureRecognizer];
-    [tapGestureRecognizer release];
     
     mentionsScrollView.contentSize = CGSizeMake(CGRectGetMaxX(commentScrollView.frame), mentionsScrollView.bounds.size.height);   
 }
