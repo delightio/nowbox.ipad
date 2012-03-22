@@ -10,6 +10,7 @@
 #import "HomeGridDataSource.h"
 #import "YouTubeGridDataSource.h"
 #import "PhoneVideoPlaybackViewController.h"
+#import "UIFont+BackupFont.h"
 
 @interface GridViewController (PrivateMethods)
 - (void)updateTitleBarForDataSource:(id<PagingGridViewDataSource>)dataSource;
@@ -75,6 +76,7 @@
     [gridView setDataSource:gridDataSource animated:NO];
     [self updateTitleBarForDataSource:gridDataSource];
     
+    titleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:26.0f backupFontName:@"Futura-Medium" size:22.0f];
     [titleLabel setGradientStartColor:[UIColor colorWithRed:255.0/255.0f green:223.0/255.0f blue:93.0/255.0f alpha:1.0f]
                              endColor:[UIColor colorWithRed:255.0/255.0f green:197.0/255.0f blue:61.0/255.0f alpha:1.0f]];
 

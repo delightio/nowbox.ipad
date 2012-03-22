@@ -30,7 +30,7 @@
     
     UILabel *noCommentsLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 16, noCommentsView.bounds.size.width - 30, 40)];
     noCommentsLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
-    noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:14.0f];
+    noCommentsLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:16.0f backupFontName:@"Futura-Medium" size:11.0f];
     noCommentsLabel.text = @"It's quiet here. Be the first to add a comment.";
     noCommentsLabel.textColor = [UIColor whiteColor];
     noCommentsLabel.backgroundColor = [UIColor clearColor];
