@@ -1639,7 +1639,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
         y = ribbonView.frame.origin.y + ribbonView.frame.size.height - 12;
     }
     
-    [shareVideoActionSheet showFromRect:CGRectMake(point.x, y, 0, 0)
+    [shareVideoActionSheet showFromRect:CGRectMake(point.x, y, 1, 1)
                                  inView:self.view animated:YES];
 }
 
