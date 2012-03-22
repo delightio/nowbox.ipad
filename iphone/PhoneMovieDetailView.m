@@ -50,7 +50,9 @@
 {
     NSTimeInterval ageInSeconds = [[NSDate date] timeIntervalSince1970] - time;
     
-    if (ageInSeconds < 60) {
+    if (ageInSeconds <= 0) {
+        return @"Just now";
+    } else if (ageInSeconds < 60) {
         return [NSString stringWithFormat:@"%i sec ago", (NSInteger)ageInSeconds];
     } else if (ageInSeconds < 60*60) {
         return [NSString stringWithFormat:@"%i min ago", (NSInteger)(ageInSeconds / 60)];
