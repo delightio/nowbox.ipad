@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NMCachedImageView.h"
 #import "BuzzView.h"
 #import "GlowLabel.h"
 
@@ -24,7 +23,7 @@
 @property (nonatomic, retain) IBOutlet UIView *bottomView;
 @property (nonatomic, retain) IBOutlet UIView *infoView;
 @property (nonatomic, retain) IBOutlet BuzzView *buzzView;
-@property (nonatomic, retain) IBOutlet NMCachedImageView *channelThumbnail;
+@property (nonatomic, retain) IBOutlet UIView *authorThumbnailPlaceholder;
 @property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
 @property (nonatomic, retain) IBOutlet GlowLabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;

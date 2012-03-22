@@ -79,9 +79,11 @@
     [self addSubview:portraitView];
     currentOrientedView = portraitView;
     
-    [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];
+    [[NSBundle mainBundle] loadNibNamed:@"VideoControlView" owner:self options:nil];    
     [self updateControlsViewForCurrentOrientation];
-    [currentOrientedView addSubview:controlsView];
+    
+    authorThumbnailView = [[NMCachedImageView alloc] initWithFrame:currentOrientedView.authorThumbnailPlaceholder.frame];    
+    [currentOrientedView.authorThumbnailPlaceholder.superview addSubview:authorThumbnailView];        
     
     mentionsArray = [[NSMutableArray alloc] init];
     
@@ -101,6 +103,7 @@
     
     [portraitView release];
     [landscapeView release];
+    [authorThumbnailView release];
     [controlsView release];
     [mentionsArray release];
     
@@ -157,8 +160,7 @@
 {
     [portraitView.authorLabel setText:author.username];
     [landscapeView.authorLabel setText:author.username];
-    [portraitView.channelThumbnail setImageForAuthorThumbnail:author];
-    [landscapeView.channelThumbnail setImageForAuthorThumbnail:author];
+    [authorThumbnailView setImageForAuthorThumbnail:author];
 }
 
 - (void)setMoreCount:(NSUInteger)moreCount
@@ -251,6 +253,8 @@
                                         controlsView.frame.size.height);
         controlsView.backgroundView.hidden = YES;        
     }
+    
+    [currentOrientedView addSubview:controlsView];
 }
 
 - (void)updateViewForInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -265,10 +269,13 @@
     }
 
     [self updateControlsViewForCurrentOrientation];
-    [currentOrientedView addSubview:controlsView];
+
     currentOrientedView.frame = self.bounds;
     [self addSubview:currentOrientedView];
     [currentOrientedView positionLabels];
+    
+    authorThumbnailView.frame = currentOrientedView.authorThumbnailPlaceholder.frame;
+    [currentOrientedView.authorThumbnailPlaceholder.superview addSubview:authorThumbnailView];
 }
 
 - (void)updateSocialMentions

@@ -25,7 +25,7 @@
 @synthesize bottomView;
 @synthesize infoView;
 @synthesize buzzView;
-@synthesize channelThumbnail;
+@synthesize authorThumbnailPlaceholder;
 @synthesize infoButtonScrollView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
@@ -80,7 +80,7 @@
     [bottomView release];
     [infoView release];
     [buzzView release];
-    [channelThumbnail release];
+    [authorThumbnailPlaceholder release];
     [infoButtonScrollView release];
     [channelTitleLabel release];
     [videoTitleLabel release];

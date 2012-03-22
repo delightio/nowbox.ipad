@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "NMMovieDetailView.h"
+#import "NMCachedImageView.h"
 #import "NMChannel.h"
 #import "PhoneVideoInfoOrientedView.h"
 #import "PhoneControlsView.h"
