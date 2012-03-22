@@ -26,6 +26,7 @@
 @synthesize infoView;
 @synthesize buzzView;
 @synthesize authorThumbnailPlaceholder;
+@synthesize infoScrollView;
 @synthesize infoButtonScrollView;
 @synthesize channelTitleLabel;
 @synthesize videoTitleLabel;
@@ -37,6 +38,7 @@
 @synthesize watchLaterButton;
 @synthesize shareButton;
 @synthesize favoriteButton;
+@synthesize toggleInfoPanelButton;
 @synthesize infoPanelExpanded;
 @synthesize buzzPanelExpanded;
 @synthesize delegate;
@@ -62,6 +64,7 @@
     
     // Keep track of what our video title frame originally was - we will be resizing it later
     originalVideoTitleFrame = videoTitleLabel.frame;
+    originalDescriptionFrame = descriptionLabel.frame;
     
     channelTitleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:19.0f backupFontName:@"Futura-Medium" size:16.0f];
     videoTitleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:30.0f backupFontName:@"Futura-Medium" size:26.0f];
@@ -81,6 +84,7 @@
     [infoView release];
     [buzzView release];
     [authorThumbnailPlaceholder release];
+    [infoScrollView release];
     [infoButtonScrollView release];
     [channelTitleLabel release];
     [videoTitleLabel release];
@@ -92,6 +96,7 @@
     [watchLaterButton release];
     [shareButton release];
     [favoriteButton release];
+    [toggleInfoPanelButton release];
     
     [super dealloc];
 }
@@ -119,10 +124,14 @@
         dateLabel.frame = frame;
 
         // Position the description label below the upload date label
-        frame = descriptionLabel.frame;
+        frame = originalDescriptionFrame;
         frame.origin.y = CGRectGetMaxY(dateLabel.frame) + 6;
-        frame.size.height = infoView.frame.size.height - frame.origin.y - 4;
+        frame.size.height = 10000;
         descriptionLabel.frame = frame;
+        [descriptionLabel sizeToFit];
+        
+        infoScrollView.contentSize = CGSizeMake(infoScrollView.frame.size.width, CGRectGetMaxY(descriptionLabel.frame) + 5);
+        toggleInfoPanelButton.frame = CGRectMake(0, 0, infoScrollView.contentSize.width, infoScrollView.contentSize.height);
     } else {
         // Position the author label below the video title
         frame = authorLabel.frame;
@@ -135,9 +144,14 @@
         dateLabel.frame = frame;
         
         // Position the description label below the upload date label
-        frame = descriptionLabel.frame;
+        frame = originalDescriptionFrame;
         frame.origin.y = CGRectGetMaxY(dateLabel.frame) + 6;
+        frame.size.height = 10000;
         descriptionLabel.frame = frame;
+        [descriptionLabel sizeToFit];
+
+        infoScrollView.contentSize = infoScrollView.bounds.size;
+        toggleInfoPanelButton.frame = infoScrollView.bounds;
     }
 }
 
@@ -215,7 +229,8 @@
         
         // We want the most recent action item to be on top when we collapse
         if (!expanded && mostRecentActionButton) {
-            [infoButtonScrollView centerViewAtIndex:[mostRecentActionButton tag] avoidMovingViewsToAbove:YES];
+            NSInteger indexDelta = ABS(infoButtonScrollView.centerViewIndex - [mostRecentActionButton tag]) % 3;
+            [infoButtonScrollView centerViewAtIndex:[mostRecentActionButton tag] avoidMovingViewsToAbove:(indexDelta < 2)];
         }
     };
 
@@ -345,6 +360,22 @@
     return 0;
 }
 
+- (void)loopViewsIfNeededAvoidLoopToTop:(BOOL)avoidLoopToTop
+{
+    // Do we need to loop any of the subviews to the top / bottom?
+    if (self.scrollEnabled) {
+        for (UIView *view in self.subviews) {
+            CGFloat distance = view.center.y - (self.contentOffset.y + self.frame.size.height / 2);
+            CGFloat newY = view.center.y + (distance > 0 ? -1.0f : 1.0f) * [self.subviews count] * self.frame.size.height;
+            CGFloat newDistance = newY - (self.contentOffset.y + self.frame.size.height / 2);
+            
+            if (ABS(newDistance) < ABS(distance) && (!avoidLoopToTop || newY > self.contentOffset.y)) {
+                view.center = CGPointMake(view.center.x, newY);
+            }
+        }
+    }
+}
+
 - (void)centerViewAtIndex:(NSUInteger)index avoidMovingViewsToAbove:(BOOL)avoidMovingAbove
 {
     NSUInteger pageCount = round((self.contentSize.height / 2) / self.frame.size.height);
@@ -357,7 +388,7 @@
         }
     }
     
-    [self setNeedsLayout];        
+    [self loopViewsIfNeededAvoidLoopToTop:avoidMovingAbove];
 }
 
 - (void)centerViewAtIndex:(NSUInteger)index
@@ -380,18 +411,8 @@
 
 - (void)layoutSubviews
 {
-    // Do we need to loop any of the subviews to the top / bottom?
-    if (self.scrollEnabled) {
-        for (UIView *view in self.subviews) {
-            CGFloat distance = view.center.y - (self.contentOffset.y + self.frame.size.height / 2);
-            CGFloat newY = view.center.y + (distance > 0 ? -1.0f : 1.0f) * [self.subviews count] * self.frame.size.height;
-            CGFloat newDistance = newY - (self.contentOffset.y + self.frame.size.height / 2);
-            
-            if (ABS(newDistance) < ABS(distance)) {
-                view.center = CGPointMake(view.center.x, newY);
-            }
-        }
-    }
+    [super layoutSubviews];
+    [self loopViewsIfNeededAvoidLoopToTop:NO];
 }
 
 @end

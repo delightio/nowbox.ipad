@@ -154,6 +154,8 @@
 {
     [portraitView.descriptionLabel setText:descriptionText];
     [landscapeView.descriptionLabel setText:descriptionText];
+    [portraitView positionLabels];
+    [landscapeView positionLabels];
 }
 
 - (void)setAuthor:(NMAuthor *)author

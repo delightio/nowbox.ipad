@@ -16,6 +16,7 @@
 // A movie detail view contains two of these, one for portrait and one for landscape.
 @interface PhoneVideoInfoOrientedView : UIView <UIScrollViewDelegate> {
     CGRect originalVideoTitleFrame;
+    CGRect originalDescriptionFrame;
     UIButton *mostRecentActionButton;
 }
 
@@ -24,6 +25,7 @@
 @property (nonatomic, retain) IBOutlet UIView *infoView;
 @property (nonatomic, retain) IBOutlet BuzzView *buzzView;
 @property (nonatomic, retain) IBOutlet UIView *authorThumbnailPlaceholder;
+@property (nonatomic, retain) IBOutlet UIScrollView *infoScrollView;
 @property (nonatomic, retain) IBOutlet InfiniteScrollView *infoButtonScrollView;
 @property (nonatomic, retain) IBOutlet GlowLabel *channelTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *videoTitleLabel;
@@ -35,6 +37,7 @@
 @property (nonatomic, retain) IBOutlet UIButton *watchLaterButton;
 @property (nonatomic, retain) IBOutlet UIButton *shareButton;
 @property (nonatomic, retain) IBOutlet UIButton *favoriteButton;
+@property (nonatomic, retain) IBOutlet UIButton *toggleInfoPanelButton;
 @property (nonatomic, assign) BOOL infoPanelExpanded;
 @property (nonatomic, assign) BOOL buzzPanelExpanded;
 @property (nonatomic, assign) IBOutlet id<PhoneVideoInfoOrientedViewDelegate> delegate;
