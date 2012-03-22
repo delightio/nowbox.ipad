@@ -218,15 +218,7 @@
         [fetchRequest setFetchBatchSize:20];
 
         NSSortDescriptor *sortOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
-        NSSortDescriptor *recommendedFirstDescriptor = [[NSSortDescriptor alloc] initWithKey:@"channel.type" ascending:YES comparator:^(id type1, id type2){
-            if ([type1 integerValue] == NMChannelRecommendedType) {
-                return NSOrderedAscending;
-            } else if ([type2 integerValue] == NMChannelRecommendedType) {
-                return NSOrderedDescending;
-            } else {
-                return NSOrderedSame;
-            }
-        }];
+        NSSortDescriptor *recommendedFirstDescriptor = [[NSSortDescriptor alloc] initWithKey:@"channel.type" ascending:NO];
         [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:recommendedFirstDescriptor, sortOrderDescriptor, nil]];
         [sortOrderDescriptor release];
         [recommendedFirstDescriptor release];
@@ -284,7 +276,7 @@
 
     if (frcIndex < frcObjectCount) {
         NMSubscription *subscription = [self objectAtIndex:index];
-        [self configureCell:view forChannel:subscription.channel isUpdate:NO];
+        [self configureCell:view forChannel:subscription.channel isUpdate:NO];        
     } else {
         NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
         

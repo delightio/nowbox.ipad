@@ -130,7 +130,7 @@
         descriptionLabel.frame = frame;
         [descriptionLabel sizeToFit];
         
-        infoScrollView.contentSize = CGSizeMake(infoScrollView.frame.size.width, CGRectGetMaxY(descriptionLabel.frame) + 5);
+        infoScrollView.contentSize = CGSizeMake(infoScrollView.frame.size.width, CGRectGetMaxY(descriptionLabel.frame) + 6);
         toggleInfoPanelButton.frame = CGRectMake(0, 0, infoScrollView.contentSize.width, infoScrollView.contentSize.height);
     } else {
         // Position the author label below the video title
