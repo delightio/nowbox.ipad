@@ -21,6 +21,7 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 	NSInteger numberOfVideoImported;
 	BOOL leftAppSessionForTwitter;
 	void (^twitterGrantBlock)(void);
+	NSInteger syncErrorCounter;
 }
 
 @property (nonatomic, retain) NSUserDefaults * userDefaults;
@@ -53,5 +54,6 @@ extern NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY;
 // Sync methods
 - (void)scheduleSyncSocialChannels;
 - (void)scheduleImportVideos;
+- (void)stopAllSyncActivity;
 
 @end

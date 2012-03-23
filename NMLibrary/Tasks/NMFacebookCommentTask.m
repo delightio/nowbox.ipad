@@ -83,7 +83,7 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 	// we are liking a post. Not a comment in the post (well unless there's a feature requirement for that)
 	switch (command) {
 		case NMCommandPostFacebookComment:
-			return [self.facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/comments", _objectID] andParams:[NSMutableDictionary dictionaryWithObject:[NMTask stringByAddingPercentEscapes:_message] forKey:@"message"] andHttpMethod:@"POST" andDelegate:ctrl];
+			return [self.facebook requestWithGraphPath:[NSString stringWithFormat:@"%@/comments", _objectID] andParams:[NSMutableDictionary dictionaryWithObject:_message forKey:@"message"] andHttpMethod:@"POST" andDelegate:ctrl];
 			break;
 			
 		case NMCommandPostNewFacebookLink:

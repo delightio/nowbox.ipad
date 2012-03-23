@@ -584,6 +584,7 @@ static NMStyleUtility * sharedStyleUtility_ = nil;
 	[videoTitleHighlightedFontColor release];
 	[videoDetailFontColor release];
     [videoDetailHighlightedFontColor release];
+	[videoDetailPlayedFontColor release];
 	[clearColor release];
 	[channelPanelFontColor release];
 	[channelPanelHighlightColor release];
