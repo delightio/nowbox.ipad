@@ -738,7 +738,6 @@
 		ctrl.previousVideo.video.nm_movie_detail_view = theDetailView;
 	}
 	theDetailView.video = ctrl.previousVideo;
-	
 	CGFloat xOffset = (CGFloat)(ctrl.previousIndexPath.row * (topLevelContainerView.frame.size.width + NM_MOVIE_VIEW_GAP));
 #ifdef DEBUG_PLAYER_NAVIGATION
 	NSLog(@"offset of previous MDV: %f ptr: %p", xOffset, theDetailView);
@@ -1305,7 +1304,8 @@
 	BOOL isFav = [video.video.nm_favorite boolValue];
     showMovieControlTimestamp = loadedControlView.timeElapsed;
     [nowboxTaskController issueMakeFavorite:!isFav video:video duration:loadedControlView.duration elapsedSeconds:loadedControlView.timeElapsed];
-	
+	[sender setEnabled:NO];
+    
     [[MixpanelAPI sharedAPI] track:isFav ? AnalyticsEventUnfavoriteVideo : AnalyticsEventFavoriteVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, video.video.title, AnalyticsPropertyVideoName, video.video.nm_id, AnalyticsPropertyVideoId, nil]];
 }
 
@@ -1316,7 +1316,8 @@
     BOOL isEnqueued = [video.video.nm_watch_later boolValue];
     showMovieControlTimestamp = loadedControlView.timeElapsed;    
 	[nowboxTaskController issueEnqueue:!isEnqueued video:video];
-
+    [sender setEnabled:NO];
+    
     if (!isEnqueued) {
         [[MixpanelAPI sharedAPI] track:AnalyticsEventEnqueueVideo properties:[NSDictionary dictionaryWithObjectsAndKeys:playbackModelController.channel.title, AnalyticsPropertyChannelName, playbackModelController.currentVideo.video.title, AnalyticsPropertyVideoName, playbackModelController.currentVideo.video.nm_id, AnalyticsPropertyVideoId, nil]];
     }

@@ -295,6 +295,7 @@
     } else {
         [watchLaterButton setImage:[UIImage imageNamed:@"phone_button_watch_later.png"] forState:UIControlStateNormal];        
     }
+    [watchLaterButton setEnabled:YES];
 }
 
 - (void)setFavorite:(BOOL)favorite
@@ -304,6 +305,7 @@
     } else {
         [favoriteButton setImage:[UIImage imageNamed:@"phone_button_like.png"] forState:UIControlStateNormal];        
     }
+    [favoriteButton setEnabled:YES];
 }
 
 - (IBAction)actionButtonPressed:(id)sender
