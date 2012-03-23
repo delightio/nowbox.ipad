@@ -722,6 +722,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	switch (chnType) {
 		case NMChannelUserFacebookType:
 		{
+			cmtObj.fromPerson = [NMAccountManager sharedAccountManager].facebookProfile;
 			// send it to facebook
 			NMFacebookCommentTask * task = [[NMFacebookCommentTask alloc] initWithInfo:info message:msg];
 			[networkController addNewConnectionForTask:task];
@@ -730,6 +731,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		}
 		case NMChannelUserTwitterType:
 		{
+			cmtObj.fromPerson = [NMAccountManager sharedAccountManager].twitterProfile;
 			// Send a new tweet to Twitter. Do NOT use this for replying or retweeting
 			NMPostTweetTask * task = [[NMPostTweetTask alloc] initPostComment:cmtObj];
 			task.account = [[NMAccountManager sharedAccountManager] currentTwitterAccount];
