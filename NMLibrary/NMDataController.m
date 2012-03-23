@@ -1116,7 +1116,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
     [request setEntity:self.videoEntityDescription];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
 	[request setReturnsObjectsAsFaults:NO];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %d", channel, NMErrorDequeueVideo]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %d AND nm_deleted == NO", channel, NMErrorDequeueVideo]];
     [request setFetchBatchSize:1];
     
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
