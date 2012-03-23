@@ -39,7 +39,7 @@ enum {
  
  The viewDidLoad and class init methods are places where we create view objects for display purpose.
  */
-@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIPopoverControllerDelegate, UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, PhoneMovieDetailViewDelegate, CommentShareViewDelegate, ToolTipControllerDelegate, MFMailComposeViewControllerDelegate> {
+@interface PhoneVideoPlaybackViewController : VideoPlaybackBaseViewController <UIScrollViewDelegate, VideoPlaybackModelControllerDelegate, NMAVQueuePlayerPlaybackDelegate, UIGestureRecognizerDelegate, PhoneMovieDetailViewDelegate, CommentShareViewDelegate, ToolTipControllerDelegate, MFMailComposeViewControllerDelegate> {
 	IBOutlet UIView * topLevelContainerView;
 	IBOutlet UIScrollView * controlScrollView;
 	IBOutlet UIScrollView * channelSwitchingScrollView;

@@ -47,7 +47,6 @@
 
 - (void)controlsViewTouchUp:(id)sender;
 - (void)configureControlViewForVideo:(NMVideo *)aVideo;
-- (void)configureDetailViewForContext:(NSInteger)ctx;
 - (void)showNextVideo:(BOOL)didPlayToEnd;
 - (void)playCurrentVideo;
 - (void)stopVideo;
@@ -375,8 +374,6 @@
 	playFirstVideoOnLaunchWhenReady = aPlayFlag;
 	forceStopByUser = NO;	// reset the flag
 	currentXOffset = 0.0f;
-//	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
-//	ribbonView.userInteractionEnabled = NO;
 
 	// playbackModelController is responsible for loading the channel managed objects and set up the playback data structure.
 	playbackModelController.channel = chnObj;
@@ -468,14 +465,13 @@
 	// actionAtItemEnd MUST be set to AVPlayerActionAtItemEndPause. When the player plays to the end of the video, the controller needs to remove the AVPlayerItem from oberver list. We do this in the notification handler
 	if ( kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber_iOS_4_0 ) {
 		player.actionAtItemEnd = AVPlayerActionAtItemEndPause;
-//		player.usesAirPlayVideoWhileAirPlayScreenIsActive = NO;
 	}
 	movieView.player = player;
 	// observe status change in player
 	[player addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_STATUS_CONTEXT];
 	[player addObserver:self forKeyPath:@"currentItem" options:0 context:(void *)NM_PLAYER_CURRENT_ITEM_CONTEXT];
 	[player addObserver:self forKeyPath:@"airPlayVideoActive" options:0 context:(void *)NM_AIR_PLAY_VIDEO_ACTIVE_CONTEXT];
-//	[movieView.layer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:(void *)NM_VIDEO_READY_FOR_DISPLAY_CONTEXT];
+
 	// all control view should observe to player changes
 	[player addObserver:self forKeyPath:@"rate" options:0 context:(void *)NM_PLAYER_RATE_CONTEXT];
 	timeObserver = [player addPeriodicTimeObserverForInterval:CMTimeMake(600, 600) queue:NULL usingBlock:^(CMTime aTime){
@@ -485,18 +481,15 @@
 		if ( t.flags & kCMTimeFlags_Valid ) {
 			sec = (NSInteger)CMTimeGetSeconds(t);
 			loadedControlView.timeElapsed = sec;
-///            [videoInfoView setElapsedTime:sec];
 		}
 		if ( didSkippedVideo ) {
 			didSkippedVideo = NO;
-//			[movieView setActivityIndicationHidden:YES animated:YES];
 		}
 		if ( showMovieControlTimestamp > 0) {
 			// check if it's time to auto hide control
 			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
 				// we should hide
 				showMovieControlTimestamp = -1;
-//				[loadedControlView setControlsHidden:YES animated:YES];
                 [[self currentDetailView] setVideoOverlayHidden:YES animated:YES];
 			}
 		}
@@ -528,22 +521,12 @@
 	[UIView animateWithDuration:0.25f delay:0.0f options:0 animations:^{
 		movieView.alpha = 1.0f;
 	} completion:^(BOOL finished) {
-//        [loadedControlView setControlsHidden:NO animated:YES];
-        //[[self currentDetailView] setVideoOverlayHidden:NO animated:YES];                
 	}];
 }
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
 	NSInteger ctxInt = (NSInteger)context;
 	switch (ctxInt) {
-			
-		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
-			// show the top bar with animation
-			[loadedControlView setTopBarHidden:NO animated:NO];
-			[self configureDetailViewForContext:ctxInt];
-//			ribbonView.hidden = YES;
-			break;
-			
 		case NM_ANIMATION_VIDEO_THUMBNAIL_CONTEXT: {
 			[self configureControlViewForVideo:[self playerCurrentVideo]];
 			[self playCurrentVideo];
@@ -697,8 +680,6 @@
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
-//	ribbonView.alpha = 0.15;	// set alpha before calling "setVideo" method
-//	ribbonView.userInteractionEnabled = NO;
 	NMChannel * chnObj = aVideo.channel;
 	if ( ![currentChannel isEqual:chnObj] ) {
 		if ( currentChannel ) [currentChannel release];
@@ -713,8 +694,7 @@
 
 - (void)launchPlayVideo:(NMVideo *)aVideo {
 	// a dedicated method for setting video to play when the app is being launched. This method avoids calling AVQueuePlayer removeAllItems.
-	// show progress indicator
-//	[movieView setActivityIndicationHidden:NO animated:NO];
+
 	// save the channel ID to user defaults
 	[appDelegate saveChannelID:aVideo.channel.nm_id];
 	// play the specified video
@@ -811,9 +791,6 @@
 			theFrame.origin.x = currentXOffset;
 			movieView.frame = theFrame;
             movieBackgroundView.frame = theFrame;
-			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
-		} else {
-			[self performSelector:@selector(delayRestoreDetailView) withObject:nil afterDelay:0.5];
 		}
 		[self cleanUpBadVideosMovieDetailView];
 	}
@@ -833,8 +810,6 @@
 	[self stopVideo];
 	// request the player to resolve the video again
 	[movieView.player refreshItemFromIndex:0];
-	// lock the playback view?
-//	controlScrollView.scrollEnabled = NO;
 	// show thumbnail and loading indicator
 	shouldFadeOutVideoThumbnail = YES;
 	[self showActivityLoader];
@@ -852,7 +827,6 @@
 	// observe property of the current item
 	[anItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:(void *)NM_PLAYBACK_LIKELY_TO_KEEP_UP_CONTEXT];
 	[anItem addObserver:self forKeyPath:@"loadedTimeRanges" options:0 context:(void *)NM_PLAYBACK_LOADED_TIME_RANGES_CONTEXT];
-//	[anItem addObserver:self forKeyPath:@"status" options:0 context:(void *)NM_PLAYER_ITEM_STATUS_CONTEXT];
 	// no need to update status of NMVideo. "Queued" status is updated in "queueVideo" method
 }
 
@@ -874,12 +848,7 @@
 	}
 	[anItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 	[anItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
-//	[anItem removeObserver:self forKeyPath:@"status"];
 }
-
-//- (void)player:(NMAVQueuePlayer *)aPlayer directURLResolutionErrorForVideo:(NMVideo *)aVideo {
-//	[playbackModelController ]
-//}
 
 - (void)player:(NMAVQueuePlayer *)aPlayer willBeginPlayingVideo:(NMVideo *)vid {
 	if ( channelSwitchStatus ) {
@@ -1154,40 +1123,6 @@
 	}
 }
 
-#pragma mark Playback view UI update
-- (void)delayRestoreDetailView {
-	// update which video the buttons hook up to
-//	[self updateRibbonButtons];
-//	[UIView animateWithDuration:0.25f animations:^{
-//		ribbonView.alpha = 1.0f;
-//	}];
-//	ribbonView.userInteractionEnabled = YES;
-}
-
-- (void)configureDetailViewForContext:(NSInteger)ctx {
-//	switch (ctx) {
-//		case NM_ANIMATION_SPLIT_VIEW_CONTEXT:
-//			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
-//				// hide everything except the thumbnail view
-//				[dtlView configureMovieThumbnailForFullScreen:NO];
-//			}
-//			break;
-//			
-//		case NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT:
-//			for (NMMovieDetailView * dtlView in movieDetailViewArray) {
-//				[dtlView configureMovieThumbnailForFullScreen:YES];
-//			}
-//			break;
-//			
-//		default:
-//			break;
-//	}
-}
-#pragma mark Popover delegate
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-	[self playCurrentVideo];
-}
-
 #pragma mark Scroll View Delegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -1199,20 +1134,6 @@
 	forceStopByUser = NO;	// reset force stop variable when scrolling begins
 	NMVideoPlaybackViewIsScrolling = YES;
     
-//	if ( NM_RUNNING_IOS_5 ) {
-//		[UIView animateWithDuration:0.25f animations:^{
-//			ribbonView.alpha = 0.15;
-//		}];
-//		ribbonView.userInteractionEnabled = NO;
-//	} else {
-//		ribbonView.alpha = 0.15;
-//	}
-//	if ( launchModeActive ) {
-//		[launchController dimProgressLabel];
-//	}
-//	[self hideControlView];
-    
-//    [loadedControlView setControlsHidden:YES animated:YES];
     // Make sure other detail views are showing their info overlays in landscape mode, hiding their controls in portrait mode
     for (PhoneMovieDetailView *detailView in movieDetailViewArray) {
         if (detailView != [self currentDetailView]) {
@@ -1263,7 +1184,6 @@
 	}
 	if ( chnObj ) {
 		[self setCurrentChannel:chnObj];
-//		[self playVideo:[chnObj.videos anyObject]];
 		[channelSwitchingScrollView setContentOffset:CGPointMake(0.0f, yOff) animated:YES];
 	} else {
 		[self resetChannelHeaderView:channelSwitchStatus == ChannelSwitchPrevious];
@@ -1314,7 +1234,6 @@
 		return;
 	}
 	// switch to the next/prev video
-//	scrollView.scrollEnabled = YES; move to animation handler
 	[nowboxTaskController issueSendViewEventForVideo:playbackModelController.currentVideo elapsedSeconds:loadedControlView.timeElapsed playedToEnd:NO];
 	if ( scrollView.contentOffset.x > currentXOffset ) {
 		// stop playing the video if user has scrolled to another video. This avoids the weird UX where there's sound of the previous video playing but the view is showing the thumbnail of the next video
@@ -1352,11 +1271,6 @@
 	}
 	scrollView.scrollEnabled = YES;
 	NMVideoPlaybackViewIsScrolling = NO;
-	// ribbon fade in transition
-//	[UIView animateWithDuration:0.25f animations:^{
-//		ribbonView.alpha = 1.0f;
-//	}];
-//	ribbonView.userInteractionEnabled = YES;
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -1366,17 +1280,14 @@
 }
 
 #pragma mark Gesture delegate methods
+
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-//	NSLog(@"should begin gesture: %d", !scrollBeyondThreshold);
-//	if ( !scrollBeyondThreshold ) {
-//		controlScrollView.scrollEnabled = NO;
-//	}
-//	return !scrollBeyondThreshold;
 	controlScrollView.scrollEnabled = NO;
 	return YES;
 }
 
 #pragma mark Target-action methods
+
 - (void)movieViewTouchUp:(UITapGestureRecognizer *)sender {    
     PhoneMovieDetailView *currentDetailView = [self currentDetailView];
     [currentDetailView setVideoOverlayHidden:!currentDetailView.videoOverlayHidden animated:YES];
@@ -1384,9 +1295,6 @@
 }
 
 - (void)movieViewDoubleTap:(id)sender {
-	if ([self currentDetailView].videoOverlayHidden) {
-		//[self movieViewTouchUp:sender];
-	}
 	[self playStopVideo:sender];
 }
 
