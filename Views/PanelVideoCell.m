@@ -28,6 +28,7 @@
 @synthesize loadingText;
 @synthesize activityIndicator;
 @synthesize videoRowDelegate;
+@synthesize highlightOnTouch;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -38,6 +39,7 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.userInteractionEnabled = YES;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.highlightOnTouch = YES;
         
         UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleDoubleTap:)];
@@ -273,7 +275,9 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	// highlight
-    [self changeViewToHighlighted:YES];
+    if (highlightOnTouch) {
+        [self changeViewToHighlighted:YES];
+    }
     [super touchesBegan:touches withEvent:event];
 }
 

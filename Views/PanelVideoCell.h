@@ -35,6 +35,7 @@ typedef enum {
 @property (nonatomic, retain) IBOutlet UILabel *loadingText;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, assign) VideoRowController *videoRowDelegate;
+@property (nonatomic, assign) BOOL highlightOnTouch;
 
 - (void)changeViewToHighlighted:(BOOL)isHighlighted;
 

@@ -52,6 +52,7 @@
         
         [[NSBundle mainBundle] loadNibNamed:@"VideoPanelPullToRefreshView" owner:self options:nil];
         pullToRefreshView.transform = CGAffineTransformMakeRotation(M_PI_2);
+        pullToRefreshView.highlightOnTouch = NO;
     }
     
     return self;
@@ -151,6 +152,7 @@
         if (cell == nil) {
             [[NSBundle mainBundle] loadNibNamed:@"VideoPanelLoadMoreView" owner:self options:nil];
             cell = loadingCell;
+            cell.highlightOnTouch = NO;
             [cell setLoadingCell:YES];
             self.loadingCell = nil;
         }
