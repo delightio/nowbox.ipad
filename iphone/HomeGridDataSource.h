@@ -7,8 +7,9 @@
 //
 
 #import "GridDataSource.h"
+#import "TwitterAccountPickerViewController.h"
 
-@interface HomeGridDataSource : GridDataSource {
+@interface HomeGridDataSource : GridDataSource <TwitterAccountPickerViewControllerDelegate> {
     UIViewController *viewController;
     NSMutableSet *refreshingChannels;
     

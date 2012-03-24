@@ -11,7 +11,6 @@
 #import "FacebookGridDataSource.h"
 #import "TwitterGridDataSource.h"
 #import "NMAccountManager.h"
-#import "TwitterAccountPickerViewController.h"
 #import "Analytics.h"
 
 @interface HomeGridDataSource (PrivateMethods)
@@ -79,13 +78,11 @@
                         [[NMAccountManager sharedAccountManager] checkAndPushTwitterAccountOnGranted:^{
                             // User should pick which Twitter account they want to log in to
                             TwitterAccountPickerViewController *picker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                            picker.delegate = self;
+
                             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:picker];
                             navController.navigationBar.barStyle = UIBarStyleBlack;
-                            [navController setModalPresentationStyle:UIModalPresentationFormSheet];
-                            picker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissSocialLogin)] autorelease];
-                            
                             [viewController presentModalViewController:navController animated:YES];
-                            
                             [navController release];      
                             [picker release];
                             
@@ -113,14 +110,6 @@
     } else {
         return [[self objectAtIndex:gridIndex] channel];
     }
-}
-
-- (void)dismissSocialLogin
-{
-    [viewController dismissModalViewControllerAnimated:YES];
-    
-    GridDataSource *twitterDataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
-    [self.gridView setDataSource:twitterDataSource animated:YES];
 }
 
 - (id)objectAtIndex:(NSUInteger)index
@@ -367,6 +356,21 @@
 - (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index
 {
     return (index == 0 ? 2 : 1);
+}
+
+#pragma mark - TwitterAccountPickerViewControllerDelegate
+
+- (void)twitterAccountPickerViewController:(TwitterAccountPickerViewController *)twitterViewController didPickAccount:(ACAccount *)account
+{    
+    GridDataSource *twitterDataSource = [[[TwitterGridDataSource alloc] initWithGridView:self.gridView managedObjectContext:self.managedObjectContext] autorelease];
+    [self.gridView setDataSource:twitterDataSource animated:YES];
+    
+    [viewController dismissModalViewControllerAnimated:YES];
+}
+
+- (void)twitterAccountPickerViewControllerDidCancel:(TwitterAccountPickerViewController *)twitterViewController
+{
+    [viewController dismissModalViewControllerAnimated:YES];
 }
 
 @end
