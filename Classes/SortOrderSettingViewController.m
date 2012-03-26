@@ -76,6 +76,8 @@ NSString * const NMSortOrderDidChangeNotification = @"NMSortOrderDidChangeNotifi
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NMSortOrderType existingSortOrder = NM_SORT_ORDER;
+    
     switch (indexPath.row) {
         case 0:
             NM_SORT_ORDER = NMSortOrderTypeNewestFirst;
@@ -84,18 +86,20 @@ NSString * const NMSortOrderDidChangeNotification = @"NMSortOrderDidChangeNotifi
             NM_SORT_ORDER = NMSortOrderTypeOldestFirst;
             break;
     }
-
+    
     [tableView reloadData];
     [self.tableView selectRowAtIndexPath:indexPath 
                                 animated:NO
                           scrollPosition:UITableViewScrollPositionNone];
     [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
-    
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setInteger:NM_SORT_ORDER forKey:NM_SORT_ORDER_KEY];
-    [userDefaults synchronize];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:NMSortOrderDidChangeNotification object:nil];
+
+    if (NM_SORT_ORDER != existingSortOrder) {
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults setInteger:NM_SORT_ORDER forKey:NM_SORT_ORDER_KEY];
+        [userDefaults synchronize];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:NMSortOrderDidChangeNotification object:nil];
+    }
 }
 
 @end
