@@ -272,6 +272,10 @@ NSString * const NMWillBeginPlayingVideoNotification = @"NMWillBeginPlayingVideo
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
     numberOfVideos = [sectionInfo numberOfObjects];
 		
+    previousVideo.nm_player_item = nil;
+    nextVideo.nm_player_item = nil;
+    nextNextVideo.nm_player_item = nil;
+    
 	self.previousVideo = nil;
 	self.previousIndexPath = nil;
 	self.currentIndexPath = nil;
