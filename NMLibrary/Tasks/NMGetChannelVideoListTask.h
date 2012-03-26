@@ -21,6 +21,7 @@
 	NSUInteger numberOfRowsFromServer;
 	NSUInteger currentPage;
 	BOOL isFavoriteChannel, isWatchLaterChannel;
+	NSString * videoID;
 }
 
 @property (nonatomic, retain) NMChannel * channel;
@@ -29,10 +30,13 @@
 @property (nonatomic) NSUInteger currentPage;
 @property (nonatomic) BOOL newChannel;
 @property (nonatomic) NSUInteger numberOfVideoAdded;
+@property (nonatomic, retain) NSString * videoID;
 
 // in this wind-down version. we only have one single channel - Live
 //- (id)initWithChannel:(NMChannel *)aChn;
 - (id)initGetMoreVideoForChannel:(NMChannel *)aChn;
+- (id)initGetNewerVideoForChannel:(NMChannel *)aChn since:(NSString *)aSinceID;
+- (id)initGetOlderVideoForChannel:(NMChannel *)aChn after:(NSString *)aMaxID;
 
 + (NSMutableDictionary *)normalizeVideoDictionary:(NSDictionary *)dict;
 + (NSMutableDictionary *)normalizeDetailDictionary:(NSDictionary *)dict;

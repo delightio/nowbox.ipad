@@ -39,8 +39,10 @@ typedef enum {
 	NMCommandSendEvent,
 	NMCommandGetFeaturedCategories,
 	NMCommandGetMoreVideoForChannel,
+	NMCommandGetNewerVideoForChannel,
+	NMCommandGetOlderVideoForChannel,
 	NMCommandGetYouTubeDirectURL,
-	NMCommandGetVimeoDirectURL,
+//	NMCommandGetVimeoDirectURL,
 	NMCommandGetCategoryThumbnail,
 	NMCommandGetChannelThumbnail,
 	NMCommandGetAuthorThumbnail,
@@ -212,6 +214,16 @@ extern NSString * const NMWillGetChannelVideListNotification;
 extern NSString * const NMDidGetChannelVideoListNotification;
 extern NSString * const NMDidFailGetChannelVideoListNotification;
 extern NSString * const NMDidCancelGetChannelVideListNotification;
+
+extern NSString * const NMWillGetNewVideoForChannelNotification;
+extern NSString * const NMDidGetNewVideoForChannelNotification;
+extern NSString * const NMDidFailGetNewVideoForChannelNotification;
+extern NSString * const NMDidCancelGetNewVideoForChannelNotification;
+
+extern NSString * const NMWillGetOlderVideoForChannelNotification;
+extern NSString * const NMDidGetOlderVideoForChannelNotification;
+extern NSString * const NMDidFailGetOlderVideoForChannelNotification;
+extern NSString * const NMDidCancelGetOlderVideoForChannelNotification;
 
 extern NSString * const NMWillGetFeaturedCategoriesNotification;
 extern NSString * const NMDidGetFeaturedCategoriesNotification;

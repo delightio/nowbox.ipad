@@ -15,11 +15,20 @@
 
 #define NM_NUMBER_OF_VIDEOS_PER_PAGE	5
 
-NSString * const NMWillGetChannelVideListNotification = @"NMWillGetChannelVideListNotification";
+NSString * const NMWillGetChannelVideoListNotification = @"NMWillGetChannelVideoListNotification";
 NSString * const NMDidGetChannelVideoListNotification = @"NMDidGetChannelVideoListNotification";
 NSString * const NMDidFailGetChannelVideoListNotification = @"NMDidFailGetChannelVideoListNotification";
 NSString * const NMDidCancelGetChannelVideListNotification = @"NMDidCancelGetChannelVideListNotification";
 
+NSString * const NMWillGetNewVideoForChannelNotification = @"NMWillGetNewVideoForChannelNotification";
+NSString * const NMDidGetNewVideoForChannelNotification = @"NMDidGetNewVideoForChannelNotification";
+NSString * const NMDidFailGetNewVideoForChannelNotification = @"NMDidFailGetNewVideoForChannelNotification";
+NSString * const NMDidCancelGetNewVideoForChannelNotification = @"NMDidCancelGetNewVideoForChannelNotification";
+
+NSString * const NMWillGetOlderVideoForChannelNotification = @"NMWillGetOlderVideoForChannelNotification";
+NSString * const NMDidGetOlderVideoForChannelNotification = @"NMDidGetOldVideoForChannelNotification";
+NSString * const NMDidFailGetOlderVideoForChannelNotification = @"NMDidFailGetOlderVideoForChannelNotification";
+NSString * const NMDidCancelGetOlderVideoForChannelNotification = @"NMDidCancelGetOlderVideoForChannelNotification";
 
 NSPredicate * outdatedVideoPredicateTempate_ = nil;
 
@@ -29,6 +38,7 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 @synthesize channel, channelName;
 @synthesize newChannel, urlString;
 @synthesize currentPage, numberOfVideoAdded;
+@synthesize videoID;
 
 + (NSArray *)directJSONKeys {
 	if ( sharedVideoDirectJSONKeys == nil ) {
@@ -97,7 +107,32 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	self.channelName = aChn.title;
 	self.targetID = aChn.nm_id;
 	self.urlString = aChn.resource_uri;
-	currentPage = [aChn.nm_current_page integerValue];
+	// only get the first page for now
+//	currentPage = [aChn.nm_current_page integerValue];
+	totalNumberOfRows = 0;
+	return self;
+}
+
+- (id)initGetNewerVideoForChannel:(NMChannel *)aChn since:(NSString *)aSinceID {
+	self = [super init];
+	command = NMCommandGetNewerVideoForChannel;
+	self.channel = aChn;
+	self.channelName = aChn.title;
+	self.targetID = aChn.nm_id;
+	self.urlString = aChn.resource_uri;
+	self.videoID = aSinceID;
+	totalNumberOfRows = 0;
+	return self;
+}
+
+- (id)initGetOlderVideoForChannel:(NMChannel *)aChn after:(NSString *)aMaxID {
+	self = [super init];
+	command = NMCommandGetOlderVideoForChannel;
+	self.channel = aChn;
+	self.channelName = aChn.title;
+	self.targetID = aChn.nm_id;
+	self.urlString = aChn.resource_uri;
+	self.videoID = aMaxID;
 	totalNumberOfRows = 0;
 	return self;
 }
@@ -107,20 +142,26 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	[channel release];
 	[parsedDetailObjects release];
 	[urlString release];
+	[videoID release];
 	[super dealloc];
 }
 
 - (NSMutableURLRequest *)URLRequest {
 	NSString * urlStr = nil;
-#ifdef DEBUG_CHANNEL
-	if ( [targetID integerValue] == 999999 ) {
-		urlStr = urlString;
-	} else {
-		urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+	switch (command) {
+		case NMCommandGetMoreVideoForChannel:
+			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+			break;
+		case NMCommandGetNewerVideoForChannel:
+			urlStr = [NSString stringWithFormat:@"%@/videos?since_id=%@&user_id=%d", urlString, videoID, NM_USER_ACCOUNT_ID];
+			break;
+		case NMCommandGetOlderVideoForChannel:
+			urlStr = [NSString stringWithFormat:@"%@/videos?max_id=%@&user_id=%d", urlString, videoID, NM_USER_ACCOUNT_ID];
+			break;
+			
+		default:
+			break;
 	}
-#else
-	urlStr = [NSString stringWithFormat:@"%@/videos?page=%d&limit=%d&user_id=%d", urlString, currentPage + 1, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
-#endif
 
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"Get Channel Video List: %@ %@", urlStr, channelName);
@@ -246,22 +287,10 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 		isWatchLaterChannel = [ctrl.myQueueChannel isEqual:channel];
 		[self insertOnlyNewVideosInController:ctrl];
 		// update the page number
-		if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
-			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
-		}
-	}
-//	NSInteger chnID = [targetID integerValue];
-//	if ( chnID == NM_USER_TWITTER_CHANNEL_ID || chnID == NM_USER_FACEBOOK_CHANNEL_ID ) {
-//		// check if we need to show/hide the stream channel
-//		if ( ![ctrl channelContainsVideo:channel] ) {
-//			// the channel is empty after update
-//			if ( ![channel.nm_hidden boolValue] ) {
-//				channel.nm_hidden = [NSNumber numberWithBool:YES];
-//			}
-//		} else if ( [channel.nm_hidden boolValue] ) {
-//			channel.nm_hidden = [NSNumber numberWithBool:NO];
+//		if ( numberOfRowsFromServer == NM_NUMBER_OF_VIDEOS_PER_PAGE ) {
+//			channel.nm_current_page = [NSNumber numberWithInteger:currentPage + 1];
 //		}
-//	}
+	}
 #ifdef DEBUG_VIDEO_LIST_REFRESH
 	NSLog(@"video list added - %@ %d", channelName, numberOfVideoAdded);
 #endif
@@ -271,13 +300,39 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 }
 
 - (NSString *)willLoadNotificationName {
-	return NMWillGetChannelVideListNotification;
+	switch (command) {
+		case NMCommandGetMoreVideoForChannel:
+			return NMWillGetChannelVideoListNotification;
+			
+		case NMCommandGetNewerVideoForChannel:
+			return NMWillGetNewVideoForChannelNotification;
+			
+		case NMCommandGetOlderVideoForChannel:
+			return NMWillGetOlderVideoForChannelNotification;
+			
+		default:
+			break;
+	}
+	return NMWillGetChannelVideoListNotification;
 }
 
 - (NSString *)didLoadNotificationName {
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Did get video - %@", channelName);
 #endif
+	switch (command) {
+		case NMCommandGetMoreVideoForChannel:
+			return NMDidGetChannelVideoListNotification;
+
+		case NMCommandGetNewerVideoForChannel:
+			return NMDidGetNewVideoForChannelNotification;
+
+		case NMCommandGetOlderVideoForChannel:
+			return NMDidGetOlderVideoForChannelNotification;
+			
+		default:
+			break;
+	}
 	return NMDidGetChannelVideoListNotification;
 }
 
@@ -285,6 +340,19 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Did fail getting video - %@", channelName);
 #endif
+	switch (command) {
+		case NMCommandGetMoreVideoForChannel:
+			return NMDidFailGetChannelVideoListNotification;
+			
+		case NMCommandGetNewerVideoForChannel:
+			return NMDidFailGetNewVideoForChannelNotification;
+			
+		case NMCommandGetOlderVideoForChannel:
+			return NMDidFailGetOlderVideoForChannelNotification;
+			
+		default:
+			break;
+	}
 	return NMDidFailGetChannelVideoListNotification;
 }
 
@@ -292,6 +360,19 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 #ifdef DEBUG_PLAYBACK_NETWORK_CALL
 	NSLog(@"Did cancel getting video - %@", channelName);
 #endif
+	switch (command) {
+		case NMCommandGetMoreVideoForChannel:
+			return NMDidCancelGetChannelVideListNotification;
+			
+		case NMCommandGetNewerVideoForChannel:
+			return NMDidCancelGetNewVideoForChannelNotification;
+			
+		case NMCommandGetOlderVideoForChannel:
+			return NMDidCancelGetOlderVideoForChannelNotification;
+			
+		default:
+			break;
+	}
 	return NMDidCancelGetChannelVideListNotification;
 }
 

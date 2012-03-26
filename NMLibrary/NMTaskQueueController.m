@@ -412,21 +412,17 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-//- (void)issueGetVideoListForChannel:(NMChannel *)chnObj numberOfVideos:(NSUInteger)numVid {
-//#if (defined DEBUG_PLAYER_DEBUG_MESSAGE || defined DEBUG_VIDEO_LIST_REFRESH)
-//	NSLog(@"get video list - %@ %d", chnObj.title, numVid);
-//#endif
-//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initWithChannel:chnObj];
-//	task.numberOfVideoRequested = numVid;
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
+- (void)issueGetNewerVideoForChannel:(NMChannel *)chnObj before:(NSNumber *)vid {
+	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetNewerVideoForChannel:chnObj since:[vid stringValue]];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
 
-//- (void)issueGetLiveChannel {
-//	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] init];
-//	[networkController addNewConnectionForTask:task];
-//	[task release];
-//}
+- (void)issueGetOlderVideoForChannel:(NMChannel *)chnObj after:(NSNumber *)vid {
+	NMGetChannelVideoListTask * task = [[NMGetChannelVideoListTask alloc] initGetOlderVideoForChannel:chnObj after:[vid stringValue]];
+	[networkController addNewConnectionForTask:task];
+	[task release];
+}
 
 - (NMGetChannelDetailTask *)issueGetDetailForChannel:(NMChannel *)chnObj {
 	NMGetChannelDetailTask * task = [[NMGetChannelDetailTask alloc] initWithChannel:chnObj];

@@ -81,6 +81,8 @@
 // Channel
 - (void)issueGetSubscribedChannels;
 - (void)issueGetMoreVideoForChannel:(NMChannel *)chnObj;
+- (void)issueGetNewerVideoForChannel:(NMChannel *)chnObj before:(NSNumber *)vid;
+- (void)issueGetOlderVideoForChannel:(NMChannel *)chnObj after:(NSNumber *)vid;
 - (void)issueGetChannelWithID:(NSInteger)chnID;
 - (void)issueGetFeaturedChannelsForCategories:(NSArray *)catArray;
 - (void)issueCompareSubscribedChannels;
