@@ -113,7 +113,8 @@
 {
     NSUInteger numberOfVideos = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
     if (numberOfVideos > 0) {
-        NMVideo *lastVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:numberOfVideos - 1 inSection:0]];
+        NSUInteger lastVideoIndex = (NM_SORT_ORDER == NMSortOrderTypeOldestFirst ? 0 : numberOfVideos - 1);
+        NMVideo *lastVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:lastVideoIndex inSection:0]];
         [[NMTaskQueueController sharedTaskQueueController] issueGetOlderVideoForChannel:channel after:lastVideo.nm_id];
     } else {
         [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
@@ -124,7 +125,8 @@
 {
     NSUInteger numberOfVideos = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
     if (numberOfVideos > 0) {
-        NMVideo *firstVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        NSUInteger firstVideoIndex = (NM_SORT_ORDER == NMSortOrderTypeNewestFirst ? 0 : numberOfVideos - 1);
+        NMVideo *firstVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:firstVideoIndex inSection:0]];
         [[NMTaskQueueController sharedTaskQueueController] issueGetNewerVideoForChannel:channel before:firstVideo.nm_id];
     } else {
         [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
