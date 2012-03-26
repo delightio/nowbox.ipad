@@ -864,6 +864,26 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	return vidObj;
 }
 
+- (NMVideo *)newestVideoForChannel:(NMChannel *)chn {
+	// fetch newest video
+	NSFetchRequest * request = [[NSFetchRequest alloc] init];
+	[request setEntity:videoEntityDescription];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chn]];
+    
+    NSSortDescriptor *timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:(NM_SORT_ORDER == NMSortOrderTypeOldestFirst)];
+    [request setSortDescriptors:[NSArray arrayWithObject:timestampDesc]];
+    [timestampDesc release];
+    
+	NSArray * results = [managedObjectContext executeFetchRequest:request error:nil];
+	NMVideo * vidObj = nil;
+	if ( [results count] ) {
+		// return the video object
+		vidObj = [results objectAtIndex:0];
+	}
+	[request release];
+	return vidObj;
+}
+
 - (void)deleteVideo:(NMVideo *)vidObj {
 	if ( vidObj == nil ) return;
 	[managedObjectContext deleteObject:vidObj];

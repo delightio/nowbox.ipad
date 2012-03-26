@@ -113,6 +113,7 @@
 - (NSArray *)sortedVideoListForChannel:(NMChannel *)chn;
 - (NMVideo *)videoForID:(NSNumber *)vid;
 - (NMVideo *)lastSessionVideoForChannel:(NMChannel *)chn;
+- (NMVideo *)newestVideoForChannel:(NMChannel *)chn;
 - (void)deleteVideo:(NMVideo *)vidObj;
 - (void)batchDeleteVideos:(NSSet *)vdoSet;
 - (void)deleteVideoWithID:(NSNumber *)vid fromChannel:(NMChannel *)chn;

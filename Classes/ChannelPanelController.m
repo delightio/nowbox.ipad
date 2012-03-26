@@ -77,7 +77,11 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
 	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotification:) name:NMDidVerifyUserNotification object:nil];
     [nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
     [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
-    
+    [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
+    [nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetNewVideoForChannelNotification object:nil];
+    [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetNewVideoForChannelNotification object:nil];
+    [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidCancelGetNewVideoForChannelNotification object:nil];
+
 	// channel view is launched in split view configuration. set content inset
 	tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
     
@@ -186,11 +190,19 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     [self rotateRefreshButton];
     
     // Get more videos for each channel
-    NSArray *allChannels = [[NMTaskQueueController sharedTaskQueueController].dataController subscribedChannels];
+    NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
+    NSArray *allChannels = [dataController subscribedChannels];
     [refreshingChannels removeAllObjects];
+    
     for (NMChannel *channel in allChannels) {
         [refreshingChannels addObject:channel];
-        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        
+        NMVideo *video = [dataController newestVideoForChannel:channel];
+        if (video) {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetNewerVideoForChannel:channel before:video.nm_id];
+        } else {
+            [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        }
     }
 }
 

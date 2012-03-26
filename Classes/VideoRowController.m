@@ -24,6 +24,8 @@
 @interface VideoRowController (PrivateMethods)
 - (NSArray *)sortDescriptors;
 - (void)hidePullToRefreshView;
+- (void)issueGetOlderVideos;
+- (void)issueGetNewerVideos;
 @end
 
 @implementation VideoRowController
@@ -47,6 +49,12 @@
         [nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetChannelVideoListNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidCancelGetChannelVideListNotification:) name:NMDidCancelGetChannelVideListNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetOlderVideosNotification:) name:NMDidGetOlderVideoForChannelNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetOlderVideosNotification:) name:NMDidFailGetOlderVideoForChannelNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetOlderVideosNotification:) name:NMDidCancelGetOlderVideoForChannelNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetNewerVideosNotification:) name:NMDidGetNewVideoForChannelNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetNewerVideosNotification:) name:NMDidFailGetNewVideoForChannelNotification object:nil];
+        [nc addObserver:self selector:@selector(handleDidGetNewerVideosNotification:) name:NMDidCancelGetNewVideoForChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
         [nc addObserver:self selector:@selector(handleSortOrderDidChangeNotification:) name:NMSortOrderDidChangeNotification object:nil];
         
@@ -99,6 +107,28 @@
                                     [pullToRefreshView.activityIndicator stopAnimating];
                                     pullToRefreshView.loadingText.text = @"";
                                 }];            
+}
+
+- (void)issueGetOlderVideos
+{
+    NSUInteger numberOfVideos = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    if (numberOfVideos > 0) {
+        NMVideo *lastVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:numberOfVideos - 1 inSection:0]];
+        [[NMTaskQueueController sharedTaskQueueController] issueGetOlderVideoForChannel:channel after:lastVideo.nm_id];
+    } else {
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+    }
+}
+
+- (void)issueGetNewerVideos
+{
+    NSUInteger numberOfVideos = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    if (numberOfVideos > 0) {
+        NMVideo *firstVideo = [self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        [[NMTaskQueueController sharedTaskQueueController] issueGetNewerVideoForChannel:channel before:firstVideo.nm_id];
+    } else {
+        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+    }
 }
 
 #pragma mark - UITableViewDelegate and UITableViewDatasource methods
@@ -288,9 +318,6 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller 
 {
-    // Add to the offset as new cells are inserted to the left
-    tableViewOffset = videoTableView.contentOffset;
-    
     [videoTableView beginUpdates];
 }
 
@@ -300,9 +327,6 @@
         case NSFetchedResultsChangeInsert:
             [videoTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]
                                   withRowAnimation:UITableViewRowAnimationFade];
-            if (newIndexPath.row < 5 && reloadingFromRight) {
-                tableViewOffset.y += [self tableView:videoTableView heightForRowAtIndexPath:newIndexPath];
-            }
             break;
 		case NSFetchedResultsChangeDelete:
             [videoTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
@@ -345,15 +369,9 @@
     isLoadingNewContent = NO;
     isAnimatingNewContentCell = animateNewContentCell;
     [videoTableView reloadData];
-
-    if (reloadingFromRight) {
-        tableViewOffset.y = MAX(0, MIN(tableViewOffset.y, videoTableView.contentSize.height - videoTableView.frame.size.width));
-        [videoTableView setContentOffset:tableViewOffset animated:NO];
-    }
     
     [self hidePullToRefreshView];
     reloadingFromLeft = NO;
-    reloadingFromRight = NO;
 }
 
 #pragma mark - Notification handling
@@ -392,6 +410,20 @@
     }
 }
 
+- (void)handleDidGetOlderVideosNotification:(NSNotification *)notification
+{
+    if ([[[notification userInfo] objectForKey:@"channel"] isEqual:channel]) {
+        [self loadingDidFinishAnimateCell:YES];        
+    }
+}
+
+- (void)handleDidGetNewerVideosNotification:(NSNotification *)notification 
+{
+    if ([[[notification userInfo] objectForKey:@"channel"] isEqual:channel]) {
+        [self loadingDidFinishAnimateCell:YES];     
+    }    
+}
+
 - (void)handleNewSessionNotification:(NSNotification *)aNotification {
 	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
 }
@@ -419,9 +451,7 @@
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
-    tableViewOffset = aScrollView.contentOffset;
-    
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {    
     CGPoint offset = aScrollView.contentOffset;
     CGRect bounds = aScrollView.bounds;
     CGSize size = aScrollView.contentSize;
@@ -432,12 +462,14 @@
     if(y > h + reload_distance && dragging) {
         if (!isLoadingNewContent && !isAnimatingNewContentCell) {
             isLoadingNewContent = YES;
-            reloadingFromRight = YES;
             [videoTableView beginUpdates];
             [videoTableView endUpdates];
             
-            NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueController];
-			[schdlr issueGetMoreVideoForChannel:channel];
+            if (NM_SORT_ORDER == NMSortOrderTypeNewestFirst) {
+                [self issueGetOlderVideos];
+            } else {
+                [self issueGetNewerVideos];
+            }
         }
     }
     
@@ -466,7 +498,12 @@
     
     if (leftY < -kPullToRefreshDistance) {
         isLoadingNewContent = YES;
-        [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+        
+        if (NM_SORT_ORDER == NMSortOrderTypeNewestFirst) {
+            [self issueGetNewerVideos];
+        } else {
+            [self issueGetOlderVideos];
+        }
         
         [pullToRefreshView.activityIndicator startAnimating];
         pullToRefreshView.loadingText.text = @"Loading videos...";

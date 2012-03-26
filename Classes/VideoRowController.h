@@ -17,10 +17,7 @@
     BOOL isAnimatingNewContentCell;
     
     BOOL reloadingFromLeft;
-    BOOL reloadingFromRight;
-    BOOL dragging;
-    
-    CGPoint tableViewOffset;
+    BOOL dragging;    
 }
 
 @property (nonatomic, retain) AGOrientedTableView *videoTableView;
