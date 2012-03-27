@@ -874,6 +874,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// show channels
 	for (NMChannel * chnObj in result) {
 		if ( [chnObj.subscription.nm_hidden boolValue] ) chnObj.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
+		// update the count
+		chnObj.video_count = [NSNumber numberWithUnsignedInteger:[chnObj.videos count]];
 	}
 	[request release];
 	
