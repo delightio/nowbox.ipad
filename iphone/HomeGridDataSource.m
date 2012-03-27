@@ -10,6 +10,8 @@
 #import "YouTubeGridDataSource.h"
 #import "FacebookGridDataSource.h"
 #import "TwitterGridDataSource.h"
+#import "YouTubeAccountStatusViewController.h"
+#import "SocialLoginViewController.h"
 #import "NMAccountManager.h"
 #import "Analytics.h"
 
@@ -102,6 +104,29 @@
                 [self.gridView setDataSource:youtubeDataSource animated:YES];
                 break;
             }
+            case 3: {
+                // More
+                UIViewController *youtubeViewController;
+                
+                if (NM_USER_YOUTUBE_SYNC_ACTIVE) {
+                    // Show current YouTube sync status
+                    youtubeViewController = [[YouTubeAccountStatusViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                } else {
+                    SocialLoginViewController *socialLoginController = [[SocialLoginViewController alloc] initWithNibName:@"SocialLoginView" bundle:nil];
+                    socialLoginController.loginType = NMLoginYouTubeType;
+                    youtubeViewController = socialLoginController;
+                    [[MixpanelAPI sharedAPI] track:AnalyticsEventStartYouTubeLogin];
+                }
+
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:youtubeViewController];
+                navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+                youtubeViewController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel 
+                                                                                                                        target:self 
+                                                                                                                        action:@selector(dismissModalViewController)] autorelease];
+                [viewController presentModalViewController:navigationController animated:YES];
+                [youtubeViewController release];
+                [navigationController release];
+            }
             default:
                 break;
         }
@@ -164,6 +189,11 @@
             [[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
         }
     }
+}
+
+- (void)dismissModalViewController
+{
+    [viewController dismissModalViewControllerAnimated:YES];
 }
 
 #pragma mark - Notifications

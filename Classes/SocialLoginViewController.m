@@ -108,7 +108,11 @@
 
 #pragma mark Notificaiton handler
 - (void)delayPushOutView {
-	[self.navigationController popViewControllerAnimated:YES];
+    if ([self.navigationController.viewControllers objectAtIndex:0] == self) {
+        [self dismissModalViewControllerAnimated:YES];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)delayShowYouTubeErroView {
