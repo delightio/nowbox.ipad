@@ -452,7 +452,7 @@
     float y = offset.y + bounds.size.height - inset.bottom;
     float h = size.height;
     float reload_distance = -kMediumVideoCellWidth-100;
-    if(y > h + reload_distance && dragging) {
+    if(y > h + reload_distance) {
         if (!isLoadingNewContent && !isAnimatingNewContentCell) {
             isLoadingNewContent = YES;
             [videoTableView beginUpdates];
