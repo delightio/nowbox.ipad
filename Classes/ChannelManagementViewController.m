@@ -564,9 +564,10 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				[thumbnailView cancelDownload];
 				thumbnailView.image = [UIImage imageNamed:@"social-youtube"];
 			} else {
+				NMAccountManager * acMgr = [NMAccountManager sharedAccountManager];
 				switch (indexPath.row) {
 					case 0:
-						if ( NM_USER_TWITTER_CHANNEL_ID ) {
+						if ( [acMgr.twitterAccountStatus integerValue] ) {
 							chn = nowboxTaskController.dataController.userTwitterStreamChannel;
 							titleLbl.text = chn.title;
 							detailLbl.text = [NSString stringWithFormat:@"%@ %@", chn.video_count, ([chn.video_count integerValue] == 1 ? @"video" : @"videos")];
@@ -595,7 +596,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						break;
 						
 					case 1:
-						if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+						if ( [acMgr.facebookAccountStatus integerValue] ) {
 							chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 							titleLbl.text = chn.title;
 							detailLbl.text = [NSString stringWithFormat:@"%@ %@", chn.video_count, ([chn.video_count integerValue] == 1 ? @"video" : @"videos")];
@@ -1140,6 +1141,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 }
 
 #pragma mark helpers
+
 -(float)categoryCellWidthFromString:(NSString *)text {
     if (text == nil) {
         return 38.0f;
@@ -1198,10 +1200,12 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 				break;
 				
 			case 1:
+			{
 				// Social channels
 				social = YES;
+				NMAccountManager * acMgr = [NMAccountManager sharedAccountManager];
 				if (tableIndexPath.row == 0) {
-					if ( NM_USER_TWITTER_CHANNEL_ID ) {
+					if ( [acMgr.twitterAccountStatus integerValue] ) {
 						chn = nowboxTaskController.dataController.userTwitterStreamChannel;
 						channelName = @"Twitter";
 					} else {
@@ -1209,7 +1213,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 						return;
 					}
 				} else {
-					if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
+					if ( [acMgr.facebookAccountStatus integerValue] ) {
 						chn = nowboxTaskController.dataController.userFacebookStreamChannel;
 						channelName = @"Facebook";
 					} else {
@@ -1218,7 +1222,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 					}                
 				}
 				break;
-				
+			}	
 			default:
 			{
 				// reset of the channels
@@ -1244,8 +1248,16 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                                                                                   [NSNumber numberWithBool:social], AnalyticsPropertySocialChannel, nil]];                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     }
     
-    [nowboxTaskController issueSubscribe:!subscribed channel:chn];
-    
+	if ( selectedIndex == 0 && tableIndexPath.section == 1 ) {
+		// let the account manage to handle the logout case
+		if ( tableIndexPath.row == 0 ) {
+			[[NMAccountManager sharedAccountManager] signOutTwitterOnCompleteTarget:self action:nil];
+		} else {
+			[[NMAccountManager sharedAccountManager] signOutFacebookOnCompleteTarget:self action:nil];
+		}
+	} else {
+		[nowboxTaskController issueSubscribe:!subscribed channel:chn];
+    }
 }
 
 @end

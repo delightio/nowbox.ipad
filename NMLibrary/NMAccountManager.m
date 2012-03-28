@@ -199,7 +199,12 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 			} else {
 				// We don't have right to access Twitter account. Send user to the Settings app
 				dispatch_async(dispatch_get_main_queue(), ^{
-					UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
+					UIAlertView * alertView = nil;
+					if ( kCFCoreFoundationVersionNumber > 690.0 ) {
+						alertView = [[UIAlertView alloc] initWithTitle:@"Twitter Login Required" message:@"You have not signed in Twitter.\nPlease open \"Settings\" app and tap \"Twitter\" to sign in." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+					} else {
+						alertView = [[UIAlertView alloc] initWithTitle:nil message:@"You have not signed in Twitter.\nDo you want to do it now?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Settings", nil];
+					}
 					[alertView show];
 					[alertView release];
 					twitterGrantBlock = [grantBlock retain];
@@ -276,7 +281,9 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 			self.twitterProfile = nil;
 			// on-completion, begin sign out
 			[tqc endSignOutTwitter];
-			[signOutTarget performSelector:completionSelector];
+			if ( completionSelector ) {
+				[signOutTarget performSelector:completionSelector];
+			}
 		});
 	});
 }
@@ -365,7 +372,9 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 
 - (void)fbDidLogout {
     // Remove saved authorization information if it exists
-	[signOutTarget performSelector:signOutAction withObject:nil];
+	if ( signOutAction ) {
+		[signOutTarget performSelector:signOutAction withObject:nil];
+	}
 	[_facebook release], _facebook = nil;
 	self.facebookAccountStatus = (NSNumber *)kCFBooleanFalse;
 }
