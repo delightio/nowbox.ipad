@@ -151,9 +151,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 #ifdef DEBUG_SESSION
 	NSLog(@"session to delete: %d", sessionID - 2);
 #endif
-	[dataController deleteVideosWithSessionID:sessionID - 2];
-	// update all page number
-	[dataController resetAllChannelsPageNumber];
+	// never delete anything now
+//	[dataController deleteVideosWithSessionID:sessionID - 2];
+//	// update all page number
+//	[dataController resetAllChannelsPageNumber];
 	// post notification
 	[[NSNotificationCenter defaultCenter] postNotificationName:NMBeginNewSessionNotification object:self];
 }

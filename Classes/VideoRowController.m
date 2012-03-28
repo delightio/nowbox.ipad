@@ -55,7 +55,7 @@
         [nc addObserver:self selector:@selector(handleDidGetNewerVideosNotification:) name:NMDidGetNewVideoForChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidGetNewerVideosNotification:) name:NMDidFailGetNewVideoForChannelNotification object:nil];
         [nc addObserver:self selector:@selector(handleDidGetNewerVideosNotification:) name:NMDidCancelGetNewVideoForChannelNotification object:nil];
-        [nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
+//        [nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil]; the backend should manage getting new videos on new session
         [nc addObserver:self selector:@selector(handleSortOrderDidChangeNotification:) name:NMSortOrderDidChangeNotification object:nil];
         
         [[NSBundle mainBundle] loadNibNamed:@"VideoPanelPullToRefreshView" owner:self options:nil];
@@ -417,9 +417,9 @@
     }    
 }
 
-- (void)handleNewSessionNotification:(NSNotification *)aNotification {
-	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
-}
+//- (void)handleNewSessionNotification:(NSNotification *)aNotification {
+//	[[NMTaskQueueController sharedTaskQueueController] issueGetMoreVideoForChannel:channel];
+//}
 
 - (void)handleSortOrderDidChangeNotification:(NSNotification *)aNotification {
     // Update the sort descriptors and reload the table

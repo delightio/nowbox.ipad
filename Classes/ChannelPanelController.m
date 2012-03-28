@@ -81,6 +81,8 @@ BOOL NM_AIRPLAY_ACTIVE = NO;
     [nc addObserver:self selector:@selector(handleDidGetChannelVideoListNotification:) name:NMDidGetNewVideoForChannelNotification object:nil];
     [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidFailGetNewVideoForChannelNotification object:nil];
     [nc addObserver:self selector:@selector(handleDidFailGetChannelVideoListNotification:) name:NMDidCancelGetNewVideoForChannelNotification object:nil];
+	// channel panel should fire refresh all channels when a new session begins
+	[nc addObserver:self selector:@selector(handleNewSessionNotification:) name:NMBeginNewSessionNotification object:nil];
 
 	// channel view is launched in split view configuration. set content inset
 	tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 360.0f, 0.0f);
@@ -750,6 +752,10 @@ NMTaskQueueController * schdlr = [NMTaskQueueController sharedTaskQueueControlle
 
 - (void)handleDidFailGetChannelVideoListNotification:(NSNotification *)notification {
     [self handleDidGetChannelVideoListNotification:notification];
+}
+
+- (void)handleNewSessionNotification:(NSNotification *)aNotification {
+	[self refreshChannels:self];
 }
 
 #pragma mark play newly subscribed channel
