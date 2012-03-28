@@ -153,10 +153,10 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetNewerVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?since_id=%@&user_id=%d", urlString, videoID, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?since_id=%@&limit=%d&user_id=%d", urlString, videoID, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetOlderVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?max_id=%@&user_id=%d", urlString, videoID, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?max_id=%@&limit=%d&user_id=%d", urlString, videoID, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 			
 		default:
