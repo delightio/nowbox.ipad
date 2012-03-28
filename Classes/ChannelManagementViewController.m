@@ -810,6 +810,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Twitter", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
+							if ( [chn.video_count integerValue] == 0) {
+								return;
+							}
 						} else {
 							// login twitter
 							if ( NM_RUNNING_IOS_5 ) {
@@ -834,6 +837,9 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 							[[MixpanelAPI sharedAPI] track:AnalyticsEventShowChannelDetails properties:[NSDictionary dictionaryWithObjectsAndKeys:@"Facebook", AnalyticsPropertyChannelName, 
 																									  [NSNumber numberWithBool:YES], AnalyticsPropertySocialChannel, 
 																									  @"channelmanagement", AnalyticsPropertySender, nil]];
+							if ( [chn.video_count integerValue] == 0) {
+								return;
+							}
 						} else {
 							[acMgr authorizeFacebook];
 							return;
