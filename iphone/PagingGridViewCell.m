@@ -167,9 +167,13 @@
 - (void)setColumnSpan:(NSUInteger)aColumnSpan
 {
     if (columnSpan != aColumnSpan) {
+        NSInteger columnSpanDifference = (NSInteger)aColumnSpan - (NSInteger)columnSpan;
+        
         // Increase/decrease the font size accordingly
-        CGFloat sizeDifference = ((NSInteger)aColumnSpan - (NSInteger)columnSpan) * 10.0f;
-        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize + sizeDifference];
+        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize + columnSpanDifference * 10.0f];
+        
+        // Increase/decrease the delete button position accordingly
+        deleteButton.center = CGPointMake(deleteButton.center.x + columnSpanDifference * 11.0f, deleteButton.center.y);
         
         columnSpan = aColumnSpan;
     }

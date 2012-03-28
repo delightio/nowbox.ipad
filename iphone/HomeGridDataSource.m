@@ -137,6 +137,36 @@
     }
 }
 
+- (void)deleteObjectAtIndex:(NSUInteger)index
+{
+    // Allow users to sign out of FB/Twitter by "deleting" their cells
+    NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    NSUInteger frcIndex = [self mappedFetchedResultsIndexForGridIndex:index];
+    
+    if (frcIndex >= frcObjectCount) {
+        switch (frcIndex - frcObjectCount) {
+            case 0:
+                // Facebook
+                if ([[NMAccountManager sharedAccountManager].facebook isSessionValid]) {
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Are you sure you want to log out from Facebook?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log Out", nil];
+                    alertView.tag = 0;
+                    [alertView show];
+                    [alertView release];
+                }
+                break;
+            case 1:
+                // Twitter
+                if ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue]) {
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Are you sure you want to log out from Twitter?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log Out", nil];
+                    alertView.tag = 1;
+                    [alertView show];
+                    [alertView release];                
+                }
+                break;
+        }
+    }    
+}
+
 - (id)objectAtIndex:(NSUInteger)index
 {
     index = [self mappedFetchedResultsIndexForGridIndex:index];
@@ -194,6 +224,18 @@
 - (void)dismissModalViewController
 {
     [viewController dismissModalViewControllerAnimated:YES];
+}
+
+- (void)didSignOutFacebook
+{
+    NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    [self.gridView updateItemAtIndex:[self mappedGridIndexForFetchedResultsIndex:frcObjectCount]];
+}
+
+- (void)didSignOutTwitter
+{
+    NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    [self.gridView updateItemAtIndex:[self mappedGridIndexForFetchedResultsIndex:frcObjectCount] + 1];
 }
 
 #pragma mark - Notifications
@@ -375,6 +417,16 @@
 
 - (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
 {
+    NSUInteger frcObjectCount = [[[self.fetchedResultsController sections] objectAtIndex:0] numberOfObjects];
+    NSUInteger frcIndex = [self mappedFetchedResultsIndexForGridIndex:index];
+    
+    if (frcIndex >= frcObjectCount) {
+        switch (frcIndex - frcObjectCount) {
+            case 0: return ([[NMAccountManager sharedAccountManager].facebook isSessionValid]);
+            case 1: return ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue]);
+        }
+    }
+    
     return NO;
 }
 
@@ -401,6 +453,24 @@
 - (void)twitterAccountPickerViewControllerDidCancel:(TwitterAccountPickerViewController *)twitterViewController
 {
     [viewController dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        switch (alertView.tag) {
+            case 0:
+                // Log out from Facebook
+                [[NMAccountManager sharedAccountManager] signOutFacebookOnCompleteTarget:self action:@selector(didSignOutFacebook)];
+                break;
+            case 1:
+                // Log out from Twitter
+                [[NMAccountManager sharedAccountManager] signOutTwitterOnCompleteTarget:self action:@selector(didSignOutTwitter)];
+                break;
+        }
+    }
 }
 
 @end

@@ -232,24 +232,24 @@
 {
     rearranging = isRearranging;
     
-    BOOL areAnyCellsEditing = NO;
+//    BOOL areAnyCellsEditing = NO;
     for (PagingGridViewCell *cell in visibleViews) {
         if (rearranging) {
             cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
         }
         // Make the cell smaller, if we are allowed to move the cell
-        if (!rearranging || (![dataSource respondsToSelector:@selector(gridView:canRearrangeItemAtIndex:)] || [dataSource gridView:self canRearrangeItemAtIndex:cell.index])) {
+//        if (!rearranging || (![dataSource respondsToSelector:@selector(gridView:canRearrangeItemAtIndex:)] || [dataSource gridView:self canRearrangeItemAtIndex:cell.index])) {
             [cell setEditing:rearranging animated:animated];
-            areAnyCellsEditing = YES;
-        }
+//            areAnyCellsEditing = YES;
+//        }
     }
         
     if (rearranging) {
-        if (!areAnyCellsEditing) {
-            // Nothing can be edited. No point in rearranging.
-            rearranging = NO;
-            return;
-        }
+//        if (!areAnyCellsEditing) {
+//            // Nothing can be edited. No point in rearranging.
+//            rearranging = NO;
+//            return;
+//        }
 
         if (!stopRearrangingButton) {
             // Put an invisible button on the last page to intercept any touch events in empty space
@@ -334,7 +334,7 @@
         view.columnSpan = [self columnSpanForCellAtIndex:index];
         view.rowSpan = [self rowSpanForCellAtIndex:index];
         view.frame = [self frameForIndex:index columnSpan:view.columnSpan rowSpan:view.rowSpan];
-        view.editing = rearranging && [dataSource gridView:self canRearrangeItemAtIndex:index];
+        view.editing = rearranging;
 
         [visibleViews addObject:view];
         [self addSubview:view];    
