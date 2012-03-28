@@ -869,6 +869,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:videoEntityDescription];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@", chn]];
+	[request setReturnsObjectsAsFaults:NO];
+	[request setFetchLimit:1];
     
     NSSortDescriptor *timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"published_at" ascending:(NM_SORT_ORDER == NMSortOrderTypeOldestFirst)];
     [request setSortDescriptors:[NSArray arrayWithObject:timestampDesc]];
