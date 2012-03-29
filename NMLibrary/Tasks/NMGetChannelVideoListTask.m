@@ -150,13 +150,13 @@ static NSArray * sharedVideoDirectJSONKeys = nil;
 	NSString * urlStr = nil;
 	switch (command) {
 		case NMCommandGetMoreVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?limit=%d&user_id=%d&include_viewed=1", urlString, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetNewerVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?since_id=%@&limit=%d&user_id=%d", urlString, videoID, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?since_id=%@&limit=%d&user_id=%d&include_viewed=1", urlString, videoID, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 		case NMCommandGetOlderVideoForChannel:
-			urlStr = [NSString stringWithFormat:@"%@/videos?max_id=%@&limit=%d&user_id=%d", urlString, videoID, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
+			urlStr = [NSString stringWithFormat:@"%@/videos?max_id=%@&limit=%d&user_id=%d&include_viewed=1", urlString, videoID, NM_NUMBER_OF_VIDEOS_PER_PAGE, NM_USER_ACCOUNT_ID];
 			break;
 			
 		default:
