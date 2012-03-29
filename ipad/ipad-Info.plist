@@ -52,6 +52,8 @@
 	<key>UIRequiresPersistentWiFi</key>
 	<true/>
 	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UIStatusBarHidden~ipad</key>
 	<true/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleBlackOpaque</string>

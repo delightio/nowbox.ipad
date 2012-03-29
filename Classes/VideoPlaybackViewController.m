@@ -231,6 +231,7 @@ BOOL NM_VIDEO_CONTENT_CELL_ALPHA_ZERO = NO;
 	
 	// create the launch view
 	launchController = [[LaunchController alloc] init];
+    launchController.playbackViewController = self;
 	launchController.viewController = self;
 	[[NSBundle mainBundle] loadNibNamed:@"LaunchView" owner:launchController options:nil];
 	[self showLaunchView];

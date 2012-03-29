@@ -9,6 +9,18 @@
 #import "NMLibrary.h"
 #import "OnBoardProcessViewController.h"
 
+#ifdef DEBUG_ONBOARD_PROCESS
+#define NM_ALWAYS_SHOW_ONBOARD_PROCESS	YES
+#else
+#define NM_ALWAYS_SHOW_ONBOARD_PROCESS	NO
+#endif
+
+#ifdef DEBUG_SKIP_ONBOARD_PROCESS
+#define NM_SKIP_ONBOARD_PROCESS YES
+#else
+#define NM_SKIP_ONBOARD_PROCESS NO
+#endif
+
 @class VideoPlaybackBaseViewController;
 
 @interface LaunchController : NSObject <OnBoardProcessViewControllerDelegate> {
@@ -18,7 +30,6 @@
 	BOOL launchProcessStuck;
 	BOOL ignoreThumbnailDownloadIndex;
 	NSString * lastFailNotificationName;
-	VideoPlaybackBaseViewController * viewController;
     OnBoardProcessViewController * onBoardProcessController;
 	NSMutableIndexSet * thumbnailVideoIndex, * resolutionVideoIndex;
 	NMChannel * channel;
@@ -26,7 +37,8 @@
     NSMutableSet * subscribingChannels;
 }
 
-@property (nonatomic, assign) VideoPlaybackBaseViewController * viewController;
+@property (nonatomic, assign) UIViewController * viewController;
+@property (nonatomic, assign) VideoPlaybackBaseViewController * playbackViewController;
 @property (nonatomic, retain) IBOutlet UIView * view;
 @property (nonatomic, retain) IBOutlet UIImageView * logoImageView;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView * activityIndicator;

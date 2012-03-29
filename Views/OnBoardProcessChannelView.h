@@ -12,7 +12,7 @@
 @interface OnBoardProcessChannelView : UIView
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
-@property (nonatomic, retain) IBOutlet NMCachedImageView *thumbnailImage;
+@property (nonatomic, retain) IBOutlet NMCachedImageView *thumbnailImageView;
 @property (nonatomic, retain) IBOutlet UILabel *titleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *reasonLabel;
 @property (nonatomic, copy) NSString *title;

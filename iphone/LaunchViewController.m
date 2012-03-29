@@ -16,6 +16,7 @@
 {    
     launchController = [[LaunchController_iPhone alloc] init];
     ((LaunchController_iPhone *)launchController).delegate = self;
+    ((LaunchController_iPhone *)launchController).viewController = self;
     [launchController loadView];    
 }
 

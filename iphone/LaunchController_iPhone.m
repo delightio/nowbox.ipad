@@ -27,12 +27,19 @@
     [self didFinish];
 }
 
+- (void)slideInVideoViewAnimated
+{
+    [self didFinish];
+}
+
 - (void)handleDidGetChannelNotification:(NSNotification *)aNotification 
 {
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
-    [self beginNewSession];
+    if (!NM_ALWAYS_SHOW_ONBOARD_PROCESS && !appFirstLaunch) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:NM_CHANNEL_LAST_UPDATE];
+        [self beginNewSession];
 
-    [self didFinish];
+        [self didFinish];
+    }
 }
 
 @end

@@ -12,7 +12,7 @@
 
 @synthesize contentView;
 @synthesize button;
-@synthesize thumbnailImage;
+@synthesize thumbnailImageView;
 
 - (void)setupWithExistingFrame:(BOOL)useExistingFrame
 {
@@ -27,7 +27,7 @@
     contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:contentView];
     
-    thumbnailImage.adjustsImageOnHighlight = YES;
+    thumbnailImageView.adjustsImageOnHighlight = YES;
     
     [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(buttonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
@@ -49,19 +49,19 @@
 {
     [contentView release];
     [button release];
-    [thumbnailImage release];
+    [thumbnailImageView release];
     
     [super dealloc];
 }
 
 - (void)buttonTouchDown:(id)sender
 {
-    [thumbnailImage setHighlighted:YES];
+    [thumbnailImageView setHighlighted:YES];
 }
 
 - (void)buttonTouchUp:(id)sender
 {
-    [thumbnailImage setHighlighted:NO];    
+    [thumbnailImageView setHighlighted:NO];
 }
 
 @end

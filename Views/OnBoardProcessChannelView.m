@@ -11,7 +11,7 @@
 @implementation OnBoardProcessChannelView
 
 @synthesize contentView;
-@synthesize thumbnailImage;
+@synthesize thumbnailImageView;
 @synthesize titleLabel;
 @synthesize reasonLabel;
 @synthesize title;
@@ -46,7 +46,7 @@
 - (void)dealloc
 {
     [contentView release];
-    [thumbnailImage release];
+    [thumbnailImageView release];
     [titleLabel release];
     [reasonLabel release];
     [title release];

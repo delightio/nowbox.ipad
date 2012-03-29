@@ -132,7 +132,7 @@
     view2.frame = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
     [self.view addSubview:view2];
     
-    [UIView animateWithDuration:0.5
+    [UIView animateWithDuration:(NM_RUNNING_ON_IPAD ? 0.5 : 0.3)
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
@@ -285,12 +285,13 @@
 {
     [super viewDidAppear:animated];
     
-    slideInView.frame = CGRectOffset(slideInView.frame, 0, 200);
+    CGFloat slideInDistance = self.view.frame.size.height - slideInView.frame.origin.y;
+    slideInView.frame = CGRectOffset(slideInView.frame, 0, slideInDistance);
     [UIView animateWithDuration:0.5
                           delay:1.5
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         slideInView.frame = CGRectOffset(slideInView.frame, 0, -200);                         
+                         slideInView.frame = CGRectOffset(slideInView.frame, 0, -slideInDistance);                         
                      }
                      completion:^(BOOL finished){
                          tappableArea.userInteractionEnabled = YES;
@@ -367,8 +368,7 @@
 			twitterAccountPicker = [[TwitterAccountPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
 			UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:twitterAccountPicker];
 			navController.navigationBar.barStyle = UIBarStyleBlack;
-			twitterAccountPicker.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSocialLogin:)] autorelease];
-			
+			twitterAccountPicker.delegate = self;
 			[navController setModalPresentationStyle:UIModalPresentationFormSheet];
 			[self presentModalViewController:navController animated:YES];
 			
@@ -643,7 +643,7 @@
         [categoryView.button setTag:index];
         [categoryView.button setTitle:[category.title uppercaseString] forState:UIControlStateNormal];
         [categoryView.button setSelected:[selectedCategoryIndexes containsIndex:index]];
-		[categoryView.thumbnailImage setImageForCategory:category];
+		[categoryView.thumbnailImageView setImageForCategory:category];
         
         return categoryView;
         
@@ -658,10 +658,22 @@
         
         [channelView setTitle:channel.title];
         [channelView setReason:[self reasonForChannel:channel]];
-        [channelView.thumbnailImage setImageForChannel:channel];
+        [channelView.thumbnailImageView setImageForChannel:channel];
         
         return channelView;        
     }
+}
+
+#pragma mark - TwitterAccountPickerViewControllerDelegate
+
+- (void)twitterAccountPickerViewController:(TwitterAccountPickerViewController *)viewController didPickAccount:(ACAccount *)account
+{
+    [self dismissSocialLogin:nil];
+}
+
+- (void)twitterAccountPickerViewControllerDidCancel:(TwitterAccountPickerViewController *)viewController
+{
+    [self dismissSocialLogin:nil];
 }
 
 @end

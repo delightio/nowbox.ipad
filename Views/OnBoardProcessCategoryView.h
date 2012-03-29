@@ -13,6 +13,6 @@
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
 @property (nonatomic, retain) IBOutlet UIButton *button;
-@property (nonatomic, retain) IBOutlet NMCachedImageView *thumbnailImage;
+@property (nonatomic, retain) IBOutlet NMCachedImageView *thumbnailImageView;
 
 @end

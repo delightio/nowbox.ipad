@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "SocialLoginViewController.h"
 #import "GridScrollView.h"
+#import "TwitterAccountPickerViewController.h"
 
 @protocol OnBoardProcessViewControllerDelegate;
-@class TwitterAccountPickerViewController;
 
-@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate> {    
+@interface OnBoardProcessViewController : UIViewController <UIAlertViewDelegate, GridScrollViewDelegate, TwitterAccountPickerViewControllerDelegate> {    
     UIView *currentView;    
     
     // YouTube sync can take ages. Have a timeout while waiting for the compare channels notification.

@@ -8,32 +8,24 @@
 
 #import "LaunchController.h"
 #import "VideoPlaybackBaseViewController.h"
+#import "PhoneOnBoardProcessViewController.h"
 #import "NMLibrary.h"
 #import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import "UIView+InteractiveAnimation.h"
 
 #define GP_CHANNEL_UPDATE_INTERVAL	-600.0f //-12.0 * 3600.0
-#ifdef DEBUG_ONBOARD_PROCESS
-#define NM_ALWAYS_SHOW_ONBOARD_PROCESS	YES
-#else
-#define NM_ALWAYS_SHOW_ONBOARD_PROCESS	NO
-#endif
-
-#ifdef DEBUG_SKIP_ONBOARD_PROCESS
-#define NM_SKIP_ONBOARD_PROCESS YES
-#else
-#define NM_SKIP_ONBOARD_PROCESS NO
-#endif
 
 #define ALERT_TAG_OPTIONAL_UPDATE 1
 #define ALERT_TAG_MANDATORY_UPDATE 2
 
 @implementation LaunchController
+
 @synthesize view;
 @synthesize activityIndicator;
 @synthesize logoImageView;
 @synthesize viewController;
+@synthesize playbackViewController;
 @synthesize lastFailNotificationName;
 @synthesize channel;
 @synthesize updateURL;
@@ -104,7 +96,7 @@
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelVideoListNotification object:nil];
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailDownloadImageNotification object:nil];
 
-		viewController.launchModeActive = YES;
+		playbackViewController.launchModeActive = YES;
 	} else {
 		// listen to fail notification
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
@@ -125,14 +117,14 @@
 - (void)showVideoViewAnimated {
 	// continue channel of the last session
 	// If last session is not available, data controller will return the first channel user subscribed. VideoPlaybackModelController will decide to load video of the last session of the selected channel
-	viewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
+	playbackViewController.currentChannel = [taskQueueController.dataController lastSessionChannel];
 	
 	// set first launch to NO
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:NM_FIRST_LAUNCH_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 	taskQueueController.appFirstLaunch = NO;
     
-	[viewController showPlaybackView];
+	[playbackViewController showPlaybackView];
 }
 
 - (void)slideInVideoViewAnimated {
@@ -147,7 +139,7 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 	taskQueueController.appFirstLaunch = NO;
     
-    [viewController showPlaybackView];
+    [playbackViewController showPlaybackView];
 }
 
 - (void)checkUpdateChannels {	
@@ -201,7 +193,11 @@
                          }
                          completion:^(BOOL finished){
                              if (!onBoardProcessController) {
-                                 onBoardProcessController = [[OnBoardProcessViewController alloc] init];
+                                 if (NM_RUNNING_ON_IPAD) {
+                                     onBoardProcessController = [[OnBoardProcessViewController alloc] init];
+                                 } else {
+                                     onBoardProcessController = [[PhoneOnBoardProcessViewController alloc] init];
+                                 }
                                  onBoardProcessController.delegate = self;                             
                                  [viewController presentModalViewController:onBoardProcessController animated:NO];
                              }
@@ -262,7 +258,7 @@
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetChannelVideoListNotification] ) {
 			// begin with fetching video list
 			self.channel = [taskQueueController.dataController lastSessionChannel];
-			[viewController setCurrentChannel:channel startPlaying:NO];
+			[playbackViewController setCurrentChannel:channel startPlaying:NO];
             [activityIndicator startAnimating];            
 		} else if ( [lastFailNotificationName isEqualToString:NMDidFailGetFeaturedCategoriesNotification] ) {
 			// begin with fetching featured categories
@@ -304,7 +300,7 @@
         // assign the channel to playback view controller
         self.channel = [taskQueueController.dataController lastSessionChannel];
         // no need to call issueGetMoreVideoForChannel explicitly here. It will be called in VideoPlaybackModelController in the method below.
-        [viewController setCurrentChannel:channel startPlaying:NO];
+        [playbackViewController setCurrentChannel:channel startPlaying:NO];
         // wait for notification of video list. We are not waiting for "did get video list" notification. Instead, we need to wait till the video's direct URL has been resolved. i.e. wait for "did resolved URL" notification.
 	} else {
         [self beginNewSession];
@@ -317,7 +313,7 @@
 - (void)handleDidResolveURLNotification:(NSNotification *)aNotification {
 	NMVideo * vdo = [[aNotification userInfo] objectForKey:@"target_object"];
 	[resolutionVideoIndex addIndex:[vdo.video.nm_id unsignedIntegerValue]];
-	NSUInteger cIdx = [viewController.currentVideo.video.nm_id unsignedIntegerValue];
+	NSUInteger cIdx = [playbackViewController.currentVideo.video.nm_id unsignedIntegerValue];
 	if ( [resolutionVideoIndex containsIndex:cIdx] ) {
 		// contains the direct URL, check if it contains the thumbnail as well
 		if ( [thumbnailVideoIndex containsIndex:cIdx] || ignoreThumbnailDownloadIndex ) {
@@ -336,7 +332,7 @@
 		NMVideo * targetVdo = [[aNotification userInfo] objectForKey:@"target_object"];
 		// store all indexes. the order of downloading video thumbnail is not guaranteed. need to check against all indexes downloaded. 
 		[thumbnailVideoIndex addIndex:[targetVdo.video.nm_id unsignedIntegerValue]];
-		NSUInteger cIdx = [viewController.currentVideo.video.nm_id unsignedIntegerValue];
+		NSUInteger cIdx = [playbackViewController.currentVideo.video.nm_id unsignedIntegerValue];
 		if ( [thumbnailVideoIndex containsIndex:cIdx] ) {
 			if ( [resolutionVideoIndex containsIndex:cIdx] ) {
                 if (NM_SKIP_ONBOARD_PROCESS) {
@@ -353,7 +349,7 @@
 	NSDictionary * info = [aNotification userInfo];
 	if ([[info objectForKey:@"channel"] isEqual:channel] && [[info objectForKey:@"num_video_received"] integerValue] == 0 ) {
 		self.channel = [taskQueueController.dataController nextChannel:channel];
-		[viewController setCurrentChannel:channel startPlaying:NO];
+		[playbackViewController setCurrentChannel:channel startPlaying:NO];
 	}
 }
 
