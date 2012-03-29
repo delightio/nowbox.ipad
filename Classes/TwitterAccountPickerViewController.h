@@ -11,7 +11,10 @@
 
 @protocol TwitterAccountPickerViewControllerDelegate;
 
-@interface TwitterAccountPickerViewController : UITableViewController
+@interface TwitterAccountPickerViewController : UITableViewController {
+	UIView * progressContainerView;
+	UIActivityIndicatorView * activityIndicator;
+}
 
 @property (nonatomic, retain) ACAccountStore * accountStore;
 @property (nonatomic, retain) NSArray * twitterAccountArray;

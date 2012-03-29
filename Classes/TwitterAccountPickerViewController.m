@@ -8,6 +8,7 @@
 
 #import "TwitterAccountPickerViewController.h"
 #import "NMLibrary.h"
+#import "NMStyleUtility.h"
 
 @implementation TwitterAccountPickerViewController
 
@@ -20,6 +21,8 @@
     self = [super initWithStyle:style];
     if (self) {
 		_accountStore = [[ACAccountStore alloc] init];
+		// observe changes in account manager
+		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1001];
     }
     return self;
 }
@@ -27,9 +30,13 @@
 - (void)dealloc 
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
     
 	[_accountStore release];
 	[_twitterAccountArray release];
+	
+	[activityIndicator release];
+	[progressContainerView release];
     
 	[super dealloc];
 }
@@ -41,11 +48,69 @@
 	// get which account(s) is/are selected	
 }
 
-- (void)cancelButtonPressed:(id)sender
-{
-    if ([delegate respondsToSelector:@selector(twitterAccountPickerViewControllerDidCancel:)]) {
-        [delegate twitterAccountPickerViewControllerDidCancel:self];
-    }
+//- (void)cancelButtonPressed:(id)sender
+//{
+//    if ([delegate respondsToSelector:@selector(twitterAccountPickerViewControllerDidCancel:)]) {
+//        [delegate twitterAccountPickerViewControllerDidCancel:self];
+//    }
+//}
+
+- (void)createProgressContainerView {
+	if ( progressContainerView ) return;
+	CGRect theFrame = self.view.bounds;
+	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
+	UIView * ctnView = [[UIView alloc] initWithFrame:theFrame];
+	ctnView.backgroundColor = [theStyle.blackColor colorWithAlphaComponent:0.5];
+	// text label
+	UILabel * lbl = [[UILabel alloc] initWithFrame:CGRectMake(0.0, floorf(theFrame.size.height / 2.0) - 10.0, theFrame.size.width, 24.0f)];
+	lbl.text = @"Connecting to Twitter...";
+	lbl.backgroundColor = theStyle.clearColor;
+	lbl.textColor = [UIColor whiteColor];
+	lbl.shadowOffset = CGSizeMake(0.0, 1.0);
+	lbl.textAlignment = UITextAlignmentCenter;
+	lbl.font = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
+	[ctnView addSubview:lbl], [lbl release];
+	// activity indicator
+	activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+	CGSize theSize = activityIndicator.bounds.size;
+	theFrame.origin.x = floorf((theFrame.size.width - theSize.width) / 2.0);
+	theFrame.origin.y = floorf(theFrame.size.height / 2.0 + 14.0);
+	theFrame.size = theSize;
+	activityIndicator.frame = theFrame;
+	[ctnView addSubview:activityIndicator];
+	
+	progressContainerView = ctnView;
+	progressContainerView.alpha = 0.0;
+	
+	[self.view addSubview:progressContainerView];
+	[UIView animateWithDuration:0.25 animations:^{
+		progressContainerView.alpha = 1.0;
+	} completion:^(BOOL finished) {
+		[activityIndicator startAnimating];
+	}];
+}
+
+- (void)delayDismissViewController {
+	[activityIndicator stopAnimating];
+	// dismiss the view
+	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	if ( context == (void *)1001 ) {
+		// check the value
+		NMAccountManager * mgr = object;
+		switch ( [mgr.twitterAccountStatus integerValue]) {
+			case  NMSyncSyncInProgress:
+				[self performSelector:@selector(delayDismissViewController) withObject:nil afterDelay:1.0];
+				break;
+				
+			default:
+				break;
+		}
+	} else {
+		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+	}
 }
 
 #pragma mark - View lifecycle
@@ -55,7 +120,7 @@
     [super viewDidLoad];
 
 	self.title = @"Twitter";
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed:)] autorelease];
+//	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed:)] autorelease];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAccountNotification:) name:ACAccountStoreDidChangeNotification object:nil];
 	[self loadTwitterAccounts];
@@ -89,7 +154,6 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     ACAccount * acObj = [_twitterAccountArray objectAtIndex:indexPath.row];
@@ -100,7 +164,11 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return @"Select an account to sign in";
+    return @"Pick an account:";
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+	return @"Nowbox will check your Twitter feed and show you videos posted by people your follow.";
 }
 
 #pragma mark - Table view delegate
@@ -113,7 +181,10 @@
     if ([delegate respondsToSelector:@selector(twitterAccountPickerViewController:didPickAccount:)]) {
         [delegate twitterAccountPickerViewController:self didPickAccount:acObj];
     }
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+	
+	// show container view
+	[self createProgressContainerView];
         
 //	NMTaskQueueController * tqCtrl = [NMTaskQueueController sharedTaskQueueController];
 //	NMChannel * chnObj = [tqCtrl.dataController insertChannelWithAccount:acObj];

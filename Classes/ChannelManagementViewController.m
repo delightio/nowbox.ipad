@@ -312,7 +312,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			UIActivityIndicatorView *actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
 			UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
 			UIImageView *backgroundView = (UIImageView *)[cell viewWithTag:14];
-			NMCachedImageView * thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
 			switch ([acMgr.facebookAccountStatus integerValue]) {
 				case NMSyncNotConfigured:
 				case NMSyncAccountActive:
@@ -323,10 +322,8 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                     [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];
 					[backgroundView setImage:channelSubscribedBackgroundImage];  
 					buttonView.userInteractionEnabled = YES;
-					// set the thumbnail image
-					[thumbnailView setImageForChannel:acMgr.facebookProfile.subscription.channel];
+					[channelsTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
 					break;
-					
 				default:
 					// show the activity indicator
 					[actView startAnimating];
@@ -346,7 +343,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			UIActivityIndicatorView *actView = (UIActivityIndicatorView *)[cell viewWithTag:15];
 			UIButton *buttonView = (UIButton *)[cell viewWithTag:11];
 			UIImageView *backgroundView = (UIImageView *)[cell viewWithTag:14];
-			NMCachedImageView * thumbnailView = (NMCachedImageView *)[cell viewWithTag:10];
 			switch ([[NMAccountManager sharedAccountManager].twitterAccountStatus integerValue]) {
 				case NMSyncNotConfigured:
 				case NMSyncAccountActive:
@@ -357,8 +353,7 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
                     [buttonView setBackgroundImage:channelSubscribedButtonImage forState:UIControlStateNormal];
 					[backgroundView setImage:channelSubscribedBackgroundImage];
 					buttonView.userInteractionEnabled = YES;
-					// set the thumbnail image
-					[thumbnailView setImageForChannel:acMgr.twitterProfile.subscription.channel];
+					[channelsTableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
 					break;
 					
 				default:
