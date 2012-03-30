@@ -21,8 +21,6 @@
     self = [super initWithStyle:style];
     if (self) {
 		_accountStore = [[ACAccountStore alloc] init];
-		// observe changes in account manager
-		[[NMAccountManager sharedAccountManager] addObserver:self forKeyPath:@"twitterAccountStatus" options:0 context:(void *)1001];
     }
     return self;
 }
@@ -30,12 +28,12 @@
 - (void)dealloc 
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-	[[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"twitterAccountStatus"];
     
 	[_accountStore release];
 	[_twitterAccountArray release];
 	
 	[activityIndicator release];
+	[activityStatusLabel release];
 	[progressContainerView release];
     
 	[super dealloc];
@@ -56,7 +54,11 @@
 //}
 
 - (void)createProgressContainerView {
-	if ( progressContainerView ) return;
+	if ( progressContainerView ) {
+		activityStatusLabel.text = @"Connecting to Twitter...";
+		progressContainerView.alpha = 1.0;
+		return;
+	}
 	CGRect theFrame = self.view.bounds;
 	NMStyleUtility * theStyle = [NMStyleUtility sharedStyleUtility];
 	UIView * ctnView = [[UIView alloc] initWithFrame:theFrame];
@@ -67,9 +69,11 @@
 	lbl.backgroundColor = theStyle.clearColor;
 	lbl.textColor = [UIColor whiteColor];
 	lbl.shadowOffset = CGSizeMake(0.0, 1.0);
+	lbl.shadowColor = theStyle.blackColor;
 	lbl.textAlignment = UITextAlignmentCenter;
 	lbl.font = [UIFont boldSystemFontOfSize:[UIFont labelFontSize]];
-	[ctnView addSubview:lbl], [lbl release];
+	[ctnView addSubview:lbl];
+	activityStatusLabel = lbl;
 	// activity indicator
 	activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	CGSize theSize = activityIndicator.bounds.size;
@@ -96,23 +100,6 @@
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	if ( context == (void *)1001 ) {
-		// check the value
-		NMAccountManager * mgr = object;
-		switch ( [mgr.twitterAccountStatus integerValue]) {
-			case  NMSyncSyncInProgress:
-				[self performSelector:@selector(delayDismissViewController) withObject:nil afterDelay:1.0];
-				break;
-				
-			default:
-				break;
-		}
-	} else {
-		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-	}
-}
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -122,7 +109,10 @@
 	self.title = @"Twitter";
 //	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed:)] autorelease];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAccountNotification:) name:ACAccountStoreDidChangeNotification object:nil];
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(handleAccountNotification:) name:ACAccountStoreDidChangeNotification object:nil];
+	[nc addObserver:self selector:@selector(handleDidGetProfileNotification:) name:NMDidGetTwitterProfileNotification object:nil];
+	[nc addObserver:self selector:@selector(handleFailGetProfileNotification:) name:NMDidFailGetTwitterProfileNotification object:nil];
 	[self loadTwitterAccounts];
 }
 
@@ -168,7 +158,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	return @"Nowbox will check your Twitter feed and show you videos posted by people your follow.";
+	return @"Nowbox will check your Twitter timeline and show you videos posted by people you follow.";
 }
 
 #pragma mark - Table view delegate
@@ -194,10 +184,27 @@
 
 #pragma mark Notification handler
 
-- (void)handleAccountNotification:(NSNotification *)aNotification 
-{
+- (void)handleAccountNotification:(NSNotification *)aNotification {
 	[self loadTwitterAccounts];
 	[self.tableView reloadData];
+}
+
+- (void)handleDidGetProfileNotification:(NSNotification *)aNotification {
+	[self performSelector:@selector(delayDismissViewController) withObject:nil afterDelay:1.0];
+}
+
+- (void)handleFailGetProfileNotification:(NSNotification *)aNotification {
+	// fade out the progress view and show error
+	[activityIndicator stopAnimating];
+	activityStatusLabel.text = @"Fail connecting to your Twitter account";
+	double delayInSeconds = 2.0;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		// hide the progress container
+		[UIView animateWithDuration:0.25 animations:^{
+			progressContainerView.alpha = 0.0f;
+		}];
+	});
 }
 
 @end

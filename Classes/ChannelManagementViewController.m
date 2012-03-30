@@ -336,7 +336,6 @@ NSString * const NMChannelManagementDidDisappearNotification = @"NMChannelManage
 			}
 		}
 	} else if ( context == TwitterSyncContext ) {
-		NMAccountManager * acMgr = object;
 		NSLog(@"channel management - twitter sync");
 		UITableViewCell * cell = [channelsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
 		if ( cell ) {

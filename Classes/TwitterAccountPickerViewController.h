@@ -14,6 +14,7 @@
 @interface TwitterAccountPickerViewController : UITableViewController {
 	UIView * progressContainerView;
 	UIActivityIndicatorView * activityIndicator;
+	UILabel * activityStatusLabel;
 }
 
 @property (nonatomic, retain) ACAccountStore * accountStore;
