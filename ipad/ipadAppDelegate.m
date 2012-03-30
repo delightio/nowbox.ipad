@@ -438,12 +438,12 @@ NSInteger NM_LAST_CHANNEL_ID;
     if (managedObjectModel_ != nil) {
         return managedObjectModel_;
     }
-//    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"mom"];
-//    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
-//    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
-//    return managedObjectModel_;
-    managedObjectModel_ = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"momd"];
+    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
+    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
     return managedObjectModel_;
+//    managedObjectModel_ = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+//    return managedObjectModel_;
 }
 
 
@@ -469,6 +469,19 @@ NSInteger NM_LAST_CHANNEL_ID;
 #endif
 
     NSError *error = nil;
+	NSDictionary * sourceMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType URL:storeURL error:&error];
+	NSManagedObjectModel * destinationModel = [self managedObjectModel];
+	if ( [destinationModel isConfiguration:nil compatibleWithStoreMetadata:sourceMetadata] ) {
+		// no need to perform migration
+		persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+		if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+			[[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
+			[persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error];
+		}    
+	} else {
+		// perform migration
+		
+	}
     persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
         /*
