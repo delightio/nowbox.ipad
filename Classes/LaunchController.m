@@ -106,6 +106,7 @@
 
 		viewController.launchModeActive = YES;
 	} else {
+        [self beginNewSession];
 		// listen to fail notification
 		[nc addObserver:self selector:@selector(handleLaunchFailNotification:) name:NMDidFailGetChannelsNotification object:nil];
 		[self checkUpdateChannels];
@@ -115,10 +116,19 @@
 }
 
 - (void)beginNewSession {
+	// start a new session
     NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
-    NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY] + 1;
-    [taskQueueController beginNewSession:sid];
-    [df setInteger:sid forKey:NM_SESSION_ID_KEY];
+    NSInteger sid = [df integerForKey:NM_SESSION_ID_KEY];
+//    [taskQueueController beginNewSession:sid];
+//    [df setInteger:sid forKey:NM_SESSION_ID_KEY];
+	NSDate * theDate = [df objectForKey:NM_LAST_SESSION_DATE];
+	if ( [theDate timeIntervalSinceNow] < -NM_SESSION_DURATION ) {	// 30 min
+		[taskQueueController beginNewSession:++sid];
+		[df setInteger:sid forKey:NM_SESSION_ID_KEY];
+	} else {
+		// use the same session
+		[taskQueueController resumeSession:sid];
+	}
     [df synchronize];
 }
 
@@ -164,7 +174,6 @@
 		}
 	} else {
 		[self performSelector:@selector(showVideoViewAnimated) withObject:nil afterDelay:0.5];
-        [self beginNewSession];
 		if ( NM_USER_YOUTUBE_SYNC_ACTIVE ) {
 			[taskQueueController issueSyncRequest];
 		}

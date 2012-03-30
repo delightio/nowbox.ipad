@@ -469,6 +469,9 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 		{
 			// We are getting the user's first 100 tweets now. Probably don't need to iteratively crawl user's complete tweet history.
 //			[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedWithTwitterInfo:infoDict];
+			if ( _socialChannelParsingTimer == nil ) {
+				self.twitterAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+			}
 			break;
 		}
 		case NMChannelUserFacebookType:
@@ -477,6 +480,10 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 			NSInteger numIterate = [[infoDict objectForKey:@"iteration"] integerValue];
 			if ( urlStr && numIterate < 5 ) {
 				[[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForFacebookChannel:chnObj taskInfo:infoDict];
+			}
+			if ( _socialChannelParsingTimer == nil ) {
+				// there's no otehr profile sync tasks scheduled
+				self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
 			}
 			break;
 		}	
