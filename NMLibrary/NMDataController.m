@@ -737,7 +737,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMChannel * chnObj = nil;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.subscriptionEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserFacebookType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserFacebookType]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	[request setReturnsObjectsAsFaults:NO];
 	
@@ -759,7 +759,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMChannel * chnObj = nil;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.subscriptionEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_hidden = NO AND personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserTwitterType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserTwitterType]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	[request setReturnsObjectsAsFaults:NO];
 	
@@ -874,6 +874,8 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// show channels
 	for (NMChannel * chnObj in result) {
 		if ( [chnObj.subscription.nm_hidden boolValue] ) chnObj.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
+		// update the count
+		chnObj.video_count = [NSNumber numberWithUnsignedInteger:[chnObj.videos count]];
 	}
 	[request release];
 	

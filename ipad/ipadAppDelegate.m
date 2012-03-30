@@ -14,7 +14,6 @@
 #import "ToolTipController.h"
 #import "Crittercism.h"
 
-#define NM_SESSION_DURATION		1800.0f // 30 min
 #define NM_DEBUG_MIXPANEL_TOKEN @"79ed82e53930d8f41c4e87f7084d9158"
 #define NM_PROD_MIXPANEL_TOKEN @"e447bed162e427230f5356bc987a5e16"
 #define NM_CRITTERCISM_APP_ID @"4f0736d2b093151a900000e7"

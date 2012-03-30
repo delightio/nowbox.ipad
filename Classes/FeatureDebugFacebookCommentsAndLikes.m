@@ -107,7 +107,7 @@
 }
 
 - (void)sendRandomComment:(id)sender {
-	NSString * str = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci urna, iaculis lacinia ultrices vel";
+	NSString * str = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci urna, iaculis lacinia ultrices vel http://test.com";
 	[[NMTaskQueueController sharedTaskQueueController] issuePostComment:str forPost:_socialInfo];
 }
 

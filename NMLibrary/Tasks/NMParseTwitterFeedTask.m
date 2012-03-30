@@ -86,7 +86,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 }
 
 - (NSURLRequest *)URLRequest {
-	NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"200", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"1", @"include_rts", nil];
+	NSMutableDictionary * params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"20", @"count", [NSString stringWithFormat:@"%d", _page], @"page", @"1", @"include_entities", @"1", @"include_rts", nil];
 	
 	if ( _since_id ) {
 		[params setObject:_since_id forKey:@"since_id"];
@@ -182,6 +182,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 		switch (chkResult) {
 			case NMVideoExistsButNotInChannel:
 			{
+				numberOfVideoAdded++;
 				// create only the NMVideo object
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
@@ -331,6 +332,9 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 			}
 		}
 	}
+	if ( numberOfVideoAdded && [_channel.subscription.nm_hidden boolValue] ) {
+		_channel.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
+	}
 	// update the last checked time
 	_channel.subscription.nm_video_last_refresh = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
 	// only update the since ID if we are parsing the first page. The rest of the tweets in other pages will have ID smaller than this one
@@ -352,7 +356,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 }
 
 - (NSDictionary *)userInfo {
-	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_added", _channel, @"channel", _account, @"account", [NSNumber numberWithInteger:_page + 1], @"next_page", _since_id, @"since_id", nil];
+	return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInteger:[parsedObjects count]], @"num_video_received", [NSNumber numberWithUnsignedInteger:numberOfVideoAdded], @"num_video_added", _channel, @"channel", _account, @"account", [NSNumber numberWithInteger:_page + 1], @"next_page", _since_id, @"since_id", nil];
 }
 
 @end

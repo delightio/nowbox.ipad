@@ -113,9 +113,9 @@ NSString * const NMDidFailDeleteFacebookCommentNotification = @"NMDidFailDeleteF
 	}
 }
 
-//- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
-//	return NO;
-//}
+- (BOOL)saveProcessedDataInController:(NMDataController *)ctrl {
+	return YES;
+}
 
 - (NSString *)willLoadNotificationName {
 	NSString * str = nil;
