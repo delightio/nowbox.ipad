@@ -15,7 +15,7 @@
 #define kLandscapeInfoPanelHeightDefault  98
 #define kLandscapeInfoPanelHeightExpanded 156
 #define kBuzzPanelHeightDefault           75
-#define kBuzzPanelHeightExpanded          172
+#define kBuzzPanelHeightExpanded          176
 
 #pragma mark - PhoneVideoInfoOrientedView
 
