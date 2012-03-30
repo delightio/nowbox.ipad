@@ -466,6 +466,9 @@ static NSArray * youTubeRegexArray = nil;
 			}
 		}
 	}
+	if ( numberOfVideoAdded && [_channel.subscription.nm_hidden boolValue] ) {
+		_channel.subscription.nm_hidden = (NSNumber *)kCFBooleanFalse;
+	}
 	// when first fire Facebook feed parsing task, feedDirectURLString is nil. This means we are getting the first page of a person's news feed. The newest item should always appear in the first page. Therefore, we only need to save the parsing time data under this condition.
 	if ( _feedDirectURLString == nil && maxUnixTime > [_channel.subscription.nm_since_id integerValue] ) {
 		// update the last checked time
