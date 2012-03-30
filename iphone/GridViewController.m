@@ -145,7 +145,7 @@
         // Go to video player
         PhoneVideoPlaybackViewController *playbackController = [[PhoneVideoPlaybackViewController alloc] initWithNibName:@"PhoneVideoPlaybackView" bundle:nil];
         [playbackController setManagedObjectContext:managedObjectContext];
-        [self presentModalViewController:playbackController animated:NO];
+        [self.navigationController pushViewController:playbackController animated:YES];
         [playbackController setCurrentChannel:channel startPlaying:YES];
         [playbackController release];
     }

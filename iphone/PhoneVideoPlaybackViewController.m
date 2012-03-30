@@ -1409,7 +1409,7 @@
 	[timeObserver release], timeObserver = nil;
 	[movieView.player removeAllItems];
     
-    [self dismissModalViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)videoInfoViewDidTapPlayButton:(PhoneMovieDetailView *)videoInfoView
