@@ -1564,9 +1564,10 @@
     #endif
             
             MFMailComposeViewController *composeController = [[MFMailComposeViewController alloc] init];
+            composeController.navigationBar.barStyle = UIBarStyleBlack;
             [composeController setMailComposeDelegate:self];
             [composeController setSubject:[NSString stringWithFormat:@"Check out this video: %@", video.video.title]];
-            [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with NOWBOX. <a href=\"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription] isHTML:YES];
+            [composeController setMessageBody:[NSString stringWithFormat:@"%@<br><br><a href=\"%@%@\"><img src=\"%@\" width=\"290\"></a><br><a href=\"%@%@\">%@</a><br>%@<br><br>--<br><br>Create your own personalized TV guide for iPhone with %@. <a href=\"%@\">Download for free</a>.", text, url, video.video.nm_id, video.video.thumbnail_uri, url, video.video.nm_id, video.video.title, videoDescription, NM_PRODUCT_NAME, NM_ITUNES_LINK] isHTML:YES];
             [self presentModalViewController:composeController animated:YES];
             [composeController release];        
         }

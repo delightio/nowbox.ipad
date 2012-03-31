@@ -7,16 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GlowLabel.h"
 #import "NMDataType.h"
 #import "NMVideo.h"
 #import "NMSocialInfo.h"
+#import "NMCachedImageView.h"
 
 @protocol CommentShareViewDelegate;
 
 typedef enum {
-    CommentShareServiceTwitter,
     CommentShareServiceFacebook,
+    CommentShareServiceTwitter,
     CommentShareServiceEmail
 } CommentShareService;
 
@@ -38,10 +38,10 @@ typedef enum {
 }
 
 @property (nonatomic, retain) IBOutlet UIView *contentView;
+@property (nonatomic, retain) IBOutlet UIView *thumbnailView;
+@property (nonatomic, retain) IBOutlet NMCachedImageView *thumbnailImage;
 @property (nonatomic, retain) IBOutlet UIImageView *textViewBackground;
 @property (nonatomic, retain) IBOutlet UITextView *textView;
-@property (nonatomic, retain) IBOutlet GlowLabel *videoTitleLabel;
-@property (nonatomic, retain) IBOutlet GlowLabel *authorLabel;
 @property (nonatomic, retain) IBOutlet UILabel *characterCountLabel;
 @property (nonatomic, retain) IBOutlet UIButton *twitterButton;
 @property (nonatomic, retain) IBOutlet UIButton *facebookButton;
@@ -60,7 +60,8 @@ typedef enum {
 - (IBAction)twitterButtonPressed:(id)sender;
 - (IBAction)facebookButtonPressed:(id)sender;
 - (IBAction)emailButtonPressed:(id)sender;
-- (IBAction)touchAreaPressed:(id)sender;
+- (IBAction)cancelButtonPressed:(id)sender;
+- (IBAction)sendButtonPressed:(id)sender;
 
 @end
 

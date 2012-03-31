@@ -18,6 +18,14 @@
 #define NM_CHANNEL_COLUMN_WIDTH		181.0f
 #define NM_SESSION_DURATION		1800.0f // 30 min
 
+#ifdef FRIENDBOX
+    #define NM_PRODUCT_NAME @"Friendbox"
+    #define NM_ITUNES_LINK @"http://itunes.apple.com/app/nowbox/id515389553?mt=8&uo=4"
+#else
+    #define NM_PRODUCT_NAME @"NOWBOX"
+    #define NM_ITUNES_LINK @"http://itunes.apple.com/app/nowbox/id464416202?mt=8&uo=4"
+#endif
+
 extern NSInteger NM_USER_ACCOUNT_ID;
 extern NSDate * NM_USER_TOKEN_EXPIRY_DATE;
 extern NSString * NM_USER_TOKEN;
