@@ -36,6 +36,7 @@ NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY = @"NM_USER_YOUTUBE_LAST_SYNC_KEY
 NSString * const NM_USER_TOKEN_KEY = @"NM_USER_TOKEN_KEY";
 NSString * const NM_USER_TOKEN_EXPIRY_DATE_KEY = @"NM_USER_TOKEN_EXPIRY_DATE_KEY";
 NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
+NSString * const NM_LOGOUT_ON_APP_START_PREFERENCE_KEY = @"NM_LOGOUT_ON_APP_START_PREFERENCE_KEY";
 // app session
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 NSString * const NM_LAST_VIDEO_LIST_KEY		= @"NM_LAST_VIDEO_LIST_KEY";
@@ -53,6 +54,7 @@ NSString * const NM_FACEBOOK_ACCESS_TOKEN_KEY = @"FBAccessTokenKey";
 NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY = @"FBExpirationDateKey";
 // setting view
 NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
+NSString * const NM_VIDEO_QUALITY_PREFERENCE_KEY	= @"NM_VIDEO_QUALITY_PREFERENCE_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
 NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
 NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
@@ -90,6 +92,7 @@ NSInteger NM_LAST_CHANNEL_ID;
       zeroNum, NM_RATE_US_REMINDER_DEFER_COUNT_KEY,
       zeroNum, NM_SHARE_COUNT_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
+      noNum, NM_VIDEO_QUALITY_PREFERENCE_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
 	  yesNum, NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
@@ -102,6 +105,7 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  noNum, NM_USER_HISTORY_CHANNEL_ID_KEY,
 	  yesNum, NM_SETTING_FACEBOOK_AUTO_POST_KEY,
 	  yesNum, NM_SETTING_TWITTER_AUTO_POST_KEY,
+      noNum, NM_LOGOUT_ON_APP_START_PREFERENCE_KEY,
 	  noNum, NM_USER_YOUTUBE_SYNC_ACTIVE_KEY,
 	  zeroNum, NM_USER_YOUTUBE_LAST_SYNC_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
@@ -344,6 +348,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 {
     activeStartTime = [[NSDate date] timeIntervalSince1970];    
     lastTimeOnAppSinceInstall = [[NSUserDefaults standardUserDefaults] floatForKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];    
+
+    // User could have changed video quality in preferences
+    NM_VIDEO_QUALITY = [userDefaults boolForKey:NM_VIDEO_QUALITY_PREFERENCE_KEY] ? NMVideoQualityAutoSelect : NMVideoQualityAlwaysSD;
+    [userDefaults setInteger:NM_VIDEO_QUALITY forKey:NM_VIDEO_QUALITY_KEY];    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

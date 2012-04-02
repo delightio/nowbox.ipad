@@ -18,6 +18,7 @@
 @interface FacebookLoginViewController (PrivateMethods)
 - (void)showGridAnimated:(BOOL)animated;
 - (void)beginNewSession;
+- (void)facebookSignOutComplete;
 @end
 
 @implementation FacebookLoginViewController
@@ -79,6 +80,14 @@
     [dataSource release];
 }
 
+- (void)facebookSignOutComplete
+{
+    [activityIndicator stopAnimating];
+    [UIView animateWithDuration:0.2 animations:^{
+        connectFacebookButton.alpha = 1;
+    }];
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -87,8 +96,19 @@
 
     connectFacebookButton.titleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:24.0 backupFontName:@"Futura-Medium" size:22.0];
     
-    NMSyncStatusType syncStatus = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
-    if (syncStatus > 0) {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    BOOL logoutOnAppStart = [userDefaults boolForKey:NM_LOGOUT_ON_APP_START_PREFERENCE_KEY];
+    if (logoutOnAppStart) {
+        // User has logged out via settings page
+        connectFacebookButton.alpha = 0;
+        [activityIndicator startAnimating];
+
+        [[NMAccountManager sharedAccountManager] signOutTwitterOnCompleteTarget:nil action:nil];
+        [[NMAccountManager sharedAccountManager] signOutFacebookOnCompleteTarget:self action:@selector(facebookSignOutComplete)];
+        
+        [userDefaults setBool:NO forKey:NM_LOGOUT_ON_APP_START_PREFERENCE_KEY];
+        [userDefaults synchronize];
+    } else if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue]) {
         // User is already logged in
         [self showGridAnimated:NO];
     }

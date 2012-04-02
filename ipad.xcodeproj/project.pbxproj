@@ -75,6 +75,7 @@
 		8355669B14EF37FE009195FB /* progress-gray-side@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8355669714EF37FD009195FB /* progress-gray-side@2x~iphone.png */; };
 		8355669C14EF37FE009195FB /* progress-gray-side~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8355669814EF37FD009195FB /* progress-gray-side~iphone.png */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
+		8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8365A339152A4CB0008839E6 /* Settings.bundle */; };
 		837437F415268F7200EF7F36 /* FacebookLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837437F315268F7200EF7F36 /* FacebookLoginViewController.m */; };
 		837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837437F71526939300EF7F36 /* FacebookLoginViewController.xib */; };
 		837437F91526954300EF7F36 /* PhoneOnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */; };
@@ -1282,6 +1283,7 @@
 		8355669814EF37FD009195FB /* progress-gray-side~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-gray-side~iphone.png"; sourceTree = "<group>"; };
 		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
 		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
+		8365A339152A4CB0008839E6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		837437F215268F7200EF7F36 /* FacebookLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginViewController.h; sourceTree = "<group>"; };
 		837437F315268F7200EF7F36 /* FacebookLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginViewController.m; sourceTree = "<group>"; };
 		837437F71526939300EF7F36 /* FacebookLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FacebookLoginViewController.xib; sourceTree = "<group>"; };
@@ -2169,6 +2171,7 @@
 			isa = PBXGroup;
 			children = (
 				837EE26B15266376001ACFC2 /* Friendbox-Info.plist */,
+				8365A339152A4CB0008839E6 /* Settings.bundle */,
 			);
 			name = Friendbox;
 			sourceTree = "<group>";
@@ -3117,6 +3120,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 837EE26515266375001ACFC2 /* Build configuration list for PBXNativeTarget "Friendbox" */;
 			buildPhases = (
+				8365A33B152A6A03008839E6 /* ShellScript */,
 				837EE03F15266375001ACFC2 /* Resources */,
 				837EE1F115266375001ACFC2 /* Sources */,
 				837EE25415266375001ACFC2 /* Frameworks */,
@@ -3647,6 +3651,7 @@
 				837EE27D1526829E001ACFC2 /* phone_video_share_thumbnail.png in Resources */,
 				837EE27F1526829E001ACFC2 /* phone_video_share_thumbnail@2x.png in Resources */,
 				837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */,
+				8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4097,6 +4102,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8365A33B152A6A03008839E6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env python";
+			shellScript = "#! /usr/bin/env python\nimport os\nfrom AppKit import NSMutableDictionary\n\n### This script updates the version number in Settings.bundle ###\n\nsettings_file_path = 'Settings.bundle/Root.plist' # the relative path from the project folder to your settings bundle\nsettings_key = 'version_preference' # the key of your settings version\n\n# these environment variables are set in the XCode build phase\nif 'PRODUCT_SETTINGS_PATH' in os.environ.keys():\n    info_path = os.environ.get('PRODUCT_SETTINGS_PATH')\n\nif 'PROJECT_DIR' in os.environ.keys():\n    settings_path = os.path.join(os.environ.get('PROJECT_DIR'), settings_file_path)\n\n# reading info.plist file\nproject_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info_path)\nproject_bundle_version = project_plist['CFBundleVersion']\n\n# print 'project_bundle_version: '+project_bundle_version\n\n# reading settings plist\nsettings_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(settings_path)\nfor dictionary in settings_plist['PreferenceSpecifiers']:\n    if 'Key' in dictionary and dictionary['Key'] == settings_key:\n        dictionary['DefaultValue'] = project_bundle_version\n\n# print repr(settings_plist)\nsettings_plist.writeToFile_atomically_(settings_path, True)";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		837EE1F115266375001ACFC2 /* Sources */ = {
