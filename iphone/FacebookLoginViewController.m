@@ -88,7 +88,8 @@
     connectFacebookButton.titleLabel.font = [UIFont fontWithName:@"Futura-CondensedMedium" size:24.0 backupFontName:@"Futura-Medium" size:22.0];
     
     NMSyncStatusType syncStatus = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
-    if (syncStatus != NMSyncNotConfigured && syncStatus != NMSyncInitialSyncError) {
+    if (syncStatus > 0) {
+        // User is already logged in
         [self showGridAnimated:NO];
     }
 }
@@ -130,7 +131,7 @@
 		case 1002:
 			// facebook
 			accStatus = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
-			if ( accStatus == NMSyncInitialSyncError ) {
+			if (accStatus == NMSyncInitialSyncError) {
 				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 				[alertView show];
 				[alertView release];
@@ -139,7 +140,7 @@
                 [UIView animateWithDuration:0.2 animations:^{
                     connectFacebookButton.alpha = 1;
                 }];
-			} else {
+			} else if (accStatus > 0) {
                 // Avoid multiple notifications
                 [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];                
                 [self showGridAnimated:YES];
