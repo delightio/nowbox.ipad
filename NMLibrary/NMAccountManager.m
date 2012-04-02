@@ -352,6 +352,11 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	});
 }
 
+- (void)subscribeTopFriends:(NSInteger)numPerson {
+	// check how many friends are there
+	
+}
+
 #pragma mark Facebook delegate methods
 
 - (void)fbDidLogin {

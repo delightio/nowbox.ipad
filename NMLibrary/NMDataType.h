@@ -117,6 +117,12 @@ typedef enum {
 } NMSyncStatusType;
 
 typedef enum {
+	NMRelationshipNone,				// people from nowhere (friends of friends)
+	NMRelationshipMe,				// the account is my own account
+	NMRelationshipFriend,			// applies to friends or followers
+} NMRelationshipType;
+
+typedef enum {
 	NMChannelUnknownType,
 	NMChannelUserType,
 	NMChannelTrendingType,
