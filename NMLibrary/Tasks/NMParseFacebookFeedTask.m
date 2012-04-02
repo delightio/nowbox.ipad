@@ -46,7 +46,7 @@ static NSArray * youTubeRegexArray = nil;
 	if ( _since_id == nil || [_since_id isEqualToString:@""]) self.since_id = @"0";
 	NMPersonProfile * theProfile =  chn.subscription.personProfile;
 	self.user_id = theProfile.nm_user_id;
-	isAccountOwner = [theProfile.nm_me boolValue];
+	isAccountOwner = [theProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.targetID = chn.nm_id;
 	return self;
 }
@@ -60,7 +60,7 @@ static NSArray * youTubeRegexArray = nil;
 	self.channel = chn;
 	NMPersonProfile * theProfile =  chn.subscription.personProfile;
 	self.user_id = theProfile.nm_user_id;
-	isAccountOwner = [theProfile.nm_me boolValue];
+	isAccountOwner = [theProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.targetID = chn.nm_id;
 	return self;
 }
@@ -73,7 +73,7 @@ static NSArray * youTubeRegexArray = nil;
 	self.channel = chn;
 	NMPersonProfile * theProfile =  chn.subscription.personProfile;
 	self.user_id = theProfile.nm_user_id;
-	isAccountOwner = [theProfile.nm_me boolValue];
+	isAccountOwner = [theProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.targetID = chn.nm_id;
 #ifdef DEBUG_FACEBOOK_IMPORT
 	NSLog(@"Getting next page - Facebook");
@@ -215,6 +215,9 @@ static NSArray * youTubeRegexArray = nil;
 	NMConcreteVideo * conVdo = nil;
 	NMVideo * vdo = nil;
 	NSString * extID;
+	
+	NSNumber * friendRelNum = [NSNumber numberWithInteger:NMRelationshipFriend];
+	
 	for (NSDictionary * vdoFeedDict in parsedObjects) {
 		extID = [vdoFeedDict objectForKey:@"external_id"];
 		idx++;
@@ -329,16 +332,9 @@ static NSArray * youTubeRegexArray = nil;
 					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
 					[objectCache setObject:theProfile forKey:manID];
 				}
-				if ( isNew ) {
-					personIDOffset++;
-					[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
-					theProfile.name = [fromDict objectForKey:@"name"];
-					// subscribe to this person if the person is friend of user
-					if ( isAccountOwner || [_user_id isEqualToString:manID] ) {
-						[ctrl subscribeUserChannelWithPersonProfile:theProfile];
-					}
-				} else if ( !isAccountOwner && theProfile.subscription == nil && [_user_id isEqualToString:manID] ) {
-					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+				if ( isAccountOwner && (isNew || [theProfile.nm_relationship_type integerValue] != NMRelationshipFriend ) ) {
+					// encounter a new profile when parsing my own News Feed
+					theProfile.nm_relationship_type = friendRelNum;
 				}
 				// set who posted this video
 				fbInfo.poster = theProfile;

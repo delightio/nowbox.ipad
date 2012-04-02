@@ -737,7 +737,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMChannel * chnObj = nil;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.subscriptionEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserFacebookType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"personProfile.nm_relationship_type = %d AND personProfile.nm_type == %d", NMRelationshipMe, NMChannelUserFacebookType]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	[request setReturnsObjectsAsFaults:NO];
 	
@@ -759,7 +759,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	NMChannel * chnObj = nil;
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:self.subscriptionEntityDescription];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"personProfile.nm_me = YES AND personProfile.nm_type == %d", NMChannelUserTwitterType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"personProfile.nm_relationship_type = %d AND personProfile.nm_type == %d", NMRelationshipMe, NMChannelUserTwitterType]];
 	[request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"channel"]];
 	[request setReturnsObjectsAsFaults:NO];
 	
@@ -1423,7 +1423,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		thePerson = [NSEntityDescription insertNewObjectForEntityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext];
 		thePerson.nm_type = [NSNumber numberWithInteger:NMChannelUserFacebookType];
 		thePerson.nm_error = [NSNumber numberWithInteger:NMErrorPendingImport];
-		thePerson.nm_me = (NSNumber *)kCFBooleanTrue;
+		thePerson.nm_relationship_type = [NSNumber numberWithInteger:NMRelationshipMe];
 		*isNew = YES;
 	} else {
 		*isNew = NO;
@@ -1558,7 +1558,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// this method is not expected to be called often. So, do not cache the predicate
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_me == YES AND nm_type == %d", NMChannelUserFacebookType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_relationship_type == %d AND nm_type == %d", NMRelationshipMe, NMChannelUserFacebookType]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];
@@ -1575,7 +1575,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	// this method is not expected to be called often. So, do not cache the predicate
 	NSFetchRequest * request = [[NSFetchRequest alloc] init];
 	[request setEntity:[NSEntityDescription entityForName:NMPersonProfileEntityName inManagedObjectContext:managedObjectContext]];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_me == YES AND nm_type == %d", NMChannelUserTwitterType]];
+	[request setPredicate:[NSPredicate predicateWithFormat:@"nm_relationship_type == %d AND nm_type == %d", NMRelationshipMe, NMChannelUserTwitterType]];
 	[request setReturnsObjectsAsFaults:NO];
 	
 	NSArray * result = [managedObjectContext executeFetchRequest:request error:nil];

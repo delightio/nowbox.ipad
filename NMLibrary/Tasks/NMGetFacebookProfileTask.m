@@ -30,7 +30,7 @@ NSString * const NMDidFailGetFacebookProfileNotification = @"NMDidFailGetFaceboo
 	self.userID = aProfile.nm_user_id;
 	self.targetID = aProfile.nm_id;
 	self.profile = aProfile;
-	profileOwnsByMe = [aProfile.nm_me boolValue];
+	profileOwnsByMe = [aProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	return self;
 }
 

@@ -18,7 +18,7 @@
 @dynamic nm_account_identifier;
 @dynamic nm_error;
 @dynamic nm_id;
-@dynamic nm_me;
+@dynamic nm_relationship_type;
 @dynamic nm_thumbnail_file_name;
 @dynamic nm_type;
 @dynamic nm_user_id;

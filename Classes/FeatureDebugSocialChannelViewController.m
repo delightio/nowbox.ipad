@@ -68,7 +68,7 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
 	NMChannel * chnObj = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	if ( [chnObj.subscription.personProfile.nm_me boolValue] ) {
+	if ( [chnObj.subscription.personProfile.nm_relationship_type boolValue] ) {
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
 	cell.textLabel.text = chnObj.title;

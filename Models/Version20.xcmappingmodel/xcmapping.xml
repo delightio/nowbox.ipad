@@ -91,7 +91,7 @@
     <object type="XDDEVRELATIONSHIPMAPPING" id="z110">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <attribute name="name" type="string">videos</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z155"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z111">
         <attribute name="name" type="string">view_count</attribute>
@@ -117,7 +117,7 @@
     <object type="XDDEVRELATIONSHIPMAPPING" id="z116">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <attribute name="name" type="string">previewThumbnails</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z155"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z117">
         <attribute name="name" type="string">nm_user_id</attribute>
@@ -288,8 +288,8 @@
         <attribute name="destinationname" type="string">NMChannel</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z189"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z195 z129 z162 z112 z166 z215 z169 z198 z151 z106"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z210 z214 z211 z110 z116"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z195 z169 z129 z112 z198 z151 z215 z166 z106 z162"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z211 z214"></relationship>
     </object>
     <object type="XDDEVRELATIONSHIPMAPPING" id="z156">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
@@ -564,7 +564,7 @@ cBIAAYagrxEMMgAHAAgAFwAzADQANQBTAFQAVQBWAFcAWABZAFoAWwBcAF0AXgBfAHoAewB8AIIAgwCP
     <object type="XDDEVRELATIONSHIPMAPPING" id="z210">
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <attribute name="name" type="string">subscription</attribute>
-        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z155"></relationship>
+        <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING"></relationship>
     </object>
     <object type="XDDEVRELATIONSHIPMAPPING" id="z211">
         <attribute name="autogenerateexpression" type="bool">1</attribute>

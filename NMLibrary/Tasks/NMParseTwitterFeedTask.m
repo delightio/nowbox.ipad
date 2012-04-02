@@ -41,7 +41,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	self.account = acObj;
 	self.since_id = chnObj.subscription.nm_since_id;
 	NMPersonProfile * thePerson = chnObj.subscription.personProfile;
-	isAccountOwner = [thePerson.nm_me boolValue];
+	isAccountOwner = [thePerson.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.user_id = thePerson.nm_user_id;
 	return self;
 }
@@ -54,7 +54,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 	self.since_id = [aDict objectForKey:@"since_id"];
 	self.page = [[aDict objectForKey:@"next_page"] integerValue];
 	NMPersonProfile * thePerson = _channel.subscription.personProfile;
-	isAccountOwner = [thePerson.nm_me boolValue];
+	isAccountOwner = [thePerson.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.user_id = thePerson.nm_user_id;
 	return self;
 }
