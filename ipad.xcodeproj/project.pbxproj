@@ -75,6 +75,9 @@
 		8355669B14EF37FE009195FB /* progress-gray-side@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8355669714EF37FD009195FB /* progress-gray-side@2x~iphone.png */; };
 		8355669C14EF37FE009195FB /* progress-gray-side~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8355669814EF37FD009195FB /* progress-gray-side~iphone.png */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
+		837437F415268F7200EF7F36 /* FacebookLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837437F315268F7200EF7F36 /* FacebookLoginViewController.m */; };
+		837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837437F71526939300EF7F36 /* FacebookLoginViewController.xib */; };
+		837437F91526954300EF7F36 /* PhoneOnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */; };
 		83771E0F1523A88900775779 /* Default@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 83771E0D1523A88900775779 /* Default@2x~iphone.png */; };
 		83771E101523A88900775779 /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 83771E0E1523A88900775779 /* Default~iphone.png */; };
 		83771E121523A99E00775779 /* PhoneOnBoardProcessViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83771E111523A99E00775779 /* PhoneOnBoardProcessViewController.xib */; };
@@ -646,7 +649,6 @@
 		837EE25015266375001ACFC2 /* FeatureDebugMentionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D339461506B700006163A6 /* FeatureDebugMentionsViewController.m */; };
 		837EE25115266375001ACFC2 /* CommentShareView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83804295150AA692009B9741 /* CommentShareView.m */; };
 		837EE25215266375001ACFC2 /* NSString+Formatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B330FB150E9DA400E9F9DE /* NSString+Formatting.m */; };
-		837EE25315266375001ACFC2 /* PhoneOnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */; };
 		837EE25515266375001ACFC2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A956EE1614CD70AD001C5C7E /* Accounts.framework */; };
 		837EE25615266375001ACFC2 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D65D214CD55280033F661 /* Twitter.framework */; };
 		837EE25715266375001ACFC2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
@@ -1280,6 +1282,9 @@
 		8355669814EF37FD009195FB /* progress-gray-side~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-gray-side~iphone.png"; sourceTree = "<group>"; };
 		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
 		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
+		837437F215268F7200EF7F36 /* FacebookLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginViewController.h; sourceTree = "<group>"; };
+		837437F315268F7200EF7F36 /* FacebookLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginViewController.m; sourceTree = "<group>"; };
+		837437F71526939300EF7F36 /* FacebookLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FacebookLoginViewController.xib; sourceTree = "<group>"; };
 		83771E0D1523A88900775779 /* Default@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x~iphone.png"; sourceTree = "<group>"; };
 		83771E0E1523A88900775779 /* Default~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default~iphone.png"; sourceTree = "<group>"; };
 		83771E111523A99E00775779 /* PhoneOnBoardProcessViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhoneOnBoardProcessViewController.xib; sourceTree = "<group>"; };
@@ -2032,6 +2037,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		837437F61526937F00EF7F36 /* Friendbox */ = {
+			isa = PBXGroup;
+			children = (
+				837437F71526939300EF7F36 /* FacebookLoginViewController.xib */,
+			);
+			name = Friendbox;
+			sourceTree = "<group>";
+		};
 		837A299414E1C8B500065F32 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -2070,6 +2083,8 @@
 				837A298914E1B2D300065F32 /* LaunchViewController.m */,
 				83771E2E1523BCD400775779 /* PhoneOnBoardProcessViewController.h */,
 				83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */,
+				837437F215268F7200EF7F36 /* FacebookLoginViewController.h */,
+				837437F315268F7200EF7F36 /* FacebookLoginViewController.m */,
 				8384CD5C14E081AF00444755 /* GridViewController.h */,
 				8384CD5D14E081AF00444755 /* GridViewController.m */,
 				A9A641DA146205CC0032EFE1 /* PhoneVideoPlaybackViewController.h */,
@@ -2161,6 +2176,7 @@
 		838106021491779E00B3FCE5 /* iPhone */ = {
 			isa = PBXGroup;
 			children = (
+				837437F61526937F00EF7F36 /* Friendbox */,
 				837A298A14E1B2D300065F32 /* LaunchViewController.xib */,
 				83771E111523A99E00775779 /* PhoneOnBoardProcessViewController.xib */,
 				83771E2C1523BA5B00775779 /* OnBoardProcessCategoryView~iphone.xib */,
@@ -3630,6 +3646,7 @@
 				837EE279152670E3001ACFC2 /* phone_button_share_cancel@2x.png in Resources */,
 				837EE27D1526829E001ACFC2 /* phone_video_share_thumbnail.png in Resources */,
 				837EE27F1526829E001ACFC2 /* phone_video_share_thumbnail@2x.png in Resources */,
+				837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4183,7 +4200,8 @@
 				837EE25015266375001ACFC2 /* FeatureDebugMentionsViewController.m in Sources */,
 				837EE25115266375001ACFC2 /* CommentShareView.m in Sources */,
 				837EE25215266375001ACFC2 /* NSString+Formatting.m in Sources */,
-				837EE25315266375001ACFC2 /* PhoneOnBoardProcessViewController.m in Sources */,
+				837437F415268F7200EF7F36 /* FacebookLoginViewController.m in Sources */,
+				837437F91526954300EF7F36 /* PhoneOnBoardProcessViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

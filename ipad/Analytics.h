@@ -72,6 +72,7 @@
 #define AnalyticsPropertyAuthFacebook @"Facebook Enabled"
 #define AnalyticsPropertyAuthTwitter @"Twitter Enabled"
 #define AnalyticsPropertyAuthYouTube @"YouTube Enabled"
+#define AnalyticsPropertyProductName @"Product Name"
 #define AnalyticsPropertyChannelName @"Channel Name"
 #define AnalyticsPropertySocialChannel @"Social Channel"
 #define AnalyticsPropertySender @"Sender"

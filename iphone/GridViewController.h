@@ -26,6 +26,7 @@
 @property (nonatomic, retain) GridDataSource *gridDataSource;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
+- (id)initWithDataSource:(GridDataSource *)aDataSource managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext nibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 - (id)initWithManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext nibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 - (IBAction)refreshButtonPressed:(id)sender;
 - (IBAction)backButtonPressed:(id)sender;

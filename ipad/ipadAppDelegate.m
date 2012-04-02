@@ -8,6 +8,8 @@
 
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
+#import "LaunchViewController.h"
+#import "FacebookLoginViewController.h"
 #import "GridViewController.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
@@ -108,13 +110,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  nil]];
 }
 
-- (void)awakeFromNib {
-	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
-    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
-        ((VideoPlaybackViewController *)viewController).managedObjectContext = self.managedObjectContext;
-    }
-}
-
 - (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
 	if ( stopShowingError ) return;
 	NSError * error = [[aNotification userInfo] objectForKey:@"error"];
@@ -175,7 +170,8 @@ NSInteger NM_LAST_CHANNEL_ID;
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, 
                                        [NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
                                        [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
-                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
+                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, 
+                                       NM_PRODUCT_NAME, AnalyticsPropertyProductName, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     appStartTime = sessionStartTime;
@@ -220,10 +216,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	[NMStyleUtility sharedStyleUtility];
     
-    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
-        ((VideoPlaybackViewController *)viewController).appDelegate = self;
-    }
-    
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
@@ -242,6 +234,30 @@ NSInteger NM_LAST_CHANNEL_ID;
 		[[NMCacheController sharedCacheController] removeAllFiles];
 	}
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
+    
+#ifdef FRIENDBOX
+    UIViewController *rootViewController = [[FacebookLoginViewController alloc] initWithManagedObjectContext:self.managedObjectContext
+                                                                                                     nibName:@"FacebookLoginViewController"
+                                                                                                      bundle:nil];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
+    navigationController.navigationBarHidden = YES;
+    self.viewController = navigationController;
+    [navigationController release];
+    [rootViewController release];
+#else
+    if (NM_RUNNING_ON_IPAD) {
+        VideoPlaybackViewController *playbackViewController = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
+        playbackViewController.appDelegate = self;
+        playbackViewController.managedObjectContext = self.managedObjectContext;
+        self.viewController = playbackViewController;
+        [playbackViewController release];
+    } else {
+        LaunchViewController *launchViewController = [[LaunchViewController alloc] initWithNibName:@"LaunchViewController" bundle:nil];
+        launchViewController.delegate = self;
+        self.viewController = launchViewController;
+        [launchViewController release];
+    }
+#endif
     
 	self.window.rootViewController = viewController;
 	[self.window makeKeyAndVisible];
@@ -517,7 +533,6 @@ NSInteger NM_LAST_CHANNEL_ID;
     
     [gridViewController release];
     [navigationController release];
-    [launchViewController release];
 }
 
 @end
