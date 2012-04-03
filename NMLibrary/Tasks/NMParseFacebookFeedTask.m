@@ -238,7 +238,8 @@ static NSArray * youTubeRegexArray = nil;
 				vdo = [ctrl insertNewVideo];
 				vdo.channel = _channel;
 				vdo.nm_session_id = NM_SESSION_ID;
-				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				// sort order of video == date when the video was posted
+				vdo.nm_sort_order = [vdoFeedDict objectForKey:@"created_time"];
 				vdo.video = conVdo;
 				// check if the set contains the info from this person already
 				NSSet * fbMtnSet = conVdo.socialMentions;
@@ -276,7 +277,7 @@ static NSArray * youTubeRegexArray = nil;
 				vdo.video = conVdo;
 				vdo.channel = _channel;
 				vdo.nm_session_id = NM_SESSION_ID;
-				vdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
+				vdo.nm_sort_order = [vdoFeedDict objectForKey:@"created_time"];
 				// create facebook info
 				fbInfo = [ctrl insertNewSocialInfo];
 				fbInfo.video = conVdo;
@@ -293,7 +294,6 @@ static NSArray * youTubeRegexArray = nil;
 			case NMVideoExistsAndInChannel:
 			{
 				// update sort order
-				vdo.nm_sort_order = [NSNumber numberWithInt:theOrder + idx];
 				vdo.nm_session_id = NM_SESSION_ID;
 				// update for mentions
 				conVdo = vdo.video;
