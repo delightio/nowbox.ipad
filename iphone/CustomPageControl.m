@@ -56,9 +56,7 @@
 }
 
 - (void)drawRect:(CGRect)rect
-{
-    if (numberOfPages <= 1) return;
-    
+{    
     overallWidth = (dotWidth + dotSpacing) * numberOfPages - dotSpacing;
     
     CGFloat startX = (self.frame.size.width - overallWidth) / 2;
