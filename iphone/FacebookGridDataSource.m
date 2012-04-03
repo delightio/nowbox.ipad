@@ -105,7 +105,7 @@
     cell.label.text = channel.title;
     
     NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
-    NMVideo *latestVideo = [dataController latestVideoForChannel:channel];
+    NMVideo *latestVideo = [dataController highestSortOrderVideoForChannel:channel];
     
     if (latestVideo) {
         [cell.image setImageForVideoThumbnail:latestVideo];
