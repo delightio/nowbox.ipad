@@ -51,6 +51,8 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
+		83038185152B9C560044A480 /* phone_home_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038183152B9C560044A480 /* phone_home_logo.png */; };
+		83038186152B9C560044A480 /* phone_home_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038184152B9C560044A480 /* phone_home_logo@2x.png */; };
 		8305574F14EDD609004048F7 /* playback-play~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574D14EDD609004048F7 /* playback-play~iphone.png */; };
 		8305575014EDD609004048F7 /* playback-play@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */; };
 		8305575214EDE773004048F7 /* MovieDetailInfoView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */; };
@@ -351,8 +353,6 @@
 		837EE12115266375001ACFC2 /* GridViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD5E14E081AF00444755 /* GridViewController.xib */; };
 		837EE12215266375001ACFC2 /* phone_home_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6314E082B500444755 /* phone_home_background.png */; };
 		837EE12315266375001ACFC2 /* phone_home_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6414E082B500444755 /* phone_home_background@2x.png */; };
-		837EE12415266375001ACFC2 /* phone_home_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6814E0836600444755 /* phone_home_logo.png */; };
-		837EE12515266375001ACFC2 /* phone_home_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6914E0836600444755 /* phone_home_logo@2x.png */; };
 		837EE12615266375001ACFC2 /* phone_button_refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7814E0893E00444755 /* phone_button_refresh.png */; };
 		837EE12715266375001ACFC2 /* phone_button_refresh@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7914E0893E00444755 /* phone_button_refresh@2x.png */; };
 		837EE12815266375001ACFC2 /* phone_button_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7C14E089F700444755 /* phone_button_settings.png */; };
@@ -1259,6 +1259,8 @@
 		22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchChannelViewController.xib; path = Classes/SearchChannelViewController.xib; sourceTree = "<group>"; };
 		22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+KeyboardDismiss.h"; sourceTree = "<group>"; };
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
+		83038183152B9C560044A480 /* phone_home_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_home_logo.png; sourceTree = "<group>"; };
+		83038184152B9C560044A480 /* phone_home_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_home_logo@2x.png"; sourceTree = "<group>"; };
 		8305574D14EDD609004048F7 /* playback-play~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play~iphone.png"; sourceTree = "<group>"; };
 		8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play@2x~iphone.png"; sourceTree = "<group>"; };
 		8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "MovieDetailInfoView~iphone.xib"; sourceTree = "<group>"; };
@@ -1349,7 +1351,7 @@
 		837E904914587FA3009F32DD /* MixpanelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelEvent.h; sourceTree = "<group>"; };
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
 		837EE26915266375001ACFC2 /* Friendbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Friendbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		837EE26B15266376001ACFC2 /* Friendbox-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Friendbox-Info.plist"; path = "/Users/chris/nowbox/git/nowmov.ipad/Friendbox-Info.plist"; sourceTree = "<absolute>"; };
+		837EE26B15266376001ACFC2 /* Friendbox-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Friendbox-Info.plist"; path = "/Users/chris/nowbox/git/nowmov.ipad/Friendbox/Friendbox-Info.plist"; sourceTree = "<absolute>"; };
 		837EE26E152670E3001ACFC2 /* phone_button_share_cancel_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_share_cancel_active.png; sourceTree = "<group>"; };
 		837EE26F152670E3001ACFC2 /* phone_button_share_cancel_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_share_cancel_active@2x.png"; sourceTree = "<group>"; };
 		837EE270152670E3001ACFC2 /* phone_button_share_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_share_cancel.png; sourceTree = "<group>"; };
@@ -2049,12 +2051,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		83038182152B9C560044A480 /* Friendbox */ = {
+			isa = PBXGroup;
+			children = (
+				83038183152B9C560044A480 /* phone_home_logo.png */,
+				83038184152B9C560044A480 /* phone_home_logo@2x.png */,
+			);
+			path = Friendbox;
+			sourceTree = "<group>";
+		};
 		837437F61526937F00EF7F36 /* Friendbox */ = {
 			isa = PBXGroup;
 			children = (
 				837437F71526939300EF7F36 /* FacebookLoginViewController.xib */,
 			);
-			name = Friendbox;
+			path = Friendbox;
 			sourceTree = "<group>";
 		};
 		837A299414E1C8B500065F32 /* Views */ = {
@@ -2095,8 +2106,6 @@
 				837A298914E1B2D300065F32 /* LaunchViewController.m */,
 				83771E2E1523BCD400775779 /* PhoneOnBoardProcessViewController.h */,
 				83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */,
-				837437F215268F7200EF7F36 /* FacebookLoginViewController.h */,
-				837437F315268F7200EF7F36 /* FacebookLoginViewController.m */,
 				8384CD5C14E081AF00444755 /* GridViewController.h */,
 				8384CD5D14E081AF00444755 /* GridViewController.m */,
 				A9A641DA146205CC0032EFE1 /* PhoneVideoPlaybackViewController.h */,
@@ -2182,14 +2191,15 @@
 			children = (
 				837EE26B15266376001ACFC2 /* Friendbox-Info.plist */,
 				8365A339152A4CB0008839E6 /* Settings.bundle */,
+				837437F215268F7200EF7F36 /* FacebookLoginViewController.h */,
+				837437F315268F7200EF7F36 /* FacebookLoginViewController.m */,
 			);
-			name = Friendbox;
+			path = Friendbox;
 			sourceTree = "<group>";
 		};
 		838106021491779E00B3FCE5 /* iPhone */ = {
 			isa = PBXGroup;
 			children = (
-				837437F61526937F00EF7F36 /* Friendbox */,
 				837A298A14E1B2D300065F32 /* LaunchViewController.xib */,
 				83771E111523A99E00775779 /* PhoneOnBoardProcessViewController.xib */,
 				83771E2C1523BA5B00775779 /* OnBoardProcessCategoryView~iphone.xib */,
@@ -2638,6 +2648,7 @@
 		A970501813438F860022BF2C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				83038182152B9C560044A480 /* Friendbox */,
 				8384CD6214E082B500444755 /* iPhone */,
 				A955268E150ED0AE00585856 /* airplay@2x.png */,
 				A955268F150ED0AE00585856 /* button-like-active@2x.png */,
@@ -3026,6 +3037,7 @@
 		A97050A213438F980022BF2C /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				837437F61526937F00EF7F36 /* Friendbox */,
 				838106021491779E00B3FCE5 /* iPhone */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
@@ -3447,8 +3459,6 @@
 				837EE12115266375001ACFC2 /* GridViewController.xib in Resources */,
 				837EE12215266375001ACFC2 /* phone_home_background.png in Resources */,
 				837EE12315266375001ACFC2 /* phone_home_background@2x.png in Resources */,
-				837EE12415266375001ACFC2 /* phone_home_logo.png in Resources */,
-				837EE12515266375001ACFC2 /* phone_home_logo@2x.png in Resources */,
 				837EE12615266375001ACFC2 /* phone_button_refresh.png in Resources */,
 				837EE12715266375001ACFC2 /* phone_button_refresh@2x.png in Resources */,
 				837EE12815266375001ACFC2 /* phone_button_settings.png in Resources */,
@@ -3661,6 +3671,8 @@
 				837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */,
 				8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */,
 				8365A341152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */,
+				83038185152B9C560044A480 /* phone_home_logo.png in Resources */,
+				83038186152B9C560044A480 /* phone_home_logo@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4125,7 +4137,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env python";
-			shellScript = "#! /usr/bin/env python\nimport os\nfrom AppKit import NSMutableDictionary\n\n### This script updates the version number in Settings.bundle ###\n\nsettings_file_path = 'Settings.bundle/Root.plist' # the relative path from the project folder to your settings bundle\nsettings_key = 'version_preference' # the key of your settings version\n\n# these environment variables are set in the XCode build phase\nif 'PRODUCT_SETTINGS_PATH' in os.environ.keys():\n    info_path = os.environ.get('PRODUCT_SETTINGS_PATH')\n\nif 'PROJECT_DIR' in os.environ.keys():\n    settings_path = os.path.join(os.environ.get('PROJECT_DIR'), settings_file_path)\n\n# reading info.plist file\nproject_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info_path)\nproject_bundle_version = project_plist['CFBundleVersion']\n\n# print 'project_bundle_version: '+project_bundle_version\n\n# reading settings plist\nsettings_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(settings_path)\nfor dictionary in settings_plist['PreferenceSpecifiers']:\n    if 'Key' in dictionary and dictionary['Key'] == settings_key:\n        dictionary['DefaultValue'] = project_bundle_version\n\n# print repr(settings_plist)\nsettings_plist.writeToFile_atomically_(settings_path, True)";
+			shellScript = "#! /usr/bin/env python\nimport os\nfrom AppKit import NSMutableDictionary\n\n### This script updates the version number in Settings.bundle ###\n\nsettings_file_path = 'Friendbox/Settings.bundle/Root.plist' # the relative path from the project folder to your settings bundle\nsettings_key = 'version_preference' # the key of your settings version\n\n# these environment variables are set in the XCode build phase\nif 'PRODUCT_SETTINGS_PATH' in os.environ.keys():\n    info_path = os.environ.get('PRODUCT_SETTINGS_PATH')\n\nif 'PROJECT_DIR' in os.environ.keys():\n    settings_path = os.path.join(os.environ.get('PROJECT_DIR'), settings_file_path)\n\n# reading info.plist file\nproject_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info_path)\nproject_bundle_version = project_plist['CFBundleVersion']\n\n# print 'project_bundle_version: '+project_bundle_version\n\n# reading settings plist\nsettings_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(settings_path)\nfor dictionary in settings_plist['PreferenceSpecifiers']:\n    if 'Key' in dictionary and dictionary['Key'] == settings_key:\n        dictionary['DefaultValue'] = project_bundle_version\n\n# print repr(settings_plist)\nsettings_plist.writeToFile_atomically_(settings_path, True)";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -4455,7 +4467,7 @@
 					FRIENDBOX,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "Friendbox-Info.plist";
+				INFOPLIST_FILE = "Friendbox/Friendbox-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
@@ -4491,7 +4503,7 @@
 					FRIENDBOX,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "Friendbox-Info.plist";
+				INFOPLIST_FILE = "Friendbox/Friendbox-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
@@ -4528,7 +4540,7 @@
 					FRIENDBOX,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "Friendbox-Info.plist";
+				INFOPLIST_FILE = "Friendbox/Friendbox-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
