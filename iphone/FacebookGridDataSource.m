@@ -223,7 +223,7 @@
 
 - (BOOL)gridView:(PagingGridView *)gridView canDeleteItemAtIndex:(NSUInteger)index
 {
-    return NO;
+    return index > 1;
 }
 
 - (NSUInteger)gridView:(PagingGridView *)gridView columnSpanForCellAtIndex:(NSUInteger)index
