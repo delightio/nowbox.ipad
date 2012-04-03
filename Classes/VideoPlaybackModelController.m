@@ -134,7 +134,11 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
 	// check if there's video to play
 	if ( numberOfVideos ) {
 		// check if we need to go back to the last video
-		NMVideo * lastSessVid = [nowboxTaskController.dataController lastSessionVideoForChannel:aChn];
+#ifdef FRIENDBOX
+		NMVideo * lastSessVid = [nowboxTaskController.dataController highestSortOrderVideoForChannel:aChn];
+#else
+		NMVideo * lastSessVid = [nowboxTaskController.dataController lastSessionVideoForChannel:aChn];        
+#endif
 		if ( lastSessVid ) {
 			// we can find the last watched video.
 			self.currentIndexPath = [self.fetchedResultsController indexPathForObject:lastSessVid];
