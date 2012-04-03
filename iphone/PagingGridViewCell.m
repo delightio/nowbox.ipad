@@ -54,7 +54,7 @@
         // Set the font depending on if it's available (iOS 4 doesn't have Futura Condensed Medium)
         UIFont *font = [UIFont fontWithName:@"Futura-CondensedMedium" size:label.font.pointSize];
         if (!font) {
-            font = [UIFont fontWithName:@"Futura-Medium" size:18];
+            font = [UIFont fontWithName:@"Futura-Medium" size:14];
         }
         [label setFont:font];
         [label setGlowColor:[UIColor colorWithWhite:0.0 alpha:0.6]];
@@ -170,7 +170,7 @@
         NSInteger columnSpanDifference = (NSInteger)aColumnSpan - (NSInteger)columnSpan;
         
         // Increase/decrease the font size accordingly
-        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize + columnSpanDifference * 10.0f];
+        label.font = [UIFont fontWithName:label.font.fontName size:label.font.pointSize + columnSpanDifference * 3.0f];
         
         // Increase/decrease the delete button position accordingly
         deleteButton.center = CGPointMake(deleteButton.center.x + columnSpanDifference * 11.0f, deleteButton.center.y);

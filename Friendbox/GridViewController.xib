@@ -55,10 +55,10 @@
 					<object class="IBUIButton" id="756713852">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{12, 13}, {109, 21}}</string>
+						<string key="NSFrame">{{13, 15}, {109, 21}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="1045571315"/>
+						<reference key="NSNextKeyView" ref="416531829"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -94,10 +94,10 @@
 					<object class="IBUIButton" id="416531829">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">289</int>
-						<string key="NSFrame">{{274, -1}, {50, 50}}</string>
+						<string key="NSFrame">{{274, -2}, {50, 50}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="48873568"/>
+						<reference key="NSNextKeyView" ref="1045571315"/>
 						<string key="NSReuseIdentifierKey">_NS:225</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -136,10 +136,10 @@
 					<object class="IBUIScrollView" id="1045571315">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{0, 47}, {320, 376}}</string>
+						<string key="NSFrame">{{0, 50}, {320, 373}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="416531829"/>
+						<reference key="NSNextKeyView" ref="48873568"/>
 						<string key="NSReuseIdentifierKey">_NS:190</string>
 						<bool key="IBUIMultipleTouchEnabled">YES</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -445,7 +445,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="friendbox_home_logo.png">{109, 21}</string>
-			<string key="phone_button_refresh.png">{18, 21}</string>
+			<string key="phone_button_refresh.png">{39, 40}</string>
 			<string key="phone_home_background.png">{320, 460}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1181</string>

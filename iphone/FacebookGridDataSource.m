@@ -9,7 +9,7 @@
 #import "FacebookGridDataSource.h"
 
 @interface FacebookGridDataSource (PrivateMethods)
-- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate;
+- (void)configureCell:(PagingGridViewCell *)cell forIndex:(NSUInteger)index isUpdate:(BOOL)isUpdate;
 @end
 
 @implementation FacebookGridDataSource
@@ -39,13 +39,18 @@
 - (NMChannel *)selectObjectAtIndex:(NSUInteger)index
 {
     NMChannel *channel = [[self objectAtIndex:index] channel];
-    
-    if (index > 0) {
-        // Start crawling user's feed for more videos
-        [[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForChannel:channel];
+    NMVideo *latestVideo = [[NMTaskQueueController sharedTaskQueueController].dataController highestSortOrderVideoForChannel:channel];
+
+    if (latestVideo) {
+        if (index > 0) {
+            // Start crawling user's feed for more videos
+            [[NMTaskQueueController sharedTaskQueueController] issueProcessFeedForChannel:channel];
+        }    
+        return channel;
     }
     
-    return channel;
+    // No videos, we can't go to the player yet
+    return nil;
 }
 
 - (id)objectAtIndex:(NSUInteger)index
@@ -100,19 +105,23 @@
     [[NMTaskQueueController sharedTaskQueueController] issueSubscribe:NO channel:subscriptionToDelete.channel];
 }
 
-- (void)configureCell:(PagingGridViewCell *)cell forChannel:(NMChannel *)channel isUpdate:(BOOL)isUpdate
+- (void)configureCell:(PagingGridViewCell *)cell forIndex:(NSUInteger)index isUpdate:(BOOL)isUpdate
 {
-    cell.label.text = channel.title;
-    
+    NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];    
     NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
     NMVideo *latestVideo = [dataController highestSortOrderVideoForChannel:channel];
+        
+    cell.authorView.hidden = NO;
+    if (index == 0) {
+        cell.label.text = @"News Feed";
+        [cell.authorImage setImageDirectly:[UIImage imageNamed:@"phone_grid_author_facebook.png"]];
+    } else {
+        cell.label.text = channel.title;
+        [cell.authorImage setImageForChannel:channel];
+    }
     
     if (latestVideo) {
         [cell.image setImageForVideoThumbnail:latestVideo];
-        cell.authorView.hidden = NO;
-        [cell.authorImage setImageForChannel:channel];
-    } else {
-        [cell.image setImageForChannel:channel];
     }
     
     if ([[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue] == NMSyncSyncInProgress) {
@@ -136,8 +145,7 @@
     // Facebook sync status updated, we have imported some videos. Update each cell without reloading the view.
     for (PagingGridViewCell *cell in self.gridView.visibleCells) {
         NSUInteger frcIndex = [self mappedFetchedResultsIndexForGridIndex:cell.index];
-        NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:frcIndex inSection:0]] channel];
-        [self configureCell:cell forChannel:channel isUpdate:YES];
+        [self configureCell:cell forIndex:frcIndex isUpdate:YES];
     }
 }
 
@@ -180,10 +188,9 @@
 {    
     if (type == NSFetchedResultsChangeUpdate) {
         // Don't replace the cell, it messes up our drags. Just change the properties of the old one.
-        NMChannel *channel = [(NMSubscription *)anObject channel];
         NSUInteger gridIndex = [self mappedGridIndexForFetchedResultsIndex:indexPath.row];
         PagingGridViewCell *cell = [self.gridView cellForIndex:gridIndex];
-        [self configureCell:cell forChannel:channel isUpdate:YES];
+        [self configureCell:cell forIndex:indexPath.row isUpdate:YES];
     } else {
         [super controller:controller didChangeObject:anObject atIndexPath:indexPath forChangeType:type newIndexPath:newIndexPath];
     }
@@ -209,8 +216,7 @@
     }
     
     index = [self mappedFetchedResultsIndexForGridIndex:index];
-    NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]] channel];
-    [self configureCell:view forChannel:channel isUpdate:NO];
+    [self configureCell:view forIndex:index isUpdate:NO];
     
     return view;
 }
