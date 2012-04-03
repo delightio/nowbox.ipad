@@ -30,6 +30,8 @@
 @synthesize internalPadding;
 @synthesize externalPadding;
 @synthesize rearranging;
+@synthesize visibleIndexes;
+@synthesize visibleCells;
 @synthesize dataSource;
 @synthesize gridDelegate;
 
@@ -41,8 +43,8 @@
     externalPadding = CGSizeMake(12, 0);
     
     visibleIndexes = [[NSMutableIndexSet alloc] init];
-    visibleViews = [[NSMutableSet alloc] init];
-    recycledViews = [[NSMutableSet alloc] init];
+    visibleCells = [[NSMutableSet alloc] init];
+    recycledCells = [[NSMutableSet alloc] init];
     
     self.pagingEnabled = YES;
     self.showsHorizontalScrollIndicator = NO;
@@ -77,8 +79,8 @@
     [rearrangePageSwitchTimer invalidate];
     
     [visibleIndexes release];
-    [visibleViews release];
-    [recycledViews release];
+    [visibleCells release];
+    [recycledCells release];
     
     [super dealloc];
 }
@@ -91,7 +93,7 @@
     
     // Can we remove any views that are offscreen?
     NSMutableSet *viewsToRemove = [NSMutableSet set];
-    for (PagingGridViewCell *view in visibleViews) {
+    for (PagingGridViewCell *view in visibleCells) {
         // If a subview is being dragged, keep it's position relative to the superview
         if ([view isDragging]) {
             view.center = CGPointMake(view.lastDragLocation.x + self.contentOffset.x, view.lastDragLocation.y + self.contentOffset.y);
@@ -101,10 +103,10 @@
             [viewsToRemove addObject:view];
             [view removeFromSuperview];
             [visibleIndexes removeIndex:index];
-            [recycledViews addObject:view];
+            [recycledCells addObject:view];
         }
     }
-    [visibleViews minusSet:viewsToRemove];
+    [visibleCells minusSet:viewsToRemove];
     
     // Do we need to add any views that came onscreen?
     CGFloat currentPageFloat = MAX(0, self.contentOffset.x / self.frame.size.width);
@@ -169,10 +171,10 @@
     [UIView animateWithDuration:0.3
                      animations:^{
                          [newCells setValue:[NSNumber numberWithFloat:1.0f] forKey:@"alpha"];
-                         [visibleViews setValue:[NSNumber numberWithFloat:0.0f] forKey:@"alpha"];   
+                         [visibleCells setValue:[NSNumber numberWithFloat:0.0f] forKey:@"alpha"];   
                      }
                      completion:^(BOOL finished){
-                         [visibleViews setValue:[NSNumber numberWithFloat:1.0f] forKey:@"alpha"];   
+                         [visibleCells setValue:[NSNumber numberWithFloat:1.0f] forKey:@"alpha"];   
                          for (PagingGridViewCell *cell in newCells) {
                              [cell removeFromSuperview];
                          }
@@ -233,7 +235,7 @@
     rearranging = isRearranging;
     
 //    BOOL areAnyCellsEditing = NO;
-    for (PagingGridViewCell *cell in visibleViews) {
+    for (PagingGridViewCell *cell in visibleCells) {
         if (rearranging) {
             cell.lastDragLocation = CGPointMake(cell.center.x - self.contentOffset.x, cell.center.y - self.contentOffset.y);
         }
@@ -336,7 +338,7 @@
         view.frame = [self frameForIndex:index columnSpan:view.columnSpan rowSpan:view.rowSpan];
         view.editing = rearranging;
 
-        [visibleViews addObject:view];
+        [visibleCells addObject:view];
         [self addSubview:view];    
     }
     
@@ -348,7 +350,7 @@
 - (void)repositionCell:(PagingGridViewCell *)repositioningView fromIndex:(NSUInteger)oldIndex toIndex:(NSUInteger)newIndex animated:(BOOL)animated
 {
     void (^repositionCells)(void) = ^{ 
-        for (PagingGridViewCell *view in visibleViews) {
+        for (PagingGridViewCell *view in visibleCells) {
             NSUInteger index = view.index;
             if (view != repositioningView && ((index > oldIndex && index <= newIndex) || (index >= newIndex && index < oldIndex))) {
                 // This view is affected by the repositioning
@@ -378,7 +380,7 @@
     
     // Update the visible indexes
     [visibleIndexes removeAllIndexes];
-    for (PagingGridViewCell *view in visibleViews) {
+    for (PagingGridViewCell *view in visibleCells) {
         [visibleIndexes addIndex:view.index];
     }
 }
@@ -422,9 +424,9 @@
 
 - (PagingGridViewCell *)dequeueReusableCell
 {
-    PagingGridViewCell *view = [[[recycledViews anyObject] retain] autorelease];
+    PagingGridViewCell *view = [[[recycledCells anyObject] retain] autorelease];
     if (view) {
-        [recycledViews removeObject:view];
+        [recycledCells removeObject:view];
         
         // Reset the view to its original appearance
         [view.activityIndicator stopAnimating];
@@ -441,7 +443,7 @@
 
 - (PagingGridViewCell *)cellForIndex:(NSUInteger)index
 {
-    for (PagingGridViewCell *cell in visibleViews) {
+    for (PagingGridViewCell *cell in visibleCells) {
         if (cell.index == index) {
             return cell;
         }
@@ -462,11 +464,11 @@
     
     
     // Remove all visible views
-    for (UIView *view in visibleViews) {
+    for (UIView *view in visibleCells) {
         [view removeFromSuperview];
-        [recycledViews addObject:view];
+        [recycledCells addObject:view];
     }
-    [visibleViews removeAllObjects];
+    [visibleCells removeAllObjects];
     [visibleIndexes removeAllIndexes];
     
     [self setNeedsLayout];
@@ -493,7 +495,7 @@
 - (void)insertItemAtIndex:(NSUInteger)index
 {
     // Bump views that come after down by one
-    for (PagingGridViewCell *cell in visibleViews) {
+    for (PagingGridViewCell *cell in visibleCells) {
         if (cell.index >= index) {
             cell.frame = [self frameForIndex:++cell.index columnSpan:cell.columnSpan rowSpan:cell.rowSpan];
         }
@@ -501,7 +503,7 @@
     
     // Update visible indexes
     [visibleIndexes removeAllIndexes];
-    for (PagingGridViewCell *cell in visibleViews) {
+    for (PagingGridViewCell *cell in visibleCells) {
         [visibleIndexes addIndex:cell.index];
     }
     
@@ -533,7 +535,7 @@
     }
     
     // Bump views that come after up by one
-    for (PagingGridViewCell *cell in visibleViews) {
+    for (PagingGridViewCell *cell in visibleCells) {
         if (cell.index == index) {
             cellToRemove = cell;
         } else if (cell.index > index) {
@@ -553,12 +555,12 @@
     void (^removeCell)(BOOL) = ^(BOOL finished){        
         [cellToRemove removeFromSuperview];    
         cellToRemove.alpha = 1;
-        [recycledViews addObject:cellToRemove];
-        [visibleViews removeObject:cellToRemove];
+        [recycledCells addObject:cellToRemove];
+        [visibleCells removeObject:cellToRemove];
         
         // Update visible indexes
         [visibleIndexes removeAllIndexes];
-        for (PagingGridViewCell *cell in visibleViews) {
+        for (PagingGridViewCell *cell in visibleCells) {
             [visibleIndexes addIndex:cell.index];
         }
         
@@ -587,7 +589,7 @@
 - (void)updateItemAtIndex:(NSUInteger)index
 {
     PagingGridViewCell *cellToRemove = nil;
-    for (PagingGridViewCell *cell in visibleViews) {
+    for (PagingGridViewCell *cell in visibleCells) {
         if (cell.index == index) {
             cellToRemove = cell;
             break;
@@ -596,7 +598,7 @@
     
     if (cellToRemove) {
         [cellToRemove removeFromSuperview];
-        [visibleViews removeObject:cellToRemove];
+        [visibleCells removeObject:cellToRemove];
         
         [self addCellAtIndex:index];
     }

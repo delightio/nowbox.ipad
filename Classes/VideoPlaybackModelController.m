@@ -134,7 +134,11 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
 	// check if there's video to play
 	if ( numberOfVideos ) {
 		// check if we need to go back to the last video
-		NMVideo * lastSessVid = [nowboxTaskController.dataController lastSessionVideoForChannel:aChn];
+#ifdef FRIENDBOX
+		NMVideo * lastSessVid = [nowboxTaskController.dataController highestSortOrderVideoForChannel:aChn];
+#else
+		NMVideo * lastSessVid = [nowboxTaskController.dataController lastSessionVideoForChannel:aChn];        
+#endif
 		if ( lastSessVid ) {
 			// we can find the last watched video.
 			self.currentIndexPath = [self.fetchedResultsController indexPathForObject:lastSessVid];
@@ -480,9 +484,17 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
     [fetchRequest setFetchBatchSize:5];
     
     // Edit the sort key as appropriate.
+#ifdef FRIENDBOX
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:NO];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [sortDescriptor release];
+#else
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:YES];
 	NSSortDescriptor * timestampDesc = [[NSSortDescriptor alloc] initWithKey:@"nm_session_id" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:timestampDesc, sortDescriptor, nil];
+    [sortDescriptor release];
+	[timestampDesc release];
+#endif
     
     [fetchRequest setSortDescriptors:sortDescriptors];
     
@@ -494,8 +506,6 @@ static NSPredicate * playbackModelFilterPredicate_ = nil;
     
     [aFetchedResultsController release];
     [fetchRequest release];
-    [sortDescriptor release];
-	[timestampDesc release];
     [sortDescriptors release];
     
     NSError *error = nil;

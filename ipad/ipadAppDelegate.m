@@ -8,6 +8,8 @@
 
 #import "ipadAppDelegate.h"
 #import "VideoPlaybackViewController.h"
+#import "LaunchViewController.h"
+#import "FacebookLoginViewController.h"
 #import "GridViewController.h"
 #import "NMLibrary.h"
 #import "NMStyleUtility.h"
@@ -34,6 +36,7 @@ NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY = @"NM_USER_YOUTUBE_LAST_SYNC_KEY
 NSString * const NM_USER_TOKEN_KEY = @"NM_USER_TOKEN_KEY";
 NSString * const NM_USER_TOKEN_EXPIRY_DATE_KEY = @"NM_USER_TOKEN_EXPIRY_DATE_KEY";
 NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY = @"NM_SETTING_TWITTER_AUTO_POST_KEY";
+NSString * const NM_LOGOUT_ON_APP_START_PREFERENCE_KEY = @"NM_LOGOUT_ON_APP_START_PREFERENCE_KEY";
 // app session
 NSString * const NM_CHANNEL_LAST_UPDATE		= @"NM_CHANNEL_LAST_UPDATE";
 NSString * const NM_LAST_VIDEO_LIST_KEY		= @"NM_LAST_VIDEO_LIST_KEY";
@@ -51,6 +54,7 @@ NSString * const NM_FACEBOOK_ACCESS_TOKEN_KEY = @"FBAccessTokenKey";
 NSString * const NM_FACEBOOK_EXPIRATION_DATE_KEY = @"FBExpirationDateKey";
 // setting view
 NSString * const NM_VIDEO_QUALITY_KEY				= @"NM_VIDEO_QUALITY_KEY";
+NSString * const NM_VIDEO_QUALITY_PREFERENCE_KEY	= @"NM_VIDEO_QUALITY_PREFERENCE_KEY";
 //NSString * const NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY = @"NM_YOUTUBE_MOBILE_BROWSER_RESOLUTION_KEY";
 NSString * const NM_SHOW_FAVORITE_CHANNEL_KEY		= @"NM_SHOW_FAVORITE_CHANNEL_KEY";
 NSString * const NM_ENABLE_PUSH_NOTIFICATION_KEY	= @"NM_ENABLE_PUSH_NOTIFICATION_KEY";
@@ -88,6 +92,7 @@ NSInteger NM_LAST_CHANNEL_ID;
       zeroNum, NM_RATE_US_REMINDER_DEFER_COUNT_KEY,
       zeroNum, NM_SHARE_COUNT_KEY,
 	  zeroNum, NM_VIDEO_QUALITY_KEY,
+      noNum, NM_VIDEO_QUALITY_PREFERENCE_KEY,
 	  noNum,  NM_SESSION_ID_KEY, 
 	  yesNum, NM_FIRST_LAUNCH_KEY, 
 	  [NSNumber numberWithInteger:-99999], NM_LAST_CHANNEL_ID_KEY, 
@@ -100,19 +105,13 @@ NSInteger NM_LAST_CHANNEL_ID;
 	  noNum, NM_USER_HISTORY_CHANNEL_ID_KEY,
 	  yesNum, NM_SETTING_FACEBOOK_AUTO_POST_KEY,
 	  yesNum, NM_SETTING_TWITTER_AUTO_POST_KEY,
+      noNum, NM_LOGOUT_ON_APP_START_PREFERENCE_KEY,
 	  noNum, NM_USER_YOUTUBE_SYNC_ACTIVE_KEY,
 	  zeroNum, NM_USER_YOUTUBE_LAST_SYNC_KEY,
 	  [NSArray array], NM_LAST_VIDEO_LIST_KEY,
 	  @"", NM_FACEBOOK_ACCESS_TOKEN_KEY,
 	  dDate, NM_FACEBOOK_EXPIRATION_DATE_KEY,
 	  nil]];
-}
-
-- (void)awakeFromNib {
-	// when application:didFinishLaunchingWithOptions: is called the nib file may not have been loaded. Assign MOC to view controller here to ensure the view controller is loaded.
-    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
-        ((VideoPlaybackViewController *)viewController).managedObjectContext = self.managedObjectContext;
-    }
 }
 
 - (void)handleShowErrorAlertNotification:(NSNotification *)aNotification {
@@ -175,7 +174,8 @@ NSInteger NM_LAST_CHANNEL_ID;
                                        [NSNumber numberWithBool:NO], AnalyticsPropertyFullScreenChannelPanel, 
                                        [NSNumber numberWithBool:(NM_USER_FACEBOOK_CHANNEL_ID != 0)], AnalyticsPropertyAuthFacebook,
                                        [NSNumber numberWithBool:(NM_USER_TWITTER_CHANNEL_ID != 0)], AnalyticsPropertyAuthTwitter, 
-                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, nil]];
+                                       [NSNumber numberWithBool:NM_USER_YOUTUBE_SYNC_ACTIVE], AnalyticsPropertyAuthYouTube, 
+                                       NM_PRODUCT_NAME, AnalyticsPropertyProductName, nil]];
     
     sessionStartTime = [[NSDate date] timeIntervalSince1970];
     appStartTime = sessionStartTime;
@@ -220,10 +220,6 @@ NSInteger NM_LAST_CHANNEL_ID;
 	
 	[NMStyleUtility sharedStyleUtility];
     
-    if ([viewController isKindOfClass:[VideoPlaybackViewController class]]) {
-        ((VideoPlaybackViewController *)viewController).appDelegate = self;
-    }
-    
 	// create task controller
 	NMTaskQueueController * ctrl = [NMTaskQueueController sharedTaskQueueController];
 	ctrl.managedObjectContext = self.managedObjectContext;
@@ -242,6 +238,44 @@ NSInteger NM_LAST_CHANNEL_ID;
 		[[NMCacheController sharedCacheController] removeAllFiles];
 	}
 	NM_LAST_CHANNEL_ID = [userDefaults integerForKey:NM_LAST_CHANNEL_ID_KEY];
+	NM_USER_ACCOUNT_ID = [userDefaults integerForKey:NM_USER_ACCOUNT_ID_KEY];
+	NM_USER_WATCH_LATER_CHANNEL_ID = [userDefaults integerForKey:NM_USER_WATCH_LATER_CHANNEL_ID_KEY];
+	NM_USER_FAVORITES_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FAVORITES_CHANNEL_ID_KEY];
+	NM_USER_HISTORY_CHANNEL_ID = [userDefaults integerForKey:NM_USER_HISTORY_CHANNEL_ID_KEY];
+	NM_USER_TWITTER_CHANNEL_ID = [userDefaults integerForKey:NM_USER_TWITTER_CHANNEL_ID_KEY];
+	NM_USER_FACEBOOK_CHANNEL_ID = [userDefaults integerForKey:NM_USER_FACEBOOK_CHANNEL_ID_KEY];
+	NM_USER_YOUTUBE_SYNC_ACTIVE = [userDefaults boolForKey:NM_USER_YOUTUBE_SYNC_ACTIVE_KEY];
+	NM_USER_YOUTUBE_LAST_SYNC = [[userDefaults objectForKey:NM_USER_YOUTUBE_LAST_SYNC_KEY] unsignedIntegerValue];
+	NM_VIDEO_QUALITY = [userDefaults integerForKey:NM_VIDEO_QUALITY_KEY];
+	NM_USER_YOUTUBE_USER_NAME = [[userDefaults stringForKey:NM_USER_YOUTUBE_USER_NAME_KEY] retain];
+	NM_USER_SHOW_FAVORITE_CHANNEL = [userDefaults boolForKey:NM_SHOW_FAVORITE_CHANNEL_KEY];
+    NM_RATE_US_REMINDER_SHOWN = [userDefaults boolForKey:NM_RATE_US_REMINDER_SHOWN_KEY];
+    NM_RATE_US_REMINDER_DEFER_COUNT = [userDefaults integerForKey:NM_RATE_US_REMINDER_DEFER_COUNT_KEY];
+    NM_SHARE_COUNT = [userDefaults integerForKey:NM_SHARE_COUNT_KEY];
+    
+#ifdef FRIENDBOX
+    UIViewController *rootViewController = [[FacebookLoginViewController alloc] initWithManagedObjectContext:self.managedObjectContext
+                                                                                                     nibName:@"FacebookLoginViewController"
+                                                                                                      bundle:nil];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
+    navigationController.navigationBarHidden = YES;
+    self.viewController = navigationController;
+    [navigationController release];
+    [rootViewController release];
+#else
+    if (NM_RUNNING_ON_IPAD) {
+        VideoPlaybackViewController *playbackViewController = [[VideoPlaybackViewController alloc] initWithNibName:@"VideoPlaybackView" bundle:nil];
+        playbackViewController.appDelegate = self;
+        playbackViewController.managedObjectContext = self.managedObjectContext;
+        self.viewController = playbackViewController;
+        [playbackViewController release];
+    } else {
+        LaunchViewController *launchViewController = [[LaunchViewController alloc] initWithNibName:@"LaunchViewController" bundle:nil];
+        launchViewController.delegate = self;
+        self.viewController = launchViewController;
+        [launchViewController release];
+    }
+#endif
     
 	self.window.rootViewController = viewController;
 	[self.window makeKeyAndVisible];
@@ -328,6 +362,10 @@ NSInteger NM_LAST_CHANNEL_ID;
 {
     activeStartTime = [[NSDate date] timeIntervalSince1970];    
     lastTimeOnAppSinceInstall = [[NSUserDefaults standardUserDefaults] floatForKey:NM_TIME_ON_APP_SINCE_INSTALL_KEY];    
+
+    // User could have changed video quality in preferences
+    NM_VIDEO_QUALITY = [userDefaults boolForKey:NM_VIDEO_QUALITY_PREFERENCE_KEY] ? NMVideoQualityAutoSelect : NMVideoQualityAlwaysSD;
+    [userDefaults setInteger:NM_VIDEO_QUALITY forKey:NM_VIDEO_QUALITY_KEY];    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -496,7 +534,6 @@ NSInteger NM_LAST_CHANNEL_ID;
     
     [gridViewController release];
     [navigationController release];
-    [launchViewController release];
 }
 
 @end

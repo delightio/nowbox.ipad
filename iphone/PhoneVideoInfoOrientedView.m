@@ -51,6 +51,8 @@
     CAGradientLayer *mask = [CAGradientLayer layer];
     mask.frame = CGRectMake(0, 0, viewToMask.bounds.size.width, viewToMask.bounds.size.height * 2);
     mask.colors = [NSArray arrayWithObjects:
+                   (id)[UIColor clearColor].CGColor,
+                   (id)[UIColor clearColor].CGColor,
                    (id)[UIColor whiteColor].CGColor,
                    (id)[UIColor whiteColor].CGColor,                       
                    (id)[UIColor clearColor].CGColor, nil];
@@ -58,6 +60,8 @@
     mask.endPoint = CGPointMake(0.5, 1);
     mask.locations = [NSArray arrayWithObjects:
                       [NSNumber numberWithFloat:0],
+                      [NSNumber numberWithFloat:0.025],
+                      [NSNumber numberWithFloat:0.06],                      
                       [NSNumber numberWithFloat:0.25],
                       [NSNumber numberWithFloat:0.425], nil];
     viewToMask.layer.mask = mask; 
@@ -108,13 +112,10 @@
     // Size the title label to fit
     videoTitleLabel.frame = originalVideoTitleFrame;
     [videoTitleLabel sizeToFit];
-    CGRect frame = videoTitleLabel.frame;
-    frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
-    videoTitleLabel.frame = frame;
     
     if (infoPanelExpanded) {
         // Position the author label below the video title
-        frame = authorLabel.frame;
+        CGRect frame = authorLabel.frame;
         frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
         authorLabel.frame = frame;
         
@@ -132,7 +133,12 @@
         
         infoScrollView.contentSize = CGSizeMake(infoScrollView.frame.size.width, CGRectGetMaxY(descriptionLabel.frame) + 6);
         toggleInfoPanelButton.frame = CGRectMake(0, 0, infoScrollView.contentSize.width, infoScrollView.contentSize.height);
-    } else {
+    } else {   
+        // Limit the height of the video title
+        CGRect frame = videoTitleLabel.frame;
+        frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
+        videoTitleLabel.frame = frame;
+
         // Position the author label below the video title
         frame = authorLabel.frame;
         frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
@@ -194,10 +200,14 @@
     }
     if (expanded) {
         mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0],
                           [NSNumber numberWithFloat:1.0],
                           [NSNumber numberWithFloat:1.0], nil];
     } else {
         mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0.025],
+                          [NSNumber numberWithFloat:0.06],
                           [NSNumber numberWithFloat:0.25],
                           [NSNumber numberWithFloat:0.425], nil];
     }

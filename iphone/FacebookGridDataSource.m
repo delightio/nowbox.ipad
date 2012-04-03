@@ -105,7 +105,7 @@
     cell.label.text = channel.title;
     
     NMDataController *dataController = [NMTaskQueueController sharedTaskQueueController].dataController;
-    NMVideo *latestVideo = [dataController latestVideoForChannel:channel];
+    NMVideo *latestVideo = [dataController highestSortOrderVideoForChannel:channel];
     
     if (latestVideo) {
         [cell.image setImageForVideoThumbnail:latestVideo];
@@ -133,8 +133,12 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    // Facebook sync status updated, we have imported some videos
-    [self.gridView updateVisibleItems];
+    // Facebook sync status updated, we have imported some videos. Update each cell without reloading the view.
+    for (PagingGridViewCell *cell in self.gridView.visibleCells) {
+        NSUInteger frcIndex = [self mappedFetchedResultsIndexForGridIndex:cell.index];
+        NMChannel *channel = [[self.fetchedResultsController objectAtIndexPath:[NSIndexPath indexPathForRow:frcIndex inSection:0]] channel];
+        [self configureCell:cell forChannel:channel isUpdate:YES];
+    }
 }
 
 #pragma mark - NSFetchedResultsController

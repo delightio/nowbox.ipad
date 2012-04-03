@@ -51,6 +51,9 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
+		83038185152B9C560044A480 /* friendbox_home_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038183152B9C560044A480 /* friendbox_home_logo.png */; };
+		83038186152B9C560044A480 /* friendbox_home_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038184152B9C560044A480 /* friendbox_home_logo@2x.png */; };
+		83038188152BA07F0044A480 /* GridViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83038187152BA07F0044A480 /* GridViewController.xib */; };
 		8305574F14EDD609004048F7 /* playback-play~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574D14EDD609004048F7 /* playback-play~iphone.png */; };
 		8305575014EDD609004048F7 /* playback-play@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */; };
 		8305575214EDE773004048F7 /* MovieDetailInfoView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */; };
@@ -75,6 +78,13 @@
 		8355669B14EF37FE009195FB /* progress-gray-side@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8355669714EF37FD009195FB /* progress-gray-side@2x~iphone.png */; };
 		8355669C14EF37FE009195FB /* progress-gray-side~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8355669814EF37FD009195FB /* progress-gray-side~iphone.png */; };
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
+		8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8365A339152A4CB0008839E6 /* Settings.bundle */; };
+		8365A33E152A87C9008839E6 /* NSDate+RelativeDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8365A33D152A87C9008839E6 /* NSDate+RelativeDate.m */; };
+		8365A340152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */; };
+		8365A341152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */; };
+		837437F415268F7200EF7F36 /* FacebookLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837437F315268F7200EF7F36 /* FacebookLoginViewController.m */; };
+		837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837437F71526939300EF7F36 /* FacebookLoginViewController.xib */; };
+		837437F91526954300EF7F36 /* PhoneOnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */; };
 		83771E0F1523A88900775779 /* Default@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 83771E0D1523A88900775779 /* Default@2x~iphone.png */; };
 		83771E101523A88900775779 /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 83771E0E1523A88900775779 /* Default~iphone.png */; };
 		83771E121523A99E00775779 /* PhoneOnBoardProcessViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83771E111523A99E00775779 /* PhoneOnBoardProcessViewController.xib */; };
@@ -341,11 +351,8 @@
 		837EE11E15266375001ACFC2 /* CrittercismViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8388798B14B7739400566002 /* CrittercismViewController.xib */; };
 		837EE11F15266375001ACFC2 /* find-channel-not-subscribed-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E348BC14BBD0E4002A376E /* find-channel-not-subscribed-button.png */; };
 		837EE12015266375001ACFC2 /* find-channel-subscribed-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E348BD14BBD0E4002A376E /* find-channel-subscribed-button.png */; };
-		837EE12115266375001ACFC2 /* GridViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD5E14E081AF00444755 /* GridViewController.xib */; };
 		837EE12215266375001ACFC2 /* phone_home_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6314E082B500444755 /* phone_home_background.png */; };
 		837EE12315266375001ACFC2 /* phone_home_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6414E082B500444755 /* phone_home_background@2x.png */; };
-		837EE12415266375001ACFC2 /* phone_home_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6814E0836600444755 /* phone_home_logo.png */; };
-		837EE12515266375001ACFC2 /* phone_home_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6914E0836600444755 /* phone_home_logo@2x.png */; };
 		837EE12615266375001ACFC2 /* phone_button_refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7814E0893E00444755 /* phone_button_refresh.png */; };
 		837EE12715266375001ACFC2 /* phone_button_refresh@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7914E0893E00444755 /* phone_button_refresh@2x.png */; };
 		837EE12815266375001ACFC2 /* phone_button_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7C14E089F700444755 /* phone_button_settings.png */; };
@@ -646,7 +653,6 @@
 		837EE25015266375001ACFC2 /* FeatureDebugMentionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D339461506B700006163A6 /* FeatureDebugMentionsViewController.m */; };
 		837EE25115266375001ACFC2 /* CommentShareView.m in Sources */ = {isa = PBXBuildFile; fileRef = 83804295150AA692009B9741 /* CommentShareView.m */; };
 		837EE25215266375001ACFC2 /* NSString+Formatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B330FB150E9DA400E9F9DE /* NSString+Formatting.m */; };
-		837EE25315266375001ACFC2 /* PhoneOnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */; };
 		837EE25515266375001ACFC2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A956EE1614CD70AD001C5C7E /* Accounts.framework */; };
 		837EE25615266375001ACFC2 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A94D65D214CD55280033F661 /* Twitter.framework */; };
 		837EE25715266375001ACFC2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9DB20CA1348B8980018AA4A /* MessageUI.framework */; };
@@ -1253,6 +1259,9 @@
 		22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchChannelViewController.xib; path = Classes/SearchChannelViewController.xib; sourceTree = "<group>"; };
 		22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+KeyboardDismiss.h"; sourceTree = "<group>"; };
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
+		83038183152B9C560044A480 /* friendbox_home_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = friendbox_home_logo.png; sourceTree = "<group>"; };
+		83038184152B9C560044A480 /* friendbox_home_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "friendbox_home_logo@2x.png"; sourceTree = "<group>"; };
+		83038187152BA07F0044A480 /* GridViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GridViewController.xib; sourceTree = "<group>"; };
 		8305574D14EDD609004048F7 /* playback-play~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play~iphone.png"; sourceTree = "<group>"; };
 		8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play@2x~iphone.png"; sourceTree = "<group>"; };
 		8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "MovieDetailInfoView~iphone.xib"; sourceTree = "<group>"; };
@@ -1281,6 +1290,13 @@
 		8355669814EF37FD009195FB /* progress-gray-side~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progress-gray-side~iphone.png"; sourceTree = "<group>"; };
 		835C747B146084CE00702643 /* VideoRowTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRowTableView.h; sourceTree = "<group>"; };
 		835C747C146084CE00702643 /* VideoRowTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRowTableView.m; sourceTree = "<group>"; };
+		8365A339152A4CB0008839E6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		8365A33C152A87C9008839E6 /* NSDate+RelativeDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RelativeDate.h"; sourceTree = "<group>"; };
+		8365A33D152A87C9008839E6 /* NSDate+RelativeDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RelativeDate.m"; sourceTree = "<group>"; };
+		8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "AppleTVIndicationView~iphone.xib"; sourceTree = "<group>"; };
+		837437F215268F7200EF7F36 /* FacebookLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginViewController.h; sourceTree = "<group>"; };
+		837437F315268F7200EF7F36 /* FacebookLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginViewController.m; sourceTree = "<group>"; };
+		837437F71526939300EF7F36 /* FacebookLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FacebookLoginViewController.xib; sourceTree = "<group>"; };
 		83771E0D1523A88900775779 /* Default@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x~iphone.png"; sourceTree = "<group>"; };
 		83771E0E1523A88900775779 /* Default~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default~iphone.png"; sourceTree = "<group>"; };
 		83771E111523A99E00775779 /* PhoneOnBoardProcessViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhoneOnBoardProcessViewController.xib; sourceTree = "<group>"; };
@@ -1336,7 +1352,7 @@
 		837E904914587FA3009F32DD /* MixpanelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelEvent.h; sourceTree = "<group>"; };
 		837E904A14587FA3009F32DD /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
 		837EE26915266375001ACFC2 /* Friendbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Friendbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		837EE26B15266376001ACFC2 /* Friendbox-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Friendbox-Info.plist"; path = "/Users/chris/nowbox/git/nowmov.ipad/Friendbox-Info.plist"; sourceTree = "<absolute>"; };
+		837EE26B15266376001ACFC2 /* Friendbox-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Friendbox-Info.plist"; path = "/Users/chris/nowbox/git/nowmov.ipad/Friendbox/Friendbox-Info.plist"; sourceTree = "<absolute>"; };
 		837EE26E152670E3001ACFC2 /* phone_button_share_cancel_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_share_cancel_active.png; sourceTree = "<group>"; };
 		837EE26F152670E3001ACFC2 /* phone_button_share_cancel_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_button_share_cancel_active@2x.png"; sourceTree = "<group>"; };
 		837EE270152670E3001ACFC2 /* phone_button_share_cancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_button_share_cancel.png; sourceTree = "<group>"; };
@@ -2036,6 +2052,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		83038182152B9C560044A480 /* Friendbox */ = {
+			isa = PBXGroup;
+			children = (
+				83038183152B9C560044A480 /* friendbox_home_logo.png */,
+				83038184152B9C560044A480 /* friendbox_home_logo@2x.png */,
+			);
+			path = Friendbox;
+			sourceTree = "<group>";
+		};
+		837437F61526937F00EF7F36 /* Friendbox */ = {
+			isa = PBXGroup;
+			children = (
+				837437F71526939300EF7F36 /* FacebookLoginViewController.xib */,
+				83038187152BA07F0044A480 /* GridViewController.xib */,
+			);
+			path = Friendbox;
+			sourceTree = "<group>";
+		};
 		837A299414E1C8B500065F32 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -2158,8 +2192,11 @@
 			isa = PBXGroup;
 			children = (
 				837EE26B15266376001ACFC2 /* Friendbox-Info.plist */,
+				8365A339152A4CB0008839E6 /* Settings.bundle */,
+				837437F215268F7200EF7F36 /* FacebookLoginViewController.h */,
+				837437F315268F7200EF7F36 /* FacebookLoginViewController.m */,
 			);
-			name = Friendbox;
+			path = Friendbox;
 			sourceTree = "<group>";
 		};
 		838106021491779E00B3FCE5 /* iPhone */ = {
@@ -2176,6 +2213,7 @@
 				83C6F93F14FC528C00D043B1 /* BuzzView.xib */,
 				8380FA6514F7276C000CE0F7 /* BuzzCommentView.xib */,
 				83804271150A99AB009B9741 /* CommentShareView.xib */,
+				8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */,
 			);
 			name = iPhone;
 			path = iphone;
@@ -2427,26 +2465,21 @@
 			path = Nibs;
 			sourceTree = "<group>";
 		};
-		83DE119E14F86C6300012806 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				83DE11A514F875E900012806 /* UIFont+BackupFont.h */,
-				83DE11A614F875E900012806 /* UIFont+BackupFont.m */,
-			);
-			name = Categories;
-			sourceTree = "<group>";
-		};
 		83EF90CA148433D000ED7993 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				8365A33C152A87C9008839E6 /* NSDate+RelativeDate.h */,
+				8365A33D152A87C9008839E6 /* NSDate+RelativeDate.m */,
+				83B330FA150E9DA400E9F9DE /* NSString+Formatting.h */,
+				83B330FB150E9DA400E9F9DE /* NSString+Formatting.m */,
+				83DE11A514F875E900012806 /* UIFont+BackupFont.h */,
+				83DE11A614F875E900012806 /* UIFont+BackupFont.m */,
 				83EF90C7148433B900ED7993 /* UIImage+Tint.h */,
 				83EF90C8148433B900ED7993 /* UIImage+Tint.m */,
 				22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */,
 				22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */,
 				83D84A2C147DD65A00474EBC /* UIView+InteractiveAnimation.h */,
 				83D84A2D147DD65B00474EBC /* UIView+InteractiveAnimation.m */,
-				83B330FA150E9DA400E9F9DE /* NSString+Formatting.h */,
-				83B330FB150E9DA400E9F9DE /* NSString+Formatting.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -2454,7 +2487,6 @@
 		A90BC4141461F7AC006AD644 /* iphone */ = {
 			isa = PBXGroup;
 			children = (
-				83DE119E14F86C6300012806 /* Categories */,
 				837A299614E1C8C500065F32 /* Objects */,
 				837A299514E1C8BE00065F32 /* Controllers */,
 				837A299414E1C8B500065F32 /* Views */,
@@ -2618,6 +2650,7 @@
 		A970501813438F860022BF2C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				83038182152B9C560044A480 /* Friendbox */,
 				8384CD6214E082B500444755 /* iPhone */,
 				A955268E150ED0AE00585856 /* airplay@2x.png */,
 				A955268F150ED0AE00585856 /* button-like-active@2x.png */,
@@ -3006,6 +3039,7 @@
 		A97050A213438F980022BF2C /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				837437F61526937F00EF7F36 /* Friendbox */,
 				838106021491779E00B3FCE5 /* iPhone */,
 				A970505D13438F860022BF2C /* VideoPlaybackView.xib */,
 				A953ED4D134CB9F100372F48 /* VideoControlView.xib */,
@@ -3108,6 +3142,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 837EE26515266375001ACFC2 /* Build configuration list for PBXNativeTarget "Friendbox" */;
 			buildPhases = (
+				8365A33B152A6A03008839E6 /* ShellScript */,
 				837EE03F15266375001ACFC2 /* Resources */,
 				837EE1F115266375001ACFC2 /* Sources */,
 				837EE25415266375001ACFC2 /* Frameworks */,
@@ -3423,11 +3458,8 @@
 				837EE11E15266375001ACFC2 /* CrittercismViewController.xib in Resources */,
 				837EE11F15266375001ACFC2 /* find-channel-not-subscribed-button.png in Resources */,
 				837EE12015266375001ACFC2 /* find-channel-subscribed-button.png in Resources */,
-				837EE12115266375001ACFC2 /* GridViewController.xib in Resources */,
 				837EE12215266375001ACFC2 /* phone_home_background.png in Resources */,
 				837EE12315266375001ACFC2 /* phone_home_background@2x.png in Resources */,
-				837EE12415266375001ACFC2 /* phone_home_logo.png in Resources */,
-				837EE12515266375001ACFC2 /* phone_home_logo@2x.png in Resources */,
 				837EE12615266375001ACFC2 /* phone_button_refresh.png in Resources */,
 				837EE12715266375001ACFC2 /* phone_button_refresh@2x.png in Resources */,
 				837EE12815266375001ACFC2 /* phone_button_settings.png in Resources */,
@@ -3637,6 +3669,12 @@
 				837EE279152670E3001ACFC2 /* phone_button_share_cancel@2x.png in Resources */,
 				837EE27D1526829E001ACFC2 /* phone_video_share_thumbnail.png in Resources */,
 				837EE27F1526829E001ACFC2 /* phone_video_share_thumbnail@2x.png in Resources */,
+				837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */,
+				8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */,
+				8365A341152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */,
+				83038185152B9C560044A480 /* friendbox_home_logo.png in Resources */,
+				83038186152B9C560044A480 /* friendbox_home_logo@2x.png in Resources */,
+				83038188152BA07F0044A480 /* GridViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4083,10 +4121,27 @@
 				837EE278152670E3001ACFC2 /* phone_button_share_cancel@2x.png in Resources */,
 				837EE27C1526829E001ACFC2 /* phone_video_share_thumbnail.png in Resources */,
 				837EE27E1526829E001ACFC2 /* phone_video_share_thumbnail@2x.png in Resources */,
+				8365A340152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8365A33B152A6A03008839E6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env python";
+			shellScript = "#! /usr/bin/env python\nimport os\nfrom AppKit import NSMutableDictionary\n\n### This script updates the version number in Settings.bundle ###\n\nsettings_file_path = 'Friendbox/Settings.bundle/Root.plist' # the relative path from the project folder to your settings bundle\nsettings_key = 'version_preference' # the key of your settings version\n\n# these environment variables are set in the XCode build phase\nif 'PRODUCT_SETTINGS_PATH' in os.environ.keys():\n    info_path = os.environ.get('PRODUCT_SETTINGS_PATH')\n\nif 'PROJECT_DIR' in os.environ.keys():\n    settings_path = os.path.join(os.environ.get('PROJECT_DIR'), settings_file_path)\n\n# reading info.plist file\nproject_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(info_path)\nproject_bundle_version = project_plist['CFBundleVersion']\n\n# print 'project_bundle_version: '+project_bundle_version\n\n# reading settings plist\nsettings_plist = NSMutableDictionary.dictionaryWithContentsOfFile_(settings_path)\nfor dictionary in settings_plist['PreferenceSpecifiers']:\n    if 'Key' in dictionary and dictionary['Key'] == settings_key:\n        dictionary['DefaultValue'] = project_bundle_version\n\n# print repr(settings_plist)\nsettings_plist.writeToFile_atomically_(settings_path, True)";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		837EE1F115266375001ACFC2 /* Sources */ = {
@@ -4190,7 +4245,9 @@
 				837EE25015266375001ACFC2 /* FeatureDebugMentionsViewController.m in Sources */,
 				837EE25115266375001ACFC2 /* CommentShareView.m in Sources */,
 				837EE25215266375001ACFC2 /* NSString+Formatting.m in Sources */,
-				837EE25315266375001ACFC2 /* PhoneOnBoardProcessViewController.m in Sources */,
+				837437F415268F7200EF7F36 /* FacebookLoginViewController.m in Sources */,
+				837437F91526954300EF7F36 /* PhoneOnBoardProcessViewController.m in Sources */,
+				8365A33E152A87C9008839E6 /* NSDate+RelativeDate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4411,11 +4468,13 @@
 					DEBUG_USE_STAGING_SERVER,
 					FRIENDBOX,
 				);
-				INFOPLIST_FILE = "Friendbox-Info.plist";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Friendbox/Friendbox-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -4446,11 +4505,13 @@
 					MIXPANEL_PROD,
 					FRIENDBOX,
 				);
-				INFOPLIST_FILE = "Friendbox-Info.plist";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Friendbox/Friendbox-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -4482,11 +4543,13 @@
 					MIXPANEL_PROD,
 					FRIENDBOX,
 				);
-				INFOPLIST_FILE = "Friendbox-Info.plist";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Friendbox/Friendbox-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -4535,6 +4598,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = MIXPANEL_PROD;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4611,6 +4675,7 @@
 					DEBUG_USE_STAGING_SERVER,
 					DEBUG_SKIP_ONBOARD_PROCESS,
 				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4642,6 +4707,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = MIXPANEL_PROD;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4671,6 +4737,7 @@
 					DEBUG_FACEBOOK_IMPORT,
 					DEBUG_USE_STAGING_SERVER,
 				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -4687,6 +4754,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "B7FE21AC-E38B-4242-B585-9368E881A8B5";
@@ -4704,6 +4772,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

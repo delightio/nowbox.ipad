@@ -27,14 +27,22 @@
 @synthesize gridDataSource;
 @synthesize managedObjectContext;
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext nibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithDataSource:(GridDataSource *)aDataSource managedObjectContext:(NSManagedObjectContext *)aManagedObjectContext nibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.managedObjectContext = aManagedObjectContext;
-        self.gridDataSource = [[[HomeGridDataSource alloc] initWithGridView:nil viewController:self managedObjectContext:managedObjectContext] autorelease];
+        self.gridDataSource = aDataSource;
     }
     return self;
+}
+
+- (id)initWithManagedObjectContext:(NSManagedObjectContext *)aManagedObjectContext nibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self initWithDataSource:[[[HomeGridDataSource alloc] initWithGridView:nil viewController:self managedObjectContext:managedObjectContext] autorelease]
+               managedObjectContext:aManagedObjectContext
+                            nibName:nibNameOrNil
+                             bundle:nibBundleOrNil];
 }
 
 - (void)dealloc
@@ -53,6 +61,9 @@
 
 - (void)updateTitleBarForDataSource:(id<PagingGridViewDataSource>)dataSource
 {
+#ifdef FRIENDBOX
+    refreshButton.alpha = 1.0f;
+#else
     if ([dataSource isKindOfClass:[HomeGridDataSource class]]) {
         refreshButton.alpha = 0.0f;
         backButton.alpha = 0.0f;
@@ -64,6 +75,7 @@
         titleLabel.alpha = 1.0f;
         nowboxLogo.alpha = 0.0f;
     }    
+#endif
 }
 
 #pragma mark - View lifecycle

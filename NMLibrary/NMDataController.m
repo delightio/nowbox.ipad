@@ -1140,6 +1140,31 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
     return video;
 }
 
+- (NMVideo *)highestSortOrderVideoForChannel:(NMChannel *)channel {
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:self.videoEntityDescription];
+    [request setRelationshipKeyPathsForPrefetching:[NSArray arrayWithObject:@"video"]];
+    [request setReturnsObjectsAsFaults:NO];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"channel == %@ AND video.nm_error < %d AND nm_deleted == NO", channel, NMErrorDequeueVideo]];
+    [request setFetchBatchSize:1];
+
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"nm_sort_order" ascending:NO];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [request setSortDescriptors:sortDescriptors];
+
+    NSArray *results = [managedObjectContext executeFetchRequest:request error:nil];
+    NMVideo *video = nil;
+    if ([results count]) {
+        video = [results objectAtIndex:0];
+    }
+
+    [request release];
+    [sortDescriptor release];
+    [sortDescriptors release];
+
+    return video;
+}
+
 - (void)deleteVideo:(NMVideo *)vidObj {
 	if ( vidObj == nil ) return;
 	[managedObjectContext deleteObject:vidObj];

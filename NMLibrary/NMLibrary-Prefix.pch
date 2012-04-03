@@ -28,6 +28,7 @@ extern NSString * const NM_USER_TWITTER_CHANNEL_ID_KEY;
 extern NSString * const NM_USER_YOUTUBE_USER_NAME_KEY;
 extern NSString * const NM_SETTING_FACEBOOK_AUTO_POST_KEY;
 extern NSString * const NM_SETTING_TWITTER_AUTO_POST_KEY;
+extern NSString * const NM_LOGOUT_ON_APP_START_KEY;
 extern NSString * const NM_USER_YOUTUBE_SYNC_ACTIVE_KEY;
 extern NSString * const NM_USER_YOUTUBE_LAST_SYNC_KEY;
 extern NSString * const NM_FIRST_LAUNCH_KEY;
