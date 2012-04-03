@@ -27,7 +27,7 @@
 #define NM_MAX_VIDEO_IN_QUEUE				3
 #define NM_INDEX_PATH_CACHE_SIZE			4
 
-#define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		4
+#define NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL		3
 #define NM_ANIMATION_RIBBON_FADE_OUT_CONTEXT			10002
 #define NM_ANIMATION_RIBBON_FADE_IN_CONTEXT				10003
 #define NM_ANIMATION_FULL_PLAYBACK_SCREEN_CONTEXT		10006
@@ -488,7 +488,7 @@
 		}
 		if ( showMovieControlTimestamp > 0) {
 			// check if it's time to auto hide control
-			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL < sec ) {
+			if ( showMovieControlTimestamp + NM_CONTROL_VIEW_AUTO_HIDE_INTERVAL <= sec ) {
 				// we should hide
 				showMovieControlTimestamp = -1;
                 [[self currentDetailView] setVideoOverlayHidden:YES animated:YES];
