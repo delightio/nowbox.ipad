@@ -51,8 +51,9 @@
 		22ADFA0813FC2AAD003CF27E /* SearchChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22ADFA0613FC2AAD003CF27E /* SearchChannelViewController.m */; };
 		22ADFA0913FC2AAD003CF27E /* SearchChannelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */; };
 		22E4D7521420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m in Sources */ = {isa = PBXBuildFile; fileRef = 22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */; };
-		83038185152B9C560044A480 /* phone_home_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038183152B9C560044A480 /* phone_home_logo.png */; };
-		83038186152B9C560044A480 /* phone_home_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038184152B9C560044A480 /* phone_home_logo@2x.png */; };
+		83038185152B9C560044A480 /* friendbox_home_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038183152B9C560044A480 /* friendbox_home_logo.png */; };
+		83038186152B9C560044A480 /* friendbox_home_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 83038184152B9C560044A480 /* friendbox_home_logo@2x.png */; };
+		83038188152BA07F0044A480 /* GridViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83038187152BA07F0044A480 /* GridViewController.xib */; };
 		8305574F14EDD609004048F7 /* playback-play~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574D14EDD609004048F7 /* playback-play~iphone.png */; };
 		8305575014EDD609004048F7 /* playback-play@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */; };
 		8305575214EDE773004048F7 /* MovieDetailInfoView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */; };
@@ -350,7 +351,6 @@
 		837EE11E15266375001ACFC2 /* CrittercismViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8388798B14B7739400566002 /* CrittercismViewController.xib */; };
 		837EE11F15266375001ACFC2 /* find-channel-not-subscribed-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E348BC14BBD0E4002A376E /* find-channel-not-subscribed-button.png */; };
 		837EE12015266375001ACFC2 /* find-channel-subscribed-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83E348BD14BBD0E4002A376E /* find-channel-subscribed-button.png */; };
-		837EE12115266375001ACFC2 /* GridViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD5E14E081AF00444755 /* GridViewController.xib */; };
 		837EE12215266375001ACFC2 /* phone_home_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6314E082B500444755 /* phone_home_background.png */; };
 		837EE12315266375001ACFC2 /* phone_home_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD6414E082B500444755 /* phone_home_background@2x.png */; };
 		837EE12615266375001ACFC2 /* phone_button_refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 8384CD7814E0893E00444755 /* phone_button_refresh.png */; };
@@ -1259,8 +1259,9 @@
 		22ADFA0713FC2AAD003CF27E /* SearchChannelViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SearchChannelViewController.xib; path = Classes/SearchChannelViewController.xib; sourceTree = "<group>"; };
 		22E4D7501420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+KeyboardDismiss.h"; sourceTree = "<group>"; };
 		22E4D7511420D1B400E3A9ED /* UINavigationController+KeyboardDismiss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KeyboardDismiss.m"; sourceTree = "<group>"; };
-		83038183152B9C560044A480 /* phone_home_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = phone_home_logo.png; sourceTree = "<group>"; };
-		83038184152B9C560044A480 /* phone_home_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_home_logo@2x.png"; sourceTree = "<group>"; };
+		83038183152B9C560044A480 /* friendbox_home_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = friendbox_home_logo.png; sourceTree = "<group>"; };
+		83038184152B9C560044A480 /* friendbox_home_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "friendbox_home_logo@2x.png"; sourceTree = "<group>"; };
+		83038187152BA07F0044A480 /* GridViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GridViewController.xib; sourceTree = "<group>"; };
 		8305574D14EDD609004048F7 /* playback-play~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play~iphone.png"; sourceTree = "<group>"; };
 		8305574E14EDD609004048F7 /* playback-play@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playback-play@2x~iphone.png"; sourceTree = "<group>"; };
 		8305575114EDE773004048F7 /* MovieDetailInfoView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "MovieDetailInfoView~iphone.xib"; sourceTree = "<group>"; };
@@ -2054,8 +2055,8 @@
 		83038182152B9C560044A480 /* Friendbox */ = {
 			isa = PBXGroup;
 			children = (
-				83038183152B9C560044A480 /* phone_home_logo.png */,
-				83038184152B9C560044A480 /* phone_home_logo@2x.png */,
+				83038183152B9C560044A480 /* friendbox_home_logo.png */,
+				83038184152B9C560044A480 /* friendbox_home_logo@2x.png */,
 			);
 			path = Friendbox;
 			sourceTree = "<group>";
@@ -2064,6 +2065,7 @@
 			isa = PBXGroup;
 			children = (
 				837437F71526939300EF7F36 /* FacebookLoginViewController.xib */,
+				83038187152BA07F0044A480 /* GridViewController.xib */,
 			);
 			path = Friendbox;
 			sourceTree = "<group>";
@@ -3456,7 +3458,6 @@
 				837EE11E15266375001ACFC2 /* CrittercismViewController.xib in Resources */,
 				837EE11F15266375001ACFC2 /* find-channel-not-subscribed-button.png in Resources */,
 				837EE12015266375001ACFC2 /* find-channel-subscribed-button.png in Resources */,
-				837EE12115266375001ACFC2 /* GridViewController.xib in Resources */,
 				837EE12215266375001ACFC2 /* phone_home_background.png in Resources */,
 				837EE12315266375001ACFC2 /* phone_home_background@2x.png in Resources */,
 				837EE12615266375001ACFC2 /* phone_button_refresh.png in Resources */,
@@ -3671,8 +3672,9 @@
 				837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */,
 				8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */,
 				8365A341152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */,
-				83038185152B9C560044A480 /* phone_home_logo.png in Resources */,
-				83038186152B9C560044A480 /* phone_home_logo@2x.png in Resources */,
+				83038185152B9C560044A480 /* friendbox_home_logo.png in Resources */,
+				83038186152B9C560044A480 /* friendbox_home_logo@2x.png in Resources */,
+				83038188152BA07F0044A480 /* GridViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4472,6 +4474,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -4508,6 +4511,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -4545,6 +4549,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries/CrittercismSDK\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
