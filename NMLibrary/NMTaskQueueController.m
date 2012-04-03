@@ -706,10 +706,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-- (void)issueSubscribePerson:(NMPersonProfile *)aProfile {
-	if ( aProfile.subscription ) return;
-	NMChannel * chn = [dataController subscribeUserChannelWithPersonProfile:aProfile];
-	[self issueProcessFeedForChannel:chn];
+- (void)issueSubscribe:(BOOL)aSubscribe profile:(NMPersonProfile *)aProfile {
+	if ( !aSubscribe && aProfile.subscription ) {
+		// unsubscribe the channel
+		// before calling this method, playback view controller should stop playing the video
+		[dataController unsubscribeChannel:aProfile.subscription.channel];
+	} else {
+		NMChannel * chn = [dataController subscribeUserChannelWithPersonProfile:aProfile];
+		[self issueProcessFeedForChannel:chn];
+	}
 }
 
 - (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info {

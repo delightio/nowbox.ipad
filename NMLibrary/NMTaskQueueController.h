@@ -138,7 +138,7 @@
 - (void)issueProcessFeedWithTwitterInfo:(NSDictionary *)twChnInfo;
 - (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj taskInfo:(NSDictionary *)infoDict;
 - (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;
-- (void)issueSubscribePerson:(NMPersonProfile *)aProfile;
+- (void)issueSubscribe:(BOOL)aSubscribe profile:(NMPersonProfile *)aProfile;
 - (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info;
 - (void)issuePostLike:(BOOL)aLike forPost:(NMSocialInfo *)info;
 - (void)issueRetweet:(NMSocialComment *)srcCmt;

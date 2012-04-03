@@ -330,6 +330,10 @@ static NSArray * youTubeRegexArray = nil;
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
 					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
+					if ( isNew ) {
+						[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
+						theProfile.name = [fromDict objectForKey:@"name"];
+					}
 					[objectCache setObject:theProfile forKey:manID];
 				}
 				if ( isAccountOwner && (isNew || [theProfile.nm_relationship_type integerValue] != NMRelationshipFriend ) ) {
@@ -338,50 +342,6 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				// set who posted this video
 				fbInfo.poster = theProfile;
-				// we only add the video to a channel if we are parsing the user's own account OR the video is from user's own friend!!
-				// logic below will skip friends of friends
-				if ( isAccountOwner /*|| [_user_id isEqual:manID]*/ ) {
-					// the video is from another person. we should add the video to that person's channel as well
-					switch (chkResult) {
-						case NMVideoDoesNotExist:
-						{
-							// the video has never existed in the database. Add it to the originator's channel as well
-							// add the video into the channel
-							NMVideo * personVdo = [ctrl insertNewVideo];
-							personVdo.video = conVdo;
-							// add the new video proxy object to the person's channel
-							personVdo.channel = theProfile.subscription.channel;
-							personVdo.nm_session_id = NM_SESSION_ID;
-							personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-							break;
-						}
-						default:
-							// the video exists in the database before. If the person's profile is NEW, we are sure that the video has not beed added to the user's channel.
-							if ( isNew ) {
-								// though the video exists in some channel, this user profile is new and so does its channel. Just add the video in.
-								NMVideo * personVdo = [ctrl insertNewVideo];
-								personVdo.video = conVdo;
-								// add the new video proxy object to the person's channel
-								personVdo.channel = theProfile.subscription.channel;
-								personVdo.nm_session_id = NM_SESSION_ID;
-								personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-							} else {
-								// the video originally exists. We need to check if the video exists in the user's channel
-								NMChannel * personChn = theProfile.subscription.channel;
-								chkResult = [ctrl videoExistsWithExternalID:extID channel:personChn targetVideo:&conVdo];
-								if ( chkResult != NMVideoExistsAndInChannel ) {
-									// add the video into the channel
-									NMVideo * personVdo = [ctrl insertNewVideo];
-									personVdo.video = conVdo;
-									// add the new video proxy object to the person's channel
-									personVdo.channel = personChn;
-									personVdo.nm_session_id = NM_SESSION_ID;
-									personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-								}
-							}
-							break;
-					}
-				}
 			}
 			// check likes
 			NSDictionary * otherDict = [vdoFeedDict objectForKey:@"likes"];

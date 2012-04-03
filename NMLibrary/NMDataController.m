@@ -1509,6 +1509,16 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 		subtObj.personProfile = aProfile;
 		subtObj.nm_subscription_tier = [NSNumber numberWithInteger:1];
 		subtObj.nm_hidden = (NSNumber *)kCFBooleanTrue;
+		
+		// videos currently under this profile should be assigned to the channel as well
+		NSSet * mentions = aProfile.socialMentions;
+		for (NMSocialInfo * theInfo in mentions) {
+			NMVideo * personVdo = [self insertNewVideo];
+			personVdo.video = theInfo.video;
+			// add the new video proxy object to the person's channel
+			personVdo.channel = chnObj;
+			personVdo.nm_session_id = NM_SESSION_ID;
+		}
 	}
 	return chnObj;
 }
@@ -1524,6 +1534,7 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 }
 
 - (void)unsubscribeChannel:(NMChannel *)chn {
+	// just delete the subscription object. The clean up code will clean up unneeded objects later on
 	[managedObjectContext deleteObject:chn.subscription];
 }
 
