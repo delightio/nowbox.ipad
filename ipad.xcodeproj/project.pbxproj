@@ -77,6 +77,8 @@
 		835C747D146084CE00702643 /* VideoRowTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 835C747C146084CE00702643 /* VideoRowTableView.m */; };
 		8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8365A339152A4CB0008839E6 /* Settings.bundle */; };
 		8365A33E152A87C9008839E6 /* NSDate+RelativeDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8365A33D152A87C9008839E6 /* NSDate+RelativeDate.m */; };
+		8365A340152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */; };
+		8365A341152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */; };
 		837437F415268F7200EF7F36 /* FacebookLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 837437F315268F7200EF7F36 /* FacebookLoginViewController.m */; };
 		837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 837437F71526939300EF7F36 /* FacebookLoginViewController.xib */; };
 		837437F91526954300EF7F36 /* PhoneOnBoardProcessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 83771E2F1523BCD400775779 /* PhoneOnBoardProcessViewController.m */; };
@@ -1287,6 +1289,7 @@
 		8365A339152A4CB0008839E6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		8365A33C152A87C9008839E6 /* NSDate+RelativeDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RelativeDate.h"; sourceTree = "<group>"; };
 		8365A33D152A87C9008839E6 /* NSDate+RelativeDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RelativeDate.m"; sourceTree = "<group>"; };
+		8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "AppleTVIndicationView~iphone.xib"; sourceTree = "<group>"; };
 		837437F215268F7200EF7F36 /* FacebookLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookLoginViewController.h; sourceTree = "<group>"; };
 		837437F315268F7200EF7F36 /* FacebookLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookLoginViewController.m; sourceTree = "<group>"; };
 		837437F71526939300EF7F36 /* FacebookLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FacebookLoginViewController.xib; sourceTree = "<group>"; };
@@ -2194,6 +2197,7 @@
 				83C6F93F14FC528C00D043B1 /* BuzzView.xib */,
 				8380FA6514F7276C000CE0F7 /* BuzzCommentView.xib */,
 				83804271150A99AB009B9741 /* CommentShareView.xib */,
+				8365A33F152A8E5D008839E6 /* AppleTVIndicationView~iphone.xib */,
 			);
 			name = iPhone;
 			path = iphone;
@@ -3649,6 +3653,7 @@
 				837EE27F1526829E001ACFC2 /* phone_video_share_thumbnail@2x.png in Resources */,
 				837437F81526939300EF7F36 /* FacebookLoginViewController.xib in Resources */,
 				8365A33A152A4CB0008839E6 /* Settings.bundle in Resources */,
+				8365A341152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4095,6 +4100,7 @@
 				837EE278152670E3001ACFC2 /* phone_button_share_cancel@2x.png in Resources */,
 				837EE27C1526829E001ACFC2 /* phone_video_share_thumbnail.png in Resources */,
 				837EE27E1526829E001ACFC2 /* phone_video_share_thumbnail@2x.png in Resources */,
+				8365A340152A8E5E008839E6 /* AppleTVIndicationView~iphone.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
