@@ -98,7 +98,7 @@
 - (void)issueSubscribe:(BOOL)aSubscribe channel:(NMChannel *)chnObj;
 - (void)issueSubscribeChannels:(NSArray *)chnArray;
 // Polling channel
-- (void)issuePollServerForChannel:(NMChannel *)chnObj;
+//- (void)issuePollServerForChannel:(NMChannel *)chnObj;
 //- (void)pollServerForChannelReadiness; don't need this since we don't need to support keyword channel
 - (void)stopPollingServer;
 // Poll for YouTube
@@ -135,6 +135,7 @@
 
 // Facebook or Twitter (social)
 - (void)issueProcessFeedForChannel:(NMChannel *)chnObj;
+- (void)issueProcessFeedForChannel:(NMChannel *)chnObj notifyOnNewProfile:(BOOL)aflag;
 - (void)issueProcessFeedWithTwitterInfo:(NSDictionary *)twChnInfo;
 - (void)issueProcessFeedForFacebookChannel:(NMChannel *)chnObj taskInfo:(NSDictionary *)infoDict;
 - (void)issueGetProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj;

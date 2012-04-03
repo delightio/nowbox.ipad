@@ -217,9 +217,9 @@ extern NSString * const NMDidFailGetChannelDetailNotification;
 extern NSString * const NMWillCreateChannelNotification;
 extern NSString * const NMDidCreateChannelNotification;
 extern NSString * const NMDidFailCreateChannelNotification;
-extern NSString * const NMWillPollChannelNotification;
-extern NSString * const NMDidPollChannelNotification;
-extern NSString * const NMDidFailPollChannelNotification;
+//extern NSString * const NMWillPollChannelNotification;
+//extern NSString * const NMDidPollChannelNotification;
+//extern NSString * const NMDidFailPollChannelNotification;
 
 // subscription
 extern NSString * const NMWillSubscribeChannelNotification;
@@ -287,6 +287,8 @@ extern NSString * const NMDidFailPostFacebookCommentNotification;
 extern NSString * const NMWillDeleteFacebookCommentNotification;
 extern NSString * const NMDidDeleteFacebookCommentNotification;
 extern NSString * const NMDidFailDeleteFacebookCommentNotification;
+
+extern NSString * const NMDidGetNewPersonProfileNotification;
 
 // twitter
 extern NSString * const NMWillParseTwitterFeedNotification;

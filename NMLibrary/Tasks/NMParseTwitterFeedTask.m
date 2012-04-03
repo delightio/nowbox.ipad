@@ -33,6 +33,7 @@ NSString * const NMDidFailParseTwitterFeedNotification = @"NMDidFailParseTwitter
 @synthesize newestTwitIDString = _newestTwitIDString;
 @synthesize feedDateFormatter = _feedDateFormatter;
 @synthesize twitterTypeNumber = _twitterTypeNumber;
+@synthesize notifyOnNewProfile = _notifyOnNewProfile;
 
 - (id)initWithChannel:(NMChannel *)chnObj account:(ACAccount *)acObj {
 	self = [super init];

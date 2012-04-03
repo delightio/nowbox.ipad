@@ -24,6 +24,8 @@ NSString * const NMWillParseFacebookFeedNotification = @"NMWillParseFacebookFeed
 NSString * const NMDidParseFacebookFeedNotification = @"NMDidParseFacebookFeedNotification";
 NSString * const NMDidFailParseFacebookFeedNotification = @"NMDidFailParseFacebookFeedNotification";
 
+NSString * const NMDidGetNewPersonProfileNotification = @"NMDidGetNewPersonProfileNotification";
+
 static NSArray * youTubeRegexArray = nil;
 
 @implementation NMParseFacebookFeedTask
@@ -34,6 +36,7 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize since_id = _since_id;
 @synthesize feedDirectURLString = _feedDirectURLString;
 @synthesize facebookTypeNumber = _facebookTypeNumber;
+@synthesize notifyOnNewProfile = _notifyOnNewProfile;
 
 - (id)initWithChannel:(NMChannel *)chn {
 #ifdef DEBUG_FACEBOOK_IMPORT
@@ -217,6 +220,7 @@ static NSArray * youTubeRegexArray = nil;
 	NSString * extID;
 	
 	NSNumber * friendRelNum = [NSNumber numberWithInteger:NMRelationshipFriend];
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	
 	for (NSDictionary * vdoFeedDict in parsedObjects) {
 		extID = [vdoFeedDict objectForKey:@"external_id"];
@@ -338,7 +342,12 @@ static NSArray * youTubeRegexArray = nil;
 				}
 				if ( isAccountOwner && (isNew || [theProfile.nm_relationship_type integerValue] != NMRelationshipFriend ) ) {
 					// encounter a new profile when parsing my own News Feed
-					theProfile.nm_relationship_type = friendRelNum;
+					if ( ![manID isEqualToString:_user_id] ) {
+						theProfile.nm_relationship_type = friendRelNum;
+					}
+					if ( _notifyOnNewProfile ) {
+						[nc postNotificationName:NMDidGetNewPersonProfileNotification object:theProfile];
+					}
 				}
 				// set who posted this video
 				fbInfo.poster = theProfile;
