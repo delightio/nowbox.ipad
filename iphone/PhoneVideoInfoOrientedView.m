@@ -112,13 +112,10 @@
     // Size the title label to fit
     videoTitleLabel.frame = originalVideoTitleFrame;
     [videoTitleLabel sizeToFit];
-    CGRect frame = videoTitleLabel.frame;
-    frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
-    videoTitleLabel.frame = frame;
     
     if (infoPanelExpanded) {
         // Position the author label below the video title
-        frame = authorLabel.frame;
+        CGRect frame = authorLabel.frame;
         frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;
         authorLabel.frame = frame;
         
@@ -136,7 +133,12 @@
         
         infoScrollView.contentSize = CGSizeMake(infoScrollView.frame.size.width, CGRectGetMaxY(descriptionLabel.frame) + 6);
         toggleInfoPanelButton.frame = CGRectMake(0, 0, infoScrollView.contentSize.width, infoScrollView.contentSize.height);
-    } else {
+    } else {   
+        // Limit the height of the video title
+        CGRect frame = videoTitleLabel.frame;
+        frame.size.height = MIN(frame.size.height, originalVideoTitleFrame.size.height);
+        videoTitleLabel.frame = frame;
+
         // Position the author label below the video title
         frame = authorLabel.frame;
         frame.origin.y = CGRectGetMaxY(videoTitleLabel.frame) + 2;

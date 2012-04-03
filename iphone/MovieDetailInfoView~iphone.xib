@@ -404,14 +404,14 @@
 											<object class="IBUILabel" id="723129820">
 												<reference key="NSNextResponder" ref="596345868"/>
 												<int key="NSvFlags">290</int>
-												<string key="NSFrame">{{58, 5}, {184, 75}}</string>
+												<string key="NSFrame">{{58, 5}, {182, 75}}</string>
 												<reference key="NSSuperview" ref="596345868"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="301057947"/>
 												<string key="NSReuseIdentifierKey">_NS:328</string>
 												<bool key="IBUIOpaque">NO</bool>
 												<bool key="IBUIClipsSubviews">YES</bool>
-												<int key="IBUIContentMode">7</int>
+												<int key="IBUIContentMode">9</int>
 												<bool key="IBUIUserInteractionEnabled">NO</bool>
 												<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 												<string key="IBUIText">Video Name</string>
@@ -916,7 +916,7 @@
 								<string key="NSReuseIdentifierKey">_NS:328</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
-								<int key="IBUIContentMode">7</int>
+								<int key="IBUIContentMode">9</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<string key="IBUIText">Video Name</string>
