@@ -15,10 +15,7 @@
 @interface PagingGridView : UIScrollView <PagingGridViewCellDelegate, UIScrollViewDelegate> {
     NSUInteger numberOfItems;
     CGSize itemSize;
-    
-    NSMutableIndexSet *visibleIndexes;
-    NSMutableSet *visibleViews;
-    NSMutableSet *recycledViews;
+    NSMutableSet *recycledCells;
     
     NSTimer *rearrangePageSwitchTimer;
     BOOL dragging;
@@ -32,6 +29,8 @@
 @property (nonatomic, assign) CGSize internalPadding;
 @property (nonatomic, assign) CGSize externalPadding;
 @property (nonatomic, assign) BOOL rearranging;
+@property (nonatomic, readonly) NSMutableIndexSet *visibleIndexes;
+@property (nonatomic, readonly) NSMutableSet *visibleCells;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDataSource> dataSource;
 @property (nonatomic, assign) IBOutlet id<PagingGridViewDelegate> gridDelegate;
 
