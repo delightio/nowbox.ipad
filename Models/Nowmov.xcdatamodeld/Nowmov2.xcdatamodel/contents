@@ -67,7 +67,7 @@
         <attribute name="nm_account_identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nm_error" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="nm_me" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="nm_relationship_type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nm_thumbnail_file_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="nm_type" optional="YES" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="nm_user_id" optional="YES" attributeType="String" syncable="YES"/>

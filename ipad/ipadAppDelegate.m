@@ -462,12 +462,12 @@ NSInteger NM_LAST_CHANNEL_ID;
     if (managedObjectModel_ != nil) {
         return managedObjectModel_;
     }
-//    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"mom"];
-//    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
-//    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
-//    return managedObjectModel_;
-    managedObjectModel_ = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+    NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Nowmov" ofType:@"momd"];
+    NSURL *modelURL = [NSURL fileURLWithPath:modelPath];
+    managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
     return managedObjectModel_;
+//    managedObjectModel_ = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+//    return managedObjectModel_;
 }
 
 
@@ -483,46 +483,25 @@ NSInteger NM_LAST_CHANNEL_ID;
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Nowmov.sqlite"];
     
-#ifdef DEBUG_ONBOARD_PROCESS
-	NSLog(@"debug!!!!!!  removing local cache to fool onboard process");
 	NSFileManager * fm = [NSFileManager defaultManager];
-	if ( [fm fileExistsAtPath:[storeURL path]] ) {
-		// remove the file
-		[fm removeItemAtURL:storeURL error:nil];
-	}
-#endif
-
     NSError *error = nil;
-    persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        /*
-         Replace this implementation with code to handle the error appropriately.
-         
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-         
-         Typical reasons for an error here include:
-         * The persistent store is not accessible;
-         * The schema for the persistent store is incompatible with current managed object model.
-         Check the error message to determine what the actual problem was.
-         
-         
-         If the persistent store is not accessible, there is typically something wrong with the file path. Often, a file URL is pointing into the application's resources directory instead of a writeable directory.
-         
-         If you encounter schema incompatibility errors during development, you can reduce their frequency by:
-         * Simply deleting the existing store:
-         [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil]
-         
-         * Performing automatic lightweight migration by passing the following dictionary as the options parameter: 
-         [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
-         
-         Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
-         
-         */
-		[[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
-		[persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error];
-		//        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		//        abort();
-    }    
+	NSDictionary * sourceMetadata = [NSPersistentStoreCoordinator metadataForPersistentStoreOfType:NSSQLiteStoreType URL:storeURL error:&error];
+	NSManagedObjectModel * destinationModel = [self managedObjectModel];
+	[storeURL checkResourceIsReachableAndReturnError:&error];
+	if (![fm fileExistsAtPath:[storeURL path]] || [destinationModel isConfiguration:nil compatibleWithStoreMetadata:sourceMetadata] ) {
+		// no need to perform migration
+		persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+		if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+			[[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
+			if ( ![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error] ) {
+				NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+				abort();
+			}
+		}    
+	} else {
+		// perform migration
+		
+	}
     
     return persistentStoreCoordinator_;
 }

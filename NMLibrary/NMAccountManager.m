@@ -226,7 +226,7 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	BOOL isNew;
 	NMPersonProfile * theProfile = [ctrl insertNewPersonProfileWithAccountIdentifier:acObj.identifier isNew:&isNew];
 	theProfile.nm_account_identifier = acObj.identifier;
-	theProfile.nm_me = (NSNumber *)kCFBooleanTrue;
+	theProfile.nm_relationship_type = [NSNumber numberWithInteger:NMRelationshipMe];
 	theProfile.username = acObj.username;
 	theProfile.nm_type = [NSNumber numberWithInteger:NMChannelUserTwitterType];
 	theProfile.nm_error = [NSNumber numberWithInteger:NMErrorPendingImport];
@@ -368,6 +368,8 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	[[NMTaskQueueController sharedTaskQueueController] issueGetProfile:thePerson account:nil];
 	// Login interface should listen to notification so that it can update the interface accordingly
 	self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncPendingInitialSync];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidGetNewProfileNotification:) name:NMDidGetNewPersonProfileNotification object:nil];
+	subscribeCount = 0;
 }
 
 - (void)fbDidLogout {
@@ -398,16 +400,6 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 #pragma mark Sync notification handlers
 
 - (void)handleSyncErrorNotification:(NSNotification *)aNotification {
-//	NSString * theName = [aNotification name];
-//	// fail to sync
-//	if ( [theName isEqualToString:NMDidFailGetFacebookProfileNotification] ) {
-//		NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
-//		if ( [theProfile.nm_me boolValue] ) {
-//			// fail to sync my facebook account. try grab the profile again after 2.0
-//			[self performSelector:@selector(scheduleImportVideos) withObject:nil afterDelay:2.0];
-//			// scheduleImportVideos checks for person profile to update too. This is what we need.
-//		}
-//	}
 	// check error type
 	NSError * errObj = [[aNotification userInfo] objectForKey:@"error"];
 	if ( [[errObj domain] isEqualToString:NSURLErrorDomain] ) {
@@ -444,15 +436,30 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 	 For Facebook, we set this task queue schedule to listen to notification in the NMAccountManager. When user has successfully granted this app access to his/her Facebook account, NMAccountManager will get called (the facebook delegate)
 	 */
 	NMPersonProfile * theProfile = [[aNotification userInfo] objectForKey:@"target_object"];
-	if ( [theProfile.nm_me boolValue] ) {
+	if ( [theProfile.nm_relationship_type integerValue] == NMRelationshipMe ) {
 		// trigger feed parsing
-		[self scheduleSyncSocialChannels];
 		if ( [theProfile.nm_type integerValue] == NMChannelUserFacebookType ) {
 			// we should extend the token
 			[_facebook extendAccessTokenIfNeeded];
 			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
+			[self scheduleFirstSyncFacebookSocialChannels];
+		} else {
+			[self scheduleSyncSocialChannels];
 		}
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:[aNotification name] object:nil];
+	}
+}
+
+- (void)handleDidGetNewProfileNotification:(NSNotification *)aNotification {
+	// try to get first five person
+	NMPersonProfile * thePerson = [aNotification object];
+	if ( thePerson ) {
+		[[NMTaskQueueController sharedTaskQueueController] issueSubscribe:YES profile:[aNotification object]];
+		subscribeCount++;
+	}
+	if ( subscribeCount > 5 ) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetNewPersonProfileNotification object:nil];
+		[self scheduleImportVideos];
 	}
 }
 
@@ -502,6 +509,47 @@ static NSString * const NMFacebookAppSecret = @"da9f5422fba3f8caf554d6bd927dc430
 }
 
 #pragma mark Sync methods
+- (void)scheduleFirstSyncFacebookSocialChannels {
+#if defined(DEBUG_FACEBOOK_IMPORT)
+	NSLog(@"scheduleFirstSyncFacebookSocialChannels");
+#endif
+	NMTaskQueueController * tqc = [NMTaskQueueController sharedTaskQueueController];
+	if ( [self.facebookAccountStatus integerValue] ) {
+		syncErrorCounter = 0;
+		// get the qualified channels
+		NSArray * theChannels = [tqc.dataController socialChannelsForSync];
+		NSUInteger c = [theChannels count];
+		BOOL foundFBChn = NO;
+		NSInteger chnType = 0;
+		NSInteger idx = 0;
+		for (NMChannel * chn in theChannels) {
+			chnType = [chn.type integerValue];
+			if ( chnType == NMChannelUserFacebookType ) {
+				[tqc issueProcessFeedForChannel:chn notifyOnNewProfile:YES];
+				foundFBChn = YES;
+			}
+			if ( ++idx == 5 ) {
+				break; // queue no more than 5 tasks
+			}
+		}
+		if ( foundFBChn ) {
+			self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncSyncInProgress];
+		}
+		if ( c > 5 && _socialChannelParsingTimer == nil ) {
+			// schedule a timer task to process other channels
+			self.socialChannelParsingTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(scheduleFirstSyncFacebookSocialChannels) userInfo:nil repeats:YES];
+		} else if ( _socialChannelParsingTimer ) {
+			[_socialChannelParsingTimer invalidate], self.socialChannelParsingTimer = nil;
+			if ( _videoImportTimer == nil ) {
+				// if there's no scheduled video import timer as well, it's safe to declare that this round of sync process has been completed
+				self.facebookAccountStatus = [NSNumber numberWithInteger:NMSyncAccountActive];
+			}
+			// stop handling auto subscribe
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NMDidGetNewPersonProfileNotification object:nil];
+		}
+	}
+}
+
 - (void)scheduleSyncSocialChannels {
 #if defined(DEBUG_FACEBOOK_IMPORT) || defined (DEBUG_TWITTER_IMPORT)
 	NSLog(@"scheduleSyncSocialChannels");

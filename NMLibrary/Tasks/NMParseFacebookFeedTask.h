@@ -24,6 +24,7 @@
 @property (nonatomic, retain) NSString * since_id;
 @property (nonatomic, retain) NSString * feedDirectURLString;
 @property (nonatomic, retain) NSNumber * facebookTypeNumber;
+@property (nonatomic) BOOL notifyOnNewProfile;
 
 + (NSString *)youTubeExternalIDFromLink:(NSString *)urlStr;
 

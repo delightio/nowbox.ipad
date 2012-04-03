@@ -24,7 +24,7 @@ NSString * const NMDidFailGetTwitterProfileNotification = @"NMDidFailGetTwitterP
 - (id)initWithProfile:(NMPersonProfile *)aProfile account:(ACAccount *)acObj {
 	self = [super init];
 	command = NMCommandGetTwitterProfile;
-	profileOwnsByMe = [aProfile.nm_me boolValue];
+	profileOwnsByMe = [aProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.targetID = aProfile.nm_id;
 	self.account = acObj;
 	self.profile = aProfile;
