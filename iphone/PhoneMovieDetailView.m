@@ -7,13 +7,13 @@
 //
 
 #import "PhoneMovieDetailView.h"
+#import "NSDate+RelativeDate.h"
 #import <QuartzCore/QuartzCore.h>
 
 #pragma mark - PhoneMovieDetailView
 
 @interface PhoneMovieDetailView (PrivateMethods)
 + (UIImage *)serviceIconForChannelType:(NMChannelType)channelType;
-+ (NSString *)relativeTimeStringForTime:(NSTimeInterval)time;
 - (void)setChannelTitle:(NSString *)channelTitle;
 - (void)setVideoTitle:(NSString *)videoTitle;
 - (void)setDate:(NSDate *)date;
@@ -44,32 +44,6 @@
         default:
             return nil;
     }    
-}
-
-+ (NSString *)relativeTimeStringForTime:(NSTimeInterval)time
-{
-    NSTimeInterval ageInSeconds = [[NSDate date] timeIntervalSince1970] - time;
-    
-    if (ageInSeconds <= 0) {
-        return @"Just now";
-    } else if (ageInSeconds < 60) {
-        return [NSString stringWithFormat:@"%i sec ago", (NSInteger)ageInSeconds];
-    } else if (ageInSeconds < 60*60) {
-        return [NSString stringWithFormat:@"%i min ago", (NSInteger)(ageInSeconds / 60)];
-    } else if (ageInSeconds < 60*60*24) {
-        NSInteger hours = (NSInteger)(ageInSeconds / (60*60));
-        return [NSString stringWithFormat:@"%i %@ ago", hours, (hours == 1 ? @"hour" : @"hours")];
-    } else if (ageInSeconds < 60*60*24*30) {
-        NSInteger days = (NSInteger)(ageInSeconds / (60*60*24));
-        if (days == 1) return @"Yesterday";
-        return [NSString stringWithFormat:@"%i days ago", days];
-    } else if (ageInSeconds < 60*60*24*365) {
-        NSInteger months = (NSInteger)(ageInSeconds / (60*60*24*30));
-        return [NSString stringWithFormat:@"%i %@ ago", months, (months == 1 ? @"month": @"months")];
-    } else {
-        NSInteger years = (NSInteger)(ageInSeconds / (60*60*24*365));
-        return [NSString stringWithFormat:@"%i %@ ago", years, (years == 1 ? @"year" : @"years")];
-    }
 }
 
 - (void)awakeFromNib
@@ -141,11 +115,7 @@
 
 - (void)setDate:(NSDate *)date
 {
-    NSString *dateString = [NSDateFormatter localizedStringFromDate:date 
-                                                          dateStyle:NSDateFormatterLongStyle 
-                                                          timeStyle:NSDateFormatterNoStyle];
-    
-    NSString *labelText = [NSString stringWithFormat:@"Uploaded on %@", dateString];
+    NSString *labelText = [NSString stringWithFormat:@"Uploaded %@", [date relativeDateString]];
     [portraitView.dateLabel setText:labelText];
     [landscapeView.dateLabel setText:labelText];
 }
@@ -299,7 +269,7 @@
             
             BuzzCommentView *postView = [portraitView.buzzView addCommentWithText:socialInfo.message username:socialInfo.poster.name showLikes:YES];
             [postView.userImageView setImageForPersonProfile:socialInfo.poster];
-            postView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[socialInfo.nm_date_posted floatValue]];
+            postView.timeLabel.text = [[NSDate dateWithTimeIntervalSince1970:[socialInfo.nm_date_posted floatValue]] relativeDateString];
             postView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
             postView.likesCountLabel.text = [NSString stringWithFormat:@"%i %@, %i %@", 
                                              likesCount, (likesCount == 1 ? @"like" : @"likes"), 
@@ -311,7 +281,7 @@
         for (NMSocialComment *comment in sortedComments) {
             BuzzCommentView *commentView = [portraitView.buzzView addCommentWithText:comment.message username:comment.fromPerson.name showLikes:NO];
             [commentView.userImageView setImageForPersonProfile:comment.fromPerson];
-            commentView.timeLabel.text = [PhoneMovieDetailView relativeTimeStringForTime:[comment.created_time floatValue]];
+            commentView.timeLabel.text = [[NSDate dateWithTimeIntervalSince1970:[comment.created_time floatValue]] relativeDateString];
             commentView.serviceIcon.image = [PhoneMovieDetailView serviceIconForChannelType:[socialInfo.nm_type integerValue]];
         }
     }
