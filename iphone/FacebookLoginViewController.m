@@ -152,6 +152,10 @@
 			// facebook
 			accStatus = [[NMAccountManager sharedAccountManager].facebookAccountStatus integerValue];
 			if (accStatus == NMSyncInitialSyncError) {
+                // Avoid multiple notifications
+                [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];                
+
+                // Sync failed
 				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Sorry, we weren't able to verify your account. Please try again later." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 				[alertView show];
 				[alertView release];
@@ -160,9 +164,12 @@
                 [UIView animateWithDuration:0.2 animations:^{
                     connectFacebookButton.alpha = 1;
                 }];
-			} else if (accStatus > 0) {
+			} else if (accStatus == NMSyncAccountActive) {
                 // Avoid multiple notifications
                 [[NMAccountManager sharedAccountManager] removeObserver:self forKeyPath:@"facebookAccountStatus"];                
+                
+                // Sync complete, proceed to friends grid
+                [activityIndicator stopAnimating];
                 [self showGridAnimated:YES];
             }
 			break;
