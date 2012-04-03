@@ -87,6 +87,15 @@
     [super dealloc];
 }
 
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
+{
+    if (deleteButton.alpha == 1 && CGRectContainsPoint(deleteButton.frame, point)) {
+        return YES;
+    }
+    
+    return [super pointInside:point withEvent:event];
+}
+
 - (void)cancelPressAndHoldTimer
 {
     [pressAndHoldTimer invalidate];
