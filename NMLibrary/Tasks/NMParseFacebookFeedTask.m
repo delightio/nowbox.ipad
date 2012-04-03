@@ -24,6 +24,8 @@ NSString * const NMWillParseFacebookFeedNotification = @"NMWillParseFacebookFeed
 NSString * const NMDidParseFacebookFeedNotification = @"NMDidParseFacebookFeedNotification";
 NSString * const NMDidFailParseFacebookFeedNotification = @"NMDidFailParseFacebookFeedNotification";
 
+NSString * const NMDidGetNewPersonProfileNotification = @"NMDidGetNewPersonProfileNotification";
+
 static NSArray * youTubeRegexArray = nil;
 
 @implementation NMParseFacebookFeedTask
@@ -34,6 +36,7 @@ static NSArray * youTubeRegexArray = nil;
 @synthesize since_id = _since_id;
 @synthesize feedDirectURLString = _feedDirectURLString;
 @synthesize facebookTypeNumber = _facebookTypeNumber;
+@synthesize notifyOnNewProfile = _notifyOnNewProfile;
 
 - (id)initWithChannel:(NMChannel *)chn {
 #ifdef DEBUG_FACEBOOK_IMPORT
@@ -46,7 +49,7 @@ static NSArray * youTubeRegexArray = nil;
 	if ( _since_id == nil || [_since_id isEqualToString:@""]) self.since_id = @"0";
 	NMPersonProfile * theProfile =  chn.subscription.personProfile;
 	self.user_id = theProfile.nm_user_id;
-	isAccountOwner = [theProfile.nm_me boolValue];
+	isAccountOwner = [theProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.targetID = chn.nm_id;
 	return self;
 }
@@ -60,7 +63,7 @@ static NSArray * youTubeRegexArray = nil;
 	self.channel = chn;
 	NMPersonProfile * theProfile =  chn.subscription.personProfile;
 	self.user_id = theProfile.nm_user_id;
-	isAccountOwner = [theProfile.nm_me boolValue];
+	isAccountOwner = [theProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.targetID = chn.nm_id;
 	return self;
 }
@@ -73,7 +76,7 @@ static NSArray * youTubeRegexArray = nil;
 	self.channel = chn;
 	NMPersonProfile * theProfile =  chn.subscription.personProfile;
 	self.user_id = theProfile.nm_user_id;
-	isAccountOwner = [theProfile.nm_me boolValue];
+	isAccountOwner = [theProfile.nm_relationship_type integerValue] == NMRelationshipMe;
 	self.targetID = chn.nm_id;
 #ifdef DEBUG_FACEBOOK_IMPORT
 	NSLog(@"Getting next page - Facebook");
@@ -215,6 +218,10 @@ static NSArray * youTubeRegexArray = nil;
 	NMConcreteVideo * conVdo = nil;
 	NMVideo * vdo = nil;
 	NSString * extID;
+	
+	NSNumber * friendRelNum = [NSNumber numberWithInteger:NMRelationshipFriend];
+	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+	
 	for (NSDictionary * vdoFeedDict in parsedObjects) {
 		extID = [vdoFeedDict objectForKey:@"external_id"];
 		idx++;
@@ -327,65 +334,23 @@ static NSArray * youTubeRegexArray = nil;
 				theProfile = [objectCache objectForKey:manID];
 				if ( theProfile == nil ) {
 					theProfile = [ctrl insertNewPersonProfileWithID:manID type:self.facebookTypeNumber isNew:&isNew];
+					if ( isNew ) {
+						[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
+						theProfile.name = [fromDict objectForKey:@"name"];
+					}
 					[objectCache setObject:theProfile forKey:manID];
 				}
-				if ( isNew ) {
-					personIDOffset++;
-					[self setupPersonProfile:theProfile withID:personIDBase + personIDOffset];
-					theProfile.name = [fromDict objectForKey:@"name"];
-					// subscribe to this person if the person is friend of user
-					if ( isAccountOwner || [_user_id isEqualToString:manID] ) {
-						[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+				if ( isAccountOwner && (isNew || [theProfile.nm_relationship_type integerValue] != NMRelationshipFriend ) ) {
+					// encounter a new profile when parsing my own News Feed
+					if ( ![manID isEqualToString:_user_id] ) {
+						theProfile.nm_relationship_type = friendRelNum;
 					}
-				} else if ( !isAccountOwner && theProfile.subscription == nil && [_user_id isEqualToString:manID] ) {
-					[ctrl subscribeUserChannelWithPersonProfile:theProfile];
+					if ( _notifyOnNewProfile ) {
+						[nc postNotificationName:NMDidGetNewPersonProfileNotification object:theProfile];
+					}
 				}
 				// set who posted this video
 				fbInfo.poster = theProfile;
-				// we only add the video to a channel if we are parsing the user's own account OR the video is from user's own friend!!
-				// logic below will skip friends of friends
-				if ( isAccountOwner /*|| [_user_id isEqual:manID]*/ ) {
-					// the video is from another person. we should add the video to that person's channel as well
-					switch (chkResult) {
-						case NMVideoDoesNotExist:
-						{
-							// the video has never existed in the database. Add it to the originator's channel as well
-							// add the video into the channel
-							NMVideo * personVdo = [ctrl insertNewVideo];
-							personVdo.video = conVdo;
-							// add the new video proxy object to the person's channel
-							personVdo.channel = theProfile.subscription.channel;
-							personVdo.nm_session_id = NM_SESSION_ID;
-							personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-							break;
-						}
-						default:
-							// the video exists in the database before. If the person's profile is NEW, we are sure that the video has not beed added to the user's channel.
-							if ( isNew ) {
-								// though the video exists in some channel, this user profile is new and so does its channel. Just add the video in.
-								NMVideo * personVdo = [ctrl insertNewVideo];
-								personVdo.video = conVdo;
-								// add the new video proxy object to the person's channel
-								personVdo.channel = theProfile.subscription.channel;
-								personVdo.nm_session_id = NM_SESSION_ID;
-								personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-							} else {
-								// the video originally exists. We need to check if the video exists in the user's channel
-								NMChannel * personChn = theProfile.subscription.channel;
-								chkResult = [ctrl videoExistsWithExternalID:extID channel:personChn targetVideo:&conVdo];
-								if ( chkResult != NMVideoExistsAndInChannel ) {
-									// add the video into the channel
-									NMVideo * personVdo = [ctrl insertNewVideo];
-									personVdo.video = conVdo;
-									// add the new video proxy object to the person's channel
-									personVdo.channel = personChn;
-									personVdo.nm_session_id = NM_SESSION_ID;
-									personVdo.nm_sort_order = [NSNumber numberWithInteger:theOrder + idx];
-								}
-							}
-							break;
-					}
-				}
 			}
 			// check likes
 			NSDictionary * otherDict = [vdoFeedDict objectForKey:@"likes"];

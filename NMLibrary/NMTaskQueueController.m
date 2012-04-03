@@ -79,7 +79,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	// handle keyword channel creation
 	NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(handleChannelCreationNotification:) name:NMDidCreateChannelNotification object:nil];
-	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil];
+	[nc addObserver:self selector:@selector(handleSocialMediaLoginNotificaiton:) name:NMDidVerifyUserNotification object:nil]; // still used by youtube sync
 	[nc addObserver:self selector:@selector(handleDidSyncUserNotification:) name:NMDidSynchronizeUserNotification object:nil];
 	[nc addObserver:self selector:@selector(handleSocialMediaLogoutNotification:) name:NMDidDeauthorizeUserNotification object:nil];
 	// polling server for channel update
@@ -234,35 +234,21 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		if ( NM_USER_TWITTER_CHANNEL_ID ) {
 			chnObj = dataController.userTwitterStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_TWITTER_CHANNEL_ID]];
 			subtObj = chnObj.subscription;
-//			if ( [chnObj.populated_at boolValue] ) {
-				if ( [subtObj.nm_hidden boolValue] ) {
-					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
-				}
-				// fetch the list of video in this twitter stream channel
-				[self issueGetMoreVideoForChannel:chnObj];
-//			} else {
-//				// never populated before
-//				shouldFirePollingLogic = YES;
-//			}
+			if ( [subtObj.nm_hidden boolValue] ) {
+				subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
+			}
+			// fetch the list of video in this twitter stream channel
+			[self issueGetMoreVideoForChannel:chnObj];
 		}
 		if ( NM_USER_FACEBOOK_CHANNEL_ID ) {
 			chnObj = dataController.userFacebookStreamChannel;//[dataController channelForID:[NSNumber numberWithInteger:NM_USER_FACEBOOK_CHANNEL_ID]];
 			subtObj = chnObj.subscription;
-//			if ( [chnObj.populated_at boolValue] ) {
-				if ( [subtObj.nm_hidden boolValue] ) {
-					subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
-				}
-				// fetch the list of video in this twitter stream channel
-				[self issueGetMoreVideoForChannel:chnObj];
-//			} else {
-//				// never populated before
-//				shouldFirePollingLogic = YES;
-//			}
+			if ( [subtObj.nm_hidden boolValue] ) {
+				subtObj.nm_hidden = (NSNumber *)kCFBooleanFalse;
+			}
+			// fetch the list of video in this twitter stream channel
+			[self issueGetMoreVideoForChannel:chnObj];
 		}
-//		if ( shouldFirePollingLogic ) {
-//			NSLog(@"Should schedule polling timer");
-//			[self pollServerForChannelReadiness];
-//		}
 	} else {
 		self.syncInProgress = NO;
 	}
@@ -659,12 +645,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 #pragma mark Social
-
-- (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
+- (void)issueProcessFeedForChannel:(NMChannel *)chnObj notifyOnNewProfile:(BOOL)aflag {
 	switch ([chnObj.type integerValue]) {
 		case NMChannelUserTwitterType:
 		{
 			NMParseTwitterFeedTask * task = [[NMParseTwitterFeedTask alloc] initWithChannel:chnObj account:[[NMAccountManager sharedAccountManager] currentTwitterAccount]];
+			task.notifyOnNewProfile = aflag;
 			[networkController addNewConnectionForTask:task];
 			[task release];
 			break;
@@ -672,6 +658,7 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		case NMChannelUserFacebookType:
 		{
 			NMParseFacebookFeedTask * task = [[NMParseFacebookFeedTask alloc] initWithChannel:chnObj];
+			task.notifyOnNewProfile = aflag;
 			[networkController addNewConnectionForTask:task];
 			[task release];
 			break;
@@ -679,6 +666,10 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 		default:
 			break;
 	}
+}
+
+- (void)issueProcessFeedForChannel:(NMChannel *)chnObj {
+	[self issueProcessFeedForChannel:chnObj notifyOnNewProfile:NO];
 }
 
 - (void)issueProcessFeedWithTwitterInfo:(NSDictionary *)twChnInfo {
@@ -706,10 +697,15 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 	}
 }
 
-- (void)issueSubscribePerson:(NMPersonProfile *)aProfile {
-	if ( aProfile.subscription ) return;
-	NMChannel * chn = [dataController subscribeUserChannelWithPersonProfile:aProfile];
-	[self issueProcessFeedForChannel:chn];
+- (void)issueSubscribe:(BOOL)aSubscribe profile:(NMPersonProfile *)aProfile {
+	if ( !aSubscribe && aProfile.subscription ) {
+		// unsubscribe the channel
+		// before calling this method, playback view controller should stop playing the video
+		[dataController unsubscribeChannel:aProfile.subscription.channel];
+	} else {
+		NMChannel * chn = [dataController subscribeUserChannelWithPersonProfile:aProfile];
+		[self issueProcessFeedForChannel:chn];
+	}
 }
 
 - (void)issuePostComment:(NSString *)msg forPost:(NMSocialInfo *)info {
@@ -867,12 +863,12 @@ BOOL NMPlaybackSafeVideoQueueUpdateActive = NO;
 }
 
 #pragma mark Server Polling
-- (void)issuePollServerForChannel:(NMChannel *)chnObj {
-	NMPollChannelTask * task = [[NMPollChannelTask alloc] initWithChannel:chnObj];
-	[networkController addNewConnectionForTask:task];
-	[task release];
-	return;
-}
+//- (void)issuePollServerForChannel:(NMChannel *)chnObj {
+//	NMPollChannelTask * task = [[NMPollChannelTask alloc] initWithChannel:chnObj];
+//	[networkController addNewConnectionForTask:task];
+//	[task release];
+//	return;
+//}
 
 //- (void)pollServerForChannelReadiness {
 //	// check the list of channels

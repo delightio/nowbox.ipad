@@ -950,6 +950,7 @@
 		A91A510214D1A52A00F41FE4 /* NMFacebookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A91A510014D1A52900F41FE4 /* NMFacebookTask.h */; };
 		A91A510314D1A52A00F41FE4 /* NMFacebookTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */; };
 		A922423214E4942A00A8FE4F /* NMSocialComment.m in Sources */ = {isa = PBXBuildFile; fileRef = A922423114E4942A00A8FE4F /* NMSocialComment.m */; };
+		A924E0FD152630BA000BFBD9 /* Version20.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = A924E0FC152630BA000BFBD9 /* Version20.xcmappingmodel */; };
 		A9250141134385BF001759F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250140134385BF001759F5 /* UIKit.framework */; };
 		A9250143134385BF001759F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9250142134385BF001759F5 /* Foundation.framework */; };
 		A925014B134385BF001759F5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9250149134385BF001759F5 /* InfoPlist.strings */; };
@@ -1051,7 +1052,6 @@
 		A9699A281462163C00ED0C6F /* VideoPlaybackBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9699A271462163C00ED0C6F /* VideoPlaybackBaseViewController.m */; };
 		A96AD056145B8F70000A8ECC /* NMUserSettingsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A96AD053145B8F29000A8ECC /* NMUserSettingsTask.m */; };
 		A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A93EF2FE144BEDF2004F72C5 /* NMDeauthorizeUserTask.m */; };
-		A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A989C592144D197B00CBC94D /* NMPollChannelTask.m */; };
 		A96BB8B21468AA31004B93ED /* NMPostSharingTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A96BB8B01468AA31004B93ED /* NMPostSharingTask.h */; };
 		A96F926514EB2EE600B51509 /* NMPersonProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = A96F926214EB2EE600B51509 /* NMPersonProfile.m */; };
 		A96F926614EB2EE600B51509 /* NMSubscription.m in Sources */ = {isa = PBXBuildFile; fileRef = A96F926414EB2EE600B51509 /* NMSubscription.m */; };
@@ -1128,6 +1128,7 @@
 		A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A9452BC71415E75E00056361 /* NMFileExistsCache.m */; };
 		A9D04874144FB39600EFD21F /* user_placeholder_image.png in Resources */ = {isa = PBXBuildFile; fileRef = A9D04873144FB39600EFD21F /* user_placeholder_image.png */; };
 		A9D19B2B140E274E008CF101 /* NMChannelDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D19B2A140E274E008CF101 /* NMChannelDetail.m */; };
+		A9D226E3152635DF009F97F7 /* NMChannel20MigrationPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D226E2152635DF009F97F7 /* NMChannel20MigrationPolicy.m */; };
 		A9D22B5714F854A8003742CE /* NMPostTweetTask.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D22B5514F854A7003742CE /* NMPostTweetTask.h */; };
 		A9D22B5814F854A8003742CE /* NMPostTweetTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D22B5614F854A7003742CE /* NMPostTweetTask.m */; };
 		A9D339471506B700006163A6 /* FeatureDebugMentionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D339461506B700006163A6 /* FeatureDebugMentionsViewController.m */; };
@@ -1651,6 +1652,7 @@
 		A91A510114D1A52A00F41FE4 /* NMFacebookTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMFacebookTask.m; sourceTree = "<group>"; };
 		A922423014E4942A00A8FE4F /* NMSocialComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSocialComment.h; sourceTree = "<group>"; };
 		A922423114E4942A00A8FE4F /* NMSocialComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSocialComment.m; sourceTree = "<group>"; };
+		A924E0FC152630BA000BFBD9 /* Version20.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Version20.xcmappingmodel; sourceTree = "<group>"; };
 		A925013C134385BF001759F5 /* nowbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nowbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9250140134385BF001759F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9250142134385BF001759F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1884,6 +1886,8 @@
 		A9D19B2A140E274E008CF101 /* NMChannelDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannelDetail.m; sourceTree = "<group>"; };
 		A9D19B30140E2916008CF101 /* NMGetChannelDetailTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMGetChannelDetailTask.h; sourceTree = "<group>"; };
 		A9D19B31140E2917008CF101 /* NMGetChannelDetailTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMGetChannelDetailTask.m; sourceTree = "<group>"; };
+		A9D226E1152635DF009F97F7 /* NMChannel20MigrationPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMChannel20MigrationPolicy.h; sourceTree = "<group>"; };
+		A9D226E2152635DF009F97F7 /* NMChannel20MigrationPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMChannel20MigrationPolicy.m; sourceTree = "<group>"; };
 		A9D22B5514F854A7003742CE /* NMPostTweetTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMPostTweetTask.h; sourceTree = "<group>"; };
 		A9D22B5614F854A7003742CE /* NMPostTweetTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMPostTweetTask.m; sourceTree = "<group>"; };
 		A9D339451506B6FF006163A6 /* FeatureDebugMentionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureDebugMentionsViewController.h; sourceTree = "<group>"; };
@@ -2844,6 +2848,9 @@
 				A9B40E5614E5E9400004DF03 /* NMChannel.m */,
 				A927BCA414EB4B5E00298615 /* NMSocialInfo.h */,
 				A927BCA514EB4B5E00298615 /* NMSocialInfo.m */,
+				A924E0FC152630BA000BFBD9 /* Version20.xcmappingmodel */,
+				A9D226E1152635DF009F97F7 /* NMChannel20MigrationPolicy.h */,
+				A9D226E2152635DF009F97F7 /* NMChannel20MigrationPolicy.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -4289,6 +4296,8 @@
 				83804296150AA692009B9741 /* CommentShareView.m in Sources */,
 				83B330FC150E9DA400E9F9DE /* NSString+Formatting.m in Sources */,
 				83771E301523BCD400775779 /* PhoneOnBoardProcessViewController.m in Sources */,
+				A924E0FD152630BA000BFBD9 /* Version20.xcmappingmodel in Sources */,
+				A9D226E3152635DF009F97F7 /* NMChannel20MigrationPolicy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4317,7 +4326,6 @@
 				A9D027BB142217590064A89D /* NMCreateUserTask.m in Sources */,
 				A9D027BC142217590064A89D /* NMFileExistsCache.m in Sources */,
 				A96AD057145B8F83000A8ECC /* NMDeauthorizeUserTask.m in Sources */,
-				A96AD058145B8FAD000A8ECC /* NMPollChannelTask.m in Sources */,
 				A9E8C79A145F2517005694D1 /* NMCheckUpdateTask.m in Sources */,
 				A9E8C79F145F26BC005694D1 /* Reachability.m in Sources */,
 				A9B9FBF81473D97200953E40 /* NMUserSynchronizeTask.m in Sources */,
@@ -4601,6 +4609,7 @@
 					DEBUG,
 					DEBUG_PANEL_ENABLED,
 					DEBUG_USE_STAGING_SERVER,
+					DEBUG_SKIP_ONBOARD_PROCESS,
 				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
