@@ -1377,6 +1377,12 @@ BOOL NMVideoPlaybackViewIsScrolling = NO;
 	[request release];
 	[pool release];
 	
+	if ( accType == NMChannelUserFacebookType ) {
+		self.userFacebookStreamChannel = nil;
+	} else {
+		self.userTwitterStreamChannel = nil;
+	}
+	
 	[managedObjectContext save:nil];
 }
 
