@@ -51,6 +51,8 @@
     CAGradientLayer *mask = [CAGradientLayer layer];
     mask.frame = CGRectMake(0, 0, viewToMask.bounds.size.width, viewToMask.bounds.size.height * 2);
     mask.colors = [NSArray arrayWithObjects:
+                   (id)[UIColor clearColor].CGColor,
+                   (id)[UIColor clearColor].CGColor,
                    (id)[UIColor whiteColor].CGColor,
                    (id)[UIColor whiteColor].CGColor,                       
                    (id)[UIColor clearColor].CGColor, nil];
@@ -58,6 +60,8 @@
     mask.endPoint = CGPointMake(0.5, 1);
     mask.locations = [NSArray arrayWithObjects:
                       [NSNumber numberWithFloat:0],
+                      [NSNumber numberWithFloat:0.025],
+                      [NSNumber numberWithFloat:0.06],                      
                       [NSNumber numberWithFloat:0.25],
                       [NSNumber numberWithFloat:0.425], nil];
     viewToMask.layer.mask = mask; 
@@ -194,10 +198,14 @@
     }
     if (expanded) {
         mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0],
                           [NSNumber numberWithFloat:1.0],
                           [NSNumber numberWithFloat:1.0], nil];
     } else {
         mask.locations = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
+                          [NSNumber numberWithFloat:0.025],
+                          [NSNumber numberWithFloat:0.06],
                           [NSNumber numberWithFloat:0.25],
                           [NSNumber numberWithFloat:0.425], nil];
     }
