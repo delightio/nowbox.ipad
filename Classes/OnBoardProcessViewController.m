@@ -20,6 +20,7 @@
 #import "ipadAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+InteractiveAnimation.h"
+#import <Delight/Delight.h>
 
 #define kChannelGridNumberOfRows 4
 #define kChannelGridNumberOfColumns 3
@@ -438,6 +439,7 @@
         [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
         [[MixpanelAPI sharedAPI] track:@"$born"];
         [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
+        [Delight setPropertyValue:[NSNumber numberWithInteger:NM_USER_ACCOUNT_ID] forKey:@"user_id"];
     }
 }
 

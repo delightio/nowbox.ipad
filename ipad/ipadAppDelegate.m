@@ -12,6 +12,7 @@
 #import "NMStyleUtility.h"
 #import "ToolTipController.h"
 #import "Crittercism.h"
+#import <Delight/Delight.h>
 
 #define NM_SESSION_DURATION		1800.0f // 30 min
 #define NM_DEBUG_MIXPANEL_TOKEN @"79ed82e53930d8f41c4e87f7084d9158"
@@ -238,7 +239,8 @@ NSInteger NM_LAST_CHANNEL_ID;
 	self.window.rootViewController = viewController;
 	[self.window makeKeyAndVisible];
 	
-	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
+	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:NULL];
+    [Delight startWithAppToken:@"343f127d1ce7b59c58b028e9151"];
     
     return YES;
 }

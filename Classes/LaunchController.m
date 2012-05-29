@@ -12,6 +12,7 @@
 #import "Crittercism.h"
 #import "ipadAppDelegate.h"
 #import "UIView+InteractiveAnimation.h"
+#import <Delight/Delight.h>
 
 #define GP_CHANNEL_UPDATE_INTERVAL	-600.0f //-12.0 * 3600.0
 #ifdef DEBUG_ONBOARD_PROCESS
@@ -171,6 +172,7 @@
     [[MixpanelAPI sharedAPI] identifyUser:[NSString stringWithFormat:@"%i", NM_USER_ACCOUNT_ID]];
     [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
     [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
+    [Delight setPropertyValue:[NSNumber numberWithInteger:NM_USER_ACCOUNT_ID] forKey:@"user_id"];    
 }
 
 #pragma mark Notification
@@ -441,6 +443,7 @@ NSComparisonResult compareVersions(NSString *leftVersion, NSString *rightVersion
     [[MixpanelAPI sharedAPI] setNameTag:userNameTag];
     [[MixpanelAPI sharedAPI] track:@"$born"];
     [[MixpanelAPI sharedAPI] track:AnalyticsEventLogin];
+    [Delight setPropertyValue:[NSNumber numberWithInteger:NM_USER_ACCOUNT_ID] forKey:@"user_id"];
     
     // Get some channels so we can subscribe to some of them
     [[NMTaskQueueController sharedTaskQueueController] issueGetFeaturedChannelsForCategories:[NMTaskQueueController sharedTaskQueueController].dataController.categories];

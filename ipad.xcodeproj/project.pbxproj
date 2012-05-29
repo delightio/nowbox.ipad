@@ -105,6 +105,10 @@
 		838F280814720B2A00935D5A /* share-button-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F280714720B2A00935D5A /* share-button-post.png */; };
 		838F281B14722A7800935D5A /* onboard-divider-shadow-down.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281914722A7800935D5A /* onboard-divider-shadow-down.png */; };
 		838F281C14722A7800935D5A /* onboard-divider-shadow-up.png in Resources */ = {isa = PBXBuildFile; fileRef = 838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */; };
+		83C30908157558630017AB25 /* Delight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C30907157558630017AB25 /* Delight.framework */; };
+		83C3090D15755A440017AB25 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C3090A15755A440017AB25 /* AssetsLibrary.framework */; };
+		83C3090E15755A440017AB25 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C3090B15755A440017AB25 /* CoreVideo.framework */; };
+		83C3090F15755A440017AB25 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C3090C15755A440017AB25 /* OpenGLES.framework */; };
 		83C71DD5147B549B00BDEFC5 /* channel-new-indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = 83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */; };
 		83D21A16146DEC13008393F1 /* onboard-splash-button.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A14146DEC13008393F1 /* onboard-splash-button.png */; };
 		83D21A1A146DF107008393F1 /* onboard-button-next.png in Resources */ = {isa = PBXBuildFile; fileRef = 83D21A19146DF107008393F1 /* onboard-button-next.png */; };
@@ -514,6 +518,10 @@
 		838F280714720B2A00935D5A /* share-button-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share-button-post.png"; sourceTree = "<group>"; };
 		838F281914722A7800935D5A /* onboard-divider-shadow-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-down.png"; sourceTree = "<group>"; };
 		838F281A14722A7800935D5A /* onboard-divider-shadow-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-divider-shadow-up.png"; sourceTree = "<group>"; };
+		83C30907157558630017AB25 /* Delight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Delight.framework; path = Libraries/Delight.framework; sourceTree = "<group>"; };
+		83C3090A15755A440017AB25 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		83C3090B15755A440017AB25 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		83C3090C15755A440017AB25 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		83C71DD4147B549B00BDEFC5 /* channel-new-indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "channel-new-indicator.png"; sourceTree = "<group>"; };
 		83D21A14146DEC13008393F1 /* onboard-splash-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-splash-button.png"; sourceTree = "<group>"; };
 		83D21A19146DF107008393F1 /* onboard-button-next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboard-button-next.png"; sourceTree = "<group>"; };
@@ -833,20 +841,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83C3090D15755A440017AB25 /* AssetsLibrary.framework in Frameworks */,
+				83C3090E15755A440017AB25 /* CoreVideo.framework in Frameworks */,
+				83C3090F15755A440017AB25 /* OpenGLES.framework in Frameworks */,
+				A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */,
+				A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */,
+				A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */,
+				A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */,
+				A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */,
 				A9DB20CC1348B8990018AA4A /* MessageUI.framework in Frameworks */,
 				83852146145A34100047B7E0 /* CoreLocation.framework in Frameworks */,
-				A9510CEC14001DE200470641 /* QuartzCore.framework in Frameworks */,
-				A9510CEB14001DDA00470641 /* CoreGraphics.framework in Frameworks */,
 				A9976F2313BB38BE00B06DFF /* libNMLibrary.a in Frameworks */,
 				A9DB20CD1348B8990018AA4A /* Security.framework in Frameworks */,
-				A9DB20C91348B8830018AA4A /* SystemConfiguration.framework in Frameworks */,
-				A97050D413439B540022BF2C /* CoreMedia.framework in Frameworks */,
-				A97050D0134398DD0022BF2C /* AVFoundation.framework in Frameworks */,
 				A97050A4134392FA0022BF2C /* CoreData.framework in Frameworks */,
 				A9250141134385BF001759F5 /* UIKit.framework in Frameworks */,
 				A9250143134385BF001759F5 /* Foundation.framework in Frameworks */,
 				A9D8E97913EB9327006C57A6 /* MediaPlayer.framework in Frameworks */,
 				838125C414E4926D001652CD /* libCrittercism_v3_1_3.a in Frameworks */,
+				83C30908157558630017AB25 /* Delight.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1005,6 +1017,10 @@
 		A925013F134385BF001759F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				83C30907157558630017AB25 /* Delight.framework */,
+				83C3090C15755A440017AB25 /* OpenGLES.framework */,
+				83C3090B15755A440017AB25 /* CoreVideo.framework */,
+				83C3090A15755A440017AB25 /* AssetsLibrary.framework */,
 				83852145145A34100047B7E0 /* CoreLocation.framework */,
 				A9D8E97813EB9327006C57A6 /* MediaPlayer.framework */,
 				A9DB20CA1348B8980018AA4A /* MessageUI.framework */,
@@ -1969,6 +1985,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -2022,6 +2039,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -2039,6 +2057,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -2062,11 +2081,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ipad/ipad-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG,
 					DEBUG_PANEL_ENABLED,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 					DEBUG_PLAYER_NAVIGATION,
-					DEBUG_USE_STAGING_SERVER,
+					DEBUG,
 				);
 				INFOPLIST_FILE = "ipad/ipad-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -2126,7 +2144,6 @@
 				GCC_PREFIX_HEADER = "NMLibrary/NMLibrary-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG_PLAYER_NAVIGATION,
-					DEBUG_USE_STAGING_SERVER,
 					DEBUG_CONNECTION_CONTROLLER,
 					DEBUG_PLAYBACK_NETWORK_CALL,
 				);

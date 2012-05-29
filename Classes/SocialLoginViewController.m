@@ -10,6 +10,7 @@
 #import "ipadAppDelegate.h"
 #import "NMLibrary.h"
 #import "UIView+InteractiveAnimation.h"
+#import <Delight/Delight.h>
 
 @implementation SocialLoginViewController
 @synthesize loginWebView, progressContainerView;
@@ -83,6 +84,20 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [Delight registerPrivateView:self.view description:@"Social Login"];
+    [Delight setHidesKeyboardInRecording:YES];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [Delight unregisterPrivateView:self.view];
+    [Delight setHidesKeyboardInRecording:NO];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
