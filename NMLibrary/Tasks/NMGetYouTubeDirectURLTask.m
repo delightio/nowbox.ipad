@@ -104,6 +104,20 @@ NSString * const NMDidFailGetYouTubeDirectURLNotification = @"NMDidFailGetYouTub
 	}
 	self.directURLString = [contentDict valueForKeyPath:@"video.hq_stream_url"];
 	self.directSDURLString = [contentDict valueForKeyPath:@"video.stream_url"];
+    
+    // If no direct links provided, check stream map array
+    if ([directURLString length] == 0 && [directSDURLString length] == 0) { 
+        NSArray *streamArray = [contentDict valueForKeyPath:@"video.fmt_stream_map"];
+        for (NSDictionary *streamDict in streamArray) {
+            NSString *qualityString = [streamDict objectForKey:@"quality"];
+            if ([qualityString isEqualToString:@"medium"] || ([qualityString isEqualToString:@"small"] && !directSDURLString)) {
+                self.directSDURLString = [streamDict objectForKey:@"url"];
+            } else if ([qualityString hasPrefix:@"hd"]) {
+                self.directURLString = [streamDict objectForKey:@"url"];
+            }
+        }
+    }
+    
 	NSUInteger dlen, dsdlen;
 	dlen = [directURLString length];
 	dsdlen = [directSDURLString length];
